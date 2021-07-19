@@ -9177,7 +9177,7 @@ def WithBundleParentTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,Pa
         chld_dict["PRICING_STATUS"] = PRICING_STATUS
         chld_dict["SERVICE_ID"] = str(par.SERVICE_ID)
         chld_dict["SERVICE_DESCRIPTION"] = str(par.SERVICE_DESCRIPTION)
-        chld_dict["OBJECT_QUANTITY"] = object_quantity
+        chld_dict["OBJECT_QUANTITY"] = str(object_quantity)
         chld_dict["TOTAL_COST"] = str(total_cost) +' '+ str(symb) if str(total_cost) else ''
         chld_dict["DISCOUNT"] = str(par.DISCOUNT)
         chld_dict["SRVTAXCLA_DESCRIPTION"] = str(par.SRVTAXCLA_DESCRIPTION)
@@ -12248,7 +12248,7 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
             chld_dict["PRICING_STATUS"] = icon #str(child.PRICING_STATUS)
             chld_dict["SERVICE_ID"] = ('<abbr id ="" title="' + str(child.SERVICE_ID) + '">' + str(child.SERVICE_ID) + "</abbr>")
             chld_dict["SERVICE_DESCRIPTION"] = ('<abbr id ="" title="' + str(child.SERVICE_DESCRIPTION) + '">' + str(child.SERVICE_DESCRIPTION) + "</abbr>") 
-            chld_dict["OBJECT_QUANTITY"] = object_quantity
+            chld_dict["OBJECT_QUANTITY"] = str(object_quantity)
             TOTAL_COST = str(total_cost) +' '+ str(symb) if str(total_cost) else ''
             TAX_PERCENTAGE = str(tax_per) +' '+ '%' if str(tax_per) else '' 
             TAX = str(tax) +' '+ str(cursymbl) if str(tax) else '' 
