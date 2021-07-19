@@ -5,7 +5,7 @@
 #   __create_date : 06/09/2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace
 Param = Param
 ApiResponseFactory = ApiResponseFactory

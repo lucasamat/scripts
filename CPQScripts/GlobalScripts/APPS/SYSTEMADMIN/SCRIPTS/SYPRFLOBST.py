@@ -5,7 +5,7 @@
 #   __create_date : 31/08/2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 

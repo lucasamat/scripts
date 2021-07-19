@@ -5,7 +5,7 @@
 #   __create_date : 31/08/2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # =======================================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 Product_name = Product.Name
 Related_Tab = 'Profiles'

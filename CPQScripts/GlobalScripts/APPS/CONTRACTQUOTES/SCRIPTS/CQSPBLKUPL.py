@@ -5,7 +5,7 @@
 #   __create_date :09-10-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-Trace.Write('bulk add-----------------')
+import Webcom.Configurator.Scripting.Test.TestProduct
 model_html = """
         <div class='row modulebnr brdr ma_mar_btm'>BULK ADD<button type='button' class='close flt_rt' onclick='closepopup_scrl()' data-dismiss='modal'>X</button></div>
         <div id='container' class='g4 pad-10 brdr except_sec spare-parts-bulk-add-ctnr-out'>

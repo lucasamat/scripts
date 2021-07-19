@@ -7,7 +7,7 @@
 #   __create_date :21-07-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 import ACVIORULES
 from SYDATABASE import SQL

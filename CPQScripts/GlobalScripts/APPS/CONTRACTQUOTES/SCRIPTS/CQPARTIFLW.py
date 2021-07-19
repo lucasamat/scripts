@@ -5,6 +5,7 @@
 #   __create_date :23-10-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys

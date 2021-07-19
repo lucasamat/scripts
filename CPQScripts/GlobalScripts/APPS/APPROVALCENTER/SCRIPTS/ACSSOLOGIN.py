@@ -8,7 +8,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 # import Webcom
 
 try:

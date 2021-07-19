@@ -5,6 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 userid = User.Id
 from SYDATABASE import SQL
 Sql = SQL()

@@ -5,7 +5,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace.Write('BULK EDIT SAVE BILLING MATRIX')
 import math
 import SYCNGEGUID as CPQID
