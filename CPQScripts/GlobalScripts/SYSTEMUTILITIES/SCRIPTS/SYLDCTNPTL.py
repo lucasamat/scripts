@@ -296,9 +296,9 @@ def MDYNMIC_CSBJ_SQLTABLE(QST_REC_ID):
 
 # CTR_INPUT_ONCHANGE CTR_TYPE
 def StaticTableFormationOnchange(ColValue, ColId, Upd_Arr, New_CtrName):
-    SetName = ""
-    SetPartNumber = ""
-    row = {}
+	SetName = ""
+	SetPartNumber = ""
+	row = {}
 	New_CtrName = ""
 	return New_CtrName, SetName, SetPartNumber, row
 
@@ -347,10 +347,13 @@ def PivotTableFormation(
 		PerPage = PerPage
 	# PRICEMODEL_ID INPUT_DATA
 	key12 = Product.Attributes.GetByName("MA_MTR_TAB_ACTION").GetValue()
+	
 	if key12 != "CLONE":
 		recno = ParentNodeRecId
+
 	else:
 		recno = Product.GetGlobal("prbk_key")
+
 	sqlobj22 = Sql.GetFirst(
 		"select PRICEMODEL_ID from PRLPBS (NOLOCK) where LIST_PRICEBOOKSET_RECORD_ID = '" + str(recno) + "'"
 	)
@@ -369,7 +372,7 @@ def PivotTableFormation(
 		Trace.Write("Ififififififif------")
 		VALUE_LIST = data_obj.PICKLIST_VALUES
 		VALUES_LIST = data_obj.PICKLIST_VALUES.split(",")
-		for name in VALUES_LIST:
+		#for name in VALUES_LIST:
 	filter_control_function += (
 		'setTimeout(function(){ $("#' + str(HEADER_LABEL) + '").colResizable({ resizeMode:"flex"});}, 3000);'
 	)
