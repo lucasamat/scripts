@@ -11,10 +11,10 @@ Sql = SQL()
 
 
 def POPUPLISTVALUE(VALUE, TABLEID, OPERATION, RETURN, IDVALUE, LOOKUPOBJ):
-        func2 = "cont_relatedlist_openedit(this)"
-        btn3 = "DELETE"
-        func4 = "cont_relatedlist_openedit(this)"
-        func3 = "cont_relatedlist_DELETE(this)"
+    func2 = "cont_relatedlist_openedit(this)"
+    btn3 = "DELETE"
+    func4 = "cont_relatedlist_openedit(this)"
+    func3 = "cont_relatedlist_DELETE(this)"
     if RETURN == "EDIT":
         func1 = '<button type="button" class="btnconfig" data-dismiss="modal">CANCEL</button>'
     readonly = "readonly"
