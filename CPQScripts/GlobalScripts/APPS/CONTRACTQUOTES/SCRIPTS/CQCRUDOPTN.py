@@ -52,7 +52,7 @@ class ContractQuoteCrudOpertion:
 		self.set_contract_quote_related_details()
 
 	def set_contract_quote_related_details(
-		self, columns=["*"], object_name=None, where_condition="", table_joins="", single_record=False
+		self, columns=["*"], table_name=None, where_condition="", table_joins="", single_record=False
 	):
 		# Set - Contract Quote Details
 		if not self.trigger_from == "IntegrationScript":
@@ -87,7 +87,7 @@ class ContractQuoteCrudOpertion:
 				"SOURCE_CONTRACT_ID",
 				"SALE_TYPE"
 			],
-			object_name="SAQTMT",
+			table_name="SAQTMT",
 			where_condition="MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id),
 			single_record=True,
 		)
@@ -108,7 +108,7 @@ class ContractQuoteCrudOpertion:
 				#"C4C_QUOTE_ID",
 				#"SOURCE_CONTRACT_ID"
 			],
-			object_name="SAQTSO",
+			table_name="SAQTSO",
 			where_condition="QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id),
 			single_record=True,
 		)
@@ -148,22 +148,20 @@ class ContractQuoteCrudOpertion:
 			#self.sale_type = None
 		return True
 
-	def _get_record_obj(self, columns=["*"], object_name=None, where_condition="", table_joins="", single_record=False):	
-		if object_name and self.tree_param != 'Approval Chain Steps' and str(current_prod).upper() not in ("SYSTEM ADMIN","APPROVAL CENTER"):
+	def _get_record_obj(self, columns=["*"], table_name=None, where_condition="", table_joins="", single_record=False):	
+		if table_name and self.tree_param != 'Approval Chain Steps' and str(current_prod).upper() not in ("SYSTEM ADMIN","APPROVAL CENTER"):
 			#Trace.Write('where_condition--133----'+str(where_condition))
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
 			
-			if single_record:				
-				return Sql.GetFirst(
-					"SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
-						Columns=",".join(columns), ObjectName=object_name, Joins=table_joins, WhereCondition=where_condition
-					)
-				)
+			if single_record:
+				return Sql.GetFirst("SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
+						Columns="".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
+					))
 			else:				
 				return Sql.GetList(
 					"SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
-						Columns=",".join(columns), ObjectName=object_name, Joins=table_joins, WhereCondition=where_condition
+						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
 					)
 				)
 		return None
@@ -176,7 +174,7 @@ class ContractQuoteCrudOpertion:
 		return True
 
 	def _add_record(
-		self, master_object_name=None, columns=[], object_name=None, condition_column=None, values=[], where_condition=""
+		self, master_object_name=None, columns=[], table_name=None, condition_column=None, values=[], where_condition=""
 	):		
 		TreeParam=Product.GetGlobal("TreeParam")
 		if self.action_type == "ADD_OFFERING" and self.all_values:
@@ -214,12 +212,12 @@ class ContractQuoteCrudOpertion:
 				where_conditon = "%s = '%s'" % (condition_column, record_ids[0],)
 			else:
 				where_conditon = "%s in %s" % (condition_column, tuple(record_ids),)
-		records_obj = self._get_record_obj(columns=columns, object_name=master_object_name, where_condition=where_conditon)
+		records_obj = self._get_record_obj(columns=columns, table_name=master_object_name, where_condition=where_conditon)
 		if records_obj:
 			auto_number_column_name_obj = self._get_record_obj(
 				columns=["API_NAME"],
-				object_name="SYOBJD",
-				where_condition="OBJECT_NAME = '{}' AND DATA_TYPE='AUTO NUMBER'".format(object_name),
+				table_name="SYOBJD",
+				where_condition="OBJECT_NAME = '{}' AND DATA_TYPE='AUTO NUMBER'".format(table_name),
 				single_record=True,
 			)
 			auto_number_column_name = auto_number_column_name_obj.API_NAME
@@ -240,18 +238,18 @@ class ContractQuoteCrudOpertion:
 	def _update(self):
 		pass
 
-	def _update_record(self, update_column_statement="", object_name="", where_condition="", order_by_statement=""):
-		if update_column_statement and object_name and where_condition:
+	def _update_record(self, update_column_statement="", table_name="", where_condition="", order_by_statement=""):
+		if update_column_statement and table_name and where_condition:
 			update_query = "UPDATE {ObjectName} SET {UpdateColumnStatement} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition} {OrderByStatement}".format(
-				ObjectName=object_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition=where_condition,
+				ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition=where_condition,
 			)
 			self._process_query(update_query)
 
 	def _delete_record(self, where_condition, object_names):
 		Trace.Write("===========> delete")
-		for object_name in object_names:
+		for table_name in object_names:
 			delete_query = "DELETE FROM {ObjectName} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
-				ObjectName=object_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition=where_condition,
+				ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition=where_condition,
 			)
 			Trace.Write("===========> 11111 delete"+str(delete_query))
 			Log.Info("User Id" + str(self.user_id) + "Script Name:CQCRUDOPTN.PY Query Statement:" + str(delete_query))
@@ -584,7 +582,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 	
@@ -806,25 +804,25 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				"UNIT_OF_MEASURE AS UOM_ID",
 				"UOM_RECORD_ID AS UOM_RECORD_ID",
 			]
-			object_name = "SAQTSV"
+			table_name = "SAQTSV"
 			condition_column = "MATERIAL_RECORD_ID"
 			row_values = {"QUOTE_NAME": self.contract_quote_name,
 				"SALESORG_ID": self.salesorg_id,
 				"SALESORG_NAME": self.salesorg_name,
 				"SALESORG_RECORD_ID": self.salesorg_record_id,}
 
-			offering_table_info = Sql.GetTable(object_name)
+			offering_table_info = Sql.GetTable(table_name)
 			existing_offering_ids = []
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
-				object_name=object_name,
+				table_name=table_name,
 				condition_column=condition_column,
 				values=self.values,
 			):
 				check_existing_offerings_obj = self._get_record_obj(
 					columns=["SERVICE_ID"],
-					object_name=object_name,
+					table_name=table_name,
 					where_condition="QUOTE_SERVICE_RECORD_ID = '{}'".format(row_detail.get("QUOTE_SERVICE_RECORD_ID")),
 					single_record=False,
 				)
@@ -1076,7 +1074,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				# Native Quote Custom Table Insert - Start
 				cart_obj = self._get_record_obj(
 					columns=["CART_ID", "USERID"],
-					object_name="CART",
+					table_name="CART",
 					where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 					single_record=True,
 				)
@@ -1808,7 +1806,7 @@ class ToolRelocationModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""	
 
@@ -1950,7 +1948,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""	
 
@@ -1973,7 +1971,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"STATUS AS FABLOCATION_STATUS"
 				
 			]
-			object_name = "SAQFBL"
+			table_name = "SAQFBL"
 			condition_column = "FAB_LOCATION_RECORD_ID"
 			Trace.Write("self.tree_param"+str(self.tree_param))
 			account_id = self.tree_param.split(' - ')
@@ -1995,7 +1993,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 			}
 
-			fab_table_info = Sql.GetTable(object_name)
+			fab_table_info = Sql.GetTable(table_name)
 			Trace.Write('self.all_values'+str(self.all_values))
 			if self.all_values:
 				qury_str=""
@@ -2008,7 +2006,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 				master_fab_obj = self._get_record_obj(
 					columns=["FAB_LOCATION_RECORD_ID"],
-					object_name=master_object_name,
+					table_name=master_object_name,
 					table_joins="JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID",
 					where_condition=""" SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND {} NOT EXISTS (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
 						self.contract_quote_record_id, qury_str, self.contract_quote_record_id, single_record=False,
@@ -2020,7 +2018,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
-				object_name=object_name,
+				table_name=table_name,
 				condition_column=condition_column,
 				values=self.values,
 			):
@@ -2123,7 +2121,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# "MNT_PLANT_RECORD_ID",
 				# "STATUS AS FABLOCATION_STATUS" 
 			]
-			object_name = "SAQSAO"
+			table_name = "SAQSAO"
 			condition_column = "ADD_ON_PRODUCT_RECORD_ID"
 			row_values = {
 				"QUOTE_NAME": self.contract_quote_name,
@@ -2133,11 +2131,11 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# "CPQTABLEENTRYADDEDBY": self.userName,
 			}
 
-			fab_table_info = Sql.GetTable(object_name)
+			fab_table_info = Sql.GetTable(table_name)
 			if self.all_values:
 				master_fab_obj = self._get_record_obj(
 					columns=["ADD_ON_PRODUCT_RECORD_ID"],
-					object_name=master_object_name,
+					table_name=master_object_name,
 					table_joins="JOIN SAQTSV (NOLOCK) ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID",
 					where_condition=""" SAQTSV.QUOTE_RECORD_ID = '{}' AND NOT EXISTS (SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}')""".format(
 						self.contract_quote_record_id, self.contract_quote_record_id,self.tree_parent_level_0, single_record=False,
@@ -2150,7 +2148,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
-				object_name=object_name,
+				table_name=table_name,
 				condition_column=condition_column,
 				values=self.values,
 			):
@@ -2308,7 +2306,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# "MNT_PLANT_RECORD_ID",
 				# "STATUS AS FABLOCATION_STATUS" 
 			]
-			object_name = "SAQSCF"
+			table_name = "SAQSCF"
 			condition_column = "FAB_LOCATION_RECORD_ID"
 			row_values = {
 				"QUOTE_NAME": self.contract_quote_name,
@@ -2318,11 +2316,11 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				# "CPQTABLEENTRYADDEDBY": self.userName,
 			}
 
-			fab_table_info = Sql.GetTable(object_name)
+			fab_table_info = Sql.GetTable(table_name)
 			if self.all_values:
 				master_fab_obj = self._get_record_obj(
 					columns=["FAB_LOCATION_RECORD_ID"],
-					object_name=master_object_name,
+					table_name=master_object_name,
 					table_joins="JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID",
 					where_condition=""" SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND NOT EXISTS (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
 						self.contract_quote_record_id, self.contract_quote_record_id, single_record=False,
@@ -2335,7 +2333,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
-				object_name=object_name,
+				table_name=table_name,
 				condition_column=condition_column,
 				values=self.values,
 			):
@@ -2761,7 +2759,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""	
 	
@@ -3191,7 +3189,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 										entitlement_obj=entitlement_obj)  
 			cart_obj = self._get_record_obj(
 				columns=["CART_ID", "USERID"],
-				object_name="CART",
+				table_name="CART",
 				where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 				single_record=True,
 			)
@@ -5880,7 +5878,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				# # Native Quote Custom Table Insert - Start
 				# cart_obj = self._get_record_obj(
 				# 	columns=["CART_ID", "USERID"],
-				# 	object_name="CART",
+				# 	table_name="CART",
 				# 	where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 				# 	single_record=True,
 				# )
@@ -5907,7 +5905,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""		
 	
@@ -5952,7 +5950,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				#self.insert_quote_items_billing_plan()
 				cart_obj = self._get_record_obj(
 					columns=["CART_ID", "USERID"],
-					object_name="CART",
+					table_name="CART",
 					where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 					single_record=True,
 				)
@@ -5981,7 +5979,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		else:
 			cart_obj = self._get_record_obj(
 				columns=["CART_ID", "USERID"],
-				object_name="CART",
+				table_name="CART",
 				where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 				single_record=True,
 			)
@@ -6065,7 +6063,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""	
 	
@@ -6084,9 +6082,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 		Sql.RunQuery("INSERT "+str(price_temp)+" (QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID, TARGET_PRICE, TOTAL_COST, YEAR_2, YEAR_1) select QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) * 1 AS ENTITLEMENT_PRICE_IMPACT, SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_2, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME NOT LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_1 from (SELECT distinct e.QUOTE_RECORD_ID, e.EQUIPMENT_RECORD_ID, e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.EQUIPMENT_RECORD_ID, SAQSCE.EQUIPMENT_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"') e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ GROUP BY QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID")
 		
-		for object_name in ('SAQICO', 'SAQITM'):
+		for table_name in ('SAQICO', 'SAQITM'):
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
-					ObjectName=object_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
+					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
 		for item in Quote.MainItems:
@@ -6664,7 +6662,7 @@ class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
 
 	def _calculate(self):
@@ -6694,7 +6692,7 @@ class ContractQuotesCommonModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')
 
 	def _get(self):
@@ -6707,7 +6705,7 @@ class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 
@@ -6726,7 +6724,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
-		self.object_name = kwargs.get('object_name')
+		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 		##getting apr current rec id
@@ -6735,7 +6733,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 	def _get(self):
 		quote_notif_obj = self._get_record_obj(
 					columns=["CPQTABLEENTRYDATEADDED", "CPQTABLEENTRYADDEDBY"],
-					object_name="SAQICO",
+					table_name="SAQICO",
 					where_condition="QUOTE_RECORD_ID = '{}' AND PRICING_STATUS = 'APPROVAL REQUIRED'".format(self.contract_quote_record_id),
 					single_record=True,
 				)
@@ -6826,7 +6824,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 										CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
 										SAPCPQ_ATTRIBUTE_NAME as ERRORMESSAGE_RECORD_ID,
 										MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
-										'{object_name}' as OBJECT_NAME,
+										'{table_name}' as OBJECT_NAME,
 										MESSAGE_TYPE as OBJECT_TYPE,
 										OBJECT_RECORD_ID as OBJECT_RECORD_ID,
 										'{quoteId}' as OBJECT_VALUE_REC_ID,
@@ -6842,7 +6840,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 										quoteId=self.contract_quote_record_id,
 										Get_UserID=self.user_id,
 										datetime_value=self.datetime_value,
-										object_name = val
+										table_name = val
 									)
 									Sql.RunQuery(insertErrLogWarnQuery)
 									ent_msg_txt = (
@@ -6918,7 +6916,7 @@ class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 
 def Factory(node=None):
 	"""Factory Method"""
-	objects = {
+	models = {
 		"OFFERINGS MODEL": ContractQuoteOfferingsModel,
 		"COMMON MODEL": ContractQuotesCommonModel,
 		"FAB MODEL": ContractQuoteFabModel,
@@ -6931,7 +6929,7 @@ def Factory(node=None):
 		"QUOTE APPROVAL MODEL":ContractQuoteApprovalModel,
 		"QUOTE ITEMS MODEL":ContractQuoteItemsModel,
 	}
-	return objects[node]
+	return models[node]
 
 if hasattr(Param, 'CPQ_Columns'):
 	integration_param_objects = Param.CPQ_Columns
@@ -6950,9 +6948,9 @@ if hasattr(Param, 'CPQ_Columns'):
 	except Exception:
 		all_values = False
 	try:
-		object_name = integration_param.get('ObjectName')
+		table_name = integration_param.get('ObjectName')
 	except Exception:
-		object_name = None
+		table_name = None
 	try:
 		action_type = integration_param.get('ActionType')
 	except Exception:
@@ -7011,9 +7009,9 @@ else:
 		except Exception:
 			all_values = False
 		try:
-			object_name = Param.ObjectName
+			table_name = Param.ObjectName
 		except Exception:
-			object_name = None
+			table_name = None
 		try:
 			action_type = Param.ActionType
 		except Exception:
@@ -7058,7 +7056,7 @@ else:
 		pass	
 
 node_object = Factory(node_type)(
-	opertion=opertion, action_type=action_type, object_name=object_name, values=values, 
+	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
 	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,
 )
