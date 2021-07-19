@@ -434,7 +434,7 @@ class ContractQuoteC4CSync:
                 #inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
                 Log.Info('inseryservice_ent-----369--------'+str(tbrow))
                 #Sql.RunQuery(inseryservice_ent)
-                    """if PRODUCT_ATTRIBUTES is not None:
+                """if PRODUCT_ATTRIBUTES is not None:
                         Trace.Write("DType--"+DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC])
                         tbrow["ENTITLEMENT_TYPE"]=DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC]
                     tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()

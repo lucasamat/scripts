@@ -69,7 +69,7 @@ class DropConstraint:
                     query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + ""
                     queryStatement = Sql.RunQuery(query)
                 delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                    objectname=self.ObjectName,apiname_column = objectApiName
+                    objectname=str(self.ObjectName),apiname_column = str(objectApiName)
                 )
                 Sql.RunQuery(delete_query_string)
                 #self.deleteRecord(cpqEntryId)
@@ -104,7 +104,7 @@ class DropConstraint:
                                 query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + " "
                                 queryStatement = Sql.RunQuery(query)
                             delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                                objectname=self.ObjectName,apiname_column = objectApiName
+                                objectname=str(self.ObjectName),apiname_column = str(objectApiName)
                             )
                             Sql.RunQuery(delete_query_string)
                             #self.deleteRecord(cpqEntryId)
@@ -159,7 +159,7 @@ class DropConstraint:
                                     queryStatement = Sql.RunQuery(query)
                                     #self.deleteRecord(cpqEntryId)
                                     delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                                        objectname=self.ObjectName,apiname_column = objectApiName
+                                        objectname=str(self.ObjectName),apiname_column = str(objectApiName)
                                     )
                                     Sql.RunQuery(delete_query_string)
                                     Output = "True"
