@@ -8,6 +8,7 @@
 
 import clr
 import sys
+import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert

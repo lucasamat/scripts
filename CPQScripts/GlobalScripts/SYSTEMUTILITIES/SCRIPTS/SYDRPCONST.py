@@ -7,6 +7,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import SYCNGEGUID as CPQID
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import SYERRMSGVL as Message
 

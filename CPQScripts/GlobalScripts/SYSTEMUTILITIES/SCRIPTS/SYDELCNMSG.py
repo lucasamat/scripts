@@ -7,7 +7,7 @@
 # ==========================================================================================================================================
 from SYDATABASE import SQL
 import SYCNGEGUID as CPQID
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 #Product_name = Product.Name
 

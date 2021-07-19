@@ -7,7 +7,7 @@
 # ==========================================================================================================================================
 import SYTABACTIN as Table
 from SYDATABASE import SQL
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 # LABLE = Param.LABLE
 import SYCNGEGUID as CPQID

@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 import datetime
 import System.Net
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 import CQTVLDRIFW

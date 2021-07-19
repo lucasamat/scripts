@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 from SYDATABASE import SQL
 from datetime import datetime
+import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
 import SYCNGEGUID as CPQID

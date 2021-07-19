@@ -17,6 +17,7 @@ Session = Session  # pylint: disable=E0602
 from datetime import date, datetime
 from SYDATABASE import SQL  # pylint: disable=F0401
 import math
+import Webcom.Configurator.Scripting.Test.TestProduct
 
 Sql = SQL()
 

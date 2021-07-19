@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import SYTABACTIN as Table
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 import System.Net
 #import PRIFLWTRGR

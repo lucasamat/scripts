@@ -10,7 +10,7 @@ Trace = Trace  # pylint: disable=E0602
 Log = Log  # pylint: disable=E0602
 SqlHelper = SqlHelper  # pylint: disable=E0602
 # pylint: disable = import-error
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 from SYDATABASE import SQL
 

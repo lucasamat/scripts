@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 
 Sql = SQL()

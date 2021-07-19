@@ -21,6 +21,7 @@ ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
 
 import re
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as keyid
 from SYDATABASE import SQL
 

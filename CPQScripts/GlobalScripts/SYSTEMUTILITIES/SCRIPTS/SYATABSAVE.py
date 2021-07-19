@@ -11,7 +11,7 @@ DESCRIPTION : To save the details of all the tabs in all modules
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 
 import System.Net
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 
 import clr
 

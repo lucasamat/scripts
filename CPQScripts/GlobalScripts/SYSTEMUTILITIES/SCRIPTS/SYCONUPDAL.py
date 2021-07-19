@@ -8,6 +8,7 @@
 # ==========================================================================================================================================
 
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
 Sql = SQL()
 Param = Param

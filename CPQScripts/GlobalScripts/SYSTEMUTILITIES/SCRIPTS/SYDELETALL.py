@@ -8,7 +8,7 @@
 from SYDATABASE import SQL
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 
 def CustomerRestrictedItem(lable, value1):

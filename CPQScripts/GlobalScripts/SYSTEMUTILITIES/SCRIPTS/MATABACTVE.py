@@ -5,6 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 def set_active_tab_to_attr():
     for tab in Product.Tabs:
         Log.Info("TNBI : " + str(tab.Name))

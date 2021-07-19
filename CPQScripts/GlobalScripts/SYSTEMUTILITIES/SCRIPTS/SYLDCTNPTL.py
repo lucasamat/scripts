@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import math
 from SYDATABASE import SQL

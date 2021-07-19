@@ -9,7 +9,7 @@ Trace = Trace  # pylint: disable=E0602
 SqlHelper = SqlHelper  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 Guid = Guid  # pylint: disable=E0602
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 
 

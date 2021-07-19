@@ -8,6 +8,7 @@
 # import Webcom
 # import Webcom.Configurator.Scripting.Test.TestProduct
 import re
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 
 Sql = SQL()

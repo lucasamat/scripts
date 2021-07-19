@@ -2,7 +2,7 @@
 import re
 import SYCNGEGUID as keyid
 from SYDATABASE import SQL
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 # =========================================================================================
 #   __script_name : SYMCTABSGD.PY
 #   __script_description : THIS SCRIPT IS USED TO LOAD THE TAB CONTAINER DATA ACROSS ALL THE APPS

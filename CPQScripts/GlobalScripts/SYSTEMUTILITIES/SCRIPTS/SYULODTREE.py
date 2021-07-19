@@ -8,6 +8,7 @@
 # ==========================================================================================================================================
 # from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYULODTRND import Product
 import SYCNGEGUID as CPQID
+import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 from SYDATABASE import SQL
 from datetime import date
