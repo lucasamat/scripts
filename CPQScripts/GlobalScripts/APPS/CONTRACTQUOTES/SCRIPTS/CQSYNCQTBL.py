@@ -125,7 +125,7 @@ class SyncQuoteAndCustomTables:
         x = datetime.datetime.today()
         x= str(x)
         y = x.split(" ")
-        ent_disp_val =''
+        ent_disp_val = ent_val_code = ''
         for OfferingRow_detail in SAQTSVObj:
             #Log.Info("SERVICE_ID--130----"+str(OfferingRow_detail.SERVICE_ID))
             webclient = System.Net.WebClient()
@@ -182,9 +182,11 @@ class SyncQuoteAndCustomTables:
                         HasDefaultvalue=True
                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
                         ent_disp_val = attributevalues[attrs]
+                        ent_val_code = attributevalues[attrs]
                     else:
                         HasDefaultvalue=False
                         ent_disp_val = ""
+                        ent_val_code = ""
                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
                     ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
                     PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
@@ -215,11 +217,14 @@ class SyncQuoteAndCustomTables:
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                             contract_days = (QuoteEndDate - QuoteStartDate).days
                             ent_disp_val = 	str(contract_days)
+                            ent_val_code =''
                         except:
                             #Log.Info('except-----')
-                            ent_disp_val = ent_disp_val	
+                            ent_disp_val = ent_disp_val
+                            ent_val_code = ''	
                     else:
-                        ent_disp_val = ent_disp_val	
+                        ent_disp_val = ent_disp_val
+                        ent_val_code =''	
                     
                     DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                     Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
@@ -234,7 +239,7 @@ class SyncQuoteAndCustomTables:
                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue==True else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue==True else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
                 Trace.Write('238--insertservice----'+str(insertservice))   
                 tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
                 tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
