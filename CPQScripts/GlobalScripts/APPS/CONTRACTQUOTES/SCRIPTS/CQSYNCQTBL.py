@@ -196,36 +196,37 @@ class SyncQuoteAndCustomTables:
                         ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 
                     #Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
-                    # if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
-                    #     try:
-                    #         Trace.Write('except-try----date-------')
-                    #         HasDefaultvalue = True
-                    #         QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-                    #         ent_disp_val = 	str(QuoteStartDate)
-                    #         Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
-                    #     except:
-                    #         #HasDefaultvalue==True
-                    #         Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
-                    #         ent_disp_val = ent_disp_val	
-                    # else:
-                    #     Trace.Write('208-----'+str(ent_disp_val))
-                    #     ent_disp_val = ent_disp_val
+                    if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
+                        try:
+                            Trace.Write('except-try----date-------')
+                            HasDefaultvalue = True
+                            QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                            ent_disp_val = 	str(QuoteStartDate)
+                            ent_val_code = ''
+                            Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
+                        except:
+                            #HasDefaultvalue==True
+                            Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
+                            ent_disp_val = ent_disp_val
+                            ent_val_code = ent_val_code
+                    else:
+                        Trace.Write('208-----'+str(ent_disp_val))
+                        ent_disp_val = ent_disp_val
+                        ent_val_code = ent_val_code
                     Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
                     if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-                            HasDefaultvalue = True
+                            
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                             contract_days = (QuoteEndDate - QuoteStartDate).days
                             ent_disp_val = 	str(contract_days)
-                            ent_val_code =''
                         except:
                             #Log.Info('except-----')
                             ent_disp_val = ent_disp_val
-                            ent_val_code = ''	
+                            	
                     else:
                         ent_disp_val = ent_disp_val
-                        ent_val_code =''	
                     
                     DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                     Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
