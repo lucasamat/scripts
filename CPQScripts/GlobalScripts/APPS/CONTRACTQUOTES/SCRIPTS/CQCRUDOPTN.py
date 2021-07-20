@@ -151,7 +151,7 @@ class ContractQuoteCrudOpertion:
 
 	def _get_record_obj(self, columns=["*"], table_name=None, where_condition="", table_joins="", single_record=False):	
 		if table_name and self.tree_param != 'Approval Chain Steps' and str(current_prod).upper() not in ("SYSTEM ADMIN","APPROVAL CENTER"):
-			#Trace.Write('where_condition--133----'+str(where_condition))
+			
 			if where_condition:
 				where_condition = "WHERE {}".format(where_condition)			
 			
