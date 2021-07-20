@@ -21,6 +21,7 @@ try:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
 			Login_Password = str(LOGIN_CREDENTIALS.Password)
 			authorization = Login_Username+":"+Login_Password
+			
 			binaryAuthorization = UTF8.GetBytes(authorization)
 			authorization = Convert.ToBase64String(binaryAuthorization)
 			authorization = "Basic " + authorization
