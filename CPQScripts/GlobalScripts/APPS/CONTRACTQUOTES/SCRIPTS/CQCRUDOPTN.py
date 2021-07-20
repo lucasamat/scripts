@@ -247,7 +247,7 @@ class ContractQuoteCrudOpertion:
 			self._process_query(update_query)
 
 	def _delete_record(self, where_condition, object_names):
-		Trace.Write("===========> delete")
+		
 		for table_name in object_names:
 			delete_query = "DELETE FROM {ObjectName} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
 				ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition=where_condition,
