@@ -1,7 +1,7 @@
 # =========================================================================================================================================
 #   __script_name : CQCRUDOPTN.PY
 #   __script_description : THIS SCRIPT IS USED TO ADD, UPDATE, DELETE RECORDS IN THE SALES AND RELATED TABLES
-#   __primary_author__ : AYYAPPAN SUBRAMANIYAN, Suriya (BB deployment issue - fixed)
+#   __primary_author__ : AYYAPPAN SUBRAMANIYAN, Suriya (BB deployment issue -- fixed)
 #   __create_date :23-09-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
