@@ -345,7 +345,6 @@ if ACTION == "LOAD":
         PageInform = Param.PageInform
         ApiResponse = ApiResponseFactory.JsonResponse(GetRolesTreeresult(PerPage, PageInform, A_Keys, A_Values))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
-
     if TABNAME == "Roles":
         PerPage = Param.PerPage
         ApiResponse = ApiResponseFactory.JsonResponse(GetRolesTreeResultFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage))
