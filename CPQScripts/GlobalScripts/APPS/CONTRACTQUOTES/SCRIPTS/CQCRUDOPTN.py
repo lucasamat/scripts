@@ -2566,7 +2566,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in self.tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in self.tree_param else "",
 							)
 						)
-			
+			a = Sql.GetFirst("select count(*) as cnt from ( SELECT DISTINCT SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME, SAQFEQ.FABLOCATION_RECORD_ID, SAQFEQ.GREENBOOK, SAQFEQ.GREENBOOK_RECORD_ID, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_NAME, SAQFEQ.QUOTE_RECORD_ID, SAQFEQ.SALESORG_ID, SAQFEQ.SALESORG_NAME, SAQFEQ.SALESORG_RECORD_ID, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM SAQFEQ (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}') ) FB""".format( treeparam=self.tree_param, QuoteRecordId=self.contract_quote_record_id, BatchGroupRecordId=batch_group_record_id, UserId=self.user_id, UserName=self.user_name, ))
+			get_batch = Sql.GetFirst("select count(*) as cnt from SYSPBT where QUOTE_RECORD_ID = '{QuoteRecordId}' and BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' ".format( QuoteRecordId=self.contract_quote_record_id, BatchGroupRecordId=batch_group_record_id ))
+			Trace.Write('cnt-----'+str(a.cnt)+'ct===='+str(get_batch.cnt))
 			self._process_query(
 					"""INSERT SAQFGB(
 						FABLOCATION_ID,
