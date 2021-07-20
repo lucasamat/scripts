@@ -265,6 +265,7 @@ class SyncQuoteAndCustomTables:
                 #Trace.Write('257----')
                 insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
                 Sql.RunQuery(insert_qtqtse_query)
+                Trace.Write('269-addednew trace---')
                 try:
                     Trace.Write('269--')
                     if OfferingRow_detail.SERVICE_ID == 'Z0016_AG':
