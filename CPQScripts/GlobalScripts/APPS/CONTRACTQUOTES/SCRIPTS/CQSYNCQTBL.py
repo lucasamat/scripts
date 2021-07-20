@@ -208,7 +208,7 @@ class SyncQuoteAndCustomTables:
                             #HasDefaultvalue==True
                             Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
                             ent_disp_val = ent_disp_val
-                            ent_val_code = ent_val_code
+                            ent_val_code = ''
                     else:
                         Trace.Write('208-----'+str(ent_disp_val))
                         ent_disp_val = ent_disp_val
