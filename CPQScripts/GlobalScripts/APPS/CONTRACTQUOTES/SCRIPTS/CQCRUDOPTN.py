@@ -6453,18 +6453,22 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_year_2 = 0.00
 		total_tax = 0.00
 		total_extended_price = 0.00
-
+		getdecimalplacecurr =decimal_val = ''
 		items_data = {}
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2,CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if items_obj:
 			for item_obj in items_obj:
+				getdecimalplacecurr = item_obj.CURRENCY
 				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR}
+		curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where 	CURRENCY = '"+str(getdecimalplacecurr)+"'")
+		decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+		formatting_string = "{0:." + str(decimal_val) + "f}"
 		for item in Quote.MainItems:
 			item_number = int(item.RolledUpQuoteItem)
 			if item_number in items_data.keys():
 				if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
 					item_data = items_data.get(item_number)
-					item.TOTAL_COST.Value = item_data.get('TOTAL_COST')
+					item.TOTAL_COST.Value = formatting_string.format(float(item_data.get('TOTAL_COST')))+str(getdecimalplacecurr)
 					total_cost += item.TOTAL_COST.Value
 					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_target_price += item.TARGET_PRICE.Value
@@ -6483,7 +6487,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.EXTENDED_PRICE.Value
 
-		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) +" " + get_curr
+		Quote.GetCustomField('TOTAL_COST').Content = formatting_string.format(float(item_data.get('total_cost')))+" "+str(getdecimalplacecurr)
 		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
 		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
 		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
