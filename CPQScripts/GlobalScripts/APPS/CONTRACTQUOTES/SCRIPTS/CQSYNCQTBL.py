@@ -214,6 +214,7 @@ class SyncQuoteAndCustomTables:
                     if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
+                            HasDefaultvalue = True
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                             contract_days = (QuoteEndDate - QuoteStartDate).days
                             ent_disp_val = 	str(contract_days)
@@ -239,7 +240,7 @@ class SyncQuoteAndCustomTables:
                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue==True else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
                 Trace.Write('238--insertservice----'+str(insertservice))   
                 tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
                 tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
