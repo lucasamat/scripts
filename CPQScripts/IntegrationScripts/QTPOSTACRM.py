@@ -16,7 +16,6 @@ import sys
 try:	
 
 	def cpq_to_crm(Qt_id):
-		Trace.Write("Qt_id--"+str(Qt_id))
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
@@ -34,7 +33,6 @@ try:
 			result = '{\"CPQ_Columns\":\r\n{\r\n\"QUOTE_ID\" : \"'+str(Qt_id)+'\"\r\n}\r\n}\r\n'
 			
 			Log.Info("28-10-2020 result ---->"+str(result))	
-			Trace.Write("28-10-2020 result ---->"+str(result))	
 
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_CRM_QUOTE_ASYNC'")
 			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
@@ -67,7 +65,6 @@ try:
 	
 	input_data = Param.QUOTE_ID
 	Log.Info("20202020 input_data ---->"+str(input_data))
-	Trace.Write("20202020 input_data ---->"+str(input_data))
 	Fun_type = Param.Fun_type
 	Log.Info("20202020 Fun_type ---->"+str(Fun_type))
 	if len(Fun_type) > 0:
