@@ -559,7 +559,7 @@ class Entitlements:
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
-				if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
+				""" if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
 					#whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
 					quoteid = Quote.GetGlobal("contract_quote_record_id")
 					EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
@@ -573,7 +573,7 @@ class Entitlements:
 						
 						
 						
-						curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
+						curr = GetRegion.GLOBAL_CURRENCY if GetRegion else "" """
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
 				for key,val in ENT_IP_DICT.items():	
@@ -692,7 +692,7 @@ class Entitlements:
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 					get_curr = value.PRICE_METHOD """
-					if 'AGS_SFM_DEI_PAC' in key and 'Included' in val:
+					""" if 'AGS_SFM_DEI_PAC' in key and 'Included' in val:
 						EntCost =(float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE))
 						Trace.Write("ENTCOST1---------->"+str(EntCost))
 						getcostbaborimpact = "{0:.2f}".format(EntCost)
@@ -713,9 +713,9 @@ class Entitlements:
 						EntCost4 = (float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE))
 						Trace.Write("ENTCOST3---------->"+str(EntCost4))
 						getcostbaborimpact = "{0:.2f}".format(EntCost4)
-						pricemethodupdate = curr
+						pricemethodupdate = curr """
 						#get_curr = curr
-					Trace.Write("Cost---->"+str(getcostbaborimpact))
+					#Trace.Write("Cost---->"+str(getcostbaborimpact))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>

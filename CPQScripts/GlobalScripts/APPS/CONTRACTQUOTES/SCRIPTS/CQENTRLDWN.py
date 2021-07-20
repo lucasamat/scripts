@@ -552,6 +552,8 @@ for obj in obj_list:
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
 		Sql.RunQuery(UpdateEntitlement)
+		Log.Info('Log before calling ftscostcalc--')
+		FTSCostCalc("SAQTSE")
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
 		if objectName == 'SAQTSE' and GetXMLsecField:
