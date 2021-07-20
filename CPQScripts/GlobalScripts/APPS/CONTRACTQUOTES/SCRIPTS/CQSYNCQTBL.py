@@ -259,14 +259,16 @@ class SyncQuoteAndCustomTables:
                 tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
                 tbrow["CPS_MATCH_ID"] = 11
                 #tbrow["IS_DEFAULT"] = '1'
-                Trace.Write('254----')
+                #Trace.Write('254----')
                 columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
                 values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-                Trace.Write('257----')
+                #Trace.Write('257----')
                 insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
                 Sql.RunQuery(insert_qtqtse_query)
                 try:
+                    Trace.Write('269--')
                     if OfferingRow_detail.SERVICE_ID == 'Z0016_AG':
+                        Trace.Write('269--OfferingRow_detail--')
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
@@ -275,11 +277,12 @@ class SyncQuoteAndCustomTables:
                         except:
                             #Log.Info('except-----')
                             ent_disp_val = ent_disp_val
-                        
+                        Trace.Write('269--OfferingRow_detail-ent_disp_val----'+str(ent_disp_val))
                         cpsmatchID = tbrow["CPS_MATCH_ID"]
                         cpsConfigID = Fullresponse['id']
                         if int(ent_disp_val) > 364:
-                            Log.Info("---requestdata--244-cpsConfigID0-----")
+                            
+                            Trace.Write("---requestdata--244-cpsConfigID0-----")
                             webclient = System.Net.WebClient()
                             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
@@ -295,11 +298,11 @@ class SyncQuoteAndCustomTables:
                                     
                             AttributeID = 'AGS_CON_DAY'
                             NewValue = ent_disp_val
-                            #Log.Info("---requestdata--252-NewValue-----"+str(NewValue))
+                            Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
                             whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = 'Z0016_AG'"
-
+                            Trace.Write('whereReq---'+str(whereReq))
                             requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-                            #Log.Info("---eqruestdata---requestdata----"+str(requestdata))
+                            Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
                             response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
                             #requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
 
@@ -311,7 +314,7 @@ class SyncQuoteAndCustomTables:
                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
                             #Log.Info("requestdata---180--265----" + str(requestdata))
                             response2 = webclient.DownloadString(Request_URL)
-                            #Log.Info('response2--182----267-----'+str(response2))
+                            Trace.Write('response2--182----267-----'+str(response2))
                             response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
                             Fullresponse= eval(response2)
                             attributesdisallowedlst=[]
@@ -338,7 +341,7 @@ class SyncQuoteAndCustomTables:
                             attributesallowedlst = list(set(attributesallowedlst))
                             overallattributeslist = list(set(overallattributeslist))
                             HasDefaultvalue=False
-                            #Log.Info('response2--182----315---')
+                            Trace.Write('response2--182----315---')
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
                             if ProductVersionObj is not None:
                                 tbrow={}
@@ -379,12 +382,14 @@ class SyncQuoteAndCustomTables:
                                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
                                     </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
                                     cpsmatc_incr = int(cpsmatchID) + 10
-                                    Log.Info('cpsmatc_incr'+str(cpsmatc_incr))
+                                    Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
+                                    Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Sql.RunQuery(Updatecps)
                         
 
                 except:
+                    Trace.Write('except scenario----final--')
                     cpsmatc_incr = ''
 
                 #inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
