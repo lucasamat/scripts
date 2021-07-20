@@ -157,7 +157,7 @@ class ContractQuoteCrudOpertion:
 			
 			if single_record:
 				return Sql.GetFirst("SELECT {Columns} FROM {ObjectName} (NOLOCK) {Joins} {WhereCondition}".format(
-						Columns="".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
+						Columns=",".join(columns), ObjectName=table_name, Joins=table_joins, WhereCondition=where_condition
 					))
 			else:				
 				return Sql.GetList(
