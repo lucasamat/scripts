@@ -210,7 +210,7 @@ class SyncQuoteAndCustomTables:
                             ent_disp_val = ent_disp_val
                             ent_val_code = ''
                     else:
-                        Trace.Write('208-----'+str(ent_disp_val))
+                        Trace.Write('208--attrs---'+str(attrs))
                         ent_disp_val = ent_disp_val
                         ent_val_code = ent_val_code
                     Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
