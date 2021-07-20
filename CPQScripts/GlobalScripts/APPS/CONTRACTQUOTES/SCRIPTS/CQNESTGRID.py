@@ -5,7 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-import Webcom.Configurator.Scripting.Test.TestProduct
+import Webcom
 from SYDATABASE import SQL
 from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
