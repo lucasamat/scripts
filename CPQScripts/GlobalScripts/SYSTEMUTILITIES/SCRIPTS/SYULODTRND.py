@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 # pylint: noqa: E501
 # pylint: disable=unused-variable
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace  # pylint: disable=E0602
 Webcom = Webcom  # pylint: disable=E0602
 Product = Product  # pylint: disable=E0602
@@ -17,7 +18,7 @@ ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
 import CQENTIFLOW
-import Webcom.Configurator.Scripting.Test.TestProduct
+
 import re
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
