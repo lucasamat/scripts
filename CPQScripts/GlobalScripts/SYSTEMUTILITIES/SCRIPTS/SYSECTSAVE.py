@@ -568,8 +568,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                 Trace.Write('QUOTE_STATUS -- inside')
                 if RECORD.get("QUOTE_STATUS") ==  'APPROVED':
                     #quote_id
-                    Trace.Write('inside---'+str('QTPOSTQCRM',{'QUOTE_ID':"'"+str(Quote.GetGlobal("contract_quote_record_id"))+"'",'Fun_type':'cpq_to_crm'}))
-                    crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':"'"+str(Quote.GetGlobal("contract_quote_record_id"))+"'",'Fun_type':'cpq_to_crm'})
+                    #Trace.Write('inside---'+str('QTPOSTQCRM',{'QUOTE_ID':"'"+str(Quote.GetGlobal("contract_quote_record_id"))+"'",'Fun_type':'cpq_to_crm'}))
+                    crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':str(Quote.GetGlobal("contract_quote_record_id")),'Fun_type':'cpq_to_crm'})
                     Trace.Write("ends--"+str(crm_result))
         except Exception,e:
             Trace.Write("except---"+str(e))
