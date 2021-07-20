@@ -567,9 +567,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
             if TableName == 'SAQTMT' and 'QUOTE_STATUS' in RECORD.keys():
                 Trace.Write('QUOTE_STATUS -- inside')
                 if RECORD.get("QUOTE_STATUS") ==  'APPROVED':
-                    #quote_id
-                    #Trace.Write('inside---'+str('QTPOSTQCRM',{'QUOTE_ID':"'"+str(Quote.GetGlobal("contract_quote_record_id"))+"'",'Fun_type':'cpq_to_crm'}))
-                    crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':str(Quote.GetGlobal("contract_quote_record_id")),'Fun_type':'cpq_to_crm'})
+                    quote_id = Sql.GetFirst(
+                        """SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(
+                        QuoteRecordId= Quote.GetGlobal("contract_quote_record_id")
+                        )
+                    )
+                    
+                    Trace.Write('inside---'+str({'QUOTE_ID':str(quote_id.QUOTE_ID),'Fun_type':'cpq_to_crm'}))
+                    crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':str(quote_id.QUOTE_ID),'Fun_type':'cpq_to_crm'})
                     Trace.Write("ends--"+str(crm_result))
         except Exception,e:
             Trace.Write("except---"+str(e))
@@ -690,11 +695,7 @@ def getting_cps_tax(item_obj,quote_type):
     x = datetime.datetime.today()
     x= str(x)
     y = x.split(" ")
-    contract_quote_obj = Sql.GetFirst(
-            """SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(
-            QuoteRecordId= Quote.GetGlobal("contract_quote_record_id")
-            )
-    )
+    
     GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(EXCHANGE_RATE_TYPE,'') as EXCHANGE_RATE_TYPE, ISNULL(DIVISION_ID, '') as DIVISION_ID,ISNULL(COUNTRY, '') as COUNTRY, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(SORG_CURRENCY,'') as SORG_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(contract_quote_obj.QUOTE_ID))
     if GetPricingProcedure is not None:			
         PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
