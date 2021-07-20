@@ -564,7 +564,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
         
         ##calling qtpost script
         try:
-            if TableName == 'SAQTMT' and 'QUOTE_STATUS' in RECORD.keys():
+            if TableName == 'SAQTMT' and 'QUOTE_STATUS' in RECORD.keys() and section_text == " EDITBASIC INFORMATION":
                 Trace.Write('QUOTE_STATUS -- inside')
                 if RECORD.get("QUOTE_STATUS") ==  'APPROVED':
                     quote_id = Sql.GetFirst(
@@ -775,6 +775,10 @@ try:
     SecRecId = Param.SecRecId
 except:
     SecRecId = ""
+try:
+    section_text = Param.SECTION_TEXT
+except:
+    section_text = ""
 TreeParam = Param.TreeParam
 TreeParentParam = Param.TreeParentParam
 TreeSuperParentParam = Param.TreeSuperParentParam
