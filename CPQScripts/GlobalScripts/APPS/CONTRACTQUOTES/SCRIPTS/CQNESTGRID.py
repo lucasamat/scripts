@@ -6244,7 +6244,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     #     else: 
     Columns = [
         "QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID",
-        "DESCRIPTION",
+        "EQUIPMENTCATEGORY_DESCRIPTION",
         "EQUIPMENT_ID",
         "SERIAL_NO",
         "CUSTOMER_TOOL_ID",
@@ -6547,7 +6547,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         data_dict["SNDFBL_ID"] = ('<abbr id ="" title="' + str(par.FABLOCATION_ID) + '">' + str(par.SNDFBL_ID) + "</abbr>") 
         data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>") 
         data_dict["SERIAL_NO"] = ('<abbr id ="" title="' + str(par.SERIAL_NO) + '">' + str(par.SERIAL_NO) + "</abbr>") 
-        data_dict["DESCRIPTION"] = ('<abbr id ="" title="' + str(par.DESCRIPTION) + '">' + str(par.DESCRIPTION) + "</abbr>") 
+        data_dict["EQUIPMENTCATEGORY_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + '">' + str(par.EQUIPMENTCATEGORY_DESCRIPTION) + "</abbr>") 
         data_dict["CUSTOMER_TOOL_ID"] = ('<abbr id ="" title="' + str(par.CUSTOMER_TOOL_ID) + '">' + str(par.CUSTOMER_TOOL_ID) + "</abbr>") 
         data_dict["EQUIPMENT_STATUS"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_STATUS) + '">' + str(par.EQUIPMENT_STATUS) + "</abbr>") 
         data_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(par.MNT_PLANT_ID) + '">' + str(par.MNT_PLANT_ID) + "</abbr>") 
