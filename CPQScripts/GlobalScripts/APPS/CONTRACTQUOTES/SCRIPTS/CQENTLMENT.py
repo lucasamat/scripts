@@ -1386,7 +1386,7 @@ class Entitlements:
 						<h3>Service Entitlement Updates <button data-dismiss="modal" type="button"
 					class="close"
 					aria-label="Close" onclick="close_popup()"> 
-				<span aria-hidden="true">×</span> 
+				<span aria-hidden="true">&times;</span> 
 			</button></h3>
 					<p>The Entitlement settings are being applied to the Equipment in this quote. You will be notified by email when this background job completes.</p>
 					</div>
