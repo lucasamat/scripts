@@ -217,10 +217,11 @@ class SyncQuoteAndCustomTables:
                     if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-                            
+                            Trace.Write('208--attrs---date check')
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                             contract_days = (QuoteEndDate - QuoteStartDate).days
                             ent_disp_val = 	str(contract_days)
+                            Trace.Write('208--attrs---date check--ent_disp_val--'+str(ent_disp_val))
                         except:
                             #Log.Info('except-----')
                             ent_disp_val = ent_disp_val
