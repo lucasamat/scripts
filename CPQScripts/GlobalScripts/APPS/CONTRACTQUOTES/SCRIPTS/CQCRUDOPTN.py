@@ -6457,6 +6457,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_extended_price = 0.00
 		getdecimalplacecurr =decimal_val = ''
 		items_data = {}
+		rem_list_sp =[]
 		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2,CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if items_obj:
 			for item_obj in items_obj:
@@ -6508,6 +6509,27 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
 		# Delete SAQICO temp table - End
 		price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
+		Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+		if Getyear:
+			start_date = datetime(Getyear.CONTRACT_VALID_FROM)
+			end_date = datetime(Getyear.CONTRACT_VALID_TO)
+			mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
+			quotient, remainder = divmod(mm, 12)
+			getyears = quotient + (1 if remainder > 0 else 0)
+			
+			if not getyears:
+				getyears = 1
+			if Quote is not None:
+				Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
+			if getyears == 1:
+				rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
+			elif getyears == 2:
+				rem_list_sp = ["YEAR_3","YEAR_4","YEAR_5"]
+			elif getyears == 3:
+				rem_list_sp = ["YEAR_4","YEAR_5"]
+			elif getyears == 4:
+				rem_list_sp = ["YEAR_5"]
+		Trace.Write('rem_list_sp--'+str(rem_list_sp))
 		return True
 
 
