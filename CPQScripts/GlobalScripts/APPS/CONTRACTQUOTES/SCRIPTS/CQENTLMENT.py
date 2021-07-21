@@ -782,7 +782,7 @@ class Entitlements:
 								Trace.Write("xml--------->"+str(updatexml))
 						where = " SAQSCE.QUOTE_RECORD_ID = '{}' AND SAQSCE.SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 						Trace.Write("where condition--"+str(where))
-						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format(updateentXML,where,e.EQUIPMENT_ID)
+						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format("test",where,e.EQUIPMENT_ID)
 						Trace.Write("UPDATE---"+str(UpdateEntitlement))
 						# UpdateEntitlement_tst = " UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition)
 						Sql.RunQuery(UpdateEntitlement)
