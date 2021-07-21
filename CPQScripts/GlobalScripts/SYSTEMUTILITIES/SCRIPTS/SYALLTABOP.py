@@ -13,7 +13,7 @@ AttributeAccess = AttributeAccess  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 Param = Param  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
-#import Webcom.Configurator.Scripting.Test.TestProduct
+import Webcom.Configurator.Scripting.Test.TestProduct
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
