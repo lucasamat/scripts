@@ -142,7 +142,7 @@ class SQL:
         QueryStatement = str(query)
         QueryStatement = QueryStatement.replace("'", "''")
         try:
-            # Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : " + query)
+            Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : " + query)
             query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(QueryStatement) + "'")
             return query_result
         except Exception, e:
