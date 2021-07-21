@@ -697,7 +697,7 @@ class Entitlements:
 				Region = GetRegion.REGION
 				getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
 				curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
-				list1 = list2 = list3 = list4 = []
+				list1 = list2 = list3 = list4 = {}
 				if getPlatform:
 					#Log.Info("Entering if")
 					for a in getPlatform:
@@ -705,18 +705,22 @@ class Entitlements:
 						getDeinstall = Sql.GetFirst("SELECT ISNULL(INSTALL_T0T1_CE_HRS,0) AS INSTALL_T0T1_CE_HRS,ISNULL(INSTALL_T0T1_TECH_HRS,0) AS INSTALL_T0T1_TECH_HRS ,ISNULL(INSTALL_T2_CE_HRS,0) AS INSTALL_T2_CE_HRS,ISNULL(INSTALL_T2_PSE_HRS,0) AS INSTALL_T2_PSE_HRS,ISNULL(INSTALL_T2_SSE_HRS,0) AS INSTALL_T2_SSE_HRS,ISNULL(INSTALL_T3_CE_HRS,0) AS INSTALL_T3_CE_HRS,ISNULL(INSTALL_T3_PSE_HRS,0) AS INSTALL_T3_PSE_HRS,ISNULL(INSTALL_T3_SSE_HRS,0) AS INSTALL_T3_SSE_HRS,ISNULL(DEINSTALL_CE_HRS,0) AS DEINSTALL_CE_HRS,DEINSTALL_PRICE,DEINSTALL_TECH_HRS,DEINSTALL_TRDPTY_AMOUNT FROM PRLPBK (NOLOCK) WHERE GREENBOOK = '{Greenbook}' AND SUBSTRATESIZE_ID LIKE '%{sub}%'".format(Greenbook=a.GREENBOOK,sub=a.WAFER_SIZE,Region=Region))
 						
 						EntCost =str((float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE)))
-						list1.append(EntCost)
+						list1[str(a.EQUIPMENT_ID)] = EntCost
+						#list1.append(EntCost)
 						Trace.Write("LIST1----"+str(list1))
 						
-						EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT)) + "_" + str(a.EQUIPMENT_ID)
-						list2.append(EntCost2)
+						EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT))
+						list2[str(a.EQUIPMENT_ID)] = EntCost2
+						#list2.append(EntCost2)
 						Trace.Write("LIST2----"+str(list2))
 						
-						EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE))) + "_" + str(a.EQUIPMENT_ID)
-						list3.append(EntCost3)
+						EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
+						list3[str(a.EQUIPMENT_ID)] = EntCost3
+						#list3.append(EntCost3)
 						Trace.Write("LIST3----"+str(list3))
-						EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE)))  + "_" + str(a.EQUIPMENT_ID)
-						list4.append(EntCost4)
+						EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
+						list4[str(a.EQUIPMENT_ID)] = EntCost4
+						#list4.append(EntCost4)
 						Trace.Write("LIST4----"+str(list4))
 					objName = "SAQSCE"
 					getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
@@ -732,20 +736,24 @@ class Entitlements:
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 							get_curr = value.PRICE_METHOD
 							if 'AGS_SFM_DEI_PAC' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-								get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
+								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
+								get_cost_impact = "{0:.2f}".format(float(list1[e.EQUIPMENT_ID]))
 								#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 								get_curr = curr
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 							if ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
-								get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
+								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
+								get_cost_impact = "{0:.2f}".format(float(list2[e.EQUIPMENT_ID]))
 								get_curr = curr
 								Trace.Write("ENTCOST2 = "+str(get_cost_impact))
 							if 'AGS_RFM_INS_T2' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-								get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list3 if str(e.EQUIPMENT_ID) in x))
+								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list3 if str(e.EQUIPMENT_ID) in x))
+								get_cost_impact = "{0:.2f}".format(float(list3[e.EQUIPMENT_ID]))
 								get_curr = curr
 								Trace.Write("ENTCOST3 = "+str(get_cost_impact))
 							if 'AGS_RFM_INS_T3' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-								get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
+								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
+								get_cost_impact = "{0:.2f}".format(float(list4[e.EQUIPMENT_ID]))
 								get_curr = curr
 								Trace.Write("ENTCOST4 = "+str(get_cost_impact))
 							
