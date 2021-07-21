@@ -726,7 +726,7 @@ class Entitlements:
 						#list4.append(EntCost4)
 						Trace.Write("LIST4----"+str(list4))
 					objName = tableName
-					getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
+					getinnercon  = Sql.GetFirst("select CPS_MATCH_ID,CPS_CONFIGURATION_ID,QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
 					GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 
 
@@ -780,11 +780,11 @@ class Entitlements:
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE)
 							updateentXML  += updatexml
 							if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
-								
+						
 								Trace.Write("xml--------->"+str(updatexml))
 						where = " SAQSCE.QUOTE_RECORD_ID = '{}' AND SAQSCE.SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 						Trace.Write("where condition--"+str(where))
-						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format(updateentXML,where,e.EQUIPMENT_ID)
+						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}',CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format(updateentXML,getinnercon.CPS_MATCH_ID,getinnercon.CPS_CONFIGURATION_ID,where,e.EQUIPMENT_ID)
 						Trace.Write("UPDATE---"+str(UpdateEntitlement))
 						# UpdateEntitlement_tst = " UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition)
 						Sql.RunQuery(UpdateEntitlement)
