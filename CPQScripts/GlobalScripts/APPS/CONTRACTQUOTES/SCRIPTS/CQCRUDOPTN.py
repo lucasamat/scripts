@@ -6531,7 +6531,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			elif getyears == 4:
 				rem_list_sp = ["YEAR_5"]
 		Trace.Write('rem_list_sp--'+str(rem_list_sp))
-		return True
+		return rem_list_sp
 
 
 	def _insert_quote_item_fab_location(self, **kwargs):
