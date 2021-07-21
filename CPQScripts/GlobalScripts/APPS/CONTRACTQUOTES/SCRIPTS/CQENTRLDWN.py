@@ -450,7 +450,6 @@ obj_list = []
 is_changed = False
 if objectName == 'SAQTSE':
 	if get_serviceid != 'Z0007_AG':
-	#Log.Info("Current oject SAQTSE")
 		obj_list = ['SAQSCE','SAQSGE','SAQSFE','SAQIEN','SAQSAE']
 	else:
 		obj_list = ['SAQSGE','SAQSFE','SAQIEN','SAQSAE']
