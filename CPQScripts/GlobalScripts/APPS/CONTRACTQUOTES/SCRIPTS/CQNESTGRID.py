@@ -6159,6 +6159,7 @@ def BreadcrumbPartNumber():
 
     return Action_Str
 
+
 def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):    
     if str(PerPage) == "" and str(PageInform) == "":
         Page_start = 1
@@ -6262,14 +6263,15 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     where_string = ""
     Trace.Write("CHKKKIIEE_J "+str(TreeParam))
     if A_Keys != "" and A_Values != "":
-		A_Keys = list(A_Keys)
-		A_Values = list(A_Values)
-		for key, value in zip(A_Keys, A_Values):
-			if value.strip():
-				if where_string:
-					where_string += " AND "
-				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
-
+        A_Keys = list(A_Keys)
+        A_Values = list(A_Values)
+        for key, value in zip(A_Keys, A_Values):
+            if value.strip():
+                if where_string:
+                    where_string += " AND "
+                where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+                
+    
     if TreeSuperParentParam == "Product Offerings" or (TreeTopSuperParentParam== "Comprehensive Services" and TreeParentParam=="Add-On Products"):
         Qstr = (
             "select top "
@@ -6823,6 +6825,196 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         Action_Str,
         Ad_on_prd,
     )
+
+def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInform):
+    if str(PerPage) == "" and str(PageInform) == "":
+        Page_start = 1
+        Page_End = 10
+        PerPage = 10
+        PageInform = "1___10___10"
+    else:
+        Page_start = int(PageInform.split("___")[0])
+        Page_End = int(PageInform.split("___")[1])
+        PerPage = PerPage
+    QueryCount = ""
+    TreeParam = Product.GetGlobal("TreeParam")
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+    # FablocationId = Product.GetGlobal("TreeParam")
+    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    ATTRIBUTE_VALUE_STR = ""
+    Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
+    
+    
+    for quer_key, quer_value in enumerate(Dict_formation):
+        x_picklistcheckobj = Sql.GetFirst(
+            "SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQSSA' AND API_NAME = '" + str(quer_value) + "'"
+        )
+        x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+        if Dict_formation.get(quer_value) != "":
+            quer_values = str(Dict_formation.get(quer_value)).strip()
+            if str(quer_values).upper() == "TRUE":
+                quer_values = "TRUE"
+            elif str(quer_values).upper() == "FALSE":
+                quer_values = "FALSE"
+            if str(quer_values).find(",") == -1:
+                if x_picklistcheck == "TRUE":
+                    ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
+                else:
+                    ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
+            else:
+                quer_values = quer_values.split(",")
+                quer_values = tuple(list(quer_values))
+                ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
+
+    data_list = []
+    rec_id = "SYOBJ_1176889_SYOBJ_1176889"
+    obj_id = "SYOBJ-1176889"
+    objh_getid = Sql.GetFirst(
+        "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAQSSA_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+    )
+    if objh_getid:
+        obj_id = objh_getid.RECORD_ID
+    objs_obj = Sql.GetFirst(
+        "select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
+    )
+    
+    orderby = ""
+    if SortColumn != '' and SortColumnOrder !='':
+        orderby = SortColumn + " " + SortColumnOrder
+    else:
+        orderby = "QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"
+    
+    
+    can_edit = str(objs_obj.CAN_EDIT)
+    can_clone = str(objs_obj.CAN_ADD)
+    can_delete = str(objs_obj.CAN_DELETE)
+    if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
+        Trace.Write("empty search")
+        if TreeSuperParentParam == "Product Offerings":
+            parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
+                )
+            )
+            
+            QueryCountObj = Sql.GetFirst(
+                    "select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam))
+            if QueryCountObj is not None:
+                QueryCount = QueryCountObj.cnt
+            
+            
+            
+        else:
+            if TreeTopSuperParentParam == "Product Offerings":
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam,ord_by = orderby
+                    )
+                )
+                
+                QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ".format(                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam))
+                if QueryCountObj is not None:
+                    QueryCount = QueryCountObj.cnt
+            
+            
+            else:
+                Trace.Write("5 level empty search --->")
+                parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                        recid=RECID,
+                        service_id=TreeSuperParentParam,
+                        fablocation_id = TreeParentParam,
+                        ord_by = orderby
+                    )
+                )
+                
+                QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}'".format(
+                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                        recid=RECID,
+                        service_id=TreeSuperParentParam,
+                        fablocation_id = TreeParentParam,
+                    ))
+                if QueryCountObj is not None:
+                    QueryCount = QueryCountObj.cnt
+                
+    else:
+        Trace.Write("search with condition")
+        if TreeSuperParentParam == "Product Offerings":
+            parent_obj = Sql.GetList(
+                "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "
+                + str(ATTRIBUTE_VALUE_STR)
+                + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
+                )
+            )
+            
+            QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam
+                ))
+            if QueryCountObj is not None:
+                QueryCount = QueryCountObj.cnt
+        else:
+            if TreeTopSuperParentParam == "Product Offerings":
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,treeparam=TreeParentParam,ord_by = orderby))
+                
+                QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,            treeparam=TreeParentParam, ))
+                if QueryCountObj is not None:
+                    QueryCount = QueryCountObj.cnt
+            else:   
+                Trace.Write("5 level coditional search --->")
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by}".format(                   ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,ord_by = orderby  ))   
+                
+                QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,))
+                if QueryCountObj is not None:
+                    QueryCount = QueryCountObj.cnt
+                
+                
+
+    for par in parent_obj:
+        data_dict = {}
+        data_id = str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
+
+        Action_str = (
+            '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
+            + str(data_id)
+            + '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+        )
+        if can_edit.upper() == "TRUE":
+            Action_str += (
+                '<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
+                + str(data_id)
+                + '" onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
+            )
+        if can_delete.upper() == "TRUE":
+            Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
+        if can_clone.upper() == "TRUE":
+            Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
+
+        Action_str += "</ul></div></div>"
+        data_dict = {}
+        data_dict["ids"] = str(data_id)
+        data_dict["ACTIONS"] = str(Action_str)
+        data_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
+            "SAQSSA", str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
+        )
+        data_dict["SND_EQUIPMENT_ID"] = str(par.SND_EQUIPMENT_ID)
+        data_dict["SND_ASSEMBLY_ID"] = str(par.SND_ASSEMBLY_ID)
+        data_dict["SND_ASSEMBLY_DESCRIPTION"] = str(par.SND_ASSEMBLY_DESCRIPTION)
+        data_dict["SND_EQUIPMENT_DESCRIPTION"] = str(par.SND_EQUIPMENT_DESCRIPTION)
+        data_dict["GOT_CODE"] = str(par.GOT_CODE)
+        #data_dict["MNT_PLANT_ID"] = str(par.MNT_PLANT_ID)
+        data_dict["SNDFBL_ID"] = str(par.SNDFBL_ID)        
+        data_list.append(data_dict)
+    
+    
+    page = ""
+    if QueryCount < int(PerPage):
+        page = str(Page_start) + " - " + str(QueryCount) + " of "
+    else:
+        page = str(Page_start) + " - " + str(Page_End)+ " of "
+    #return data_list, QueryCount, page
+    # Trace.Write("GetCovObjChildFilter data_list --->"+str(data_list))
+    # Trace.Write("GetCovObjChildFilter QueryCount ---->"+str(QueryCount))
+    # Trace.Write("GetCovObjChildFilter page --->"+str(page))
+    
+    return data_list, QueryCount, page
 
 def GetContractCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     if str(PerPage) == "" and str(PageInform) == "":
@@ -8616,196 +8808,6 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
     # Trace.Write("GetCovObjChildFilter QueryCount ---->"+str(QueryCount))
     # Trace.Write("GetCovObjChildFilter page --->"+str(page))
     return data_list, QueryCount, page
-def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInform):
-    Trace.Write('GetSendEupChildFilter-------------------')
-
-    if str(PerPage) == "" and str(PageInform) == "":
-        Page_start = 1
-        Page_End = 10
-        PerPage = 10
-        PageInform = "1___10___10"
-    else:
-        Page_start = int(PageInform.split("___")[0])
-        Page_End = int(PageInform.split("___")[1])
-        PerPage = PerPage
-    QueryCount = ""
-    TreeParam = Product.GetGlobal("TreeParam")
-    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-    TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-    # FablocationId = Product.GetGlobal("TreeParam")
-    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-    ATTRIBUTE_VALUE_STR = ""
-    Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
-    for quer_key, quer_value in enumerate(Dict_formation):
-        x_picklistcheckobj = Sql.GetFirst(
-            "SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQSSA' AND API_NAME = '" + str(quer_value) + "'"
-        )
-        x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
-        if Dict_formation.get(quer_value) != "":
-            quer_values = str(Dict_formation.get(quer_value)).strip()
-            if str(quer_values).upper() == "TRUE":
-                quer_values = "TRUE"
-            elif str(quer_values).upper() == "FALSE":
-                quer_values = "FALSE"
-            if str(quer_values).find(",") == -1:
-                if x_picklistcheck == "TRUE":
-                    ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
-                else:
-                    ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
-            else:
-                quer_values = quer_values.split(",")
-                quer_values = tuple(list(quer_values))
-                ATTRIBUTE_VALUE_STR += str(quer_value) + " in " + str(quer_values) + " and "
-
-    data_list = []
-    rec_id = "SYOBJ_1176889_SYOBJ_1176889"
-    obj_id = "SYOBJ-1176889"
-    objh_getid = Sql.GetFirst(
-        "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAQSSA_ATTRIBUTE_NAME='" + str(obj_id) + "'"
-    )
-    if objh_getid:
-        obj_id = objh_getid.RECORD_ID
-    objs_obj = Sql.GetFirst(
-        "select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
-    )
-    
-    orderby = ""
-    if SortColumn != '' and SortColumnOrder !='':
-        orderby = SortColumn + " " + SortColumnOrder
-    else:
-        orderby = "QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"
-    
-    
-    can_edit = str(objs_obj.CAN_EDIT)
-    can_clone = str(objs_obj.CAN_ADD)
-    can_delete = str(objs_obj.CAN_DELETE)
-    if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
-        Trace.Write("empty search")
-        if TreeSuperParentParam == "Product Offerings":
-            parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
-                    )
-                )
-            
-            QueryCountObj = Sql.GetFirst(
-                    "select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam))
-            if QueryCountObj is not None:
-                QueryCount = QueryCountObj.cnt
-            
-            
-            
-        else:
-            if TreeTopSuperParentParam == "Product Offerings":
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam,ord_by = orderby
-                    )
-                )
-                
-                QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ".format(                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam))
-                if QueryCountObj is not None:
-                    QueryCount = QueryCountObj.cnt
-            
-            
-            else:
-                Trace.Write("5 level empty search --->")
-                parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
-                        recid=RECID,
-                        service_id=TreeSuperParentParam,
-                        fablocation_id = TreeParentParam,
-                        ord_by = orderby
-                    )
-                )
-                
-                QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}'".format(
-                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
-                        recid=RECID,
-                        service_id=TreeSuperParentParam,
-                        fablocation_id = TreeParentParam,
-                    ))
-                if QueryCountObj is not None:
-                    QueryCount = QueryCountObj.cnt
-                
-    else:
-        Trace.Write("search with condition")
-        if TreeSuperParentParam == "Product Offerings":
-            parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "
-                + str(ATTRIBUTE_VALUE_STR)
-                + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
-                )
-            )
-            
-            QueryCountObj = Sql.GetFirst( "select count(*) as cnt from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam
-                ))
-            if QueryCountObj is not None:
-                QueryCount = QueryCountObj.cnt
-        else:
-            if TreeTopSuperParentParam == "Product Offerings":
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,treeparam=TreeParentParam,ord_by = orderby))
-                
-                QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,            treeparam=TreeParentParam, ))
-                if QueryCountObj is not None:
-                    QueryCount = QueryCountObj.cnt
-            else:   
-                Trace.Write("5 level coditional search --->")
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by}".format(                   ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,ord_by = orderby  ))   
-                
-                QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,))
-                if QueryCountObj is not None:
-                    QueryCount = QueryCountObj.cnt
-                
-                
-
-    for par in parent_obj:
-        data_dict = {}
-        data_id = str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
-
-        Action_str = (
-            '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
-            + str(data_id)
-            + '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-        )
-        if can_edit.upper() == "TRUE":
-            Action_str += (
-                '<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
-                + str(data_id)
-                + '" onclick="Move_to_parent_obj_edit(this)">EDIT</a></li>'
-            )
-        if can_delete.upper() == "TRUE":
-            Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
-        if can_clone.upper() == "TRUE":
-            Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
-
-        Action_str += "</ul></div></div>"
-        data_dict = {}
-        data_dict["ids"] = str(data_id)
-        data_dict["ACTIONS"] = str(Action_str)
-        data_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
-            "SAQSSA", str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
-        )
-        data_dict["SND_EQUIPMENT_ID"] = str(par.SND_EQUIPMENT_ID)
-        data_dict["SND_ASSEMBLY_ID"] = str(par.SND_ASSEMBLY_ID)
-        data_dict["SND_ASSEMBLY_DESCRIPTION"] = str(par.SND_ASSEMBLY_DESCRIPTION)
-        data_dict["SND_EQUIPMENT_DESCRIPTION"] = str(par.SND_EQUIPMENT_DESCRIPTION)
-        data_dict["GOT_CODE"] = str(par.GOT_CODE)
-        #data_dict["MNT_PLANT_ID"] = str(par.MNT_PLANT_ID)
-        data_dict["SNDFBL_ID"] = str(par.SNDFBL_ID)        
-        data_list.append(data_dict)
-    
-    
-    page = ""
-    if QueryCount < int(PerPage):
-        page = str(Page_start) + " - " + str(QueryCount) + " of "
-    else:
-        page = str(Page_start) + " - " + str(Page_End)+ " of "
-    #return data_list, QueryCount, page
-    # Trace.Write("GetCovObjChildFilter data_list --->"+str(data_list))
-    # Trace.Write("GetCovObjChildFilter QueryCount ---->"+str(QueryCount))
-    # Trace.Write("GetCovObjChildFilter page --->"+str(page))
-    return data_list, QueryCount, page
-
 def GetCommonParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):    
     ATTRIBUTE_VALUES = list(ATTRIBUTE_VALUE)
     ATTRIBUTE_VALUE=[]
