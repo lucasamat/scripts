@@ -764,7 +764,7 @@ class Entitlements:
 								get_curr = curr
 								Trace.Write("ENTCOST4 = "+str(get_cost_impact))
 							
-							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+							updatexml  = """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
@@ -775,9 +775,11 @@ class Entitlements:
 								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE) 
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE)
+							updateentXML  += updatexml
 							if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
-								Trace.Write("xml--------->"+str(updateentXML))
+								
+								Trace.Write("xml--------->"+str(updatexml))
 						where = " SAQSCE.QUOTE_RECORD_ID = '{}' AND SAQSCE.SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 						Trace.Write("where condition--"+str(where))
 						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format(updateentXML,where,e.EQUIPMENT_ID)
