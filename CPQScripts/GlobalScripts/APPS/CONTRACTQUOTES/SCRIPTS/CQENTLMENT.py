@@ -723,7 +723,7 @@ class Entitlements:
 					for e in getPlatform:
 					
 						for value in GetXMLsecField:
-							Trace.Write("VALUE IN XML--------->"+str(value))
+							Trace.Write("VALUE IN XML--------->"+str(value.ENTITLEMENT_DISPLAY_VALUE))
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
