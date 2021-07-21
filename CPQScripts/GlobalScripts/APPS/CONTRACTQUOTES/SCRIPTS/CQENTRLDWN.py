@@ -742,10 +742,10 @@ for obj in obj_list:
 			get_calc_factor = value.CALCULATION_FACTOR
 			if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and get_serviceid =='Z0016_AG':
 				if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
-					get_calc_factor = get_value = round(float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt),2)
-					grnbk_dict[value.ENTITLEMENT_NAME] = get_value
-					get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-					
+					get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
+					grnbk_dict[value.ENTITLEMENT_NAME] = get_val
+					get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+					get_calc_factor = get_value = round(get_val,2)
 			updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 				<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
