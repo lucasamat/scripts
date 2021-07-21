@@ -692,7 +692,7 @@ class Entitlements:
 				Trace.Write("TEST COMMIT")
 				where = " QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
-				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK  FROM SAQSCO WHERE {where}".format(where))
+				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK  FROM SAQSCO WHERE {where}".format(where=where))
 				GetRegion = Sql.GetFirst("SELECT REGION,GLOBAL_CURRENCY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
 				Region = GetRegion.REGION
 				getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
