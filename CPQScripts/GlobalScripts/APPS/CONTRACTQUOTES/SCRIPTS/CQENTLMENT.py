@@ -1078,9 +1078,9 @@ class Entitlements:
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
 				dataent = getedit_calc.DT				
-				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
-				if factcurr:
-					factcurreny = factcurr.GS
+				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
+				# if factcurr:
+				# 	factcurreny = factcurr.GS
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
