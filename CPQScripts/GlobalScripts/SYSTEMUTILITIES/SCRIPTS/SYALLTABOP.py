@@ -6,6 +6,8 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace  # pylint: disable=E0602
 Webcom = Webcom  # pylint: disable=E0602
 Product = Product  # pylint: disable=E0602
@@ -13,7 +15,7 @@ AttributeAccess = AttributeAccess  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 Param = Param  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
-import Webcom.Configurator.Scripting.Test.TestProduct
+
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
