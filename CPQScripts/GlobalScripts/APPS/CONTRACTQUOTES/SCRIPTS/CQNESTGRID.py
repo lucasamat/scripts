@@ -13197,7 +13197,14 @@ if ACTION == "LOAD":
         PerPage = Param.PerPage
         PageInform = Param.PageInform
         ApiResponse = ApiResponseFactory.JsonResponse(GetCovObjChild(EQUIPMENTID, PerPage, PageInform, A_Keys, A_Values))
-        Trace.Write("Current Rec Id is " + str(CURR_REC_ID))    
+        Trace.Write("Current Rec Id is " + str(CURR_REC_ID)) 
+    elif TABNAME == "Sendingequp Child Pagination":
+        A_Keys = list(Param.ATTRIBUTE_NAME)
+        A_Values = list(Param.ATTRIBUTE_VALUE)
+        PerPage = Param.PerPage
+        PageInform = Param.PageInform
+        ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentChild(EQUIPMENTID, PerPage, PageInform, A_Keys, A_Values))
+        Trace.Write("Current Rec Id is " + str(CURR_REC_ID))         
     elif TABNAME == "Equipment Parent":
         ApiResponse = ApiResponseFactory.JsonResponse(GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
     elif TABNAME == 'Common Parent':
