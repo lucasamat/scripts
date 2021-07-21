@@ -706,6 +706,7 @@ class Entitlements:
 						
 						EntCost =str((float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE))) + "_" + str(a.EQUIPMENT_ID)
 						list1.append(EntCost)
+						Trace.Write("LIST1----"+str(list1))
 						
 						EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT)) + "_" + str(a.EQUIPMENT_ID)
 						list2.append(EntCost2)
