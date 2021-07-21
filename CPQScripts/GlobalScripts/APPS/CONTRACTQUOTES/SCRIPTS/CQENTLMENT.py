@@ -1556,18 +1556,18 @@ except:
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
 #Trace.Write("calc_factor : " + str(calc_factor) + " costimpact : " + str(costimpact) + " priceimapct "+str(priceimapct))
 #Trace.Write("AttributeID : " + str(AttributeID) + " AttributeValCode : " + str(AttributeValCode))
-EntObject = Entitlements()
+EntObj = Entitlements()
 if ENT_CANCEL == 'CANCEL':
 	ApiResponse = ApiResponseFactory.JsonResponse(
-		EntObject.EntitlementCancel(SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId)
+		EntObj.EntitlementCancel(SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId)
 	)
 elif ACTION == 'POPUP':
-	ApiResponse = ApiResponseFactory.JsonResponse(EntObject.popup())
+	ApiResponse = ApiResponseFactory.JsonResponse(EntObj.popup())
 elif ACTION == 'SAVE':
 	Trace.Write("calling save")
-	ApiResponse = ApiResponseFactory.JsonResponse(EntObject.Rolldown())
+	ApiResponse = ApiResponseFactory.JsonResponse(EntObj.Rolldown())
 else:
 	Trace.Write("calling else save")
 	ApiResponse = ApiResponseFactory.JsonResponse(
-		EntObject.EntitlementSave(subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
+		EntObj.EntitlementSave(subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
 	)
