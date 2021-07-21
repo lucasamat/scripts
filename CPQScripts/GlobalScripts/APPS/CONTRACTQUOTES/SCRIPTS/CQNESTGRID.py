@@ -2335,32 +2335,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 )
             )
         
-    #     elif TreeParentParam == 'Fab Locations':
-    #         Parent_Equipmentid = Sql.GetFirst(
-    #             "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
-    #                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
-    #                 FablocationId=Product.GetGlobal("TreeParam"),
-    #                 EquipmentId=recid,
-    #             )
-    #         )
-    #     elif TreeTopSuperParentParam == 'Fab Locations':
-    #         Parent_Equipmentid = Sql.GetFirst(
-    #             "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
-    #                 ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
-    #                 FablocationId = Product.GetGlobal("TreeParentLevel0"),
-    #                 EquipmentId = recid,
-    #                 GreenBook = Product.GetGlobal("TreeParam"),
-    #             )
-    #         )
-    #     elif TreeSuperParentParam == 'Fab Locations':
-    #         Parent_Equipmentid = Sql.GetFirst(
-    #             "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
-    #                 ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
-    #                 FablocationId = Product.GetGlobal("TreeParam"),
-    #                 EquipmentId = recid,
-    #                 #GreenBook = Product.GetGlobal("TreeParam"),
-    #             )
-    #         )
+    
 
     if Parent_Equipmentid:
         EquipmentID = Parent_Equipmentid.SND_EQUIPMENT_ID
@@ -13199,6 +13174,7 @@ if ACTION == "LOAD":
         ApiResponse = ApiResponseFactory.JsonResponse(GetCovObjChild(EQUIPMENTID, PerPage, PageInform, A_Keys, A_Values))
         Trace.Write("Current Rec Id is " + str(CURR_REC_ID)) 
     elif TABNAME == "Sendingequp Child Pagination":
+        Trace.Write('sendingequp=================')
         A_Keys = list(Param.ATTRIBUTE_NAME)
         A_Values = list(Param.ATTRIBUTE_VALUE)
         PerPage = Param.PerPage
