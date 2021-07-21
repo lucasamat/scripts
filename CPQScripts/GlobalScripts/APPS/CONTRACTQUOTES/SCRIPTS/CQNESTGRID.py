@@ -8642,6 +8642,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
     # Trace.Write("GetCovObjChildFilter page --->"+str(page))
     return data_list, QueryCount, page
 def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInform):
+    Trace.Write('GetSendEupChildFilter-------------------')
 
     if str(PerPage) == "" and str(PageInform) == "":
         Page_start = 1
