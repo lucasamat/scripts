@@ -6471,6 +6471,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
 					item_data = items_data.get(item_number)
 					item.TOTAL_COST.Value = formatting_string.format(float(item_data.get('TOTAL_COST')))+" "+getdecimalplacecurr
+					Trace.Write('6474-------')
 					total_cost += item.TOTAL_COST.Value
 					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_target_price += item.TARGET_PRICE.Value
