@@ -2438,7 +2438,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			elif auto_equp_insert == "true": 
 				Trace.Write('ifff1--')       
 				account_id = self.tree_param.split(' - ')
-		 		account_id = account_id[len(account_id)-1]
+				account_id = account_id[len(account_id)-1]
 				fab_type = 'SENDING FAB' if "Sending Account -" in self.tree_param else 'RECEIVING FAB' if "Receiving Account -" in self.tree_param else ""
 				get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}' ".format(self.contract_quote_record_id,account_id,fab_type) )
 				if get_fab_query:
@@ -3222,7 +3222,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 
 	def _insert_quote_service_covered_object(self, **kwargs):
 		if self.sale_type == "TOOL RELOCATION":
-    			Trace.Write('covered_object_insert')
+			Trace.Write('covered_object_insert')
 			if self.tree_param != "Sending Equipment":
 				relocation = "AND ISNULL(SAQFEQ.RELOCATION_EQUIPMENT_TYPE,'')='"+str(self.tree_param)+"'"
 				self._process_query(
@@ -6366,9 +6366,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		#(select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT distinct replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT FROM (select convert(xml,replace(replace(SAQSCE.ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)) IQ)
 		# Insert Quote Items Covered Object - End
 		self._process_query("""UPDATE SAQICO SET PRICING_STATUS = CASE  
-                        WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
-                        ELSE 'ERROR'
-                    END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
+						WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
+						ELSE 'ERROR'
+					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 		self._process_query("""UPDATE SAQICO
 			SET
 			SAQICO.ANNUAL_BENCHMARK_BOOKING_PRICE = PRPRBM.ANNUAL_BOOKING_PRICE,
