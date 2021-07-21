@@ -6472,7 +6472,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					item_data = items_data.get(item_number)
 					item.TOTAL_COST.Value = str(formatting_string.format(float(item_data.get('TOTAL_COST'))))+" "+getdecimalplacecurr
 					Trace.Write('6474-------')
-					total_cost += item.TOTAL_COST.Value
+					total_cost += float(item_data.get('TOTAL_COST'))
 					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_target_price += item.TARGET_PRICE.Value
 					total_ceiling_price += item.CEILING_PRICE.Value
