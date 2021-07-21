@@ -120,7 +120,7 @@ class SyncQuoteAndCustomTables:
         return date_str
     def CreateEntitlements(self,quote_record_id):
         SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=quote_record_id))
-        Log.Info("quote_record_id---123------"+str(quote_record_id))
+        #Log.Info("quote_record_id---123------"+str(quote_record_id))
         tableInfo = SqlHelper.GetTable("SAQTSE")
         x = datetime.datetime.today()
         x= str(x)
@@ -198,22 +198,22 @@ class SyncQuoteAndCustomTables:
                     #Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
                     if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
                         try:
-                            Trace.Write('except-try----date-------')
+                            #Trace.Write('except-try----date-------')
                             HasDefaultvalue = True
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                             ent_disp_val = 	str(QuoteStartDate)
                             ent_val_code = ''
-                            Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
+                            #Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
                         except:
                             #HasDefaultvalue==True
-                            Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
+                            #Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
                             ent_disp_val = ent_disp_val
                             ent_val_code = ''
                     else:
                         Trace.Write('208--attrs---'+str(attrs))
                         ent_disp_val = ent_disp_val
                         ent_val_code = ent_val_code
-                    Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
+                    #Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
                     if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
@@ -230,7 +230,7 @@ class SyncQuoteAndCustomTables:
                         ent_disp_val = ent_disp_val
                     
                     DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
-                    Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
+                    #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -299,11 +299,11 @@ class SyncQuoteAndCustomTables:
                                     
                             AttributeID = 'AGS_CON_DAY'
                             NewValue = ent_disp_val
-                            Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
+                            #Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
                             whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = 'Z0016_AG'"
-                            Trace.Write('whereReq---'+str(whereReq))
+                            #Trace.Write('whereReq---'+str(whereReq))
                             requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-                            Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
+                            #Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
                             response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
                             #requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
 
@@ -342,7 +342,7 @@ class SyncQuoteAndCustomTables:
                             attributesallowedlst = list(set(attributesallowedlst))
                             overallattributeslist = list(set(overallattributeslist))
                             HasDefaultvalue=False
-                            Trace.Write('response2--182----315---')
+                            #Trace.Write('response2--182----315---')
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
                             if ProductVersionObj is not None:
                                 tbrow={}
@@ -606,6 +606,8 @@ class SyncQuoteAndCustomTables:
                                     salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
                                 TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
                                 if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
+                                    QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                                    Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
                                     salesorg_data.update({'EXCHANGE_RATE':'1'})
                                 #commented the below code we updated the exchange rate type from Custom field.	
                                 #exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
