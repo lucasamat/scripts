@@ -190,50 +190,6 @@ class Entitlements:
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		return eval(response2),cpsmatc_incr,attribute_code
 	
-	# def labor_type_entitlement_attr_code_mapping(self,cpsConfigID,cpsmatchID,AttributeID,NewValue):
-	# 	if type(NewValue) is 'str' and multiselect_flag != 'true':
-	# 		NewValue = NewValue.replace("'","''")
-	# 		if NewValue == 'Select':
-	# 			NewValue = ''
-		
-	# 	cpsmatc_incr = int(cpsmatchID)
-	# 	attr_map_dict = {}
-		
-	# 	STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT A.SYSTEM_ID, S.STANDARD_ATTRIBUTE_VALUE, S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))			
-	# 	if STANDARD_ATTRIBUTE_VALUES is not None:
-	# 		previous_attr_str = ""
-	# 		for val in STANDARD_ATTRIBUTE_VALUES:					
-	# 			if val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue:		
-	# 				Trace.Write("============******* >>>>0000 "+str(val.SYSTEM_ID+str(int(val.STANDARD_ATTRIBUTE_VALUE))))
-	# 				response = self.Request_access_token()
-	# 				webclient = System.Net.WebClient()
-	# 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
-	# 				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])		
-	# 				webclient.Headers.Add("If-Match", "1"+str(cpsmatc_incr))	
-	# 				try:			
-	# 					requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'+previous_attr_str+']}]}'
-						
-	# 					#previous_attr_str += ', {"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
-	# 					response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-	# 				except Exception:
-	# 					Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
-	# 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-	# 				webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-	# 				Trace.Write("requestdata222222222222222211111" + str(requestdata))
-	# 				response2 = webclient.DownloadString(Request_URL)
-	# 				Trace.Write('response2--733---------222222222222222221111111111'+str(response2))
-	# 				response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-	# 				cpsmatc_incr += 10
-	# 				for rootattribute, rootvalue in eval(response2).items():
-	# 					if rootattribute == "rootItem":
-	# 						for Productattribute, Productvalue in rootvalue.items():								
-	# 							if Productattribute == "variantConditions":
-	# 								Trace.Write("============******* >>>>1111 "+str(Productvalue))
-	# 								for prdvalue in Productvalue:
-	# 									Trace.Write("============******* >>>>2222 "+str(val.SYSTEM_ID+str(int(val.STANDARD_ATTRIBUTE_VALUE))))
-	# 									attr_map_dict[prdvalue['key']] = val.SYSTEM_ID+str(int(val.STANDARD_ATTRIBUTE_VALUE))
-	# 	return attr_map_dict, cpsmatc_incr
-	
 	def get_product_attr_level_cps_pricing(self, characteristics_attr_values=None,serviceId =None):
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -1114,42 +1070,9 @@ class Entitlements:
 				)
 				Sql.RunQuery(UpdateEntitlement)'''
 				# to insert  input column value end
-			
-		
+				
 		factcurreny = dataent = ""
-		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE FROM PRENVL where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
-		if getedit_calc:
-			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
-				dataent = getedit_calc.DATA_TYPE				
-				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")
-				if factcurr:
-					factcurreny = factcurr.GLOBAL_CURRENCY
 		
-		if tableName == 'SAQTSE':
-			where = "WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' ".format(AttributeID, self.ContractRecordId, serviceId)
-		elif tableName == 'SAQSFE':
-			where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
-		elif tableName == 'SAQSGE':
-			where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
-		else:
-			where = "AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND TGT.EQUIPMENT_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, EquipmentId,self.treeparam)
-		
-		#cpsmatc_incr = cpsmatchID + 10
-		#updated cps response while changing value in UI		
-		'''UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}', ENTITLEMENT_VALUE_CODE = '{}',CPS_MATCH_ID ={} WHERE ENTITLEMENT_NAME = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'  ".format(
-			tableName,NewValue, AttributeValCoderes, cpsmatc_incr,AttributeID, self.ContractRecordId, serviceId
-		)
-		Sql.RunQuery(UpdateEntitlement)
-		Trace.Write("Updated Successfully!!")
-		#self.ent_update(tableName,NewValue, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
-		try:
-			Trace.Write("where.."+str(where))			
-			CQENTIFLOW.iflow_entitlement(tableName,where)
-		except:
-			Log.Info("ENTITLEMENT IFLOW ERROR!")'''
-		Trace.Write("attr_level_pricing===>"+str(attr_level_pricing))
-
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
