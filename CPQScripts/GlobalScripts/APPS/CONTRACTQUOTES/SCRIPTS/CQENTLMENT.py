@@ -1074,7 +1074,7 @@ class Entitlements:
 			
 		factcurreny = ""
 		dataent = ""
-		quoteid = str(Quote.GetGlobal("contract_quote_record_id"))
+		#quoteid = str(Quote.GetGlobal("contract_quote_record_id"))
 		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
