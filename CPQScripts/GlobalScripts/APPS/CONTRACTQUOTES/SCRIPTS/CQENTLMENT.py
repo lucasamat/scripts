@@ -39,8 +39,8 @@ class Entitlements:
 		#Trace.Write("treesuperparentparam--25--"+str(self.treesuperparentparam)+"treetopsuperparentparam-"+ str(self.treetopsuperparentparam)+"treetopsupertopparentparam-- "+ str(self.treetopsupertopparentparam)+"--" + str(self.treesupertopparentparam))
 		self.attr_code_mapping = {"L3_SLB_S1":"AGS_LAB_OPT1", "L3_SLB_S2":"AGS_LAB_OPT2", "L3_SLA_CWW":"AGS_LAB_OPT3", "L3_SLB_CWW":"AGS_LAB_OPT4", "SER_COO_S1":"AGS_LAB_OPT5", "RAM_SPE_S1":"AGS_LAB_OPT6", "ENG_IN_CHA_S1":"AGS_LAB_OPT7", "APP_ENG_S1":"AGS_LAB_OPT8", "3MON_SLA_CWW":"AGS_LAB_OPT9", "3MON_SLB_CWW":"AGS_LAB_OPT10", "3MON_EIC_RS_S1":"AGS_LAB_OPT11", "6MON_SLA_CWW":"AGS_LAB_OPT12", "6MON_SLB_CWW":"AGS_LAB_OPT13", "6MON_EIC_RS_S1":"AGS_LAB_OPT14"}
 
-	def getcpsID(self,objectName,serviceId,parentObj,whereReq,attId,ParentwhereReq):
-		cpsConfiguration = Sql.GetFirst("select CPS_CONFIGURATION_ID,MAX(CPS_MATCH_ID) as CPS_MATCH_ID from {} (NOLOCK) WHERE {} GROUP BY CPS_CONFIGURATION_ID ".format(objectName, whereReq))
+	def getcpsID(self,tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq):
+		cpsConfiguration = Sql.GetFirst("select CPS_CONFIGURATION_ID,MAX(CPS_MATCH_ID) as CPS_MATCH_ID from {} (NOLOCK) WHERE {} GROUP BY CPS_CONFIGURATION_ID ".format(tableName, whereReq))
 		
 		cpsmatchID = ''
 		cpsConfigID = ''
@@ -51,8 +51,8 @@ class Entitlements:
 			oldConfigID = cpsConfiguration.CPS_CONFIGURATION_ID
 			if parentObj !='':
 				parentcpsConfig = Sql.GetFirst("select CPS_CONFIGURATION_ID,MAX(CPS_MATCH_ID) as CPS_MATCH_ID from {} (NOLOCK) WHERE  QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' GROUP BY CPS_CONFIGURATION_ID ".format(parentObj,self.ContractRecordId, serviceId))
-				# if cpsConfigID == parentcpsConfig.CPS_CONFIGURATION_ID and objectName != 'SAQTSE':					
-				# 	cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,objectName,whereReq,serviceId,parentObj,ParentwhereReq)
+				# if cpsConfigID == parentcpsConfig.CPS_CONFIGURATION_ID and tableName != 'SAQTSE':					
+				# 	cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)
 		return cpsmatchID,cpsConfigID,oldConfigID
 	def Request_access_token(self):
 		webclient = System.Net.WebClient()
@@ -65,7 +65,7 @@ class Entitlements:
 		)
 		return eval(response)
 
-	def ChildEntRequest(self,cpsmatchID,objectName,where,serviceId,parentObj,ParentwhereReq):		
+	def ChildEntRequest(self,cpsmatchID,tableName,where,serviceId,parentObj,ParentwhereReq):		
 		response = self.Request_access_token()
 		webclient = System.Net.WebClient()		
 		Trace.Write(response["access_token"])
@@ -117,10 +117,10 @@ class Entitlements:
 							Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
 
-			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(objectName,where))
+			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
 			cpsmatc_incr = cpsmatchID + 10
 			for data in getdata:
-				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(objectName,newConfigurationid,cpsmatchID,where))            
+				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 		except Exception:
 			Trace.Write("Patch Error--"+str(sys.exc_info()[1]))        
 		
@@ -298,7 +298,7 @@ class Entitlements:
 		if priceimapct == '':
 			priceimapct = 'null'
 		UpdateEntitlement = ''
-		objectName = getregionval = ''
+		tableName = getregionval = ''
 		serviceId = ''
 		parentObj = ''
 		whereReq = ''
@@ -314,17 +314,17 @@ class Entitlements:
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Other Products' or self.treetopsuperparentparam == 'Other Products' or self.treesupertopparentparam == 'Other Products' ):
 			Trace.Write('inside')
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
-				objectName = 'SAQTSE'
+				tableName = 'SAQTSE'
 				serviceId = self.treeparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' and subtabName == 'Entitlements':
-				objectName = 'SAQSFE'
+				tableName = 'SAQSFE'
 				serviceId = self.treesuperparentparam 
 				parentObj = 'SAQTSE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
-				objectName = 'SAQSGE'
+				tableName = 'SAQSGE'
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
@@ -333,7 +333,7 @@ class Entitlements:
 			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
-				objectName = 'SAQSCE'
+				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQSGE'
@@ -343,42 +343,42 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):			
-				objectName = 'SAQTSE'
+				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treesuperparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Comprehensive Services' )) and subtabName == 'Entitlements'):
-				objectName = 'SAQSFE'
+				tableName = 'SAQSFE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQTSE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)	
 			elif ((self.treesupertopparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				objectName = 'SAQSGE'
+				tableName = 'SAQSGE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				objectName = 'SAQSCE'
+				tableName = 'SAQSCE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
-				objectName = 'SAQSAE'
+				tableName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND EQUIPMENT_ID = '{}' AND FABLOCATION_ID = '{}' AND ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 			elif (self.treeparentparam == 'Quote Items' and subtabName == 'Entitlements'):
-				objectName = 'SAQIEN'
+				tableName = 'SAQIEN'
 				serviceId = (self.treeparam).split("-")[1].strip()	
 		
 		
-		Trace.Write('objectName'+str(objectName))
+		Trace.Write('tableName'+str(tableName))
 		attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)		
-		cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(objectName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+		cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 		
 		attributesdisallowedlst = []
 		attributesallowedlst = []
@@ -386,7 +386,7 @@ class Entitlements:
 		attributeEditonlylst = []
 		attributevalues = {}
 		where = pricemethodupdate = ""
-		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(objectName,whereReq))
+		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
 			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 		else:
@@ -444,8 +444,8 @@ class Entitlements:
 		attr_level_pricing = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
-			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(objectName, cpsmatc_incr,cpsConfigID, whereReq)
-			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(objectName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 			get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
 												FROM TAB_PRODUCTS
 												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
@@ -467,7 +467,7 @@ class Entitlements:
 			else:
 				defaultval = 1'''
 			#UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-			#objectName,defaultval,AttributeID, whereReq)
+			#tableName,defaultval,AttributeID, whereReq)
 			Trace.Write('whereReq----'+str(whereReq))
 			#Sql.RunQuery(UpdateIsdefault)
 			characteristics_attr_values = []
@@ -547,11 +547,11 @@ class Entitlements:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = defaultval,ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
 
-						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(objectName, updateentXML,whereReq)
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 						Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
 							
 			#Sql.RunQuery(UpdateEntitlement)	
-			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(objectName, cpsmatc_incr,cpsConfigID, whereReq)
+			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 			Sql.RunQuery(Updatecps)
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
@@ -730,7 +730,7 @@ class Entitlements:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = str((val).split("||")[0]).replace("'","&apos;"),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
 					#Trace.Write("updateentXML---"+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(objectName, updateentXML,whereReq)
+				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
 
 				Sql.RunQuery(UpdateEntitlement)
 				where = " QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
@@ -1000,9 +1000,9 @@ class Entitlements:
 						AND PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
 					#Sql.RunQuery(updateSAQICO)
 
-				'''UpdateEntitlement = " UPDATE {} SET CALCULATION_FACTOR={},ENTITLEMENT_COST_IMPACT={},ENTITLEMENT_PRICE_IMPACT={} WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(objectName,calc_factor,costimpact,priceimapct,AttributeID, whereReq)
+				'''UpdateEntitlement = " UPDATE {} SET CALCULATION_FACTOR={},ENTITLEMENT_COST_IMPACT={},ENTITLEMENT_PRICE_IMPACT={} WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(tableName,calc_factor,costimpact,priceimapct,AttributeID, whereReq)
 				Sql.RunQuery(UpdateEntitlement)
-				updatePricemethod = " UPDATE TGT SET TGT.PRICE_METHOD = SRC.PRICE_METHOD FROM PRENVL (NOLOCK) SRC JOIN {} (NOLOCK) TGT ON TGT.ENTITLEMENT_NAME = SRC.ENTITLEMENT_NAME WHERE SRC.ENTITLEMENT_NAME = '{}' AND {} ".format(objectName,AttributeID, whereReq)
+				updatePricemethod = " UPDATE TGT SET TGT.PRICE_METHOD = SRC.PRICE_METHOD FROM PRENVL (NOLOCK) SRC JOIN {} (NOLOCK) TGT ON TGT.ENTITLEMENT_NAME = SRC.ENTITLEMENT_NAME WHERE SRC.ENTITLEMENT_NAME = '{}' AND {} ".format(tableName,AttributeID, whereReq)
 				Sql.RunQuery(updatePricemethod)'''
 				# to insert new input column value and price factor, cost impact for manual input end
 			else:
@@ -1047,12 +1047,12 @@ class Entitlements:
 						Trace.Write("AttributeID---904----"+str(AttributeID))
 						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input')
 						Trace.Write("Fullresponse"+str(Fullresponse))
-						Trace.Write("objectName--894---"+str(objectName))
+						Trace.Write("tableName--894---"+str(tableName))
 						Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
 						Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
 						Trace.Write("whereReq--894---"+str(whereReq))
 
-						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(objectName, cpsmatc_incr,cpsConfigID, whereReq)
+						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 						Sql.RunQuery(Updatecps)
 						characteristics_attr_values = []
 						for rootattribute, rootvalue in Fullresponse.items():
@@ -1101,7 +1101,7 @@ class Entitlements:
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
 				Trace.Write("---------------------------222222222222222"+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(objectName, updateentXML,whereReq)
+				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 				
 				#Sql.RunQuery(UpdateEntitlement)	
 				'''if getmaualipval:
@@ -1110,7 +1110,7 @@ class Entitlements:
 				Trace.Write('335-------NewValue------------456----------'+str(NewValue))
 				Trace.Write('335-------NewValue------------456----------'+str(NewValue))						
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}',IS_DEFAULT = '0' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-				objectName,NewValue,AttributeID, whereReq
+				tableName,NewValue,AttributeID, whereReq
 				)
 				Sql.RunQuery(UpdateEntitlement)'''
 				# to insert  input column value end
@@ -1126,11 +1126,11 @@ class Entitlements:
 				if factcurr:
 					factcurreny = factcurr.GLOBAL_CURRENCY
 		
-		if objectName == 'SAQTSE':
+		if tableName == 'SAQTSE':
 			where = "WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' ".format(AttributeID, self.ContractRecordId, serviceId)
-		elif objectName == 'SAQSFE':
+		elif tableName == 'SAQSFE':
 			where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
-		elif objectName == 'SAQSGE':
+		elif tableName == 'SAQSGE':
 			where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
 		else:
 			where = "AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND TGT.EQUIPMENT_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, EquipmentId,self.treeparam)
@@ -1138,14 +1138,14 @@ class Entitlements:
 		#cpsmatc_incr = cpsmatchID + 10
 		#updated cps response while changing value in UI		
 		'''UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}', ENTITLEMENT_VALUE_CODE = '{}',CPS_MATCH_ID ={} WHERE ENTITLEMENT_NAME = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'  ".format(
-			objectName,NewValue, AttributeValCoderes, cpsmatc_incr,AttributeID, self.ContractRecordId, serviceId
+			tableName,NewValue, AttributeValCoderes, cpsmatc_incr,AttributeID, self.ContractRecordId, serviceId
 		)
 		Sql.RunQuery(UpdateEntitlement)
 		Trace.Write("Updated Successfully!!")
-		#self.ent_update(objectName,NewValue, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
+		#self.ent_update(tableName,NewValue, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		try:
 			Trace.Write("where.."+str(where))			
-			CQENTIFLOW.iflow_entitlement(objectName,where)
+			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except:
 			Log.Info("ENTITLEMENT IFLOW ERROR!")'''
 		Trace.Write("attr_level_pricing===>"+str(attr_level_pricing))
@@ -1158,7 +1158,7 @@ class Entitlements:
 		## set entitlement_xml for cancel fn A055S000P01-3157
 		getprevent_xml = Product.GetGlobal('previous_entitlement_xml')
 		## set entitlement_xml for cancel fn A055S000P01-3157
-		objectName = ''
+		tableName = ''
 		serviceId = ''
 		parentObj = ''
 		whereReq = ''
@@ -1169,17 +1169,17 @@ class Entitlements:
 		###tool relocation receiving entitilement starts
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Other Products' or self.treetopsuperparentparam == 'Other Products' or self.treesupertopparentparam == 'Other Products' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
-				objectName = 'SAQTSE'
+				tableName = 'SAQTSE'
 				serviceId = self.treeparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' and subtabName == 'Entitlements':
-				objectName = 'SAQSFE'
+				tableName = 'SAQSFE'
 				serviceId = self.treesuperparentparam 
 				parentObj = 'SAQTSE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
-				objectName = 'SAQSGE'
+				tableName = 'SAQSGE'
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
@@ -1188,7 +1188,7 @@ class Entitlements:
 			elif self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Equipment Entitlements':
 				Trace.Write('331----treesuperparentparam----'+str(self.treesuperparentparam))
 				Trace.Write('331----treetopsuperparentparam----'+str(self.treetopsuperparentparam))
-				objectName = 'SAQSCE'
+				tableName = 'SAQSCE'
 				#serviceId = self.treesuperparentparam
 				serviceId = self.treetopsuperparentparam
 				parentObj = 'SAQSGE'
@@ -1198,36 +1198,36 @@ class Entitlements:
 		else:
 			##addon product condition is added
 			if ((self.treesuperparentparam == 'Product Offerings' or (self.treeparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Product Offerings')) and subtabName == 'Entitlements'):
-				objectName = 'SAQTSE'
+				tableName = 'SAQTSE'
 				serviceId = self.treeparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treesuperparentparam == 'Add-On Products' and self.treesupertopparentparam == 'Comprehensive Services' )) and subtabName == 'Entitlements'):
-				objectName = 'SAQSFE'
+				tableName = 'SAQSFE'
 				serviceId = self.treeparentparam
 				parentObj = 'SAQTSE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif ((self.treesupertopparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
-				objectName = 'SAQSGE'
+				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				serviceId = self.treeparentparam
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
-				objectName = 'SAQSCE'
+				tableName = 'SAQSCE'
 				parentObj = 'SAQSGE'
 				serviceId = self.treesuperparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND EQUIPMENT_ID = '{}'".format(self.ContractRecordId,serviceId,self.treeparam,EquipmentId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
-				objectName = 'SAQSAE'
+				tableName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND EQUIPMENT_ID = '{}' AND FABLOCATION_ID = '{}' AND ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,serviceId,self.treeparam)
 			elif (self.treeparentparam == 'Quote Items' and subtabName == 'Entitlements'):
-				objectName = 'SAQIEN'
+				tableName = 'SAQIEN'
 				serviceId = (self.treeparam).split("-")[1].strip()				
 			
 		valdisplaycode = []
@@ -1235,7 +1235,7 @@ class Entitlements:
 		Trace.Write('Getprevdict----------'+str(Getprevdict))
 		###added  3157
 		#attId=AttributeID = valcode=""
-		#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(objectName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+		#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 		#Fullresponse,cpsmatc_incrn = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
 		#Trace.Write("Fullresponse-->cancel--"+ str(Fullresponse)+"cpsmatc_incrn"+str(cpsmatc_incrn))
 		#Trace.Write("cpsmatchID--"+ str(cpsmatchID)+"cpsConfigID"+str(cpsConfigID)+"oldConfigID-- "+str(oldConfigID))
@@ -1246,7 +1246,7 @@ class Entitlements:
 				valdisplaycode.append(str(valcode))
 				attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)
 				#Trace.Write("attId--"+str(attId))	
-				cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(objectName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
+				cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
 				attributesdisallowedlst = []
@@ -1319,20 +1319,20 @@ class Entitlements:
 				#Trace.Write("AttributeValCoderes--------"+str(AttributeValCoderes))			
 				#updated cps response while clicking cancel in UI
 				#UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}', ENTITLEMENT_VALUE_CODE = '{}',CPS_MATCH_ID ={} WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-				#	objectName,valcode, AttributeValCoderes, cpsmatc_incr,AttributeID, whereReq
+				#	tableName,valcode, AttributeValCoderes, cpsmatc_incr,AttributeID, whereReq
 				#)
 				#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement)+"valcode"+str(valcode))
 				#Sql.RunQuery(UpdateEntitlement)
-				#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(objectName, cpsmatc_incr, self.ContractRecordId, serviceId)
+				#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(tableName, cpsmatc_incr, self.ContractRecordId, serviceId)
 				#Sql.RunQuery(Updatecps)
 				## set entitlement_xml for cancel fn A055S000P01-3157 starts
 				if getprevent_xml:
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={} WHERE {}  ".format(
-							objectName,getprevent_xml,cpsmatc_incr,whereReq
+							tableName,getprevent_xml,cpsmatc_incr,whereReq
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
-				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(objectName, cpsmatc_incr, self.ContractRecordId, serviceId)
+				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(tableName, cpsmatc_incr, self.ContractRecordId, serviceId)
 				Sql.RunQuery(Updatecps)
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
 				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
@@ -1342,23 +1342,23 @@ class Entitlements:
 					else:
 						defaultval = 1
 					UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-					objectName,defaultval,AttributeID, whereReq
+					tableName,defaultval,AttributeID, whereReq
 					)
 					Sql.RunQuery(UpdateIsdefault)
-		if objectName == 'SAQTSE':
+		if tableName == 'SAQTSE':
 			where = "WHERE TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' ".format(self.ContractRecordId, serviceId)
-		elif objectName == 'SAQSFE':
+		elif tableName == 'SAQSFE':
 			where = " WHERE TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(self.ContractRecordId, serviceId, self.treeparam)
-		elif objectName == 'SAQSGE':
+		elif tableName == 'SAQSGE':
 			where = "WHERE TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND TGT.GREENBOOK ='{}'".format(self.ContractRecordId, serviceId, self.treeparam)
 		else:
 			where = "WHERE TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND TGT.GREENBOOK ='{}' AND TGT.EQUIPMENT_ID = '{}'".format(self.ContractRecordId, serviceId, self.treeparam,EquipmentId)		
-		#self.ent_update(objectName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
+		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
 		#Trace.Write("valdisplaycode--------"+str(valdisplaycode))
 		'''try:			
-			CQENTIFLOW.iflow_entitlement(objectName,where)
+			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
 			Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
@@ -1420,7 +1420,7 @@ class Entitlements:
 				serviceId = self.treesuperparentparam
 				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}'  AND SRC.EQUIPMENT_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.FABLOCATION_ID = '{}'".format(self.ContractRecordId, serviceId,EquipmentId,self.treeparam,self.treeparentparam)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
-				objectName = 'SAQSAE'
+				tableName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
 				whereReq = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
@@ -1432,11 +1432,11 @@ class Entitlements:
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Log.Info("inside Attr List------> "+str(AttributeList))
-			objectName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
+			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId, serviceId)
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			try:			
-				CQENTIFLOW.iflow_entitlement(objectName,where,Getprevdict)
+				CQENTIFLOW.iflow_entitlement(tableName,where,Getprevdict)
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
