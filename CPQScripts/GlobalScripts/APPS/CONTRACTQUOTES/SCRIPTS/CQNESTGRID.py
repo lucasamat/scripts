@@ -13085,7 +13085,7 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
     elif TABNAME == "Sending Equipment Parent":
         Trace.Write("EDITWORK")
         ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))       
-    elif TABNAME == "Sending Equipment Child": 
+    elif TABNAME == "Sending Equipment child": 
         Trace.Write("111111111_J ")
         REC_ID = Param.REC_ID
         RECID = REC_ID.split("_")[-1]
