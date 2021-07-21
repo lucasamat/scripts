@@ -1072,13 +1072,14 @@ class Entitlements:
 				Sql.RunQuery(UpdateEntitlement)'''
 				# to insert  input column value end
 			
-		factcurreny = dataent = ""
-		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
+		factcurreny = ""
+		dataent = ""
+		quoteid = str(Quote.GetGlobal("contract_quote_record_id"))
+		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
 				dataent = getedit_calc.DT				
-				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
+				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
 				if factcurr:
 					factcurreny = factcurr.GLOBAL_CURRENCY		
 		
