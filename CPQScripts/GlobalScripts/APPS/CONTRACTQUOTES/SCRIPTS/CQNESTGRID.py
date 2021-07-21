@@ -13085,6 +13085,7 @@ ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
 
 ##CHANGED FOR CHILD TABLE PAGINATION
 if ACTION == "LOAD":
+    Trace.Write('load--------------------------')
     PerPage = "10"
     PageInform = "1___10___10"
     A_Keys = []
@@ -13187,6 +13188,8 @@ if ACTION == "LOAD":
         ApiResponse = ApiResponseFactory.JsonResponse(GetCommonParent(PerPage, PageInform, A_Keys, A_Values))
     elif TABNAME == 'Common Parent Contracts':
         ApiResponse = ApiResponseFactory.JsonResponse(GetCommonParentContract(PerPage, PageInform, A_Keys, A_Values))
+    else:
+        Trace.Write('TABNAME@@@@')    
 
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
     if TABNAME == "Equipment Parent Filter":
