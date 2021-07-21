@@ -733,30 +733,32 @@ class Entitlements:
 					for e in getPlatform:
 						eq = str(e.EQUIPMENT_ID)
 						for value in GetXMLsecField:
-							Trace.Write("VALUE IN XML--------->"+str(value.ENTITLEMENT_DISPLAY_VALUE))
+							
+							get_name = value.ENTITLEMENT_NAME
+							Trace.Write("VALUE IN XML--------->"+str(get_name))
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 							get_curr = value.PRICE_METHOD
-							if 'AGS_SFM_DEI_PAC' in value.ENTITLEMENT_NAME and 'Included' in get_value:
+							if 'AGS_SFM_DEI_PAC' in get_name and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
 								get_cost_impact = "{0:.2f}".format(float(list1[eq]))
 								#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 								get_curr = curr
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
-							elif ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
+							elif ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name) and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
 								Trace.Write("list2="+str(list2))
 								get_cost_impact = "{0:.2f}".format(float(list2[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST2 = "+str(float(list2[e.EQUIPMENT_ID])))
 								Trace.Write("ENTCOST2 = "+str(get_cost_impact))
-							elif 'AGS_RFM_INS_T2' in value.ENTITLEMENT_NAME and 'Included' in get_value:
+							elif 'AGS_RFM_INS_T2' in get_name and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list3 if str(e.EQUIPMENT_ID) in x))
 								get_cost_impact = "{0:.2f}".format(float(list3[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST3 = "+str(get_cost_impact))
-							elif 'AGS_RFM_INS_T3' in value.ENTITLEMENT_NAME and 'Included' in get_value:
+							elif 'AGS_RFM_INS_T3' in get_name and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
 								get_cost_impact = "{0:.2f}".format(float(list4[eq]))
 								get_curr = curr
@@ -773,8 +775,8 @@ class Entitlements:
 								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE) 
-							if ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME):
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE) 
+							if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
 								Trace.Write("xml--------->"+str(updateentXML))
 						where = " SAQSCE.QUOTE_RECORD_ID = '{}' AND SAQSCE.SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 						Trace.Write("where condition--"+str(where))
