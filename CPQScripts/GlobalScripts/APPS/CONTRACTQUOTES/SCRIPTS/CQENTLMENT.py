@@ -590,7 +590,7 @@ class Entitlements:
 						attr_level_pricing = ""
 						Trace.Write("")
 					if attr_level_pricing:
-						getcostbaborimpact = attr_level_pricing[key]['price']	
+						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
 						calculation_factor =  attr_level_pricing[key]['factor']
 						pricemethodupdate =  attr_level_pricing[key]['currency']
