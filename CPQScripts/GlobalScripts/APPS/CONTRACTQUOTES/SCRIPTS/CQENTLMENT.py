@@ -1074,17 +1074,13 @@ class Entitlements:
 			
 		factcurreny = ""
 		dataent = ""
-		#quoteid = str(Quote.GetGlobal("contract_quote_record_id"))
 		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
 				dataent = getedit_calc.DT				
-				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
+				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				if factcurr:
-					factcurreny = factcurr.GLOBAL_CURRENCY		
-		
-		Trace.Write("attr_level_pricing===>"+str(attr_level_pricing))
-
+					factcurreny = factcurr.GLOBAL_CURRENCY
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
