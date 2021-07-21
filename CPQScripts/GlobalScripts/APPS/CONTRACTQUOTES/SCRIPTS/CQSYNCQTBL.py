@@ -510,7 +510,7 @@ class SyncQuoteAndCustomTables:
                             "QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
                             "GLOBAL_CURRENCY":"USD",
                             "INCOTERMS":custom_fields_detail.get("Incoterms"),
-                            "INCOTERMS_NOTES":custom_fields_detail.get("IncotermsLocation"),
+                            "INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
                             #"PRICING_DATE":pricing_date,
                             #"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
                             
