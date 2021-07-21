@@ -449,8 +449,11 @@ datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 obj_list = []
 is_changed = False
 if objectName == 'SAQTSE':
+	if get_serviceid != 'Z0007_AG':
 	#Log.Info("Current oject SAQTSE")
-	obj_list = ['SAQSCE','SAQSGE','SAQSFE','SAQIEN','SAQSAE']
+		obj_list = ['SAQSCE','SAQSGE','SAQSFE','SAQIEN','SAQSAE']
+	else:
+		obj_list = ['SAQSGE','SAQSFE','SAQIEN','SAQSAE']
 elif objectName == 'SAQSFE':
 	obj_list = ['SAQSCE','SAQSGE','SAQTSE','SAQIEN','SAQSAE']
 	is_changed = True
