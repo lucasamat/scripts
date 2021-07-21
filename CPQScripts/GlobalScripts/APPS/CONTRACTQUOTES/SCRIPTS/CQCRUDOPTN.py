@@ -6462,7 +6462,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			for item_obj in items_obj:
 				getdecimalplacecurr = item_obj.CURRENCY
 				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR}
-		curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where 	CURRENCY = '"+str(getdecimalplacecurr)+"'")
+		curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
 		decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 		formatting_string = "{0:." + str(decimal_val) + "f}"
 		for item in Quote.MainItems:
@@ -6470,7 +6470,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			if item_number in items_data.keys():
 				if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
 					item_data = items_data.get(item_number)
-					item.TOTAL_COST.Value = formatting_string.format(float(item_data.get('TOTAL_COST')))+str(getdecimalplacecurr)
+					item.TOTAL_COST.Value = formatting_string.format(float(item_data.get('TOTAL_COST')))
 					total_cost += item.TOTAL_COST.Value
 					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_target_price += item.TARGET_PRICE.Value
