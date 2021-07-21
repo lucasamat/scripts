@@ -16,8 +16,8 @@ import CQPARTIFLW
 import CQVLDRIFLW
 import CQTVLDRIFW
 from SYDATABASE import SQL
-from datetime import datetime
-import time
+#from datetime import datetime
+#import time
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
@@ -6512,8 +6512,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 		if Getyear:
-			start_date = datetime(Getyear.CONTRACT_VALID_FROM)
-			end_date = datetime(Getyear.CONTRACT_VALID_TO)
+			start_date = datetime.datetime(Getyear.CONTRACT_VALID_FROM)
+			end_date = datetime.datetime(Getyear.CONTRACT_VALID_TO)
 			mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
 			quotient, remainder = divmod(mm, 12)
 			getyears = quotient + (1 if remainder > 0 else 0)
