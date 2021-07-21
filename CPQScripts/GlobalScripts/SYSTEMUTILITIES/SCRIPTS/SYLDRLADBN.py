@@ -5,6 +5,9 @@
 #   __primary_author__ : JOE EBENEZER
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
+
 Webcom = Webcom  # pylint: disable=E0602
 Trace = Trace  # pylint: disable=E0602
 User = User  # pylint: disable=E0602
@@ -17,7 +20,6 @@ Session = Session  # pylint: disable=E0602
 from datetime import date, datetime
 from SYDATABASE import SQL  # pylint: disable=F0401
 import math
-import Webcom.Configurator.Scripting.Test.TestProduct
 
 Sql = SQL()
 
