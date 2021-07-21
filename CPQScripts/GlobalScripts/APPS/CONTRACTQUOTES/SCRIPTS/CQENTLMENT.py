@@ -731,6 +731,8 @@ class Entitlements:
 
 
 					for e in getPlatform:
+						updatexml = ""
+						updateentXML = ""
 						eq = str(e.EQUIPMENT_ID)
 						for value in GetXMLsecField:
 							
