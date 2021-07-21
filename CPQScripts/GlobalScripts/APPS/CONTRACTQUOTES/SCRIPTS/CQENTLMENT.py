@@ -529,7 +529,7 @@ class Entitlements:
 							else:
 								ent_disp_val = 	attrValue
 								ent_val_code = attrValue
-						except Exception, e:
+						except Exception as e:
 							Trace.Write('except'+str(e))
 							ent_disp_val = 	attrValue
 							ent_val_code = attrValue
@@ -1437,7 +1437,7 @@ class Entitlements:
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			try:			
 				CQENTIFLOW.iflow_entitlement(objectName,where,Getprevdict)
-			except Exception, e:
+			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
 		
