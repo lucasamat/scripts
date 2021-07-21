@@ -775,7 +775,7 @@ class Entitlements:
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE) 
 							
-						
+						Trace.Write("where condition--"+str(where))
 						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE {} AND EQUIPMENT_ID = '{}'".format(updateentXML,where,e.EQUIPMENT_ID)
 						Trace.Write("UPDATE---"+str(UpdateEntitlement))
 						# UpdateEntitlement_tst = " UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition)
