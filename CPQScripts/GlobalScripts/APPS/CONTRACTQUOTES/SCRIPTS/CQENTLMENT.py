@@ -1079,9 +1079,9 @@ class Entitlements:
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
 				dataent = getedit_calc.DT				
-				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
-				if factcurr:
-					factcurreny = factcurr.GLOBAL_CURRENCY		
+				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
+				# if factcurr:
+				# 	factcurreny = factcurr.GLOBAL_CURRENCY		
 		
 		Trace.Write("attr_level_pricing===>"+str(attr_level_pricing))
 
