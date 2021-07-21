@@ -13084,6 +13084,9 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
         ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
     elif TABNAME == "Sending Equipment Parent":
         Trace.Write("EDITWORK")
+        REC_ID = Param.REC_ID
+        RECID = REC_ID.split("_")[-1]
+        Trace.Write("123 RECID --->"+str(RECID))
         ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))       
 elif ACTION == "CHILDLOAD":
     PerPage = "10"
