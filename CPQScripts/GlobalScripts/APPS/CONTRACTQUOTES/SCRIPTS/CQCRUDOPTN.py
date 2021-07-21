@@ -6489,7 +6489,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.EXTENDED_PRICE.Value
 
-		Quote.GetCustomField('TOTAL_COST').Content = formatting_string.format(float(item_data.get('total_cost')))+" "+str(getdecimalplacecurr)
+		Quote.GetCustomField('TOTAL_COST').Content = formatting_string.format(float(item_data.get('total_cost')))
 		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
 		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
 		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
