@@ -16,7 +16,8 @@ import CQPARTIFLW
 import CQVLDRIFLW
 import CQTVLDRIFW
 from SYDATABASE import SQL
-
+from datetime import datetime
+import time
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
