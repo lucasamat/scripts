@@ -598,9 +598,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                 except:
                     Trace.Write('except--1---')
                     ent_disp_val = ""
-                get_config_ids = Sql.GetFirst("Select * from SAQSTE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID = 'Z0016_AG' ")
-                cpsmatchID = 11
-                cpsConfigID = Fullresponse['id']
+                get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID = 'Z0016_AG' ")
+                cpsmatchID = get_config_ids.CPS_MATCH_ID
+                cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
                 if int(ent_disp_val) > 364:
                             
                     Trace.Write("---requestdata--244-cpsConfigID0-----")
