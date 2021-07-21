@@ -1397,6 +1397,9 @@ class Entitlements:
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId, serviceId)
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
+			Trace.Write("where---"+str(where))
+			Trace.Write("Getprevdict---"+str(Getprevdict))
+			Trace.Write("tableName---"+str(tableName))
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where,Getprevdict)
 			except Exception as e:
