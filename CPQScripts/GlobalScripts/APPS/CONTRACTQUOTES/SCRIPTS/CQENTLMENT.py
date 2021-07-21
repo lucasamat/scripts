@@ -689,6 +689,7 @@ class Entitlements:
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
 
 				Sql.RunQuery(UpdateEntitlement)
+				Trace.Write("TEST COMMIT")
 				where = " QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.List("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK  FROM SAQSCO WHERE {where}".format(where))
