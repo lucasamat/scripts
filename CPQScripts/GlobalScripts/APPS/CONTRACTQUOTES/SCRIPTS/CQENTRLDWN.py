@@ -600,10 +600,9 @@ for obj in obj_list:
 				#fab_val = where_cond.split('AND ')
 				#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
 				#Log.Info('where_condition-----1307--'+str(where_condition))	
-				get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSFE {} ".format(where_condition) )
+				get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 				
-				GetXMLfab = Sql.GetList("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID   ".format(where_condition,value.ENTITLEMENT_NAME))
-				for fab in GetXMLfab:
+				for fab in get_value_query:
 					updateentXML = ""
 					where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
 					for value in GetXMLsecField:
@@ -613,7 +612,7 @@ for obj in obj_list:
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 						
 						if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown')  and get_serviceid =='Z0007_AG' and value.ENTITLEMENT_COST_IMPACT):
-								
+							GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID   ".format(where_condition,value.ENTITLEMENT_NAME))
 							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 							#Log.Info("get_calc_factor---"+str(get_calc_factor))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -732,12 +731,11 @@ for obj in obj_list:
 			#fab_val = where_cond.split('AND ')
 			#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
 			#Log.Info('where_condition-----1307--'+str(where_condition))	
-			#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSGE {} ".format(where_condition) )
-			updateentXML = ""
-			GetXMLfab = Sql.GetList("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID,e.GREENBOOK ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID,SAQSCE.GREENBOOK, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID, GREENBOOK  ".format(where_condition,value.ENTITLEMENT_NAME))
-			for fab in GetXMLfab:
+			
+			get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
+			for fab in get_value_query:
 				updateentXML = ""
-				where_condition += " AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
+				where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
@@ -745,7 +743,7 @@ for obj in obj_list:
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					
 					if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown')  and get_serviceid =='Z0007_AG' and value.ENTITLEMENT_COST_IMPACT):
-							
+						GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID,e.GREENBOOK ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID,SAQSCE.GREENBOOK, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID, GREENBOOK ".format(where_condition,value.ENTITLEMENT_NAME))
 						get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 						#Log.Info("get_calc_factor---"+str(get_calc_factor))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -766,7 +764,7 @@ for obj in obj_list:
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
 				Sql.RunQuery(UpdateEntitlement)
-		
+			
 		else:
 			Log.Info('grnbk_dict----'+str(grnbk_dict))
 			#where_condition = where_cond 
