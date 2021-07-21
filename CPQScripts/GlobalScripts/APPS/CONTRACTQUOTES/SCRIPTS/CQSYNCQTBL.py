@@ -609,6 +609,7 @@ class SyncQuoteAndCustomTables:
                                     QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
                                     Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
                                     salesorg_data.update({'EXCHANGE_RATE':'1'})
+                                    salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
                                 #commented the below code we updated the exchange rate type from Custom field.	
                                 #exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
                                 
