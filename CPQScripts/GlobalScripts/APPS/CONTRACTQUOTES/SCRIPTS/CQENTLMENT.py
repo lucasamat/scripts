@@ -1080,30 +1080,8 @@ class Entitlements:
 				dataent = getedit_calc.DT				
 				factcurr = Sql.GetFirst("select GLOBAL_CURRENCY from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
 				if factcurr:
-					factcurreny = factcurr.GLOBAL_CURRENCY
+					factcurreny = factcurr.GLOBAL_CURRENCY		
 		
-		# if tableName == 'SAQTSE':
-		# 	where = "WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' ".format(AttributeID, self.ContractRecordId, serviceId)
-		# elif tableName == 'SAQSFE':
-		# 	where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.FABLOCATION_ID ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
-		# elif tableName == 'SAQSGE':
-		# 	where = " WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, self.treeparam)
-		# else:
-		# 	where = "AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE TGT.ENTITLEMENT_NAME = '{}' AND TGT.QUOTE_RECORD_ID = '{}' AND TGT.SERVICE_ID = '{}' AND TGT.EQUIPMENT_ID = '{}' AND SRC.GREENBOOK ='{}'".format(AttributeID, self.ContractRecordId, serviceId, EquipmentId,self.treeparam)
-		
-		#cpsmatc_incr = cpsmatchID + 10
-		#updated cps response while changing value in UI		
-		# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}', ENTITLEMENT_VALUE_CODE = '{}',CPS_MATCH_ID ={} WHERE ENTITLEMENT_NAME = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'  ".format(
-		# 	tableName,NewValue, AttributeValCoderes, cpsmatc_incr,AttributeID, self.ContractRecordId, serviceId
-		# )
-		# Sql.RunQuery(UpdateEntitlement)
-		# Trace.Write("Updated Successfully!!")
-		# #self.ent_update(tableName,NewValue, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
-		# try:
-		# 	Trace.Write("where.."+str(where))			
-		# 	CQENTIFLOW.iflow_entitlement(tableName,where)
-		# except:
-		# 	Log.Info("ENTITLEMENT IFLOW ERROR!")
 		Trace.Write("attr_level_pricing===>"+str(attr_level_pricing))
 
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing
