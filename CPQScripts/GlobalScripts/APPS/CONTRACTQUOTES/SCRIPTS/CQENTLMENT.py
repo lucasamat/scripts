@@ -728,7 +728,7 @@ class Entitlements:
 
 
 					for e in getPlatform:
-					
+						eq = str(e.EQUIPMENT_ID)
 						for value in GetXMLsecField:
 							Trace.Write("VALUE IN XML--------->"+str(value.ENTITLEMENT_DISPLAY_VALUE))
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
@@ -737,23 +737,24 @@ class Entitlements:
 							get_curr = value.PRICE_METHOD
 							if 'AGS_SFM_DEI_PAC' in value.ENTITLEMENT_NAME and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
-								get_cost_impact = "{0:.2f}".format(float(list1[e.EQUIPMENT_ID]))
+								get_cost_impact = "{0:.2f}".format(float(list1[eq]))
 								#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 								get_curr = curr
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 							if ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
-								get_cost_impact = "{0:.2f}".format(float(list2[e.EQUIPMENT_ID]))
+								get_cost_impact = "{0:.2f}".format(float(list2[eq]))
 								get_curr = curr
+								Trace.Write("ENTCOST2 = "+str(float(list2[e.EQUIPMENT_ID])))
 								Trace.Write("ENTCOST2 = "+str(get_cost_impact))
 							if 'AGS_RFM_INS_T2' in value.ENTITLEMENT_NAME and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list3 if str(e.EQUIPMENT_ID) in x))
-								get_cost_impact = "{0:.2f}".format(float(list3[e.EQUIPMENT_ID]))
+								get_cost_impact = "{0:.2f}".format(float(list3[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST3 = "+str(get_cost_impact))
 							if 'AGS_RFM_INS_T3' in value.ENTITLEMENT_NAME and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
-								get_cost_impact = "{0:.2f}".format(float(list4[e.EQUIPMENT_ID]))
+								get_cost_impact = "{0:.2f}".format(float(list4[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST4 = "+str(get_cost_impact))
 							
