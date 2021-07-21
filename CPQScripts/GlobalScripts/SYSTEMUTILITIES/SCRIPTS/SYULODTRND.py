@@ -2721,7 +2721,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 							new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
 						new_value_dicta["FACTOR CURRENCY"] = ""
 						new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
-						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' style='display:none' title=''></abbr>")+str(edit_pencil_icon)
+						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
 						new_value_dicta["DATA TYPE"] = ""
 						new_value_dicta["CALCULATION FACTOR"] = ""
 						if new_value_dicta:
