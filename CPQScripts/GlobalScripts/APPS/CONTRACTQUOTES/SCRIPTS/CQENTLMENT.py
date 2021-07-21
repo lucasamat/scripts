@@ -710,12 +710,14 @@ class Entitlements:
 						
 						EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT)) + "_" + str(a.EQUIPMENT_ID)
 						list2.append(EntCost2)
+						Trace.Write("LIST2----"+str(list2))
 						
 						EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE))) + "_" + str(a.EQUIPMENT_ID)
 						list3.append(EntCost3)
-						
+						Trace.Write("LIST3----"+str(list3))
 						EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE)))  + "_" + str(a.EQUIPMENT_ID)
 						list4.append(EntCost4)
+						Trace.Write("LIST4----"+str(list4))
 					objName = "SAQSCE"
 					getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
 					GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
@@ -730,8 +732,8 @@ class Entitlements:
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 							get_curr = value.PRICE_METHOD
 							if 'AGS_SFM_DEI_PAC' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
-								get_cost_impact = "{0:.2f}".format(float(list1[0]))
+								get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
+								#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 								get_curr = curr
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 							if ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
