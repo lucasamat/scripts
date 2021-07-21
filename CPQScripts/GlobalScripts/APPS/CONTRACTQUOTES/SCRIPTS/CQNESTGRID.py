@@ -755,13 +755,13 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         orderby = "QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID"
     where_string = ""
     if A_Keys != "" and A_Values != "":
-		A_Keys = list(A_Keys)
-		A_Values = list(A_Values)
-		for key, value in zip(A_Keys, A_Values):
-			if value.strip():
-				if where_string:
-					where_string += " AND "
-				where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+        A_Keys = list(A_Keys)
+        A_Values = list(A_Values)
+        for key, value in zip(A_Keys, A_Values):
+            if value.strip():
+                if where_string:
+                    where_string += " AND "
+                where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
     Trace.Write('where string--->'+str(where_string))
     if (("Sending Equipment" in TreeParentParam) or ("Receiving Equipment" in TreeParentParam)):
 
