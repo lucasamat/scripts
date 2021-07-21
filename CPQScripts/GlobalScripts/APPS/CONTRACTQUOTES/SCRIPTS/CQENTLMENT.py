@@ -697,7 +697,10 @@ class Entitlements:
 				Region = GetRegion.REGION
 				getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
 				curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
-				list1 = list2 = list3 = list4 = {}
+				list1 = {}
+				list2 = {}
+				list3 = {}
+				list4 = {}
 				if getPlatform:
 					#Log.Info("Entering if")
 					for a in getPlatform:
@@ -743,6 +746,7 @@ class Entitlements:
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 							elif ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
+								Trace.Write("list2="+str(list2))
 								get_cost_impact = "{0:.2f}".format(float(list2[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST2 = "+str(float(list2[e.EQUIPMENT_ID])))
