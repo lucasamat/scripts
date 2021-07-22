@@ -3270,7 +3270,8 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 											if val.ENTITLEMENT_PRICE_IMPACT:
 												sec_str_primp += str("{:,}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 											else:
-												sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
+												Trace.Write("else price")
+												sec_str_primp += str("{:,}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 										except Exception, e:
 											Trace.Write(str(e)+'error2222')
 											
