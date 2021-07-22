@@ -3256,11 +3256,11 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 											#Trace.Write("@@3087")
 											if val.ENTITLEMENT_COST_IMPACT:
 												#Trace.Write("@@3089")
-												sec_str_imt += str("{:,}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 												
 											else:
 												#Trace.Write("@@3093")
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 												
 										except Exception, e:
 											Trace.Write(str(e)+'error1111')
