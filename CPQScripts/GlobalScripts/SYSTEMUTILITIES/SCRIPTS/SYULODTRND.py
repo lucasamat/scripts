@@ -3106,14 +3106,14 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 										
 										#Trace.Write("curr = "+str(curr))
 										
-										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
+										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 											sec_str_faccur += str(val.PRICE_METHOD)
-										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
+										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 											sec_str_faccur += str(val.PRICE_METHOD)
-										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
+										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										else:
