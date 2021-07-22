@@ -2048,10 +2048,10 @@ def CommonTreeViewHTMLDetail(
 		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
 						FROM SAQTBP (NOLOCK) 
 						WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
-		if date_diff_obj:
-			if date_diff_obj.IS_CHANGED:
-				notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
-				sec_str = notification+sec_str
+		# if date_diff_obj:
+		# 	if date_diff_obj.IS_CHANGED:
+		# 		notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
+		# 		sec_str = notification+sec_str
 	
 	# To Hide Add On Products Subtab
 	try:
