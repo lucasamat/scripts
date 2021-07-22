@@ -2503,9 +2503,9 @@ if CurrentTabName == "Quote":
 		getQuotetype = ""
 
 if CurrentTab == 'Quotes':
-	if str(ObjName) == "SAQTBP":
-		CurrentRecordId = "8A70EAA9-094B-4D42-AB91-111DCE26DD52"
-    	crnt_Qry = Sql.GetFirst("SELECT SAPCPQ_ATTRIBUTE_NAME FROM SYOBJR (NOLOCK) WHERE RECORD_ID = '" + str(CurrentRecordId) + "'")
+	# if str(ObjName) == "SAQTBP":
+	# 	CurrentRecordId = "8A70EAA9-094B-4D42-AB91-111DCE26DD52"
+    # 	crnt_Qry = Sql.GetFirst("SELECT SAPCPQ_ATTRIBUTE_NAME FROM SYOBJR (NOLOCK) WHERE RECORD_ID = '" + str(CurrentRecordId) + "'")
 	if str(subTabName) == "Assembly Details":
 		ObjName = "SAQSCA"
 	if TreeSuperParentParam == "Fab Locations" and (subTabName == "Equipment Details" or subTabName == "Equipment Fab Value Drivers"):
@@ -2518,9 +2518,9 @@ if CurrentTab == 'Quotes':
 		ObjName = "SAQIFP"
 	if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")):
 		ObjectName = "SAQSRA"	    
-	if crnt_Qry is not None:
-		if str(ObjName) != "SAQTBP":
-			CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
+	# if crnt_Qry is not None:
+	# 	if str(ObjName) != "SAQTBP":
+	# 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
 
 
 ApiResponse = ApiResponseFactory.JsonResponse(
