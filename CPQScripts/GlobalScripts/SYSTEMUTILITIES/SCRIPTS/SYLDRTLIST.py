@@ -3058,7 +3058,7 @@ class SYLDRTLIST:
                                             )
                                         else:                                            
                                             if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
-                                                precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','YEAR_OVER_YEAR']
+                                                precentage_columns = ['TOTAL_COST','SALES_DISCOUNT','BD_DISCOUNT','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','YEAR_OVER_YEAR']
                                                 if value123 in precentage_columns:
                                                     # perc = Sql.GetList("SELECT DISCOUNT FROM SAQICO WHERE "+str(value123)+" = '"+str(value1234)+"'")
                                                     string_val = str(value1234)
