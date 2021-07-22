@@ -1514,6 +1514,15 @@ def Related_Sub_Banner(
 		SecondValue = str(TreeParentParam)
 		ThirdLable = "Greenbook"
 		ThirdValue = str(TreeParam)
+	elif TreeTopSuperParentParam == "Other Products"  and (subTabName == "Details")):		
+		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		Trace.Write("1359===========")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)	
 
 	elif (TreeSuperParentParam == "Sending Equipment" or TreeSuperTopParentParam =="Other Products" and (subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" )):		
 		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
