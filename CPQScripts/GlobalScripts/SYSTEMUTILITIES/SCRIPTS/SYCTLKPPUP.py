@@ -868,7 +868,7 @@ def GSCONTLOOKUPPOPUPFILTER(
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 if str(where).strip() != "" :
                     where = " and " + str(where)
-                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
+                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and str(TABLEID) != "SAQSCO" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
                     VAL_Str = "SELECT top 100 " + COLUMNS_NAME + " FROM " + TABLEID + " where " + ATTRIBUTE_VALUE_STR + where
                     VAL_Obj = Sql.GetList(VAL_Str) 
 
