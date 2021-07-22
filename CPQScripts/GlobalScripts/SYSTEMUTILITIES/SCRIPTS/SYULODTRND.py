@@ -3268,10 +3268,10 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 										#price_impact = val.ENTITLEMENT_PRICE_IMPACT
 										try:
 											if val.ENTITLEMENT_PRICE_IMPACT:
-												sec_str_primp += str("{:,}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 											else:
 												Trace.Write("else price")
-												sec_str_primp += str("{:,}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 										except Exception, e:
 											Trace.Write(str(e)+'error2222')
 											
