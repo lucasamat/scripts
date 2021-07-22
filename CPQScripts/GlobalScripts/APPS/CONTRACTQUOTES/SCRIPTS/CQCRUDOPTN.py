@@ -2609,13 +2609,14 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID
 						JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID
 						WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND GREENBOOK
-						NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}')
+						NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND FABLOCATION_ID IN {fab})
 						) FB""".format(
 										treeparam=self.tree_param,
 										QuoteRecordId=self.contract_quote_record_id,
 										BatchGroupRecordId=batch_group_record_id,
 										UserId=self.user_id,
 										UserName=self.user_name,
+										fab = get_fab,
 									)
 					)		
 			self._process_query(
