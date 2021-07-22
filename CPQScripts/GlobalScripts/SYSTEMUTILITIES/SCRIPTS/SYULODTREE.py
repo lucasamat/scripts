@@ -938,6 +938,7 @@ class TreeView:
 							RelatedId = getRightView.RELATED_RECORD_ID
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ProductDict["id"] = RelatedId
+
 							if subTabName:
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
@@ -1696,6 +1697,8 @@ class TreeView:
 										subTabName = str(NodeText) + " : " + str(subTabName)
 									elif (str(ObjRecId) == '354C16C4-BDCA-4045-BC4A-40F1A6600AFD' and  str(getRightView.SUBTAB_TYPE) == 'OBJECT RELATED LAYOUT'):
 										subTabName = str(NodeText) + " : " + str(subTabName)
+									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+										subTabName = ""
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
