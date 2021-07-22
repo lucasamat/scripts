@@ -1074,7 +1074,34 @@ def Related_Sub_Banner(
 						# FourthLable = "Fab Location ID"
 						# FourthValue = get_val.FABLOCATION_ID
 						# FifthLable = "Equipment"
-						# FifthValue = "ALL" 	
+						# FifthValue = "ALL" 
+				if (TreeTopSuperParentParam == "Other Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
+					Trace.Write("Fab2333")
+					if subTabName == "Equipment Fab Value Drivers":
+						get_val = Sql.GetFirst(" select FABLOCATION_ID,FABLOCATION_NAME,EQUIPMENT_ID,SERIAL_NUMBER from SAQFEQ where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+						PrimaryLable = "Fab Location ID "
+						PrimaryValue = get_val.FABLOCATION_ID
+						SecondLable = "Fab Location Name"
+						SecondValue = get_val.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment ID"
+						FourthValue = get_val.EQUIPMENT_ID
+						FifthLable = "Serial Number"
+						FifthValue = get_val.SERIAL_NUMBER 
+						
+					else:				
+						get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+						PrimaryLable = "Fab Location ID "
+						PrimaryValue = get_val.FABLOCATION_ID
+						SecondLable = "Greenbook"
+						SecondValue = str(TreeParam)
+						ThirdLable = "Equipment"
+						ThirdValue = "ALL"
+						# FourthLable = "Fab Location ID"
+						# FourthValue = get_val.FABLOCATION_ID
+						# FifthLable = "Equipment"
+						# FifthValue = "ALL" 			
 				if str(ObjName) == 'SAQSFB':
 					if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
 						get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
