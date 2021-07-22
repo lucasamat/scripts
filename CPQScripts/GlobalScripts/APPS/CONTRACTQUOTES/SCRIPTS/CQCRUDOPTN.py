@@ -6430,10 +6430,10 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 							OBJECT_QUANTITY = IQ.EQUIPMENT_ID_COUNT
 							FROM SAQITM (NOLOCK)
 							INNER JOIN (SELECT SAQITM.CpqTableEntryId,						
-										ISNULL(SUM(ISNULL(SAQICO.TOTAL_COST, 0)), 0) as TOTAL_COST,
-										ISNULL(SUM(ISNULL(SAQICO.TARGET_PRICE, 0)), 0) as TARGET_PRICE,
-										ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0) as YEAR_1,
-										ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0) as YEAR_2,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.TOTAL_COST, 0)), 0), 0) as decimal(18,2)) as TOTAL_COST,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.TARGET_PRICE, 0)), 0), 0) as decimal(18,2)) as TARGET_PRICE,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
 										ISNULL(COUNT(SAQICO.EQUIPMENT_ID),0) as EQUIPMENT_ID_COUNT
 										FROM SAQITM (NOLOCK) 
 										JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
@@ -6456,24 +6456,23 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_year_2 = 0.00
 		total_tax = 0.00
 		total_extended_price = 0.00
-		getdecimalplacecurr =decimal_val = ''
+		#getdecimalplacecurr =decimal_val = ''
 		items_data = {}
 		rem_list_sp =[]
 		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2,CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if items_obj:
 			for item_obj in items_obj:
-				getdecimalplacecurr = item_obj.CURRENCY
+				#getdecimalplacecurr = item_obj.CURRENCY
 				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR}
-		curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
-		decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
-		formatting_string = "{0:." + str(decimal_val) + "f}"
+		#curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
+		#decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+		#formatting_string = "{0:." + str(decimal_val) + "f}"
 		for item in Quote.MainItems:
 			item_number = int(item.RolledUpQuoteItem)
 			if item_number in items_data.keys():
 				if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
 					item_data = items_data.get(item_number)
-					item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))
-					Trace.Write('6474-------')
+					item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
 					total_cost += float(item_data.get('TOTAL_COST'))
 					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
 					total_target_price += item.TARGET_PRICE.Value
@@ -6490,8 +6489,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_year_2 += item.YEAR_2.Value
 					total_tax += item.TAX.Value
 					item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
-					total_extended_price += item.EXTENDED_PRICE.Value
-		Trace.Write('6491---------')
+					total_extended_price += item.EXTENDED_PRICE.Value		
 		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
 		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
 		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
