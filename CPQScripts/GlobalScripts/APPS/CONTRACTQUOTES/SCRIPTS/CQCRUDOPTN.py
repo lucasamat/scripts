@@ -455,6 +455,7 @@ class ContractQuoteCrudOpertion:
 												DateColumn=date_columns, SumSelectDateColoumn=sum_select_date_columns,CartId=cart_id, UserId=cart_user_id,)								
 										)
 							# Total based on service - end
+	
 	def getting_cps_tax(self, item_obj=None, quote_type=None, item_lines_obj=None):		
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -576,6 +577,7 @@ class ContractQuoteCrudOpertion:
 						BatchGroupRecordId=batch_group_record_id
 					)
 				)
+
 
 class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
@@ -1801,6 +1803,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			except:
 				cpsmatc_incr = ''	
 
+
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
@@ -1942,6 +1945,7 @@ class ToolRelocationModel(ContractQuoteCrudOpertion):
 			if table_data is not None:
 				for row_data in table_data:
 					yield row_data.EQUIPMENT_RECORD_ID
+
 
 class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
@@ -2567,9 +2571,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in self.tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in self.tree_param else "",
 							)
 						)
-			a = Sql.GetFirst("select count(*) as cnt from ( SELECT DISTINCT SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME, SAQFEQ.FABLOCATION_RECORD_ID, SAQFEQ.GREENBOOK, SAQFEQ.GREENBOOK_RECORD_ID, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_NAME, SAQFEQ.QUOTE_RECORD_ID, SAQFEQ.SALESORG_ID, SAQFEQ.SALESORG_NAME, SAQFEQ.SALESORG_RECORD_ID, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM SAQFEQ (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}') ) FB""".format( treeparam=self.tree_param, QuoteRecordId=self.contract_quote_record_id, BatchGroupRecordId=batch_group_record_id, UserId=self.user_id, UserName=self.user_name, ))
-			get_batch = Sql.GetFirst("select count(*) as cnt from SYSPBT where QUOTE_RECORD_ID = '{QuoteRecordId}' and BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' ".format( QuoteRecordId=self.contract_quote_record_id, BatchGroupRecordId=batch_group_record_id ))
-			Trace.Write('cnt-----'+str(a.cnt)+'ct===='+str(get_batch.cnt)+str(get_fab))
+			
 			self._process_query(
 					"""INSERT SAQFGB(
 						FABLOCATION_ID,
@@ -4593,6 +4595,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def _delete(self):
 		pass
 
+
 class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
@@ -4751,6 +4754,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		#BM_line_item_end_time = time.time()
 		#Log.Info("BM_line_item_end_time end==> "+str(BM_line_item_end_time - BM_line_item_start_time))
 		return True
+
 class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
@@ -5407,7 +5411,8 @@ class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 											) '''
 		# Approval Trigger - End
 		return None
-		
+
+
 class ContractQuotesCommonModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
@@ -5420,6 +5425,7 @@ class ContractQuotesCommonModel(ContractQuoteCrudOpertion):
 
 	def _get(self):
 		pass
+
 
 class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 
@@ -5440,6 +5446,7 @@ class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 			for val in get_approvaltxn_steps:				
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +val.APRCHN_DESCRIPTION+'</label></div></div>')
 		return gettransactionmessage
+
 
 class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
@@ -5637,6 +5644,7 @@ class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 			{"Primary_Data": str(self.contract_quote_record_id), "TabNAME": "Quote", "ACTION": "VIEW", "RELATED": ""},
 		) """
 
+
 def Factory(node=None):
 	"""Factory Method"""
 	models = {
@@ -5713,7 +5721,6 @@ if hasattr(Param, 'CPQ_Columns'):
 	
 	# Integration call to update billing matrix - End
 else:
-#else:
 	try:
 		opertion = Param.Opertion
 		node_type = Param.NodeType
