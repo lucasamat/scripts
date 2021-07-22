@@ -760,7 +760,7 @@ class Entitlements:
 								#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 								get_curr = curr
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
-							elif ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name) and 'Included' in get_value:
+							elif 'AGS_RFM_INS_T1' in get_name and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
 								Trace.Write("list2="+str(list2))
 								get_cost_impact = "{0:.2f}".format(float(list2[eq]))
