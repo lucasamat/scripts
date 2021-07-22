@@ -17,6 +17,7 @@ Sql = SQL()
 userId = str(User.Id)
 userName = str(User.UserName)
 
+
 try:
 	objs = Param.CPQ_Columns['objectName']    
 	wherecon = Param.CPQ_Columns['where']
