@@ -732,10 +732,10 @@ class Entitlements:
 							EntCost2 = 0.00
 							EntCost3 = 0.00
 							EntCost4 - 0.00
-							list1[str(a.EQUIPMENT_ID)] = EntCost
-							list2[str(a.EQUIPMENT_ID)] = EntCost2
-							list3[str(a.EQUIPMENT_ID)] = EntCost3
-							list4[str(a.EQUIPMENT_ID)] = EntCost4
+							list1[str(a.EQUIPMENT_ID)] = str(EntCost)
+							list2[str(a.EQUIPMENT_ID)] = str(EntCost2)
+							list3[str(a.EQUIPMENT_ID)] = str(EntCost3)
+							list4[str(a.EQUIPMENT_ID)] = str(EntCost4)
 					objName = tableName
 					Trace.Write("objName--"+str(objName)+'----'+str(where))
 					getinnercon  = Sql.GetFirst("select CPS_MATCH_ID,CPS_CONFIGURATION_ID,QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
