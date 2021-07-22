@@ -2041,7 +2041,7 @@ def CommonTreeViewHTMLDetail(
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
 		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID= 'Z0016_AG'")
 		if SAQTSVObj:
-			sec_str = "<div class='noRecDisp'>No Records to Display.</div>"
+			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		else:
 			sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 	if RECORD_ID and ObjectName == 'SAQTBP':
