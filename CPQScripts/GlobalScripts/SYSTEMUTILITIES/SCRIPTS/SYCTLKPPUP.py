@@ -225,6 +225,25 @@ def GSCONTLOOKUPPOPUP(
         )
         sec_str += "</div></div>"
         sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+    elif LOOKUP_ID == "PARTY_ID":
+        sec_str += (
+            '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
+            + str(eval("Header_Obj.LABEL")).upper()
+            + " LOOKUP LIST"
+            + '<button type="button" style="float:right;" class="close"  data-dismiss= "modal">X</button></div>'
+        )
+        sec_str += '<div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Acoount ID</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Account Name</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><button type="button" class="btnconfig" id="' + str(TABLEID) + "|" + str(str(Header_Obj.RECORD_NAME)) + '" onclick="' + btn_clear + '">CLEAR SELECTION</button>'
+        # sec_str += (
+        #     '<button type="button" class="btnconfig" id="'
+        #     + str(TABLEID)
+        #     + "|"
+        #     + str(str(Header_Obj.RECORD_NAME))
+        #     + '" onclick="'
+        #     + btn_clear
+        #     + '">CLEAR SELECTION</button>'
+        # )
+        sec_str += "</div></div>"
+        sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
     else:
         sec_str += (
             '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
