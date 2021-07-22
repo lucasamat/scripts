@@ -1985,6 +1985,8 @@ class TreeView:
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ChildDict["id"] = RelatedId
 							if subTabName:
+								if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+									subTabName = ""
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
@@ -2294,6 +2296,8 @@ class TreeView:
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
 								if subTabName:
+									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+										subTabName = ""
 									SubTabList.append(
 										self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 									)
