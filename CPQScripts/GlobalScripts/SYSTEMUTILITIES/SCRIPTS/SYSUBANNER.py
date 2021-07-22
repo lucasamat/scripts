@@ -1090,8 +1090,11 @@ def Related_Sub_Banner(
 						FifthLable = "Serial Number"
 						FifthValue = get_val.SERIAL_NUMBER 
 						
-					else:				
-						get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+					else:	
+						if TreeParam == "Receiving Equipment":			
+							get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
+						else:
+							get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
 						PrimaryLable = "Product Offering ID"
 						PrimaryValue = str(TreeSuperParentParam)
 						SecondLable = "Fab Location ID"
