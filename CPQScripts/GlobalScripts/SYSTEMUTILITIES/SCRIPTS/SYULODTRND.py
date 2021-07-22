@@ -797,6 +797,7 @@ def CommonTreeViewHTMLDetail(
 						+ "' AND RELOCATION_TYPE LIKE '%RECEIVING%'"
 					)
 			elif ObjectName == "SAQITM":
+				Trace.Write("test74_J "+str(RECORD_ID))
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
