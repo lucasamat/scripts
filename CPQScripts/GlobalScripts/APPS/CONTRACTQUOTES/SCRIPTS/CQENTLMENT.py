@@ -731,7 +731,7 @@ class Entitlements:
 							EntCost = 0.00
 							EntCost2 = 0.00
 							EntCost3 = 0.00
-							EntCost4 - 0.00
+							EntCost4 = 0.00
 							list1[str(a.EQUIPMENT_ID)] = str(EntCost)
 							list2[str(a.EQUIPMENT_ID)] = str(EntCost2)
 							list3[str(a.EQUIPMENT_ID)] = str(EntCost3)
