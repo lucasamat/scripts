@@ -6344,7 +6344,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + " and "
                 + str(Page_End)
             )
-        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services":
+        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
             Qstr = (
                 "select top "
                 + str(PerPage)
