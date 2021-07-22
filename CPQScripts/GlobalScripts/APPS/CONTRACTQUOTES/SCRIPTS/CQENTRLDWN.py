@@ -604,6 +604,7 @@ for obj in obj_list:
 				get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 				
 				for fab in get_value_query:
+					where_condition = SAQITMWhere.replace('A.','')
 					updateentXML = ""
 					where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
 					for value in GetXMLsecField:
@@ -738,6 +739,7 @@ for obj in obj_list:
 			get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
 			for fab in get_value_query:
 				updateentXML = ""
+				where_condition = SAQITMWhere.replace('A.','')
 				where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
