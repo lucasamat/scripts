@@ -1089,7 +1089,7 @@ def Related_Sub_Banner(
 						FourthValue = get_val.EQUIPMENT_ID
 						FifthLable = "Serial Number"
 						FifthValue = get_val.SERIAL_NUMBER 
-					elif subTabName == "Details" and str(ObjName) == "SAQSGB"P
+					elif subTabName == "Details" and str(ObjName) == "SAQSGB":
 						PrimaryLable = "Product Offering ID"
 						PrimaryValue = str(TreeSuperParentParam)
 						SecondLable = "Fab Location ID"
