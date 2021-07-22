@@ -706,25 +706,34 @@ class Entitlements:
 					for a in getPlatform:
 					
 						getDeinstall = Sql.GetFirst("SELECT ISNULL(INSTALL_T0T1_CE_HRS,0) AS INSTALL_T0T1_CE_HRS,ISNULL(INSTALL_T0T1_TECH_HRS,0) AS INSTALL_T0T1_TECH_HRS ,ISNULL(INSTALL_T2_CE_HRS,0) AS INSTALL_T2_CE_HRS,ISNULL(INSTALL_T2_PSE_HRS,0) AS INSTALL_T2_PSE_HRS,ISNULL(INSTALL_T2_SSE_HRS,0) AS INSTALL_T2_SSE_HRS,ISNULL(INSTALL_T3_CE_HRS,0) AS INSTALL_T3_CE_HRS,ISNULL(INSTALL_T3_PSE_HRS,0) AS INSTALL_T3_PSE_HRS,ISNULL(INSTALL_T3_SSE_HRS,0) AS INSTALL_T3_SSE_HRS,ISNULL(DEINSTALL_CE_HRS,0) AS DEINSTALL_CE_HRS,DEINSTALL_PRICE,DEINSTALL_TECH_HRS,DEINSTALL_TRDPTY_AMOUNT FROM PRLPBK (NOLOCK) WHERE GREENBOOK = '{Greenbook}' AND SUBSTRATESIZE_ID LIKE '%{sub}%'".format(Greenbook=a.GREENBOOK,sub=a.WAFER_SIZE,Region=Region))
-						
-						EntCost =str((float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE)))
-						list1[str(a.EQUIPMENT_ID)] = EntCost
-						#list1.append(EntCost)
-						Trace.Write("LIST1----"+str(list1))
-						
-						EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT))
-						list2[str(a.EQUIPMENT_ID)] = EntCost2
-						#list2.append(EntCost2)
-						Trace.Write("LIST2----"+str(list2))
-						
-						EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
-						list3[str(a.EQUIPMENT_ID)] = EntCost3
-						#list3.append(EntCost3)
-						Trace.Write("LIST3----"+str(list3))
-						EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
-						list4[str(a.EQUIPMENT_ID)] = EntCost4
-						#list4.append(EntCost4)
-						Trace.Write("LIST4----"+str(list4))
+						if getDeinstall is not None:
+							EntCost =str((float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE)))
+							list1[str(a.EQUIPMENT_ID)] = EntCost
+							#list1.append(EntCost)
+							Trace.Write("LIST1----"+str(list1))
+							
+							EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT))
+							list2[str(a.EQUIPMENT_ID)] = EntCost2
+							#list2.append(EntCost2)
+							Trace.Write("LIST2----"+str(list2))
+							
+							EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
+							list3[str(a.EQUIPMENT_ID)] = EntCost3
+							#list3.append(EntCost3)
+							Trace.Write("LIST3----"+str(list3))
+							EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE)))
+							list4[str(a.EQUIPMENT_ID)] = EntCost4
+							#list4.append(EntCost4)
+							Trace.Write("LIST4----"+str(list4))
+						else:
+							EntCost = 0.00
+							EntCost2 = 0.00
+							EntCost3 = 0.00
+							EntCost4 - 0.00
+							list1[str(a.EQUIPMENT_ID)] = EntCost
+							list2[str(a.EQUIPMENT_ID)] = EntCost2
+							list3[str(a.EQUIPMENT_ID)] = EntCost3
+							list4[str(a.EQUIPMENT_ID)] = EntCost4
 					objName = tableName
 					getinnercon  = Sql.GetFirst("select CPS_MATCH_ID,CPS_CONFIGURATION_ID,QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
 					GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
