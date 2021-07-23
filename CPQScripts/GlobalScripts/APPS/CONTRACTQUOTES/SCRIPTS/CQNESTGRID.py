@@ -6905,10 +6905,13 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
     
     
     for quer_key, quer_value in enumerate(Dict_formation):
-        x_picklistcheckobj = Sql.GetFirst(
-            "SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQSSA' AND API_NAME = '" + str(quer_value) + "'"
-        )
-        x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+        try:
+            x_picklistcheckobj = Sql.GetFirst(
+                "SELECT PICKLIST FROM SYOBJD (NOLOCK) WHERE OBJECT_NAME ='SAQSSA' AND API_NAME = '" + str(quer_value) + "'"
+            )
+            x_picklistcheck = str(x_picklistcheckobj.PICKLIST).upper()
+        except:
+            x_picklistcheck = ""    
         if Dict_formation.get(quer_value) != "":
             quer_values = str(Dict_formation.get(quer_value)).strip()
             if str(quer_values).upper() == "TRUE":
