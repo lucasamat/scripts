@@ -3564,16 +3564,16 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             child_obj_recid = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
-                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParam, ORDER_BY = orderby
+                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' ORDER BY  {ORDER_BY}".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), ORDER_BY = orderby
                 )
             )
 
             Count = Sql.GetFirst(
                 "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
-                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}'".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParam
+                + "' and QUOTE_RECORD_ID = '{ContractRecordId}'".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
                 )
             )
             if Count:
