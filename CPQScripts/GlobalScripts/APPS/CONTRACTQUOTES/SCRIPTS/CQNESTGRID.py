@@ -13287,6 +13287,7 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
             GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform)
         )
     elif TABNAME == "Sending Equipment Child":
+        Trace.Write('send9999====')
         REC_ID = Param.REC_ID
         RECID = REC_ID.split("_")[-1]
         Trace.Write("123 Covered Object Child RECID --->"+str(RECID))
