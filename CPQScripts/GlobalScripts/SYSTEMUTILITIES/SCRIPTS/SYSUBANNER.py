@@ -2284,6 +2284,7 @@ def Related_Sub_Banner(
                         Trace.Write("btn---12"+str(btn))
                         # if "PRICE" in btn:
                         fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         if len(fts_scenario_check) == 2:
                             sec_rel_sub_bnr += (btn)
                         else:
