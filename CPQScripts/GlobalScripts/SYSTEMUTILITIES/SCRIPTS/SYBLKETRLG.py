@@ -431,13 +431,18 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 			quote_record_id = str(Qt_rec_id)
 			getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 		if obj_name == "SAQSCO":
-			Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0")))
-			Sql.RunQuery("UPDATE SAQSFE SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0")))
-			Sql.RunQuery("UPDATE SAQSGE SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0")))
-			Sql.RunQuery("""UPDATE SAQSCE SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID= '{ServiceId}' {SingleRow}""".format(
+			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
+			fabname = getfab.FABLOCATION_NAME
+			fabrec = getfab.FABLOCATION_RECORD_ID
+			Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+			Sql.RunQuery("UPDATE SAQSFE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+			Sql.RunQuery("UPDATE SAQSGE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+			Sql.RunQuery("""UPDATE SAQSCE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID= '{ServiceId}' {SingleRow}""".format(
 			VALUE=VALUE,
 			UserId=User.Id, 
-			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), 
+			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			name=fabname,
+			rec=fabrec
 			ServiceId=Quote.GetGlobal("TreeParentLevel0"),SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""))
 			Sql.RunQuery(
 				"""INSERT SAQSFB(
