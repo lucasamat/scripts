@@ -154,7 +154,9 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' tabindex='' disabled=''> </div>"
 					)
 			else:
 
