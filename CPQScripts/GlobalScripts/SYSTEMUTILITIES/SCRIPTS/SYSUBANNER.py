@@ -2283,7 +2283,13 @@ def Related_Sub_Banner(
                     for btn in multi_buttons:
                         Trace.Write("btn---12"+str(btn))
                         # if "PRICE" in btn:
-                        sec_rel_sub_bnr += (btn)
+                        fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        if len(fts_scenario_check) == 2:
+                            sec_rel_sub_bnr += (btn)
+                        else:
+                            Trace.Write("hide PRICING for fts")
+                            if 'GENERATE LINE ITEMS' in btn:
+                                sec_rel_sub_bnr += (btn)
                     # Appending Price button in Quote Items Node
 
                     # sec_rel_sub_bnr += (
