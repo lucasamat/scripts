@@ -915,8 +915,9 @@ def GSCONTLOOKUPPOPUPFILTER(
                         + str(PRICE_MOD_ID)
                         + "' AND ACTIVE = 1 and PROCEDURE_ID !='UNASGN' "
                     )
-
-
+                elif str(TABLEID) == "SAQSCO":
+                    VAL_Str = ("SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id")))
+                    VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                     object_name = Header_Obj.OBJECT_NAME
