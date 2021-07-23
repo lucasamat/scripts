@@ -2353,8 +2353,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		if self.values:
 			record_ids = []
 			if self.all_values and auto_equp_insert is None: 
-				Trace.Write('ifff--')       
-				get_fab = ""       
+				Trace.Write('ifff--')		      
 				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND SALESORG_RECORD_ID = '{salesorgrecid}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND NOT EXISTS (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
 							acc=self.account_record_id,
 							fab=self.tree_param,
@@ -2363,6 +2362,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 					Query_String=query_string
 				)
+				get_fab = self.tree_param
 				table_count_data = Sql.GetFirst(query_string_for_count)
 				if table_count_data is not None:
 					table_total_rows = table_count_data.count
