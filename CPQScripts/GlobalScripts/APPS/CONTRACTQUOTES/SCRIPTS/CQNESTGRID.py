@@ -8304,6 +8304,47 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
                     equipment_column = " EQUIPMENTCATEGORY_ID AS DESCRIPTION "
                 else:
                     equipment_column = " EQUIPMENTCATEGORY_ID "
+
+                if TreeParam == "Receiving Equipment":
+                    parent_obj = Sql.GetList(
+                        "SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' ORDER BY "  + str(orderby))
+
+                    QueryCountObj = Sql.GetFirst(
+                        "SELECT count(*) as cnt from SAQSCO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'AND SERVICE_TYPE = '"+ str(TreeTopSuperParentParam)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' "  
+                    )
+                    if QueryCountObj is not None:
+                        QueryCount = QueryCountObj.cnt 
+
+                elif TreeParentParam == "Receiving Equipment":
+                    parent_obj = Sql.GetList(
+                        "SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_ID AS DESCRIPTION from SAQSCO (NOLOCK) where "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " 1=1 and QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'AND SERVICE_TYPE = '"
+                        + str(TreeTopSuperParentParam)
+                        + "' AND SERVICE_ID ='"
+                        + str(TreeSuperParentParam)
+                        + "' AND FABLOCATION_ID = '"
+                        + str(TreeParam)                        
+                        + "' ORDER BY "  + str(orderby) 
+                    )
+
+                    QueryCountObj = Sql.GetFirst(
+                        "SELECT count(*) as cnt from SAQSCO (NOLOCK) where "
+                        + str(ATTRIBUTE_VALUE_STR)
+                        + " 1=1 and QUOTE_RECORD_ID = '"
+                        + str(ContractRecordId)
+                        + "'AND SERVICE_TYPE = '"
+                        + str(TreeTopSuperParentParam)
+                        + "' AND SERVICE_ID ='"
+                        + str(TreeSuperParentParam)
+                        + "' AND FABLOCATION_ID = '"
+                        + str(TreeParam)                        
+                        + "' "  
+                    )
+                    if QueryCountObj is not None:
+                        QueryCount = QueryCountObj.cnt     
                 parent_obj = Sql.GetList(
                     "SELECT top "+str(PerPage)+" QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID, WARRANTY_END_DATE,WARRANTY_START_DATE,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,"+str(equipment_column)+" from SAQSCO (NOLOCK) where "
                     + str(ATTRIBUTE_VALUE_STR)
