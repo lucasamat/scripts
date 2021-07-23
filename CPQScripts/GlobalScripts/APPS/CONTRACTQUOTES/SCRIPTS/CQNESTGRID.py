@@ -6932,7 +6932,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
     rec_id = "SYOBJ_1176889_SYOBJ_1176889"
     obj_id = "SYOBJ-1176889"
     objh_getid = Sql.GetFirst(
-        "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAQSSA_ATTRIBUTE_NAME='" + str(obj_id) + "'"
+        "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
     )
     if objh_getid:
         obj_id = objh_getid.RECORD_ID
