@@ -13286,7 +13286,7 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
         ApiResponse = ApiResponseFactory.JsonResponse(
             GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform)
         )
-    elif TABNAME == "Sending Equipment Child":
+    elif TABNAME == "Sending Equipment child":
         Trace.Write('send9999====')
         REC_ID = Param.REC_ID
         RECID = REC_ID.split("_")[-1]
@@ -13327,12 +13327,12 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
     elif TABNAME == "Sending Equipment Parent":
         Trace.Write("EDITWORK")
         ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))       
-    elif TABNAME == "Sending Equipment child": 
-        Trace.Write("111111111_J ")
-        REC_ID = Param.REC_ID
-        RECID = REC_ID
-        Trace.Write("123 RECID --->_J "+str(RECID))
-        ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentChild(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform))
+    # elif TABNAME == "Sending Equipment child": 
+    #     Trace.Write("111111111_J ")
+    #     REC_ID = Param.REC_ID
+    #     RECID = REC_ID
+    #     Trace.Write("123 RECID --->_J "+str(RECID))
+    #     ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentChild(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,SortPerPage,SortPageInform))
 elif ACTION == "CHILDLOAD":
     PerPage = "10"
     PageInform = "1___10___10"
