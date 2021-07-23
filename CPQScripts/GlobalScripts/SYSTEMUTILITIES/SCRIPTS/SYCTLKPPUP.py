@@ -834,7 +834,7 @@ def GSCONTLOOKUPPOPUPFILTER(
                     VAL_Str = ("SELECT top 1000 * FROM MAFBLC WHERE "+ str(ATTRIBUTE_VALUE_STR)+ " AND ACCOUNT_ID like '%{account_id}%'".format(account_id = account_id))
                     VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(TABLEID) == "SAQSCO":
-                    VAL_Str = ("SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id")))
+                    VAL_Str = ("SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND "+ str(ATTRIBUTE_VALUE_STR)+ " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id")))
                     VAL_Obj = Sql.GetList(VAL_Str)    
                 elif str(TABLEID) == "cpq_permissions":
                     VAL_Str = "SELECT top 10000 permission_id,SYSTEM_ID,permission_name FROM cpq_permissions where "+ str(ATTRIBUTE_VALUE_STR)+ " and permission_type ='0'"
