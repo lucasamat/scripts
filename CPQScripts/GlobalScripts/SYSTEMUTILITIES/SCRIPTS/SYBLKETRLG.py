@@ -442,7 +442,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 			UserId=User.Id, 
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			name=fabname,
-			rec=fabrec
+			rec=fabrec,
 			ServiceId=Quote.GetGlobal("TreeParentLevel0"),SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""))
 			Sql.RunQuery(
 				"""INSERT SAQSFB(
