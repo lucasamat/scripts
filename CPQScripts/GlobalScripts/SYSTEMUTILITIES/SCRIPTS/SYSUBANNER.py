@@ -1084,7 +1084,7 @@ def Related_Sub_Banner(
                         SecondValue = str(TreeParentParam)
                         ThirdLable = ""
                         ThirdValue = ""
-                    if subTabName == "Equipment Fab Value Drivers":
+                    elif subTabName == "Equipment Fab Value Drivers":
                         get_val = Sql.GetFirst(" select FABLOCATION_ID,FABLOCATION_NAME,EQUIPMENT_ID,SERIAL_NUMBER from SAQFEQ where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                         PrimaryLable = "Fab Location ID "
                         PrimaryValue = get_val.FABLOCATION_ID
