@@ -8300,7 +8300,7 @@ def GetCovObjMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
 
             else:
                 Trace.Write("5 level tree --->")
-                if str(TreeTopSuperParentParam)=="Comprehensive Services":
+                if str(TreeTopSuperParentParam)=="Comprehensive Services" or str(TreeParam) == "Receiving Equipment" or str(TreeParentParam) == "Receiving Equipment" or str(TreeSuperParentParam) == "Receiving Equipment":
                     equipment_column = " EQUIPMENTCATEGORY_ID AS DESCRIPTION "
                 else:
                     equipment_column = " EQUIPMENTCATEGORY_ID "
