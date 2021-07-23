@@ -1078,12 +1078,17 @@ def Related_Sub_Banner(
                 if (TreeTopSuperParentParam == "Other Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
                     Trace.Write("Fab2333")
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
+                        if TreeParam == "Receiving Equipment":			
+                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
+                        else:
+                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+                        Trace.Write("Fab_NODE_J")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
                         SecondLable = "Fab Location ID"
                         SecondValue = str(TreeParentParam)
-                        ThirdLable = ""
-                        ThirdValue = ""
+                        # ThirdLable = ""
+                        # ThirdValue = ""
                     elif subTabName == "Equipment Fab Value Drivers":
                         get_val = Sql.GetFirst(" select FABLOCATION_ID,FABLOCATION_NAME,EQUIPMENT_ID,SERIAL_NUMBER from SAQFEQ where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                         PrimaryLable = "Fab Location ID "
@@ -1098,10 +1103,6 @@ def Related_Sub_Banner(
                         FifthValue = get_val.SERIAL_NUMBER 
                         
                     else:	
-                        if TreeParam == "Receiving Equipment":			
-                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
-                        else:
-                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
                         SecondLable = "Fab Location ID"
