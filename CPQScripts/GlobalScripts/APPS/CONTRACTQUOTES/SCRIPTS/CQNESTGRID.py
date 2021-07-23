@@ -6345,7 +6345,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(Page_End)
             )
         elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
-            if TreeParentParam == "Receiving Equipments":
+            if TreeParentParam == "Receiving Equipment":
                 Qstr = (
                     "select top "
                     + str(PerPage)
@@ -6464,7 +6464,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + "'"
             )
         elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
-            if TreeParentParam == "Receiving Equipments":
+            if TreeParentParam == "Receiving Equipment":
                 QueryCountObj = Sql.GetFirst(
                     "select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
