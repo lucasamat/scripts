@@ -3543,7 +3543,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
         if TreeParam == 'Fab Locations':
             #Trace.Write("Level 1 empty search ---->")
             child_obj_recid = Sql.GetList(
-                "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
+                "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
                 + "' and QUOTE_RECORD_ID = '{ContractRecordId}'  ORDER BY  {ORDER_BY}".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), ORDER_BY = orderby
@@ -3562,7 +3562,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
         elif TreeParentParam == 'Fab Locations':
             #Trace.Write("Level 2 empty search ---->")
             child_obj_recid = Sql.GetList(
-                "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
+                "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
                 + "' and QUOTE_RECORD_ID = '{ContractRecordId}' ORDER BY  {ORDER_BY}".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), ORDER_BY = orderby
@@ -3668,7 +3668,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             chld_dict["WARRANTY_END_DATE"] = str(cld.WARRANTY_END_DATE)
             chld_dict["SALESORG_ID"] = str(cld.SALESORG_ID)
             chld_dict["SERIAL_NUMBER"] = str(cld.SERIAL_NUMBER)
-            chld_dict["EQUIPMENTTYPE_ID"] = str(cld.EQUIPMENTTYPE_ID)
+            chld_dict["ASSEMBLYTYPE_ID"] = str(cld.ASSEMBLYTYPE_ID)
             chld_list.append(chld_dict)
     #Trace.Write("5555 chld_list ---->"+str(chld_list))
 
