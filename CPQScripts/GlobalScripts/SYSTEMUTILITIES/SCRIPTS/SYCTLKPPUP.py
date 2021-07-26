@@ -288,7 +288,7 @@ def GSCONTLOOKUPPOPUP(
         if TABLEID == "SVPGAL":
             NAME = str(DATA_OBJ[1:-1])
         else:
-            NAME = str(DATA_OBJ.COLUMNS[1:-1]).replace('"', "'")
+            NAME = str(DATA_OBJ.COLUMNS[1:-1]).replace('"', "'").replace("[","").replace("]","")
         if tab_Name == "Set" and str(TABLEID) == "MAATTR":
             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_MA_00263").GetValue()
             Atrribute_Obj = Sql.GetList(
