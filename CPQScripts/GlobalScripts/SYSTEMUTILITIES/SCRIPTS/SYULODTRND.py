@@ -89,7 +89,8 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName == 'SAQTBP':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
 	# Billing Matrix Details Load - End
-	
+	if Product.GetGlobal("TreeParentLevel0") == 'Sending Equipment':
+		ObjectName = "SAQSSF"
 	#getyear calculatin start
 	try:
 		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
