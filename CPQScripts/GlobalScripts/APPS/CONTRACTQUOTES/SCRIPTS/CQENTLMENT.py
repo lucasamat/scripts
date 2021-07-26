@@ -412,7 +412,7 @@ class Entitlements:
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 			Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC)
 			Trace.Write("Fullresponse--"+str(Fullresponse))
-			Product.SetGlobal('Fullresponse',Fullresponse)
+			Product.SetGlobal('Fullresponse',str(Fullresponse))
 			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
 			'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 			if GetDefault.PRICE_METHOD:
