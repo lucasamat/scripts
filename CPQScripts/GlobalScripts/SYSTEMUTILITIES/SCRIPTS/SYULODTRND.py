@@ -3702,7 +3702,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 				for tab in tabs:
 					list_of_tabs.append(tab.Name)
 					sysectObj = Sql.GetFirst(
-						"SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(tab.Name) + "' and RECORD_ID ='"+str(primary_value)+"' "
+						"SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(tab.Name) + "'  "
 					)
 					Section_id = sysectObj.RECORD_ID
 					Section_desc = sysectObj.SECTION_DESC
