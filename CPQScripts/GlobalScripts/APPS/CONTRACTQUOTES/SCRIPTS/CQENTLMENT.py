@@ -233,7 +233,7 @@ class Entitlements:
 				if data['conditionType'] == 'VA00':# and data['varcondKey'] in characteristics_attr_values.get('SDCOM_VKOND'):
 					total_price_val = "{:,}".format(float(data['conditionValue']))
 					price_val = "{:,}".format(float(data['conditionRate']))
-					attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': 'USD'}
+					attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
 			return attr_prices
 					
