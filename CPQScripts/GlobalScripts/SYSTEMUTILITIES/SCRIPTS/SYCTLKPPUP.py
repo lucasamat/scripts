@@ -308,6 +308,7 @@ def GSCONTLOOKUPPOPUP(
         RelTABEL_NAME = ""
         API_NAME_list = [ins.API_NAME for ins in END_OBJ]
         API_NAME_str = ",".join(API_NAME_list)
+        Trace.Write('API_NAME_str==='+str(API_NAME_str))
         FIELD_LABEL_list = [ins.FIELD_LABEL for ins in END_OBJ]
         LABEL_list = [{ins.FIELD_LABEL: ins.API_NAME} for ins in END_OBJ]
         FIELD_LABEL_str = ",".join(FIELD_LABEL_list)
