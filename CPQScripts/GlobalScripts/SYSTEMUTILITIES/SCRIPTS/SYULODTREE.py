@@ -789,9 +789,12 @@ class TreeView:
 		return returnList, objrList
 
 	def CommonDynamicLeftTreeView(self):
-		TreeParam = Product.GetGlobal("TreeParam")
-		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")		
+		try:
+			TreeParam = Product.GetGlobal("TreeParam")
+			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+		except:
+			Trace.Write("Error in Treeparam GetGlobal")
 		objR_obj = list2 = []
 		try:
 			#crnt_prd_val = prod.APP_ID
