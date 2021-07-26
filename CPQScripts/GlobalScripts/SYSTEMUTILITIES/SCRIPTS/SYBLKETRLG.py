@@ -396,11 +396,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			elif obj_name == "SAQSCO":
 				recordslist = []
 				for val in selectPN:
-					ObjectName = val.split('-')[0]
-					cpqid = val.split('-')[1]
+					ObjectName = val.split('-')[0].strip()
+					cpqid = val.split('-')[1].strip()
 					recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 					recordslist.append(recid)
+				Trace.Write("recccccccc"+str(recordslist))	
 				recordslist = str(tuple(recordslist)).replace(',)',')')
+				Trace.Write("recordslist--->"+str(recordslist))
 			##multi select bulk edit..	
 			elif str(obj_name) == "SAQSPT":
 				
