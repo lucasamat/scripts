@@ -1907,12 +1907,27 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			table_name = "SAQFBL"
 			condition_column = "FAB_LOCATION_RECORD_ID"
 			Trace.Write("self.tree_param"+str(self.tree_param))
-			account_id = self.tree_param.split(' - ')
-			account_id = account_id[len(account_id)-1]
-			account_table  = Sql.GetFirst("SELECT ACCOUNT_NAME,ACCOUNT_RECORD_ID FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id)+"'") 
-			if account_table:
-				account_name = account_table.ACCOUNT_NAME
-				account_rec_id = account_table.ACCOUNT_RECORD_ID
+			if self.sale_type != "TOOL RELOCATION":
+				contract_quote_record_obj = self._get_record_obj(
+				columns=[
+					"ACCOUNT_ID",
+					"ACCOUNT_NAME",
+					"ACCOUNT_RECORD_ID"
+				],
+				table_name="SAQTMT",
+				where_condition="MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id),
+				single_record=True,
+				)
+				accnt_id = contract_quote_record_obj.ACCOUNT_ID
+				accnt_name = contract_quote_record_obj.ACCOUNT_NAME
+				accnt_record_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
+			else:
+				account_id = self.tree_param.split(' - ')
+				account_id = account_id[len(account_id)-1]
+				account_table  = Sql.GetFirst("SELECT ACCOUNT_NAME,ACCOUNT_RECORD_ID FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id)+"'") 
+				if account_table:
+					account_name = account_table.ACCOUNT_NAME
+					account_rec_id = account_table.ACCOUNT_RECORD_ID
 			row_values = {
 				"QUOTE_NAME": self.contract_quote_name,
 				"SALESORG_ID": self.salesorg_id,
@@ -1920,10 +1935,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SALESORG_RECORD_ID": self.salesorg_record_id,
 				# "CPQTABLEENTRYADDEDBY": self.userName,
 				"RELOCATION_FAB_TYPE" : "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
-				"ACCOUNT_ID" : account_id if account_id else "",
-				"ACCOUNT_NAME" : account_name if account_name else "",
-				"ACCOUNT_RECORD_ID" : account_rec_id if account_rec_id else ""
-
+				"ACCOUNT_ID" : account_id if account_id else accnt_id,
+				"ACCOUNT_NAME" : account_name if account_name else accnt_name,
+				"ACCOUNT_RECORD_ID" : account_rec_id if account_rec_id else accnt_record_id
 			}
 
 			fab_table_info = Sql.GetTable(table_name)
