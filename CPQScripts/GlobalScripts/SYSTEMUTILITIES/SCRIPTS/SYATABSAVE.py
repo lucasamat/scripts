@@ -1098,7 +1098,7 @@ for tab in Product.Tabs:
                                                         row.pop("CPQTABLEENTRYMODIFIEDBY")
                                                         row.pop("CPQTABLEENTRYDATEMODIFIED")
                                                         
-                                                    #Trace.Write(str(CurrentTabName) + "ROW----754------" + str(row))
+                                                    Trace.Write(str(CurrentTabName) + "ROW----754------" + str(row))
                                                     if str(CurrentTabName) == "Profile":                                                   
                                                         Trace.Write(
                                                             str(CurrentTabName) + "---CurrentTabName--768---" + str(row)
