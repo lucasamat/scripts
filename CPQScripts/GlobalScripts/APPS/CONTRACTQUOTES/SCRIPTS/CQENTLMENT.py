@@ -1113,6 +1113,7 @@ class Entitlements:
 				Trace.Write("---------------------------222222222222222"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 				
+				
 				#Sql.RunQuery(UpdateEntitlement)	
 				'''if getmaualipval:
 					AttributeID = inputId
