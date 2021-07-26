@@ -443,6 +443,9 @@ def GSCONTLOOKUPPOPUP(
                 elif str(TABLEID) == "SAQSCO":
                     VAL_Str = "SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id"))
                     VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLID) == "SYOBJR":
+                    VAL_Str = "SELECT top 10 * " + " FROM " + str(TABLEID)
+                    count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
