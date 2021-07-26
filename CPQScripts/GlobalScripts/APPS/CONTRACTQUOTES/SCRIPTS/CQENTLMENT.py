@@ -1306,8 +1306,13 @@ class Entitlements:
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
-				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(tableName, cpsmatc_incr, self.ContractRecordId, serviceId)
-				Sql.RunQuery(Updatecps)
+				####to update match id at all level while cancelling starts
+				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE']
+				for table in ent_tables_list:
+					Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId, serviceId)
+					Sql.RunQuery(Updatecps)
+				###to update match id at all level while cancelling ends
+
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
 				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
 				if GetDefault:
