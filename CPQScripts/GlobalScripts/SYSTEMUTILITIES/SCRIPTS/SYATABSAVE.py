@@ -1296,6 +1296,7 @@ for tab in Product.Tabs:
                                                         ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert11" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert11" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : This "Role Id & Name" Already exists </label></div></div></div>'
                                                                                           
                                             else:
+                                                Trace.Write("sec-alrt===###")
                                                 if (
                                                     Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                     and flag == "True"
