@@ -1077,7 +1077,7 @@ for tab in Product.Tabs:
                                             col_name = (iskey.API_NAME).strip()
                                             #Trace.Write(str(col_name) + "---col_name---16996--" + str(row))
                                             unique_val = row[col_name]
-                                            #Trace.Write("unique_val" + str(unique_val))
+                                            Trace.Write("unique_val" + str(unique_val))
                                             if unique_val is not None and unique_val != "":
                                                 is_key_table = Sql.GetFirst(
                                                     "select "
