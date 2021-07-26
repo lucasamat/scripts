@@ -2643,10 +2643,14 @@ def EntitlementTreeViewHTMLDetail(
 									selected_option = ' title="Select" '
 								VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 								for value in STDVALUES:
+									if value.SYSTEM_ID in dropdowndisallowlist:
+										disallow_style = "style = 'display:none'"
+									else:	
+										disallow_style = ""
 									if str(selected_option)=='selected':
 										selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 									VAR1 += (
-										'<option id="'+str(value.SYSTEM_ID)+'"  value = "'
+										'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
 										+ '"'+str(select_option)+'>'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3086,6 +3090,10 @@ def EntitlementTreeViewHTMLDetail(
 											default = 'selected'
 										VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 										for value in STDVALUES:
+											if value.SYSTEM_ID in dropdowndisallowlist:
+												disallow_style = "style = 'display:none'"
+											else:	
+												disallow_style = ""
 											Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 											if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
 												selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
@@ -3098,7 +3106,9 @@ def EntitlementTreeViewHTMLDetail(
 												)
 											else:
 												VAR1 += (
-													'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
+													'<option '
+													+ str(disallow_style)
+													+ ' id="'+str(value.SYSTEM_ID)+'" value = "'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													+ '">'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
