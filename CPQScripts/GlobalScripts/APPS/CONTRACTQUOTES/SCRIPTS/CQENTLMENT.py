@@ -399,6 +399,7 @@ class Entitlements:
 			defaultval = '0'
 		attr_level_pricing = []
 		dropdownallowlist = []
+		dropdowndisallowlist = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -448,7 +449,9 @@ class Entitlements:
 								if prdvalue["possibleValues"]:
 									for i in prdvalue["possibleValues"]:
 										if i['selectable'] == 'false':
-											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+											dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+										else:
+											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)	
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
@@ -1136,7 +1139,7 @@ class Entitlements:
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
