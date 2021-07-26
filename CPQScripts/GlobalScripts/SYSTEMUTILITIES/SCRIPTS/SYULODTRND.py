@@ -74,7 +74,9 @@ def CommonTreeViewHTMLDetail(
 	action_visible_str = contract_quote_record_id = ""
 	queryStr = ""
 	add_style = ""
-	
+	if Product.GetGlobal("TreeParentLevel0") == 'Sending Equipment':
+		ObjectName = "SAQSSF"
+		SectionList = ["CD4AEEE6-54EC-4C7A-8103-F9D76843632B","A88CBAD1-1EC2-43A4-A953-FF100D9D89CF"]
 	Account_Id_Query = Sql.GetFirst("SELECT PARTY_ID, PARTY_NAME FROM SAQTIP (NOLOCK) WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '"+str(primary_value)+"'")
 	if Account_Id_Query:
 		Account_Id = Account_Id_Query.PARTY_ID
@@ -89,8 +91,7 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName == 'SAQTBP':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
 	# Billing Matrix Details Load - End
-	if Product.GetGlobal("TreeParentLevel0") == 'Sending Equipment':
-		ObjectName = "SAQSSF"
+	
 	#getyear calculatin start
 	try:
 		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
