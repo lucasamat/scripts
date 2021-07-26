@@ -1202,7 +1202,7 @@ class TreeView:
 					if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                        
 						Wh_API_NAME = ""
 						where_string = where_string
-					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'SNDFBL_ID':
+					elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
 					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID':
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != ''".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
