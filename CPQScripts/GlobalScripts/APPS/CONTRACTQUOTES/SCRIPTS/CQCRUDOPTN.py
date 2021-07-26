@@ -1918,9 +1918,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				where_condition="MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id),
 				single_record=True,
 				)
-				accnt_id = contract_quote_record_obj.ACCOUNT_ID
-				accnt_name = contract_quote_record_obj.ACCOUNT_NAME
-				accnt_record_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
+				account_id = contract_quote_record_obj.ACCOUNT_ID
+				account_name = contract_quote_record_obj.ACCOUNT_NAME
+				account_rec_id = contract_quote_record_obj.ACCOUNT_RECORD_ID
 			else:
 				account_id = self.tree_param.split(' - ')
 				account_id = account_id[len(account_id)-1]
@@ -1935,9 +1935,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"SALESORG_RECORD_ID": self.salesorg_record_id,
 				# "CPQTABLEENTRYADDEDBY": self.userName,
 				"RELOCATION_FAB_TYPE" : "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
-				"ACCOUNT_ID" : account_id if account_id else accnt_id,
-				"ACCOUNT_NAME" : account_name if account_name else accnt_name,
-				"ACCOUNT_RECORD_ID" : account_rec_id if account_rec_id else accnt_record_id
+				"ACCOUNT_ID" : account_id,
+				"ACCOUNT_NAME" : account_name,
+				"ACCOUNT_RECORD_ID" : account_rec_id
 			}
 
 			fab_table_info = Sql.GetTable(table_name)
