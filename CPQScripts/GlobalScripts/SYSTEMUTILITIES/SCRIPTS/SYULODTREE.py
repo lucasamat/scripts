@@ -1166,6 +1166,9 @@ class TreeView:
 				elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID':
 					ObjectName = 'SAQTMT'
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
+				elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
+					ObjectName = 'SAQTMT'
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
 			   	elif str(ObjName).strip() == "SYPSAC" and CurrentTabName == 'App':
 					getsectrec = Product.GetGlobal("NodeRecIdS")
 					where_string += " AND SECTION_RECORD_ID = '"+str(getsectrec)+"'"
