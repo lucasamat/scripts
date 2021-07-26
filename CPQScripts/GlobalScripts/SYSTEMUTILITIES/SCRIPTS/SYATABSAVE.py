@@ -1207,6 +1207,7 @@ for tab in Product.Tabs:
                                                                                                        
                                                     else:
                                                         ##CPQ Attribute name starts
+                                                        Trace.Write('###SAP')
                                                         if ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYTABS":
                                                             if (str(row["APP_ID"]) != ""):
                                                                 APP_ID = str(TABLE_NAME)+"-"+str(row["APP_ID"])+"-"
