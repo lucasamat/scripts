@@ -1207,7 +1207,8 @@ for tab in Product.Tabs:
                                                                                                        
                                                     else:
                                                         ##CPQ Attribute name starts
-                                                        if ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYTABS":
+                                                        #if ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYTABS":
+                                                        if str(TABLE_NAME) == "SYTABS":    
                                                             if (str(row["APP_ID"]) != ""):
                                                                 APP_ID = str(TABLE_NAME)+"-"+str(row["APP_ID"])+"-"
                                                                 cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYTABS (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
