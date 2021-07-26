@@ -398,7 +398,7 @@ class Entitlements:
 		else:
 			defaultval = '0'
 		attr_level_pricing = []
-		dropdownallow = {}
+		dropdownallowlist = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -429,13 +429,13 @@ class Entitlements:
 			Trace.Write('whereReq----'+str(whereReq))
 			#Sql.RunQuery(UpdateIsdefault)
 			characteristics_attr_values = []
-			dropdownallow = {}
+			#dropdownallow = {}
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
-								dropdownallowlist = []
+								#dropdownallowlist = []
 								#Trace.Write('attr_chk----'+str(prdvalue))
 								if prdvalue["visible"] == "false":							
 									attributesdisallowedlst.append(prdvalue["id"])
@@ -448,7 +448,7 @@ class Entitlements:
 								if prdvalue["possibleValues"]:
 									if i['selectable'] == 'false':
 										dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
-										dropdownallow[prdvalue["id"]] = dropdownallowlist
+										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
 								
@@ -460,7 +460,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			Trace.Write("dropdownallow---"+str(dropdownallow))
+			Trace.Write("dropdownallow---"+str(dropdownallowlist))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				#Trace.Write("serviceId--1--"+str(serviceId))
 				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
@@ -1134,7 +1134,7 @@ class Entitlements:
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallow
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
