@@ -446,8 +446,9 @@ class Entitlements:
 								if prdvalue["readOnly"] == "false":
 									attributeEditonlylst.append(prdvalue["id"])
 								if prdvalue["possibleValues"]:
-									if i['selectable'] == 'false':
-										dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+									for i in prdvalue["possibleValues"]:
+										if i['selectable'] == 'false':
+											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
@@ -1113,7 +1114,7 @@ class Entitlements:
 				Trace.Write("---------------------------222222222222222"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 				
-				
+
 				#Sql.RunQuery(UpdateEntitlement)	
 				'''if getmaualipval:
 					AttributeID = inputId
