@@ -5073,11 +5073,11 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		#getdecimalplacecurr =decimal_val = ''
 		items_data = {}
 		rem_list_sp =[]
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2,CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if items_obj:
 			for item_obj in items_obj:
 				#getdecimalplacecurr = item_obj.CURRENCY
-				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR}
+				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
 		#curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
 		#decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 		#formatting_string = "{0:." + str(decimal_val) + "f}"
@@ -5103,7 +5103,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_year_2 += item.YEAR_2.Value
 					total_tax += item.TAX.Value
 					item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
-					total_extended_price += item.EXTENDED_PRICE.Value		
+					total_extended_price += item.EXTENDED_PRICE.Value	
+					item.OBJECT_QUANTITY += item_data.get('OBJECT_QUANTITY')	
 		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
 		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
 		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
