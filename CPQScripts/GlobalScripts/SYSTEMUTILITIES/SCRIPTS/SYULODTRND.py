@@ -3089,7 +3089,7 @@ def EntitlementTreeViewHTMLDetail(
 												)
 											else:
 												VAR1 += (
-													'<option  id="'+str(attrSysId)+'" value = "'
+													'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													+ '">'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
