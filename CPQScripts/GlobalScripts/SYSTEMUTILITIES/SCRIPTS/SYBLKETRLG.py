@@ -395,7 +395,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			##multi select bulk edit..
 			elif obj_name == "SAQSCO":
 				recordslist = []
-				for val in selectPn:
+				for val in selectPN:
 					ObjectName = val.split('-')[0]
 					cpqid = val.split('-')[1]
 					recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
