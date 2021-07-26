@@ -316,6 +316,7 @@ def GSCONTLOOKUPPOPUP(
             if str(ins.DATA_TYPE) == "CHECKBOX":
                 CHECKBOX_LIST.append(str(ins.API_NAME))
         RelTABEL_NAME = ""
+        Trace.Write('RelTABEL_NAME==='+str(RelTABEL_NAME))
         if RelTABEL_NAME != "QSTN_R_SYOBJR_80011":
             SegmentsClickParam = Product.GetGlobal("TreeParam")
             TreeParentParam = Product.GetGlobal("TreeParentLevel0")
