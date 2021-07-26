@@ -1305,6 +1305,7 @@ for tab in Product.Tabs:
                                                         "SEC_N_TAB_PAGE_ALERT"
                                                     ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert12" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert12" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>'
                                         else:
+                                            Trace.Write("sec-alrt===")
                                             col_name = (iskey.API_NAME).strip()
                                             if (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
