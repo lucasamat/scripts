@@ -451,7 +451,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			if characteristics_attr_values:
+			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				#Trace.Write("serviceId--1--"+str(serviceId))
 				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
 				#Trace.Write("attr_prices"+str(attr_prices))
@@ -1069,7 +1069,7 @@ class Entitlements:
 									# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 						Trace.Write("characteristics_attr_values"+str(characteristics_attr_values))
 						
-						if characteristics_attr_values:
+						if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 							Trace.Write("serviceId---"+str(serviceId))
 							attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
 							Product.SetGlobal('attr_level_pricing',str(attr_prices))
