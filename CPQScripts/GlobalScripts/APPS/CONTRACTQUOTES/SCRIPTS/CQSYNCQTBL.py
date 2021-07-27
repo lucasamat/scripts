@@ -196,7 +196,7 @@ class SyncQuoteAndCustomTables:
                         ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 
                     #Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
-                    if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
+                    if str(attrs) == 'AGS_REL_STDATE' and "Z0007" in OfferingRow_detail.SERVICE_ID:
                         try:
                             #Trace.Write('except-try----date-------')
                             HasDefaultvalue = True
