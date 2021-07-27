@@ -1116,7 +1116,7 @@ class TreeView:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
-
+		Trace.Write("=================>> ParRecId "+str(ParRecId))
 		# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
