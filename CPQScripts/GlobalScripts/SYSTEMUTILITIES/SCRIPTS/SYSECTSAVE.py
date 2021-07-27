@@ -665,7 +665,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                             overallattributeslist = list(set(overallattributeslist))
                             HasDefaultvalue=False
                             #Trace.Write('response2--182----315---')
-                            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
+                            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
                             if ProductVersionObj is not None:
                                 #tbrow={}
                                 insertservice = ""
