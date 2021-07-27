@@ -205,6 +205,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 				)
 				if len(list(RECORDID)) > 1:
+					Trace.Write("data_type_CHECK__J "+str(data_type))
 					if data_type.upper() == "TEXT":
 						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
 					elif data_type.upper() == "NUMBER":
