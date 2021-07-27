@@ -204,6 +204,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 					+ str(field_lable)
 					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 				)
+				Trace.Write("list(RECORDID)_CHECK__J "+list(RECORDID))
 				if len(list(RECORDID)) > 1:
 					Trace.Write("data_type_CHECK__J "+str(data_type))
 					if data_type.upper() == "TEXT":
