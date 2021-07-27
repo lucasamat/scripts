@@ -1928,6 +1928,8 @@ def Related_Sub_Banner(
                 + str(ThirdValueDiv)
                 + "</abbr></div></div>"
             )
+                Trace.Write("Line no:1931")
+                Trace.Write(sec_rel_sub_bnr)
         else:
             sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
@@ -1940,6 +1942,8 @@ def Related_Sub_Banner(
                 + str(ThirdValue)
                 + "</abbr></div></div>"
             )
+            Trace.Write("Line no:1945")
+            Trace.Write(sec_rel_sub_bnr)
     if str(FourthLable) != "" and str(FourthValue) != "" and (ObjName != "SAQTMT") and str(TreeParam) != "Quote Preview":		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
