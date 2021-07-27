@@ -2702,6 +2702,10 @@ def EntitlementTreeViewHTMLDetail(
 							VAR1 = sec_str1 = ""
 							if STDVALUES:
 								for value in STDVALUES:
+									if value.SYSTEM_ID in dropdowndisallowlist:
+										disallow_style = "style = 'display:none'"
+									else:	
+										disallow_style = ""
 									#if attrValue == value.STANDARD_ATTRIBUTE_VALUE:
 										#Trace.Write("SYSTEM_ID"+str(value.SYSTEM_ID))
 										#get_code = Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '{sys_id}' ".format(sys_id = str(value.SYSTEM_ID) )  )
@@ -2709,7 +2713,7 @@ def EntitlementTreeViewHTMLDetail(
 										#getnameentallowed.append(value.SYSTEM_ID)
 										#Trace.Write('valueeeee----'+str(getnameentallowed))
 									VAR1 += (
-										'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
+										'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 										+ '">'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3194,6 +3198,10 @@ def EntitlementTreeViewHTMLDetail(
 										Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
 										VAR1 = sec_str1 = selected_option = ""
 										for value in STDVALUES:
+											if value.SYSTEM_ID in dropdowndisallowlist:
+												disallow_style = "style = 'display:none'"
+											else:	
+												disallow_style = ""
 											Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
 											try:
 												if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float'):
@@ -3219,7 +3227,7 @@ def EntitlementTreeViewHTMLDetail(
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() not in value_code :
 													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
-														'<option id="'+str(value.SYSTEM_ID)+'" value = "'
+														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														+ '">'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3241,7 +3249,7 @@ def EntitlementTreeViewHTMLDetail(
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() != value_code :
 													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
-														'<option id="'+str(value.SYSTEM_ID)+'" value = "'
+														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														+ '">'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
