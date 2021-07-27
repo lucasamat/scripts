@@ -605,7 +605,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                         cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
                         if int(ent_disp_val) > 364:
                                     
-                            Trace.Write("---requestdata--244-cpsConfigID0-----")
+                            Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
                             webclient = System.Net.WebClient()
                             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
