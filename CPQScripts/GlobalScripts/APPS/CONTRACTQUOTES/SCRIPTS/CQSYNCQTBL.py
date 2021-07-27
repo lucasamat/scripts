@@ -214,7 +214,7 @@ class SyncQuoteAndCustomTables:
                         ent_disp_val = ent_disp_val
                         ent_val_code = ent_val_code
                     #Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
-                    if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
+                    if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.SERVICE_ID: 
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
                             Trace.Write('208--attrs---date check')
@@ -268,7 +268,7 @@ class SyncQuoteAndCustomTables:
                 Trace.Write('269-addednew trace---')
                 try:
                     Trace.Write('269--')
-                    if OfferingRow_detail.SERVICE_ID == 'Z0016_AG':
+                    if 'Z0016' in OfferingRow_detail.SERVICE_ID:
                         Trace.Write('269--OfferingRow_detail--')
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
@@ -300,7 +300,7 @@ class SyncQuoteAndCustomTables:
                             AttributeID = 'AGS_CON_DAY'
                             NewValue = ent_disp_val
                             #Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
-                            whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = 'Z0016_AG'"
+                            whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"
                             #Trace.Write('whereReq---'+str(whereReq))
                             requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
                             #Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
