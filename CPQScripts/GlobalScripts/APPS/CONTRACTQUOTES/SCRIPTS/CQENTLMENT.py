@@ -1252,8 +1252,10 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
-			
-				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC)
+				if get_datatype:
+					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC)
+				else:
+					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
 				attributesdisallowedlst = []
 				attributesallowedlst = []
