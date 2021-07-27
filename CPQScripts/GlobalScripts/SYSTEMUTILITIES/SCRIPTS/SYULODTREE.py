@@ -1874,7 +1874,7 @@ class TreeView:
 										if NodeText.startswith('Z'):
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText))
 										
-										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG'):                                      
+										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											service_id_1 = str(NodeText)
