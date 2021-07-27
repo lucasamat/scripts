@@ -1045,7 +1045,7 @@ def Related_Sub_Banner(
                     ThirdLable = "Product Offering Type"
                     ThirdValue = get_val.SERVICE_TYPE
                     FourthLable = "Fab Location ID"
-                    FourthValue = get_val.FABLOCATION_ID
+                    FourthValue = str(TreeParam)
                     FifthLable = "Equipment"
                     FifthValue = "ALL" 
                 if (TreeSuperParentParam == "Sending Equipment" or TreeSuperParentParam == "Receiving Equipment") and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
