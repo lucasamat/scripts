@@ -449,6 +449,19 @@ def sendEmail(level):
 datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")    
 obj_list = []
 is_changed = False
+
+level = ""
+if objectName == 'SAQTSE':
+	level = "Offering Entitlement "
+elif objectName == 'SAQSFE':
+	level = "Fab Location Entitlement "
+elif objectName == 'SAQSGE':
+	level = "Greenbook Entitlement "
+elif objectName == "SAQSCE":
+	level = "Equipment Entitlement "
+elif objectName == "SAQSAE":
+	level = "Assembly Entitlement "
+
 if 'Z0007' in get_serviceid:
 	objectName = 'SAQSCE'
 if objectName == 'SAQTSE':
@@ -919,17 +932,7 @@ for obj in obj_list:
 			where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID')
 			#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
 			update_entitlement_price_impact(where_condition)
-	level = ""
-	if objectName == 'SAQTSE':
-		level = "Offering Entitlement "
-	elif objectName == 'SAQSFE':
-		level = "Fab Location Entitlement "
-	elif objectName == 'SAQSGE':
-		level = "Greenbook Entitlement "
-	elif objectName == "SAQSCE":
-		level = "Equipment Entitlement "
-	elif objectName == "SAQSAE":
-		level = "Assembly Entitlement "
+	
 #Log.Info('Log before calling ftscostcalc--')
 #FTSCostCalc("SAQTSE")
 sendEmail(level)
