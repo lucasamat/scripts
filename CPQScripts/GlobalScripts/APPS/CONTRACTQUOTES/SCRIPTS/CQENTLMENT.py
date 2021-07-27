@@ -400,6 +400,7 @@ class Entitlements:
 		attr_level_pricing = []
 		dropdownallowlist = []
 		dropdowndisallowlist = []
+		dropdownallowlist_attr = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -451,10 +452,14 @@ class Entitlements:
 										if i['selectable'] == 'false':
 											dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 										else:
-											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)	
-										#dropdownallow[prdvalue["id"]] = dropdownallowlist
+											STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.* FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
+											all_list = [i.SYSTEM_ID for i in STANDARD_ATTRIBUTE_VALUES]
+											dropdownallowlist_attr.extend(all_list)
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
+												
+										#dropdownallow[prdvalue["id"]] = dropdownallowlist
+								
 								
 									# if prdvalue["id"] in characteristics_attr_values:
 									# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
@@ -462,6 +467,7 @@ class Entitlements:
 									# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 						if Productattribute == "variantConditions":
 							characteristics_attr_values = Productvalue
+			dropdownallowlist = [i for i in dropdownallowlist_attr if i not in dropdowndisallowlist]
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			Trace.Write("dropdownallow---"+str(dropdownallowlist))
