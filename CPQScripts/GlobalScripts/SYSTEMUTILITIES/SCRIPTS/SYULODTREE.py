@@ -1126,11 +1126,11 @@ class TreeView:
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
 		Trace.Write("NodeName---1073----"+str(NodeName))
 		pagerecordid = ""
-		if NodeName == 'FIELD_LABEL':
-			global c_total
-			c_total += 1
-			if c_total > 5:
-				return ChildList
+		# if NodeName == 'FIELD_LABEL':
+		# 	global c_total
+		# 	c_total += 1
+		# 	if c_total > 5:
+		# 		return ChildList
 		if str(NodeType) == "DYNAMIC":
 			# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 			#Trace.Write("where_string"+str(where_string))
