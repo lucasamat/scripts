@@ -2376,7 +2376,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 					Query_String=query_string
 				)
-				get_fab = self.tree_param
+				get_fab = '('+str(self.tree_param)+')'
 				table_count_data = Sql.GetFirst(query_string_for_count)
 				if table_count_data is not None:
 					table_total_rows = table_count_data.count
@@ -2406,7 +2406,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				if table_total_rows:
 					record_ids = [data for data in self.get_res(query_string, table_total_rows)]                  
 			else:
-				get_fab = self.tree_param
+				get_fab = '('+str(self.tree_param)+')'
 				record_ids = [
 					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 					if value.strip() != "" and master_object_name in value
