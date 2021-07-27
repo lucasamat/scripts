@@ -1468,7 +1468,8 @@ def CommonTreeViewHTMLDetail(
 								+ str(edit_warn_icon)
 								+ "</td>"
 							)
-				elif data_type == "CHECKBOX":					
+				elif data_type == "CHECKBOX":
+					Trace.Write('1472----------'+str(current_obj_value))					
 					if str(current_obj_value).upper() == "TRUE" or current_obj_value == "1":
 						sec_str += (
 							'<td><input id="'
