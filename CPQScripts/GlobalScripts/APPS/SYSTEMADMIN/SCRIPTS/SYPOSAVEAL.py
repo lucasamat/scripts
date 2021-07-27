@@ -292,7 +292,7 @@ def do_process(TABLEID, LABLE, VALUE):
                             row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
                 elif ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPGAC":
                     if str(row.get("TAB_RECORD_ID")) != "":
-                        sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYTABS (NOLOCK) WHERE TAB_RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
+                        sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYTABS (NOLOCK) WHERE RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
                         APP_ID = "SYPGAC-{}-".format(sytabs_app_id.APP_ID)
                         cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYPGAC (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
                         if sytabs_app_id is not None and cpq_attr_name is not None:
