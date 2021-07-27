@@ -443,12 +443,15 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
-			prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
-			line_items_obj = """UPDATE SAQICO SET SRVTAXCLA_ID = '{TAX_CLASSIFICATION_ID}', SRVTAXCLA_RECORD_ID = '{SRVTAXCLA_RECORD_ID}' WHERE SRVTAXCLA_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(TAX_CLASSIFICATION_ID = prtxcl_obj.TAX_CLASSIFICATION_ID,SRVTAXCLA_RECORD_ID = prtxcl_obj.TAX_CLASSIFICATION_RECORD_ID,SRVTAXCLA_DESCRIPTION = str(VALUE),quote_record_id = str(ContractRecordId))
-			Sql.RunQuery(line_items_obj)
-			quote_id = quote_id
-			quote_record_id = str(Qt_rec_id)
-			getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
+			if TITLE != 'SALES_PRICE':
+				prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
+				line_items_obj = """UPDATE SAQICO SET SRVTAXCLA_ID = '{TAX_CLASSIFICATION_ID}', SRVTAXCLA_RECORD_ID = '{SRVTAXCLA_RECORD_ID}' WHERE SRVTAXCLA_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(TAX_CLASSIFICATION_ID = prtxcl_obj.TAX_CLASSIFICATION_ID,SRVTAXCLA_RECORD_ID = prtxcl_obj.TAX_CLASSIFICATION_RECORD_ID,SRVTAXCLA_DESCRIPTION = str(VALUE),quote_record_id = str(ContractRecordId))
+				Sql.RunQuery(line_items_obj)
+				quote_id = quote_id
+				quote_record_id = str(Qt_rec_id)
+				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
+			elif TITLE == 'SALES_PRICE':
+				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}' WHERE CpqTableEntryId = {cpqid}".formay(VALUE=VALUE,cpqid=cpqid))
 		if obj_name == "SAQSCO":
 			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
 			fabname = getfab.FABLOCATION_NAME
