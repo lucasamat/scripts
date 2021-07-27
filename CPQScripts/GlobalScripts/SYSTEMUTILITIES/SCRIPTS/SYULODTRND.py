@@ -897,7 +897,7 @@ def CommonTreeViewHTMLDetail(
 					except UnicodeEncodeError:
 						current_obj_value = current_obj_value
 					except:
-						Trace.Write("Error")
+						Trace.Write("Error--900")
 				if action_visible_str:
 					edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
 					
