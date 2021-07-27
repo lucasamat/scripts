@@ -2368,15 +2368,16 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			record_ids = []
 			if self.all_values and auto_equp_insert is None: 
 				Trace.Write('ifff--')		      
-				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND SALESORG_RECORD_ID = '{salesorgrecid}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND NOT EXISTS (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND SALESORG_RECORD_ID = '{salesorgrecid}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
 							acc=self.account_record_id,
 							fab=self.tree_param,
 							salesorgrecid=self.salesorg_record_id,
-							QuoteRecordId=self.contract_quote_record_id)
+							QuoteRecordId=self.contract_quote_record_id)			
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 					Query_String=query_string
 				)
-				get_fab = '('+str(self.tree_param)+')'
+				Trace.Write("query_string_for_count"+str(query_string))
+				get_fab = "('"+str(self.tree_param)+"')"
 				table_count_data = Sql.GetFirst(query_string_for_count)
 				if table_count_data is not None:
 					table_total_rows = table_count_data.count
@@ -2406,7 +2407,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				if table_total_rows:
 					record_ids = [data for data in self.get_res(query_string, table_total_rows)]                  
 			else:
-				get_fab = '('+str(self.tree_param)+')'
+				get_fab = "('"+str(self.tree_param)+"')"
 				record_ids = [
 					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 					if value.strip() != "" and master_object_name in value
