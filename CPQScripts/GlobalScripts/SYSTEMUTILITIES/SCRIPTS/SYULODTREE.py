@@ -16,7 +16,7 @@ from datetime import date
 Sql = SQL()
 
 c_total = 0
-
+g_total = 0
 
 
 class TreeView:
@@ -1341,8 +1341,14 @@ class TreeView:
 						)
 						#("DynamicQueryCHK1"+str(DynamicQuery))
 						if CurrentTabName == 'Profile' and 'SYPRSF' in DynamicQuery:
-							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
-							childQuery = None
+							global g_total
+							g_total += 1
+							
+							if g_total == 1:
+								Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
+								childQuery = Sql.GetList("" + str(DynamicQuery) + "")   
+							else:
+								childQuery = None
 						else:
 							childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
 					else:
