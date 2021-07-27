@@ -97,7 +97,7 @@ try:
 		if str(QuoteInvolvedPartiesquery.RESULT) != "" :
 			QuoteInvolvedPartiesquery = str(QuoteInvolvedPartiesquery.RESULT)
 			
-			QuoteInvolvedPartiesfabquery = SqlHelper.GetFirst("select replace(replace(STUFF((SELECT  ' '+final_xml FROM (SELECT  '<FAB>'+CASE WHEN ISNULl(CRM_FABLOCATION_ID,'')<>'' THEN CRM_FABLOCATION_ID ELSE ISNULL(SAQFBL.FABLOCATION_ID,'') END+'</FAB>' AS final_xml  FROM SAQFBL(NOLOCK) JOIN MAFBLC (NOLOCK) ON SAQFBL.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID WHERE QUOTE_ID  = '"+str(QUOTE_ID)+"')SUB_SAQFBL FOR XML PATH ('')  ), 1, 1, ''),'&lt;','<'),'&gt;','>')AS RESULT")
+			QuoteInvolvedPartiesfabquery = SqlHelper.GetFirst("select replace(replace(STUFF((SELECT  ' '+final_xml FROM (SELECT  DISTINCT '<FAB>'+CASE WHEN ISNULl(CRM_FABLOCATION_ID,'')<>'' THEN CRM_FABLOCATION_ID ELSE ISNULL(SAQFBL.FABLOCATION_ID,'') END+'</FAB>' AS final_xml  FROM SAQSFB SAQFBL(NOLOCK) JOIN MAFBLC (NOLOCK) ON SAQFBL.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID WHERE QUOTE_ID  = '"+str(QUOTE_ID)+"')SUB_SAQFBL FOR XML PATH ('')  ), 1, 1, ''),'&lt;','<'),'&gt;','>')AS RESULT")
 			
 			if str(QuoteInvolvedPartiesfabquery.RESULT) != "" :
 			
