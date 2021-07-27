@@ -1937,9 +1937,9 @@ def Related_Sub_Banner(
                 + '">'
                 + str(ThirdLable)
                 + "</abbr></div><div class='segment_part_text_child'><abbr title='"
-                + str(ThirdValue)
-                + "'>"
                 #+ str(ThirdValue)
+                + "'>"
+                + str(ThirdValue)
                 + "</abbr></div></div>"
             )
             Trace.Write("Line no:1945")
