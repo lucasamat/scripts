@@ -451,7 +451,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				quote_record_id = str(Qt_rec_id)
 				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 			elif TITLE == 'SALES_PRICE':
-				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid))
+				a = Sql.GetFirst("SELECT SALES_DISCOUNT_PRICE FROM SAQICO WHERE SALES_DISCOUNT_PRICE IS NOT NULL AND CpqTableEntryId = {}".format(cpqid))
+				if a:
+					discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
+				else:
+					discount = 0.00
+				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}',DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount))
 		if obj_name == "SAQSCO":
 			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
 			fabname = getfab.FABLOCATION_NAME
