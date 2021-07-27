@@ -1946,7 +1946,7 @@ def Related_Sub_Banner(
             Trace.Write(sec_rel_sub_bnr)
     if str(FourthLable) != "" and str(FourthValue) != "" and (ObjName != "SAQTMT") and str(TreeParam) != "Quote Preview":		
         sec_rel_sub_bnr += (
-                '<div class="segment_   part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
+                '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(FourthLable)
                 + '">'
                 + str(FourthLable)
