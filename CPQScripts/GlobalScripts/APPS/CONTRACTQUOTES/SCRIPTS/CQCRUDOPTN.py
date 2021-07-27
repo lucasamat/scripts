@@ -5594,6 +5594,8 @@ def Factory(node=None):
 	return models[node]
 
 if hasattr(Param, 'CPQ_Columns'):
+	Trace.Write("Started Here...>")
+	Trace.Write(Param.CPQ_Columns)
 	integration_param_objects = Param.CPQ_Columns
 	integration_param = {}
 	for integration_param_object in integration_param_objects: 
