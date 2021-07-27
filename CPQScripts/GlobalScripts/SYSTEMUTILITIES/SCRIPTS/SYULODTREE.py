@@ -1340,8 +1340,10 @@ class TreeView:
 							.replace("where_string", where_string)
 						)
 						#("DynamicQueryCHK1"+str(DynamicQuery))
-
-						childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
+						if CurrentTabName == 'Profile' and 'SYPRSF' in DynamicQuery:
+							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
+						else:
+							childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
 					else:
 						if NodeName.find("-") == -1:
 							NodeValue = NodeName
