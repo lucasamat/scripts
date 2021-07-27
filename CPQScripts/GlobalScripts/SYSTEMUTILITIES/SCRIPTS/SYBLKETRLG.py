@@ -229,6 +229,10 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
 							edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
 							Trace.Write("EDITSTR"+str(edt_str))	
+						elif obj_obj == 'SYROUS':
+							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+							edt_str += '<input  id="SYROMA|SYROUS" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+							Trace.Write("EDITSTR"+str(edt_str))	
 					elif data_type.upper() == "PICKLIST":
 						edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
 						pick_val = pick_val.split(",")
