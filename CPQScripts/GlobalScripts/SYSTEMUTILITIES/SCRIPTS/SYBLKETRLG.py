@@ -172,6 +172,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 		TITLE = "BILLING_DATE"
 	if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and TreeParentParam != 'Quote Items':
 		canedit = "FALSE"	
+	Trace.Write("@175----canedit-------->"+str(canedit))
 	if objh_obj is not None and str(canedit).upper() == "TRUE":
 		obj_obj = str(objh_obj.OBJECT_NAME)
 		
