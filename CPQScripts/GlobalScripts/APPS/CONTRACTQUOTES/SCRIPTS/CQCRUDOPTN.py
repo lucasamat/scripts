@@ -2405,7 +2405,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					table_total_rows = table_count_data.count
 				if table_total_rows:
 					record_ids = [data for data in self.get_res(query_string, table_total_rows)]                  
-			else:        
+			else:
+				get_fab = self.tree_param
 				record_ids = [
 					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 					if value.strip() != "" and master_object_name in value
