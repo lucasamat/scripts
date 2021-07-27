@@ -322,6 +322,7 @@ def do_process(TABLEID, LABLE, VALUE):
             elif str(TABLEID) == "SYPGAC":
                 if ("ACTION_NAME" in row):
                     row["ACTION_NAME"] = row["ACTION_NAME"].title()
+                    Trace.Write('@@@@@@@@@'+str(row["ACTION_NAME"]))
 
                  
 
