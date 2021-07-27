@@ -202,7 +202,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 				edt_str += (
 					'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
 					+ str(field_lable)
-					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
+					+ '</td><input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text"><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 				)
 				if len(list(RECORDID)) > 1:
 					if data_type.upper() == "TEXT":
