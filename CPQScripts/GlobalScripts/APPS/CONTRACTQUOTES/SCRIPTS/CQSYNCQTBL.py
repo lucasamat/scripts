@@ -1145,7 +1145,7 @@ class SyncQuoteAndCustomTables:
                                 self.CreateEntitlements(quote_record_id)
                                 entitle_end_time = time.time()
                                 Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
-
+                            Trace.Write("EQUIPMENT DATA------->>"+str(equipment_data))
                             if equipment_data:
                                 Log.Info(""""EQUIPMENTS INSERT""")
                                 count = 0
