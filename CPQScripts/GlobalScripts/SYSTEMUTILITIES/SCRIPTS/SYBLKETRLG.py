@@ -200,7 +200,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 				edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 				edt_str += '<table class="wdth100" id="bulk_edit">'
 				edt_str += (
-					'<tbody><tr class="fieldRow"><td <input  class="form-control light_yellow wth_80">'
+					'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
 					+ str(field_lable)
 					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 				)
