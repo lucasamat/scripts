@@ -178,11 +178,7 @@ class ContractQuoteCrudOpertion:
 	def _add_record(
 		self, master_object_name=None, columns=[], table_name=None, condition_column=None, values=[], where_condition=""
 	):		
-		try:
-			TreeParam=Product.GetGlobal("TreeParam")
-		except:
-			TreeParam= ""
-
+		TreeParam=Product.GetGlobal("TreeParam")
 		if self.action_type == "ADD_OFFERING" and self.all_values:
 			if TreeParam=="Product Offerings":
 				product_type=" PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' "
