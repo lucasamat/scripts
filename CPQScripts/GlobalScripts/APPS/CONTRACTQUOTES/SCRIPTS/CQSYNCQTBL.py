@@ -169,7 +169,7 @@ class SyncQuoteAndCustomTables:
             attributesallowedlst = list(set(attributesallowedlst))
             overallattributeslist = list(set(overallattributeslist))
             HasDefaultvalue=False
-            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
+            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
             if ProductVersionObj is not None:
                 tbrow={}
                 insertservice =ent_disp_valdate =  ""
