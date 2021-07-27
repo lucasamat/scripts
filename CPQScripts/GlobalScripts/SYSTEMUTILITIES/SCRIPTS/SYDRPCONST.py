@@ -7,7 +7,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import SYCNGEGUID as CPQID
-import Webcom.Configurator.Scripting.Test.TestProduct
+#import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import SYERRMSGVL as Message
 
@@ -171,7 +171,7 @@ class DropConstraint:
                             )
                             Output = ErrorMsg
            
-        except Exception, e:
+        except Exception as e:
             self.exceptMessage = "SYDRPCONST : DropConstraint : EXCEPTION : UNABLE TO DROP CONSTRAINT: " + str(e)
            
         return Output
@@ -245,7 +245,7 @@ class DropConstraint:
                 objectname=self.ObjectName
             )
             Sql.RunQuery(delete_query_string)
-        except Exception, e:
+        except Exception as e:
             self.exceptMessage = (
                 "SYDRPCONST : bulkDeleteConstraint : EXCEPTION : UNABLE TO DROP ALL CONSTRAINTS OF THE OBJECT: " + str(e)
             )
@@ -402,7 +402,7 @@ class DropConstraint:
             result_update = "UPDATE SYOBJH SET HAS_CONSTRAINTS = 1 WHERE OBJECT_NAME='" + str(self.ObjectName) + "'"
             query_result = Sql.RunQuery(str(result_update))
 
-        except Exception, e:
+        except Exception as e:
             self.exceptMessage = "SYDRPCONST : recreateConstraint : EXCEPTION : UNABLE TO CREATE CONSTRAINTS: " + str(e)
             Trace.Write(self.exceptMessage)
         return True
