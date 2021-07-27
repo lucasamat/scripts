@@ -1342,6 +1342,7 @@ class TreeView:
 						#("DynamicQueryCHK1"+str(DynamicQuery))
 						if CurrentTabName == 'Profile' and 'SYPRSF' in DynamicQuery:
 							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
+							childQuery = None
 						else:
 							childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
 					else:
