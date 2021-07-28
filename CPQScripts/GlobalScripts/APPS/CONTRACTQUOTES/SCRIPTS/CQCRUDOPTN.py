@@ -3468,7 +3468,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				UserId=self.user_id,
 				UserName=self.user_name,
 				TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Other Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
-				TreeParentParam=self.tree_parent_level_0 if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,
+				TreeParentParam=self.tree_parent_level_1 if self.tree_param  == 'Sending Equipment' else self.tree_parent_level_0,
 				QuoteRecordId=self.contract_quote_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id')
 			)
