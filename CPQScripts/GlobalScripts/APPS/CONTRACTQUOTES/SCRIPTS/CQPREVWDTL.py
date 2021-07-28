@@ -13,7 +13,6 @@ import SYCNGEGUID as CPQID
 import CQVLDRIFLW
 
 # import CMGTRULRAC as CMRUL
-# Get_UserID = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
 try:
 	userId = str(User.Id)
 	userName = str(User.UserName)
