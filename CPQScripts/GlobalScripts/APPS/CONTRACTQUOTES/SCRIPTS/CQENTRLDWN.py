@@ -721,7 +721,7 @@ for obj in obj_list:
 								get_calc_factor = get_value = round(get_val,2)
 							else:
 								get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
-							Log.Info('get_value--grn-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
+							#Log.Info('get_value--grn-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
 
 				updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
@@ -800,7 +800,7 @@ for obj in obj_list:
 							get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
 							get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
 							get_calc_factor = get_value = round(get_val,2)
-							Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
+							#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
