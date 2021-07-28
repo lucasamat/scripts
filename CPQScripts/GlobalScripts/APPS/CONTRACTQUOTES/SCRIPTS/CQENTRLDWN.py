@@ -787,7 +787,7 @@ for obj in obj_list:
 			get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
 			for grnbk in get_value_query:
 				# fab_dict[fab.FABLOCATION_ID] = fab.cnt
-				where_condition = where_cond + " AND GREENBOOK = '{}' ".format(grnbk.GREENBOOK)
+				where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
 				updateentXML = ""
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
