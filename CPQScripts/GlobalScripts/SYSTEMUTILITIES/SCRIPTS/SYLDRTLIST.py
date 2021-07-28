@@ -1286,7 +1286,11 @@ class SYLDRTLIST:
                             elif str(RECORD_ID) == "SYOBJR-95840": 
                                 Wh_API_NAMEs = "PAGEACTION_RECORD_ID"                       
                                 RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00723").GetValue()
-                                Qustr =  " where SCRIPT_RECORD_ID = '" + str(RecAttValue) + "'"     
+                                Qustr =  " where SCRIPT_RECORD_ID = '" + str(RecAttValue) + "'"
+                            elif str(RECORD_ID) == "SYOBJR-98867":
+                                TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
+                                Wh_API_NAMEs = "PAGE_LABEL"                       
+                                Qustr =  " where PAGE_LABEL = '" + str(TreeParentParam) + "'"         
                             else:    
                                 Trace.Write("check1234")                         
                                 Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
