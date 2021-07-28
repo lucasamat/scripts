@@ -2846,7 +2846,9 @@ def EntitlementTreeViewHTMLDetail(
 			totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
 			Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
 	elif EntitlementType == "SENDING_LEVEL":
-		getnameentallowed = multi_select_attr_list = []
+		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
+		multi_select_attr_list = {}
+		getnameentallowed = []
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		#sec_str = "Entitlements are not applicable at this level"
