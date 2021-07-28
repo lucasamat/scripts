@@ -2421,8 +2421,8 @@ def EntitlementTreeViewHTMLDetail(
 								for i in prdvalue["possibleValues"]:
 									if i['selectable'] == 'false':
 										dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
-									else:
-										dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+									# else:
+									# 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 							for attribute in prdvalue["values"]:
 								attributevalues[str(prdvalue["id"])] = attribute["value"]
 		Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
