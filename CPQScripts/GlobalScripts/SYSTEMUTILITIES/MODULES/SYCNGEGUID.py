@@ -9,7 +9,7 @@
 
 
 from SYDATABASE import SQL
-import Webcom.Configurator.Scripting.Test.TestProduct
+#import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 
 
