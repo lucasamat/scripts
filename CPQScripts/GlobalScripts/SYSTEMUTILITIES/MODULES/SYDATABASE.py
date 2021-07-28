@@ -9,7 +9,7 @@
 # ====================================================================================================
 
 import datetime
-import Webcom.Configurator.Scripting.Test.TestProduct
+#import Webcom.Configurator.Scripting.Test.TestProduct
 
 class SQL:
     """Model to handle custom table transactions."""
