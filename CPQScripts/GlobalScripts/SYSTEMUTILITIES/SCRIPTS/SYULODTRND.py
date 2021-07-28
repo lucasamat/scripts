@@ -2870,6 +2870,7 @@ def EntitlementTreeViewHTMLDetail(
 		getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 		if str(TreeParentParam).upper() == "ADD-ON PRODUCTS":
 			TreeSuperParentParam = ""
+		Trace.Write('TreeParam----'+str(TreeParam)+'--'+str(ProductPartnumber))
 		if TreeParam.upper() == ProductPartnumber or TreeParentParam.upper() == ProductPartnumber or TreeSuperParentParam == ProductPartnumber:	
 			#Trace.Write("@2756------->"+str(TreeParentParam))
 			'''if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
