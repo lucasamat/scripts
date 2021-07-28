@@ -451,12 +451,15 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				quote_record_id = str(Qt_rec_id)
 				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 			elif TITLE == 'SALES_PRICE':
-				a = Sql.GetFirst("SELECT SALES_DISCOUNT_PRICE FROM SAQICO WHERE SALES_DISCOUNT_PRICE IS NOT NULL AND CpqTableEntryId = {}".format(cpqid))
+				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				if a:
 					discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
 				else:
 					discount = 0.00
-				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}',DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount))
+				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount))
+				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
+				if float(getPRCFVA.FACTOR_PCTVAR) < discount:
+					Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = {}".format(Quote.GetGlobal("contract_quote_record_id")))
 		if obj_name == "SAQSCO":
 			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
 			fabname = getfab.FABLOCATION_NAME
