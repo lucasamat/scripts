@@ -92,7 +92,8 @@ class SQL:
                 row["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
                 row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
                 row["CpqTableEntryDateModified"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-                row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
+                #row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
+                row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
             else:
                 row["CpqTableEntryId"] = tableInfo.TableDataRows.Item[rows].CpqTableEntryId
                 row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
