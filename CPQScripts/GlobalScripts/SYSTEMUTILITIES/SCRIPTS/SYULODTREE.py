@@ -1344,7 +1344,7 @@ class TreeView:
 							global g_total
 							g_total += 1
 							
-							if g_total < 25:
+							if g_total < 23:
 								Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
 								childQuery = Sql.GetList("" + str(DynamicQuery) + "")   
 							else:
