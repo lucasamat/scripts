@@ -2434,8 +2434,8 @@ def EntitlementTreeViewHTMLDetail(
 								MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
 							FROM PRODUCTS PDS 
 							INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
-							WHERE SYSTEM_ID ='{SystemId}' 
-							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber)))
+							WHERE SYSTEM_ID ='{SystemId}' and PRVS.SAPKBVersion = '{kb_version}'
+							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
 	
 	product_tabs_obj = Sql.GetList("""SELECT 
 											TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
