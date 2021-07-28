@@ -2430,49 +2430,49 @@ def EntitlementTreeViewHTMLDetail(
 		Trace.Write('attributevalues'+str(attributevalues))
 
 
-	product_obj = Sql.GetFirst("""SELECT 
-								MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
-							FROM PRODUCTS PDS 
-							INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
-							WHERE SYSTEM_ID ='{SystemId}' and PRVS.SAPKBVersion = '{kb_version}'
-							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
-	
-	product_tabs_obj = Sql.GetList("""SELECT 
-											TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
-										FROM TAB_PRODUCTS
-										JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
-										WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
-										ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
-	
-	product_attributes_obj = Sql.GetList("""SELECT TOP 1000 PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE, 
-												TAB_PRODUCTS.TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE, ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,PRODUCT_ATTRIBUTES.LABEL AS LABEL, ATTRIBUTE_DEFN.SYSTEM_ID AS SYSTEM_ID, ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+		product_obj = Sql.GetFirst("""SELECT 
+									MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+								FROM PRODUCTS PDS 
+								INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+								WHERE SYSTEM_ID ='{SystemId}' and PRVS.SAPKBVersion = '{kb_version}'
+								GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
+		
+		product_tabs_obj = Sql.GetList("""SELECT 
+												TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
 											FROM TAB_PRODUCTS
-											LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
-											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
-											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
-											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
-											 
-											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
+											JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
+											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
 											ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
-	tabwise_product_attributes = {}
-	#overall_attribute_list = []	
-	if product_attributes_obj:
-		for product_attribute_obj in product_attributes_obj:
-			overall_attribute ={}
-			attr_detail = {'attribute_name':str(product_attribute_obj.STANDARD_ATTRIBUTE_NAME), 
-						'attribute_label':str(product_attribute_obj.LABEL), 
-						'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
-						'attribute_dtype':str(product_attribute_obj.ATT_DISPLAY_DESC),
-						'attribute_code':str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)
-						
-						}
-			# overall_attribute[str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)] = str(product_attribute_obj.SYSTEM_ID)
-			# overall_attribute_list.append(overall_attribute)
-			if product_attribute_obj.TAB_PROD_ID in tabwise_product_attributes:
-				tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
-			else:
-				tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-	Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
+		
+		product_attributes_obj = Sql.GetList("""SELECT TOP 1000 PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE, 
+													TAB_PRODUCTS.TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE, ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,PRODUCT_ATTRIBUTES.LABEL AS LABEL, ATTRIBUTE_DEFN.SYSTEM_ID AS SYSTEM_ID, ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
+												ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
+		tabwise_product_attributes = {}
+		#overall_attribute_list = []	
+		if product_attributes_obj:
+			for product_attribute_obj in product_attributes_obj:
+				overall_attribute ={}
+				attr_detail = {'attribute_name':str(product_attribute_obj.STANDARD_ATTRIBUTE_NAME), 
+							'attribute_label':str(product_attribute_obj.LABEL), 
+							'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
+							'attribute_dtype':str(product_attribute_obj.ATT_DISPLAY_DESC),
+							'attribute_code':str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)
+							
+							}
+				# overall_attribute[str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)] = str(product_attribute_obj.SYSTEM_ID)
+				# overall_attribute_list.append(overall_attribute)
+				if product_attribute_obj.TAB_PROD_ID in tabwise_product_attributes:
+					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
+				else:
+					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
+		Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 	
 	#Trace.Write('overall_attribute_list'+str(overall_attribute_list))
 
@@ -2486,30 +2486,30 @@ def EntitlementTreeViewHTMLDetail(
 
 	# attr_dict = {}
 	# ServiceContainer = Product.GetContainerByName("Services")
-	sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
-	multi_select_attr_list = {}
-	getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
-	if getregion:
-		getregionval = getregion.REGION
-		
-	GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid))
+		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
+		multi_select_attr_list = {}
+		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
+		if getregion:
+			getregionval = getregion.REGION
+			
+		GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid))
 
-	if GetCPSVersion and EntitlementType != "SENDING_LEVEL":
-		if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
-			sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
+		if GetCPSVersion :
+			if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
+				sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
+			else:
+				sec_str += ''
 		else:
-			sec_str += ''
-	else:
-		Trace.Write("GETCPS VERSION EMPTY!")	
-	
-	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+			Trace.Write("GETCPS VERSION EMPTY!")	
+		
+		desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 
-	
-	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
-	date_field = []
-	
-	insertservice = ""
-	Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
+		
+		attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+		date_field = []
+		
+		insertservice = ""
+		Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
 	if TableObj is None and (EntitlementType == "EQUIPMENT"): 
 		
 		getnameentallowed = []
