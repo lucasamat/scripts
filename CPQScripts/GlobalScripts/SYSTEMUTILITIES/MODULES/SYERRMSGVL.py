@@ -12,7 +12,7 @@ ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 # Product = Product   # pylint: disable=E0602
 # Param = Param   # pylint: disable=E0602
 # ApiResponseFactory = ApiResponseFactory   # pylint: disable=E0602
-import Webcom.Configurator.Scripting.Test.TestProduct
+#import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 #from datetime import timedelta
