@@ -2144,17 +2144,19 @@ def Related_Sub_Banner(
                     elif TreeParam == "Fab Locations" and subTabName == "Equipment":
                         
                         sec_rel_sub_bnr += ""
-                    elif TreeParam == "Customer Information":
-                        send_receive =[]
-                        ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
-                        for acnt in send_and_receive:
-                            send_receive.append(acnt.PARTY_ROLE)
-                        Trace.Write("send_receive_J"+str(send_receive))
-                        if ("SENDING ACCOUNT" in send_receive and "RECEIVING ACCOUNT" in send_receive):
-                            sec_rel_sub_bnr += ""
-                        else:
-                            sec_rel_sub_bnr += (str(add_button))
+                    # Removed Add New Button suppress functionality
+                    
+                    # elif TreeParam == "Customer Information":
+                    #     send_receive =[]
+                    #     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+                    #     send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
+                    #     for acnt in send_and_receive:
+                    #         send_receive.append(acnt.PARTY_ROLE)
+                    #     Trace.Write("send_receive_J"+str(send_receive))
+                    #     if ("SENDING ACCOUNT" in send_receive and "RECEIVING ACCOUNT" in send_receive):
+                    #         sec_rel_sub_bnr += ""
+                    #     else:
+                    #         sec_rel_sub_bnr += (str(add_button))
                     else:
                         Trace.Write('elseeee11')
                         sec_rel_sub_bnr += (str(add_button))
