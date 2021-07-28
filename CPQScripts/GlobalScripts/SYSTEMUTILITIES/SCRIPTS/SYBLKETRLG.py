@@ -452,7 +452,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
 			elif TITLE == 'SALES_PRICE':
 				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
-				if a:
+				if float(a.DISCOUNT) != 0.0:
 					discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
 				else:
 					discount = 0.00
