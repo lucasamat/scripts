@@ -2387,47 +2387,47 @@ def EntitlementTreeViewHTMLDetail(
 		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 		join = ''		
 	OBJDObjd = Sql.GetList("select * from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "'")
-	
-	if TableObj is None and (EntitlementType == "EQUIPMENT"):
-		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-		Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
-	else:		
-		if TableObj:
-			cpsConfigID = TableObj.CPS_CONFIGURATION_ID
-		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-		Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
+	if EntitlementType != "SENDING_LEVEL":
+		if TableObj is None and (EntitlementType == "EQUIPMENT"):
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+			Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
+		else:		
+			if TableObj:
+				cpsConfigID = TableObj.CPS_CONFIGURATION_ID
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
+			Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
-	attributesdisallowedlst = []
-	attributeReadonlylst = attributes_disallowed_list = []
-	attributeEditlst = list_of_tabs = []
-	attributevalues = {}
-	dropdowndisallowlist = []
-	dropdownallowlist = []
-	get_lastsection_val = attrcode = disable_edit = ""
-	# where = ""
-	Trace.Write("Fullresponse_J "+str(Fullresponse))
-	for rootattribute, rootvalue in Fullresponse.items():
-		if rootattribute == "rootItem":
-			for Productattribute, Productvalue in rootvalue.items():
-				if Productattribute == "characteristics":
-					for prdvalue in Productvalue:
-						if prdvalue["visible"] == "false":
-							attributesdisallowedlst.append(prdvalue["id"])
-						if prdvalue["readOnly"] == "true":
-							attributeReadonlylst.append(prdvalue["id"])
-						if prdvalue["readOnly"] == "false":
-							attributeEditlst.append(prdvalue["id"])
-						if prdvalue["possibleValues"]:
-							for i in prdvalue["possibleValues"]:
-								if i['selectable'] == 'false':
-									dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
-								else:
-									dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
-						for attribute in prdvalue["values"]:
-							attributevalues[str(prdvalue["id"])] = attribute["value"]
-	Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-	Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
-	Trace.Write('attributevalues'+str(attributevalues))
+		attributesdisallowedlst = []
+		attributeReadonlylst = attributes_disallowed_list = []
+		attributeEditlst = list_of_tabs = []
+		attributevalues = {}
+		dropdowndisallowlist = []
+		dropdownallowlist = []
+		get_lastsection_val = attrcode = disable_edit = ""
+		# where = ""
+		Trace.Write("Fullresponse_J "+str(Fullresponse))
+		for rootattribute, rootvalue in Fullresponse.items():
+			if rootattribute == "rootItem":
+				for Productattribute, Productvalue in rootvalue.items():
+					if Productattribute == "characteristics":
+						for prdvalue in Productvalue:
+							if prdvalue["visible"] == "false":
+								attributesdisallowedlst.append(prdvalue["id"])
+							if prdvalue["readOnly"] == "true":
+								attributeReadonlylst.append(prdvalue["id"])
+							if prdvalue["readOnly"] == "false":
+								attributeEditlst.append(prdvalue["id"])
+							if prdvalue["possibleValues"]:
+								for i in prdvalue["possibleValues"]:
+									if i['selectable'] == 'false':
+										dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+									else:
+										dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+							for attribute in prdvalue["values"]:
+								attributevalues[str(prdvalue["id"])] = attribute["value"]
+		Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
+		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
+		Trace.Write('attributevalues'+str(attributevalues))
 
 
 	product_obj = Sql.GetFirst("""SELECT 
