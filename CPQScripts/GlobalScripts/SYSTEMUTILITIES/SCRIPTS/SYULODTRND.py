@@ -2872,7 +2872,7 @@ def EntitlementTreeViewHTMLDetail(
 			TreeSuperParentParam = ""
 		Trace.Write('TreeParam----'+str(TreeParam)+'--'+str(ProductPartnumber))
 		if TreeParam.upper() == ProductPartnumber or TreeParentParam.upper() == ProductPartnumber or TreeSuperParentParam == ProductPartnumber:	
-			#Trace.Write("@2756------->"+str(TreeParentParam))
+			Trace.Write("@2756------->"+str(TreeParentParam))
 			'''if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.GetFirst("SELECT PLATFORM, WAFER_SIZE FROM SAQSCO WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{}'".format(RECORD_ID))
