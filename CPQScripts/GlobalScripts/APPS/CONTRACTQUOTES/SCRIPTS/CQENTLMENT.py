@@ -491,7 +491,7 @@ class Entitlements:
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				Trace.Write("serviceId--1--"+str(serviceId))
 				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
-				Trace.Write("attr_prices"+str(attr_prices)+'---'+str(attr_code_mapping))
+				Trace.Write("attr_prices"+str(attr_prices)+'---')
 				if self.attr_code_mapping and attr_prices:
 					for attr, attr_value in attr_prices.items():
 						data_dict = {'key':attr}
