@@ -2465,76 +2465,20 @@ class TreeView:
 								NewList = []								
 							ChildList.append(ChildDict)
 					return ChildList
+		return ChildList
 
 	def getSubtabRelatedDetails(self, subTabName, type, ObjRecId, RelatedId, RelatedName):
 		SubTabDict = {}
 		DetailList = []
 		DetailDict = {}		
-		if type == "OBJECT SECTION LAYOUT":
-			sectObj = Sql.GetList(
-				"SELECT DISTINCT SYSECT.RECORD_ID FROM SYSECT (NOLOCK) WHERE SYSECT.PRIMARY_OBJECT_RECORD_ID = '"
-				+ str(ObjRecId)
-				+ "' AND SYSECT.PAGE_RECORD_ID = ''"
-			)
-			if sectObj is not None:
-				for section in sectObj:
-					DetailList.append(section.RECORD_ID)
-				DetailDict.update({"Detail": DetailList})
-				#syojhObj=Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH (NOLOCK) WHERE RECORD_ID='"+str(ObjRecId) +"'")
-				#if syojhObj is not None:
-					#DetailDict.update({"ObjectName": syojhObj.OBJECT_NAME})
-				SubTabDict.update({subTabName: DetailDict})
-
-		if type == "OBJECT RELATED LAYOUT":
-			RelatedDict = {}
-			RelatedDict.update({str(RelatedId): str(RelatedName)})
-			SubTabDict = {}
-			RelatedList = []
-			RelatedList.append(RelatedDict)
-			RelDict = {}
-			RelDict.update({"Related": RelatedList})
-			SubTabDict.update({subTabName: RelDict})
-			#Trace.Write("SubTabDict------>"+str(SubTabDict))
+		
 		return SubTabDict
 
 	def getPageRelatedDetails(self, subTabName, pageType, objRecId, ObjectRecId, querystr):
 		SubTabDict = {}
 		DetailList = []
 		DetailDict = {}
-		if pageType == "OBJECT PAGE LISTGRID":
-			RelatedObj = Sql.GetList(
-				"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
-				+ str(ObjectRecId)
-				+ "' AND OBJ_REC_ID = '"
-				+ str(objRecId)
-				+ "' AND VISIBLE = 'True' "
-				+ str(querystr)
-				+ ""
-			)
-			if RelatedObj is not None:
-				RelatedDict = {}
-				for rel in RelatedObj:
-					RelatedDict = {}
-					RelatedDict.update({rel.SAPCPQ_ATTRIBUTE_NAME: rel.NAME})
-				SubTabDict = {}
-				RelatedList = []
-				RelatedList.append(RelatedDict)
-				RelDict = {}
-				RelDict.update({"Related": RelatedList})
-				SubTabDict.update({subTabName: RelDict})
-
-		if pageType == "OBJECT PAGE LAYOUT":
-			sectObj = Sql.GetList(
-				"SELECT DISTINCT SYSECT.RECORD_ID FROM SYSECT (NOLOCK) WHERE SYSECT.PRIMARY_OBJECT_RECORD_ID = '"
-				+ str(objRecId)
-				+ "' AND SYSECT.PAGE_RECORD_ID = ''"
-			)
-			if sectObj is not None:
-				for section in sectObj:
-					DetailList.append(section.RECORD_ID)
-				DetailDict.update({"Detail": DetailList})
-				SubTabDict.update({subTabName: DetailDict})
-		#Trace.Write("=====================> SubTabDict"+str(SubTabDict))
+		
 		return SubTabDict
 
 
