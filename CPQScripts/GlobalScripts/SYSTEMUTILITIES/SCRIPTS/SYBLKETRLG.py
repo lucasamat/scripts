@@ -144,7 +144,7 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 	
 			
 			
-def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
+def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
@@ -193,18 +193,19 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 				pick_val = str(objd_obj.PICKLIST_VALUES)
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
-				edt_str += (
-					'<div   class="row modulebnr brdr">EDIT '
-					+ str(field_lable).upper()
-					+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
-				)
-				edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
-				edt_str += '<table class="wdth100" id="bulk_edit">'
-				edt_str += (
-					'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
-					+ str(field_lable)
-					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
-				)
+				if selectAll != "noselection":
+					edt_str += (
+						'<div   class="row modulebnr brdr">EDIT '
+						+ str(field_lable).upper()
+						+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
+					)
+					edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+					edt_str += '<table class="wdth100" id="bulk_edit">'
+					edt_str += (
+						'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
+						+ str(field_lable)
+						+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
+					)
 				Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
 				if len(list(RECORDID)) > 1:
 					Trace.Write("data_type_CHECK__J "+str(data_type))
@@ -736,7 +737,7 @@ except:
 #Trace.Write("RECORDID--------xxx-----" + str(RECORDID))
 if ELEMENT == "RELATEDEDIT":
 	
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL))
 elif ELEMENT == "SAVE":
 	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN))
 else:
