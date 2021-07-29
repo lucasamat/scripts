@@ -2508,8 +2508,8 @@ def POPUPLISTVALUEADDNEW(
 				if TreeParam == 'Sending Equipment' or TreeParam == "Receiving Equipment":
 					
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParentParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam
 					)
 					)
 					""" elif TreeParam == 'Receiving Equipment':
