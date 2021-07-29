@@ -564,9 +564,9 @@ def CommonTreeViewHTMLDetail(
 					+ "</div> </label></div>"
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
-			#elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007'):	
-			#	Trace.Write("astrl2"+str(sec.SECTION_NAME))
-			#	sec_str += ("") 		
+			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007'):	
+				Trace.Write("astrl2"+str(sec.SECTION_NAME))
+				sec_str += ("") 		
 			else:				
 				sec_str += (
 					'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#'
