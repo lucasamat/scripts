@@ -340,7 +340,7 @@ class SyncQuoteAndCustomTables:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
                             
                             attributesallowedlst = list(set(attributesallowedlst))
-                            #overallattributeslist = list(set(overallattributeslist))
+                            #overallattributeslist = list(set(overallattributeslist)) 
                             HasDefaultvalue=False
                             #Trace.Write('response2--182----315---')
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
