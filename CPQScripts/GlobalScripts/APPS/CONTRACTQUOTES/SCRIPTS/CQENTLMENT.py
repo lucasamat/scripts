@@ -203,7 +203,8 @@ class Entitlements:
 		today = str(datetime.datetime.today())		
 		today = today.split(" ")		
 		variant_condition = ', '.join(['{"factor":'+str(attr_code.get('factor'))+',"key":"'+attr_code.get('key')+'"}' for attr_code in characteristics_attr_values])
-			
+		QuoteItemList = Quote.QuoteTables["SAQICD"]
+		CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
 		account_obj = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}'".format(QuoteRecordId=self.ContractRecordId))
 		stp_account_id = ""
 		if account_obj:
@@ -234,6 +235,27 @@ class Entitlements:
 					total_price_val = "{:,}".format(float(data['conditionValue']))
 					price_val = "{:,}".format(float(data['conditionRate']))
 					attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
+				#to update quote table
+				newRow = QuoteItemList.AddNewRow()
+				newRow['CONDITION_COUNTER'] = data['conditionCounter']
+				newRow['CONDITION_DATA_TYPE'] =  data['conditionType']
+				newRow['CONDITION_RATE'] = data['conditionRate'].strip()
+				newRow['CONDITION_TYPE'] = data['conditionType']
+				newRow['CONDITIONTYPE_NAME'] = data['conditionTypeDescription'].strip()
+				newRow['UOM'] =  data['conditionUnit']
+				newRow['CONDITIONTYPE_RECORD_ID'] = ''
+				newRow['CONDITION_VALUE'] = data['conditionValue']
+				newRow['UOM_RECORD_ID'] = ''
+				newRow['LINE'] = ''
+				newRow['QTEITM_RECORD_ID'] = CrtId
+				newRow['QUOTE_NAME'] = ''
+				newRow['SERVICE_DESCRIPTION'] = ''
+				newRow['SERVICE_ID'] = str(serviceId)
+				newRow['STEP_NUMBER'] = data['stepNo']
+				newRow['SERVICE_RECORD_ID'] = ''
+				newRow['QUOTE_RECORD_ID'] = self.ContractRecordId
+				newRow['QUOTE_ID'] = ''
+			QuoteItemList.Save()
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
 			return attr_prices
 					
