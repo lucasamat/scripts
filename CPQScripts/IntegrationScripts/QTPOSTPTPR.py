@@ -102,7 +102,7 @@ try:
 			contract_quote_record_id = None				
 
 
-			#Log.Info("456 type(price) --->"+str(type(price)))
+			Log.Info("456 type(price) --->")
 			if str(type(price)) == "<type 'Dictionary[str, object]'>":
 				#Log.Info("type condition--->")
 				price = [price]
@@ -115,6 +115,7 @@ try:
 				Taxrate = ''
 				Taxvalue = ''		
 				GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, SORG_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
+				getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))")
 				if GetPricingProcedure is not None:
 					#PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 					PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -126,14 +127,36 @@ try:
 					contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
 				#Log.Info("123 i[conditions] -->"+str(type(i['conditions'])))
 				Taxrate = '0.00'
+				QuoteItemList = Quote.QuoteTables["SAQICD"]
 				if str(type(i['conditions'])) == "<type 'ArrayList'>":
 					for cond_info in i['conditions']:
-						#Log.Info("333 cond_info['conditionType'] --->"+str(cond_info['conditionType']))
-
+						Log.Info("333 cond_info['conditionType'] --->")
+						getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+						newRow = QuoteItemList.AddNewRow()
+						newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
+						newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
+						newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
+						newRow['CONDITION_TYPE'] = cond_info['conditionType']
+						newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
+						newRow['UOM'] =  cond_info['conditionUnit']
+						newRow['CONDITIONTYPE_RECORD_ID'] = ''
+						newRow['CONDITION_VALUE'] = cond_info['conditionValue']
+						newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
+						newRow['LINE'] = ''
+						newRow['QTEITM_RECORD_ID'] = ''
+						newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
+						newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
+						newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
+						newRow['STEP_NUMBER'] = cond_info['stepNo']
+						newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
+						newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+						newRow['QUOTE_ID'] = QUOTE
+					
 						if str(cond_info['conditionType']).upper() == 'ZWSC':
 							Taxrate = cond_info['conditionRate']		
 							if Taxrate == '':
-									Taxrate = '0.00'					
+									Taxrate = '0.00'
+					QuoteItemList.Save()					
 				
 				
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-1], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate)))
