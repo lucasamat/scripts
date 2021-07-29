@@ -2465,7 +2465,7 @@ class TreeView:
 								NewList = []								
 							ChildList.append(ChildDict)
 					return ChildList
-		return ChildList
+		
 
 	def getSubtabRelatedDetails(self, subTabName, type, ObjRecId, RelatedId, RelatedName):
 		SubTabDict = {}
