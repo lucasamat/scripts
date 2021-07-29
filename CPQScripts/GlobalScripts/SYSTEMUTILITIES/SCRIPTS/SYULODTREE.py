@@ -1065,6 +1065,7 @@ class TreeView:
 									# 	str(PageRecId)+"===="+
 									# 	str(ObjectRecId)+"===="+
 									# 	str(ordersBy))                
+									Trace.Write("====> 3333")
 									ChildListData = self.getChildOne(
 										NodeType,
 										NodeName,
@@ -1908,7 +1909,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										
+										Trace.Write("====> 0000")
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -2125,7 +2126,7 @@ class TreeView:
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
 								# Filter based on service type - Services Node - End
 								#Trace.Write("check----"+str(NodeText))
-								
+								Trace.Write("====> 1111")
 								SubChildData = self.getChildOne(
 									SubNodeType,
 									SubNodeName,
@@ -2438,7 +2439,8 @@ class TreeView:
 												+ "'"
 											)											
 											Subwhere_string = str(where_string)
-											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                     
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)     
+											Trace.Write("====> 2222")                                
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,
