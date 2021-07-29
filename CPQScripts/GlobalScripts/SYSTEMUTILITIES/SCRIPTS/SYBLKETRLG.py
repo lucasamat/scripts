@@ -206,126 +206,126 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						+ str(field_lable)
 						+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 					)
-				Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
-				if len(list(RECORDID)) > 1:
-					Trace.Write("data_type_CHECK__J "+str(data_type))
-					if data_type.upper() == "TEXT":
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					elif data_type.upper() == "NUMBER":
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+					Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
+					if len(list(RECORDID)) > 1:
+						Trace.Write("data_type_CHECK__J "+str(data_type))
+						if data_type.upper() == "TEXT":
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						elif data_type.upper() == "NUMBER":
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+							edt_str += (
+								'<input class="custom light_yellow wth_80"  id="'
+								+ str(api_name)
+								+ '" type="checkbox"><span class="lbl"></span>'
+							)
+						elif data_type.upper() == "FORMULA":
+							if  obj_obj == 'SAQSTE':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
+							elif obj_obj == 'SAQICO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+							elif obj_obj == 'SAQSCO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))	
+							elif obj_obj == 'SYROUS':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SYROMA|SYROUS" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))	
+						elif data_type.upper() == "PICKLIST":
+							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
+							pick_val = pick_val.split(",")
+							for value in pick_val:
+								edt_str += "<option>" + str(value) + "</option>"
+							edt_str += "</select>"
+						elif data_type.upper() == "DATE":
+							date_field.append(api_name)
+							edt_str += (
+								'<input id="'
+								+ str(api_name)
+								+ '" type="text" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
+								+ str(datepicker)
+								+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							)
+						else:
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						edt_str += '</div></td></tr><tr class="selectionRow">'
 						edt_str += (
-							'<input class="custom light_yellow wth_80"  id="'
-							+ str(api_name)
-							+ '" type="checkbox"><span class="lbl"></span>'
-						)
-					elif data_type.upper() == "FORMULA":
-						if  obj_obj == 'SAQSTE':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
-						elif obj_obj == 'SAQICO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-						elif obj_obj == 'SAQSCO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-							Trace.Write("EDITSTR"+str(edt_str))	
-						elif obj_obj == 'SYROUS':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="SYROMA|SYROUS" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-							Trace.Write("EDITSTR"+str(edt_str))	
-					elif data_type.upper() == "PICKLIST":
-						edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
-						pick_val = pick_val.split(",")
-						for value in pick_val:
-							edt_str += "<option>" + str(value) + "</option>"
-						edt_str += "</select>"
-					elif data_type.upper() == "DATE":
-						date_field.append(api_name)
-						edt_str += (
-							'<input id="'
-							+ str(api_name)
-							+ '" type="text" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
-							+ str(datepicker)
-							+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
-						)
-					else:
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					edt_str += '</div></td></tr><tr class="selectionRow">'
-					edt_str += (
-						'<td   class="labelCol wth50txtcein">Apply changes to</td><td class="dataCol"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All '
-						+ str(len(list(RECORDID)))
-						+ " selected records</label>"
-					)
-				else:
-					
-					if data_type.upper() == "TEXT":
-						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '">'
-						)
-					elif data_type.upper() == "FORMULA" and obj_obj == 'SAQSTE':
-						edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-						edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-					elif data_type.upper() == "NUMBER":
-						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" value="'
-							+ str(VALUE)
-							+ '" type="text">'
-						)
-					elif data_type.upper() == "FORMULA":
-						if  obj_obj == 'SAQSTE':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
-						elif obj_obj == 'SAQICO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-						elif obj_obj == 'SAQSCO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-							Trace.Write("EDITSTR"+str(edt_str))
-					elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
-						if str(VALUE).upper() == "TRUE":
-							checked = "checked"
-						edt_str += (
-							'<input class="custom light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="checkbox" '
-							+ str(checked)
-							+ '><span class="lbl"></span>'
-						)
-					elif data_type.upper() == "PICKLIST":
-						edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
-						pick_val = pick_val.split(",")
-						for value in pick_val:
-							edt_str += "<option>" + str(value) + "</option>"
-						edt_str += "</select>"
-					elif data_type.upper() == "DATE":
-						date_field.append(api_name)
-						edt_str += (
-							'<input id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
-							+ str(datepicker)
-							+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							'<td   class="labelCol wth50txtcein">Apply changes to</td><td class="dataCol"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All '
+							+ str(len(list(RECORDID)))
+							+ " selected records</label>"
 						)
 					else:
-						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '">'
-						)
-				edt_str += "</div></td></tr></tbody></table>"
-				edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+						
+						if data_type.upper() == "TEXT":
+							edt_str += (
+								'<input class="form-control light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '">'
+							)
+						elif data_type.upper() == "FORMULA" and obj_obj == 'SAQSTE':
+							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+						elif data_type.upper() == "NUMBER":
+							edt_str += (
+								'<input class="form-control light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" value="'
+								+ str(VALUE)
+								+ '" type="text">'
+							)
+						elif data_type.upper() == "FORMULA":
+							if  obj_obj == 'SAQSTE':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
+							elif obj_obj == 'SAQICO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+							elif obj_obj == 'SAQSCO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))
+						elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+							if str(VALUE).upper() == "TRUE":
+								checked = "checked"
+							edt_str += (
+								'<input class="custom light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="checkbox" '
+								+ str(checked)
+								+ '><span class="lbl"></span>'
+							)
+						elif data_type.upper() == "PICKLIST":
+							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
+							pick_val = pick_val.split(",")
+							for value in pick_val:
+								edt_str += "<option>" + str(value) + "</option>"
+							edt_str += "</select>"
+						elif data_type.upper() == "DATE":
+							date_field.append(api_name)
+							edt_str += (
+								'<input id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
+								+ str(datepicker)
+								+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							)
+						else:
+							edt_str += (
+								'<input class="form-control light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '">'
+							)
+					edt_str += "</div></td></tr></tbody></table>"
+					edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 			else:
 				edt_str = "NO"
 		else:
