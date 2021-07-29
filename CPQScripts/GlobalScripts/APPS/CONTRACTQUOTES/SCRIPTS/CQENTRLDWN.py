@@ -539,7 +539,11 @@ for obj in obj_list:
 						if calculated_value:
 							if get_value_diff != 0.00:
 								get_calc_factor = get_value = int(round(float(calculated_value) + get_value_diff ) )
-								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+								if value.ENTITLEMENT_COST_IMPACT and get_value:
+									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+								else:
+									get_price_impact = 0.00
+								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								
 							else:
 								get_calc_factor = get_value = calculated_value
@@ -588,7 +592,11 @@ for obj in obj_list:
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
 							get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
-							get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+							if value.ENTITLEMENT_COST_IMPACT and get_value:
+								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+							else:
+								get_price_impact = 0.00
+							#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 						
 						#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -670,7 +678,11 @@ for obj in obj_list:
 								GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
 								if get_value_diff != 0.00:
 									get_calc_factor = get_value = int(round(float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff) )
-									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+									if value.ENTITLEMENT_COST_IMPACT and get_value:
+										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+									else:
+										get_price_impact = 0.00
+									#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
 									get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 								Log.Info('get_value--fab-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
@@ -717,7 +729,10 @@ for obj in obj_list:
 							GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
 							if get_value_diff != 0.00:
 								get_val = float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff
-								get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+								if value.ENTITLEMENT_COST_IMPACT and get_val:
+									get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+								else:
+									get_price_impact = 0.00
 								get_calc_factor = get_value = round(get_val,2)
 							else:
 								get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
@@ -798,7 +813,10 @@ for obj in obj_list:
 						
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
 							get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
-							get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+							if value.ENTITLEMENT_COST_IMPACT and get_val:
+								get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+							else:
+								get_price_impact = 0.00
 							get_calc_factor = get_value = round(get_val,2)
 							#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -840,7 +858,10 @@ for obj in obj_list:
 				if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
 					get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
 					grnbk_dict[value.ENTITLEMENT_NAME] = get_val
-					get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+					if value.ENTITLEMENT_COST_IMPACT and get_val:
+						get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+					else:
+						get_price_impact = 0.00
 					get_calc_factor = get_value = round(get_val,2)
 			updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
