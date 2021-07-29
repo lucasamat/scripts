@@ -2521,7 +2521,7 @@ def POPUPLISTVALUEADDNEW(
 					
 				else:
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}')".format(where_string=str(where_string)+" AND " if where_string else "",
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}')".format(where_string=str(where_string)+" AND " if where_string else "",
 						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
 					)
 					)
