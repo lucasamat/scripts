@@ -3073,7 +3073,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						#userselectedvalue = [val.ENTITLEMENT_DESCRIPTION for val in GetXMLsecField if GetXMLsecField]
 						sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
-						
+						Trace.Write("inserted_value_list--"+str(inserted_value_list))
 						if GetXMLsecField and attrSysId in inserted_value_list:
 							# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 							# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
@@ -3396,7 +3396,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						else:
 							add_style = "display:none"
-							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
