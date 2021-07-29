@@ -326,6 +326,8 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							)
 					edt_str += "</div></td></tr></tbody></table>"
 					edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+				if SELECTALL == "noselection":
+					edt_str = "NO"
 			else:
 				edt_str = "NO"
 		else:
