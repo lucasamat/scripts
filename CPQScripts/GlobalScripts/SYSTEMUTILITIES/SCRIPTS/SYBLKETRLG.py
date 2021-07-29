@@ -193,7 +193,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 				pick_val = str(objd_obj.PICKLIST_VALUES)
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
-				if selectAll != "noselection":
+				if SELECTALL != "noselection":
 					edt_str += (
 						'<div   class="row modulebnr brdr">EDIT '
 						+ str(field_lable).upper()
