@@ -7503,6 +7503,7 @@ def GetContractCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     )
 
 def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
+    QueryCountObj = ""
     TreeParam = Product.GetGlobal("TreeParam")
     TreeParentParam = Product.GetGlobal("TreeParentLevel0")
     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
