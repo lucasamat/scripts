@@ -7723,7 +7723,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
                     Parent_Equipmentid=Parent_Equipmentid,
                     treeparam=TreeTopSuperParentParam,
-                    fab=TreeSuperParentParam
+                    fab=TreeParentParam
                 )
                 + str(Page_start)
                 + " and "
@@ -7738,7 +7738,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "'and SERVICE_ID ='"
                 + str(TreeTopSuperParentParam)
                 + "' AND FABLOCATION_ID = '"
-                + str(TreeSuperParentParam)
+                + str(TreeParentParam)
                 + "'"
             )        
         if QueryCountObj is not None:
