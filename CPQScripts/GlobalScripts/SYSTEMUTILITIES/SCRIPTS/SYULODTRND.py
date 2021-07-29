@@ -3393,11 +3393,12 @@ def EntitlementTreeViewHTMLDetail(
 						
 						
 						else:
+							add_style = "display:none"
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
-							if attrSysId in attributesdisallowedlst:						
-								add_style = "display:none"
-							else:
-								add_style = ""
+							# if attrSysId in attributesdisallowedlst:						
+							# 	add_style = "display:none"
+							# else:
+							# 	add_style = ""
 							if DType == "Check Box":
 								#Trace.Write('attrSysId--2324---'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
