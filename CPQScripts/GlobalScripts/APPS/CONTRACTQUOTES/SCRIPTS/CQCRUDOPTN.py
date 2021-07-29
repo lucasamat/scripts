@@ -3832,6 +3832,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					"""INSERT SAQSSF(
 						SNDFBL_ID,
 						SNDFBL_NAME,
+						SNDACC_ID,
+						SNDACC_NAME,
+						SNDACC_RECORD_ID,
 						SNDFBL_RECORD_ID,
 						SERVICE_ID,					
 						SERVICE_DESCRIPTION,
@@ -3863,6 +3866,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						SELECT DISTINCT
 						SAQSSE.SNDFBL_ID,
 						SAQSSE.SNDFBL_NAME,
+						SAQSSE.SNDACC_ID,
+						SAQSSE.SNDACC_NAME,
+						SAQSSE.SNDACC_RECORD_ID,
 						SAQSSE.SNDFBL_RECORD_ID,
 						SAQSSE.SERVICE_ID,					
 						SAQSSE.SERVICE_DESCRIPTION,
