@@ -411,8 +411,10 @@ def CommonTreeViewHTMLDetail(
 				else:					
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
 		Trace.Write("main container"+str(a))
-		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
-
+		if str(a)=="g4 F43725A0-056D-473B-BC90-0065CCCF9D13" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):
+			sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '" style ="display:none" >'
+		else:
+			sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
 		action_visible_obj = ""
 		SecEdiApp = ["SYSTEM ADMIN", "SALES"]
 		if current_prod not in SecEdiApp:
