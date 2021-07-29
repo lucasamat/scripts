@@ -5163,6 +5163,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		# Delete SAQICO temp table - Start
 		temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
 		# Delete SAQICO temp table - End
+		get_billing_matrix_year =[]
 		price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 		if Getyear:
@@ -5177,15 +5178,15 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			if Quote is not None:
 				Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
 			if getyears == 1:
-				rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
+				get_billing_matrix_year = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
 			elif getyears == 2:
-				rem_list_sp = ["YEAR_3","YEAR_4","YEAR_5"]
+				get_billing_matrix_year = ["YEAR_3","YEAR_4","YEAR_5"]
 			elif getyears == 3:
-				rem_list_sp = ["YEAR_4","YEAR_5"]
+				get_billing_matrix_year = ["YEAR_4","YEAR_5"]
 			elif getyears == 4:
-				rem_list_sp = ["YEAR_5"]
-		Trace.Write('rem_list_sp--'+str(rem_list_sp))
-		return rem_list_sp
+				get_billing_matrix_year = ["YEAR_5"]
+		Trace.Write('get_billing_matrix_year------'+str(get_billing_matrix_year))
+		return get_billing_matrix_year
 
 
 	def _insert_quote_item_fab_location(self, **kwargs):
@@ -5327,11 +5328,13 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
-			self._quote_items_insert()
+
+			get_billing_matrix_year = self._quote_items_insert()
 			batch_group_record_id = str(Guid.NewGuid()).upper()
 			self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
 			self._insert_quote_item_greenbook(batch_group_record_id=batch_group_record_id)
 			#self._insert_quote_item_greenbook()
+			return get_billing_matrix_year
 	
 	def _update(self):
 		pass
