@@ -563,7 +563,7 @@ def CommonTreeViewHTMLDetail(
 					+ "</div> </label></div>"
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
-			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam == 'Z0007' or TreeParam == 'Z0007_AG'):	
+			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):	
 				sec_str += ("") 		
 			else:				
 				sec_str += (
