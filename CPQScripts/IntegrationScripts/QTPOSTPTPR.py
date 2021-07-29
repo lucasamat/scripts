@@ -23,7 +23,7 @@ import time
 from SYDATABASE import SQL
 
 Sql = SQL()
-
+Log.Info('iflow script called----')
 try:
 	start_time = time.time()
 	if 'Param' in globals(): 
