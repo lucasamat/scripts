@@ -1,4 +1,4 @@
-# __script_name : QTUPDLNITM .PY
+# __script_name : CQUPDLNITM .PY
 # __script_description : THIS SCRIPT IS used to load additional data for quote line items
 # __primary_author__ :Dhurga
 # __create_date :7/29/2021
