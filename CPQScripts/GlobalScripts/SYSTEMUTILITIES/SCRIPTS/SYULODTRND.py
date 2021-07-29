@@ -414,7 +414,7 @@ def CommonTreeViewHTMLDetail(
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
 				else:					
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
-
+		Trace.Write("main container"+str(a))
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
 
 		action_visible_obj = ""
@@ -564,7 +564,7 @@ def CommonTreeViewHTMLDetail(
 					+ "</div> </label></div>"
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
-			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007'):	
+			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):	
 				Trace.Write("astrl2"+str(sec.SECTION_NAME))
 				sec_str += ("") 		
 			else:				
@@ -584,7 +584,7 @@ def CommonTreeViewHTMLDetail(
 					+ '">EDIT</a></li></ul></div></div>'
 				)'''
 		Trace.Write("astrl3"+str(b))
-		if str(b) =="sec_F43725A0-056D-473B-BC90-0065CCCF9D13" and TreeParam != 'Z0007':
+		if str(b) =="sec_F43725A0-056D-473B-BC90-0065CCCF9D13" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):
 			sec_str += '<div id="' + str(b) + '" class="collapse in" style ="display:none"> <table  class="wth100mrg8">'
 		else:
 			sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
