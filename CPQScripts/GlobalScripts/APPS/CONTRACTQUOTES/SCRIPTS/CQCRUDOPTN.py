@@ -1576,7 +1576,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 					ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 
-				if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
+				if str(attrs) == 'AGS_REL_STDATE' and 'Z0007' in OfferingRow_detail.SERVICE_ID:
 					try:						
 						QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
 						ent_disp_val = 	str(QuoteStartDate)						
@@ -4904,7 +4904,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					SAQSCO.SERVICE_ID, 
 					SAQSCO.SERVICE_RECORD_ID, 
 					SAQSCO.WAFER_SIZE,
-					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007_AG' 
+					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007' 
 							THEN  null
 							ELSE  SAQSCE_TEMP.TARGET_PRICE
 					END as TARGET_PRICE,
@@ -4949,7 +4949,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					SAQSCO.SALESORG_RECORD_ID, 
 					SAQICO.TARGET_PRICE_MARGIN as TARGET_MARGIN, 
 					SAQICO.TARGET_PRICE_MARGIN_RECORD_ID as TARGET_MARGIN_THRESHOLD_RECORD_ID,
-					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007_AG' 
+					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007' 
 							THEN  SAQSCE_TEMP.TOTAL_COST
 							ELSE  SAQSCE_TEMP.TARGET_PRICE
 					END as TOTAL_COST,
@@ -4966,11 +4966,11 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					SAQSCE_TEMP.TARGET_PRICE as EXTENDED_PRICE, 
 					null as SALE_DISCOUNT_PRICE, 
 					null as TAX,
-					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007_AG' 
+					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007' 
 							THEN  0
 							ELSE  SAQSCE_TEMP.YEAR_1
 					END as YEAR_1,          
-					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007_AG' 
+					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007' 
 							THEN  0
 							ELSE  SAQSCE_TEMP.YEAR_2
 					END as YEAR_2,    
@@ -4979,7 +4979,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					null as YEAR_5,
 					SAQICO.LIST_PRICE as LIST_PRICE,
 					null as EQUIPMENT_QUANTITY,
-					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007_AG' 
+					CASE WHEN MAMTRL.SAP_PART_NUMBER = 'Z0007' 
 							THEN  null
 							ELSE  1
 					END as YEAR_OVER_YEAR,
