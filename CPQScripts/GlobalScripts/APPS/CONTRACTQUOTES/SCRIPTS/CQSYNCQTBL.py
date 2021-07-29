@@ -1164,7 +1164,7 @@ class SyncQuoteAndCustomTables:
                                                                     ) A
                                                                 """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value)))
                                     SAQFEQ_end = time.time()
-                                    Log.Info("SAQFEQ----"+str(SAQFEQ_end-SAQFEQ_start))
+                                    Log.Info("SAQFEQ----"+str(SAQFEQ_end-SAQFEQ_start)+"INSERTSAQFEQ"+str(equipment_insert))
 
                                     
                                     
