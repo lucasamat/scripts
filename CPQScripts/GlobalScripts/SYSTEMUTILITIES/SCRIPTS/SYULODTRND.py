@@ -564,9 +564,9 @@ def CommonTreeViewHTMLDetail(
 					+ "</div> </label></div>"
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
-			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007'):	
-				Trace.Write("astrl2"+str(sec.SECTION_NAME))
-				sec_str += ("") 		
+			#elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007'):	
+			#	Trace.Write("astrl2"+str(sec.SECTION_NAME))
+			#	sec_str += ("") 		
 			else:				
 				sec_str += (
 					'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#'
@@ -584,7 +584,10 @@ def CommonTreeViewHTMLDetail(
 					+ '">EDIT</a></li></ul></div></div>'
 				)'''
 		Trace.Write("astrl3"+str(b))
-		sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
+		if str(b) =="sec_F43725A0-056D-473B-BC90-0065CCCF9D13" and TreeParam != 'Z0007':
+			sec_str += '<div id="' + str(b) + '" class="collapse in" style ="display:none"> <table  class="wth100mrg8">'
+		else:
+			sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
 		sec_str += auto_field
 					
 		query_value = Sql.GetFirst(
