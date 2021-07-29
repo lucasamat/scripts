@@ -1082,7 +1082,7 @@ class Entitlements:
 									# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
 									# 			else:
 									# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
-						Trace.Write("characteristics_attr_values"+str(characteristics_attr_values))
+						Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 						
 						if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 							Trace.Write("serviceId---"+str(serviceId))
