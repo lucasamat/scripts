@@ -546,6 +546,7 @@ def CommonTreeViewHTMLDetail(
 			
 			sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"		
 		else:			
+			Trace.Write("astrl"+str(TreeParam))
 			if sec.SECTION_NAME =="BASIC INFORMATION" and TreeParentParam == "Field Dependencies":
 				'''sec_str += (
 					'<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
