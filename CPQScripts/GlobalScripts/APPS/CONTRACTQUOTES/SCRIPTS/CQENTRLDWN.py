@@ -27,7 +27,7 @@ except:
 	wherecon = Param.where
 	get_prev_dict = Param.get_prev_dict
 wherecon = wherecon.replace("&#39;","'")
-get_prev_dict = eval(get_prev_dict.replace("&#39;","'"))
+get_prev_dict = eval(get_prev_dict.replace("&#39;","'").replace("&#38;","&"))
 objItems = objs.split('=')
 where = wherecon.split(",")[0]
 SAQITMWhere = wherecon.split(",")[1]
