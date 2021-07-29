@@ -6680,7 +6680,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(cls)
                 + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
                 + str(cls)
-                + '").text();localStorage.setItem("multiedit_selectall","no"); selectAll = false; $("#table_covered_obj_parent").find(\'[type="checkbox"]:checked\').map(function () {if ($(this).attr("name")== "btSelectAll"){selectAll = true; localStorage.setItem("multiedit_selectall","yes");} }); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+                + '").text();localStorage.setItem("multiedit_selectall","no"); selectAll = false; rowselected = $("#table_covered_obj_parent").find(\'[type="checkbox"]:checked\').length if(rowselected == 0){selectAll = "noselection"} $("#table_covered_obj_parent").find(\'[type="checkbox"]:checked\').map(function () {if ($(this).attr("name")== "btSelectAll"){selectAll = true; localStorage.setItem("multiedit_selectall","yes");} }); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
                 + str(table_id)
                 + '");   cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
                 + str(table_id)
