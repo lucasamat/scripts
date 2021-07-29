@@ -43,7 +43,7 @@ def iflow_pricing_call(user,entries):
 
         authorization = Convert.ToBase64String(binaryAuthorization)
         authorization = "Basic " + authorization
-    Log.Info("testing.............")
+    Log.Info("testing............."+str(requestdata))
     webclient = System.Net.WebClient()
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
