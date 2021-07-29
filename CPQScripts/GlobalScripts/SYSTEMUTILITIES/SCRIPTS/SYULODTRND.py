@@ -583,7 +583,7 @@ def CommonTreeViewHTMLDetail(
 					+ str(editclick)
 					+ '">EDIT</a></li></ul></div></div>'
 				)'''
-
+		Trace.Write("astrl3"+str(b))
 		sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
 		sec_str += auto_field
 					
