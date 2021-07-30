@@ -466,12 +466,18 @@ class SyncQuoteAndCustomTables:
                                 }
                             ) """
                     if custom_fields_detail.get("PaymentTerms"):
+                        payid =""
+                        paydesc = ""
+                        payrec = ""
                         payterm_obj = Sql.GetFirst(
-                            "SELECT PAYMENT_TERM_ID, PAYMENT_TERM_NAME,NUMBER_OF_DAYS,PAYMENT_TERM_RECORD_ID FROM PRPTRM (NOLOCK) WHERE PAYMENT_TERM_ID = '{}'".format(
+                            "SELECT PAYMENT_TERM_ID, PAYMENT_TERM_NAME,NUMBER_OF_DAYS,PAYMENT_TERM_RECORD_ID,DESCRIPTION FROM PRPTRM (NOLOCK) WHERE PAYMENT_TERM_ID = '{}'".format(
                                 custom_fields_detail.get("PaymentTerms")
                             )
                         )
                         if payterm_obj:
+                            payid =payterm_obj.PAYMENT_TERM_ID
+                            paydesc = payterm_obj.DESCRIPTION
+                            payrec = payterm_obj.PAYMENT_TERM_RECORD_ID
                             contract_quote_data.update(
                                 {
                                     "PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
@@ -480,6 +486,10 @@ class SyncQuoteAndCustomTables:
                                     "PAYMENTTERM_RECORD_ID": payterm_obj.PAYMENT_TERM_RECORD_ID,
                                 }
                             )
+                    else:
+                        payid =""
+                        paydesc = ""
+                        payrec = ""
                     # self.quote.OrderStatus.Name
 
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
@@ -697,11 +707,25 @@ class SyncQuoteAndCustomTables:
                             """.format(RecordId=NewSalesAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME))
 
                             if not getDiv or not getDistr:
+                                if custom_fields_detail.get("Incoterms"):
+                                    incid = ""
+                                    incdesc = ""
+                                    increc = ""
+                                    getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
+                                    if getInc:
+                                        incid = getInc.INCOTERM_ID
+                                        incdesc = getInc.DESCRIPTION
+                                        increc = getInc.INCOTERM_RECORD_ID
+                                else:
+                                    incid = ""
+                                    incdesc = ""
+                                    increc = ""
+                                
 
                                 NewSalesAreaAccountRecordId = str(Guid.NewGuid()).upper()
-                                Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}')
-                                """.format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing))
-
+                                insert = Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE,INCOTERM_ID,INCOTERM_DESCRIPTION,INCOTERM_RECORD_ID,PAYMENTTERM_ID,PAYMENTTERM_DESCRIPTION,PAYMENTTERM_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}','{incid}','{incdesc}','{increc}','{payid}','{paydesc}','{payrec}')
+                                """.format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing,incid=incid,incdesc=incdesc,increc=increc,payid=payid,paydesc=paydesc,payrec=payrec))
+                                Log.Info("@@@728------>"+str(insert))
                                 getCtry = Sql.GetFirst("SELECT COUNTRY_RECORD_ID FROM SACTRY WHERE COUNTRY = '{}'".format(custom_fields_detail.get("PayerCountry")))
                                 NewRecordId = str(Guid.NewGuid()).upper()
                                 Sql.RunQuery("""INSERT INTO SAASCT (ACCOUNT_SALES_AREA_COUNTRY_TAX_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,COUNTRY,COUNTRY_NAME,COUNTRY_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Country}','{CountryName}','{CountryRecordId}')
