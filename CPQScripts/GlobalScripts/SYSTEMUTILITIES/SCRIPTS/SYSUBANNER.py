@@ -2069,7 +2069,7 @@ def Related_Sub_Banner(
                         #Product.Attributes.GetByName("BTN_SYACTI_QT_00011_ADDFAB").Allowed = True
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
-                        if len(send_and_receive) == 0 and TreeParam == "Fab Locations"
+                        if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
                             sec_rel_sub_bnr += ""
                         else:
                             sec_rel_sub_bnr += (str(add_button))
