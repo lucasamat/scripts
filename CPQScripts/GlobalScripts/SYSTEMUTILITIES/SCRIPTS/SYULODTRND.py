@@ -3402,6 +3402,60 @@ def EntitlementTreeViewHTMLDetail(
 							# 	add_style = "display:none"
 							# else:
 							# 	add_style = ""
+							if DType == "Drop Down":
+								#Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
+								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+
+									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+
+									, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+									, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+									, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+									FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+									INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+									LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+									LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+								VAR1 = sec_str1 = selected_option = ""
+								if STDVALUES:
+									if attributevalues.get(attrSysId) is not None:
+										select_option = 'selected'
+										default = ''
+									else:
+										select_option = ""
+										default = 'selected'
+										selected_option = ' title="Select" '
+									VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
+									for value in STDVALUES:
+										if value.SYSTEM_ID in dropdowndisallowlist:
+											disallow_style = "style = 'display:none'"
+										else:	
+											disallow_style = ""
+										if str(selected_option)=='selected':
+											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
+										VAR1 += (
+											'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
+											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
+											+ '"'+str(select_option)+'>'
+											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+											+ "</option>"
+										)
+								sec_str1 += (
+									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  data-content ="'
+									+ str(attrSysId)
+									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  disabled>'
+									+ str(VAR1)
+									+ "</select>"
+								)
+									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
+								#sec_str += "</select></td>"
+						
 							if DType == "Check Box":
 								#Trace.Write('attrSysId--2324---'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
@@ -3445,7 +3499,7 @@ def EntitlementTreeViewHTMLDetail(
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
 								sec_str1 += (
-									'<input class="form-control '+str(disable_edit)+'" id = "'
+									'<input class="form-control '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
