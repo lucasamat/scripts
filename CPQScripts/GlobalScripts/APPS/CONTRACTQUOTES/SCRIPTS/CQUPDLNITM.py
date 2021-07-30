@@ -28,7 +28,7 @@ def getData():
                     rate += "<td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td>"
                     data_info += "<tr class='"+tr_class+"' id='1' ><td class='textalign' id=' "+str(row.SERVICE_ID)+"'>"+str(row.STEP_NUMBER)+"</td><td class='textalign'>"+str(row.CONDITION_TYPE)+"</td><td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td>"+rate+"</td><td class='textalign'>'USD'</td><td class='numberalign'>"+str(row.UOM)+"</td><td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td><td class='textalign'>"+str(row.UOM)+"</td><td class='textalign'>'STATIC'</td><td class='textalign'>'C'</td><td class='numberalign'>'1'</td><td class='textalign'>'INACTIVE'</td><td class='textalign'>'YO66'</td><td class='centeralign'>"+factor_id+"</td></tr>"
                 data.append({rolled_up_id:data_info})
-            Trace.Write(str(data))
+    Trace.Write(str(data))
     return data
 LoadAction = Param.LoadAction
 if LoadAction == "LOADQT":
