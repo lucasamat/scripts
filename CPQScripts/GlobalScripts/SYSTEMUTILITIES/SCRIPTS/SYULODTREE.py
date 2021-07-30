@@ -1626,7 +1626,16 @@ class TreeView:
 									+ str(NodeText)
 									+ "'"
 								)
-							
+								if NodeName == 'SECTION_FIELD_ID':
+									Trace.Write('XXXXXXX==> '+str("select * from "
+									+ str(ObjName)
+									+ " (nolock) where "
+									+ str(where_string)
+									+ " AND "
+									+ str(NodeName)
+									+ " = '"
+									+ str(NodeText)
+									+ "'"))
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
