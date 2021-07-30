@@ -3074,7 +3074,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						#userselectedvalue = [val.ENTITLEMENT_DESCRIPTION for val in GetXMLsecField if GetXMLsecField]
 						sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
-						Trace.Write("inserted_value_list--"+str(inserted_value_list))
+						#Trace.Write("inserted_value_list--"+str(inserted_value_list))
 						if GetXMLsecField and attrSysId in inserted_value_list:
 							# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 							# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
@@ -3396,6 +3396,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						
 						else:
+							attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
@@ -3518,7 +3519,9 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 							new_value_dicta["DATA TYPE"] = ""
 							new_value_dicta["CALCULATION FACTOR"] = ""	
+						Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 						totaldisallowlist = [item for item in attributesdisallowedlst]
+
 						#getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
 						#Trace.Write("check all-----"+str(attrLabel)+"userselectedvalue"+str(userselectedvalue)+str(totaldisallowlist)+str(getnameentallowed))
 						# if  str(attrLabel) not in userselectedvalue and len(userselectedvalue) > 0:							
