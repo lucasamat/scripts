@@ -1774,7 +1774,7 @@ def Related_Sub_Banner(
     #         SixthLable = ""
     #         SixthValue = ""
     elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and str(TreeParam) != "":
-        Trace("Check----123-->")
+        Trace.Write("Check----123-->")
         PrimaryLable = ListKey[0]
         PrimaryValue = PrimaryValue		
         try:
