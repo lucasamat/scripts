@@ -96,54 +96,104 @@ end = 1000
 L = 1
 
 Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
-    
-while L == 1:
-    #Log.Info("Looping Count ==> "+str(n))
-    itemid = ''
-    part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
-    partids = quantity = li = []
-    s = ""
-    if part_query:      
-        partids = [p.PART_NUMBER for p in part_query]
-        quantity = [float(q.ANNUAL_QUANTITY) for q in part_query]  
-        start = start + 1000
-        end = end + 1000
-        
-        if len(partids) == 1:
-            itemid = str(partids[0])+";"+str(QUOTE)+";"+str(quantity[0])
-            item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(quantity[0])+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(partids[0])+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(Taxm1Qurey.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(partids[0])+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
+part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+if part_query:
 
-            requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(item_string)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
-        else:
-            for p,q in zip(partids,quantity):
-                itemid = str(p)+";"+str(QUOTE)+";"+str(q)
-                item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(q)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(p)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(Taxm1Qurey.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(p)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
-                li.append(item_string)
-            s = ','.join(li)
+    while L == 1:
+        #Log.Info("Looping Count ==> "+str(n))
+        itemid = ''
+        part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+        partids = quantity = li = []
+        s = ""
+        if part_query:      
+            partids = [p.PART_NUMBER for p in part_query]
+            quantity = [float(q.ANNUAL_QUANTITY) for q in part_query]  
+            start = start + 1000
+            end = end + 1000
             
-            start_time = time.time()
-            requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root>  {"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
+            if len(partids) == 1:
+                itemid = str(partids[0])+";"+str(QUOTE)+";"+str(quantity[0])
+                item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(quantity[0])+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(partids[0])+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(Taxm1Qurey.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(partids[0])+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 
-        #Log.Info("requestdata==>"+str(requestdata))
-        #response1 = webclient.UploadString(Request_URL,str(requestdata))
-        
-        LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
-        Login_Username = str(LOGIN_CREDENTIALS.Username)
-        Login_Password = str(LOGIN_CREDENTIALS.Password)
-        authorization = Login_Username + ":" + Login_Password
-        binaryAuthorization = UTF8.GetBytes(authorization)
-        authorization = Convert.ToBase64String(binaryAuthorization)
-        authorization = "Basic " + authorization
-        webclient = System.Net.WebClient()
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
-        #Log.Info("Looping Count ==> ")
-        
-        response1 = webclient.UploadString("https://e250404-iflmap.hcisbt.us3.hana.ondemand.com/cxf/CPQ_CPS",str(requestdata))
-        end_time = time.time()
-        #Log.Info("QUOTE ID---> "+str(QUOTE)+"loop---"+str(loop_count)+ "---time"+str(end_time - start_time))
-    else:
-        L=0
+                requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root> {"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(item_string)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
+            else:
+                for p,q in zip(partids,quantity):
+                    itemid = str(p)+";"+str(QUOTE)+";"+str(q)
+                    item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(q)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(p)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(Taxm1Qurey.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(p)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
+                    li.append(item_string)
+                s = ','.join(li)
+                
+                start_time = time.time()
+                requestdata = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">  <soapenv:Body> <cpq_columns><root>  {"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']} </root> <CPSToken>'+str(response['access_token'])+'</CPSToken></cpq_columns> </soapenv:Body></soapenv:Envelope>'
+
+            #Log.Info("requestdata==>"+str(requestdata))
+            #response1 = webclient.UploadString(Request_URL,str(requestdata))
+            
+            LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
+            Login_Username = str(LOGIN_CREDENTIALS.Username)
+            Login_Password = str(LOGIN_CREDENTIALS.Password)
+            authorization = Login_Username + ":" + Login_Password
+            binaryAuthorization = UTF8.GetBytes(authorization)
+            authorization = Convert.ToBase64String(binaryAuthorization)
+            authorization = "Basic " + authorization
+            webclient = System.Net.WebClient()
+            webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+            #Log.Info("Looping Count ==> ")
+            
+            response1 = webclient.UploadString("https://e250404-iflmap.hcisbt.us3.hana.ondemand.com/cxf/CPQ_CPS",str(requestdata))
+            end_time = time.time()
+            #Log.Info("QUOTE ID---> "+str(QUOTE)+"loop---"+str(loop_count)+ "---time"+str(end_time - start_time))
+        else:
+            L=0
+else:
+    Log.Info('150----to call pricing here---quote table insert----')
+    price = []
+    QUOTE = ''
+
+    for root, value in response1.items():
+        for root1 in value:
+            for inv in root1:			
+                if inv == "items":
+                    #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
+                    price = root1[inv]			 
+                    break
+    if str(type(price)) == "<type 'Dictionary[str, object]'>":
+        Log.Info("type condition--->")
+        price = [price]
+		Log.Info("456789 type(price) --->"+str(type(price)))
+        for i in price:		
+            Itemidinfo = str(i["itemId"]).split(";")
+            Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
+            QUOTE = str(Itemidinfo[1])	
+            contract_quote_record_id = None		
+            
+            getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
+            QuoteItemList = Quote.QuoteTables["SAQICD"]
+            if str(type(i['conditions'])) == "<type 'ArrayList'>":
+                for cond_info in i['conditions']:
+                    Log.Info("333 cond_info['conditionType'] --->")
+                    getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+                    newRow = QuoteItemList.AddNewRow()
+                    newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
+                    newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
+                    newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
+                    newRow['CONDITION_TYPE'] = cond_info['conditionType']
+                    newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
+                    newRow['UOM'] =  cond_info['conditionUnit']
+                    newRow['CONDITIONTYPE_RECORD_ID'] = ''
+                    newRow['CONDITION_VALUE'] = cond_info['conditionValue']
+                    newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
+                    newRow['LINE'] = ''
+                    newRow['QTEITM_RECORD_ID'] = ''
+                    newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
+                    newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
+                    newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
+                    newRow['STEP_NUMBER'] = cond_info['stepNo']
+                    newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
+                    newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+                    newRow['QUOTE_ID'] = QUOTE
+                QuoteItemList.Save()		                
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
