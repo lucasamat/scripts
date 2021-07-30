@@ -18,7 +18,7 @@ def getData():
     CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
     Ownrid = TagParserProduct.ParseString("<*CTX( Quote.OwnerId )*>")
     QuoteNumber=Quote.GetGlobal("contract_quote_record_id")
-    getquoteid = Sql.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"'")
+    getquoteid = SqlHelper.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"'")
     for item in Quote.Items :
         rolled_up_id = factor_id =rate =""
         section_row1[str("dyn_" + str(item.Rank))] = ""
