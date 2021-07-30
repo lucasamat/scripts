@@ -239,7 +239,7 @@ class Entitlements:
 					price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
 					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_value, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 				#to update quote table
-				
+			Product.SetGlobal('attr_level_pricing',str(attr_prices))	
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
 			return attr_prices
 					
@@ -614,6 +614,7 @@ class Entitlements:
 					except:	
 						attr_level_pricing = ""
 						Trace.Write("")
+					Trace.Write("attr_level_pricing"+str(attr_level_pricing))
 					if attr_level_pricing:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
@@ -1119,7 +1120,7 @@ class Entitlements:
 						if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 							Trace.Write("serviceId---"+str(serviceId))
 							attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
-							Product.SetGlobal('attr_level_pricing',str(attr_prices))
+							#Product.SetGlobal('attr_level_pricing',str(attr_prices))
 							Trace.Write("attr_prices---908---"+str(attr_prices))
 							if attr_prices:
 								for attr, attr_value in attr_prices.items():
