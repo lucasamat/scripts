@@ -1533,14 +1533,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		attributesdisallowedlst=[]
 		attributeReadonlylst=[]
 		attributesallowedlst=[]
-		overallattributeslist =[]
+		#overallattributeslist =[]
 		attributevalues={}
 		for rootattribute, rootvalue in Fullresponse.items():
 			if rootattribute=="rootItem":
 				for Productattribute, Productvalue in rootvalue.items():
 					if Productattribute=="characteristics":
 						for prdvalue in Productvalue:
-							overallattributeslist.append(prdvalue['id'])
+							#overallattributeslist.append(prdvalue['id'])
 							if prdvalue['visible'] =='false':
 								attributesdisallowedlst.append(prdvalue['id'])
 							else:								
@@ -1551,14 +1551,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								attributevalues[str(prdvalue['id'])]=attribute['value']
 		
 		attributesallowedlst = list(set(attributesallowedlst))
-		overallattributeslist = list(set(overallattributeslist))		
+		#overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 					
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
-			for attrs in overallattributeslist:
+			for attrs in attributesallowedlst:
 				if attrs in attributevalues:					
 					HasDefaultvalue=True					
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
@@ -1669,14 +1669,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					attributesdisallowedlst=[]
 					attributeReadonlylst=[]
 					attributesallowedlst=[]
-					overallattributeslist =[]
+					#overallattributeslist =[]
 					attributevalues={}
 					for rootattribute, rootvalue in Fullresponse.items():
 						if rootattribute=="rootItem":
 							for Productattribute, Productvalue in rootvalue.items():
 								if Productattribute=="characteristics":
 									for prdvalue in Productvalue:
-										overallattributeslist.append(prdvalue['id'])
+										#overallattributeslist.append(prdvalue['id'])
 										if prdvalue['visible'] =='false':
 											attributesdisallowedlst.append(prdvalue['id'])
 										else:
@@ -1688,13 +1688,13 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 											attributevalues[str(prdvalue['id'])]=attribute['value']
 					
 					attributesallowedlst = list(set(attributesallowedlst))
-					overallattributeslist = list(set(overallattributeslist))
+					#overallattributeslist = list(set(overallattributeslist))
 					HasDefaultvalue=False
 					ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 					if ProductVersionObj is not None:
 						tbrow={}
 						insertservice = ""						
-						for attrs in overallattributeslist:							
+						for attrs in attributesallowedlst:							
 							if attrs in attributevalues:
 								HasDefaultvalue=True
 								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
