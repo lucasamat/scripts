@@ -1317,7 +1317,19 @@ def Related_Sub_Banner(
         ThirdValue = TreeParam
         FourthLable = "Equipment"
         FourthValue = "All"
-    if TreeParam == "Approvals" and CurrentTabName == "My Approvals Queue":
+    elif TreeSuperParentParam == 'Quote Items' and ObjName == 'SAQICO':
+        TreeParentParam = TreeParentParam.split('-')
+        PrimaryLable = "Line Item ID"
+        PrimaryValue = TreeParentParam[0].strip()
+        SecondLable = "Product Offering ID"
+        SecondValue = TreeParentParam[1].strip()
+        ThirdLable = "Fab Location ID"
+        ThirdValue = TreeParam
+        FourthLable = "Greenbooks"
+        FourthValue = "All"
+        FifthLable = "Equipment"
+        FifthValue = "All"  
+    elif TreeParam == "Approvals" and CurrentTabName == "My Approvals Queue":
         transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
         chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
         PrimaryLable = "Approval Chain ID"
@@ -1735,18 +1747,7 @@ def Related_Sub_Banner(
         FifthValue = "All"
         SixthLable = "Equipment"
         SixthValue = "All"
-    elif TreeSuperParentParam == 'Quote Items' and ObjName == 'SAQICO':
-        TreeParentParam = TreeParentParam.split('-')
-        PrimaryLable = "Line Item ID"
-        PrimaryValue = TreeParentParam[0].strip()
-        SecondLable = "Product Offering ID"
-        SecondValue = TreeParentParam[1].strip()
-        ThirdLable = "Fab Location ID"
-        ThirdValue = TreeParam
-        FourthLable = "Greenbooks"
-        FourthValue = "All"
-        FifthLable = "Equipment"
-        FifthValue = "All"       
+       
     # elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and TabName == "Quote" and str(TreeParam) != "":
     #     PrimaryLable = ListKey[0]
     #     PrimaryValue = PrimaryValue
