@@ -1066,20 +1066,23 @@ class TreeView:
 									# 	str(ObjectRecId)+"===="+
 									# 	str(ordersBy))                
 									Trace.Write('3333333333333333@@@@')
-									ChildListData = self.getChildOne(
-										NodeType,
-										NodeName,
-										RecAttValue,
-										nodeId,
-										ParRecId,
-										DynamicQuery,
-										ObjectName,
-										RecId,
-										where_string,
-										PageRecId,
-										ObjectRecId,
-										ordersBy,
-									)
+									if NodeName == 'App Level Permissions':
+										ChildListData = []
+									else:
+										ChildListData = self.getChildOne(
+											NodeType,
+											NodeName,
+											RecAttValue,
+											nodeId,
+											ParRecId,
+											DynamicQuery,
+											ObjectName,
+											RecId,
+											where_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
