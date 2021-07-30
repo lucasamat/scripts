@@ -1773,46 +1773,6 @@ def Related_Sub_Banner(
     #         FifthValue = ""
     #         SixthLable = ""
     #         SixthValue = ""
-    elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and str(TreeParam) != "":
-        Trace.Write("Check----123-->")
-        PrimaryLable = ListKey[0]
-        PrimaryValue = PrimaryValue		
-        try:
-            FifthLable = ListKey[4]
-            FifthValue = ListVal[4]
-        except:
-            FifthLable = ""
-            FifthValue = ""
-        try:
-            PrimaryLable = ListKey[0]
-            PrimaryValue = PrimaryValue
-        except:
-            PrimaryLable = ""
-            PrimaryValue = ""
-        try:
-            SecondLable = ListKey[1]
-            SecondValue = ListVal[1]
-        except:
-            SecondLable = ""
-            SecondValue = ""
-        try:
-            ThirdLable = ListKey[2]
-            ThirdValue = ListVal[2]
-        except:
-            ThirdLable = ""
-            ThirdValue = ""
-        try:
-            FourthLable = ListKey[3]
-            FourthValue = ListVal[3]
-        except:
-            FourthLable = ListKey[3]
-            FourthValue = ListVal[3]
-        try:
-            SixthLable =ListKey[5]
-            SixthValue = ListVal[5]
-        except:
-            SixthLable =ListKey[5]
-            SixthValue = ListVal[5]
     elif TreeParentParam == "Add-On Products" and subTabName != "Equipment":
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION,ADNPRD_DESCRIPTION from SAQSAO(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and ADNPRD_ID = '"+str(TreeParam)+"'")
         PrimaryLable = "Parent Product Offering ID"
