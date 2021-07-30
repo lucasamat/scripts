@@ -623,7 +623,7 @@ class Entitlements:
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
 							try:
-								getcostbaborimpact = getpriceimpact.split(" ")[0].strip()
+								getcostbaborimpact = getcostbaborimpact.split(" ")[0].strip()
 								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
 								getcostbaborimpact = getcostbaborimpact	
