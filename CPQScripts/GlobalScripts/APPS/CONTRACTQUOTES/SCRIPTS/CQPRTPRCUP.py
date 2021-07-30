@@ -151,7 +151,7 @@ else:
     price = []
     QUOTE = ''
 
-    for root, value in response1.items():
+    for root, value in response.items():
         for root1 in value:
             for inv in root1:			
                 if inv == "items":
