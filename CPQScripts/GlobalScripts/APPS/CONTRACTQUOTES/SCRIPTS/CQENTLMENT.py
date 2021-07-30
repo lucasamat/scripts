@@ -236,7 +236,7 @@ class Entitlements:
 					price_val = "{:,}".format(float(data['conditionRate']))
 					#attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 					total_price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
-					price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
+					price_value = "{} {}".format(price_val, data['conditionCurrency'] )
 					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_value, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 				#to update quote table
 			Product.SetGlobal('attr_level_pricing',str(attr_prices))	
