@@ -624,6 +624,10 @@ class Entitlements:
 							Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
 						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
+							try:
+								getpriceimpact = getpriceimpact.split(" ")[0].strip()
+							except:
+								getpriceimpact = getpriceimpact	
 							Trace.Write("getpriceimpact---"+str(getpriceimpact))
 						if str((val).split("||")[4]).strip() and str((val).split("||")[4]).strip() not in ('undefined','NULL'):
 							calculation_factor = str((val).split("||")[4]).strip()
