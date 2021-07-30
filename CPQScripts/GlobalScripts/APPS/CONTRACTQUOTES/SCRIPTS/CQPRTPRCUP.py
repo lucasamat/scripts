@@ -161,7 +161,7 @@ else:
     if str(type(price)) == "<type 'Dictionary[str, object]'>":
         Log.Info("type condition--->")
         price = [price]
-		Log.Info("456789 type(price) --->"+str(type(price)))
+        Log.Info("456789 type(price) --->"+str(type(price)))
         for i in price:		
             Itemidinfo = str(i["itemId"]).split(";")
             Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
