@@ -235,8 +235,9 @@ class Entitlements:
 					total_price_val = "{:,}".format(float(data['conditionValue']))
 					price_val = "{:,}".format(float(data['conditionRate']))
 					#attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
-					#total_price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
-					attr_prices[data['varcondKey']] = {'total_price':total_price_val , 'price':price_val, 'factor':data['varcondFactor']}
+					total_price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
+					price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
+					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_value, 'factor':data['varcondFactor']}
 				#to update quote table
 				
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
@@ -621,11 +622,17 @@ class Entitlements:
 					else:	
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
+							try:
+								getpriceimpact = getpriceimpact.split(" ")[0].strip()
+								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
+							except:
+								getpriceimpact = getpriceimpact	
 							Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
 						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
 							try:
 								getpriceimpact = getpriceimpact.split(" ")[0].strip()
+								pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
 								getpriceimpact = getpriceimpact	
 							Trace.Write("getpriceimpact---"+str(getpriceimpact))
@@ -701,6 +708,8 @@ class Entitlements:
 						pricemethodupdate = curr """
 						#get_curr = curr
 					#Trace.Write("Cost---->"+str(getcostbaborimpact))
+					getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
+					getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
