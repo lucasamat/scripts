@@ -2083,16 +2083,16 @@ def Related_Sub_Banner(
                     #     sec_rel_sub_bnr += str(add_button)
                     # else:
                     #     sec_rel_sub_bnr += ""
-                    # else:
-                    #     Trace.Write("CHK_3")
-                    #     if CurrentRecordId == "SYOBJR-98789" and TreeParam == "Fab Locations":
-                    #         Trace.Write("No Button are required!!!")
-                    #     else:	
-                    #         sec_rel_sub_bnr += (str(add_button))
-                        # sec_rel_sub_bnr += (
-                        #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
-                        #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal" disabled>ADD FAB</button>'
-                        # )
+                    else:
+                        Trace.Write("CHK_3")
+                        if CurrentRecordId == "SYOBJR-98789" and TreeParam == "Fab Locations":
+                            Trace.Write("No Button are required!!!")
+                        else:	
+                            sec_rel_sub_bnr += (str(add_button))
+                        sec_rel_sub_bnr += (
+                            '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
+                            ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal" disabled>ADD FAB</button>'
+                        )
 
                 elif CurrentRecordId == "SYOBJR-98788":
                     sec_rel_sub_bnr += (str(add_button))
