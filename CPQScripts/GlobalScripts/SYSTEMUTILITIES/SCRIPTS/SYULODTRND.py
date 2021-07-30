@@ -3397,7 +3397,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						else:
 							add_style = "display:none"
-							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
