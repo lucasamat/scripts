@@ -178,8 +178,8 @@ else:
         for root1 in value:
             for inv in root1:			
                 if inv == "items":
-                    Log.Info("6666 i[u] --->"+str(list(root1[inv])))
-                    price = root1[inv]			 
+                    #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
+                    price = value[:]			 
                     break
    
     Log.Info("type condition--->")
