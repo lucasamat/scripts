@@ -632,8 +632,9 @@ class Entitlements:
 						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
 							try:
-								getpriceimpact = getpriceimpact.split(" ")[0].strip()
-								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
+								price_split = getpriceimpact.split(" ")
+								getpriceimpact = price_split.split(" ")[0].strip()
+								pricemethodupdate = price_split.split(" ")[1].strip()
 							except:
 								getpriceimpact = getpriceimpact	
 							Trace.Write("getpriceimpact---"+str(getpriceimpact))
