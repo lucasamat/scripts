@@ -1306,7 +1306,7 @@ def Related_Sub_Banner(
         #     SixthLable = ''
         #     SixthValue = ''    
     Trace.Write("tab name--"+str(TabName)+" REC_ID "+str(CurrentRecordId))
-    if  TreeTopSuperParentParam == "Quote Items" and TabName == "Quotes" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
+    if  TreeTopSuperParentParam == "Quote Items" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
         Trace.Write("check --1668")
         #TreeParentParam = TreeParentParam.split('-')
         PrimaryLable = "Product Offering ID"
