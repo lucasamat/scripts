@@ -175,12 +175,10 @@ else:
     response1 = eval(response1)
     Log.Info("res--176------"+str(response1))
     for root, value in response1.items():
-        for root1 in value:
-            for inv in root1:			
-                if inv == "items":
-                    #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
-                    price = value[:]			 
-                    break
+        if root == "items":
+            #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
+            price = value[:]			 
+            break
    
     Log.Info("type condition--->")
     #price = [price]
