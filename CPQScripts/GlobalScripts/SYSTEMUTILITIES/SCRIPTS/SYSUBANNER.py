@@ -2063,10 +2063,14 @@ def Related_Sub_Banner(
                         Trace.Write("CHK_2")
                         Trace.Write("Fab node equipment add hide")
                         sec_rel_sub_bnr += ""
-                    elif FabList is not None and TreeParam != "Fab Locations" and len(FabList) >0:
+                    elif FabList is not None and len(FabList) >0:
                         Trace.Write("CHK_1")
-                        #Product.Attributes.GetByName("BTN_SYACTI_QT_00011_ADDFAB").Allowed = True						
-                        sec_rel_sub_bnr += (str(add_button))
+                        #Product.Attributes.GetByName("BTN_SYACTI_QT_00011_ADDFAB").Allowed = True
+                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
+                        if len(send_and_receive) == 0 and TreeParam == "Fab Locations"
+                            sec_rel_sub_bnr += ""
+                        else:
+                            sec_rel_sub_bnr += (str(add_button))
                         # sec_rel_sub_bnr += (
                         #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                         #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD FAB</button>'
