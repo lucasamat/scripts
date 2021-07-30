@@ -1065,6 +1065,7 @@ class TreeView:
 									# 	str(PageRecId)+"===="+
 									# 	str(ObjectRecId)+"===="+
 									# 	str(ordersBy))                
+									Trace.Write('3333333333333333@@@@')
 									ChildListData = self.getChildOne(
 										NodeType,
 										NodeName,
@@ -1343,9 +1344,9 @@ class TreeView:
 						if CurrentTabName == 'Profile' and 'SYPRSF' in DynamicQuery:
 							global g_total
 							g_total += 1
-							
+							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
 							if g_total < 2:
-								Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
+								
 								childQuery = Sql.GetList("" + str(DynamicQuery) + "")   
 							else:
 								childQuery = None
@@ -1908,7 +1909,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										
+										Trace.Write('4444444444444444444444@@@@')
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -2125,7 +2126,7 @@ class TreeView:
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
 								# Filter based on service type - Services Node - End
 								#Trace.Write("check----"+str(NodeText))
-								
+								Trace.Write('11111111111111111111111111@@@@')
 								SubChildData = self.getChildOne(
 									SubNodeType,
 									SubNodeName,
@@ -2438,7 +2439,8 @@ class TreeView:
 												+ "'"
 											)											
 											Subwhere_string = str(where_string)
-											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                     
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)     
+											Trace.Write('2222222222222222222222@@@@')                                
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,
