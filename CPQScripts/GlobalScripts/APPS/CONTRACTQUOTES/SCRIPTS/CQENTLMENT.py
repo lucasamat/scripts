@@ -237,7 +237,7 @@ class Entitlements:
 					#attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 					total_price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
 					price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
-					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_value, 'factor':data['varcondFactor']}
+					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_value, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
 				#to update quote table
 				
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
@@ -618,7 +618,7 @@ class Entitlements:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
 						calculation_factor =  attr_level_pricing[key]['factor']
-						#pricemethodupdate =  attr_level_pricing[key]['currency']
+						pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
@@ -632,7 +632,7 @@ class Entitlements:
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
 							try:
 								getpriceimpact = getpriceimpact.split(" ")[0].strip()
-								pricemethodupdate = getpriceimpact.split(" ")[1].strip()
+								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
 								getpriceimpact = getpriceimpact	
 							Trace.Write("getpriceimpact---"+str(getpriceimpact))
@@ -641,6 +641,7 @@ class Entitlements:
 							Trace.Write("calculation_factor---"+str(calculation_factor))
 						# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
 						# 	pricemethodupdate = str((val).split("||")[7]).strip()
+
 					##assigning cost impact, price impact, calc factor value ends
 					
 					if getcostbaborimpact == "" or getcostbaborimpact == 'null':
@@ -747,7 +748,7 @@ class Entitlements:
 				list2 = {}
 				list3 = {}
 				list4 = {}
-				if getPlatform:
+				if getPlatform and 'Z0007' in serviceId:
 					#Log.Info("Entering if")
 					for a in getPlatform:
 					
