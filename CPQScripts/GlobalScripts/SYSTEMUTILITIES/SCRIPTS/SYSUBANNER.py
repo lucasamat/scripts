@@ -60,7 +60,7 @@ def Related_Sub_Banner(
         Login_Domain = str(LOGIN_CREDENTIALS.Domain)
     else:
         Login_Domain = "APPLIEDMATERIALS_TST"
-        
+    Trace.Write("TreeTopSuperParentParam"+str(TreeTopSuperParentParam)) 
     ListKey = ""   
     sec_rel_sub_bnr = (
         PrimaryLable
@@ -1863,7 +1863,7 @@ def Related_Sub_Banner(
         SixthLable = ''
         SixthValue = ''
                 
-    elif  TreeTopSuperParentParam == "Quote Items" and TabName == "Quotes" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
+    if  TreeTopSuperParentParam == "Quote Items" and TabName == "Quotes" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
         Trace.Write("check --1668")
         #TreeParentParam = TreeParentParam.split('-')
         PrimaryLable = "Product Offering ID"
