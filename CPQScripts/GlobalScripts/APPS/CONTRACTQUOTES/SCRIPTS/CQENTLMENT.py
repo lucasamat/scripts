@@ -623,10 +623,10 @@ class Entitlements:
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
 							try:
-								getpriceimpact = getpriceimpact.split(" ")[0].strip()
+								getcostbaborimpact = getpriceimpact.split(" ")[0].strip()
 								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
-								getpriceimpact = getpriceimpact	
+								getcostbaborimpact = getcostbaborimpact	
 							Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
 						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
