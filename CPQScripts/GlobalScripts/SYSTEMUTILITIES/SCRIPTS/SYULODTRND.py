@@ -2505,10 +2505,11 @@ def EntitlementTreeViewHTMLDetail(
 		else:
 			Trace.Write("GETCPS VERSION EMPTY!")	
 		
-		desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+		#desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+		desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 
-		
-		attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+		#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+		attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
 		date_field = []
 		
 		insertservice = ""
@@ -2770,10 +2771,10 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 						else:
 							new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-						new_value_dicta["FACTOR CURRENCY"] = ""
+						#new_value_dicta["FACTOR CURRENCY"] = ""
 						new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
 						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
-						new_value_dicta["DATA TYPE"] = ""
+						#new_value_dicta["DATA TYPE"] = ""
 						new_value_dicta["CALCULATION FACTOR"] = ""
 						if new_value_dicta:
 							date_boot_field.append(new_value_dicta)
@@ -3388,9 +3389,9 @@ def EntitlementTreeViewHTMLDetail(
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
 								Trace.Write("@3323-----"+str(sec_str_imt))
-								new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
+								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
-								new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
+								#new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title='"+str(sec_str_primp)+"'>"+str(sec_str_primp)+"</abbr>")+str(edit_pencil_icon)
 								new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")
 						
@@ -3514,10 +3515,10 @@ def EntitlementTreeViewHTMLDetail(
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-							new_value_dicta["FACTOR CURRENCY"] = ""
+							#new_value_dicta["FACTOR CURRENCY"] = ""
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
-							new_value_dicta["DATA TYPE"] = ""
+							#new_value_dicta["DATA TYPE"] = ""
 							new_value_dicta["CALCULATION FACTOR"] = ""	
 						Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 						totaldisallowlist = [item for item in attributesdisallowedlst]
@@ -3787,10 +3788,11 @@ def ContractEntitlementTreeViewHTMLDetail(
 	else:
 		Trace.Write("GETCPS VERSION EMPTY!")'''	
 
-	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
-
+	#desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 	
-	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+	#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
 	date_field = []
 	getnameentallowed = []
 	insertservice = ""
@@ -4143,9 +4145,9 @@ def ContractEntitlementTreeViewHTMLDetail(
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
-							new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
+							#new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= sec_str_imt
-							new_value_dicta["DATA TYPE"] = sec_str_dt
+							#new_value_dicta["DATA TYPE"] = sec_str_dt
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= sec_str_primp
 							new_value_dicta["CALCULATION FACTOR"] = sec_str_cf
 					totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
@@ -4204,9 +4206,9 @@ def ContractEntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 						else:
 							new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-						new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
+						#new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
 						new_value_dicta["ENTITLEMENT COST IMPACT"]= sec_str_imt
-						new_value_dicta["DATA TYPE"] = sec_str_dt
+						#new_value_dicta["DATA TYPE"] = sec_str_dt
 						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 						new_value_dicta["CALCULATION FACTOR"] = sec_str_cf
 					if new_value_dicta:
