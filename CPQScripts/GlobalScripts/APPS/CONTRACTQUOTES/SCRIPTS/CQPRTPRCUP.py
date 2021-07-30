@@ -168,54 +168,55 @@ else:
         item_string = '{"itemId":"1","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+exchange_rate_type+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(serviceId)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-ALAND","values":["US"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMK-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-PMATN","values":["'+str(serviceId)+'"]},{"name":"KOMK-WAERK","values":["'+str(salesorg_obj.SORG_CURRENCY)+'"]},{"name":"KOMK-HWAER","values":["'+str(salesorg_obj.SORG_CURRENCY)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(salesorg_obj.DISTRIBUTIONCHANNEL_ID)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg_obj.SALESORG_ID)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 
     requestdata = '{"docCurrency":"'+salesorg_obj.SORG_CURRENCY+'","locCurrency":"'+salesorg_obj.SORG_CURRENCY+'","pricingProcedure":"'+pricing_procedure_id+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+item_string+']}'
-    Log.Info("requestdata111111111"+str(requestdata))
+    Log.Info("requestdata--171---"+str(requestdata))
     response1 = webclient.UploadString(Request_URL,str(requestdata))
-    Log.Info("res111111111"+str(response1))
+    Log.Info("res--173-------"+str(response1))
     response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
     response1 = eval(response1)
+    Log.Info("res--176------"+str(response1))
     for root, value in response1.items():
         for root1 in value:
             for inv in root1:			
                 if inv == "items":
-                    #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
+                    Log.Info("6666 i[u] --->"+str(list(root1[inv])))
                     price = root1[inv]			 
                     break
-    if str(type(price)) == "<type 'Dictionary[str, object]'>":
-        Log.Info("type condition--->")
-        price = [price]
-        Log.Info("456789 type(price) --->"+str(type(price)))
-        for i in price:		
-            Itemidinfo = str(i["itemId"]).split(";")
-            Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
-            QUOTE = str(Itemidinfo[1])	
-            contract_quote_record_id = None		
-            
-            getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
-            QuoteItemList = Quote.QuoteTables["SAQICD"]
-            if str(type(i['conditions'])) == "<type 'ArrayList'>":
-                for cond_info in i['conditions']:
-                    Log.Info("333 cond_info['conditionType'] --->")
-                    getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
-                    newRow = QuoteItemList.AddNewRow()
-                    newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
-                    newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
-                    newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
-                    newRow['CONDITION_TYPE'] = cond_info['conditionType']
-                    newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
-                    newRow['UOM'] =  cond_info['conditionUnit']
-                    newRow['CONDITIONTYPE_RECORD_ID'] = ''
-                    newRow['CONDITION_VALUE'] = cond_info['conditionValue']
-                    newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
-                    newRow['LINE'] = ''
-                    newRow['QTEITM_RECORD_ID'] = ''
-                    newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
-                    newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
-                    newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
-                    newRow['STEP_NUMBER'] = cond_info['stepNo']
-                    newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
-                    newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
-                    newRow['QUOTE_ID'] = QUOTE
-                QuoteItemList.Save()		                
+   
+    Log.Info("type condition--->")
+    #price = [price]
+    #Log.Info("456789 type(price) --->"+str(type(price)))
+    for i in price[0]['conditions']:		
+        Itemidinfo = str(i["itemId"]).split(";")
+        Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
+        #QUOTE = str(Itemidinfo[1])	
+        contract_quote_record_id = None		
+        
+        getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
+        QuoteItemList = Quote.QuoteTables["SAQICD"]
+        if str(type(i['conditions'])) == "<type 'ArrayList'>":
+            for cond_info in i['conditions']:
+                Log.Info("333 cond_info['conditionType'] --->")
+                getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+                newRow = QuoteItemList.AddNewRow()
+                newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
+                newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
+                newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
+                newRow['CONDITION_TYPE'] = cond_info['conditionType']
+                newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
+                newRow['UOM'] =  cond_info['conditionUnit']
+                newRow['CONDITIONTYPE_RECORD_ID'] = ''
+                newRow['CONDITION_VALUE'] = cond_info['conditionValue']
+                newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
+                newRow['LINE'] = ''
+                newRow['QTEITM_RECORD_ID'] = ''
+                newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
+                newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
+                newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
+                newRow['STEP_NUMBER'] = cond_info['stepNo']
+                newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
+                newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+                newRow['QUOTE_ID'] = QUOTE
+            QuoteItemList.Save()		                
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
