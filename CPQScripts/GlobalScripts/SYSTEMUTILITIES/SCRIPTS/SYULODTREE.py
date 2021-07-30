@@ -1934,7 +1934,8 @@ class TreeView:
 								NewList = []                                
 								ChildList.append(ChildDict)
 								#Trace.Write("ChildList"+str(ChildList))
-								
+							else:
+								ChildList.append(ChildDict)	
 		else:
 			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 			if getAccounts is None:
