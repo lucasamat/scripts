@@ -1065,7 +1065,7 @@ class TreeView:
 									# 	str(PageRecId)+"===="+
 									# 	str(ObjectRecId)+"===="+
 									# 	str(ordersBy))                
-									Trace.Write('3333333333333333@@@@')
+									Trace.Write('3333333333333333@@@@ '+str(NodeName))
 									if NodeName == 'App Level Permissions':
 										ChildListData = []
 									else:
