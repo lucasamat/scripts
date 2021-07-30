@@ -168,19 +168,19 @@ else:
         item_string = '{"itemId":"1","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+exchange_rate_type+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(serviceId)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-ALAND","values":["US"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMK-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-SPART","values":["'+str(salesorg_obj.DIVISION_ID)+'"]},{"name":"KOMP-PMATN","values":["'+str(serviceId)+'"]},{"name":"KOMK-WAERK","values":["'+str(salesorg_obj.SORG_CURRENCY)+'"]},{"name":"KOMK-HWAER","values":["'+str(salesorg_obj.SORG_CURRENCY)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(salesorg_obj.DISTRIBUTIONCHANNEL_ID)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg_obj.SALESORG_ID)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
 
     requestdata = '{"docCurrency":"'+salesorg_obj.SORG_CURRENCY+'","locCurrency":"'+salesorg_obj.SORG_CURRENCY+'","pricingProcedure":"'+pricing_procedure_id+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+item_string+']}'
-    Log.Info("requestdata--171---"+str(requestdata))
+    #Log.Info("requestdata--171---"+str(requestdata))
     response1 = webclient.UploadString(Request_URL,str(requestdata))
-    Log.Info("res--173-------"+str(response1))
+    #Log.Info("res--173-------"+str(response1))
     response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
     response1 = eval(response1)
-    Log.Info("res--176------"+str(response1))
+    #Log.Info("res--176------"+str(response1))
     for root, value in response1.items():
         if root == "items":
             #Log.Info("6666 i[u] --->"+str(list(root1[inv])))
             price = value[:]			 
             break
    
-    Log.Info("type condition--->")
+    #Log.Info("type condition--->")
     #price = [price]
     #Log.Info("456789 type(price) --->"+str(type(price)))
     for i in price[0]['conditions']:		
@@ -192,7 +192,7 @@ else:
         getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
         #QuoteItemList = Quote.QuoteTables["SAQICD"]
         for cond_info in price[0]['conditions']:
-            Log.Info("333 cond_info['conditionType'] --->")
+            #Log.Info("333 cond_info['conditionType'] --->")
             getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
             saqicd_insert = SqlHelper.GetFirst("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['conditionType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnit'])+ "'','''',''"+ str(cond_info['conditionValue'])+ "'','''','''',''"+ str(QUOTE)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(QUOTE)+ "'')'")
             '''newRow = QuoteItemList.AddNewRow()
