@@ -1772,7 +1772,7 @@ def Related_Sub_Banner(
     #         FifthValue = ""
     #         SixthLable = ""
     #         SixthValue = ""
-    elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and TabName == "Quote" and str(TreeParam) != "":
+    elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and str(TreeParam) != "":
         Trace("Check----123-->")
         PrimaryLable = ListKey[0]
         PrimaryValue = PrimaryValue		
