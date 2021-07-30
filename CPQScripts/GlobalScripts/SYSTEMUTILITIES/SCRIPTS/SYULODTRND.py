@@ -2596,11 +2596,11 @@ def EntitlementTreeViewHTMLDetail(
 						
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
-							edit_pencil_icon = '<a href="#" class="editclick"><i class="fa fa-pencil"  aria-hidden="true"></i></a>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
 							
 						else:
 							disable_edit = ''
-							edit_pencil_icon = '<a href="#" class="editclick"><i class="fa fa-lock"  aria-hidden="true"></i></a>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						Trace.Write('attrValueSysId'+str(attrValueSysId))
 						if DType == 'Check Box' and attrValueSysId is None:
@@ -3062,11 +3062,11 @@ def EntitlementTreeViewHTMLDetail(
 							add_style = ""	
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
-							edit_pencil_icon = '<a href="#" class="editclick"><i class="fa fa-pencil"  aria-hidden="true"></i></a>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
 							
 						else:
 							disable_edit = ''
-							edit_pencil_icon = '<a href="#" class="editclick"><i class="fa fa-lock"  aria-hidden="true"></i></a>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 					
 						disp_val = ""
