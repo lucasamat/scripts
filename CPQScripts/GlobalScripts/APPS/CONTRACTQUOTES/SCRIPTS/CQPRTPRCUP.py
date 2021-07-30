@@ -191,30 +191,29 @@ else:
         
         getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
         QuoteItemList = Quote.QuoteTables["SAQICD"]
-        if str(type(i['conditions'])) == "<type 'ArrayList'>":
-            for cond_info in i['conditions']:
-                Log.Info("333 cond_info['conditionType'] --->")
-                getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
-                newRow = QuoteItemList.AddNewRow()
-                newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
-                newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
-                newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
-                newRow['CONDITION_TYPE'] = cond_info['conditionType']
-                newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
-                newRow['UOM'] =  cond_info['conditionUnit']
-                newRow['CONDITIONTYPE_RECORD_ID'] = ''
-                newRow['CONDITION_VALUE'] = cond_info['conditionValue']
-                newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
-                newRow['LINE'] = ''
-                newRow['QTEITM_RECORD_ID'] = ''
-                newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
-                newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
-                newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
-                newRow['STEP_NUMBER'] = cond_info['stepNo']
-                newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
-                newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
-                newRow['QUOTE_ID'] = QUOTE
-            QuoteItemList.Save()		                
+        for cond_info in price[0]['conditions']:
+            Log.Info("333 cond_info['conditionType'] --->")
+            getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+            newRow = QuoteItemList.AddNewRow()
+            newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
+            newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
+            newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
+            newRow['CONDITION_TYPE'] = cond_info['conditionType']
+            newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
+            newRow['UOM'] =  cond_info['conditionUnit']
+            newRow['CONDITIONTYPE_RECORD_ID'] = ''
+            newRow['CONDITION_VALUE'] = cond_info['conditionValue']
+            newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
+            newRow['LINE'] = ''
+            newRow['QTEITM_RECORD_ID'] = ''
+            newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
+            newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
+            newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
+            newRow['STEP_NUMBER'] = cond_info['stepNo']
+            newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
+            newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+            newRow['QUOTE_ID'] = QUOTE
+        QuoteItemList.Save()		                
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
