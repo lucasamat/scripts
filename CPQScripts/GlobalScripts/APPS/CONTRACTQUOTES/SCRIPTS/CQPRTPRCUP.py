@@ -190,7 +190,7 @@ else:
         contract_quote_record_id = None		
         
         getservicerecord = Sql.GetFirst("select QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
-        QuoteItemList = Quote.QuoteTables["SAQICD"]
+        #QuoteItemList = Quote.QuoteTables["SAQICD"]
         for cond_info in price[0]['conditions']:
             Log.Info("333 cond_info['conditionType'] --->")
             getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
