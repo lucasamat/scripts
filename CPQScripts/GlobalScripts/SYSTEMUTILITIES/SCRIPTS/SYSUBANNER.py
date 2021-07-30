@@ -1305,7 +1305,18 @@ def Related_Sub_Banner(
         # except:
         #     SixthLable = ''
         #     SixthValue = ''    
-    Trace.Write("tab name--"+str(TabName)+" REC_ID "+str(CurrentRecordId))	
+    Trace.Write("tab name--"+str(TabName)+" REC_ID "+str(CurrentRecordId))
+    if  TreeTopSuperParentParam == "Quote Items" and TabName == "Quotes" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
+        Trace.Write("check --1668")
+        #TreeParentParam = TreeParentParam.split('-')
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = TreeSuperParentParam.split('-')[1]
+        SecondLable = "Fab Location ID"
+        SecondValue = TreeParentParam
+        ThirdLable = "Greenbook"
+        ThirdValue = TreeParam
+        FourthLable = "Equipment"
+        FourthValue = "All"
     if TreeParam == "Approvals" and CurrentTabName == "My Approvals Queue":
         transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
         chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
@@ -1863,17 +1874,7 @@ def Related_Sub_Banner(
         SixthLable = ''
         SixthValue = ''
                 
-    if  TreeTopSuperParentParam == "Quote Items" and TabName == "Quotes" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
-        Trace.Write("check --1668")
-        #TreeParentParam = TreeParentParam.split('-')
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = TreeSuperParentParam.split('-')[1]
-        SecondLable = "Fab Location ID"
-        SecondValue = TreeParentParam
-        ThirdLable = "Greenbook"
-        ThirdValue = TreeParam
-        FourthLable = "Equipment"
-        FourthValue = "All"
+
     if str(Image) != "":
         sec_rel_sub_bnr += (
             '<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="'
