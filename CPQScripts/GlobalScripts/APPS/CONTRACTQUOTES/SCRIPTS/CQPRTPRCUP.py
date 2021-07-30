@@ -184,8 +184,8 @@ else:
     #price = [price]
     #Log.Info("456789 type(price) --->"+str(type(price)))
     for i in price[0]['conditions']:		
-        Itemidinfo = str(i["itemId"]).split(";")
-        Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
+        #Itemidinfo = str(i["itemId"]).split(";")
+        #Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
         #QUOTE = str(Itemidinfo[1])	
         contract_quote_record_id = None		
         
