@@ -633,8 +633,8 @@ class Entitlements:
 							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
 							try:
 								price_split = getpriceimpact.split(" ")
-								getpriceimpact = price_split.split(" ")[0].strip()
-								pricemethodupdate = price_split.split(" ")[1].strip()
+								getpriceimpact = price_split[0].strip()
+								pricemethodupdate = price_split[1].strip()
 							except:
 								getpriceimpact = getpriceimpact	
 							Trace.Write("getpriceimpact---"+str(getpriceimpact))
