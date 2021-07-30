@@ -2071,7 +2071,13 @@ def Related_Sub_Banner(
                         #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                         #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD FAB</button>'
                         # )
-
+                    # if TreeParam == "Customer Information":
+                    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+                    send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
+                    if len(send_and_receive) > 0 and TreeParam != 'Fab Locations':
+                        sec_rel_sub_bnr += str(add_button)
+                    else:
+                        sec_rel_sub_bnr += ""
                     else:
                         Trace.Write("CHK_3")
                         if CurrentRecordId == "SYOBJR-98789" and TreeParam == "Fab Locations":
