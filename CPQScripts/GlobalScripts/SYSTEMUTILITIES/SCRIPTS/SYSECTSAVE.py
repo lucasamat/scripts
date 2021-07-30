@@ -516,7 +516,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                             billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1 WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(billing_matrix_obj.QUOTE_BILLING_PLAN_RECORD_ID)
                             Sql.RunQuery(billing_query)
                     #generate_year_based_billing_matrix(newdict)
-                
+                if TableName == 'SAQTIP':
+                    Trace.Write('SAQTIP_CHK_J '+str(RECORD['PARTY_ROLE']))
                 # A055S000P01-3324 start 
                 if TableName == 'SAQTMT':
                     
