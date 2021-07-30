@@ -234,7 +234,9 @@ class Entitlements:
 				if data['conditionType'] == 'VA00':# and data['varcondKey'] in characteristics_attr_values.get('SDCOM_VKOND'):
 					total_price_val = "{:,}".format(float(data['conditionValue']))
 					price_val = "{:,}".format(float(data['conditionRate']))
-					attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
+					#attr_prices[data['varcondKey']] = {'total_price':total_price_val, 'price':price_val, 'factor':data['varcondFactor'],'currency': data['conditionCurrency']}
+					total_price_value = "{} {}".format(total_price_val, data['conditionCurrency'] )
+					attr_prices[data['varcondKey']] = {'total_price':total_price_value , 'price':price_val, 'factor':data['varcondFactor']}
 				#to update quote table
 				
 			#Trace.Write("attr_prices111111111111"+str(attr_prices))
@@ -479,7 +481,7 @@ class Entitlements:
 						data_dict.update(attr_value)
 						attr_level_pricing.append(data_dict)
 				else:
-					attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,'currency': ''} for i in characteristics_attr_values]
+					attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
 					
 			Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
 			ServiceContainer = Product.GetContainerByName("Services")
@@ -615,7 +617,7 @@ class Entitlements:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
 						calculation_factor =  attr_level_pricing[key]['factor']
-						pricemethodupdate =  attr_level_pricing[key]['currency']
+						#pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
@@ -626,8 +628,8 @@ class Entitlements:
 						if str((val).split("||")[4]).strip() and str((val).split("||")[4]).strip() not in ('undefined','NULL'):
 							calculation_factor = str((val).split("||")[4]).strip()
 							Trace.Write("calculation_factor---"+str(calculation_factor))
-						if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
-							pricemethodupdate = str((val).split("||")[7]).strip()
+						# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
+						# 	pricemethodupdate = str((val).split("||")[7]).strip()
 					##assigning cost impact, price impact, calc factor value ends
 					
 					if getcostbaborimpact == "" or getcostbaborimpact == 'null':
