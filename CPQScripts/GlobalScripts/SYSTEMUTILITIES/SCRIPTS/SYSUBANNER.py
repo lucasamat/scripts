@@ -1317,7 +1317,7 @@ def Related_Sub_Banner(
         ThirdValue = TreeParam
         FourthLable = "Equipment"
         FourthValue = "All"
-    elif TreeSuperParentParam == 'Quote Items' and ObjName == 'SAQICO':
+    elif TreeSuperParentParam == 'Quote Items':
         TreeParentParam = TreeParentParam.split('-')
         PrimaryLable = "Line Item ID"
         PrimaryValue = TreeParentParam[0].strip()
