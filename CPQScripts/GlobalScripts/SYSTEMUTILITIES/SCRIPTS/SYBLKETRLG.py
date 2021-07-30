@@ -464,12 +464,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 				b = Sql.GetFirst("SELECT SUM(SALES_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
 
-				Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 
 				if float(getPRCFVA.FACTOR_PCTVAR) < discount:
-					Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+					Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 		if obj_name == "SAQSCO":
 			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
 			fabname = getfab.FABLOCATION_NAME
