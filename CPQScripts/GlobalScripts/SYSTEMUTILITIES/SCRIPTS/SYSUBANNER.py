@@ -2053,6 +2053,7 @@ def Related_Sub_Banner(
                         sec_rel_sub_bnr += (btn)		
 
                 elif CurrentRecordId == "SYOBJR-98789" and TreeParentParam != "Fab Locations":
+                    Trace.Write("Comming Inside fab condition_J")
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     FabList = Sql.GetList(
                         "SELECT FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )".format(
