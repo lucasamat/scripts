@@ -832,7 +832,7 @@ class TreeView:
 			crnt_prd_val = "QT"
 		quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
-			Trace.Write("SET GLOBAL----")
+			#Trace.Write("SET GLOBAL----")
 			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
 			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 		returnList = []
@@ -1080,9 +1080,7 @@ class TreeView:
 										PageRecId,
 										ObjectRecId,
 										ordersBy,
-									)
-									if NodeName == 'APP_ID':
-										Trace.Write('====> App ID'+str(ChildListData))
+									)									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
@@ -1120,7 +1118,7 @@ class TreeView:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
-		Trace.Write("=================>> ParRecId "+str(ParRecId))
+		#Trace.Write("=================>> ParRecId "+str(ParRecId))
 		# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1128,7 +1126,7 @@ class TreeView:
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
-		Trace.Write("NodeName---1073----"+str(NodeName))
+		#Trace.Write("NodeName---1073----"+str(NodeName))
 		pagerecordid = ""
 		# if NodeName == 'FIELD_LABEL':
 		# 	global c_total
@@ -1155,7 +1153,7 @@ class TreeView:
 				ObjName = pageDetails.OBJECT_APINAME
 				pagerecordid = pageDetails.RECORD_ID				
 				CurrentTabName = pageDetails.TAB_NAME
-				Trace.Write('CurrentTabName==='+str(CurrentTabName)+'pagerecordid---'+str(pagerecordid)+'ObjName--'+str(ObjName)+'OBJECT_RECORD_ID---'+str(OBJECT_RECORD_ID))
+				#Trace.Write('CurrentTabName==='+str(CurrentTabName)+'pagerecordid---'+str(pagerecordid)+'ObjName--'+str(ObjName)+'OBJECT_RECORD_ID---'+str(OBJECT_RECORD_ID))
 				if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                   
 					#objd_where_obj = Sql.GetFirst("SELECT DISTINCT top 1000 US.USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and up.permission_id = '"+ str(RecAttValue)+ "' order by USERNAME")
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+"'")
@@ -1262,7 +1260,7 @@ class TreeView:
 						where_string = '1=1 AND'
 						gettabtext = Product.GetGlobal('settabname')
 						getsectid = Product.GetGlobal("NodeSecRecIdS")
-						Trace.Write("getsectid-----638---"+str(getsectid))
+						#Trace.Write("getsectid-----638---"+str(getsectid))
 						
 						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
 						if getsectname:
@@ -1508,35 +1506,7 @@ class TreeView:
 									+ str(NodeText)
 									+ "' ORDER BY ACAPCH.APRCHN_ID,ACAPMA.APRCHN_RECORD_ID"
 								)
-
-							''' elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
-								NodeText = str(eval("childdata." + str(NodeName))).title()
-								childQueryObj = Sql.GetFirst( "select TOP 10 APRCHNSTP_NAME, APPROVAL_CHAIN_STEP_RECORD_ID FROM ACACST (nolock) inner join ACAPMA (nolock) on ACACST.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )  
-							elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
-								NodeText = str(eval("childdata." + str(NodeName)))
-								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.APRCHNSTPTRX_ID, ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID  = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID inner join ACAPMA (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPMA.APRCHNSTP_RECORD_ID where "
-								+ str(where_string)
-								+ " ORDER BY ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.APRCHNSTPTRX_ID, ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT") '''
-							''' elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-								NodeText = "Round "+str(eval("childdata." + str(NodeName))).title()
-								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID,ACACHR.APPROVAL_ROUND, ACACHR.APPROVAL_ID,ACACHR.CpqTableEntryId FROM ACACHR (nolock) inner join ACAPTX (nolock) on ACAPTX.APRCHN_ID = ACACHR.APRCHN_ID where ACACHR.APPROVAL_ROUND = '{approval_round}' AND ".format(approval_round = NodeText.split(' ')[1])
-								+ str(where_string)) 
-								##for showing relevent subtab for approval in quote starts
-								try:
-									#Trace.Write("try"+str(where_string))
-									if "APRCHN_ID" in str(where_string).strip().split(" ")[0]:
-										#Trace.Write("if"+str(where_string).strip().split(" ")[0])
-										aprchn_id = "AND ACAPCH.APRCHN_ID = {}".format(str(where_string).strip().split(" ")[2])
-									else:
-										#Trace.Write("else"+str(where_string))
-										aprchn_id = ""
-								except:
-									#Trace.Write("except")
-									aprchn_id = ""
-								#Trace.Write("aprchn_id"+str(aprchn_id))
-								##for showing relevent subtab for approval in quote ends '''
-
-							if str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
+							elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst( "select TOP 10 ACACSA.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID, ACACSA.APRCHN_ID,ACACSA.APRCHNSTP_RECORD_ID FROM ACACSA (nolock) inner join ACACST (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACACSA.APRCHNSTP_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )
 							elif str(ObjName).strip() == 'ACAPTF' and str(NodeName).strip() == 'TRKOBJ_TRACKEDFIELD_LABEL' and str(ProductName).upper() == "APPROVAL CENTER":
@@ -1891,7 +1861,7 @@ class TreeView:
 										RecAttValue = NodeRecId                                        
 										ObjectName = parObjName
 										Subwhere_string = "" + str(where_string) + ""
-										Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
+										#Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
 										addon_obj = None
 										if NodeText.startswith('Z'):
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText))
@@ -1899,7 +1869,7 @@ class TreeView:
 										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
-											service_id_1 = str(NodeText)
+											#service_id_1 = str(NodeText)
 										elif addon_obj:											
 											if 'SERVICE_ID' in Subwhere_string:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
