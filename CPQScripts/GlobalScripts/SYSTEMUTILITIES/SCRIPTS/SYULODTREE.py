@@ -1891,7 +1891,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write('4444444444444444444444@@@@')
+										Trace.Write('4444444444444444444444@@@@'+str(NodeName))
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
