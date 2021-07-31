@@ -1127,7 +1127,7 @@ class TreeView:
 		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
 		#Trace.Write("NodeName---1073----"+str(NodeName))
-		pagerecordid = ""
+		#pagerecordid = ""
 		# if NodeName == 'FIELD_LABEL':
 		# 	global c_total
 		# 	c_total += 1
@@ -1151,7 +1151,7 @@ class TreeView:
 			if pageDetails is not None:
 				OBJECT_RECORD_ID = pageDetails.OBJECT_RECORD_ID
 				ObjName = pageDetails.OBJECT_APINAME
-				pagerecordid = pageDetails.RECORD_ID				
+				#pagerecordid = pageDetails.RECORD_ID				
 				CurrentTabName = pageDetails.TAB_NAME
 				#Trace.Write('CurrentTabName==='+str(CurrentTabName)+'pagerecordid---'+str(pagerecordid)+'ObjName--'+str(ObjName)+'OBJECT_RECORD_ID---'+str(OBJECT_RECORD_ID))
 				if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                   
