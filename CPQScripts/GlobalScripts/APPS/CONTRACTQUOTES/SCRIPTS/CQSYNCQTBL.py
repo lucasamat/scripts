@@ -14,6 +14,8 @@ import sys
 import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
+import re
+from datetime import timedelta , date
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -492,7 +494,8 @@ class SyncQuoteAndCustomTables:
                         payrec = ""
                     # self.quote.OrderStatus.Name
                     Log.Info("expired"+str(start_date))
-                    
+                    edat = date.today()+ timedelta(days=90)
+                    Log.Info("expired2"+str(edat))
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
                     quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
                     opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
