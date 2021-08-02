@@ -2061,7 +2061,7 @@ def POPUPLISTVALUEADDNEW(
 				dbl_clk_function = (
 					'$("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); });  $(".bs-checkbox input").addClass("custom"); $("'
+					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); btn.addEventListener("click",function(){onchange = "get_checkedval()"});  $(".bs-checkbox input").addClass("custom"); $("'
 					+ str(table_ids)
 					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 					+ str(table_id)
