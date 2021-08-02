@@ -3322,25 +3322,25 @@ def EntitlementTreeViewHTMLDetail(
 											if val.ENTITLEMENT_COST_IMPACT:
 												#Trace.Write("@@3089")
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT ))) + " "+val.PRICE_METHOD
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 												
 											else:
 												#Trace.Write("@@3093")
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT ))) + " "+val.PRICE_METHOD
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 												
 										except Exception, e:
-											Trace.Write(str(e)+'error1111')
+											Trace.Write(str(e)+'error1111'+str(attrSysId))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 										#price_impact = val.ENTITLEMENT_PRICE_IMPACT
 										try:
 											if val.ENTITLEMENT_PRICE_IMPACT:
 												#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT ))) + " "+val.PRICE_METHOD
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
 											else:
 												Trace.Write("else price")
 												#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT ))) + " "+val.PRICE_METHOD
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
 										except Exception, e:
 											sec_str_imt += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
