@@ -183,43 +183,43 @@ else:
     #Log.Info("type condition--->")
     #price = [price]
     #Log.Info("456789 type(price) --->"+str(type(price)))
-    for i in price[0]['conditions']:		
+    #for i in price[0]['conditions']:		
         #Itemidinfo = str(i["itemId"])
         #Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
         #QUOTE = str(Itemidinfo[1])	
-        contract_quote_record_id = None		
-        getuomrec_val = ''
-        getservicerecord = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
-        #QuoteItemList = Quote.QuoteTables["SAQICD"]
-        for cond_info in price[0]['conditions']:
-            #Log.Info("333 cond_info['conditionType'] --->"+str(cond_info['conditionType']))
-            getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
-            if getuomrec:
-                getuomrec_val = getuomrec.UOM_RECORD_ID
-            else:
-                getuomrec_val = 'EA'
-            #Log.Info("query start")
-            #Log.Info("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_CURRENCY,CONDITION_BASE) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['calculationType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnitValue'])+ "'',''"+ str(cond_info['conditionUnit'])+ "'',''"+ str(cond_info['conditionValue'])+ "'',''"+ str(getuomrec_val)+ "'','''',''"+ str(getservicerecord.QUOTE_RECORD_ID)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(QUOTE)+ "'',''"+str(cond_info['conditionCurrency'])+"'',''"+str(cond_info['conditionBase'])+"'')'")
-            saqicd_insert = SqlHelper.GetFirst("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_CURRENCY,CONDITION_BASE) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['calculationType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnitValue'])+ "'',''"+ str(cond_info['conditionUnit'])+ "'',''"+ str(cond_info['conditionValue'])+ "'',''"+ str(getuomrec_val)+ "'','''',''"+ str(QUOTE)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(getservicerecord.QUOTE_RECORD_ID)+ "'',''"+str(cond_info['conditionCurrency'])+"'',''"+str(cond_info['conditionBase'])+"'')'")
-            '''newRow = QuoteItemList.AddNewRow()
-            newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
-            newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
-            newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
-            newRow['CONDITION_TYPE'] = cond_info['conditionType']
-            newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
-            newRow['UOM'] =  cond_info['conditionUnit']
-            newRow['CONDITIONTYPE_RECORD_ID'] = ''
-            newRow['CONDITION_VALUE'] = cond_info['conditionValue']
-            newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
-            newRow['LINE'] = ''
-            newRow['QTEITM_RECORD_ID'] = ''
-            newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
-            newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
-            newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
-            newRow['STEP_NUMBER'] = cond_info['stepNo']
-            newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
-            newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
-            newRow['QUOTE_ID'] = QUOTE
+    contract_quote_record_id = None		
+    getuomrec_val = ''
+    getservicerecord = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
+    #QuoteItemList = Quote.QuoteTables["SAQICD"]
+    for cond_info in price[0]['conditions']:
+        #Log.Info("333 cond_info['conditionType'] --->"+str(cond_info['conditionType']))
+        getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+        if getuomrec:
+            getuomrec_val = getuomrec.UOM_RECORD_ID
+        else:
+            getuomrec_val = 'EA'
+        #Log.Info("query start")
+        #Log.Info("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_CURRENCY,CONDITION_BASE) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['calculationType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnitValue'])+ "'',''"+ str(cond_info['conditionUnit'])+ "'',''"+ str(cond_info['conditionValue'])+ "'',''"+ str(getuomrec_val)+ "'','''',''"+ str(getservicerecord.QUOTE_RECORD_ID)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(QUOTE)+ "'',''"+str(cond_info['conditionCurrency'])+"'',''"+str(cond_info['conditionBase'])+"'')'")
+        saqicd_insert = SqlHelper.GetFirst("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_CURRENCY,CONDITION_BASE) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['calculationType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnitValue'])+ "'',''"+ str(cond_info['conditionUnit'])+ "'',''"+ str(cond_info['conditionValue'])+ "'',''"+ str(getuomrec_val)+ "'','''',''"+ str(QUOTE)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(getservicerecord.QUOTE_RECORD_ID)+ "'',''"+str(cond_info['conditionCurrency'])+"'',''"+str(cond_info['conditionBase'])+"'')'")
+        '''newRow = QuoteItemList.AddNewRow()
+        newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
+        newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
+        newRow['CONDITION_RATE'] = cond_info['conditionRate'].strip()
+        newRow['CONDITION_TYPE'] = cond_info['conditionType']
+        newRow['CONDITIONTYPE_NAME'] = cond_info['conditionTypeDescription'].strip()
+        newRow['UOM'] =  cond_info['conditionUnit']
+        newRow['CONDITIONTYPE_RECORD_ID'] = ''
+        newRow['CONDITION_VALUE'] = cond_info['conditionValue']
+        newRow['UOM_RECORD_ID'] = getuomrec.UOM_RECORD_ID
+        newRow['LINE'] = ''
+        newRow['QTEITM_RECORD_ID'] = ''
+        newRow['QUOTE_NAME'] = getservicerecord.QUOTE_NAME
+        newRow['SERVICE_DESCRIPTION'] = getservicerecord.SERVICE_DESCRIPTION
+        newRow['SERVICE_ID'] = getservicerecord.SERVICE_ID
+        newRow['STEP_NUMBER'] = cond_info['stepNo']
+        newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
+        newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
+        newRow['QUOTE_ID'] = QUOTE
         QuoteItemList.Save()'''		                
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
