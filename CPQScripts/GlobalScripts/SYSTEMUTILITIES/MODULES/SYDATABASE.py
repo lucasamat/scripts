@@ -30,7 +30,7 @@ class SQL:
         Param : query: string : sql query to be executed.
         """
         try:
-            Trace.Write("SYDATABASE : GetList : RUNNING QUERY : " + query)
+            #Trace.Write("SYDATABASE : GetList : RUNNING QUERY : " + query)
             return SqlHelper.GetList(query)
         except Exception, e:
             self.exceptMessage = (
