@@ -2061,7 +2061,7 @@ def POPUPLISTVALUEADDNEW(
 				dbl_clk_function = (
 					'$("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $(".bs-checkbox input").addClass("custom"); $("'
+					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $(".bs-checkbox input").addClass("custom"); var selectAll = false; $("#offerings-addnew-model").find("[type="checkbox"]:checked").map(function () {if ($(this).attr("name") == "btSelectAll"){var selectAll = true; $("#add-offerings").css("display","block");} else if (sel_val != "") {$("#add-offerings").css("display","block");};}); $("'
 					+ str(table_ids)
 					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 					+ str(table_id)
