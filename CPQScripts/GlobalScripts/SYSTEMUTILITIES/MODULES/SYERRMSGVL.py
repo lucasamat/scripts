@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
-Webcom = Webcom  # pylint: disable=E0602
+#Webcom = Webcom  # pylint: disable=E0602
 Trace = Trace  # pylint: disable=E0602
 Log = Log  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
