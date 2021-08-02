@@ -1118,7 +1118,7 @@ class TreeView:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
-		Trace.Write("=================>> ParRecId "+str(ParRecId))
+		#Trace.Write("=================>> ParRecId "+str(ParRecId))
 		# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1346,7 +1346,7 @@ class TreeView:
 							global g_total
 							g_total += 1
 							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
-							if g_total > 25:
+							if g_total < 2:
 								
 								childQuery = Sql.GetList("" + str(DynamicQuery) + "")   
 							else:
@@ -1891,7 +1891,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write(str(SubNodeName)+'Dynamic4444444444444444444444@@@@'+str(NodeName))
+										Trace.Write(str(SubNodeName)+' Dynamic4444444444444444444444@@@@'+str(NodeName))
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -1914,7 +1914,7 @@ class TreeView:
 											for item in sublist:
 												list2.append(item)
 										ChildDict["nodes"] = list2
-									NewList = []                                
+								NewList = []                                
 								ChildList.append(ChildDict)
 								#Trace.Write("ChildList"+str(ChildList))
 								
