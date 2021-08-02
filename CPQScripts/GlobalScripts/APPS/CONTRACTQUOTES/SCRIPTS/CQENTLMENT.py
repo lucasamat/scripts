@@ -123,7 +123,7 @@ class Entitlements:
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								for code in row.ENTITLEMENT_VALUE_CODE:
+								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + code + '","selected":true}'
 									requestdata +=','
 								requestdata +=']},'	
