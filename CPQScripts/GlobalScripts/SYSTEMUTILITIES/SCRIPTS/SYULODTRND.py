@@ -3322,12 +3322,12 @@ def EntitlementTreeViewHTMLDetail(
 											if val.ENTITLEMENT_COST_IMPACT:
 												#Trace.Write("@@3089")
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip() ))) + " "+val.ENTITLEMENT_COST_IMPACT.split(" ")[1] 
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT ))) + " "+val.PRICE_METHOD
 												
 											else:
 												#Trace.Write("@@3093")
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip() ))) + " "+val.ENTITLEMENT_COST_IMPACT.split(" ")[1] 
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT ))) + " "+val.PRICE_METHOD
 												
 										except Exception, e:
 											Trace.Write(str(e)+'error1111')
@@ -3336,11 +3336,11 @@ def EntitlementTreeViewHTMLDetail(
 										try:
 											if val.ENTITLEMENT_PRICE_IMPACT:
 												#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT.split(" ")[0].strip() ))) + " "+val.ENTITLEMENT_PRICE_IMPACT.split(" ")[1] 
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT ))) + " "+val.PRICE_METHOD
 											else:
 												Trace.Write("else price")
 												#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT.split(" ")[0].strip() ))) + " "+val.ENTITLEMENT_PRICE_IMPACT.split(" ")[1] 
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT ))) + " "+val.PRICE_METHOD
 										except Exception, e:
 											sec_str_imt += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
