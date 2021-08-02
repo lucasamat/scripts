@@ -35,7 +35,8 @@ def getData():
                         <td class='textalign'>"+str(row.CONDITION_TYPE)+"</td>
                         <td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td>
                         <td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td>
-                        <td class='textalign'>'USD'</td><td class='numberalign'>"+str(row.UOM)+"</td>
+                        <td class='textalign'>'USD'</td>
+                        <td class='numberalign'>"+str(row.UOM)+"</td>
                         <td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td>
                         <td class='textalign'>"+str(row.UOM)+"</td>
                         <td class='textalign'>'STATIC'</td>
@@ -44,6 +45,7 @@ def getData():
                         <td class='textalign'>'INACTIVE'</td>
                         <td class='textalign'>'YO66'</td>
                         <td class='centeralign'>"+factor_id+"</td>
+                        
                         </tr>"""
         data.append({rolled_up_id:data_info})
     Trace.Write(str(data))
