@@ -45,7 +45,11 @@ class ConfigUpdateScript:
 		elif Param.CurrentTab == "Role":
 			self.current_tab_name = "Role"
 		elif Param.CurrentTab == "Currency":
-			self.current_tab_name = "Currency"				
+			self.current_tab_name = "Currency"
+		elif Param.CurrentTab == "Message":
+			self.current_tab_name = "Message"
+		elif Param.CurrentTab == "Error Log":
+			self.current_tab_name = "Error Log"				
 		else:
 			self.current_tab_name = "Contract"
 	def get_obj_name(self):
