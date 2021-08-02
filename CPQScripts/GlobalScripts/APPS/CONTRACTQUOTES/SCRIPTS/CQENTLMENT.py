@@ -49,8 +49,7 @@ class Entitlements:
 		cpsConfigID = ''
 		oldConfigID =''
 		if cpsConfiguration is not None:
-			#cpsmatchID = cpsConfiguration.CPS_MATCH_ID
-			cpsmatchID = 11
+			cpsmatchID = cpsConfiguration.CPS_MATCH_ID
 			cpsConfigID = cpsConfiguration.CPS_CONFIGURATION_ID
 			oldConfigID = cpsConfiguration.CPS_CONFIGURATION_ID
 			if parentObj !='':
