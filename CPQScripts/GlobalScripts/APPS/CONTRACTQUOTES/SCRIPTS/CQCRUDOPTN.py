@@ -4875,9 +4875,10 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		# Native Cart Items Insert - ENd
 		#price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)
 		# Insert Quote Items Covered Object - Start
-		QuoteItemList = Quote.QuoteTables["SAQICD"]
-		QuoteItemList.Rows.Clear()
-		QuoteItemList.Save()
+		#QuoteItemList = Quote.QuoteTables["SAQICD"]
+		Sql.RunQuery("DELETE   FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")
+		#QuoteItemList.Rows.Clear()
+		#QuoteItemList.Save()
 		entries = str(self.contract_quote_id)
 		user = self.user_name
 		Log.Info('4880---iflow for quote table insert----')
