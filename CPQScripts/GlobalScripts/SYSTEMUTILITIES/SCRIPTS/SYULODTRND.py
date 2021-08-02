@@ -3320,7 +3320,7 @@ def EntitlementTreeViewHTMLDetail(
 										try:
 											#Trace.Write("@@3087")
 											if val.ENTITLEMENT_COST_IMPACT:
-												#Trace.Write("@@3089")
+												Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 												
