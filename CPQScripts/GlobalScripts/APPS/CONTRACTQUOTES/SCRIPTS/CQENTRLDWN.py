@@ -538,10 +538,10 @@ for obj in obj_list:
 			get_calc_factor = value.CALCULATION_FACTOR 
 			get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 			get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-			try:
-				get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-			except:
-				get_currency = ""
+			#try:
+			get_currency = value.PRICE_METHOD
+			#except:
+			#get_currency = ""
 			#Log.Info('ENTITLEMENT_COST_IMPACT-----'+str(value.ENTITLEMENT_COST_IMPACT))
 			if (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid):
 				if value.ENTITLEMENT_DISPLAY_VALUE:
@@ -606,10 +606,7 @@ for obj in obj_list:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					try:
-						get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-					except:
-						get_currency = ""
+					get_currency = value.PRICE_METHOD
 					get_calc_factor = value.CALCULATION_FACTOR 
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
@@ -692,10 +689,7 @@ for obj in obj_list:
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					try:
-						get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-					except:
-						get_currency = ""
+					get_currency = value.PRICE_METHOD
 					get_calc_factor = value.CALCULATION_FACTOR 
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
@@ -747,10 +741,10 @@ for obj in obj_list:
 				get_value = value.ENTITLEMENT_DISPLAY_VALUE
 				get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 				get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-				try:
-					get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-				except:
-					get_currency = ""
+				#try:
+				get_currency = value.PRICE_METHOD
+				#except:
+				#	get_currency = ""
 				get_calc_factor = value.CALCULATION_FACTOR
 				if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 					if value.ENTITLEMENT_DISPLAY_VALUE:
@@ -841,10 +835,7 @@ for obj in obj_list:
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 					get_calc_factor = value.CALCULATION_FACTOR
-					try:
-						get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-					except:
-						get_currency = ""
+					get_currency = value.PRICE_METHOD
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 						
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
@@ -890,10 +881,10 @@ for obj in obj_list:
 			get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 			get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 			get_calc_factor = value.CALCULATION_FACTOR
-			try:
-				get_currency = value.ENTITLEMENT_PRICE_IMPACT.split(" ")[1].strip()
-			except:
-				get_currency = ""
+			#try:
+			get_currency = value.PRICE_METHOD
+			#except:
+			#	get_currency = ""
 			if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 				if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
 					get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
