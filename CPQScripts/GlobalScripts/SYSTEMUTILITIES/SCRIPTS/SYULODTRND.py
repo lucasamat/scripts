@@ -3318,7 +3318,7 @@ def EntitlementTreeViewHTMLDetail(
 											)
 										#cost_impact  = val.ENTITLEMENT_COST_IMPACT
 										try:
-											#Trace.Write("@@3087")
+											Trace.Write("@@3087"+str(attrSysId))
 											if val.ENTITLEMENT_COST_IMPACT:
 												Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
@@ -3342,7 +3342,7 @@ def EntitlementTreeViewHTMLDetail(
 											# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 											# 	sec_str_primp += ""
 										except Exception, e:
-											sec_str_imt += str(val.ENTITLEMENT_PRICE_IMPACT)
+											sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
 											
 										#calc_factor = val.CALCULATION_FACTOR
