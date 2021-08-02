@@ -1893,7 +1893,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write(str(SubNodeName)+' Dynamic4444444444444444444444@@@@'+str(NodeName))
+										Trace.Write(str(SubNodeName)+' 	@@@@'+str(NodeName))
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -1910,12 +1910,12 @@ class TreeView:
 										)
 									
 									if len(SubChildData) > 0:
-										NewList.append(SubChildData)
-										list2 = []
-										for sublist in NewList:
-											for item in sublist:
-												list2.append(item)
-										ChildDict["nodes"] = list2
+										# NewList.append(SubChildData)
+										# list2 = []
+										# for sublist in NewList:
+										# 	for item in sublist:
+										# 		list2.append(item)
+										ChildDict["nodes"] = SubChildData
 								NewList = []                                
 								ChildList.append(ChildDict)
 								#Trace.Write("ChildList"+str(ChildList))
@@ -2129,12 +2129,12 @@ class TreeView:
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
 							if len(SubChildData) > 0:
-								NewList.append(SubChildData)
-								list2 = []
-								for sublist in NewList:
-									for item in sublist:
-										list2.append(item)
-								ChildDict["nodes"] = list2
+								# NewList.append(SubChildData)
+								# list2 = []
+								# for sublist in NewList:
+								# 	for item in sublist:
+								# 		list2.append(item)
+								ChildDict["nodes"] = SubChildData
 					NewList = []                    
 					ChildList.append(ChildDict)
 		#Trace.Write("ChildList"+str(ChildList))
