@@ -2072,7 +2072,7 @@ def POPUPLISTVALUEADDNEW(
 					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
 					)
 				dbl_clk_function += (
-					'console.log("checkbox_true= ============>"); var selectedOfferings = []; var selectAll = false; $("#offerings-addnew-model").find("[type="checkbox"]:checked").map(function () { if ($(this).attr("name") == "btSelectAll"){	selectAll = true;} var sel_val = $(this).closest("tr").find("td:nth-child(2)").text(); if (sel_val != "") { selectedOfferings.push(sel_val);}});  '
+					'console.log("checkbox_true= ============>"); var selectAll = false; $("#offerings-addnew-model").find("[type="checkbox"]:checked").map(function () { if ($(this).attr("name") == "btSelectAll"){ console.log("checkbox_111= ============>"); selectAll = true; $("#add-offerings").css("display","block")} });'
 				)	
 
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
