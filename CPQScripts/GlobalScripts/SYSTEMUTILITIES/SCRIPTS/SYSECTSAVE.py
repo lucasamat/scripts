@@ -585,7 +585,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
         ##ends
 
         ##entitlement contract date update for z0016
-        quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+        try:
+            quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+        except:
+            quote_record_id = ''
         try:
             get_service_id = Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID LIKE '%Z0016%' ")
             if get_service_id:
