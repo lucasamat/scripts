@@ -41,18 +41,24 @@ class Entitlements:
 
 	def getcpsID(self,tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq):
 		cpsConfiguration = Sql.GetFirst("select CPS_CONFIGURATION_ID,MAX(CPS_MATCH_ID) as CPS_MATCH_ID from {} (NOLOCK) WHERE {} GROUP BY CPS_CONFIGURATION_ID ".format(tableName, whereReq))
-		
+		try:
+			new_configid_flag = Param.new_configid_flag
+		except:
+			new_configid_flag = ""	
 		cpsmatchID = ''
 		cpsConfigID = ''
 		oldConfigID =''
 		if cpsConfiguration is not None:
-			cpsmatchID = cpsConfiguration.CPS_MATCH_ID
+			#cpsmatchID = cpsConfiguration.CPS_MATCH_ID
+			cpsmatchID = 11
 			cpsConfigID = cpsConfiguration.CPS_CONFIGURATION_ID
 			oldConfigID = cpsConfiguration.CPS_CONFIGURATION_ID
 			if parentObj !='':
 				parentcpsConfig = Sql.GetFirst("select CPS_CONFIGURATION_ID,MAX(CPS_MATCH_ID) as CPS_MATCH_ID from {} (NOLOCK) WHERE  QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' GROUP BY CPS_CONFIGURATION_ID ".format(parentObj,self.ContractRecordId, serviceId))
 				# if cpsConfigID == parentcpsConfig.CPS_CONFIGURATION_ID and tableName != 'SAQTSE':					
 				# 	cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)
+			if new_configid_flag == 'true':
+				cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)	
 		return cpsmatchID,cpsConfigID,oldConfigID
 	def Request_access_token(self):
 		webclient = System.Net.WebClient()
@@ -83,39 +89,53 @@ class Entitlements:
 			Trace.Write("response.."+str(eval(response1)))
 			newConfigurationid = Fullresponse["id"]
 			Trace.Write("newConfigurationid.."+str(newConfigurationid))
-			if ParentwhereReq!="":
-				Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {} AND ENTITLEMENT_XML!=''".format(parentObj,ParentwhereReq))
+			if tableName!="":
+				get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
+				ent_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+				ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) "+str(whereReq)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'') ; exec sys.sp_xml_removedocument @H; '")
+				Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE QUOTE_RECORD_ID = '{}'".format(ent_temp,self.ContractRecordId))
 				Trace.Write("ParentwhereReq "+str(ParentwhereReq))
 				if Parentgetdata is not None:					
 					response = self.Request_access_token()					
 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
 					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 					cpsmatchID=11
-					for row in Parentgetdata:
-						#response = self.Request_access_token()
-						#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-						webclient = System.Net.WebClient()
-						webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-						webclient.Headers[
-							System.Net.HttpRequestHeader.Authorization
-						] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-						response = webclient.DownloadString(
-							"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
-						)
-						response = eval(response)	
-						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-							
-						#webclient.Headers.Add("If-Match", "111")
-						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
-						try:
-							requestdata = '{"characteristics":[{"id":"' + str(row.ENTITLEMENT_NAME) + '","values":[{"value":"' + str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]}]}'
-							#Trace.Write("requestdata" + str(requestdata))
-							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							cpsmatchID = cpsmatchID + 10			
-							
-						except Exception:
-							Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
-							cpsmatchID = cpsmatchID
+					#response = self.Request_access_token()
+					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+					webclient = System.Net.WebClient()
+					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+					webclient.Headers[
+						System.Net.HttpRequestHeader.Authorization
+					] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+					response = webclient.DownloadString(
+						"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+					)
+					response = eval(response)	
+					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+						
+					#webclient.Headers.Add("If-Match", "111")
+					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
+					try:
+						requestdata = '{"characteristics":['
+						for row in Parentgetdata:
+							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+								for code in row.ENTITLEMENT_VALUE_CODE:
+									requestdata += '{"value":"' + code + '","selected":true}'
+									requestdata +=','
+								requestdata +=']},'	
+							else:
+								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+						requestdata += ']}'
+						requestdata = requestdata.replace('},]','}]')
+						Trace.Write("requestdata--child-- " + str(requestdata))
+						response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+						cpsmatchID = cpsmatchID + 10			
+						
+					except Exception:
+						Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
+						cpsmatchID = cpsmatchID
 
 			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
 			cpsmatc_incr = cpsmatchID + 10
@@ -123,7 +143,7 @@ class Entitlements:
 				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 		except Exception:
 			Trace.Write("Patch Error--"+str(sys.exc_info()[1]))        
-		
+		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return newConfigurationid,cpsmatchID
 
 	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None):
@@ -679,8 +699,8 @@ class Entitlements:
 					##------ commented and assign the default currency ---++
 					#GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str((val).split("||")[0]).replace("'","&apos;")))
 					## replace fn &apos; added for A055S000P01-3158
-					Trace.Write("getcostbaborimpact--1--"+str(getcostbaborimpact))
-					Trace.Write("getpriceimpact--1--"+str(getpriceimpact))
+					#Trace.Write("getcostbaborimpact--1--"+str(getcostbaborimpact))
+					#Trace.Write("getpriceimpact--1--"+str(getpriceimpact))
 					#if GetDefault:
 					#	pricemethodupdate = GetDefault.PRICE_METHOD
 					""" get_value = value.ENTITLEMENT_DISPLAY_VALUE
@@ -727,15 +747,15 @@ class Entitlements:
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = str((val).split("||")[0]).replace("'","&apos;"),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
 					#Trace.Write("updateentXML---"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
-				####to update match id at all level while cancelling starts
-				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
-				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
+				####to update match id at all level while saving starts
+				# get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
+				# ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
 				#ent_tables_list.remove(tableName)
-				if get_match_id:
-					for table in ent_tables_list:
-						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId, serviceId)
-						Sql.RunQuery(Updatecps)
-				###to update match id at all level while cancelling ends
+				# if get_match_id:
+				# 	for table in ent_tables_list:
+				# 		Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId, serviceId)
+				# 		Sql.RunQuery(Updatecps)
+				###to update match id at all level while saving ends
 
 				Sql.RunQuery(UpdateEntitlement)
 				Trace.Write("TEST COMMIT")
@@ -1375,12 +1395,12 @@ class Entitlements:
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
-				####to update match id at all level while cancelling starts
-				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
-				#ent_tables_list.remove(tableName)
-				for table in ent_tables_list:
-					Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId, serviceId)
-					Sql.RunQuery(Updatecps)
+				# ####to update match id at all level while cancelling starts
+				# ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
+				# #ent_tables_list.remove(tableName)
+				# for table in ent_tables_list:
+				# 	Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId, serviceId)
+				# 	Sql.RunQuery(Updatecps)
 				###to update match id at all level while cancelling ends
 
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
