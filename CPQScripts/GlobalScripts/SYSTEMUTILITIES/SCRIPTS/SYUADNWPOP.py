@@ -2069,7 +2069,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_lists)+" AddNewContainerSorting(name, order, '"
 					+ str(table_id)
-					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
+					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); '
 					)
 				
 
