@@ -2071,7 +2071,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
 					)
-				dbl_clk_function += ('console.log("checkbox_true= ============>"); var selectAll = false; $("#offerings-addnew-model").find("[type="checkbox"]:checked").map(function () { if ($(this).attr("name") == "btSelectAll"){ console.log("checkbox_111= ============>"); selectAll = true; $("#add-offerings").css("display","block")} });')
+				
 
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
