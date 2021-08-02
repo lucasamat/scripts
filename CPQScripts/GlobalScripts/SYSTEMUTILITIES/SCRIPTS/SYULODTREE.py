@@ -1558,8 +1558,6 @@ class TreeView:
 										ChildDict["objname"] = "ACAPTX"
 										
 										# ChildList.append(ChildDict)
-							elif NodeName == 'SECTION_FIELD_ID' and TabName == 'Profile':
-								childQueryObj = childdata
 							elif NodeName.find(",") == -1 and NodeName.find("-") == -1:                               
 								if str(NodeName) == "OBJECT_NAME" and TabName == 'Profile': 
 									NodeText = str(eval("childdata." + str(NodeName)))									
