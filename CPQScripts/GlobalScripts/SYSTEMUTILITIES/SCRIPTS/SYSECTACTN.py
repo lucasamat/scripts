@@ -120,7 +120,7 @@ def nativeProfileUpdate(newdict):
     # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
     # Trace.Write('156-------------------------'+str(setPermissionURL))
 
- 	prfname = profile_id_gen = prfid = ""
+	prfname = profile_id_gen = prfid = ""
 	Trace.Write('64----nativeProfileSave-------'+str(newdict))
 	prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 	prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
