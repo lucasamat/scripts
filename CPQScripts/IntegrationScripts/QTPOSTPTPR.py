@@ -131,7 +131,7 @@ try:
 				if str(type(i['conditions'])) == "<type 'ArrayList'>":
 					for cond_info in i['conditions']:
 						Log.Info("333 cond_info['conditionType'] --->")
-						getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+						'''getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
 						newRow = QuoteItemList.AddNewRow()
 						newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
 						newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
@@ -150,8 +150,9 @@ try:
 						newRow['STEP_NUMBER'] = cond_info['stepNo']
 						newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
 						newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
-						newRow['QUOTE_ID'] = QUOTE
-					
+						newRow['QUOTE_ID'] = QUOTE'''
+						getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+            			saqicd_insert = SqlHelper.GetFirst("sp_executesql @T=N'INSERT QT__SAQICD (CONDITION_COUNTER,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_CURRENCY,CONDITION_BASE) values (''"+str(cond_info['conditionCounter'])+"'',''"+str(cond_info['calculationType'])+"'',''"+str(cond_info['conditionRate'].strip())+"'',''"+str(cond_info['conditionType'])+ "'',''"+ str(cond_info['conditionTypeDescription'].strip())+ "'' , ''"+ str(cond_info['conditionUnitValue'])+ "'',''"+ str(cond_info['conditionUnit'])+ "'',''"+ str(cond_info['conditionValue'])+ "'',''"+ str(getuomrec.UOM_RECORD_ID)+ "'','''',''"+ str(getservicerecord.QUOTE_RECORD_ID)+ "'','''',''"+ str(getservicerecord.QUOTE_NAME)+ "'',''"+ str(getservicerecord.SERVICE_DESCRIPTION)+ "'',''"+ str(getservicerecord.SERVICE_ID)+ "'',''"+ str(cond_info['stepNo'])+ "'',''"+ str(getservicerecord.SERVICE_RECORD_ID)+ "'',''"+ str(QUOTE)+ "'',''"+str(cond_info['conditionCurrency'])+"'','"+str(cond_info['conditionBase'])+"'')'")
 						if str(cond_info['conditionType']).upper() == 'ZWSC':
 							Taxrate = cond_info['conditionRate']		
 							if Taxrate == '':
