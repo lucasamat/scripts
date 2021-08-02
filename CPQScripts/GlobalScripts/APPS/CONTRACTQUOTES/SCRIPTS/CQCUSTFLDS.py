@@ -8,6 +8,7 @@
 
 def custfieldsupdated(saleprice):
 	Quote.GetCustomField('SALE_PRICE').Content = str(saleprice)
+    return saleprice
 
 
 try:
