@@ -212,6 +212,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						if data_type.upper() == "TEXT":
 							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
 						elif data_type.upper() == "NUMBER":
+							Trace.Write("@215 inside number")
 							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
 						elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
 							edt_str += (
