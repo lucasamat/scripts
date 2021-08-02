@@ -104,22 +104,23 @@ class Entitlements:
 					cpsmatchID=11
 					#response = self.Request_access_token()
 					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-					webclient = System.Net.WebClient()
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-					webclient.Headers[
-						System.Net.HttpRequestHeader.Authorization
-					] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-					response = webclient.DownloadString(
-						"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
-					)
-					response = eval(response)	
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-						
-					#webclient.Headers.Add("If-Match", "111")
-					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
-					try:
-						requestdata = '{"characteristics":['
-						for row in Parentgetdata:
+					for row in Parentgetdata:
+						webclient = System.Net.WebClient()
+						webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+						webclient.Headers[
+							System.Net.HttpRequestHeader.Authorization
+						] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+						response = webclient.DownloadString(
+							"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+						)
+						response = eval(response)	
+						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+							
+						#webclient.Headers.Add("If-Match", "111")
+						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
+						try:
+							requestdata = '{"characteristics":['
+							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
 								for code in row.ENTITLEMENT_VALUE_CODE:
@@ -128,15 +129,15 @@ class Entitlements:
 								requestdata +=']},'	
 							else:
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
-						requestdata += ']}'
-						requestdata = requestdata.replace('},]','}]')
-						Trace.Write("requestdata--child-- " + str(requestdata))
-						response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-						cpsmatchID = cpsmatchID + 10			
-						
-					except Exception:
-						Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
-						cpsmatchID = cpsmatchID
+							requestdata += ']}'
+							requestdata = requestdata.replace('},]','}]')
+							Trace.Write("requestdata--child-- " + str(requestdata))
+							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+							cpsmatchID = cpsmatchID + 10			
+							
+						except Exception:
+							Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
+							cpsmatchID = cpsmatchID
 
 			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
 			cpsmatc_incr = cpsmatchID + 10
