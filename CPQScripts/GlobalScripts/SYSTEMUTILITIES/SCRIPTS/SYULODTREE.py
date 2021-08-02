@@ -1908,12 +1908,12 @@ class TreeView:
 										)
 									
 									if len(SubChildData) > 0:
-										# NewList.append(SubChildData)
-										# list2 = []
-										# for sublist in NewList:
-										# 	for item in sublist:
-										# 		list2.append(item)
-										ChildDict["nodes"] = SubChildData
+										NewList.append(SubChildData)
+										list2 = []
+										for sublist in NewList:
+											for item in sublist:
+												list2.append(item)
+										ChildDict["nodes"] = list2
 									NewList = []                                
 								ChildList.append(ChildDict)
 								#Trace.Write("ChildList"+str(ChildList))
@@ -2127,12 +2127,12 @@ class TreeView:
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
 							if len(SubChildData) > 0:
-								# NewList.append(SubChildData)
-								# list2 = []
-								# for sublist in NewList:
-								# 	for item in sublist:
-								# 		list2.append(item)
-								ChildDict["nodes"] = SubChildData
+								NewList.append(SubChildData)
+								list2 = []
+								for sublist in NewList:
+									for item in sublist:
+										list2.append(item)
+								ChildDict["nodes"] = list2
 					NewList = []                    
 					ChildList.append(ChildDict)
 		#Trace.Write("ChildList"+str(ChildList))
