@@ -6,7 +6,7 @@
 #   � BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 #import Webcom
-#import Webcom.Configurator.Scripting.Test.TestProduct
+import Webcom.Configurator.Scripting.Test.TestProduct
 from datetime import timedelta
 from datetime import datetime as date
 from SYDATABASE import SQL
