@@ -20,7 +20,7 @@ def getData():
     QuoteNumber=Quote.GetGlobal("contract_quote_record_id")
     getquoteid = SqlHelper.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"'")
     for item in Quote.Items :
-        rolled_up_id = factor_id =rate = con_type = con_uom = ""
+        rolled_up_id = factor_id =rate = con_type = con_uom = con_rec = ""
         section_row1[str("dyn_" + str(item.Rank))] = ""
         Queryload = SqlHelper.GetList("select ownerId,cartId,CONDITION_COUNTER,CONDITION_CURRENCY,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_BASE from QT__SAQICD where QUOTE_ID = '"+str(getquoteid.QUOTE_ID)+"'  and SERVICE_ID= '"+str(item.PartNumber)+"' ")
         if Queryload and counter == 0:
@@ -37,8 +37,13 @@ def getData():
                         con_uom = ''
                     else:
                         con_uom
+                    con_rec = str(row.CONDITIONTYPE_RECORD_ID).strip()
+                    if con_rec == "None":
+                        con_rec = ''
+                    else:
+                        con_rec
                     Trace.Write('CONDITION_TYPE--con_type----'+str(con_type))
-                    data_info += "<tr class='"+tr_class+"' id='1' > <td class='textalign' id=' "+str(row.SERVICE_ID)+"'>"+str(row.STEP_NUMBER)+"</td> <td class='textalign'>"+str(con_type)+"</td> <td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td> <td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td> <td class='textalign'>"+str(row.CONDITION_CURRENCY).strip()+"</td> <td class='numberalign'>"+str(row.CONDITIONTYPE_RECORD_ID)+"</td> <td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td> <td class='textalign'>"+str(con_uom)+"</td> <td class='textalign'>STATIC</td> <td class='textalign'>"+str(row.CONDITION_DATA_TYPE).strip()+"</td><td class='textalign'>"+str(row.CONDITION_BASE).strip()+"</td></tr>"
+                    data_info += "<tr class='"+tr_class+"' id='1' > <td class='textalign' id=' "+str(row.SERVICE_ID)+"'>"+str(row.STEP_NUMBER)+"</td> <td class='textalign'>"+str(con_type)+"</td> <td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td> <td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td> <td class='textalign'>"+str(row.CONDITION_CURRENCY).strip()+"</td> <td class='numberalign'>"+str(con_rec)+"</td> <td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td> <td class='textalign'>"+str(con_uom)+"</td> <td class='textalign'>STATIC</td> <td class='textalign'>"+str(row.CONDITION_DATA_TYPE).strip()+"</td><td class='textalign'>"+str(row.CONDITION_BASE).strip()+"</td></tr>"
         data.append({rolled_up_id:data_info})
     Trace.Write(str(data))
     return data
