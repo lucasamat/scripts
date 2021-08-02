@@ -711,8 +711,8 @@ class Entitlements:
 						pricemethodupdate = curr """
 						#get_curr = curr
 					#Trace.Write("Cost---->"+str(getcostbaborimpact))
-					getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
-					getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
+					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
+					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
