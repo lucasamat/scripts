@@ -29,9 +29,8 @@ def getData():
                 rate += "<td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td>"
                 if str(item.PartNumber) == str(row.SERVICE_ID) :
                     
-                    if str(row.CONDITION_TYPE).strip() == 'None':
-                        str(row.CONDITION_TYPE) = ''
-                    data_info += "<tr class='"+tr_class+"' id='1' > <td class='textalign' id=' "+str(row.SERVICE_ID)+"'>"+str(row.STEP_NUMBER)+"</td> <td class='textalign'>"+str(row.CONDITION_TYPE)+"</td> <td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td> <td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td> <td class='textalign'>"+str(row.CONDITION_CURRENCY).strip()+"</td> <td class='numberalign'>"+str(row.CONDITIONTYPE_RECORD_ID)+"</td> <td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td> <td class='textalign'>"+str(row.CONDITION_DATA_TYPE).strip()+"</td><td class='textalign'>"+str(row.CONDITION_BASE).strip()+"</td></tr>"
+                    
+                    data_info += "<tr class='"+tr_class+"' id='1' > <td class='textalign' id=' "+str(row.SERVICE_ID)+"'>"+str(row.STEP_NUMBER)+"</td> <td class='textalign'>"+str(row.CONDITION_TYPE)+"</td> <td class='textalign'>"+str(row.CONDITIONTYPE_NAME).replace("`","'")+"</td> <td class='numberalign'>"+str(row.CONDITION_RATE).strip()+"</td> <td class='textalign'>"+str(row.CONDITION_CURRENCY).strip()+"</td> <td class='numberalign'>"+str(row.CONDITIONTYPE_RECORD_ID)+"</td> <td class='numberalign'>"+str(row.CONDITION_VALUE)+"</td> <td class='textalign'>"+str(row.UOM)+"</td> <td class='textalign'>STATIC</td> <td class='textalign'>"+str(row.CONDITION_DATA_TYPE).strip()+"</td><td class='textalign'>"+str(row.CONDITION_BASE).strip()+"</td></tr>"
         data.append({rolled_up_id:data_info})
     Trace.Write(str(data))
     return data
