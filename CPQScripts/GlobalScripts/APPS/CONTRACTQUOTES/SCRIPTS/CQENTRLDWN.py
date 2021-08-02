@@ -508,7 +508,7 @@ grnbk_dict = {}
 
 for obj in obj_list:
 	join =""
-	update_fields = "CPS_MATCH_ID = '{}', CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format( getinnercon.CPS_MATCH_ID, getinnercon.CPS_CONFIGURATION_ID,userId,datetimenow)
+	update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userId,datetimenow)
 	if objectName == 'SAQSGE' and obj == 'SAQIEN':
 		join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
 	# elif objectName == 'SAQSGE':
