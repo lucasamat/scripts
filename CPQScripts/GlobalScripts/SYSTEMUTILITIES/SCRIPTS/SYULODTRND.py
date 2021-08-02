@@ -3152,13 +3152,13 @@ def EntitlementTreeViewHTMLDetail(
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										else:
 											sec_str_imt += ""
@@ -3318,9 +3318,9 @@ def EntitlementTreeViewHTMLDetail(
 											)
 										#cost_impact  = val.ENTITLEMENT_COST_IMPACT
 										try:
-											Trace.Write("@@3087"+str(attrSysId))
+											#Trace.Write("@@3087"+str(attrSysId))
 											if val.ENTITLEMENT_COST_IMPACT:
-												Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
+												#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
 												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 												
