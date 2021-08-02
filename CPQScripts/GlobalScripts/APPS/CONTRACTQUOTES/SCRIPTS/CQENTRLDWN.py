@@ -555,9 +555,9 @@ for obj in obj_list:
 							if get_value_diff != 0.00:
 								get_calc_factor = get_value = int(round(float(calculated_value) + get_value_diff ) )
 								if value.ENTITLEMENT_COST_IMPACT and get_value:
-									get_price_impact = str(get_value * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip()) )+" "+str(get_currency)
+									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
-									get_price_impact = "0.00 "+str(get_currency)
+									get_price_impact = 0.00
 								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								
 							else:
@@ -615,9 +615,9 @@ for obj in obj_list:
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
 							get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
 							if value.ENTITLEMENT_COST_IMPACT and get_value:
-								get_price_impact = str(get_value * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip()) )+" "+str(get_currency)
+								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 							else:
-								get_price_impact = "0.00 "+str(get_currency)
+								get_price_impact = 0.00
 							#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 						
 						#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
@@ -706,9 +706,9 @@ for obj in obj_list:
 								if get_value_diff != 0.00:
 									get_calc_factor = get_value = int(round(float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff) )
 									if value.ENTITLEMENT_COST_IMPACT and get_value:
-										get_price_impact = str(get_value * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip()) )+" "+str(get_currency)
+										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 									else:
-										get_price_impact = "0.00 "+str(get_currency)
+										get_price_impact = 0.00
 									#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
 									get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
@@ -761,10 +761,9 @@ for obj in obj_list:
 							if get_value_diff != 0.00:
 								get_val = float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff
 								if value.ENTITLEMENT_COST_IMPACT and get_val:
-									#get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-									get_price_impact = str(get_val * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip()) )+" "+str(get_currency)
+									get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
-									get_price_impact = "0.00 "+str(get_currency)
+									get_price_impact = 0.00
 								get_calc_factor = get_value = round(get_val,2)
 							else:
 								get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
@@ -851,10 +850,9 @@ for obj in obj_list:
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
 							get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
 							if value.ENTITLEMENT_COST_IMPACT and get_val:
-								#get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-								get_price_impact = str(get_val * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip()) )+" "+str(get_currency)
+								get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
 							else:
-								get_price_impact = "0.00 "+str(get_currency)
+								get_price_impact = 0.00
 							get_calc_factor = get_value = round(get_val,2)
 							#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -901,9 +899,9 @@ for obj in obj_list:
 					get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
 					grnbk_dict[value.ENTITLEMENT_NAME] = get_val
 					if value.ENTITLEMENT_COST_IMPACT and get_val:
-						get_price_impact = str(get_val * float(value.ENTITLEMENT_COST_IMPACT.split(" ")[0].strip() ) )+" "+str(get_currency)
+						get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
 					else:
-						get_price_impact = "0.00 "+str(get_currency)
+						get_price_impact = 0.00
 					get_calc_factor = get_value = round(get_val,2)
 			updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
