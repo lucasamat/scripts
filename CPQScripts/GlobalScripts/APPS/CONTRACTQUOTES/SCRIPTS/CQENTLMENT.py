@@ -748,15 +748,15 @@ class Entitlements:
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = str((val).split("||")[0]).replace("'","&apos;"),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
 					#Trace.Write("updateentXML---"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
-				####to update match id at all level while saving starts
-				# get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
-				# ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
+				###to update match id at all level while saving starts
+				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
+				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
 				#ent_tables_list.remove(tableName)
-				# if get_match_id:
-				# 	for table in ent_tables_list:
-				# 		Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId, serviceId)
-				# 		Sql.RunQuery(Updatecps)
-				###to update match id at all level while saving ends
+				if get_match_id:
+					for table in ent_tables_list:
+						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId, serviceId)
+						Sql.RunQuery(Updatecps)
+				##to update match id at all level while saving ends
 
 				Sql.RunQuery(UpdateEntitlement)
 				Trace.Write("TEST COMMIT")
@@ -1396,13 +1396,13 @@ class Entitlements:
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
-				# ####to update match id at all level while cancelling starts
-				# ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
-				# #ent_tables_list.remove(tableName)
-				# for table in ent_tables_list:
-				# 	Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId, serviceId)
-				# 	Sql.RunQuery(Updatecps)
-				###to update match id at all level while cancelling ends
+				####to update match id at all level while cancelling starts
+				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
+				#ent_tables_list.remove(tableName)
+				for table in ent_tables_list:
+					Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, cpsmatc_incr, self.ContractRecordId, serviceId)
+					Sql.RunQuery(Updatecps)
+				##to update match id at all level while cancelling ends
 
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
 				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
