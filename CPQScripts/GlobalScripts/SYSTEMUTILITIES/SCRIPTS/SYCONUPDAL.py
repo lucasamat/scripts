@@ -38,6 +38,8 @@ class ConfigUpdateScript:
 			self.current_tab_name = "Page"			
 		elif Param.CurrentTab == "Object":
 			self.current_tab_name = "Object"
+		elif Param.CurrentTab == "Variable":
+			self.current_tab_name = "Variable"
 		elif Param.CurrentTab == "Script":
 			self.current_tab_name = "Script"
 		elif Param.CurrentTab == "Profile":
