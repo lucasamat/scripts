@@ -2593,14 +2593,17 @@ def EntitlementTreeViewHTMLDetail(
 						Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
 						Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
 						if attrSysId in attributesdisallowedlst:
-							add_style = "display:none"
+							if attrSysId in attributedefaultvalue
+								add_style = "display:none;color: blue"
+							else:
+								add_style = "display:none;"
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							add_style = ""
-						if attrSysId in attributedefaultvalue:
-							add_style_color = ";color: red"
-						else:
-							add_style_color = ""
+						# if attrSysId in attributedefaultvalue:
+						# 	add_style_color = ";color: red"
+						# else:
+						# 	add_style_color = ""
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -2681,7 +2684,7 @@ def EntitlementTreeViewHTMLDetail(
 										+ "</option>"
 									)
 							sec_str1 += (
-								'<select class="form-control remove_yellow" style ="'+str(add_style)+str(add_style_color)+'" id = "'
+								'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
 								+ str(attrSysId)
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
@@ -2731,7 +2734,7 @@ def EntitlementTreeViewHTMLDetail(
 										+ "</option>"
 									)
 							sec_str1 += (
-								'<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+str(add_style_color)+'" id = "'
+								'<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+'" id = "'
 								+ str(attrSysId)
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
