@@ -104,7 +104,7 @@ def POPUPLISTVALUEADDNEW(
 		CurrentTab = TestProduct.CurrentTab
 	except:
 		CurrentTab = 'Quotes'    
-	
+	Trace.Write('TABLEID----'+str(TABLEID))
 	table1 = table[2] + "-" + table[3]
 	popup_table_id = table[0] + "-" + table[1]
 
