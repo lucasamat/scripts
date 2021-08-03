@@ -2218,7 +2218,7 @@ def EntitlementTreeViewHTMLDetail(
 	SectionList,
 	EntitlementType,
 ):
-	quoteid = Quote.GetGlobal("contract_quote_record_id")
+	# quoteid = Quote.GetGlobal("contract_quote_record_id")
 	TreeParentParam = AllTreeParam["TreeParentLevel0"]
 	TreeSuperParentParam = AllTreeParam["TreeParentLevel1"]
 	cpsConfigID = get_last_secid = ''
