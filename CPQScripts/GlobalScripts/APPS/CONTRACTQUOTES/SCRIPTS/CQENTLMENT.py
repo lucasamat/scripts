@@ -192,7 +192,7 @@ class Entitlements:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
-			#Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
+			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
 
 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 			#Trace.Write("patch response1---170---" + str(response1))
