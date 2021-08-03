@@ -190,13 +190,12 @@ class Entitlements:
 							requestdata +=','
 						elif field_type == 'Drop Down':
 							Trace.Write("New_VALUE_J "+str(val.STANDARD_ATTRIBUTE_VALUE))
-							list_of_vals = []
-							list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
-							Trace.Write("list_of_vals_J "+str(list_of_vals))
+							# list_of_vals = []
+							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
+							# Trace.Write("list_of_vals_J "+str(list_of_vals))
 							if NewValue == 'select':
-								for value in list_of_vals:
-									Trace.Write("inside_J____DROP_DOWN")
-									requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + value + '","selected":false}'',]}]}'
+								Trace.Write("inside_J____DROP_DOWN")
+								requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + val.STANDARD_ATTRIBUTE_VALUE) + '","selected":false}'',]}]}'
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			if NewValue != 'select':
