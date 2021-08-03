@@ -195,7 +195,8 @@ class Entitlements:
 							# Trace.Write("list_of_vals_J "+str(list_of_vals))
 							if NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN")
-								requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'',]}]}'
+								requestdata = ""
+								requestdata += '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'',]}]}'
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			if NewValue != 'select':
