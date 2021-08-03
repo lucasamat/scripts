@@ -3061,19 +3061,15 @@ def EntitlementTreeViewHTMLDetail(
 						DType = attribute['attribute_dtype']
 						Trace.Write("attrValue_else_j "+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
-							
-							add_style = "display:none"
+							if attrSysId in attributedefaultvalue:
+								add_style = "display:none;color:blue"
+							else:
+								add_style = "display:none"
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 							add_style = ""
-						if attrSysId in attributedefaultvalue:
-							
-							add_style_color = "color:red"
-							
-						else:
-							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
-							add_style_color = ""	
+						
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -3153,7 +3149,7 @@ def EntitlementTreeViewHTMLDetail(
 													+ "</option>"
 												)
 										sec_str1 += (
-										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+str(add_style_color)+'" id = "'
+										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
@@ -3280,7 +3276,7 @@ def EntitlementTreeViewHTMLDetail(
 										#Trace.Write("CHKNG_STYLE_J "+str(add_style)+" attrSysId "+str(attrSysId))
 										Trace.Write("CHKNG_STYLE_J "+str(VAR1)+" attrSysId "+str(attrSysId))
 										sec_str1 += (
-											'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+str(add_style_color)+'" id = "'
+											'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+'" id = "'
 											+ str(attrSysId)
 											+ '" type="text"  data-content ="'
 											+ str(attrSysId)
