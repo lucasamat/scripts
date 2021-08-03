@@ -170,6 +170,7 @@ class Entitlements:
 			requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 			attribute_code = []
 			Trace.Write("field_type--"+str(field_type))
+			Trace.Write("previous_val "+str(Getprevdict))
 			if field_type != 'input':
 				STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
 				
