@@ -188,6 +188,10 @@ class Entitlements:
 							Trace.Write("inside_J____")
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
+						elif field_type == 'Drop Down':
+							Trace.Write("inside_J____DROP_DOWN")
+							requestdata += '{"value":"002","selected":false}'
+							requestdata +=','
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
