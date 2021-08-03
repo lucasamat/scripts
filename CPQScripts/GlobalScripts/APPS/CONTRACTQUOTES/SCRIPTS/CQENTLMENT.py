@@ -151,7 +151,7 @@ class Entitlements:
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
 			if NewValue == 'Select':
-				NewValue = '{"value":"002","selected":false}'
+				NewValue = '002'
 		#Trace.Write('cpsmatchID--132-----------'+str(cpsmatchID))
 		#Trace.Write('AttributeID--132-----------'+str(AttributeID))
 		Trace.Write('NewValue--132-----------'+str(NewValue))
@@ -180,11 +180,12 @@ class Entitlements:
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
 						#Trace.Write('NewValue'+str(NewValue)+'---'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
-							#Trace.Write('inside-------')
+							Trace.Write('inside-------')
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 							requestdata +=','
 							attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
 						elif field_type == 'Check Box':
+							Trace.Write("inside_J____")
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
 			else:
