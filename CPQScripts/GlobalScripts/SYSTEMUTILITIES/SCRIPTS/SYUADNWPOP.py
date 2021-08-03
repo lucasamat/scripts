@@ -4033,6 +4033,7 @@ def POPUPLISTVALUEADDNEW(
 							)
 
 						elif data_type == "PICKLIST":
+							Trace.Write('4036---------')
 							if ObjectName == "SYOBJD" or ObjectName == "ACACSA":
 								sec_str += (
 									'<td><select id="'
