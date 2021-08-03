@@ -190,7 +190,7 @@ class Entitlements:
 							requestdata +=','
 						elif field_type == 'Drop Down':
 							Trace.Write("New_VALUE_J "+str(NewValue))
-							if NewValue == 'Select':
+							if NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN")
 								requestdata += '{"value":"002","selected":false}'
 								requestdata +=','
