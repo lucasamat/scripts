@@ -2513,7 +2513,7 @@ if CurrentTab == 'Quotes':
         ObjName = "SAQFEQ"   
     if str(subTabName) == "Equipment" and (TreeParam != "Fab Locations" and TreeParentParam != "Fab Locations" and TreeParam != "Quote Information" and TreeParentParam != "Sending Equipment" and TreeParentParam != "Receiving Equipment" ) :
         ObjName = "SAQSCO"
-    if str(subTabName) == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations" or TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment" ) :
+    if (str(subTabName) == "Equipment" and str(subTabName) != "Fab Locations") and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations" or TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment" ) :
         ObjName = "SAQFEQ"
     if TreeParentParam == "Quote Items" and (subTabName == "Spare Part Details" or subTabName == "Entitlements") and getQuotetype == "ZWK1 - SPARES":
         ObjName = "SAQIFP"
