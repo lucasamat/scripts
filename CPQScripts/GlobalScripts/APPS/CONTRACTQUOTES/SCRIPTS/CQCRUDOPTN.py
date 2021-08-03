@@ -5421,6 +5421,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		self.node_id = ""
 		##getting apr current rec id
 		self.apr_current_record_id = kwargs.get('apr_current_record_id')
+		Trace.Write('indise notification class')
 
 	def _get(self):
 		quote_notif_obj = self._get_record_obj(
