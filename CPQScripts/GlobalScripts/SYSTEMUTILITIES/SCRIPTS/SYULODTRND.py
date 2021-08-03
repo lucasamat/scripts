@@ -2404,6 +2404,7 @@ def EntitlementTreeViewHTMLDetail(
 		attributeReadonlylst = attributes_disallowed_list = []
 		attributeEditlst = list_of_tabs = []
 		attributevalues = {}
+		attributedefaultvalue = {}
 		dropdowndisallowlist = []
 		dropdownallowlist = []
 		get_lastsection_val = attrcode = disable_edit = ""
@@ -2428,6 +2429,7 @@ def EntitlementTreeViewHTMLDetail(
 									# 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 							for attribute in prdvalue["values"]:
 								attributevalues[str(prdvalue["id"])] = attribute["value"]
+								attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
 		Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
 		Trace.Write('attributevalues'+str(attributevalues))
