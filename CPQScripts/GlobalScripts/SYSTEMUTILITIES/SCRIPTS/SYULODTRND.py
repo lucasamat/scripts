@@ -3073,7 +3073,7 @@ def EntitlementTreeViewHTMLDetail(
 						else:
 							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 							add_style = ""
-						
+						Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
