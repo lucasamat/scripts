@@ -409,8 +409,8 @@ class ButtonAction:
                                         btnactn.setAllowedAttribute(actAttributeName, False)
 
                                 if value == "VIEW" or value == "SEG_EDIT":
-                                    #Trace.Write(str(flag)+'------424---------------'+str(value))
-                                    #Trace.Write("value------" + str(value))
+                                    Trace.Write(str(flag)+'------424---------------'+str(value))
+                                    Trace.Write("value------" + str(value))
                                     if str(ACTItem.ACTION_NAME) == "DELETE" and actAttributeName is not None:
                                         actAttributeName.Allowed = (
                                             True if DELETE.upper() == "TRUE" and flag == "True" else False
