@@ -402,392 +402,7 @@ class TreeView:
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		Trace.Write("returnList-----> " + str(returnList))
 		return returnList, objrList
-
-
-
-	def ProfileTreeView(self):	
-		Trace.Write('ProfileTreeView')	
-		ProfileRecId = Product.GetGlobal("ProfileRecId")		
-		objR_obj = []
-		try:
-			current_prod = Product.Name
-		except Exception:
-			current_prod = ""
-
-		objR_obj = []
-
-		nodeId = 0
-		objrList = ["Profile Information", "Assigned Members", "App Level Permissions", "Object Level Permissions"]
-
-		ProductDict = {}
-		ChildList = []
-		returnList = []
-		ProductList = []
-		Firstnode = "Profile Information"
-		returnList = []
-
-		proff_per_id = ""
-		primary_data = ""
-		# A043S001P01-9518 start
-		permissionid = ""
-		profile_Name = Product.GetGlobal("Profile_Name")
-		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()	
-		if "cpq" not in permissions_id_val:
-			permissions_id_val = permissions_id_val
-
-		cpq_permission_val = Sql.GetFirst(
-			"Select permission_id from cpq_permissions where permission_name ='" + str(profile_Name) + "'"
-		)
-		if cpq_permission_val:
-			proff_per_id = cpq_permission_val.permission_id
-
-		proff_id = Product.GetGlobal("Profile_ID_val")		
-		Product.SetGlobal("proff_per_id", str(proff_per_id))
-		
-		if proff_id == "":
-
-			proff_id = proff_per_id
-		else:
-
-			proff_id = Product.GetGlobal("Profile_ID_val")
-		# A043S001P01-9518 end
-
-		for data in objrList:
-			ProductDict = {}
-			ProductDict["text"] = str(data)
-			ProductDict["nodeId"] = int(nodeId)
-			nodeId = int(nodeId) + 1
-			AppsubDict = {}
-			Appsublist = []
-			childsublist = []
-			listvar = []
-			if data == "App Level Permissions":
-				objrrec_id = "SYOBJR-93121"
-				ProductDict["id"] = "SYOBJR-93121"
-				ProductDict["objname"] = "SYPRAP"
-				app_load_list = Sql.GetList(
-					"SELECT DISTINCT top 1000 APP_ID,PROFILE_APP_RECORD_ID FROM SYPRAP where PROFILE_ID='"
-					+ str(permissions_id_val)
-					+ "' "
-				)
-
-				if app_load_list is not None:
-					for val in app_load_list:
-						childsublist = []
-						if val.APP_ID:
-							subDict = {
-								"text": str(val.APP_ID).upper(),
-								"nodeId": int(nodeId),
-								"id": str(val.PROFILE_APP_RECORD_ID),
-								"objname": "SYPRAP",
-							}
-							nodeId = int(nodeId) + 1
-							#Trace.Write("nodeId " + str(nodeId))
-
-							tab_load_list = Sql.GetList(
-								"SELECT DISTINCT top 1000 p.TAB_ID,p.TAB_RECORD_ID,p.PROFILE_TAB_RECORD_ID,S.DISPLAY_ORDER FROM SYPRTB p WITH (NOLOCK) inner join SYTABS S on S.RECORD_ID =p.TAB_RECORD_ID  WHERE p.APP_ID='"
-								+ str(val.APP_ID)
-								+ "' and p.PROFILE_ID='"
-								+ str(permissions_id_val)
-								+ "' order by S.DISPLAY_ORDER"
-							)
-
-							tablist = []
-							tablist1 = []
-							tabdict1 = {}
-							tabdict1 = {"text": "Tabs", "nodeId": int(nodeId), "objname": "SYPRTB", "id": "SYOBJR-93159"}
-							nodeId = int(nodeId) + 1
-							for tab in tab_load_list:
-								tabdict = {}
-								tabdict = {
-									"text": str(tab.TAB_ID),
-									"id": tab.PROFILE_TAB_RECORD_ID,
-									"nodeId": int(nodeId),
-									"objname": "SYPRTB",
-								}
-								nodeId = int(nodeId) + 1
-
-								sec_load_list = Sql.GetList(
-									"SELECT DISTINCT top 1000 p.SECTION_ID,p.PROFILE_SECTION_RECORD_ID,p.SECTION_RECORD_ID,s.DISPLAY_ORDER FROM SYPRSN p WITH (NOLOCK) inner join SYSECT s on s.RECORD_ID = p.SECTION_RECORD_ID WHERE p.TAB_ID='"
-									+ str(tab.TAB_ID)
-									+ "' and p.TAB_RECORD_ID = '"
-									+ str(tab.TAB_RECORD_ID)
-									+ "' and p.PROFILE_ID='"
-									+ str(permissions_id_val)
-									+ "' order by s.DISPLAY_ORDER"
-								)
-								seclist = []
-								Seclist1 = []
-								Secdict1 = {}
-								Secdict1 = {
-									"text": "Sections",
-									"nodeId": int(nodeId),
-									"objname": "SYPRSN",
-									"id": "SYOBJR-93160",
-								}
-								nodeId = int(nodeId) + 1
-								if sec_load_list is not None:
-									for sect in sec_load_list:
-										secdict = {}
-										if str(sect.SECTION_ID) not in secdict:
-											secdict = {
-												"text": str(sect.SECTION_ID),
-												"id": sect.PROFILE_SECTION_RECORD_ID,
-												"nodeId": int(nodeId),
-												"objname": "SYPRSN",
-											}
-											nodeId = int(nodeId) + 1
-
-										secactlist1 = []
-										secactdict1 = {}
-										seclstact = []
-										secactdict1 = {
-											"text": "Actions",
-											"nodeId": int(nodeId),
-											"objname": "SYPRAC",
-											"id": "SYOBJR-93169",
-										}
-										actionquery = Sql.GetList(
-											"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER,SEC_REC_ID,SECTION_NAME from SYPRAC where SEC_REC_ID = '"
-											+ str(sect.SECTION_RECORD_ID)
-											+ "' and PROFILE_ID='"
-											+ str(permissions_id_val)
-											+ "' order by DISPLAY_ORDER"
-										)
-										if actionquery:
-											nodeId = int(nodeId) + 1
-											for val in actionquery:
-												secdictact = {}
-												secdictact = {
-													"text": str(val.ACTION_NAME),
-													"id": val.PROFILE_ACTION_RECORD_ID,
-													"nodeId": int(nodeId),
-													"objname": "SYPRAC",
-												}
-												nodeId = int(nodeId) + 1
-												seclstact.append(secdictact)
-
-											secactdict1["nodes"] = seclstact
-
-										secactlist1.append(secactdict1)
-										nodeId = int(nodeId) + 1
-
-										secdict["nodes"] = secactlist1
-
-										qst_load_list = Sql.GetList(
-											"SELECT DISTINCT top 1000 p.SECTION_FIELD_ID ,p.SECTIONFIELD_RECORD_ID,p.PROFILE_SECTIONFIELD_RECORD_ID,s.DISPLAY_ORDER FROM SYPRSF p WITH (NOLOCK) inner join SYSEFL s on s.RECORD_ID = p.SECTIONFIELD_RECORD_ID WHERE  p.SECTION_RECORD_ID = '"
-											+ str(sect.SECTION_RECORD_ID)
-											+ "' and p.PROFILE_ID='"
-											+ str(permissions_id_val)
-											+ "' order by s.DISPLAY_ORDER"
-										)
-										qstlist = []
-										qstlist1 = []
-										qstdict1 = {}
-										qstdict1 = {
-											"text": "Fields",
-											"nodeId": int(nodeId),
-											"id": "SYOBJR-93162",
-											"objname": "SYPRSF",
-										}
-										nodeId = int(nodeId) + 1
-										if qst_load_list is not None:
-											for qst in qst_load_list:
-												qstdict = {}
-												qstdict = {
-													"text": str(qst.SECTION_FIELD_ID),
-													"id": qst.PROFILE_SECTIONFIELD_RECORD_ID,
-													"nodeId": int(nodeId),
-													"objname": "SYPRSF",
-												}
-												nodeId = int(nodeId) + 1
-												qstlist.append(qstdict)
-												qstdict1["nodes"] = qstlist
-											qstlist1.append(qstdict1)
-											if secdict.get("nodes"):
-												secdict["nodes"].extend(qstlist1)
-											else:
-												# secdict['nodes'].extend(qstlist1
-												secdict["nodes"].append(qstlist1)
-
-										seclist.append(secdict)
-									# if secdict1.get('nodes'):
-									Secdict1["nodes"] = seclist
-									# Secdict1['nodes'].extend(SYOBJSlistheaderload)
-									Seclist1.append(Secdict1)
-								SYOBJSdictheaderload = {
-									"text": "Actions",
-									"id": "SYOBJR-93169",
-									"nodeId": int(nodeId),
-									"objname": "SYPRAC",
-								}
-								SYOBJSlistheaderload = []
-								SYOBJSlistdataload = []
-								# SYOBJSdictdataload ={}
-								nodeId = int(nodeId) + 1
-								# A043S001P01-9098 Start
-								querySYOBJS = Sql.GetList(
-									"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER from SYPRAC where TAB_RECORD_ID = '"
-									+ str(tab.TAB_RECORD_ID)
-									+ "' and PROFILE_ID='"
-									+ str(permissions_id_val)
-									+ "' order by DISPLAY_ORDER"
-								)
-
-								# Trace.Write(
-								# 	"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER from SYPRAC where TAB_RECORD_ID = '"
-								# 	+ str(tab.TAB_RECORD_ID)
-								# 	+ "' and PROFILE_ID='"
-								# 	+ str(permissions_id_val)
-								# 	+ "' order by DISPLAY_ORDER"
-								# )
-
-								if querySYOBJS:
-									for val in querySYOBJS:
-										SYOBJSdictdataload = {}
-										SYOBJSdictdataload = {
-											"text": str(val.ACTION_NAME),
-											"id": val.PROFILE_ACTION_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPRAC",
-										}
-										nodeId = int(nodeId) + 1
-
-										SYOBJSlistdataload.append(SYOBJSdictdataload)
-									# A043S001P01-9098 End
-
-									SYOBJSdictheaderload["nodes"] = SYOBJSlistdataload
-
-								SYOBJSlistheaderload.append(SYOBJSdictheaderload)
-								tabdict["nodes"] = Seclist1
-								if tabdict.get("nodes"):
-									tabdict["nodes"].extend(SYOBJSlistheaderload)
-								else:
-									tabdict["nodes"].append(SYOBJSlistheaderload)
-								tablist.append(tabdict)
-							tabdict1["nodes"] = tablist
-							if tabdict1.get("nodes"):
-								tablist1.append(tabdict1)
-								subDict["nodes"] = tablist1
-							Appsublist.append(subDict)
-					ProductDict["nodes"] = Appsublist
-					# Trace.Write("Appsublist " + str(Appsublist))
-			elif data == "Assigned Members":
-				
-				objrrec_id = "SYOBJR-95800"
-				ProductDict["id"] = "SYOBJR-95800"
-				ProductDict["objname"] = "USERS"
-				newPRFRECID = Product.GetGlobal("PF_REC_ID")
-
-				user_load_list = Sql.GetList(
-					"SELECT DISTINCT top 1000 US.USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and cp.SYSTEM_ID = '"
-					+ str(permissions_id_val)
-					+ "' order by USERNAME"
-				)
-				# RD_ID,NAME FROM SYPRUS WITH (NOLOCK) WHERE PROFILE_RECORD_ID='"+str(newPRFRECID)+"' order by USER_NAME")
-				if user_load_list is not None:
-					for val in user_load_list:
-						if val.USERNAME != "":
-							childsublist.append(
-								{
-									"text": str(val.USERNAME).upper(),
-									"nodeId": int(nodeId),
-									"objname": "USERS",
-									"id": str(val.ID),
-								}
-							)
-							nodeId = int(nodeId) + 1
-					ProductDict["nodes"] = childsublist
-			elif data == "Object Level Permissions":
-				ProductDict["id"] = "SYOBJR-93122"
-				ProductDict["objname"] = "SYPROH"
-				objsublist = []
-				objfieldlist = []
-				objsubdict = {}
-
-				obj_load_list = Sql.GetList(
-					"SELECT DISTINCT TOP 1000 OBJECT_NAME, OBJECT_RECORD_ID FROM SYPROH  WITH (NOLOCK) WHERE PROFILE_ID = '"
-					+ str(permissions_id_val)
-					+ "' AND OBJECT_NAME NOT LIKE 'SYPR%' GROUP BY OBJECT_NAME, OBJECT_RECORD_ID ORDER BY OBJECT_NAME "
-				)
-
-				if obj_load_list is not None:
-					for val in obj_load_list:
-						if val.OBJECT_NAME != "":
-							objsubdict = {
-								"text": str(val.OBJECT_NAME).upper(),
-								"nodeId": int(nodeId),
-								"id": str(val.OBJECT_RECORD_ID),
-								"objname": "SYPROH",
-							}
-							nodeId = int(nodeId) + 1
-							objrlist = []
-							objfieldlist = []
-							objrlistheader = []
-							objrdictheader = {}
-							objrfieldlistheader = []
-							objfieldlist = []
-							objrfielddictheader = {}
-							"""objrdictheader = {"text": "Related List", "nodeId": int(nodeId), "objname": "SYPROH"}
-							nodeId = int(nodeId) + 1"""
-
-							objrfielddictheader = {
-								"text": "Fields",
-								"nodeId": int(nodeId),
-								"objname": "SYPROD",
-								"id": "SYOBJR-93130",
-							}
-							nodeId = int(nodeId) + 1
-							queryfields = Sql.GetList(
-								"SELECT DISTINCT TOP 1000 p.PROFILE_OBJECTFIELD_RECORD_ID, p.OBJECT_RECORD_ID,p.OBJECT_FIELD_ID,p.OBJECTFIELD_RECORD_ID,p.OBJECT_FIELD_ID,s.DISPLAY_ORDER FROM SYPROD p  WITH (NOLOCK) inner join SYOBJD s on s.RECORD_ID = p.OBJECTFIELD_RECORD_ID WHERE PROFILE_ID = '"
-								+ str(permissions_id_val)
-								+ "' and OBJECT_NAME = '"
-								+ str(val.OBJECT_NAME)
-								+ "' ORDER BY s.DISPLAY_ORDER "
-							)
-							if queryfields is not None:
-								for val in queryfields:
-									objfielddict = {}
-									if val.OBJECT_FIELD_ID is not None and val.OBJECT_FIELD_ID != "":
-										objfielddict = {
-											"text": val.OBJECT_FIELD_ID,
-											"id": val.PROFILE_OBJECTFIELD_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPROD",
-										}
-									else:
-										objfielddict = {
-											"text": val.OBJECT_FIELD_ID,
-											"id": val.PROFILE_OBJECTFIELD_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPROD",
-										}
-									nodeId = int(nodeId) + 1
-									objfieldlist.append(objfielddict)
-							# if queryvalsyprjd is not None:
-							# for val in queryvalsyprjd:
-							# objfielddict = {}
-							# if val.FIELD_LABEL:
-							# objfielddict={"text":val.FIELD_LABEL,"id": val.SYOBJD_RECORD_ID,"nodeId":int(nodeId)}
-							# nodeId = int(nodeId) + 1
-							# objfieldlist.append(objfielddict)
-							objrfielddictheader["nodes"] = objfieldlist
-							objrfieldlistheader.append(objrfielddictheader)
-
-							if objsubdict.get("nodes"):
-								objsubdict["nodes"].extend(objrfieldlistheader)
-							else:
-								objsubdict["nodes"] = objrfieldlistheader
-							objsublist.append(objsubdict)
-
-					ProductDict["nodes"] = list(objsublist)
-			returnList.append(ProductDict)
-			# ## #TREE NODE STRUCTURE CODE ENDS
-		Product.SetGlobal("CommonTreeList", str(returnList))
-		#Trace.Write("returnList-------> " + str(returnList))
-		# ## #TREE NODE STRUCTURE CODE ENDS
-		return returnList, objrList
-
+	
 	def CommonDynamicLeftTreeView(self):
 		try:
 			TreeParam = Product.GetGlobal("TreeParam")
@@ -1955,18 +1570,8 @@ class TreeView:
 							.replace("ContAttValue", ContAttValue)
 							.replace("where_string", where_string)
 						)
-						#("DynamicQueryCHK1"+str(DynamicQuery))
-						if CurrentTabName == 'Profile' and 'SYPRSF' in DynamicQuery:
-							global g_total
-							g_total += 1
-							Trace.Write("=============>>> Profile Tab 1111 "+str(DynamicQuery))
-							if g_total < 2:
-								
-								childQuery = Sql.GetList("" + str(DynamicQuery) + "")   
-							else:
-								childQuery = None
-						else:
-							childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
+						#("DynamicQueryCHK1"+str(DynamicQuery))						
+						childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
 					else:
 						if NodeName.find("-") == -1:
 							NodeValue = NodeName
@@ -2209,17 +1814,7 @@ class TreeView:
 									+ " = '"
 									+ str(NodeText)
 									+ "'"
-								)
-								if NodeName == 'SECTION_FIELD_ID':
-									Trace.Write('XXXXXXX==> '+str("select * from "
-									+ str(ObjName)
-									+ " (nolock) where "
-									+ str(where_string)
-									+ " AND "
-									+ str(NodeName)
-									+ " = '"
-									+ str(NodeText)
-									+ "'"))
+								)								
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
@@ -2505,7 +2100,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write(str(SubNodeName)+' Dynamic4444444444444444444444@@@@'+str(NodeName))
+										
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -2721,8 +2316,7 @@ class TreeView:
 									Quote.SetGlobal("Equipment",NodeText) 
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
 								# Filter based on service type - Services Node - End
-								#Trace.Write("check----"+str(NodeText))
-								Trace.Write(str(SubNodeName)+' 5555555555555555@@@@'+str(NodeName))			
+								#Trace.Write("check----"+str(NodeText))										
 								try:			   
 									CurrentTabName = TestProduct.CurrentTab
 								except:
@@ -3055,8 +2649,7 @@ class TreeView:
 												+ "'"
 											)											
 											Subwhere_string = str(where_string)
-											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)     
-											Trace.Write('2222222222222222222222@@@@')                                
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)										                              
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,
