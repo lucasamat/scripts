@@ -231,7 +231,7 @@ class SyncQuoteAndCustomTables:
                         else:
                             ent_disp_val = ent_disp_val
                         
-                        DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+                        DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
                         #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
                         insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                         <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
@@ -370,7 +370,7 @@ class SyncQuoteAndCustomTables:
 
                                 
                                     
-                                    DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+                                    DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
                                     #Log.Info('response2--182----342-')
                                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
