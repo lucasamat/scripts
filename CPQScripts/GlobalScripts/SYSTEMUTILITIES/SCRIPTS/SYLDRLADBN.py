@@ -360,8 +360,10 @@ class ButtonAction:
                         all_lookuplist = []  # A043S001P01-15458
                         sec_loouplist = []
                         if SYACTI_OBJNAME is not None:
+                            Trace.Write("Value_Test222")
                             attributeDictionary = {}
                             for ACTItem in SYACTI_OBJNAME:
+                                Trace.Write("Value_Test111")
                                 # GET ACTION BUTTON ATTRIBUTE NAME
                                 ACTIONRECORDID = str(ACTItem.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_")
                                 ACTIONNAME = str(ACTItem.ACTION_NAME).replace(" ", "")
