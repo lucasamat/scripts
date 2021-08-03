@@ -2430,9 +2430,10 @@ def EntitlementTreeViewHTMLDetail(
 							for attribute in prdvalue["values"]:
 								attributevalues[str(prdvalue["id"])] = attribute["value"]
 								attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
-		Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
+		#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
+		#Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
 		Trace.Write('attributevalues'+str(attributevalues))
+		Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
 
 
 		product_obj = Sql.GetFirst("""SELECT 
