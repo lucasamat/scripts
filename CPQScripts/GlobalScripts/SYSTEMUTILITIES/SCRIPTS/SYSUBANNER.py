@@ -92,9 +92,9 @@ def Related_Sub_Banner(
 
 
 
-    # if str(ObjName) == "SYOBJC":
-    #     if page_details:
-    #         dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
+    if str(ObjName) == "SYOBJC":
+         if page_details:
+             dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
 
     # Binding button Id's based on Related list Table record id
         
