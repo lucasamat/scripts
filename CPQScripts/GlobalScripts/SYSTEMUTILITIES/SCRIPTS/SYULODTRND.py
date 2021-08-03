@@ -3100,6 +3100,7 @@ def EntitlementTreeViewHTMLDetail(
 								# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 								#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 								#Trace.Write("dtype-----before if"+str(DType))
+								add_style = ''
 								if DType == "Drop Down" :
 									
 									
