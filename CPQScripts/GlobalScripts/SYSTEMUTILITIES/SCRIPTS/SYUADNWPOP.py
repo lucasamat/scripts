@@ -4121,8 +4121,7 @@ def POPUPLISTVALUEADDNEW(
 				cancel_button = ""
 				save_button = ""
 				event_name = "loadRelatedList('" + str(popup_table_id) + "','" + str(DIVNAME) + "')"
-				if popup_table_id = 'SYOBJR-98459' and TabName == 'Script':
-					popup_table_id = 'SYOBJR-95840'
+				
 
 				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"'")
 
