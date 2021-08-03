@@ -2218,7 +2218,7 @@ def EntitlementTreeViewHTMLDetail(
 	SectionList,
 	EntitlementType,
 ):
-	# quoteid = Quote.GetGlobal("contract_quote_record_id")
+	quoteid = Quote.GetGlobal("contract_quote_record_id")
 	TreeParentParam = AllTreeParam["TreeParentLevel0"]
 	TreeSuperParentParam = AllTreeParam["TreeParentLevel1"]
 	cpsConfigID = get_last_secid = ''
@@ -3100,7 +3100,7 @@ def EntitlementTreeViewHTMLDetail(
 								# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 								#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 								#Trace.Write("dtype-----before if"+str(DType))
-								add_style_color = ''
+								
 								if DType == "Drop Down" :
 									
 									
