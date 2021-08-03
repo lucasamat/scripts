@@ -2600,6 +2600,7 @@ def EntitlementTreeViewHTMLDetail(
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							add_style = ""
+						Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
 						# if attrSysId in attributedefaultvalue:
 						# 	add_style_color = ";color: red"
 						# else:
