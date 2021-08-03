@@ -194,10 +194,12 @@ class Entitlements:
 							list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							Trace.Write("list_of_vals_J "+str(list_of_vals))
 							if NewValue == 'select':
-								Trace.Write("inside_J____DROP_DOWN")
+								
 								for value in list_of_vals:
-									requestdata += '{"value":"' + value + '","selected":false}'
-									requestdata +=','
+									if val.STANDARD_ATTRIBUTE_VALUE == value:
+										Trace.Write("inside_J____DROP_DOWN")
+										requestdata += '{"value":"' + value + '","selected":false}'
+										requestdata +=','
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
