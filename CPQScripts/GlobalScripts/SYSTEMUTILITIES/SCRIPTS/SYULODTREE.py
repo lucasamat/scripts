@@ -2722,21 +2722,41 @@ class TreeView:
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
 								# Filter based on service type - Services Node - End
 								#Trace.Write("check----"+str(NodeText))
-								Trace.Write(str(SubNodeName)+' 5555555555555555@@@@'+str(NodeName))								
-								SubChildData = self.getChildOne(
-									SubNodeType,
-									SubNodeName,
-									RecAttValue,
-									nodeId,
-									SubParRecId,
-									subDynamicQuery,
-									ObjectName,
-									RecId,
-									Subwhere_string,
-									PageRecId,
-									ObjectRecId,
-									ordersBy,
-								)
+								Trace.Write(str(SubNodeName)+' 5555555555555555@@@@'+str(NodeName))			
+								try:			   
+									CurrentTabName = TestProduct.CurrentTab
+								except:
+									CurrentTabName = ""			
+								if CurrentTabName == 'Profile':	
+									SubChildData = self.getProfileChildOne(
+										SubNodeType,
+										SubNodeName,
+										RecAttValue,
+										nodeId,
+										SubParRecId,
+										subDynamicQuery,
+										ObjectName,
+										RecId,
+										Subwhere_string,
+										PageRecId,
+										ObjectRecId,
+										ordersBy,
+									)	
+								else:
+									SubChildData = self.getChildOne(
+										SubNodeType,
+										SubNodeName,
+										RecAttValue,
+										nodeId,
+										SubParRecId,
+										subDynamicQuery,
+										ObjectName,
+										RecId,
+										Subwhere_string,
+										PageRecId,
+										ObjectRecId,
+										ordersBy,
+									)
 							
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
