@@ -25,11 +25,11 @@ try:
 	today = datetime.datetime.now()
 	Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 	
-	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamtrl_inbound set sap_part_number = convert(bigint,sap_part_number) where isnumeric(sap_part_number)=1 '")
+	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamtrl_inbound set sap_part_number =  convert(varchar(100),convert(bigint,sap_part_number)) where isnumeric(sap_part_number)=1 and sap_part_number not like ''%.%'' '")
 
-	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamsop_inbound set sap_part_number = convert(bigint,sap_part_number) where isnumeric(sap_part_number)=1 '")
+	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamsop_inbound set sap_part_number =  convert(varchar(100),convert(bigint,sap_part_number)) where isnumeric(sap_part_number)=1 and sap_part_number not like ''%.%'' '")
 
-	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamact_inbound set sap_part_number = convert(bigint,sap_part_number) where isnumeric(sap_part_number)=1 '")
+	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update mamact_inbound set sap_part_number =  convert(varchar(100),convert(bigint,sap_part_number)) where isnumeric(sap_part_number)=1 and sap_part_number not like ''%.%'' '")
 
 	UpdateTable1=SqlHelper.GetFirst("sp_executesql @T=N'update a set sap_part_number = b.sap_part_number,division_id = b.division_id from mamsop_inbound a join mamtrl_inbound b on a.session_id = b.session_id  '")
 
@@ -595,6 +595,7 @@ try:
 
 	#Deleting dynamically created table(ERROR_LOG
 	#TempTable = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(Temp_Table_Name)+"'' ) BEGIN DROP TABLE "+str(Temp_Table_Name)+" END'")
+	ERRLOG_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''TEMP_PROCESS'' ) BEGIN DROP TABLE TEMP_PROCESS END ' ")
 	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": "Data successfully uploaded"}]})
 		
 except:
