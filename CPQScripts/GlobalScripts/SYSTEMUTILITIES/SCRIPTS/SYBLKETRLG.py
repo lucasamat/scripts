@@ -469,8 +469,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				import datetime as dt
 				fmt = '%-m%d%Y'
-				d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).strip("/"), fmt)
-				d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).strip("/"), fmt)
+				d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).replace("/",""), fmt)
+				d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).replace("/",""), fmt)
 				days = (d2 - d1).days
 				Trace.Write("number of days---------------->"+str((d2 - d1).days))
 				
