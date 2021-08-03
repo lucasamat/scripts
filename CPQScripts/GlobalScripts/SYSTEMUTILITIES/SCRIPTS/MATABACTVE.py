@@ -8,7 +8,7 @@
 import Webcom.Configurator.Scripting.Test.TestProduct
 def set_active_tab_to_attr():
     for tab in Product.Tabs:
-        Log.Info("TNBI : " + str(tab.Name))
+        #Log.Info("TNBI : " + str(tab.Name))
         if tab.IsSelected == True:
             Product.Attributes.GetByName("MA_MTR_ACTIVE_TAB").AssignValue(str(tab.Name))
             break
