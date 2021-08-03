@@ -4060,6 +4060,7 @@ def POPUPLISTVALUEADDNEW(
 								+ str(current_obj_api_name)
 								+ "' "
 							)
+							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
 							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id))
