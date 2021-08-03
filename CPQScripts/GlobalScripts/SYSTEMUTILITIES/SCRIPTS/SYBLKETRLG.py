@@ -560,7 +560,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
 				if geteqp:
-					recordslist = str(tuple([fab['EQUIPMENT_ID'] for fab in geteqp])).replace(",)",')')
+					recordslist = str(tuple([fab.EQUIPMENT_ID for fab in geteqp])).replace(",)",')')
 
 					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
 					
