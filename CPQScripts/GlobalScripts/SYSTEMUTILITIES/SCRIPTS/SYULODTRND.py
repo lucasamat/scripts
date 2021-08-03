@@ -2557,7 +2557,7 @@ def EntitlementTreeViewHTMLDetail(
 							Section_id = sysectObj.RECORD_ID
 							Section_desc = sysectObj.SECTION_DESC.split('_')
 							Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
-				add_style =  ""
+				add_style =  add_style_color = ""
 				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
 				for key, invs in enumerate(list(desc_list)):
 					invs = str(invs).strip()
@@ -2597,7 +2597,10 @@ def EntitlementTreeViewHTMLDetail(
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							add_style = ""
-						
+						if attrSysId in attributedefaultvalue:
+							add_style_color = ";color: red"
+						else:
+							add_style_color = ""
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -2678,7 +2681,7 @@ def EntitlementTreeViewHTMLDetail(
 										+ "</option>"
 									)
 							sec_str1 += (
-								'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+								'<select class="form-control remove_yellow" style ="'+str(add_style)+str(add_style_color)+'" id = "'
 								+ str(attrSysId)
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
@@ -2728,7 +2731,7 @@ def EntitlementTreeViewHTMLDetail(
 										+ "</option>"
 									)
 							sec_str1 += (
-								'<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+'" id = "'
+								'<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+str(add_style_color)+'" id = "'
 								+ str(attrSysId)
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
@@ -3063,7 +3066,14 @@ def EntitlementTreeViewHTMLDetail(
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
-							add_style = ""	
+							add_style = ""
+						if attrSysId in attributedefaultvalue:
+							
+							add_style_color = "color:red"
+							
+						else:
+							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
+							add_style_color = ""	
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -3143,7 +3153,7 @@ def EntitlementTreeViewHTMLDetail(
 													+ "</option>"
 												)
 										sec_str1 += (
-										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+str(add_style_color)+'" id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
@@ -3270,7 +3280,7 @@ def EntitlementTreeViewHTMLDetail(
 										#Trace.Write("CHKNG_STYLE_J "+str(add_style)+" attrSysId "+str(attrSysId))
 										Trace.Write("CHKNG_STYLE_J "+str(VAR1)+" attrSysId "+str(attrSysId))
 										sec_str1 += (
-											'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+'" id = "'
+											'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+str(add_style_color)+'" id = "'
 											+ str(attrSysId)
 											+ '" type="text"  data-content ="'
 											+ str(attrSysId)
@@ -3298,7 +3308,7 @@ def EntitlementTreeViewHTMLDetail(
 											sec_str1 += (
 												'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 												+ str(attrSysId)
-												+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+												+ '" type="text"  style ="'+str(add_style)+str(add_style_color)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 												+ str(attr_value)
 												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="'+str(datepicker_onchange)+'" disabled>'									
 												+ "</input> "
