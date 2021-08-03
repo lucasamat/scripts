@@ -513,16 +513,17 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				get_curr = str(Quote.GetCustomField('Currency').Content)
 
-				Quote.GetCustomField('SALE_PRICE').Content =str(b.SUM_PRICE) + " " + get_curr
+				#Quote.GetCustomField('SALE_PRICE').Content =str(b.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(b.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(b.YEAR2) + " " + get_curr
 				for item in Quote.MainItems:
-					item.SALES_PRICE.Value = str(b.SUM_PRICE)
-					item.YEAR_1.Value = str(b.YEAR1)
-					item.YEAR_2.Value = str(b.YEAR2)
-					item.YEAR_3.Value = str(b.YEAR3)
-					item.YEAR_4.Value = str(b.YEAR4)
-					item.YEAR_5.Value = str(b.YEAR5)
+					if item.PartNumber == a.SERVICE_ID:
+						item.SALES_PRICE.Value = str(b.SUM_PRICE)
+						item.YEAR_1.Value = str(b.YEAR1)
+						item.YEAR_2.Value = str(b.YEAR2)
+						item.YEAR_3.Value = str(b.YEAR3)
+						item.YEAR_4.Value = str(b.YEAR4)
+						item.YEAR_5.Value = str(b.YEAR5)
 				Quote.Save()
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 
