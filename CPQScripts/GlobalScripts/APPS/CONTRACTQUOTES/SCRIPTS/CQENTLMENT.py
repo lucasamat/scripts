@@ -150,8 +150,8 @@ class Entitlements:
 	def EntitlementRequest(self,cpsConfigID=None,cpsmatchID=None,AttributeID=None,NewValue=None,field_type=None):
 		if type(NewValue) is 'str' and multiselect_flag != 'true':
 			NewValue = NewValue.replace("'","''")
-			if NewValue == 'Select':
-				NewValue = ''
+			# if NewValue == 'Select':
+			# 	NewValue = ''
 		#Trace.Write('cpsmatchID--132-----------'+str(cpsmatchID))
 		#Trace.Write('AttributeID--132-----------'+str(AttributeID))
 		Trace.Write('NewValue--132-----------'+str(NewValue))
