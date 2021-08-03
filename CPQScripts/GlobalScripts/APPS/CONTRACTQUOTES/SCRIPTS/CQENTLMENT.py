@@ -194,15 +194,13 @@ class Entitlements:
 							list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							Trace.Write("list_of_vals_J "+str(list_of_vals))
 							if NewValue == 'select':
-								
 								for value in list_of_vals:
-									if val.STANDARD_ATTRIBUTE_VALUE == value:
-										Trace.Write("inside_J____DROP_DOWN")
-										requestdata += '{"value":"' + value + '","selected":false}'
-										requestdata +=','
+									Trace.Write("inside_J____DROP_DOWN")
+									requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":[{"value":"' + value + '","selected":false}'',]}]}'
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
-			requestdata += ']}]}'
+			if NewValue != 'select':
+				requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
 			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
 
