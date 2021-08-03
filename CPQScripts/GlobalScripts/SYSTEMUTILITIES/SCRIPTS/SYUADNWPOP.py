@@ -4075,8 +4075,8 @@ def POPUPLISTVALUEADDNEW(
 								if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
 									Tier_List1.remove("RECEIVING ACCOUNT")
 								Trace.Write("CHKNG_J "+str(Tier_List1))
-								for req1 in Tier_List1:
-									sec_str += "<option>" + str(req1) + "</option>"
+							for req1 in Tier_List1:
+								sec_str += "<option>" + str(req1) + "</option>"
 							sec_str += "</select></td>"
 							
 						elif data_type == "LONG TEXT AREA":
