@@ -4065,7 +4065,7 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
-							Trace.Write('4063--Tier_List1-----')
+							Trace.Write('4063--Tier_List1-----'+str(TabName))
 							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id))
 							if str(TabName) == "Quotes":
 								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
