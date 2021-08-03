@@ -2593,7 +2593,7 @@ def EntitlementTreeViewHTMLDetail(
 						Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
 						Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
 						if attrSysId in attributesdisallowedlst:
-							if attrSysId in attributedefaultvalue
+							if attrSysId in attributedefaultvalue:
 								add_style = "display:none;color: blue"
 							else:
 								add_style = "display:none;"
