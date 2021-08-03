@@ -586,7 +586,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 
         ##entitlement contract date update for z0016
         try:
-            quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+            if Quote is not None:
+                quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+            else:
+                quote_record_id = ''
         except:
             quote_record_id = ''
         try:
