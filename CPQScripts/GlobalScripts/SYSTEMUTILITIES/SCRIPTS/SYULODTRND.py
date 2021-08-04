@@ -3075,7 +3075,7 @@ def EntitlementTreeViewHTMLDetail(
 							add_style = ""
 						if attrSysId in attributedefaultvalue:
 							Trace.Write("add_style----3077----- "+str(attrSysId))
-							add_style = "color:#e4effa"
+							add_style = "color:#1B78D2"
 						Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
