@@ -221,8 +221,6 @@ class Entitlements:
 										requestdata += '{"value":"' + prev_val + '","selected":false}'
 										requestdata +=','
 			else:
-				Product.SetGlobal("pre_ent_val",str(NewValue))
-				Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
@@ -240,6 +238,9 @@ class Entitlements:
 			cpsmatc_incr = cpsmatchID
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+		requestdata_split = requestdata.split('"')[11]
+		Product.SetGlobal("pre_ent_val",str(requestdata_split))
+		Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
 		Trace.Write("requestdata---180---" + str(requestdata))
 		response2 = webclient.DownloadString(Request_URL)
 		Trace.Write('response2--182---------'+str(response2))
