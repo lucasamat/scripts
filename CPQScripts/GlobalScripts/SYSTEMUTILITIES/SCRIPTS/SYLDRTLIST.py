@@ -4096,6 +4096,7 @@ class SYLDRTLIST:
                 + str(table_id)	
                 + "_SortColumnOrder', order); }); "	
             )	
+            Trace.Write("@4099----->"+str(SAQICO_dbl_clk_function))
 
             SAQICO_dbl_clk_function += (
                     '$("'
