@@ -2089,13 +2089,13 @@ def POPUPLISTVALUEADDNEW(
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,additional_where
 					)
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "", Product.GetGlobal("TreeParam"),ObjectName, contract_quote_record_id,additional_where
 					)
 				)
@@ -2127,11 +2127,11 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			if TreeParam == "Product Offerings":
-				where_string += """ ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )""".format(
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )""".format(
 					contract_quote_record_id
 				)
 			else:
-				where_string += """ ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
+				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id
 				)
 				
