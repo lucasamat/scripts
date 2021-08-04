@@ -6201,6 +6201,9 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-95890": 
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                    elif str(RECORD_ID) == "SYOBJR-95826":
+                        RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00701").GetValue()
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                     else:    
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
                         Trace.Write("sort param 2 "+str(Wh_API_NAMEs))                                        
