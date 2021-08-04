@@ -247,6 +247,8 @@ def do_process(TABLEID, LABLE, VALUE):
 
             
             row = dict(zip(LABLE, VALUE))
+            Trace.Write("Line no:250")
+            Trace.Write(row)
             ##auto populate SAPCPQ_ATTRIBUTE_NAME starts
             
             if str(TABLEID) == "SYSECT":
