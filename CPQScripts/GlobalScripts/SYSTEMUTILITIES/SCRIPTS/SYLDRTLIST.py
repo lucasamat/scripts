@@ -3697,7 +3697,7 @@ class SYLDRTLIST:
                     + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
                 )
                 dbl_clk_function += (
-                    '$("'
+                    'debugger; $("'
                     + str(table_ids)
                     + '").on("dbl-click-cell.bs.table", onClickCell); $("'
                     + str(table_ids)
@@ -3713,7 +3713,7 @@ class SYLDRTLIST:
                     + str(table_id)
                     + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
                     + str(table_id)
-                    + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { } debugger; $("#VIEW_MODAL_SECTION").css("display","none"); inp = "input#".concat(reco_id.toString()); $("input").prop("readonly",false); }if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
+                    + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { } $("#VIEW_MODAL_SECTION").css("display","none"); inp = "input#".concat(reco_id.toString()); $("input").prop("readonly",false); }if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
                     + str(table_ids)
                     + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
                     + str(table_id)
