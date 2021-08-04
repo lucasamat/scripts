@@ -554,10 +554,17 @@ for obj in obj_list:
 					get_currency = value.PRICE_METHOD
 					GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
 					
-					get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-					get_calc_factor = GetXML.CALCULATION_FACTOR 
-					get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-					get_code = GetXML.ENTITLEMENT_VALUE_CODE
+					if GetXML:
+						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+						get_calc_factor = GetXML.CALCULATION_FACTOR 
+						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+						get_code = GetXML.ENTITLEMENT_VALUE_CODE
+					else:
+						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
+						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+						get_calc_factor = GetXML.CALCULATION_FACTOR 
+						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+						get_code = GetXML.ENTITLEMENT_VALUE_CODE
 					#try:
 					
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
@@ -751,11 +758,18 @@ for obj in obj_list:
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_currency = value.PRICE_METHOD
 							GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
+							if GetXML:
+								get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+								get_calc_factor = GetXML.CALCULATION_FACTOR 
+								get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+								get_code = GetXML.ENTITLEMENT_VALUE_CODE
+							else:
+								GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
+								get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+								get_calc_factor = GetXML.CALCULATION_FACTOR 
+								get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+								get_code = GetXML.ENTITLEMENT_VALUE_CODE
 
-							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-							get_calc_factor = GetXML.CALCULATION_FACTOR 
-							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-							get_code = GetXML.ENTITLEMENT_VALUE_CODE
 						
 						
 							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
@@ -974,10 +988,17 @@ for obj in obj_list:
 						get_currency = value.PRICE_METHOD
 						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
 
-						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-						get_calc_factor = GetXML.CALCULATION_FACTOR 
-						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-						get_code = GetXML.ENTITLEMENT_VALUE_CODE
+						if GetXML:
+							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+							get_calc_factor = GetXML.CALCULATION_FACTOR 
+							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+							get_code = GetXML.ENTITLEMENT_VALUE_CODE
+						else:
+							GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
+							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+							get_calc_factor = GetXML.CALCULATION_FACTOR 
+							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+							get_code = GetXML.ENTITLEMENT_VALUE_CODE
 					
 					
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
