@@ -171,14 +171,14 @@ class Entitlements:
 			attribute_code = []
 			Trace.Write("field_type--"+str(field_type))
 			Trace.Write("previous_val "+str(Getprevdict))
-			ent_total_val = []
+			
 			
 			if field_type != 'input':
 				STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
 				
 				if STANDARD_ATTRIBUTE_VALUES is not None:				
 					#AttributeValCode=STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
-					
+					ent_total_val = []
 					for val in STANDARD_ATTRIBUTE_VALUES:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
@@ -202,7 +202,7 @@ class Entitlements:
 							# except:
 							# 	previous_value = ""
 							# Trace.Write("previous_Value_J "+str(previous_value))
-
+							
 							ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 
 							if NewValue != 'select':
