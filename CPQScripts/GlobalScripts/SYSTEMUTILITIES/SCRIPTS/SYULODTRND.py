@@ -3309,7 +3309,7 @@ def EntitlementTreeViewHTMLDetail(
 											sec_str1 += (
 												'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 												+ str(attrSysId)
-												+ '" type="text"  style ="'+str(add_style)+str(add_style_color)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+												+ '" type="text"  style ="'+str(add_style)'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 												+ str(attr_value)
 												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="'+str(datepicker_onchange)+'" disabled>'									
 												+ "</input> "
