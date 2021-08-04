@@ -583,7 +583,7 @@ for obj in obj_list:
 						# else:
 						# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 							#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-					elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+					elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 						get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
 						getvalue = []
 						getcode = []
@@ -788,7 +788,7 @@ for obj in obj_list:
 								# else:
 								# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 									#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-							elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+							elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined'::
 								get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
 								getvalue = []
 								getcode = []
@@ -1018,7 +1018,7 @@ for obj in obj_list:
 							# else:
 							# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 								#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-						elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+						elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined'::
 							get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
 							getvalue = []
 							getcode = []
