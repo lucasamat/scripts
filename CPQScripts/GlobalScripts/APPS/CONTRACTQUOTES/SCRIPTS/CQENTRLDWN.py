@@ -543,7 +543,7 @@ for obj in obj_list:
 		if 'Z0016' in get_serviceid:
 			#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE {} ".format(where_condition) )
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
-			Log.Info('getxml----'+str("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition)))
+			# Log.Info('getxml----'+str("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition)))
 			updateentXML = ""
 			if GetXMLsec:
 				for value in GetXMLsec:
@@ -788,7 +788,7 @@ for obj in obj_list:
 								# else:
 								# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 									#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-							elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined'::
+							elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 								get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
 								getvalue = []
 								getcode = []
@@ -1018,7 +1018,7 @@ for obj in obj_list:
 							# else:
 							# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 								#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-						elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined'::
+						elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 							get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
 							getvalue = []
 							getcode = []
