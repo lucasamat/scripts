@@ -5506,7 +5506,6 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					ProductPartnumber = TreeParam
 				else:	
 					ProductPartnumber = self.tree_parent_level_0
-					if self.tree_parent_level_1 == 'Other Products' and TreeParam == 'Receiving Equipment':
 			elif self.tree_parent_level_3 == "Product Offerings":
 				if str(self.tree_parent_level_0).upper() == "ADD-ON PRODUCTS":
 					ProductPartnumber = TreeParam
