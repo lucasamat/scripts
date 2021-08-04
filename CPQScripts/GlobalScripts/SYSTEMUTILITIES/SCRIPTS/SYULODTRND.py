@@ -3167,7 +3167,7 @@ def EntitlementTreeViewHTMLDetail(
 													VAR1 += (
 														'<option '
 														+ str(disallow_style)
-														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{}">{}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
 													)
 
 										sec_str1 += (
