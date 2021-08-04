@@ -218,8 +218,6 @@ class Entitlements:
 								requestdata +=','
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
-								Trace.Write("re_dat_J"+str(requestdata))
-								Trace.Write("re_dat_split_J"+str(requestdata_split))
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
