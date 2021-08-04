@@ -387,7 +387,7 @@ class Entitlements:
 		attributeReadonlylst = []
 		attributeEditonlylst = []
 		attributevalues = {}
-		attributedefaultvalue = {}
+		attributedefaultvalue = []
 		where = pricemethodupdate = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
@@ -504,7 +504,7 @@ class Entitlements:
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
 									if attribute["author"] == "Default":
-										attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
+										attributedefaultvalue.append(prdvalue["id"])
 								
 									# if prdvalue["id"] in characteristics_attr_values:
 									# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
@@ -1339,7 +1339,7 @@ class Entitlements:
 				attributesallowedlst = []
 				attributeReadonlylst = []
 				attributeEditonlylst = []
-				attributedefaultvalue = {}
+				attributedefaultvalue = []
 				attributevalues = {}			
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "rootItem":
@@ -1360,7 +1360,7 @@ class Entitlements:
 										#Trace.Write("attribute---"+str(attribute))
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										if attribute["author"] == "Default":
-											attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
+											attributedefaultvalue.append(prdvalue["id"])
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
 				# for row in ServiceContainer.Rows:
