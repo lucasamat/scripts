@@ -198,12 +198,14 @@ class Entitlements:
 								previous_value = Product.GetGlobal("previous_ent_val")
 							except:
 								previous_value = ""
-							Product.SetGlobal("previous_ent_val",val.STANDARD_ATTRIBUTE_VALUE)
 							Trace.Write("previous_Value_J "+str(previous_value))
 							if NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN")
 								requestdata += '{"value":"' + previous_value + '","selected":false}'
 								requestdata +=','
+							else:
+								Product.SetGlobal("previous_ent_val",val.STANDARD_ATTRIBUTE_VALUE)
+								Trace.Write("previous_Value_J "+str(val.STANDARD_ATTRIBUTE_VALUE))
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
