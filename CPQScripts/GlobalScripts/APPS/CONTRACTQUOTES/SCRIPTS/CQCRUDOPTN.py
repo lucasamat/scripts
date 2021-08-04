@@ -5489,7 +5489,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			for val in get_approvaltxn_steps:
 				#gettransactionmessage = '<p>This quote has to be approved for the following : </p>'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +str(val.APRCHN_DESCRIPTION).upper()+'</label></div></div>')
-		
+		Trace.Write('entitlement_save_flag--'+str(entitlement_save_flag))
 		if ent_message_query:
 			#for val in obj_list:
 			val = 'SAQTSE'
@@ -5747,6 +5747,10 @@ else:
 			contract_quote_record_id = Param.ContractQuoteRecordId	
 		except Exception:
 			contract_quote_record_id = False
+		try:
+			entitlement_save_flag = Param.entitlement_save_flag
+		except:
+			entitlement_save_flag = ''
 	except:
 		pass	
 
