@@ -116,6 +116,8 @@ class DeleteConfirmPopup:
         ban_str += "CONFIRMATION : DELETE " + str(LABLE)
         # ban_str += '<button type="button" class="close" data-dismiss="modal">X</button>'
         ban_str += "</div>"
+        Trace.Write('GridName----'+str(GridName))
+        Trace.Write('LABLE----'+str(LABLE))
         sec_str += (
             "<div> Are you sure you would like to delete this " + str(GridName).title() + " " + str(LABLE) + " ?</div>"
         )
