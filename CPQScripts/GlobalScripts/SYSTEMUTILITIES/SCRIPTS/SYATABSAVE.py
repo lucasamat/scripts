@@ -330,16 +330,15 @@ for tab in Product.Tabs:
                     )
                     if REC_ID_OBJ is not None:
                         SYOBJH_OBJ = REC_ID_OBJ.RECORD_ID
-                        if secobj.SECTION_NAME == "BASIC INFORMATION":
-                            QUE_OBJ = Sql.GetFirst(
-                                "Select RECORD_ID,SAPCPQ_ATTRIBUTE_NAME from SYSEFL (nolock) where API_FIELD_NAME='"
-                                + str(REC_ID_OBJ.RECORD_NAME).strip()
-                                + "' and API_NAME='"
-                                + str(TABLE_NAME).strip()
-                                + "' and SECTION_RECORD_ID='"
-                                + str(secobj.RECORD_ID)
-                                + "' "
-                            )
+                        QUE_OBJ = Sql.GetFirst(
+                            "Select RECORD_ID,SAPCPQ_ATTRIBUTE_NAME from SYSEFL (nolock) where API_FIELD_NAME='"
+                            + str(REC_ID_OBJ.RECORD_NAME).strip()
+                            + "' and API_NAME='"
+                            + str(TABLE_NAME).strip()
+                            + "' and SECTION_RECORD_ID='"
+                            + str(secobj.RECORD_ID)
+                            + "' "
+                        )
                         ###TO GET THE QUESTION INFORMATION
                         if QUE_OBJ is not None:
                             RECORDID = str(QUE_OBJ.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_").replace(" ", "")
