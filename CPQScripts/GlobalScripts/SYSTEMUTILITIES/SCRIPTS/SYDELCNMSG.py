@@ -163,6 +163,12 @@ class DeleteConfirmPopup:
                     ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(
                         RecordValue=str(details[1])
                     )
+                elif ObjName.startswith("SYOBJX"):
+                    deleteFunction = 'CommonDeleteRecord("{RecordId}", "{ObjName}")'.format(
+                        RecordId=RecordId, ObjName=ObjName
+                    )
+                    Buttons = self.DynamicButton({"DELETE": str(deleteFunction), "Cancel": ""})
+                    ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(RecordValue=RecordValue.split('#')[0])
                 # elif ObjName.startswith("SYSCRP"):
                 #     Trace.Write("Check")
                 #     details = RecordValue.split('#')
