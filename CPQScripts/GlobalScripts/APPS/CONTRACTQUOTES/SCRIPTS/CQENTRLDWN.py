@@ -569,7 +569,7 @@ for obj in obj_list:
 					
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-						get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+						get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
 
 						if get_value_qry:
 							#if get_value_diff != 0.00:
@@ -774,7 +774,7 @@ for obj in obj_list:
 						
 							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-								get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condtn,ent_name = value.ENTITLEMENT_NAME))
+								get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
 
 								if get_value_qry:
 									#if get_value_diff != 0.00:
@@ -1004,7 +1004,7 @@ for obj in obj_list:
 					
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-							get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condtn,ent_name = value.ENTITLEMENT_NAME))
+							get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
 
 							if get_value_qry:
 								#if get_value_diff != 0.00:
