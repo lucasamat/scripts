@@ -212,7 +212,7 @@ class Entitlements:
 								Trace.Write("inside_J____DROP_DOWN")
 								for prev_val in ent_total_val:
 									if prev_val not in ent_non_selec_value:
-										requestdata += '{"value":"' + previous_value + '","selected":false}'
+										requestdata += '{"value":"' + prev_val + '","selected":false}'
 										requestdata +=','
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
