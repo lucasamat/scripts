@@ -3159,7 +3159,7 @@ def EntitlementTreeViewHTMLDetail(
 													)
 											except:
 												if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
-													selected_option = val.ENTITLEMENT_DISPLAY_VALUE)
+													selected_option = val.ENTITLEMENT_DISPLAY_VALUE
 													VAR1 += (
 														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
 													)
