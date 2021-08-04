@@ -2296,7 +2296,7 @@ def EntitlementTreeViewHTMLDetail(
 	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Other Products'):
 		TreeSuperParentParam = ProductPartnumber = TreeTopSuperParentParam
 		Trace.Write('comes1'+str(ProductPartnumber))
-	GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
+	#GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
 	if EntitlementType == "EQUIPMENT":
 		### add on product entitilement starts		
 		if str(TreeParentParam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
