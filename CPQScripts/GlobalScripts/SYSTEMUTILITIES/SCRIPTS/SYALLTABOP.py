@@ -297,6 +297,9 @@ def process_view(details_and_qstns_obj, record_obj, record_id, tab_name, product
                     Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("0")
                     Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
                     # Product.Attributes.GetByName(app_attr_name).Access = 0
+                elif str(get_record_val)=="":
+                    Trace.Write('Empty get_rec_val')
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
                     
                     
             elif data_type == "NUMBER" or data_type == "CURRENCY":
