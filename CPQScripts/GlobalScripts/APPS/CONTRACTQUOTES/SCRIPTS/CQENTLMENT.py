@@ -385,6 +385,7 @@ class Entitlements:
 		attributeReadonlylst = []
 		attributeEditonlylst = []
 		attributevalues = {}
+		attributedefaultvalue = {}
 		where = pricemethodupdate = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
@@ -500,6 +501,8 @@ class Entitlements:
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
+									if attribute["author"] == "Default":
+										attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
 								
 									# if prdvalue["id"] in characteristics_attr_values:
 									# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
@@ -1334,7 +1337,7 @@ class Entitlements:
 				attributesallowedlst = []
 				attributeReadonlylst = []
 				attributeEditonlylst = []
-				
+				attributedefaultvalue = {}
 				attributevalues = {}			
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "rootItem":
@@ -1354,6 +1357,8 @@ class Entitlements:
 									for attribute in prdvalue["values"]:
 										#Trace.Write("attribute---"+str(attribute))
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
+										if attribute["author"] == "Default":
+											attributedefaultvalue[str(prdvalue["id"])] = attribute["author"
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
 				# for row in ServiceContainer.Rows:
@@ -1449,7 +1454,7 @@ class Entitlements:
 		except Exception, e:
 			Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue
 	def Rolldown(self):
 		#Log.Info("Newdict------523----> "+str(Newdict))
 		try:
