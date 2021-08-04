@@ -3136,15 +3136,11 @@ def EntitlementTreeViewHTMLDetail(
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
-											Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+											#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 											if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
 												selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
 												VAR1 += (
-														'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
-														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
-														+ '" selected>'
-														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
-														+ "</option>"
+														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
 												)
 											else:
 												VAR1 += (
