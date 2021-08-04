@@ -5529,6 +5529,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					generate_lineitem_flag = 'True'
 		ent_msg_txt = ''
 		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg:
+			Trace.Write('inside-----')
 			ent_msg_txt = (
 							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
 							+ str(get_msg.MESSAGE_LEVEL)
