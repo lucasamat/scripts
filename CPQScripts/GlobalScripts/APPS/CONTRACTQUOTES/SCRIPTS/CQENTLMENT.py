@@ -1358,7 +1358,7 @@ class Entitlements:
 										#Trace.Write("attribute---"+str(attribute))
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										if attribute["author"] == "Default":
-											attributedefaultvalue[str(prdvalue["id"])] = attribute["author"
+											attributedefaultvalue[str(prdvalue["id"])] = attribute["author"]
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
 				# for row in ServiceContainer.Rows:
