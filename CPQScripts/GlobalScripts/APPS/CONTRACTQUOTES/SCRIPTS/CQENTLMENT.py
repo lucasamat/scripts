@@ -194,9 +194,15 @@ class Entitlements:
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							# Trace.Write("list_of_vals_J "+str(list_of_vals))
+							try:
+								previous_value = Product.GetGlobal("previous_ent_val")
+							except:
+								previous_value = ""
+							Product.SetGlobal("previous_ent_val",val.STANDARD_ATTRIBUTE_VALUE)
+							Trace.Write("previous_Value_J "+str(previous_value))
 							if NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN")
-								requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
+								requestdata += '{"value":"' + previous_value + '","selected":false}'
 								requestdata +=','
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
