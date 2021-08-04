@@ -3136,22 +3136,40 @@ def EntitlementTreeViewHTMLDetail(
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
-											#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-											if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
-												selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
-												VAR1 += (
+											try:
+												#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+												if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
+													selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
+													VAR1 += (
+														'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
+														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
+														+ '" selected>'
+														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
+														+ "</option>"
+													)
+												else:
+													VAR1 += (
+														'<option '
+														+ str(disallow_style)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "'
+														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														+ '">'
+														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														+ "</option>"
+													)
+											except:
+												if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
+													selected_option = val.ENTITLEMENT_DISPLAY_VALUE)
+													VAR1 += (
 														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
-												)
-											else:
-												VAR1 += (
-													'<option '
-													+ str(disallow_style)
-													+ ' id="'+str(value.SYSTEM_ID)+'" value = "'
-													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-													+ '">'
-													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-													+ "</option>"
-												)
+													)
+												else:
+													VAR1 += (
+														'<option '
+														+ str(disallow_style)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{}">{}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
+													)
+
 										sec_str1 += (
 										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 										+ str(attrSysId)
