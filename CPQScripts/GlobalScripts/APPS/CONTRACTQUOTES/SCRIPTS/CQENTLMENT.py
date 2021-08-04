@@ -179,6 +179,7 @@ class Entitlements:
 				if STANDARD_ATTRIBUTE_VALUES is not None:				
 					#AttributeValCode=STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
 					ent_total_val = []
+					ent_non_selec_value = []
 					for val in STANDARD_ATTRIBUTE_VALUES:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
@@ -207,7 +208,7 @@ class Entitlements:
 							
 
 							if NewValue != 'select':
-								ent_non_selec_value = []
+								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
 								Trace.Write("ent_total_val "+str(ent_total_val))
 								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
