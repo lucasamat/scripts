@@ -763,6 +763,7 @@ Trace.Write("record_name-------------" + str(record_id))
 tab_name = str(Param.TabNAME).strip()
 Trace.Write("tab_name-------------" + str(tab_name))
 action = str(Param.ACTION).strip()
+Trace.Write('Action--------'+str(action))
 try:
     product_name = Product.Name 
 except:
