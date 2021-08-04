@@ -581,14 +581,16 @@ for obj in obj_list:
 						getvalue = []
 						getcode = []
 						for val in get_value_qry:
-							#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
-							if val.ENTITLEMENT_VALUE_CODE:
-								getvalue.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
-								
-							if val.ENTITLEMENT_DISPLAY_VALUE:
-								getcode.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
-						get_value = str(set(getvalue))
-						get_code = str(set(getcode))
+                            #Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+                            if val.ENTITLEMENT_VALUE_CODE:
+                                getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+                                
+                            if val.ENTITLEMENT_DISPLAY_VALUE:
+                                getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
+                        get_val = list(set(getvalue) )
+                        get_cod = list(set(getcode))
+                        get_value = str(get_val).replace("'", '"')
+                        get_code = str(get_cod).replace("'", '"')
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -777,14 +779,16 @@ for obj in obj_list:
 								getvalue = []
 								getcode = []
 								for val in get_value_qry:
-									#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+								#Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 									if val.ENTITLEMENT_VALUE_CODE:
-										getvalue.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+										getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 										
 									if val.ENTITLEMENT_DISPLAY_VALUE:
-										getcode.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
-								get_value = str(set(getvalue))
-								get_code = str(set(getcode))
+										getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
+								get_val = list(set(getvalue) )
+								get_cod = list(set(getcode))
+								get_value = str(get_val).replace("'", '"')
+								get_code = str(get_cod).replace("'", '"')
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -997,14 +1001,16 @@ for obj in obj_list:
 							getvalue = []
 							getcode = []
 							for val in get_value_qry:
-								#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+                            #Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 								if val.ENTITLEMENT_VALUE_CODE:
-									getvalue.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+									getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 									
 								if val.ENTITLEMENT_DISPLAY_VALUE:
-									getcode.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
-							get_value = str(set(getvalue))
-							get_code = str(set(getcode))
+									getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
+							get_val = list(set(getvalue) )
+							get_cod = list(set(getcode))
+							get_value = str(get_val).replace("'", '"')
+							get_code = str(get_cod).replace("'", '"')
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
