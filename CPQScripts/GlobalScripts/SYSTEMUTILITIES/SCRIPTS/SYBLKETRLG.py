@@ -333,7 +333,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 					else:
-						k = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO WHERE CpqTableEntryId = {}".format(RECORDID.split("-")[1]))
+						k = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 						Trace.Write("query---->"+str(k))
 						key = str(k.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
 				if SELECTALL == "noselection":
