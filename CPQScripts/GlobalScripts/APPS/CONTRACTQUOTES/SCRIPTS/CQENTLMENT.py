@@ -213,7 +213,7 @@ class Entitlements:
 								Trace.Write("ent_total_val "+str(ent_total_val))
 								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 							elif NewValue == 'select':
-								Trace.Write("inside_J____DROP_DOWN")
+								Trace.Write("inside_J____DROP_DOWN"+str(Product.GetGlobal("pre_ent_val"))
 								Trace.Write("ent_total_val "+str(ent_total_val))
 								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 								for prev_val in ent_total_val:
@@ -221,6 +221,7 @@ class Entitlements:
 										requestdata += '{"value":"' + prev_val + '","selected":false}'
 										requestdata +=','
 			else:
+				Product.SetGlobal("pre_ent_val",NewValue)
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
