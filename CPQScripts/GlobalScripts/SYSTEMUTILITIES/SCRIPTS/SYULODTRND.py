@@ -2429,7 +2429,7 @@ def EntitlementTreeViewHTMLDetail(
 									# 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 							for attribute in prdvalue["values"]:
 								attributevalues[str(prdvalue["id"])] = attribute["value"]
-								if attribute["author"] == "Default":
+								if attribute["author"] in ["Default","User"]:
 									attributedefaultvalue.append(prdvalue["id"])
 		#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 		#Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
