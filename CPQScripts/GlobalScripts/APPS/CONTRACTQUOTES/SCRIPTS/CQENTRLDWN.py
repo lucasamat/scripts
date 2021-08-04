@@ -547,8 +547,8 @@ for obj in obj_list:
 			updateentXML = ""
 			if GetXMLsec:
 				for value in GetXMLsec:
-					where_condition = SAQITMWhere.replace('A.','')
-					where_condition += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
+					where_condtn = SAQITMWhere.replace('A.','')
+					where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
 					#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					get_currency = value.PRICE_METHOD
