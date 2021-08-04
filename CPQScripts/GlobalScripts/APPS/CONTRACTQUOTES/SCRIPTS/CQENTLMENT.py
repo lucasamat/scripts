@@ -176,6 +176,8 @@ class Entitlements:
 				
 				if STANDARD_ATTRIBUTE_VALUES is not None:				
 					#AttributeValCode=STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+					ent_total_val = []
+					ent_non_selec_value = []
 					for val in STANDARD_ATTRIBUTE_VALUES:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
@@ -194,18 +196,25 @@ class Entitlements:
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							# Trace.Write("list_of_vals_J "+str(list_of_vals))
-							try:
-								previous_value = Product.GetGlobal("previous_ent_val")
-							except:
-								previous_value = ""
-							Trace.Write("previous_Value_J "+str(previous_value))
-							if NewValue == 'select':
+							# try:
+							# 	previous_value = Product.GetGlobal("previous_ent_val")
+							# except:
+							# 	previous_value = ""
+							# Trace.Write("previous_Value_J "+str(previous_value))
+
+							ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
+
+							if NewValue != 'select'::
+								ent_non_selec_value = []
+								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
+								Trace.Write("ent_total_val "+str(ent_total_val))
+								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
+							elif NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN")
-								requestdata += '{"value":"' + previous_value + '","selected":false}'
-								requestdata +=','
-							else:
-								Product.SetGlobal("previous_ent_val",val.STANDARD_ATTRIBUTE_VALUE)
-								Trace.Write("previous_Value_J_1 "+str(val.STANDARD_ATTRIBUTE_VALUE))
+								for prev_val in ent_total_val:
+									if prev_val not in ent_non_selec_value:
+										requestdata += '{"value":"' + previous_value + '","selected":false}'
+										requestdata +=','
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
