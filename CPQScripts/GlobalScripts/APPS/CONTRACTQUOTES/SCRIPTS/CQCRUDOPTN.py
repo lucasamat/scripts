@@ -5501,15 +5501,15 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		ProductPartnumber = ""
 		try:
 			if self.tree_parent_level_1 == "Product Offerings":		
-				ProductPartnumber = TreeParam
+				ProductPartnumber = self.tree_param
 			elif self.tree_parent_level_2 == "Product Offerings":
 				if str(self.tree_parent_level_0).upper() == "ADD-ON PRODUCTS":
-					ProductPartnumber = TreeParam
+					ProductPartnumber = self.tree_param
 				else:	
 					ProductPartnumber = self.tree_parent_level_0
 			elif self.tree_parent_level_3 == "Product Offerings":
 				if str(self.tree_parent_level_0).upper() == "ADD-ON PRODUCTS":
-					ProductPartnumber = TreeParam
+					ProductPartnumber = self.tree_param
 				else:	
 					ProductPartnumber = self.tree_parent_level_1
 			elif (str(self.tree_parent_level_3).upper() == "COMPREHENSIVE SERVICES" and str(self.tree_parent_level_1).upper() == "ADD-ON PRODUCTS"):		
