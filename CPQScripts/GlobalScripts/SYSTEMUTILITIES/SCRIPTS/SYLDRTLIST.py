@@ -3630,7 +3630,7 @@ class SYLDRTLIST:
                 + str(table_id)
                 + "'); }); "
             )
-            Trace.Write("@3633----->"+str(dbl_clk_function))
+            Trace.Write("@3633------->"+str(dbl_clk_function))
 
         else:
             
@@ -3678,7 +3678,7 @@ class SYLDRTLIST:
                 + str(table_id)
                 + "'); }); "
             )            
-            Trace.Write("@3681----->"+str(dbl_clk_function))
+            Trace.Write("@3681-------->"+str(dbl_clk_function))
         
 
         NORECORDS = ""
