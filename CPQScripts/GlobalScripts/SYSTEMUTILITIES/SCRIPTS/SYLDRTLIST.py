@@ -3630,6 +3630,7 @@ class SYLDRTLIST:
                 + str(table_id)
                 + "'); }); "
             )
+            Trace.Write("@3633----->"+str(dbl_clk_function))
 
         else:
             
