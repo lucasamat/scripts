@@ -205,7 +205,7 @@ class Entitlements:
 								requestdata +=','
 							else:
 								Product.SetGlobal("previous_ent_val",val.STANDARD_ATTRIBUTE_VALUE)
-								Trace.Write("previous_Value_J "+str(val.STANDARD_ATTRIBUTE_VALUE))
+								Trace.Write("previous_Value_J_1 "+str(val.STANDARD_ATTRIBUTE_VALUE))
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
