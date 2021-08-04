@@ -1045,9 +1045,11 @@ for tab in Product.Tabs:
                                                 #     + str(row)
                                                 # )
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
+                                                    Trace.Write("row_row_ADD NE1111W")
                                                     flag = "False"
                                                     break
                                                 else:
+                                                    Trace.Write("row_row_ADD NE1111W2222")
                                                     flag = "True"
 
                                         for req_add_new in Required_obj:
@@ -1072,7 +1074,9 @@ for tab in Product.Tabs:
                                             + str(TABLE_NAME)
                                             + "'and IS_KEY='True' "
                                         )
+                                        Trace.Write(str("---is_key---1694---"+str(flag))
                                         if iskey is not None and flag == "True":
+                                            Trace.Write(str("---is_key---1694---")
                                             Trace.Write(str(iskey.API_NAME) + "---is_key---1695---")
                                             col_name = (iskey.API_NAME).strip()
                                             #Trace.Write(str(col_name) + "---col_name---16996--" + str(row))
