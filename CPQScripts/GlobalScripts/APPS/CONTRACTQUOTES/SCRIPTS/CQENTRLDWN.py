@@ -640,7 +640,7 @@ for obj in obj_list:
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
 				
 		Log.Info('updateentXML--ser-'+str(updateentXML))
-		
+		where_condition = SAQITMWhere.replace('A.','')
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
 		Sql.RunQuery(UpdateEntitlement)
@@ -744,8 +744,8 @@ for obj in obj_list:
 					GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
 					if GetXMLsec:
 						for value in GetXMLsec:
-							where_condition = SAQITMWhere.replace('A.','')
-							where_condition += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
+							where_condtn = SAQITMWhere.replace('A.','')
+							where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
 							#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_currency = value.PRICE_METHOD
@@ -759,7 +759,7 @@ for obj in obj_list:
 						
 							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-								get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+								get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condtn,ent_name = value.ENTITLEMENT_NAME))
 
 								if get_value_qry:
 									#if get_value_diff != 0.00:
@@ -964,8 +964,8 @@ for obj in obj_list:
 				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
 				if GetXMLsec:
 					for value in GetXMLsec:
-						where_condition = SAQITMWhere.replace('A.','')
-						where_condition += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
+						where_condtn = SAQITMWhere.replace('A.','')
+						where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
 						#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 						get_currency = value.PRICE_METHOD
@@ -979,7 +979,7 @@ for obj in obj_list:
 					
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-							get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+							get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,where_condition = where_condtn,ent_name = value.ENTITLEMENT_NAME))
 
 							if get_value_qry:
 								#if get_value_diff != 0.00:
