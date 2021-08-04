@@ -222,6 +222,7 @@ class Entitlements:
 										requestdata +=','
 			else:
 				Product.SetGlobal("pre_ent_val",str(NewValue))
+				Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
