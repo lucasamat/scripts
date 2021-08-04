@@ -744,11 +744,7 @@ class TreeView:
 		NodeText1 = ""
 		ChildList = []
 		NewList = []
-		
-		TreeParam = Product.GetGlobal("TreeParam")		
-		TreeParentParam = Product.GetGlobal("TreeParentLevel0")		
-		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-		
+				
 		if str(NodeType) == "DYNAMIC":			
 			try:
 				ContAtt = Product.Attributes.GetByName('QSTN_SYSEFL_QT_016909')
@@ -1129,9 +1125,8 @@ class TreeView:
 										PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
 										RecAttValue = NodeRecId                                        
 										ObjectName = parObjName
-										Subwhere_string = "" + str(where_string) + ""
+										Subwhere_string = "" + str(where_string) + ""										
 										
-										addon_obj = None
 										SubChildData = self.getProfileChildOne(
 											SubNodeType,
 											SubNodeName,
