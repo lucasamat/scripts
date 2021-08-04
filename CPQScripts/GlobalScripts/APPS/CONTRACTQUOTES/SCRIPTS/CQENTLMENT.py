@@ -216,6 +216,8 @@ class Entitlements:
 								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
 								requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
 								requestdata +=','
+								requestdata += ']}]}'
+								requestdata = requestdata.replace(',]}]}',']}]}')
 								Trace.Write("re_dat_J"+str(requestdata))
 								Trace.Write("re_dat_split_J"+str(requestdata_split))
 			else:
