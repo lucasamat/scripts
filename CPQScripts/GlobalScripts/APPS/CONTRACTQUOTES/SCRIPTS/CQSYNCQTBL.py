@@ -170,6 +170,7 @@ class SyncQuoteAndCustomTables:
             
             attributesallowedlst = list(set(attributesallowedlst))
             #overallattributeslist = list(set(overallattributeslist))
+            Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
             HasDefaultvalue=False
             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
             if ProductVersionObj is not None:
@@ -342,7 +343,8 @@ class SyncQuoteAndCustomTables:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
                             
                             attributesallowedlst = list(set(attributesallowedlst))
-                            #overallattributeslist = list(set(overallattributeslist)) 
+                            #overallattributeslist = list(set(overallattributeslist))
+                            Trace.Write('attributesallowedlst---'+str(attributesallowedlst)) 
                             HasDefaultvalue=False
                             #Trace.Write('response2--182----315---')
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
