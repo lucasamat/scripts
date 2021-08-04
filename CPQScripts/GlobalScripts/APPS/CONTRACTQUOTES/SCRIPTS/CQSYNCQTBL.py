@@ -227,7 +227,7 @@ class SyncQuoteAndCustomTables:
                                 Trace.Write('208--attrs---date check--ent_disp_val--'+str(ent_disp_val))
                             except:
                                 #Log.Info('except-----')
-                                ent_disp_val = ent_disp_val
+                                ent_disp_val = ent_disp_val 
                                     
                         else:
                             ent_disp_val = ent_disp_val
