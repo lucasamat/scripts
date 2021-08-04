@@ -5498,6 +5498,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		Trace.Write('entitlement_save_flag--'+str(entitlement_save_flag))
 		generate_lineitem_flag = 'False'
 		get_msg = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-01040' and MESSAGE_LEVEL = 'WARNING' and RECORD_ID = '390551C3-4C06-4BE7-86E6-8CA7D9AF9E96' ")
+		ProductPartnumber = ""
 		try:
 			if self.tree_parent_level_1 == "Product Offerings":		
 				ProductPartnumber = TreeParam
