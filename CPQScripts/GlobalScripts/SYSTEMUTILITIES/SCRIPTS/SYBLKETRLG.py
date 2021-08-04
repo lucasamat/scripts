@@ -158,6 +158,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	pricbkst_lock = "FALSE"
 	pricbk_lock = "FALSE"
 	date_field = []
+	key = ""
 	VALUE = remove_html_tags(VALUE)
 	rec_ids = ",".join(RECORDID)
 	
@@ -331,6 +332,8 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 					if TITLE != 'SALES_PRICE':
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+					else:
+						key = recid = CPQID.KeyCPQId.GetKEYId("SAQICO",str(RECORDID))
 				if SELECTALL == "noselection":
 					edt_str = "NO"
 			else:
@@ -340,7 +343,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 			Trace.Write("EDITSTR"+str(edt_str))	
 	else:
 		edt_str = "NO"
-	return edt_str, date_field
+	return edt_str, date_field,key
 
 
 def remove_html_tags(text):
