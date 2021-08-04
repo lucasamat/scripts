@@ -183,6 +183,7 @@ class Entitlements:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
 						#Trace.Write('NewValue'+str(NewValue)+'---'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
 							Trace.Write('inside-------')
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
@@ -203,7 +204,7 @@ class Entitlements:
 							# 	previous_value = ""
 							# Trace.Write("previous_Value_J "+str(previous_value))
 							
-							ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
+							
 
 							if NewValue != 'select':
 								ent_non_selec_value = []
