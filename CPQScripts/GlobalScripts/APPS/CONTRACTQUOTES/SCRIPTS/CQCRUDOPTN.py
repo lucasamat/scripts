@@ -5440,7 +5440,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		#obj_list = ['SAQIEN']
 		
 		ent_message_query = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='864BA37C-7523-4C7D-A586-6CEF1CABD682' and MESSAGE_LEVEL = 'WARNING'")
-		ent_msg_txt = msg_txt = getostfactor = msg_app_txt = getpricefactor = ""
+		ent_msg_txt = msg_txt = getostfactor = msg_app_txt = getpricefactor = ent_msg_gen_txt =""
 		# AllParams = Param.AllParams
 		#TreeParam = Product.GetGlobal("TreeParam")
 		#notification banner start for add on product
@@ -5527,10 +5527,10 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				if item.PartNumber == ProductPartnumber :
 					Trace.Write("item.PartNumber---"+str(item.PartNumber))
 					generate_lineitem_flag = 'True'
-		ent_msg_txt = ''
+		ent_msg_gen_txt = ''
 		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg:
 			Trace.Write('inside-----')
-			ent_msg_txt = (
+			ent_msg_gen_txt = (
 							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
 							+ str(get_msg.MESSAGE_LEVEL)
 							+ " : "
@@ -5638,8 +5638,8 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 						+ str(info_message_obj.MESSAGE_TEXT)
 						+ "</label></div></div>"
 					) """
-		Trace.Write('ent_msg_txt--'+str(ent_msg_txt))
-		return ent_msg_txt,msg_app_txt,gettransactionmessage
+		Trace.Write('ent_msg_gen_txt--'+str(ent_msg_gen_txt))
+		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt
 
 class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
