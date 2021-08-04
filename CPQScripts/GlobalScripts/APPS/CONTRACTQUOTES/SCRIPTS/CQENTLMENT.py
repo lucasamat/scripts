@@ -205,7 +205,6 @@ class Entitlements:
 							ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 
 							if NewValue != 'select'::
-								ent_non_selec_value = []
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
 								Trace.Write("ent_total_val "+str(ent_total_val))
 								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
