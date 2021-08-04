@@ -553,12 +553,11 @@ for obj in obj_list:
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 					get_currency = value.PRICE_METHOD
 					GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
-					Log.Info('dis12')
+					
 					get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
 					get_calc_factor = GetXML.CALCULATION_FACTOR 
 					get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
 					get_code = GetXML.ENTITLEMENT_VALUE_CODE
-					Log.Info('dis1')
 					#try:
 					
 					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
