@@ -531,7 +531,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			Trace.Write("dropdownallow---"+str(dropdownallowlist))
+			Trace.Write("attributedefaultvalue--532------"+str(attributedefaultvalue))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				Trace.Write("serviceId--1--"+str(serviceId))
 				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
