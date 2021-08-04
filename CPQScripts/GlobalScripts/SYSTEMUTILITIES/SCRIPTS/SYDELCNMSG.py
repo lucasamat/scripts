@@ -182,6 +182,7 @@ class DeleteConfirmPopup:
                     Buttons = self.DynamicButton({"DELETE": str(deleteFunction), "Cancel": ""})
                     ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(RecordValue=RecordValue)
                     #ErrorMsg = "Are you sure you would like to delete these records?"
+                    Trace.Write('REcordValue--->'+str(RecordValue))
             elif str(Message) == "INFO":
                 InfoIcon = "mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg"
                 InfoMsg = "CONFIRMATION : INFO"
