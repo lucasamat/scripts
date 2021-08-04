@@ -229,8 +229,8 @@ def process_view(details_and_qstns_obj, record_obj, record_id, tab_name, product
             Product.ResetAttr(str(app_attr_name))
             
             get_record_val = get_value_from_obj(record_obj, str(detail_and_qstn_obj.API_FIELD_NAME))
+            Trace.Write('get_record_val@@@'+str(get_record_val))
             if qstn_custom_object_field.upper() == "CPQTABLEENTRYMODIFIEDBY":
-                Trace.Write('get_record_val@@@'+str(get_record_val))
                 if str(get_record_val) != "" and get_record_val is not None:
                     Trace.Write('get_record_val####'+str(get_record_val))
                     try:
