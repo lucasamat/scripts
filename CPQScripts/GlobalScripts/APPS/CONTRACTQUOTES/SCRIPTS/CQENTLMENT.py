@@ -221,7 +221,7 @@ class Entitlements:
 										requestdata += '{"value":"' + prev_val + '","selected":false}'
 										requestdata +=','
 			else:
-				Product.SetGlobal("pre_ent_val",NewValue)
+				Product.SetGlobal("pre_ent_val",str(NewValue))
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
