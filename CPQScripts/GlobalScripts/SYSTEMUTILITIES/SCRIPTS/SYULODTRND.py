@@ -2594,7 +2594,7 @@ def EntitlementTreeViewHTMLDetail(
 						Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
 						if attrSysId in attributesdisallowedlst:
 							if attrSysId in attributedefaultvalue:
-								add_style = "display:none;color: blue"
+								add_style = "display:none;color: #e4effa"
 							else:
 								add_style = "display:none;"
 							attributes_disallowed_list.append(attrSysId)
@@ -3066,7 +3066,7 @@ def EntitlementTreeViewHTMLDetail(
 						Trace.Write("attrValue_else_j "+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
 							if attrSysId in attributedefaultvalue:
-								add_style = "display:none;color:blue"
+								add_style = "display:none;color:#e4effa"
 							else:
 								add_style = ""
 							attributes_disallowed_list.append(attrSysId)
@@ -3075,7 +3075,7 @@ def EntitlementTreeViewHTMLDetail(
 							add_style = ""
 						if attrSysId in attributedefaultvalue:
 							Trace.Write("add_style----3077----- "+str(attrSysId))
-							add_style = "color:blue"
+							add_style = "color:#e4effa"
 						Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
