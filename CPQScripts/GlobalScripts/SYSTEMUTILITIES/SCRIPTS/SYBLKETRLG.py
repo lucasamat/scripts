@@ -194,19 +194,20 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
 				if SELECTALL != "noselection":
-					edt_str += (
-						'<div   class="row modulebnr brdr">EDIT '
-						+ str(field_lable).upper()
-						+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
-					)
-					edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
-					edt_str += '<table class="wdth100" id="bulk_edit">'
-					edt_str += (
-						'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
-						+ str(field_lable)
-						+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
-					)
-					Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
+					if TITLE != 'SALES_PRICE':
+						edt_str += (
+							'<div   class="row modulebnr brdr">EDIT '
+							+ str(field_lable).upper()
+							+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
+						)
+						edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+						edt_str += '<table class="wdth100" id="bulk_edit">'
+						edt_str += (
+							'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
+							+ str(field_lable)
+							+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
+						)
+						Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
 					if len(list(RECORDID)) > 1:
 						Trace.Write("data_type_CHECK__J "+str(data_type))
 						if data_type.upper() == "TEXT":
@@ -272,14 +273,15 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
 							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
 						elif data_type.upper() == "NUMBER":
-							Trace.Write("inside number")
-							edt_str += (
-								'<input class="form-control light_yellow wth_80"   id="'
-								+ str(api_name)
-								+ '" value="'
-								+ str(VALUE)
-								+ '" type="text">'
-							)
+							if TITLE != 'SALES_PRICE':
+								Trace.Write("inside number")
+								edt_str += (
+									'<input class="form-control light_yellow wth_80"   id="'
+									+ str(api_name)
+									+ '" value="'
+									+ str(VALUE)
+									+ '" type="text">'
+								)
 						elif data_type.upper() == "FORMULA":
 							if  obj_obj == 'SAQSTE':
 								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
@@ -326,8 +328,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					edt_str += "</div></td></tr></tbody></table>"
-					edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+					if TITLE != 'SALES_PRICE':
+						edt_str += "</div></td></tr></tbody></table>"
+						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 				if SELECTALL == "noselection":
 					edt_str = "NO"
 			else:
