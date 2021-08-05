@@ -3137,7 +3137,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 		else:
-			Trace.Write("===============> Else")
+			#Trace.Write("===============> Else")
 			overflow_val = ""
 			where_condition = ""
 			if ObjectName == "ACACST":
@@ -3152,14 +3152,11 @@ def POPUPLISTVALUEADDNEW(
 				+ " ORDER BY abs(DISPLAY_ORDER) "
 			)
 
-			lookup_val = [val.LOOKUP_API_NAME for val in Sqq_obj]
-			Trace.Write("===============> lookup_valElse"+str(lookup_val))
+			lookup_val = [val.LOOKUP_API_NAME for val in Sqq_obj]			
 			if ObjectName == "ACACST":
 				lookup_val.append("APROBJ_LABEL")
-			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}
-			Trace.Write("===============>lookup_listElse"+str(lookup_list))
-			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}
-			Trace.Write("===============> lookup_list1"+str(lookup_list1))
+			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}			
+			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}			
 			new_value_dict = {}
 			new_value_dict1 = {}
 			val_list = []
@@ -3176,8 +3173,7 @@ def POPUPLISTVALUEADDNEW(
 					)
 					new_value_dict1 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 			
-			else:
-				Trace.Write("else1====else")               
+			else:				               
 				result = ScriptExecutor.ExecuteGlobal(
 					"SYPARCEFMA", {"Object": str(ObjectName), "API_Name": record_field, "API_Value": str(primary_value),},
 				)
@@ -3414,8 +3410,7 @@ def POPUPLISTVALUEADDNEW(
 							if TABLEID == 'ADDNEW__SYOBJR_00014_SYOBJ_01024' and LOOKUPAPI == 'PROFILE_ID':
 								#Trace.Write("2116---ADDNEW__SYOBJR_00014_SYOBJ_01024")
 								api_name = 'PROFILE_RECORD_ID'
-			else:
-				Trace.Write("else22================else")
+			else:				
 				attrval_obj = Sql.GetFirst(
 					"SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE OBJECT_NAME='"
 					+ str(ObjectName)
@@ -3432,8 +3427,7 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict_new[api_name] = str(primary_value)
 					new_value_dict = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 					new_value_dict.update(new_value_dict_new)
-					Trace.Write("new_value_dict===="+str(new_value_dict))
-					Trace.Write("new_value_dict_new===="+str(new_value_dict_new))
+					
 					# A043S001P01-12265 Start
 					if str(ObjectName) == "ACACSA" or str(ObjectName) == "ACAPTF":
 						ChainRec = new_value_dict.get("APRCHN_RECORD_ID")
@@ -3507,12 +3501,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 			sec_str += '<table class="width100">'
 
-			if Sqq_obj is not None:
-				Trace.Write("else33================Sqq_obj")
-				for val in Sqq_obj:
-					Trace.Write("else33================current_obj_api_name")
-					current_obj_api_name = val.API_NAME.strip()
-					Trace.Write("else44================current_obj_api_name"+str(current_obj_api_name))
+			if Sqq_obj is not None:				
+				for val in Sqq_obj:					
+					current_obj_api_name = val.API_NAME.strip()					
 					readonly_val = val.PERMISSION.strip()
 					current_obj_field_lable = val.FIELD_LABEL.strip()
 					data_type = val.DATA_TYPE.strip()
@@ -3721,16 +3712,12 @@ def POPUPLISTVALUEADDNEW(
 								sec_str += '<span class="req-field mrg3fltltmt7">*</span>'
 							sec_str += "</a></td>"
 
-						if data_type == "LOOKUP":
-							Trace.Write('lokppp=====')
-							if current_obj_api_name in new_value_dict:
-								Trace.Write('lokppp111====='+str(current_obj_api_name))
-								current_obj_value = new_value_dict[current_obj_api_name]
-								Trace.Write('cob111====='+str(current_obj_value))
+						if data_type == "LOOKUP":							
+							if current_obj_api_name in new_value_dict:								
+								current_obj_value = new_value_dict[current_obj_api_name]							
 
 							try:
-								if current_obj_api_name in new_value_dict1:
-									Trace.Write('lokppp=====1111')
+								if current_obj_api_name in new_value_dict1:									
 									current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 
 							except:
