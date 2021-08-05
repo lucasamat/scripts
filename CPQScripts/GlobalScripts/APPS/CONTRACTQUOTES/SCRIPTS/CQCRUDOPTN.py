@@ -5517,7 +5517,8 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			#generate_lineitem_flag = "False"
 			entitlement_save_flag = "False"
 		Trace.Write("entitlement_save_flag"+str(entitlement_save_flag)+'----'+str(generate_lineitem_flag)+'---'+str(get_msg.MESSAGE_LEVEL)+'--'+str( current_prod).upper())
-		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg and str(current_prod).upper() == 'SALES':
+		##and str(current_prod).upper() == 'SALES'
+		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg :
 			Trace.Write('inside-----')
 			ent_msg_gen_txt = (
 							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
