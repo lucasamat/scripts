@@ -1074,7 +1074,7 @@ for tab in Product.Tabs:
                                             + str(TABLE_NAME)
                                             + "'and IS_KEY='True' "
                                         )
-                                        Trace.Write(str("---is_key---1694---"+str(flag))
+                                        Trace.Write(str("---is_key---1694---"+str(flag)))
                                         if iskey is not None and flag == "True":
                                             Trace.Write(str("---is_key---1694---")
                                             Trace.Write(str(iskey.API_NAME) + "---is_key---1695---")
