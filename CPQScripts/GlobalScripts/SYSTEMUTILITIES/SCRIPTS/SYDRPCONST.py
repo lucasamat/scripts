@@ -173,7 +173,7 @@ class DropConstraint:
             elif constraintType == "PRIMARY KEY":
                 Trace.Write('174----'+ str(objectApiName))
                 query_result = Sql.GetList(
-                    "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
+                    "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'PRIMARY KEY' AND OBJECT_APINAME = '"
                     + str(self.ObjectName)
                     + "' "
                     + " AND OBJECTFIELD_APINAME ='"
