@@ -3178,6 +3178,7 @@ def POPUPLISTVALUEADDNEW(
 					"SYPARCEFMA", {"Object": str(ObjectName), "API_Name": record_field, "API_Value": str(primary_value),},
 				)
 				new_value_dict1 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
+				Trace.Write("new_value_dict1==111"+str(new_value_dict1))
 				attrval_obj = Sql.GetFirst(
 					"SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE OBJECT_NAME='"
 					+ str(ObjectName)
