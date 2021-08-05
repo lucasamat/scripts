@@ -79,73 +79,71 @@ class Entitlements:
 		#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 		Trace.Write(str(cpsmatchID)+"Request_URL--"+Request_URL)
 		ProductPartnumber = serviceId#'Z0035'
-		#try:        
-		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
-		Trace.Write("requestdata" + str(requestdata))
-		response1 = webclient.UploadString(Request_URL, str(requestdata))   
-		Trace.Write("response1---"+str(response1))     
-		response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
-		Fullresponse = eval(response1)
-		Trace.Write("response.."+str(eval(response1)))
-		newConfigurationid = Fullresponse["id"]
-		Trace.Write("newConfigurationid.."+str(newConfigurationid))
-		if tableName!="":
-			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
-			ent_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
-			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
-			where_cond = where.replace("'","''")
-			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'') ; exec sys.sp_xml_removedocument @H; '")
-			Parentgetdata=Sql.GetList("SELECT * FROM {} where {}".format(ent_temp,where))
-			Trace.Write("where------ "+str(where))
-			if Parentgetdata:					
-				response = self.Request_access_token()					
-				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
-				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-				cpsmatchID=11
-				#response = self.Request_access_token()
-				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-				for row in Parentgetdata:
-					webclient = System.Net.WebClient()
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-					webclient.Headers[
-						System.Net.HttpRequestHeader.Authorization
-					] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-					response = webclient.DownloadString(
-						"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
-					)
-					response = eval(response)	
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-						
-					#webclient.Headers.Add("If-Match", "111")
-					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
-					#try:
-					requestdata = '{"characteristics":['
-					
-					requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
-					if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-						for code in eval(row.ENTITLEMENT_VALUE_CODE):
-							requestdata += '{"value":"' + code + '","selected":true}'
-							requestdata +=','
-						requestdata +=']},'	
-					else:
-						requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
-					requestdata += ']}'
-					requestdata = requestdata.replace('},]','}]')
-					Trace.Write("requestdata--child-- " + str(requestdata))
-					response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-					cpsmatchID = cpsmatchID + 10			
-					
-					#except Exception:
-					Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
-					cpsmatchID = cpsmatchID
+		try:        
+			requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
+			Trace.Write("requestdata" + str(requestdata))
+			response1 = webclient.UploadString(Request_URL, str(requestdata))        
+			response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
+			Fullresponse = eval(response1)
+			Trace.Write("response.."+str(eval(response1)))
+			newConfigurationid = Fullresponse["id"]
+			Trace.Write("newConfigurationid.."+str(newConfigurationid))
+			if tableName!="":
+				get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
+				ent_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+				ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+				where_cond = where.replace("'","''")
+				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'') ; exec sys.sp_xml_removedocument @H; '")
+				Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
+				Trace.Write("where------ "+str(where))
+				if Parentgetdata:					
+					response = self.Request_access_token()					
+					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
+					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+					cpsmatchID=11
+					#response = self.Request_access_token()
+					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+					for row in Parentgetdata:
+						webclient = System.Net.WebClient()
+						webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+						webclient.Headers[
+							System.Net.HttpRequestHeader.Authorization
+						] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+						response = webclient.DownloadString(
+							"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+						)
+						response = eval(response)	
+						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+							
+						#webclient.Headers.Add("If-Match", "111")
+						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
+						try:
+							requestdata = '{"characteristics":['
+							
+							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+								for code in eval(row.ENTITLEMENT_VALUE_CODE):
+									requestdata += '{"value":"' + code + '","selected":true}'
+									requestdata +=','
+								requestdata +=']},'	
+							else:
+								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+							requestdata += ']}'
+							requestdata = requestdata.replace('},]','}]')
+							Trace.Write("requestdata--child-- " + str(requestdata))
+							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+							cpsmatchID = cpsmatchID + 10			
+							
+						except Exception:
+							Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
+							cpsmatchID = cpsmatchID
 
-		getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
-		cpsmatc_incr = cpsmatchID + 10
-		for data in getdata:
-			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
-		#except Exception:
-		Trace.Write("Patch Error-2-"+str(sys.exc_info()[1]))        
-	
+			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
+			cpsmatc_incr = cpsmatchID + 10
+			for data in getdata:
+				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
+		except Exception:
+			Trace.Write("Patch Error--"+str(sys.exc_info()[1]))        
 		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return newConfigurationid,cpsmatchID
 
