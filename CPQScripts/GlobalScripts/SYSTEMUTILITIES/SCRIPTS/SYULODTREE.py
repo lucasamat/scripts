@@ -920,7 +920,8 @@ class TreeView:
 						elif str(ObjName) == "USERS":
 							ordersByQuery = ""
 							childQuery = Sql.GetList("SELECT DISTINCT top 1000 UPPER(US.USERNAME) AS USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and up.permission_id = '"+ str(RecAttValue)+ "' order by USERNAME") 
-						else:				                    
+						else:		
+							Trace.Write("ObjName_chk "+str(ObjName))		                    
 							ordersByQuery = ""
 							childQuery = Sql.GetList(
 								"select distinct "
