@@ -669,9 +669,9 @@ for obj in obj_list:
 							'{QuoteId}' as OBJECT_VALUE,
 							1 as ACTIVE,
 							'{UserId}' as CPQTABLEENTRYADDEDBY, 
-							{DateTimeValue} as CPQTABLEENTRYDATEADDED, 
+							'{DateTimeValue}' as CPQTABLEENTRYDATEADDED, 
 							'{UserId}' as CpqTableEntryModifiedBy, 
-							{DateTimeValue} as CpqTableEntryDateModified
+							'{DateTimeValue}' as CpqTableEntryDateModified
 						FROM SYMSGS (nolock)
 						WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
 					""".format(
