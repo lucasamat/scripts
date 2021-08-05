@@ -127,9 +127,9 @@ def Calcfctrs(TreeParam, Treeparent, TreesuperParent, TopParentparam, query_resu
 )'''
 def do_process(TABLEID, LABLE, VALUE):
     
-    # Trace.Write("VALUE------------" + str(VALUE))
-    # Trace.Write("TABLEID------------" + str(TABLEID))
-    # Trace.Write("LABLE------------" + str(LABLE))
+    Trace.Write("VALUE------------" + str(VALUE))
+    Trace.Write("TABLEID------------" + str(TABLEID))
+    Trace.Write("LABLE------------" + str(LABLE))
 
     if len(VALUE) > 0:
         if VALUE[0] != "":
