@@ -797,7 +797,7 @@ class Entitlements:
 						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={} WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(table, get_match_id.CPS_MATCH_ID, self.ContractRecordId, serviceId)
 						Sql.RunQuery(Updatecps)
 				##to update match id at all level while saving ends
-
+				Quote.GetCustomField('is_entitlement_save').Content = 'True'
 				Sql.RunQuery(UpdateEntitlement)
 				Trace.Write("TEST COMMIT")
 				where = " QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
