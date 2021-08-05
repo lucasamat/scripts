@@ -5197,6 +5197,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			elif getyears == 4:
 				get_billing_matrix_year = ["YEAR_5"]
 		Trace.Write('get_billing_matrix_year------'+str(get_billing_matrix_year))
+		# Is Changed Information Notification - Start
+		self._process_query("""UPDATE SAQSCE SET IS_CHANGED = 0 FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
+		# Is Changed Information Notification - End
 		return get_billing_matrix_year
 
 
@@ -5630,22 +5633,24 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					) """
 		Trace.Write('ent_msg_gen_txt--'+str(ent_msg_gen_txt))
 		# Is Changed Information Notification - Start
-		log_message_obj = Sql.GetFirst(
-				"SELECT TOP 1000 SYMSGS.MESSAGE_TEXT, SYMSGS.MESSAGE_TYPE, SYMSGS.MESSAGE_CODE, SYMSGS.MESSAGE_LEVEL FROM SYMSGS (nolock) INNER JOIN SYELOG (NOLOCK) ON SYELOG.ERRORMESSAGE_RECORD_ID = SYMSGS.RECORD_ID WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE = '{QuoteId}' AND SYELOG.OBJECT_VALUE_REC_ID = '{QuoteRecordId}' ORDER BY abs(SYMSGS.MESSAGE_CODE)".format(
-					QuoteId=self.contract_quote_id,
-					QuoteRecordId=self.contract_quote_record_id
+		equip_level_entitlement_obj = Sql.GetFirst("SELECT QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID FROM SAQSCE (NOLOCK) WHERE IS_CHANGED = 1 AND QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		if equip_level_entitlement_obj:
+			log_message_obj = Sql.GetFirst(
+					"SELECT TOP 1000 SYMSGS.MESSAGE_TEXT, SYMSGS.MESSAGE_TYPE, SYMSGS.MESSAGE_CODE, SYMSGS.MESSAGE_LEVEL FROM SYMSGS (nolock) INNER JOIN SYELOG (NOLOCK) ON SYELOG.ERRORMESSAGE_RECORD_ID = SYMSGS.RECORD_ID WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE = '{QuoteId}' AND SYELOG.OBJECT_VALUE_REC_ID = '{QuoteRecordId}' ORDER BY abs(SYMSGS.MESSAGE_CODE)".format(
+						QuoteId=self.contract_quote_id,
+						QuoteRecordId=self.contract_quote_record_id
+					)
 				)
-			)
-		if log_message_obj:
-			ent_msg_txt += (
-				'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
-				+ str(log_message_obj.MESSAGE_LEVEL)
-				+ " : "
-				+ str(log_message_obj.MESSAGE_CODE)
-				+ " : "
-				+ str(log_message_obj.MESSAGE_TEXT)
-				+ "</label></div></div>"
-			)
+			if log_message_obj:
+				ent_msg_txt += (
+					'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
+					+ str(log_message_obj.MESSAGE_LEVEL)
+					+ " : "
+					+ str(log_message_obj.MESSAGE_CODE)
+					+ " : "
+					+ str(log_message_obj.MESSAGE_TEXT)
+					+ "</label></div></div>"
+				)
 		# Is Changed Information Notification - End
 		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt
 
