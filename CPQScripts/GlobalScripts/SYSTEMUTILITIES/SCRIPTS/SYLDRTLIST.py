@@ -1965,7 +1965,7 @@ class SYLDRTLIST:
                             + str(ObjectName)
                             + " (nolock) "
                             + str(Qustr)
-                            + " ) ORDER BY SECTION_FIELD_ID ASC m where m.ROW BETWEEN "
+                            + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
                             + str(Page_End)
@@ -2411,7 +2411,7 @@ class SYLDRTLIST:
                         + str(ObjectName)
                         + " (nolock) "
                         + str(Qustr)
-                        + " ) ORDER BY SECTION_FIELD_ID ASC m where m.ROW BETWEEN "
+                        + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                         + str(Page_start)
                         + " and "
                         + str(Page_End)
@@ -6009,7 +6009,7 @@ class SYLDRTLIST:
                             + str(ObjectName)
                             + " (nolock) "
                             + str(Qustr)
-                            + " ) ORDER BY SECTION_FIELD_ID ASC m where m.ROW BETWEEN "
+                            + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
                             + str(Page_End)
