@@ -5105,7 +5105,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 										WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' 
 										GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
 							ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' {where}""".format(QuoteRecordId=self.contract_quote_record_id))
+							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id))
 		
 		get_curr = str(Quote.GetCustomField('Currency').Content)
 		#assigning value to quote summary starts
