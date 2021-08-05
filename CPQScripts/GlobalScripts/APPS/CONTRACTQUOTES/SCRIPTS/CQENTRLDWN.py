@@ -477,9 +477,11 @@ def get_config_id():
 		Fullresponse = eval(response1)
 		Log.Info("response.."+str(eval(response1)))
 		newConfigurationid = Fullresponse["id"]	
+	except:
+		pass
 	return newConfigurationid
 	
-def ChildEntRequest(attribute_id,value_code,attr_type,config_id):		
+def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id):		
 	try:        
 		Log.Info("newConfigurationid.."+str(newConfigurationid))
 		if attribute_id !="":
@@ -504,26 +506,27 @@ def ChildEntRequest(attribute_id,value_code,attr_type,config_id):
 			webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 			#Log.Info('row--'+str(row.ENTITLEMENT_NAME))	
 			#if value_code and value_code !='undefined' and	row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select':
-			try:
-				requestdata = '{"characteristics":['
-				
-				requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
-				if attr_type in ('Check Box','CheckBox'):
-					for code in eval(value_code):
-						requestdata += '{"value":"' + code + '","selected":true}'
-						requestdata +=','
-					requestdata +=']},'	
-				else:
-					requestdata+= '{"value":"' +str(value_code) + '","selected":true}]},'
-				requestdata += ']}'
-				requestdata = requestdata.replace('},]','}]')
-				Log.Info("requestdata--child-- " + str(requestdata))
-				response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-				cpsmatchID = cpsmatchID + 10			
-				
-			except Exception:
-				Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
-				cpsmatchID = cpsmatchID
+			if value_code and value_code !='undefined' and attribute_id !='undefined' and display_name !='select':
+				try:
+					requestdata = '{"characteristics":['
+					
+					requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
+					if attr_type in ('Check Box','CheckBox'):
+						for code in eval(value_code):
+							requestdata += '{"value":"' + code + '","selected":true}'
+							requestdata +=','
+						requestdata +=']},'	
+					else:
+						requestdata+= '{"value":"' +str(value_code) + '","selected":true}]},'
+					requestdata += ']}'
+					requestdata = requestdata.replace('},]','}]')
+					Log.Info("requestdata--child-- " + str(requestdata))
+					response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+					cpsmatchID = cpsmatchID + 10			
+					
+				except Exception:
+					Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
+					cpsmatchID = cpsmatchID
 
 		cpsmatc_incr = cpsmatchID + 10
 		         
@@ -696,8 +699,8 @@ for obj in obj_list:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 					
-					if get_code and get_code !='undefined' and value.ENTITLEMENT_NAME !='undefined' and get_value !='select':
-						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,newConfigurationid)
+					
+					cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,ent_disp_val,newConfigurationid)
 
 		else:
 			updateentXML = ""
@@ -739,11 +742,9 @@ for obj in obj_list:
 		where_condition = SAQITMWhere.replace('A.','')
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-		try:
-			Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
-			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
-		except:
-			Log.Info('cpsconfig not updated')		
+		Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
+		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+				
 		Sql.RunQuery(UpdateEntitlement)
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
