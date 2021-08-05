@@ -3034,7 +3034,7 @@ class SYLDRTLIST:
                                         if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                             
                                             new_dict[value123] = (
-                                                '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
+                                                '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" class="fltltlightyello"  disabled> </input>'
                                             )
                                         elif str(value123) in billing_date_column:
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
@@ -7824,7 +7824,7 @@ class SYLDRTLIST:
                                 else:                                    
                                     if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                         new_dict[value123] = (
-                                            '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" disabled>' + value1234 + "</input>"
+                                            '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" class="fltltlightyello" disabled>' + value1234 + "</input>"
                                         )
                                     
                                     else:
