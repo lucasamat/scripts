@@ -800,9 +800,9 @@ class TreeView:
 						
 						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
 						if getsectname:
-							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"'"
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"' ORDER BY SECTION_FIELD_ID ASC"
 						else:
-							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"'"
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"' ORDER BY SECTION_FIELD_ID ASC"
 					else:
 						Wh_API_NAME = objd_where_obj.API_NAME					
 						if RecAttValue: 
@@ -889,7 +889,7 @@ class TreeView:
 							)					
 						elif str(ObjName) == "SYPRSF":							
 							where_string += where_string
-							ordersByQuery = "ORDER BY SECTION_FIELD_ID ASC"
+							ordersByQuery = ""
 							childQuery = Sql.GetList(
 								"select "
 								+ str(NodeName)
