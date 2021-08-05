@@ -1486,17 +1486,31 @@ def CommonTreeViewHTMLDetail(
 							+ ' checked><span class="lbl"></span></td>'
 						)
 					elif str(ObjectName) == "USERS":
-						sec_str += (
-							'<td><input id="'
-							+ str(current_obj_api_name)
-							+ '" type="'
-							+ str(data_type)
-							+ '" value="'
-							+ current_obj_value
-							+ '" class="custom" '
-							+ disable
-							+ ' checked><span class="lbl"></span></td>'
-						)
+						Trace.Write('1472----------'+str(current_obj_value))
+						if str(current_obj_value).upper() == "TRUE" or current_obj_value == "1":
+							sec_str += (
+								'<td><input id="'
+								+ str(current_obj_api_name)
+								+ '" type="'
+								+ str(data_type)
+								+ '" value="'
+								+ current_obj_value
+								+ '" class="custom" '
+								+ disable
+								+ ' checked><span class="lbl"></span></td>'
+							)
+						else:
+							sec_str += (
+								'<td><input id="'
+								+ str(current_obj_api_name)
+								+ '" type="'
+								+ str(data_type)
+								+ '" value="'
+								+ current_obj_value
+								+ '" class="custom" '
+								+ disable
+								+ '><span class="lbl"></span></td>'
+							)
 					else:
 						sec_str += (
 							'<td><input id="'
