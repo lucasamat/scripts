@@ -1552,7 +1552,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								attributevalues[str(prdvalue['id'])]=attribute['value']
 								if attribute["author"] == 'Default':
 									Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
-									attributedefaultvalue[str(prdvalue['id'])]=attribute['Default']
+									attributedefaultvalue[str(prdvalue['id'])]=attribute['author']
 		attributesallowedlst = list(set(attributesallowedlst))
 		#overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
