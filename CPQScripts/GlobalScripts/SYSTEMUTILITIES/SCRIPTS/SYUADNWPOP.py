@@ -3137,7 +3137,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 		else:
-			#Trace.Write("===============> Else")
+			Trace.Write("===============> Else")
 			overflow_val = ""
 			where_condition = ""
 			if ObjectName == "ACACST":
@@ -3153,10 +3153,13 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			lookup_val = [val.LOOKUP_API_NAME for val in Sqq_obj]
+			Trace.Write("===============> lookup_valElse"+str(lookup_val))
 			if ObjectName == "ACACST":
 				lookup_val.append("APROBJ_LABEL")
 			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}
+			Trace.Write("===============>lookup_listElse"+str(lookup_list))
 			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}
+			Trace.Write("===============> lookup_list1"+str(lookup_list1))
 			new_value_dict = {}
 			new_value_dict1 = {}
 			val_list = []
@@ -3173,7 +3176,8 @@ def POPUPLISTVALUEADDNEW(
 					)
 					new_value_dict1 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 			
-			else:               
+			else:
+				Trace.Write("else1====else")               
 				result = ScriptExecutor.ExecuteGlobal(
 					"SYPARCEFMA", {"Object": str(ObjectName), "API_Name": record_field, "API_Value": str(primary_value),},
 				)
@@ -3260,6 +3264,7 @@ def POPUPLISTVALUEADDNEW(
 						new_value_dict["PROFILE_RECORD_ID"] = str(getcpqpermission.permission_id)
 
 			if NEWVALUE != "":
+				Trace.Write("else1====NEWVALUE")
 				if str(OPER) == "CLEAR SELECTION":
 					attrval_obj = Sql.GetFirst(
 						"SELECT API_NAME FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
@@ -3410,6 +3415,7 @@ def POPUPLISTVALUEADDNEW(
 								#Trace.Write("2116---ADDNEW__SYOBJR_00014_SYOBJ_01024")
 								api_name = 'PROFILE_RECORD_ID'
 			else:
+				Trace.Write("else22================else")
 				attrval_obj = Sql.GetFirst(
 					"SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE OBJECT_NAME='"
 					+ str(ObjectName)
@@ -3500,7 +3506,9 @@ def POPUPLISTVALUEADDNEW(
 			sec_str += '<table class="width100">'
 
 			if Sqq_obj is not None:
+				Trace.Write("else33================Sqq_obj")
 				for val in Sqq_obj:
+					Trace.Write("else33================current_obj_api_name"+str(current_obj_api_name))
 					current_obj_api_name = val.API_NAME.strip()
 					readonly_val = val.PERMISSION.strip()
 					current_obj_field_lable = val.FIELD_LABEL.strip()
