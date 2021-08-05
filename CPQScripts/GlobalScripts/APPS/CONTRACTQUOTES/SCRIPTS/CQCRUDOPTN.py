@@ -1533,6 +1533,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		attributesdisallowedlst=[]
 		attributeReadonlylst=[]
 		attributesallowedlst=[]
+		attributedefaultvalue = {}
 		#overallattributeslist =[]
 		attributevalues={}
 		for rootattribute, rootvalue in Fullresponse.items():
@@ -1549,16 +1550,22 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								attributeReadonlylst.append(prdvalue['id'])
 							for attribute in prdvalue['values']:								
 								attributevalues[str(prdvalue['id'])]=attribute['value']
-		
+								if attribute["author"] == 'Default':
+									attributedefaultvalue[str(prdvalue['id'])]=attribute['Default']
 		attributesallowedlst = list(set(attributesallowedlst))
 		#overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-					
+		is_default = ''			
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
 			for attrs in attributesallowedlst:
+				if attrs in attributedefaultvalue:
+					is_default = attributedefaultvalue[attrs]
+					is_default = '1'
+				else:
+					is_default = '0'
 				if attrs in attributevalues:					
 					HasDefaultvalue=True					
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
@@ -1606,7 +1613,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					<IS_DEFAULT>{is_default}</IS_DEFAULT>
 					<PRICE_METHOD>{pm}</PRICE_METHOD>
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = is_default,pm = '',cf = '')
 			
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 			tbrow["QUOTE_ID"]=OfferingRow_detail.get("QUOTE_ID")
