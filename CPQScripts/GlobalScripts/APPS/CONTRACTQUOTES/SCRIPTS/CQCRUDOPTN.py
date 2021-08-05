@@ -4726,7 +4726,6 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		self.node_id = ""	
 	
 	def _quote_items_insert(self):
-		Quote.GetCustomField('is_entitlement_save').Content = 'False'
 		## Delete SAQICO, SAQITM  and native quote items - Start		
 		# Temp table creation and delete(if altready there) for SAQICO - Start
 		temp_table = "SAQICO_BKP_"+str(self.c4c_quote_id)
@@ -5503,36 +5502,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			for val in get_approvaltxn_steps:
 				#gettransactionmessage = '<p>This quote has to be approved for the following : </p>'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +str(val.APRCHN_DESCRIPTION).upper()+'</label></div></div>')
-		##entitlement save notification based on generate line item starts
-		#Trace.Write('entitlement_save_flag--'+str(entitlement_save_flag))
-		generate_lineitem_flag = 'False'
-		get_msg = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-01040' and MESSAGE_LEVEL = 'WARNING' and RECORD_ID = '390551C3-4C06-4BE7-86E6-8CA7D9AF9E96' ")
-		#is_entitlement_save
-		for item in Quote.MainItems:
-			Trace.Write("item.PartNumber---"+str(item.PartNumber))
-			generate_lineitem_flag = 'True'
-			#Product.SetGlobal("generate_lineitem_flag","True")
-		ent_msg_gen_txt = ''
-		try:
-			#generate_lineitem_flag = Product.GetGlobal("generate_lineitem_flag")
-			entitlement_save_flag = Quote.GetCustomField('is_entitlement_save').Content
-		except:
-			#generate_lineitem_flag = "False"
-			entitlement_save_flag = "False"
-		Trace.Write("entitlement_save_flag"+str(entitlement_save_flag)+'----'+str(generate_lineitem_flag)+'---'+str(get_msg.MESSAGE_LEVEL)+'--'+str( current_prod).upper())
-		##and str(current_prod).upper() == 'SALES'
-		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg :
-			Trace.Write('inside-----')
-			ent_msg_gen_txt = (
-							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
-							+ str(get_msg.MESSAGE_LEVEL)
-							+ " : "
-							+ str(get_msg.MESSAGE_CODE)
-							+ " : "
-							+ str(get_msg.MESSAGE_TEXT)
-							+ "</label></div></div>"
-						)
-		##ends
+		
 
 		if ent_message_query:
 			#for val in obj_list:
