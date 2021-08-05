@@ -1486,7 +1486,7 @@ def CommonTreeViewHTMLDetail(
 							+ ' checked><span class="lbl"></span></td>'
 						)
 					elif str(ObjectName) == "USERS":
-						Trace.Write('1472----------'+str(current_obj_value))
+						Trace.Write('1472----USERSA------'+str(current_obj_value))
 						if str(current_obj_value).upper() == "TRUE" or current_obj_value == "1":
 							sec_str += (
 								'<td><input id="'
