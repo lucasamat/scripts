@@ -7864,7 +7864,7 @@ class SYLDRTLIST:
                                                 
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
-                                                        new_dict[value123] = value1234                                                        
+                                                        new_dict[value123] = ('<abbr id="'+key_value+'" title="'+value1234+'">'+value1234+'</abbr>')
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
