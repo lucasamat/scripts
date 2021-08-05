@@ -720,7 +720,7 @@ class Entitlements:
 						getpriceimpact = ""
 					##storing values for multi select  starts
 					
-					if str((val).split("||")[2]) == "Check Box" or str((val).split("||")[2]) == "DropDown":
+					if str((val).split("||")[2]) == "Check Box" :
 						display_vals = str((val).split("||")[0])
 						if display_vals:
 							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
@@ -732,7 +732,13 @@ class Entitlements:
 								ent_val_code =  str(attr_code).replace("'", '"')
 						else:
 							attr_code = ""
-					
+					elif str((val).split("||")[2]) == "DropDown":
+						display_vals = str((val).split("||")[0])
+						if display_vals:
+							STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals  ))
+							if STANDARD_ATTRIBUTE_VALUES:
+								
+								ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
 						
 					else:
 						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
