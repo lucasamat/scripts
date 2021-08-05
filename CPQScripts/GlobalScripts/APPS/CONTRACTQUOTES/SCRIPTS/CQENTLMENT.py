@@ -116,7 +116,8 @@ class Entitlements:
 						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 							
 						#webclient.Headers.Add("If-Match", "111")
-						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))						
+						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+						Trace.Write('row--'+str(row.ENTITLEMENT_NAME))					
 						try:
 							requestdata = '{"characteristics":['
 							
@@ -135,7 +136,7 @@ class Entitlements:
 							cpsmatchID = cpsmatchID + 10			
 							
 						except Exception:
-							Trace.Write("Patch Error--"+str(sys.exc_info()[1]))
+							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
 
 			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
@@ -143,7 +144,7 @@ class Entitlements:
 			for data in getdata:
 				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 		except Exception:
-			Trace.Write("Patch Error--"+str(sys.exc_info()[1]))        
+			Trace.Write("Patch Error-2-"+str(sys.exc_info()[1]))        
 		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return newConfigurationid,cpsmatchID
 
