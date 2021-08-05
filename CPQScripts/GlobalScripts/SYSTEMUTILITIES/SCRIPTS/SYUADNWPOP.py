@@ -3432,6 +3432,8 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict_new[api_name] = str(primary_value)
 					new_value_dict = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 					new_value_dict.update(new_value_dict_new)
+					Trace.Write("new_value_dict===="+str(new_value_dict))
+					Trace.Write("new_value_dict_new===="+str(new_value_dict_new))
 					# A043S001P01-12265 Start
 					if str(ObjectName) == "ACACSA" or str(ObjectName) == "ACAPTF":
 						ChainRec = new_value_dict.get("APRCHN_RECORD_ID")
