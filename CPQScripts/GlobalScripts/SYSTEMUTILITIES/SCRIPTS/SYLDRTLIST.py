@@ -2399,7 +2399,7 @@ class SYLDRTLIST:
                     TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
                     
                     app_ObjectName = Sql.GetFirst("select PRIMARY_OBJECT_NAME FROM SYTABS INNER JOIN SYAPPS ON SYTABS.APP_LABEL = SYAPPS.APP_LABEL WHERE SYTABS.TAB_LABEL = '"+str(TopTreeSuperParentParam)+"' AND SYAPPS.APP_LABEL = '"+str(TreeSecondSuperTopParentParam)+"'")
-                    Qustr = " WHERE SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(ObjectName)+"' "
+                    Qustr = " WHERE SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(app_ObjectName.PRIMARY_OBJECT_NAME)+"' "
                     Qury_str = (
                         "select DISTINCT top "
                         + str(PerPage)
@@ -5997,7 +5997,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-93123":
                         app_ObjectName = Sql.GetFirst("select PRIMARY_OBJECT_NAME FROM SYTABS INNER JOIN SYAPPS ON SYTABS.APP_LABEL = SYAPPS.APP_LABEL WHERE SYTABS.TAB_LABEL = '"+str(TopTreeSuperParentParam)+"' AND SYAPPS.APP_LABEL = '"+str(TreeFirstSuperTopParentParam)+"'")
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-                        Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR) +" SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(ObjectName)+"' "
+                        Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR) +" SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(app_ObjectName.PRIMARY_OBJECT_NAME)+"' "
                         Qury_str = (
                             "select DISTINCT top "
                             + str(PerPage)
