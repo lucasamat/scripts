@@ -4726,6 +4726,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		self.node_id = ""	
 	
 	def _quote_items_insert(self):
+		Quote.GetCustomField('is_entitlement_save').Content = 'False'
 		## Delete SAQICO, SAQITM  and native quote items - Start		
 		# Temp table creation and delete(if altready there) for SAQICO - Start
 		temp_table = "SAQICO_BKP_"+str(self.c4c_quote_id)
@@ -5421,11 +5422,7 @@ class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		try:
-			ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'),tree_parent_level_1=kwargs.get('tree_parent_level_1'),tree_parent_level_2=kwargs.get('tree_parent_level_2'),tree_parent_level_3=kwargs.get('tree_parent_level_3'),tree_parent_level_4=kwargs.get('tree_parent_level_4'))	
-		except:
-			Trace.Write('error')
-			ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 				
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -5504,40 +5501,23 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				#gettransactionmessage = '<p>This quote has to be approved for the following : </p>'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +str(val.APRCHN_DESCRIPTION).upper()+'</label></div></div>')
 		##entitlement save notification based on generate line item starts
-		Trace.Write('entitlement_save_flag--'+str(entitlement_save_flag))
+		#Trace.Write('entitlement_save_flag--'+str(entitlement_save_flag))
 		generate_lineitem_flag = 'False'
 		get_msg = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-01040' and MESSAGE_LEVEL = 'WARNING' and RECORD_ID = '390551C3-4C06-4BE7-86E6-8CA7D9AF9E96' ")
-		ProductPartnumber = ""
-		try:
-			if self.tree_parent_level_1 == "Product Offerings":		
-				ProductPartnumber = self.tree_param
-			elif self.tree_parent_level_2 == "Product Offerings":
-				if str(self.tree_parent_level_0).upper() == "ADD-ON PRODUCTS":
-					ProductPartnumber = self.tree_param
-				else:	
-					ProductPartnumber = self.tree_parent_level_0
-			elif self.tree_parent_level_3 == "Product Offerings":
-				if str(self.tree_parent_level_0).upper() == "ADD-ON PRODUCTS":
-					ProductPartnumber = self.tree_param
-				else:	
-					ProductPartnumber = self.tree_parent_level_1
-			elif (str(self.tree_parent_level_3).upper() == "COMPREHENSIVE SERVICES" and str(self.tree_parent_level_1).upper() == "ADD-ON PRODUCTS"):		
-				ProductPartnumber = self.tree_parent_level_0	
-			elif str(self.tree_parent_level_4).upper() == "COMPREHENSIVE SERVICES" and str(self.tree_parent_level_2).upper() == "ADD-ON PRODUCTS":		
-				ProductPartnumber = self.tree_parent_level_1		
-			elif (self.tree_parent_level_1 in ('Receiving Equipment', 'Sending Equipment') and self.tree_parent_level_3 == 'Other Products'):
-				ProductPartnumber = self.tree_parent_level_2
-
-		except:	
-			ProductPartnumber =""
-		if ProductPartnumber:
-			Trace.Write('ProductPartnumber-----'+str(ProductPartnumber))	
-			for item in Quote.MainItems:
-				if item.PartNumber == ProductPartnumber :
-					Trace.Write("item.PartNumber---"+str(item.PartNumber))
-					generate_lineitem_flag = 'True'
+		#is_entitlement_save
+		for item in Quote.MainItems:
+			Trace.Write("item.PartNumber---"+str(item.PartNumber))
+			generate_lineitem_flag = 'True'
+			#Product.SetGlobal("generate_lineitem_flag","True")
 		ent_msg_gen_txt = ''
-		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg:
+		try:
+			#generate_lineitem_flag = Product.GetGlobal("generate_lineitem_flag")
+			entitlement_save_flag = Quote.GetCustomField('is_entitlement_save').Content
+		except:
+			#generate_lineitem_flag = "False"
+			entitlement_save_flag = "False"
+		
+		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg and str(current_prod).upper() == 'SALES':
 			Trace.Write('inside-----')
 			ent_msg_gen_txt = (
 							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
@@ -5807,10 +5787,7 @@ else:
 			contract_quote_record_id = Param.ContractQuoteRecordId	
 		except Exception:
 			contract_quote_record_id = False
-		try:
-			entitlement_save_flag = Param.entitlement_save_flag
-		except:
-			entitlement_save_flag = ''
+		
 	except:
 		pass	
 
