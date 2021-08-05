@@ -449,6 +449,89 @@ def sendEmail(level):
 datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")    
 obj_list = []
 is_changed = False
+def Request_access_token():
+	webclient = System.Net.WebClient()
+	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+	webclient.Headers[
+		System.Net.HttpRequestHeader.Authorization
+	] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+	response = webclient.DownloadString(
+		"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+	)
+	return eval(response)
+
+def ChildEntRequest(attribute_id,value_code,attr_type):		
+	response = Request_access_token()
+	webclient = System.Net.WebClient()		
+	Log.Info(response["access_token"])
+	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
+	#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
+	Log.Info(str(cpsmatchID)+"Request_URL--"+Request_URL)
+	ProductPartnumber = get_serviceid#'Z0035'
+	try:        
+		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
+		Log.Info("requestdata" + str(requestdata))
+		response1 = webclient.UploadString(Request_URL, str(requestdata))        
+		response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
+		Fullresponse = eval(response1)
+		Log.Info("response.."+str(eval(response1)))
+		newConfigurationid = Fullresponse["id"]
+		Log.Info("newConfigurationid.."+str(newConfigurationid))
+		if attribute_id !="":
+			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
+			Log.Info("where------ "+str(where))
+			#if Parentgetdata:					
+			response = self.Request_access_token()					
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
+			cpsmatchID=11
+			#for row in Parentgetdata:
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[
+				System.Net.HttpRequestHeader.Authorization
+			] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+			response = webclient.DownloadString(
+				"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+			)
+			response = eval(response)	
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+				
+			#webclient.Headers.Add("If-Match", "111")
+			webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+			#Log.Info('row--'+str(row.ENTITLEMENT_NAME))	
+			#if value_code and value_code !='undefined' and	row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select':
+			try:
+				requestdata = '{"characteristics":['
+				
+				requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
+				if attr_type in ('Check Box','CheckBox'):
+					for code in eval(value_code):
+						requestdata += '{"value":"' + code + '","selected":true}'
+						requestdata +=','
+					requestdata +=']},'	
+				else:
+					requestdata+= '{"value":"' +str(value_code) + '","selected":true}]},'
+				requestdata += ']}'
+				requestdata = requestdata.replace('},]','}]')
+				Log.Info("requestdata--child-- " + str(requestdata))
+				response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+				cpsmatchID = cpsmatchID + 10			
+				
+			except Exception:
+				Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
+				cpsmatchID = cpsmatchID
+
+		getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
+		cpsmatc_incr = cpsmatchID + 10
+		for data in getdata:
+			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
+	except Exception:
+		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
+	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+	return newConfigurationid,cpsmatchID
+
+
 
 level = ""
 if objectName == 'SAQTSE':
@@ -588,7 +671,7 @@ for obj in obj_list:
 						getvalue = []
 						getcode = []
 						for val in get_value_qry:
-							#Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+							#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 							if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 								getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 								
@@ -610,6 +693,7 @@ for obj in obj_list:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+					cpsConfigID,cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE)
 
 		else:
 			updateentXML = ""
@@ -647,10 +731,12 @@ for obj in obj_list:
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
 				
-		Log.Info('updateentXML--ser-'+str(updateentXML))
+		#Log.Info('updateentXML--ser-'+str(updateentXML))
 		where_condition = SAQITMWhere.replace('A.','')
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-		Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
+		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
+		Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
+		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,cpsConfigID,cpsmatchID,where_condition))		
 		Sql.RunQuery(UpdateEntitlement)
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
@@ -792,7 +878,7 @@ for obj in obj_list:
 								getvalue = []
 								getcode = []
 								for val in get_value_qry:
-								#Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+								#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 									if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 										getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 										
@@ -1022,7 +1108,7 @@ for obj in obj_list:
 							getvalue = []
 							getcode = []
 							for val in get_value_qry:
-							#Trace.Write('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+							#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 								if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 									getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 									
