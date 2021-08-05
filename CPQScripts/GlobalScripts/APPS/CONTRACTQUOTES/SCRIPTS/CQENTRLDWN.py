@@ -482,7 +482,7 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 		if attribute_id !="":
 			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
 			#if Parentgetdata:					
-			response = self.Request_access_token()					
+			response = Request_access_token()					
 			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
 			cpsmatchID=11
 			#for row in Parentgetdata:
@@ -522,13 +522,11 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 				Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
 				cpsmatchID = cpsmatchID
 
-		getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
 		cpsmatc_incr = cpsmatchID + 10
-		for data in getdata:
-			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
+		         
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
-	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+	
 	return newConfigurationid,cpsmatchID
 
 
