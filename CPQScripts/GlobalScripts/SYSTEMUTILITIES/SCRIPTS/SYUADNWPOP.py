@@ -3711,11 +3711,15 @@ def POPUPLISTVALUEADDNEW(
 							sec_str += "</a></td>"
 
 						if data_type == "LOOKUP":
+							Trace.Write('lokppp=====')
 							if current_obj_api_name in new_value_dict:
+								Trace.Write('lokppp111====='+str(current_obj_api_name))
 								current_obj_value = new_value_dict[current_obj_api_name]
+								Trace.Write('cob111====='+str(current_obj_value))
 
 							try:
 								if current_obj_api_name in new_value_dict1:
+									Trace.Write('lokppp=====1111')
 									current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 
 							except:
