@@ -5516,7 +5516,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		except:
 			#generate_lineitem_flag = "False"
 			entitlement_save_flag = "False"
-		Trace.Write("entitlement_save_flag"+str(entitlement_save_flag)+'----'+str(generate_lineitem_flag)+'---'+str(get_msg.MESSAGE_LEVEL))
+		Trace.Write("entitlement_save_flag"+str(entitlement_save_flag)+'----'+str(generate_lineitem_flag)+'---'+str(get_msg.MESSAGE_LEVEL)+'--'+str( current_prod).upper())
 		if entitlement_save_flag == 'True' and generate_lineitem_flag == 'True' and get_msg and str(current_prod).upper() == 'SALES':
 			Trace.Write('inside-----')
 			ent_msg_gen_txt = (
