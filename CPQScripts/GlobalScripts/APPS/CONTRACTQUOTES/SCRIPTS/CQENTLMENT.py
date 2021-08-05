@@ -719,7 +719,8 @@ class Entitlements:
 					if getpriceimpact == 0.00:
 						getpriceimpact = ""
 					##storing values for multi select  starts
-					if str((val).split("||")[2]) == "Check Box":
+					
+					if str((val).split("||")[2]) == "Check Box" or str((val).split("||")[2]) == "DropDown":
 						display_vals = str((val).split("||")[0])
 						if display_vals:
 							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
@@ -731,6 +732,8 @@ class Entitlements:
 								ent_val_code =  str(attr_code).replace("'", '"')
 						else:
 							attr_code = ""
+					
+						
 					else:
 						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
 					Trace.Write('ent_val_code--'+str(key)+'--'+str(ent_val_code))
