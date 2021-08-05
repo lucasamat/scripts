@@ -912,15 +912,15 @@ for obj in obj_list:
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 
-							cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
-							cpsmatc_incr = cpsmatchID
+							# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+							# cpsmatc_incr = cpsmatchID
 
 					#Log.Info('updateentXML--fab2-'+str(updateentXML))
 				
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 								
 					Sql.RunQuery(UpdateEntitlement)
-					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+					# Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 			
 			# else:
 			# 	where_condition = SAQITMWhere.replace('A.','')
@@ -1148,15 +1148,15 @@ for obj in obj_list:
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 
-						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
-						cpsmatc_incr = cpsmatchID
+						# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+						# cpsmatc_incr = cpsmatchID
 
 				#Log.Info('updateentXML--fab2-'+str(updateentXML))
 			
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
 				Sql.RunQuery(UpdateEntitlement)
-				Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+				# Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 			
 
 		else:
