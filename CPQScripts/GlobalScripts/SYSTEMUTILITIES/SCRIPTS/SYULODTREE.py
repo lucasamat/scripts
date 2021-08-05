@@ -891,7 +891,7 @@ class TreeView:
 							where_string += where_string
 							ordersByQuery = ""
 							childQuery = Sql.GetList(
-								"select "
+								"select top 1000 "
 								+ str(NodeName)
 								+ " from "
 								+ str(ObjName)
