@@ -585,7 +585,7 @@ class Entitlements:
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
 
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 						Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
