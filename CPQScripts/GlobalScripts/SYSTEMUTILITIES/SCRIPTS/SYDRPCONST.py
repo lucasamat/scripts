@@ -127,7 +127,7 @@ class DropConstraint:
                     + str(objectApiName)
                     + "' "
                 )
-
+               
                 for loop in query_result:
                     FK_CONSTRAINT = Sql.GetFirst(
                         "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
@@ -159,11 +159,9 @@ class DropConstraint:
                                     )
                                     queryStatement = Sql.RunQuery(query)
                                     #self.deleteRecord(cpqEntryId)
-                                    delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                                        objectname=str(self.ObjectName),apiname_column = str(objectApiName)
-                                    )
-                                    Sql.RunQuery(delete_query_string)
-                                    Output = "True"
+                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                            Sql.RunQuery(delete_query_string)
+                            Output = "True"
 
                         else:
                             ErrorMsg = Message.GetErrorMessage(
@@ -189,6 +187,9 @@ class DropConstraint:
                     )
                     Sql.RunQuery(delete_query_string)
                     Output = "True"
+            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+            Sql.RunQuery(delete_query_string)
+            Output = "True"
         except Exception as e:
             self.exceptMessage = "SYDRPCONST : DropConstraint : EXCEPTION : UNABLE TO DROP CONSTRAINT: " + str(e)
            
