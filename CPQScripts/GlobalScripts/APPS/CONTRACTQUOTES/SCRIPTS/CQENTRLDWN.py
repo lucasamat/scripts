@@ -693,8 +693,7 @@ for obj in obj_list:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
-					cpsConfigID = ""
-					cpsmatchID = ""
+					
 					if get_code and get_code !='undefined' and value.ENTITLEMENT_NAME !='undefined' and get_value !='select':
 						cpsConfigID,cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE)
 
@@ -738,8 +737,11 @@ for obj in obj_list:
 		where_condition = SAQITMWhere.replace('A.','')
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-		Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
-		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,cpsConfigID,cpsmatchID,where_condition))		
+		try:
+			Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
+			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,cpsConfigID,cpsmatchID,where_condition))
+		except:
+			Log.Info('cpsconfig not updated')		
 		Sql.RunQuery(UpdateEntitlement)
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
