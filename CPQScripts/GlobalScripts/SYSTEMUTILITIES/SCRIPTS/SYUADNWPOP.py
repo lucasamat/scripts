@@ -3718,6 +3718,7 @@ def POPUPLISTVALUEADDNEW(
 								current_obj_value = new_value_dict[current_obj_api_name]							
 
 							try:
+								Trace.Write("new_value_dict1==="+str(new_value_dict1))
 								if current_obj_api_name in new_value_dict1:									
 									current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 
