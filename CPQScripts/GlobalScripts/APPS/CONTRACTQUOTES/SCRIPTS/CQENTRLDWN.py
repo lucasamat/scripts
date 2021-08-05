@@ -1197,7 +1197,7 @@ for obj in obj_list:
 		
 
 	##roll down and up for all levels ends
-	if obj == "SAQSCE" or objectName == "SAQSCE":            
+	if (obj == "SAQSCE" or objectName == "SAQSCE"):            
 		where_string_splitted = ''
 		where_str = where.split('AND')
 		if where_str:
@@ -1216,7 +1216,8 @@ for obj in obj_list:
 							ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
 		Sql.RunQuery("""UPDATE SAQSCE
 							SET
-							ENTITLEMENT_GROUP_ID = OQ.RowNo                            
+							ENTITLEMENT_GROUP_ID = OQ.RowNo,
+							IS_CHANGED = 1                            
 							FROM SAQSCE (NOLOCK)
 							INNER JOIN (
 								SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
