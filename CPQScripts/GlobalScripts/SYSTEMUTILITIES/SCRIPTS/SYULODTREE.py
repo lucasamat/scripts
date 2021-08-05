@@ -889,7 +889,7 @@ class TreeView:
 							)					
 						elif str(ObjName) == "SYPRSF":							
 							where_string += where_string
-							ordersByQuery = ""
+							ordersByQuery = "ORDER BY SECTION_FIELD_ID ASC"
 							childQuery = Sql.GetList(
 								"select "
 								+ str(NodeName)
