@@ -543,9 +543,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
             else:
                 Trace.Write("1237------5444------------" + str(newdict))
                 newdict.update(RECORD)
-                tableInfo = SqlHelper.GetTable("USERS")
-                tableInfo.AddRow(newdict)
-                SqlHelper.Upsert(tableInfo)
+                Trace.Write("1237------5444------------" + str(newdict))
+                activeval = newdict.get("ACTIVE")
+                idval = newdict.get("ID")
+                UPDATE_USERS = "UPDATE USERS SET Active = {} WHERE ID = {}".format(activeval,idval)
+                Sql.RunQuery(UPDATE_USERS)
+                #tableInfo = SqlHelper.GetTable("USERS")
+                #tableInfo.AddRow(newdict)
+                #SqlHelper.Upsert(tableInfo)
         else:            
             new_val = str(Guid.NewGuid()).upper()
             RECID = {str(AutoNumb): new_val}
