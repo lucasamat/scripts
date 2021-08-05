@@ -3219,7 +3219,30 @@ def POPUPLISTVALUEADDNEW(
 					
 				Product.SetGlobal("Flag_value", "false")
 				
-			
+			if str(ObjectName)  == "SYSEFL":
+				Trace.Write("Pers Attr Value--->")
+				Getapiname = Sql.GetFirst(
+					"SELECT SECTION_RECORD_ID FROM SYSECT (NOLOCK) WHERE SECTION_NAME = '"
+					+ str(TreeParentParam)
+					+ "' AND PAGE_LABEL = '"
+					+ str(TreeTopSuperParentParam)
+					+"'"
+				)
+				if Getapiname is not None:
+					PersAttVal_rec_id = str(Getapiname.SECTION_RECORD_ID)
+					result = ScriptExecutor.ExecuteGlobal(
+						"SYPARCEFMA",
+						{
+							"Object": str(ObjectName),
+							"API_Name": "ATTRIBUTE_RECORD_ID",
+							"API_Value": str(PersAttVal_rec_id),
+						},
+					)
+					new_value_dict3 = {}
+					new_value_dict3["ATTRIBUTE_RECORD_ID"] = str(PersAttVal_rec_id)
+					new_value_dict2 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
+					new_value_dict1.update(new_value_dict2)
+					new_value_dict1.update(new_value_dict3)
 			if TreeParentParam == "Approval Chain Steps":
 				TreeParam = Product.GetGlobal("TreeParam")
 				StepRecordId = Sql.GetFirst(
