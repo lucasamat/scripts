@@ -3508,8 +3508,9 @@ def POPUPLISTVALUEADDNEW(
 			if Sqq_obj is not None:
 				Trace.Write("else33================Sqq_obj")
 				for val in Sqq_obj:
-					Trace.Write("else33================current_obj_api_name"+str(current_obj_api_name))
+					Trace.Write("else33================current_obj_api_name")
 					current_obj_api_name = val.API_NAME.strip()
+					Trace.Write("else44================current_obj_api_name"+str(current_obj_api_name))
 					readonly_val = val.PERMISSION.strip()
 					current_obj_field_lable = val.FIELD_LABEL.strip()
 					data_type = val.DATA_TYPE.strip()
