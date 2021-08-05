@@ -3221,6 +3221,7 @@ def POPUPLISTVALUEADDNEW(
 				
 			if str(ObjectName)  == "SYSEFL":
 				Trace.Write("Pers Attr Value--->")
+				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 				Getapiname = Sql.GetFirst(
 					"SELECT RECORD_ID FROM SYSECT (NOLOCK) WHERE SECTION_NAME = '"
 					+ str(TreeParentParam)
