@@ -1067,7 +1067,7 @@ for tab in Product.Tabs:
                                         iskey = Sql.GetFirst(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
                                             + str(TABLE_NAME)
-                                            + "'and IS_KEY='True' "
+                                            + "' and IS_KEY='True' "
                                         )
                                         Trace.Write(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
