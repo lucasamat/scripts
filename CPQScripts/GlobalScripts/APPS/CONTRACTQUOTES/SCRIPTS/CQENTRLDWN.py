@@ -481,7 +481,7 @@ def get_config_id():
 		pass
 	return newConfigurationid
 	
-def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id):		
+def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID):		
 	try:        
 		Log.Info("newConfigurationid.."+str(newConfigurationid))
 		if attribute_id !="":
@@ -489,7 +489,7 @@ def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id):
 			#if Parentgetdata:					
 			response = Request_access_token()					
 			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
-			cpsmatchID=11
+			#cpsmatchID=11
 			#for row in Parentgetdata:
 			webclient = System.Net.WebClient()
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -528,7 +528,7 @@ def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id):
 					Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
 					cpsmatchID = cpsmatchID
 
-		cpsmatc_incr = cpsmatchID + 10
+		
 		         
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
@@ -699,8 +699,9 @@ for obj in obj_list:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 					
-					
-					cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,ent_disp_val,newConfigurationid)
+					cpsmatc_incr = 11
+					cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+					cpsmatc_incr +=10
 
 		else:
 			updateentXML = ""
@@ -742,10 +743,11 @@ for obj in obj_list:
 		where_condition = SAQITMWhere.replace('A.','')
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-		Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
-		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+		Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+		
 				
 		Sql.RunQuery(UpdateEntitlement)
+		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
 		if objectName == 'SAQTSE' and GetXMLsecField:
