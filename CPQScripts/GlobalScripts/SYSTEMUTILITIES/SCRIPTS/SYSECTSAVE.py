@@ -541,7 +541,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                     #     violationruleInsert.InsertAction(header_obj.RECORD_ID, Quote.GetGlobal("contract_quote_record_id"), "SAQTMT")
                 # A055S000P01-3324 end
             else:
-                Trace.Write("1237------------------" + str(newdict))
+                Trace.Write("1237------5444------------" + str(newdict))
                 newdict.update(RECORD)
                 tableInfo = SqlHelper.GetTable("USERS")
                 tableInfo.AddRow(newdict)
