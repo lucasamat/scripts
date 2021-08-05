@@ -460,8 +460,7 @@ def Request_access_token():
 		"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
 	)
 	return eval(response)
-
-def ChildEntRequest(attribute_id,value_code,attr_type):		
+def get_config_id():
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
 	Log.Info(response["access_token"])
@@ -477,7 +476,11 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 		response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse = eval(response1)
 		Log.Info("response.."+str(eval(response1)))
-		newConfigurationid = Fullresponse["id"]
+		newConfigurationid = Fullresponse["id"]	
+	return newConfigurationid
+	
+def ChildEntRequest(attribute_id,value_code,attr_type,config_id):		
+	try:        
 		Log.Info("newConfigurationid.."+str(newConfigurationid))
 		if attribute_id !="":
 			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
@@ -527,7 +530,7 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
 	
-	return newConfigurationid,cpsmatchID
+	return cpsmatchID
 
 
 
@@ -622,6 +625,7 @@ for obj in obj_list:
 		# " WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId, serviceId)	
 		
 		if 'Z0016' in get_serviceid:
+			newConfigurationid	= get_config_id()
 			#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE {} ".format(where_condition) )
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
 			# Log.Info('getxml----'+str("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition)))
@@ -693,7 +697,7 @@ for obj in obj_list:
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 					
 					if get_code and get_code !='undefined' and value.ENTITLEMENT_NAME !='undefined' and get_value !='select':
-						cpsConfigID,cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE)
+						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,newConfigurationid)
 
 		else:
 			updateentXML = ""
@@ -737,7 +741,7 @@ for obj in obj_list:
 		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
 		try:
 			Log.Info('cpsconfig---ser-'+str(cpsConfigID)+'cpsmatchID-'+str(cpsmatchID))
-			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,cpsConfigID,cpsmatchID,where_condition))
+			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 		except:
 			Log.Info('cpsconfig not updated')		
 		Sql.RunQuery(UpdateEntitlement)
