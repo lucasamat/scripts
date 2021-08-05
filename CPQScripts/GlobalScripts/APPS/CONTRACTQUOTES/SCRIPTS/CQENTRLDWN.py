@@ -485,7 +485,7 @@ elif objectName == 'SAQSCE':
 datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
 where_cond = where.replace('SRC.','')
 Log.Info('where_cond----'+str(where_cond))
-getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")
+getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")
 #Log.Info('getinnercon-----'+str(("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")))
 
 ##get c4c quote id
@@ -652,7 +652,35 @@ for obj in obj_list:
 		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 		Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
 		Sql.RunQuery(UpdateEntitlement)
+
+		# Is Changed Information Notification - Start
 		
+		Sql.RunQuery("DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.OBJECT_APINAME = 'SAQSCE' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
+
+		Sql.RunQuery("""INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+						SELECT
+							CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
+							RECORD_ID as ERRORMESSAGE_RECORD_ID,
+							MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
+							OBJECT_APINAME as OBJECT_NAME,
+							MESSAGE_TYPE as OBJECT_TYPE,
+							OBJECT_RECORD_ID as OBJECT_RECORD_ID,
+							'{QuoteRecordId}' as OBJECT_VALUE_REC_ID,
+							'{QuoteId}' as OBJECT_VALUE,
+							1 as ACTIVE,
+							'{UserId}' as CPQTABLEENTRYADDEDBY, 
+							{DateTimeValue} as CPQTABLEENTRYDATEADDED, 
+							'{UserId}' as CpqTableEntryModifiedBy, 
+							{DateTimeValue} as CpqTableEntryDateModified
+						FROM SYMSGS (nolock)
+						WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
+					""".format(
+						QuoteRecordId=getinnercon.QUOTE_RECORD_ID,
+						QuoteId=getinnercon.QUOTE_ID,
+						UserId=userId,
+						DateTimeValue=datetimenow
+					))
+		# Is Changed Information Notification - End
 
 	elif obj == 'SAQSFE' and GetXMLsecField:
 		if objectName == 'SAQTSE' and GetXMLsecField:
