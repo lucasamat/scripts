@@ -170,7 +170,25 @@ class DropConstraint:
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
                             Output = ErrorMsg
-           
+            elif constraintType == "PRIMARY KEY":
+                Trace.Write('174----'+ str(objectApiName))
+                query_result = Sql.GetList(
+                    "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
+                    + str(self.ObjectName)
+                    + "' "
+                    + " AND OBJECTFIELD_APINAME ='"
+                    + str(objectApiName)
+                    + "' "
+                )
+                for loop in query_result:
+                    query = ( "ALTER TABLE "+ loop.OBJECT_APINAME+ " ALTER COLUMN "+ loop.OBJECTFIELD_APINAME+ " NVARCHAR(250) NULL")
+                    queryStatement = Sql.RunQuery(query)
+                    #self.deleteRecord(cpqEntryId)
+                    delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
+                        objectname=str(self.ObjectName),apiname_column = str(objectApiName)
+                    )
+                    Sql.RunQuery(delete_query_string)
+                    Output = "True"
         except Exception as e:
             self.exceptMessage = "SYDRPCONST : DropConstraint : EXCEPTION : UNABLE TO DROP CONSTRAINT: " + str(e)
            
