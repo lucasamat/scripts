@@ -1295,7 +1295,7 @@ class Entitlements:
 			elif ((self.treesupertopparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
-				serviceId = self.treeparentparam
+				serviceId = self.treesuperparentparam
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,serviceId)
