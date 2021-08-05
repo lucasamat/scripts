@@ -468,7 +468,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 				
 				if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
-					discount =float(a.SALES_DISCOUNT_PRICE)-float(VALUE)/float(a.SALES_DISCOUNT_PRICE)
+					discount =(float(a.SALES_DISCOUNT_PRICE)-float(VALUE))/float(a.SALES_DISCOUNT_PRICE)
 					Trace.Write("discount1="+str(discount))
 					discount = discount*100.00
 					Trace.Write("discount2="+str(discount))
