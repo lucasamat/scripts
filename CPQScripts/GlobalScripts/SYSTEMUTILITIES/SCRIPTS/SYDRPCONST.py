@@ -27,14 +27,14 @@ class DropConstraint:
         Output = ""
         Trace.Write('delete constraint from related list----')
         try:
-            
+            Trace.Write('try---')
             #constraintType = Value.split(",")[3]
             #objectApiName = Value.split(",")[4]
             #Id = Value.split(",")[1]
             #cpqEntryId = Id.split("-")[1]
             Output = ""
             constraintType = Value.split("#")[0]
-            
+            Trace.Write('try-constraintType-----'+str(constraintType))
             objectApiName = Value.split("#")[1]
             Id = Value.split("#")[2]
             cpqEntryId = ""
