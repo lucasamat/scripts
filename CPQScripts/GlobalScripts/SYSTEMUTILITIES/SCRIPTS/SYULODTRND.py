@@ -385,6 +385,7 @@ def CommonTreeViewHTMLDetail(
 		# 	)
 		# )
 		data_obj = Sql.GetList(QuStr)
+		Trace.Write('388-----------')
 		API_NAMES = ",".join(str(data.API_NAME) for data in data_obj if data.DATA_TYPE != "DATE")
 
 		for data in data_obj:
@@ -859,7 +860,9 @@ def CommonTreeViewHTMLDetail(
 				"SELECT * FROM " + str(ObjectName) + " (NOLOCK) WHERE " + str(autoNumber) + " = '" + str(RECORD_ID) + "'"
 			)
 			Custom_obj = Sql.GetFirst(script)
-		if data_obj is not None:			
+		Trace.Write('862-----------')
+		if data_obj is not None:
+			Trace.Write('862----864-------')			
 			for val in data_obj:				
 				readonly = "readonly"
 				disable = "disabled"
