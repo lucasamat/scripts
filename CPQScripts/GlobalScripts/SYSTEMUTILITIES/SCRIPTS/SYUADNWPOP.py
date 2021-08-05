@@ -3712,7 +3712,8 @@ def POPUPLISTVALUEADDNEW(
 								sec_str += '<span class="req-field mrg3fltltmt7">*</span>'
 							sec_str += "</a></td>"
 
-						if data_type == "LOOKUP":							
+						if data_type == "LOOKUP":	
+							Trace.Write("new_value_dict==="+str(new_value_dict))						
 							if current_obj_api_name in new_value_dict:								
 								current_obj_value = new_value_dict[current_obj_api_name]							
 
