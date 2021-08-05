@@ -469,7 +469,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
 					discount =float(a.SALES_DISCOUNT_PRICE)-float(VALUE)/float(a.SALES_DISCOUNT_PRICE)
+					Trace.Write("discount1="+str(discount))
 					discount = discount*100.00
+					Trace.Write("discount2="+str(discount))
 				else:
 					discount = 0.00
 				
