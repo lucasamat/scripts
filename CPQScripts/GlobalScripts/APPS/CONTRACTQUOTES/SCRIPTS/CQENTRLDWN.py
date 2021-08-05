@@ -446,7 +446,8 @@ def sendEmail(level):
 	mailClient.Send(msg)
 
 	return True
-datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")    
+datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
+gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 obj_list = []
 is_changed = False
 def Request_access_token():
@@ -467,8 +468,8 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
 	#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
-	Log.Info(str(cpsmatchID)+"Request_URL--"+Request_URL)
-	ProductPartnumber = get_serviceid#'Z0035'
+	Log.Info("Request_URL--"+Request_URL)
+	ProductPartnumber = get_serviceid
 	try:        
 		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
 		Log.Info("requestdata" + str(requestdata))
@@ -480,7 +481,6 @@ def ChildEntRequest(attribute_id,value_code,attr_type):
 		Log.Info("newConfigurationid.."+str(newConfigurationid))
 		if attribute_id !="":
 			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
-			Log.Info("where------ "+str(where))
 			#if Parentgetdata:					
 			response = self.Request_access_token()					
 			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
