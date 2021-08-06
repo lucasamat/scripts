@@ -139,8 +139,10 @@ class DropConstraint:
                         + "'"
                     )
                     if FK_CONSTRAINT is not None:
+                        Trace.Write('142-----')
                         foreignKey = FK_CONSTRAINT.Result
                         if foreignKey == 0:
+                            Trace.Write('142-145------')
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
                                 + loop.COLUMN_NAME
