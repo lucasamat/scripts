@@ -3886,6 +3886,14 @@ def POPUPLISTVALUEADDNEW(
 									+ str(TreeParentParam)
 									+"' class='form-control related_popup_css' disabled>"
 								)
+							elif current_obj_api_name == "PAGE_NAME" and str(ObjectName) == "SYPGAC":
+								sec_str += (
+									"<td><input id='"
+									+ str(current_obj_api_name)
+									+ "' type='text' value='"
+									+ str(TreeParentParam)
+									+"' class='form-control related_popup_css' disabled>"
+								)	
 							elif current_obj_api_name == "PAGE_LABEL" and str(ObjectName) == "SYSECT":
 								sec_str += (
 									"<td><input id='"
