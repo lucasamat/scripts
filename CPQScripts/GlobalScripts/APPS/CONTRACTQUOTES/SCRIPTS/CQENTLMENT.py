@@ -539,6 +539,11 @@ class Entitlements:
 
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
+					sectional_current_dict = Param.sectional_current_dict
+				except:
+					sectional_current_dict = ""
+
+				try:
 					sectional_current_dict =eval(sectional_current_dict)
 					Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
 					#b = eval(a)
