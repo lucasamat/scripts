@@ -38,7 +38,7 @@ class DropConstraint:
             objectApiName = Value.split("#")[1]
             Id = Value.split("#")[2]
             cpqEntryId = ""
-            Output = ""
+            Output = ErrorMsg = ""
 
             # DROP FOREIGN KEY
             if constraintType == "FOREIGN KEY":
@@ -194,7 +194,7 @@ class DropConstraint:
         except Exception as e:
             self.exceptMessage = "SYDRPCONST : DropConstraint : EXCEPTION : UNABLE TO DROP CONSTRAINT: " + str(e)
            
-        return Output
+        return Output,ErrorMsg
 
     def deleteRecord(self, cpqEntryId):
         """ Delete record from SYOBJC table"""
