@@ -2331,7 +2331,7 @@ class TreeView:
 										                                   
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
+									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
 									for tree in getpagename:                 
 										#where_string =  where_string 
 										Tree_Node = str(tree.TREE_RECORD_ID)
