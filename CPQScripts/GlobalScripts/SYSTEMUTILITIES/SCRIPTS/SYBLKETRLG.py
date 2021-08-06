@@ -497,15 +497,15 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 				if days > 365:
 					year2 = float(VALUE) - dec1
-					dec2 = (float(VALUE)*dec1)/100
+					dec2 = (year2*dec1)/100
 				if days > 730:
-					year3 = float(VALUE) - dec2
-					dec3 = (float(VALUE)*dec2)/100
+					year3 = year2 - dec2
+					dec3 = (year3*dec2)/100
 				if days > 1095:
-					year4 = float(VALUE) - dec3
-					dec4 = (float(VALUE)*dec3)/100
+					year4 = year3 - dec3
+					dec4 = (year4*dec3)/100
 				if days > 1460:
-					year5 = float(VALUE) - dec4
+					year5 = year4 - dec4
 				
 				ext_price = year1 + year2 + year3 + year4 + year5
 
