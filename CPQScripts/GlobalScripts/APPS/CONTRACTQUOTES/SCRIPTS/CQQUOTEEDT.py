@@ -42,7 +42,7 @@ def bannerdetails(Quoteid,active_tab_name):
             qid=str(matchObj.group(1))
             Log.Info("MatchObj:" + qid)
             Quote = QuoteHelper.Edit(qid)
-            Log.Info(Quote)
+            Log.Info(str(Quote))
             try:
             	Quote.RefreshActions()
             except:
