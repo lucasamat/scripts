@@ -577,13 +577,16 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				year4 = 0.00
 				year5 = 0.00
 				dec1 = (float(VALUE)*yoy)/100
+				Trace.Write("dec1---"+str(dec1))
 
 				if days > 365:
 					year2 = float(VALUE) - dec1
 					dec2 = (year2*yoy)/100
+					Trace.Write("dec2---"+str(dec2))
 				if days > 730:
 					year3 = year2 - dec2
 					dec3 = (year3*yoy)/100
+					Trace.Write("dec3---"+str(dec3))
 				if days > 1095:
 					year4 = year3 - dec3
 					dec4 = (year4*yoy)/100
