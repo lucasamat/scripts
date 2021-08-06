@@ -1726,11 +1726,6 @@ class TreeView:
 								+ str(ordersByQuery)
 								+ ""
 							)
-							try:
-								Trace.Write('1729--->'+str(childQuery[0].TREE_NAME))
-								Product.SetGlobal('TreeName',str(childQuery[0].TREE_NAME))
-							except:
-								pass
 					flag = 1
 					if str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID' and flag != 2:
 						flag = 1
@@ -1838,7 +1833,9 @@ class TreeView:
 									+ str(NodeText)
 									+ "'"
 								)				
-								Trace.Write('**1841nodetext'+str(NodeText))				
+								if(str(NodeName)=="TREE_NAME"):
+									Trace.Write('**1841nodetext'+str(NodeText))
+									Product.SetGlobal('TreeName',str(NodeText))
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
