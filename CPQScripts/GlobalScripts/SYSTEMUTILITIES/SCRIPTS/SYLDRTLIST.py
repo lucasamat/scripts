@@ -4896,7 +4896,6 @@ class SYLDRTLIST:
                             + "'"
                         )                        
                     elif RECORD_ID == "SYOBJR-95843" and TreeParentParam != "" :  
-                        Trace.Write("SYOBJR-95843__1"+str(Wh_API_NAME))
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()
                         Qury_str = (
                         "select top "
