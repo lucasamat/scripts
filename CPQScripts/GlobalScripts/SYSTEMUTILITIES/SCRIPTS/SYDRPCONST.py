@@ -187,9 +187,9 @@ class DropConstraint:
                     )
                     Sql.RunQuery(delete_query_string)
                     Output = "True"
-            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
-            Sql.RunQuery(delete_query_string)
-            Output = "True"
+            # delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+            # Sql.RunQuery(delete_query_string)
+            # Output = "True"
         except Exception as e:
             self.exceptMessage = "SYDRPCONST : DropConstraint : EXCEPTION : UNABLE TO DROP CONSTRAINT: " + str(e)
            
