@@ -520,7 +520,7 @@ class Entitlements:
 										if i['selectable'] == 'false' and 'valueLow' in i.keys():
 											dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 										elif i['selectable'] == 'true' and 'valueLow' in i.keys():
-											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)dropdownallowlist_selected.append(str(prdvalue["id"])+'}}'+str(i['valueLow'])	)
+											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)#dropdownallowlist_selected.append(str(prdvalue["id"])+'}}'+str(i['valueLow'])	)
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
@@ -537,7 +537,7 @@ class Entitlements:
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			Trace.Write("dropdownallowlist--532------"+str(dropdownallowlist))
-			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
+			#Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
 					sectional_current_dict = Param.sectional_current_dict
