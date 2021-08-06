@@ -2076,7 +2076,8 @@ def Related_Sub_Banner(
                         # )
 
                 elif CurrentRecordId == "SYOBJR-98788":
-                    sec_rel_sub_bnr += (str(add_button))
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        sec_rel_sub_bnr += (str(add_button))
                     # sec_rel_sub_bnr += (
                     #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                     #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD OFFERINGS</button>'
