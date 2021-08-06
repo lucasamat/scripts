@@ -1727,7 +1727,8 @@ class TreeView:
 								+ ""
 							)
 							try:
-								Trace.Write('1729--->'+str(childQuery[0]))
+								Trace.Write('1729--->'+str(childQuery[0].TREE_NAME))
+								Product.SetGlobal('TreeName',str(childQuery[0].TREE_NAME))
 							except:
 								pass
 					flag = 1
@@ -2362,7 +2363,7 @@ class TreeView:
 										ordersBy,
 									)	
 								else:
-									Trace.Write('2358')
+									Trace.Write('2358'+str(Product.GetGlobal('TreeName')))
 									SubChildData = self.getChildOne(
 										SubNodeType,
 										SubNodeName,
