@@ -408,6 +408,7 @@ class Entitlements:
 		attributeEditonlylst = []
 		attributevalues = {}
 		attributedefaultvalue = []
+		dropdownallowlist_selected = []
 		where = pricemethodupdate = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
@@ -514,6 +515,10 @@ class Entitlements:
 									attributeReadonlylst.append(prdvalue["id"])
 								if prdvalue["readOnly"] == "false":
 									attributeEditonlylst.append(prdvalue["id"])
+								if prdvalue["values"]:
+									for i in prdvalue["values"]:
+										if i['value']:
+											dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(['value']))
 								if prdvalue["possibleValues"]:
 									for i in prdvalue["possibleValues"]:
 
@@ -537,7 +542,7 @@ class Entitlements:
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			Trace.Write("dropdownallowlist--532------"+str(dropdownallowlist))
-			#Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
+			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
 					sectional_current_dict = Param.sectional_current_dict
