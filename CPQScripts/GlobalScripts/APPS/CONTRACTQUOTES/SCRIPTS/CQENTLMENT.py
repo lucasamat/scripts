@@ -536,7 +536,32 @@ class Entitlements:
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			Trace.Write("attributedefaultvalue--532------"+str(attributedefaultvalue))
+
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
+				try:
+					sectional_current_dict =eval(sectional_current_dict)
+					Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
+					#b = eval(a)
+					non_integer_list =[]
+					for key,value in sectional_current_dict.items():
+						if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
+							val = str(value.split('||')[0])
+							Trace.Write('val---'+str(val))
+							if float(val).is_integer() == False:
+								non_integer_list.append(key)
+					##
+					response_charactr = enumerate(a)
+					for key,value in response_charactr:
+						if value['key'] in val:
+							index = [key]
+							Trace.Write('bb---'+str(index)+'--'+str(value))
+							characteristics_attr_values.pop(index)
+					Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
+
+				except Exception,e:
+					Trace.Write('error--pop--'+str(e))
+					#pass
+
 				Trace.Write("serviceId--1--"+str(serviceId))
 				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
 				Trace.Write("attr_prices"+str(attr_prices)+'---')
@@ -1652,6 +1677,10 @@ try:
 	Getprevdict = Param.getprevdict
 except:
 	Getprevdict = {}
+try:
+	sectional_current_dict = Param.sectional_current_dict
+except:
+	sectional_current_dict = {}
 try:
 	calc_factor = Param.calc_factor
 except:
