@@ -45,7 +45,7 @@ class Entitlements:
 			new_configid_flag = Param.new_configid_flag
 		except:
 			new_configid_flag = ""	
-		cpsmatchID = ''
+		cpsmatchID = parentcpsConfig = ''
 		cpsConfigID = ''
 		oldConfigID =''
 		if cpsConfiguration is not None:
