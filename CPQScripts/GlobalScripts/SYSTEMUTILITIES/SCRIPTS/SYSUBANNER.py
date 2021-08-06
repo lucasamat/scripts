@@ -2315,11 +2315,13 @@ def Related_Sub_Banner(
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts")
                             if 'GENERATE LINE ITEMS' in btn:
-                                sec_rel_sub_bnr += (btn)
+                                if quote_status.QUOTE_STATUS != 'APPROVED':
+                                    sec_rel_sub_bnr += (btn)
                             
                         else:
                             Trace.Write("hide PRICING for fts")
-                            sec_rel_sub_bnr += (btn)
+                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                                sec_rel_sub_bnr += (btn)
                     # Appending Price button in Quote Items Node
 
                     # sec_rel_sub_bnr += (
@@ -2329,7 +2331,8 @@ def Related_Sub_Banner(
                     # Appending REFRESH button in Quote Items Node
                     for btn in multi_buttons:
                         if "REFRESH" in btn:
-                            sec_rel_sub_bnr += (btn)
+                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                                sec_rel_sub_bnr += (btn)
                 # Appending REFRESH button in Quote Items Node
 
                 # sec_rel_sub_bnr += (
