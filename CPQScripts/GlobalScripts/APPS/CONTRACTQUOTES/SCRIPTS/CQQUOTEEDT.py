@@ -8,6 +8,7 @@
 import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace
 Param = Param
+Log = Log
 ApiResponseFactory = ApiResponseFactory
 import re
 from SYDATABASE import SQL
@@ -15,6 +16,8 @@ Sql = SQL()
 
 
 def bannerdetails(Quoteid,active_tab_name):
+    Log.Info(Quoteid)
+    Log.Info(active_tab_name)
 	contract_record_id = ""
 	matchObj = re.match( r'.*>\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
 	Trace.Write('Quoteid'+str(Quoteid))
@@ -40,6 +43,7 @@ def bannerdetails(Quoteid,active_tab_name):
 				Quote.SetGlobal("contract_record_id",contract_record_id)
 				test = Quote.GetGlobal("contract_record_id")
 				Trace.Write("test"+str(test))
+				Log.Info(str(test))
 			##ends
 			return Quote.CompositeNumber
 
