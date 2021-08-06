@@ -697,6 +697,7 @@ class TreeView:
 											ordersBy,
 										)	
 									else:
+										Trace.Write('700')
 										ChildListData = self.getChildOne(
 											NodeType,
 											NodeName,
@@ -2117,7 +2118,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										
+										Trace.Write('2121')
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -2354,6 +2355,7 @@ class TreeView:
 										ordersBy,
 									)	
 								else:
+									Trace.Write('2358')
 									SubChildData = self.getChildOne(
 										SubNodeType,
 										SubNodeName,
@@ -2666,7 +2668,8 @@ class TreeView:
 												+ "'"
 											)											
 											Subwhere_string = str(where_string)
-											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)										                              
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)	
+											Trace.Write('2672')									                              
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,
