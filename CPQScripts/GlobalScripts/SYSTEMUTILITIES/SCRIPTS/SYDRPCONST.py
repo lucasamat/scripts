@@ -151,6 +151,7 @@ class DropConstraint:
                                 + "' "
                             )
                             if UQ_CONSTRAINT is not None:
+                                Trace.Write('failyere---')
                                 uniqueKey = UQ_CONSTRAINT.Result
                                 if uniqueKey == 0:
                                     query = (
