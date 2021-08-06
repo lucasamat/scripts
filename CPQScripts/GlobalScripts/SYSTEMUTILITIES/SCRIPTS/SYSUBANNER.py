@@ -169,7 +169,7 @@ def Related_Sub_Banner(
 
             Trace.Write("ADD+BUT_J "+str(add_button))
             Trace.Write("Multi buttons--> "+str(multi_buttons))
-    else:
+    elif current_prod != 'Sales':
         dynamic_Button = None
         # Getting page details
         multi_buttons = []
