@@ -366,7 +366,10 @@ class ButtonAction:
                                 Trace.Write("Value_Test111")
                                 # GET ACTION BUTTON ATTRIBUTE NAME
                                 ACTIONRECORDID = str(ACTItem.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_")
-                                ACTIONNAME = str(ACTItem.ACTION_NAME).replace(" ", "")
+                                try:
+                                    ACTIONNAME = str(ACTItem.ACTION_NAME).replace(" ", "")
+                                else:
+                                    ACTIONNAME = str(ACTItem.ACTION_NAME)
                                 actRawAttributeName = "BTN_" + (ACTIONRECORDID + "_" + ACTIONNAME).upper()
                                 #Trace.Write("Button ID--actRawAttributeName----" + str(actRawAttributeName))
                                 Trace.Write("Value_Test" + str(value))
