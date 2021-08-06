@@ -371,7 +371,7 @@ class ButtonAction:
                                 else:
                                     ACTIONNAME = str(ACTItem.ACTION_NAME)
                                 actRawAttributeName = "BTN_" + (ACTIONRECORDID + "_" + ACTIONNAME).upper()
-                                #Trace.Write("Button ID--actRawAttributeName----" + str(actRawAttributeName))
+                                Trace.Write("Button ID--actRawAttributeName----" + str(actRawAttributeName))
                                 Trace.Write("Value_Test" + str(value))
                                 actAttributeName = productAttributesGetByName(str(actRawAttributeName))
                                 #Trace.Write("Button attr ID--" + str(actAttributeName))
