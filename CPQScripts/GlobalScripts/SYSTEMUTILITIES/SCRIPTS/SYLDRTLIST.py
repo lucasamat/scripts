@@ -2958,7 +2958,7 @@ class SYLDRTLIST:
                                 + "' and SE.SECTION_NAME ='BASIC INFORMATION'"
                             )
                         else:
-                            Trace.Write('At line 2805 -- Else')
+                            Trace.Write('At line 2805 ---2960----- Else')
                             imgValue = ''
                             if value1234.startswith("<img"):
                                 # value1234 = value1234.replace('"', "&quot;")
@@ -3073,12 +3073,12 @@ class SYLDRTLIST:
                                                     
                                                     if value1234 is not None and value1234 != '':
                                                         new_dict[value123] = (
-                                                            '<abbr id ="' + key_value + '" title="' + value1234 +'">' + value1234 +  ' %' +  "</abbr>"
+                                                            '<abbr id ="' + key_value + '" title="' + str(value1234).upper() +'">' + str(value1234).upper() +  ' %' +  "</abbr>"
                                                         )
                                                         Trace.Write('At line 2899')
                                                     else:
                                                         new_dict[value123] = (
-                                                        '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                                                        '<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                                                     )    
                                                         Trace.Write('At line 2904')
                                                 else:
@@ -3093,15 +3093,15 @@ class SYLDRTLIST:
                                                         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
                                                     # for redirecting the left tree node while viewing record from listgrid - start    
                                                     elif ObjectName in value1234: 
-                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>") 
+                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
                                                         Trace.Write('At line 2918')
                                                     # for redirecting the left tree node while viewing record from listgrid - end       
                                                     elif ObjectName == "SAQSAO":
                                                         
-                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>") 
+                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
                                                     else:
                                                         Trace.Write('At line 2924')
-                                                        new_dict[value123] = ('<abbr title="' + value1234 + '">' + value1234 + "</abbr>")
+                                                        new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
