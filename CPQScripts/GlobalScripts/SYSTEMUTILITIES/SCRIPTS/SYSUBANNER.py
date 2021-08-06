@@ -89,12 +89,7 @@ def Related_Sub_Banner(
     #if quote_status:
     if quote_status.QUOTE_STATUS == 'APPROVED':
         add_button = ''
-        multi_buttons = ''
-        if subTabName == 'Equipment' and str(TreeParentParam) == 'Fab Locations':
-        #if quote_status.QUOTE_STATUS == 'APPROVED':
-            Trace.Write('eqp sub===')
-            add_button = ''
-            multi_buttons = ''
+        multi_buttons = ''          
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
     Trace.Write('status-----')
@@ -566,8 +561,10 @@ def Related_Sub_Banner(
                 
                 else:
                     Trace.Write("Inside Else"+str(sec_rel_sub_bnr))
-                    sec_rel_sub_bnr += (str(add_button))
-                    Trace.Write(str(sec_rel_sub_bnr))
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        Trace.Write("Inside addbut")          
+                        sec_rel_sub_bnr += (str(add_button))
+                        Trace.Write(str(sec_rel_sub_bnr))
 
             elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
                 if ObjName == 'CTCTIP' and subTabName == 'Detail':
