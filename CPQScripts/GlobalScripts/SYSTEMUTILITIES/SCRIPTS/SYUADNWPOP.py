@@ -3939,6 +3939,7 @@ def POPUPLISTVALUEADDNEW(
 									and current_obj_api_name in lookup_val
 									and readonly != "readonly"
 								):
+									Trace.Write('cm to this if====')
 									formula_disabled = "disabled"
 									sec_str += (
 										"<td><input id='"
@@ -3966,6 +3967,7 @@ def POPUPLISTVALUEADDNEW(
 										)
 								else:
 									try:
+										Trace.Write('cm to this else====')
 										if current_obj_api_name in new_value_dict1:
 											current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 											Trace.Write("--3742---current_obj_value--->" + str(current_obj_value))
