@@ -43,7 +43,7 @@ def bannerdetails(Quoteid,active_tab_name):
             Log.Info("MatchObj:" + qid)
             Quote = QuoteHelper.Edit(qid)
             Quote.RefreshActions()
-            time.sleep(5)
+            #time.sleep(5)
             ##getting contarct rec id as global
             if contract_record_id:
                 Quote.SetGlobal("contract_record_id",contract_record_id)
