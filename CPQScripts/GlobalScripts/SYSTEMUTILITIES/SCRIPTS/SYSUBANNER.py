@@ -2065,10 +2065,10 @@ def Related_Sub_Banner(
                             Trace.Write("No Button are required!!!")
                         else:	
                             sec_rel_sub_bnr += (str(add_button))
-                        sec_rel_sub_bnr += (
-                            '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
-                            ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal" disabled>ADD FAB</button>'
-                        )
+                        # sec_rel_sub_bnr += (
+                        #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
+                        #     ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal" disabled>ADD FAB</button>'
+                        # )
 
                 elif CurrentRecordId == "SYOBJR-98788":
                     sec_rel_sub_bnr += (str(add_button))
