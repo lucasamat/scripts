@@ -87,9 +87,12 @@ def Related_Sub_Banner(
     except:
         quote_status = ''    
     #if quote_status:
-    if quote_status.QUOTE_STATUS == 'APPROVED':
-        add_button = ''
-        multi_buttons = ''          
+    try:
+        if quote_status.QUOTE_STATUS == 'APPROVED':
+            add_button = ''
+            multi_buttons = ''          
+    except:
+        pass
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
     Trace.Write('status-----')
