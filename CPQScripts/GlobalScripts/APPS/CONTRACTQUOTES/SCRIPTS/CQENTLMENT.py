@@ -535,8 +535,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			Trace.Write("attributedefaultvalue--532------"+str(attributedefaultvalue))
-
+			Trace.Write("dropdownallowlist--532------"+str(dropdownallowlist))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
 					sectional_current_dict = Param.sectional_current_dict
