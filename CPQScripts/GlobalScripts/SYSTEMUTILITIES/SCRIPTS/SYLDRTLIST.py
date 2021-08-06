@@ -4950,7 +4950,46 @@ class SYLDRTLIST:
                             tabRecord = str(gettabres.RECORD_ID)
 
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" SECTION_RECORD_ID = '" + str(tabRecord) + "'"
-
+                    elif RECORD_ID == "SYOBJR-93121":
+                        proff_per_id = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+                        Profile_ID_PERMISSION = Product.GetGlobal("Profile_ID_PERMISSION")                        
+                        if proff_per_id != "":
+                            Qury_str = (
+                                "select top "
+                                + str(PerPage)
+                                + " PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId from ( select ROW_NUMBER() OVER( order by APP_ID) AS ROW, PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId  from SYPRAP (nolock) where "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(proff_per_id)
+                                + "') m where m.ROW BETWEEN "
+                                + str(Page_start)
+                                + " and "
+                                + str(Page_End)
+                            )
+                            QuryCount_str = (
+                                "select count(*) as cnt from "
+                                + str(ObjectName)
+                                + " (nolock) where  "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(proff_per_id)
+                                + "' "
+                            )
+                        else:
+                            proff_id = Product.GetGlobal("Profile_ID")
+                            Qury_str = (
+                                "select top "
+                                + str(PerPage)
+                                + " PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId from ( select ROW_NUMBER() OVER( order by APP_ID) AS ROW, PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId  from SYPRAP (nolock) where "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(Profile_ID_PERMISSION)
+                                + "') m where m.ROW BETWEEN "
+                                + str(Page_start)
+                                + " and "
+                                + str(Page_End)
+                            )
+                            QuryCount_str = (
+                                "select count(*) as cnt from "
+                                + str(ObjectName)
+                                + " (nolock) where  "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(Profile_ID_PERMISSION)
+                                + "' "
+                            )
                     elif RECORD_ID == "SYOBJR-95800":                        
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
                         permiss_id = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
