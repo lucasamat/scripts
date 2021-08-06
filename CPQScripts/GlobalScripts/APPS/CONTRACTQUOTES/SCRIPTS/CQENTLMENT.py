@@ -557,7 +557,7 @@ class Entitlements:
 					Trace.Write('non_integer_list--'+str(non_integer_list))
 					response_charactr = enumerate(characteristics_attr_values)
 					for key,value in response_charactr:
-						if value['key'] in val:
+						if value['key'] in non_integer_list:
 							index = [key]
 							Trace.Write('bb---'+str(index)+'--'+str(value))
 							characteristics_attr_values.pop(index)
