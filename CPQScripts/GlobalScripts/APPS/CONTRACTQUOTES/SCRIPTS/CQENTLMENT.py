@@ -549,6 +549,7 @@ class Entitlements:
 					Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
 					#b = eval(a)
 					non_integer_list =[]
+					#remove_indices = []
 					for key,value in sectional_current_dict.items():
 						if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
 							val = str(value.split('||')[0])
@@ -557,12 +558,15 @@ class Entitlements:
 								non_integer_list.append(key)
 					##
 					Trace.Write('non_integer_list--'+str(non_integer_list))
-					response_charactr = enumerate(characteristics_attr_values)
-					for key,value in response_charactr:
-						if value['key'] in non_integer_list:
-							index = key
-							Trace.Write('bb---'+str(index)+'--'+str(value))
-							characteristics_attr_values.pop(index)
+					remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
+					Trace.Write('remove_indices--'+str(remove_indices))
+					# response_charactr = enumerate(characteristics_attr_values)
+					# for key,value in response_charactr:
+					# 	if value['key'] in non_integer_list:
+					# 		remove_indices.append(key)
+					# 		Trace.Write('bb---'+str(index)+'--'+str(value))
+							#characteristics_attr_values.pop(index)
+					characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
 					Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
 				except Exception,e:
