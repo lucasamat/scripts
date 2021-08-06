@@ -2449,7 +2449,7 @@ def EntitlementTreeViewHTMLDetail(
 								if attribute["author"] in ('User','Default'):
 									attributedefaultvalue.append(prdvalue["id"])
 		#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-		#Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
+		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
 		Trace.Write('attributevalues'+str(attributevalues))
 		Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
 
