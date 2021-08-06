@@ -113,7 +113,7 @@ def Related_Sub_Banner(
     else:
         add_button = ""
     # Binding button Id's based on Related list Table record id
-    Trace.Write('len------'+str(len(dynamic_Button)))
+    
     if len(dynamic_Button) > 0:
         Trace.Write('len------')
         for btn in dynamic_Button:
