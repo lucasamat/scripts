@@ -1353,11 +1353,6 @@ class TreeView:
 		NodeText1 = ""
 		ChildList = []
 		NewList = []
-		Trace.Write('1356 getchildone called')
-		Trace.Write('**Parent Rec Id '+str(ParRecId))
-		Trace.Write('**Rec Id '+str(RecId))
-		Trace.Write('**NodeName'+str(NodeName))
-		Trace.Write('**NodeType'+str(NodeType))
 		try:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
@@ -1834,7 +1829,6 @@ class TreeView:
 									+ "'"
 								)				
 								if(str(NodeName)=="TREE_NAME"):
-									Trace.Write('**1841nodetext'+str(NodeText))
 									Product.SetGlobal('TreeName',str(NodeText))
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
@@ -2149,7 +2143,6 @@ class TreeView:
 								#Trace.Write("ChildList"+str(ChildList))
 								
 		else:
-			Trace.Write('**2145')
 			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 			if getAccounts is None:
 				findChildOneObj = Sql.GetList(
@@ -2177,7 +2170,6 @@ class TreeView:
 			) """
 			if findChildOneObj is not None and len(findChildOneObj) > 0:
 				for findChildOne in findChildOneObj:
-					Trace.Write('**for 2172')
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
 							DynamicQuery.replace("{", "")
@@ -2269,7 +2261,6 @@ class TreeView:
 					)  """                                  
 					if findSubChildAvailable is not None:
 						for findSubChildOne in findSubChildAvailable:
-							Trace.Write('**for 2263')
 							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findSubChildOne.NODE_TYPE)
 							NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
