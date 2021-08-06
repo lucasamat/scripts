@@ -142,7 +142,7 @@ class DropConstraint:
                         Trace.Write('142-----')
                         foreignKey = FK_CONSTRAINT.Result
                         if foreignKey == 0:
-                            Trace.Write('142-145------')
+                            Trace.Write('142-145------'+str(self.ObjectName))
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
                                 + loop.COLUMN_NAME
@@ -164,13 +164,14 @@ class DropConstraint:
                                     #self.deleteRecord(cpqEntryId)
                             delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
                             Sql.RunQuery(delete_query_string)
+                            Trace.Write('142-167---167777----'+str(objectApiName))
                             Output = "True"
 
                         else:
                             ErrorMsg = Message.GetErrorMessage(
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
-                            Output = ErrorMsg
+                            #Output = ErrorMsg
             elif constraintType == "PRIMARY KEY":
                 Trace.Write('174----'+ str(objectApiName))
                 query_result = Sql.GetList(
