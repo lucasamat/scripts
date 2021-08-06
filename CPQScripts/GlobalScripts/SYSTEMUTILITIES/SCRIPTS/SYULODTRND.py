@@ -3510,7 +3510,7 @@ def EntitlementTreeViewHTMLDetail(
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  disabled>'
+									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
 									+ str(VAR1)
 									+ "</select>"
 								)
@@ -3551,7 +3551,7 @@ def EntitlementTreeViewHTMLDetail(
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" class="form-control" onchange="editent_bt(this)" disabled>'
+									+ '" class="form-control" onchange="editent_bt(this)" >'
 									+ str(VAR1)
 									+ "</select>"
 								)
@@ -3564,7 +3564,7 @@ def EntitlementTreeViewHTMLDetail(
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onclick="editent_bt(this)" disabled>'
+									+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onclick="editent_bt(this)" >'
 									+ "</input>"
 								)
 							
