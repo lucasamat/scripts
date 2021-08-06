@@ -537,10 +537,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						item.YEAR_5.Value = str(b.YEAR5)
 				Quote.Save()
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
-
-				if float(getPRCFVA.FACTOR_PCTVAR) < discount:
-					Sql.RunQuery("UPDATE SAQICO SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
-					Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				try:
+					if float(getPRCFVA.FACTOR_PCTVAR) < discount:
+						Sql.RunQuery("UPDATE SAQICO SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
+						Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				except:
+					Trace.Write("NO STATUS UPDATE")
 			elif TITLE == 'DISCOUNT':
 				
 				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
