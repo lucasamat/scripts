@@ -1374,7 +1374,7 @@ class TreeView:
 		# 		return ChildList
 		if str(NodeType) == "DYNAMIC":
 			# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
-			#Trace.Write("where_string"+str(where_string))
+			Trace.Write("1377-where_string"+str(where_string))
 			try:
 				ContAtt = Product.Attributes.GetByName('QSTN_SYSEFL_QT_016909')
 			except:
@@ -1536,8 +1536,8 @@ class TreeView:
 						#where_string += " AND PAGE_NAME = '"+str(getpagename.PAGE_NAME)+"'"
 					elif str(ObjName).strip()=="SYTRND" and str(NodeName).strip()=="NODE_NAME" and CurrentTabName=="Page":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue()
-						where_string += " AND NODE_PAGE_RECORD_ID = '"+str(RecAttValue)+"' " 
 						getpagename = Sql.GetList("select TREE_RECORD_ID,TREE_NAME from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'")
+						where_string += " AND NODE_PAGE_RECORD_ID = '"+str(RecAttValue)+"' " 
 						for tree in getpagename:          
 						 	where_string += " AND TREE_NAME = '"+str(tree.TREE_NAME)+"'"
 						# where_string +=" AND " + str(objd_where_obj.API_NAME) +" = '"+str(Product.GetGlobal('TreeRecordId'))+"' ORDER BY NODE_ID"
