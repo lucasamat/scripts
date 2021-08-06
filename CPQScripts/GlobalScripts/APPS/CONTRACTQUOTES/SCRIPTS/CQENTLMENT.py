@@ -57,8 +57,8 @@ class Entitlements:
 				# if cpsConfigID == parentcpsConfig.CPS_CONFIGURATION_ID and tableName != 'SAQTSE':					
 				# 	cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)
 			if new_configid_flag == 'true':
-				if  tableName != 'SAQTSE': 
-					cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)	
+				#if  tableName != 'SAQTSE': 
+				cpsConfigID,cpsmatchID = self.ChildEntRequest(cpsmatchID,tableName,whereReq,serviceId,parentObj,ParentwhereReq)	
 		return cpsmatchID,cpsConfigID,oldConfigID
 	def Request_access_token(self):
 		webclient = System.Net.WebClient()
