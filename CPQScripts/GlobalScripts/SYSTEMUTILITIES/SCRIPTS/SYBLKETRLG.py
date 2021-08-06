@@ -558,6 +558,40 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				b = Sql.GetFirst("SELECT SUM(SALES_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
 
 				#Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
+				
+				
+				import datetime as dt
+				fmt = '%m/%d/%Y'
+				d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+				d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+				days = (d2 - d1).days
+				Trace.Write("number of days---------------->"+str((d2 - d1).days))
+				
+				
+				yoy = float(a.YEAR_OVER_YEAR)
+				VALUE = float(a.SALES_DISCOUNT_PRICE)-amt
+				year1 = float(VALUE)
+				year2 = 0.00
+				year3 = 0.00
+				year4 = 0.00
+				year5 = 0.00
+				dec1 = (float(VALUE)*yoy)/100
+
+				if days > 365:
+					year2 = float(VALUE) - dec1
+					dec2 = (year2*dec1)/100
+				if days > 730:
+					year3 = year2 - dec2
+					dec3 = (year3*dec2)/100
+				if days > 1095:
+					year4 = year3 - dec3
+					dec4 = (year4*dec3)/100
+				if days > 1460:
+					year5 = year4 - dec4
+				
+				ext_price = year1 + year2 + year3 + year4 + year5
+
 
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 
