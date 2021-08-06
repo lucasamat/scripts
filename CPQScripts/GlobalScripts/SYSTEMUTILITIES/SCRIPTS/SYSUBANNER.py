@@ -106,7 +106,9 @@ def Related_Sub_Banner(
             # Binding button Id's based on Related list Table record id
                 
                 if len(dynamic_Button) > 0:
+                    Trace.Write('len------')
                     for btn in dynamic_Button:
+                        Trace.Write('btn-----')
                         if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
                             Trace.Write("dynamic_Button---"+str(btn.HTML_CONTENT))
                             if btn.RELATED_LIST_RECORD_ID:
