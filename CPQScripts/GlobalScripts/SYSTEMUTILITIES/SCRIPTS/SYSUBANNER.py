@@ -90,6 +90,11 @@ def Related_Sub_Banner(
     if quote_status.QUOTE_STATUS == 'APPROVED':
         add_button = ''
         multi_buttons = ''
+        if subTabName == 'Equipment' and (str(TreeParentParam) == 'Fab Locations' or str(TreeParentParam) == 'Compherensive Services' or str(TreeParentParam) == 'Bridge Products' or str(TreeParentParam) == 'Add-On Products' or str(TreeParentParam) == 'Other Products'):
+        #if quote_status.QUOTE_STATUS == 'APPROVED':
+            Trace.Write('eqp sub===')
+            add_button = ''
+            multi_buttons = ''
     #elif quote_status.QUOTE_STATUS != 'APPROVED':
     #else:     
     Trace.Write('status-----')
@@ -2276,11 +2281,7 @@ def Related_Sub_Banner(
         # 	Trace.Write("elseeee")
     Trace.Write("tabNameeee"+str(TabName))
     Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
-    if subTabName == 'Equipment' and (str(TreeParentParam) == 'Fab Locations' or str(TreeParentParam) == 'Compherensive Services' or str(TreeParentParam) == 'Bridge Products' or str(TreeParentParam) == 'Add-On Products' or str(TreeParentParam) == 'Other Products'):
-        if quote_status.QUOTE_STATUS == 'APPROVED':
-            Trace.Write('eqp sub===')
-            add_button = ''
-            multi_buttons = ''
+    
 
     if subTabName == 'Subtotal by Offerings' and TreeParam == "Quote Items" and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
         Trace.Write("Subtotal by Offering"+str(TabName))
