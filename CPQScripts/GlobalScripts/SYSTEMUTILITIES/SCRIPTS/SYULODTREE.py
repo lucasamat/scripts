@@ -1542,13 +1542,13 @@ class TreeView:
 					elif str(ObjName).strip()=="SYTRND" and str(NodeName).strip()=="NODE_NAME" and CurrentTabName=="Page":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue()
 						where_string += " AND NODE_PAGE_RECORD_ID = '"+str(RecAttValue)+"' " 
-					elif str(ObjName).strip() == 'SYTRND' and CurrentTabName == 'Page':	 	
-						where_string = where_string
-						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-						getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
-						for tree in getpagename:                 
-						 	#where_string =  where_string 
-						 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
+					# elif str(ObjName).strip() == 'SYTRND' and CurrentTabName == 'Page':	 	
+					# 	where_string = where_string
+					# 	RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
+					# 	getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
+					# 	for tree in getpagename:                 
+					# 	 	#where_string =  where_string 
+					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
 					 		 
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
 						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%') ".format(Quote.GetGlobal("contract_quote_record_id"))
@@ -1837,7 +1837,8 @@ class TreeView:
 									+ " = '"
 									+ str(NodeText)
 									+ "'"
-								)								
+								)				
+								Trace.Write('**1841nodetext'+str(NodeText))				
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
