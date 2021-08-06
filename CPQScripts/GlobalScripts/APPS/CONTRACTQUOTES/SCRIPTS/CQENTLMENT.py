@@ -119,7 +119,7 @@ class Entitlements:
 						#webclient.Headers.Add("If-Match", "111")
 						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 						Trace.Write('row--'+str(row.ENTITLEMENT_NAME))	
-						if 	row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE !='undefined' and	row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select':
+						if 	row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE in ('undefined','None') and	row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' :
 							try:
 								requestdata = '{"characteristics":['
 								
