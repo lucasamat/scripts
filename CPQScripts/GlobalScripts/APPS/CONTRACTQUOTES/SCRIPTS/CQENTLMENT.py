@@ -518,7 +518,7 @@ class Entitlements:
 								if prdvalue["values"]:
 									for i in prdvalue["values"]:
 										if i['value']:
-											dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(['value']))
+											dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
 								if prdvalue["possibleValues"]:
 									for i in prdvalue["possibleValues"]:
 
