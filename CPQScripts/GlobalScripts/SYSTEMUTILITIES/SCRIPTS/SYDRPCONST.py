@@ -145,9 +145,9 @@ class DropConstraint:
                             Trace.Write('142-145------'+str(self.ObjectName))
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
-                                + loop.COLUMN_NAME
+                                + loop.OBJECTFIELD_APINAME
                                 + "' AND TABLE_NAME= '"
-                                + loop.TABLE_NAME
+                                + loop.OBJECT_APINAME
                                 + "' "
                             )
                             if UQ_CONSTRAINT is not None:
