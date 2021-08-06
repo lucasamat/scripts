@@ -1354,6 +1354,8 @@ class TreeView:
 		ChildList = []
 		NewList = []
 		Trace.Write('1356 getchildone called')
+		Trace.Write('**Parent Rec Id '+str(ParRecId))
+		Trace.Write('**Rec Id '+str(RecId))
 		try:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
