@@ -1726,6 +1726,7 @@ class TreeView:
 								+ str(ordersByQuery)
 								+ ""
 							)
+							Trace.Write('1729--->'+str(childQuery))
 					flag = 1
 					if str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID' and flag != 2:
 						flag = 1
