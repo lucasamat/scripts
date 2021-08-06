@@ -7830,7 +7830,7 @@ class SYLDRTLIST:
                         value1234 = value1234.replace("<p>", " ")
                         value1234 = value1234.replace("</p>", " ")                        
                         new_dict[value123] = (
-                            '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                            '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                         )                        
 
                     else:               
@@ -7904,7 +7904,7 @@ class SYLDRTLIST:
                                                 
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
-                                                        new_dict[value123] = ('<abbr id="'+key_value+'" title="'+value1234+'">'+value1234+'</abbr>')
+                                                        new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
