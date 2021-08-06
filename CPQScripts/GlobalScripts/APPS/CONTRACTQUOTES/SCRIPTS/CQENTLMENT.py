@@ -555,7 +555,8 @@ class Entitlements:
 							if float(val).is_integer() == False:
 								non_integer_list.append(key)
 					##
-					response_charactr = enumerate(a)
+					Trace.Write('non_integer_list--'+str(non_integer_list))
+					response_charactr = enumerate(characteristics_attr_values)
 					for key,value in response_charactr:
 						if value['key'] in val:
 							index = [key]
