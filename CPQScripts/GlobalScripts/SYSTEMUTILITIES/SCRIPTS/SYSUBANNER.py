@@ -81,11 +81,13 @@ def Related_Sub_Banner(
         CurrentTabName = ""
     Trace.Write("curr_tab@@"+str(CurrentTabName))
     # Getting Dynamic buttons for secondary banner - Starts
-    add_button = ''
-    multi_buttons = ''
+    
     quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
     if quote_status:
-        if quote_status.QUOTE_STATUS != 'APPROVED':
+        if quote_status.QUOTE_STATUS == 'APPROVED':
+            add_button = ''
+            multi_buttons = ''
+        elif quote_status.QUOTE_STATUS != 'APPROVED':
             Trace.Write('status-----')
             dynamic_Button = None
             # Getting page details
