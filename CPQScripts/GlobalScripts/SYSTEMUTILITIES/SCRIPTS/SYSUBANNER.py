@@ -90,7 +90,7 @@ def Related_Sub_Banner(
     if quote_status.QUOTE_STATUS == 'APPROVED':
         add_button = ''
         multi_buttons = ''
-        if subTabName == 'Equipment' and (str(TreeParentParam) == 'Fab Locations' or str(TreeParentParam) == 'Compherensive Services' or str(TreeParentParam) == 'Bridge Products' or str(TreeParentParam) == 'Add-On Products' or str(TreeParentParam) == 'Other Products'):
+        if subTabName == 'Equipment' and str(TreeParentParam) == 'Fab Locations':
         #if quote_status.QUOTE_STATUS == 'APPROVED':
             Trace.Write('eqp sub===')
             add_button = ''
