@@ -1280,20 +1280,20 @@ class Entitlements:
 						# 	getcostbaborimpact = attr_level_pricing[0].get('total_price')
 						# 	getpriceimpact = attr_level_pricing[0].get('price')		
 						# 	factor_value = 	attr_level_pricing[0].get('factor')	
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-					<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-					<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-					<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-					<IS_DEFAULT>{is_default}</IS_DEFAULT>
-					<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-					<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-					<PRICE_METHOD>{pm}</PRICE_METHOD>
-					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
-				Trace.Write("---------------------------222222222222222"+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
+				# 	updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+				# 	<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+				# 	<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+				# 	<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+				# 	<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+				# 	<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+				# 	<IS_DEFAULT>{is_default}</IS_DEFAULT>
+				# 	<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+				# 	<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+				# 	<PRICE_METHOD>{pm}</PRICE_METHOD>
+				# 	<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+				# 	</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
+				# Trace.Write("---------------------------222222222222222"+str(updateentXML))
+				# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 				
 
 				#Sql.RunQuery(UpdateEntitlement)	
