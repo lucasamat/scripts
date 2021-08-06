@@ -38,8 +38,9 @@ def bannerdetails(Quoteid,active_tab_name):
         
     if Quoteid is not None and str(Quoteid) !='':
         if matchObj:
-            Log.Info("MatchObj:" + str(matchObj.group(1)))
-            Quote = QuoteHelper.Edit(str(matchObj.group(1)))
+            qid=str(matchObj.group(1))
+            Log.Info("MatchObj:" + qid)
+            Quote = QuoteHelper.Edit(qid)
             Quote.RefreshActions()
             ##getting contarct rec id as global
             if contract_record_id:
