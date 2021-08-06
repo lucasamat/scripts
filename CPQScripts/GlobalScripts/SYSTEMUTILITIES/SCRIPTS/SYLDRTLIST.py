@@ -4905,6 +4905,8 @@ class SYLDRTLIST:
                         + " from "
                         + str(ObjectName)
                         + " (nolock) WHERE "
+                        +str(ATTRIBUTE_VALUE_STR)
+                        +""
                         + str(Wh_API_NAME)
                         + " = '"
                         + str(RecAttValue)
