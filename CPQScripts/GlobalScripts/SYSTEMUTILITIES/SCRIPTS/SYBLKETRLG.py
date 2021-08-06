@@ -456,7 +456,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
-			if TITLE != 'SALES_PRICE':
+			if TITLE != 'SALES_PRICE' and TITLE != 'DISCOUNT':
 				prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
 				line_items_obj = """UPDATE SAQICO SET SRVTAXCLA_ID = '{TAX_CLASSIFICATION_ID}', SRVTAXCLA_RECORD_ID = '{SRVTAXCLA_RECORD_ID}' WHERE SRVTAXCLA_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(TAX_CLASSIFICATION_ID = prtxcl_obj.TAX_CLASSIFICATION_ID,SRVTAXCLA_RECORD_ID = prtxcl_obj.TAX_CLASSIFICATION_RECORD_ID,SRVTAXCLA_DESCRIPTION = str(VALUE),quote_record_id = str(ContractRecordId))
 				Sql.RunQuery(line_items_obj)
