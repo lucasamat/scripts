@@ -2077,6 +2077,7 @@ def Related_Sub_Banner(
 
                 elif CurrentRecordId == "SYOBJR-98788":
                     if quote_status.QUOTE_STATUS != 'APPROVED':
+                        Trace.Write('add======')
                         sec_rel_sub_bnr += (str(add_button))
                     # sec_rel_sub_bnr += (
                     #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
