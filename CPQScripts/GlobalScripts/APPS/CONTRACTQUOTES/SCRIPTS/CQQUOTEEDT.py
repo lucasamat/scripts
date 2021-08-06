@@ -42,7 +42,11 @@ def bannerdetails(Quoteid,active_tab_name):
             qid=str(matchObj.group(1))
             Log.Info("MatchObj:" + qid)
             Quote = QuoteHelper.Edit(qid)
-            Quote.RefreshActions()
+            Log.Info(Quote)
+            try:
+            	Quote.RefreshActions()
+            except:
+                Log.Info("RefreshAction throws an error")
             #time.sleep(5)
             ##getting contarct rec id as global
             if contract_record_id:
