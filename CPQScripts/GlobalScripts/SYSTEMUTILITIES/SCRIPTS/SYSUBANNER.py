@@ -2055,7 +2055,8 @@ def Related_Sub_Banner(
                             if sale_type.SALE_TYPE == "NEW":
                                 for btn in multi_buttons:
                                     if "ADD FAB" in btn:
-                                        sec_rel_sub_bnr += (str(btn))
+                                        if quote_status.QUOTE_STATUS != 'APPROVED':
+                                            sec_rel_sub_bnr += (str(btn))
                         else:
                             sec_rel_sub_bnr += ""
                         # sec_rel_sub_bnr += (
@@ -2134,16 +2135,19 @@ def Related_Sub_Banner(
                         if len(GetToolReloc) == 0:
                             for btn in multi_buttons:
                                 if "ADD FAB" in str(btn):
-                                    sec_rel_sub_bnr += (str(btn))
+                                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                                        sec_rel_sub_bnr += (str(btn))
                     if subTabName == 'Fab Locations':
                         if TreeParam.startswith("Sending"):
                             for btn in multi_buttons:
                                 if "ADD SENDING FAB" in str(btn):
-                                    sec_rel_sub_bnr += (str(btn))
+                                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                                        sec_rel_sub_bnr += (str(btn))
                         elif TreeParam.startswith("Receiving"):
                             for btn in multi_buttons:
                                 if "ADD RECEIVING FAB" in str(btn):
-                                    sec_rel_sub_bnr += (str(btn))
+                                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                                        sec_rel_sub_bnr += (str(btn))
                     elif TreeParam == "Fab Locations" and subTabName == "Equipment":
                         
                         sec_rel_sub_bnr += ""
@@ -2162,7 +2166,11 @@ def Related_Sub_Banner(
                     #         sec_rel_sub_bnr += (str(add_button))
                     else:
                         Trace.Write('elseeee11')
-                        sec_rel_sub_bnr += (str(add_button))
+                        if str(TabName) == 'Quotes':
+                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                                sec_rel_sub_bnr += (str(add_button))
+                        else:                                        
+                            sec_rel_sub_bnr += (str(add_button))
                     # else:
                     # 	Trace.Write("12345---- "+str(add_button))	
                     # 	sec_rel_sub_bnr += (str(add_button))
