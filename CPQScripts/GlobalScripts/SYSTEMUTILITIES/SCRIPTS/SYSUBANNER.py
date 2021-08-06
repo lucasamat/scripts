@@ -42,6 +42,7 @@ def Related_Sub_Banner(
     
     try:
         current_prod = Product.Name
+        Trace.Write('current_prod==='+str(current_prod))
     except:
         current_prod = "Sales"
     try:
