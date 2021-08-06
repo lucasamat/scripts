@@ -104,7 +104,7 @@ def Related_Sub_Banner(
                     dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
 
             # Binding button Id's based on Related list Table record id
-                
+                Trace.Write('len------'+str(len(dynamic_Button)))
                 if len(dynamic_Button) > 0:
                     Trace.Write('len------')
                     for btn in dynamic_Button:
