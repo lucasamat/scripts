@@ -144,7 +144,7 @@ class DropConstraint:
                         if foreignKey == 0:
                             Trace.Write('142-145---145555---'+str(self.ObjectName))
                             UQ_CONSTRAINT = Sql.GetFirst(
-                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
+                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE INFORMATION_SCHEMA.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
                                 + loop.OBJECTFIELD_APINAME
                                 + "' AND TABLE_NAME= '"
                                 + loop.OBJECT_APINAME
