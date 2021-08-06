@@ -107,75 +107,75 @@ def Related_Sub_Banner(
 
 
 
-    if str(ObjName) == "SYOBJC":
-        if page_details:
-            dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
-    else:
-        add_button = ""
-    # Binding button Id's based on Related list Table record id
-    
-    if len(dynamic_Button) > 0:
-        Trace.Write('len------')
-        for btn in dynamic_Button:
-            Trace.Write('btn-----')
-            if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
-                Trace.Write("dynamic_Button---"+str(btn.HTML_CONTENT))
-                if btn.RELATED_LIST_RECORD_ID:
-                    SYOBJH_ID = Sql.GetFirst("SELECT SYOBJH.SAPCPQ_ATTRIBUTE_NAME AS REC_ID,SYOBJR.NAME AS NAME FROM SYOBJR (NOLOCK) INNER JOIN SYOBJH (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{syobjr_rec_id}'".format(syobjr_rec_id = btn.RELATED_LIST_RECORD_ID))
-                if len(dynamic_Button) > 1:
-                    if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
-                        button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")
-                        add_button = ""
-                        if btn.RELATED_LIST_RECORD_ID:
-                            Trace.Write("Check SHP0")
-                            div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
-                            # add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
-                            if "div_id" in str(btn.HTML_CONTENT):
-                                Trace.Write("Check SHP1")
-                                add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id), div_id= str(div_id))
+    # if str(ObjName) == "SYOBJC":
+    #     if page_details:
+    #         dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
+    # else:
+    #     add_button = ""
+        # Binding button Id's based on Related list Table record id
+        
+        if len(dynamic_Button) > 0:
+            Trace.Write('len------')
+            for btn in dynamic_Button:
+                Trace.Write('btn-----')
+                if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
+                    Trace.Write("dynamic_Button---"+str(btn.HTML_CONTENT))
+                    if btn.RELATED_LIST_RECORD_ID:
+                        SYOBJH_ID = Sql.GetFirst("SELECT SYOBJH.SAPCPQ_ATTRIBUTE_NAME AS REC_ID,SYOBJR.NAME AS NAME FROM SYOBJR (NOLOCK) INNER JOIN SYOBJH (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID WHERE SYOBJR.SAPCPQ_ATTRIBUTE_NAME = '{syobjr_rec_id}'".format(syobjr_rec_id = btn.RELATED_LIST_RECORD_ID))
+                    if len(dynamic_Button) > 1:
+                        if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
+                            button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")
+                            add_button = ""
+                            if btn.RELATED_LIST_RECORD_ID:
+                                Trace.Write("Check SHP0")
+                                div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
+                                # add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
+                                if "div_id" in str(btn.HTML_CONTENT):
+                                    Trace.Write("Check SHP1")
+                                    add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id), div_id= str(div_id))
+                                else:
+                                    add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
                             else:
                                 add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
+                            Trace.Write("add_button"+str(add_button))
+                            multi_buttons.append(add_button)
+                            
                         else:
-                            add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
-                        Trace.Write("add_button"+str(add_button))
-                        multi_buttons.append(add_button)
-                        
-                    else:
-                        Trace.Write("Billing matrix 124--------")
-                        add_button = btn.HTML_CONTENT
-                        if btn.RELATED_LIST_RECORD_ID:
-                            div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
-                            if "div_id" in str(btn.HTML_CONTENT):
-                                add_button = add_button.format(div_id = div_id)
-                        multi_buttons.append(add_button)
-                        
-                else:					
-                    if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
-                        button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")						
-                        
-                        if btn.RELATED_LIST_RECORD_ID:
-                            div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
-                            if "div_id" in str(btn.HTML_CONTENT):
-                                add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id), div_id= str(div_id))
+                            Trace.Write("Billing matrix 124--------")
+                            add_button = btn.HTML_CONTENT
+                            if btn.RELATED_LIST_RECORD_ID:
+                                div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
+                                if "div_id" in str(btn.HTML_CONTENT):
+                                    add_button = add_button.format(div_id = div_id)
+                            multi_buttons.append(add_button)
+                            
+                    else:					
+                        if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
+                            button_id = str(btn.RELATED_LIST_RECORD_ID).replace("-","_")+"_"+str(SYOBJH_ID.REC_ID).replace("-","_")						
+                            
+                            if btn.RELATED_LIST_RECORD_ID:
+                                div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
+                                if "div_id" in str(btn.HTML_CONTENT):
+                                    add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id), div_id= str(div_id))
+                                else:
+                                    add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
                             else:
                                 add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
+                            
                         else:
-                            add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
-                        
-                    else:
-                        Trace.Write("Billing matrix 146-------")
-                        add_button = btn.HTML_CONTENT
-                        if btn.RELATED_LIST_RECORD_ID:
-                            div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
-                            if "div_id" in add_button:
-                                add_button = add_button.format(div_id = div_id)
-            else:
-                add_button = ""
-    else:
-        add_button = ""
+                            Trace.Write("Billing matrix 146-------")
+                            add_button = btn.HTML_CONTENT
+                            if btn.RELATED_LIST_RECORD_ID:
+                                div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
+                                if "div_id" in add_button:
+                                    add_button = add_button.format(div_id = div_id)
+                else:
+                    add_button = ""
+        else:
+            add_button = ""
 
-    Trace.Write("ADD+BUT_J "+str(add_button))
-    Trace.Write("Multi buttons--> "+str(multi_buttons))
+        Trace.Write("ADD+BUT_J "+str(add_button))
+        Trace.Write("Multi buttons--> "+str(multi_buttons))
             
             # Getting Dynamic buttons for secondary banner -  Ends
     
@@ -2073,6 +2073,9 @@ def Related_Sub_Banner(
                         Trace.Write("CHK_3")
                         if CurrentRecordId == "SYOBJR-98789" and TreeParam == "Fab Locations":
                             Trace.Write("No Button are required!!!")
+                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                                Trace.Write('add======')
+                                sec_rel_sub_bnr += (str(add_button))
                         else:	
                             sec_rel_sub_bnr += (str(add_button))
                         # sec_rel_sub_bnr += (
