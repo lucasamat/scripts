@@ -7564,7 +7564,8 @@ class SYLDRTLIST:
                     if ObjectName != "SAQIBP" :
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
-
+                if str(Action_permission.get("Edit")).upper() == "TRUE":
+                    Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'
                 if str(Action_permission.get("Delete")).upper() == "TRUE":
                     Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
 
