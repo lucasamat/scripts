@@ -31,6 +31,8 @@ def bannerdetails(Quoteid,active_tab_name):
         get_contract_rec_id = Sql.GetFirst("SELECT CONTRACT_RECORD_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_ID='" + str(reObj.group(1)) + "'")
         if get_contract_rec_id:
             contract_record_id = str(get_contract_rec_id.CONTRACT_RECORD_ID)
+            Quote.SetGlobal("contract_record_id",str(get_contract_rec_id.CONTRACT_RECORD_ID))
+            Log.Info("CRI:"+str(get_contract_rec_id.CONTRACT_RECORD_ID))
         Trace.Write("contract_record_id"+str(contract_record_id))
         ###ends
         Quoteid = SQLObj.QUOTE_ID
