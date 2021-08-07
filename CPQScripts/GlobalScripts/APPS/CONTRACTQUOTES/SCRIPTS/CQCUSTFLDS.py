@@ -32,22 +32,22 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	year3 = 0.00
 	year4 = 0.00
 	year5 = 0.00
-    dec1 = (float(saleprice)*yoy)/100
-    Trace.Write("dec1---"+str(dec1))
+	dec1 = (float(saleprice)*yoy)/100
+	Trace.Write("dec1---"+str(dec1))
 
-    if days > 365:
-        year2 = float(saleprice) - dec1
-        dec2 = (year2*yoy)/100
-        Trace.Write("dec2---"+str(dec2))
-    if days > 730:
-        year3 = year2 - dec2
-        dec3 = (year3*yoy)/100
-        Trace.Write("dec3---"+str(dec3))
-    if days > 1095:
-        year4 = year3 - dec3
-        dec4 = (year4*yoy)/100
-    if days > 1460:
-        year5 = year4 - dec4    
+	if days > 365:
+		year2 = float(saleprice) - dec1
+		dec2 = (year2*yoy)/100
+		Trace.Write("dec2---"+str(dec2))
+	if days > 730:
+		year3 = year2 - dec2
+		dec3 = (year3*yoy)/100
+		Trace.Write("dec3---"+str(dec3))
+	if days > 1095:
+		year4 = year3 - dec3
+		dec4 = (year4*yoy)/100
+	if days > 1460:
+		year5 = year4 - dec4    
 
 	ext_price = year1 + year2 + year3 + year4 + year5
 
@@ -110,6 +110,24 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	GROUP BY SAQICO.LINE_ITEM_ID, SAQICO.QUOTE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQICO.DISCOUNT)IQ
 	ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
 	WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
+	##Updating custom fields...
+	total_item_obj = SqlHelper.GetFirst("""SELECT 
+	SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
+	SUM(ISNULL(SALES_PRICE, 0)) as SALES_PRICE,
+	SUM(ISNULL(YEAR_OVER_YEAR, 0)) as YEAR_OVER_YEAR,
+	SUM(ISNULL(YEAR_1, 0)) as YEAR_1,
+	SUM(ISNULL(YEAR_2, 0)) as YEAR_2,
+	SUM(ISNULL(YEAR_3, 0)) as YEAR_3,
+	SUM(ISNULL(YEAR_4, 0)) as YEAR_4,
+	SUM(ISNULL(YEAR_5, 0)) as YEAR_5
+	FROM SAQITM (NOLOCK)
+	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
+	if total_item_obj is not None:
+		Quote.GetCustomField('SALE_PRICE').Content = str(total_item_obj.SALES_PRICE)
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
+		Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
+		Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)
+		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_item_obj.EXTENDED_PRICE)
 	pricefactor_obj = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}'".format(service_id))
 	if float(pricefactor_obj.FACTOR_PCTVAR) < discount:
 	   Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
