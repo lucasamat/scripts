@@ -2323,10 +2323,11 @@ class TreeView:
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
 									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
-									for tree in getpagename:                 
-										#where_string =  where_string 
-										Tree_Node = str(tree.TREE_RECORD_ID)
-									Subwhere_string += " AND TREE_RECORD_ID = '"+str(Tree_Node)+"'" 
+									if getpagename:
+										for tree in getpagename:                 
+											#where_string =  where_string 
+											Tree_Node = str(tree.TREE_RECORD_ID)
+										Subwhere_string += " AND TREE_RECORD_ID = '"+str(Tree_Node)+"'" 
 								elif str(NodeText) in ["Sending Equipment", "Receiving Equipment"]:
 									Quote.SetGlobal("Equipment",NodeText) 
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
