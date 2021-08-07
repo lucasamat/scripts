@@ -5034,15 +5034,15 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			# Insert Quote Items Covered Object - End
 
 		# Native Cart Items Insert - Start
-		grouped_items_obj = Sql.GetList("""SELECT TOP 1000 SAQITM.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
-		for grouped_item_obj in grouped_items_obj:			
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQITM.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
+		for quote_item_obj in quote_items_obj:			
 			#product_native_obj = ProductHelper.CreateProduct(str(grouped_item_obj.SERVICE_ID))
 			#product_native_obj.AddToQuote()
-			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(grouped_item_obj.SERVICE_ID)) )
+			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
 			if product_obj:
 				temp_product = Quote.AddItem('vc_config_cpq')
 				for product in temp_product:
-					product.PartNumber = str(grouped_item_obj.SERVICE_ID)
+					product.PartNumber = str(quote_item_obj.SERVICE_ID)
 					product.Description = product_obj.PRODUCT_NAME
 					product.QUOTE_ID.Value = self.contract_quote_id		
 					product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
