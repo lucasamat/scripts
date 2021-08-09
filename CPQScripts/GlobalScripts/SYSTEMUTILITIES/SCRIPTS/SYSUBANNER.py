@@ -2115,7 +2115,8 @@ def Related_Sub_Banner(
                     if sale_type == 'TOOL RELOCATION':
                         sec_rel_sub_bnr += ''
                     else:
-                        sec_rel_sub_bnr += (str(add_button))
+                        if quote_status.QUOTE_STATUS != 'APPROVED':
+                            sec_rel_sub_bnr += (str(add_button))
                         # sec_rel_sub_bnr += (
                         #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                         #     ')" class="btnconfig" data-target="" data-toggle="modal">ADD FROM LIST</button>'
@@ -2346,7 +2347,8 @@ def Related_Sub_Banner(
         sec_rel_sub_bnr += (add_button)
     if TreeParam == "Billing Matrix" and subTabName =="Details" and ObjName == "SAQTBP":
     # 	Trace.Write("button")
-         sec_rel_sub_bnr += (add_button)	
+        if quote_status.QUOTE_STATUS != 'APPROVED':
+            sec_rel_sub_bnr += (add_button)	
     if subTabName == 'Add On Products' and TreeParentParam == "Comprehensive Services":		
         sec_rel_sub_bnr += (
                 '<button class="btnconfig cust_def_btn" data-target="" data-toggle="modal" id="activate_btn" onclick="addon_products()">ACTIVATE</button>'
