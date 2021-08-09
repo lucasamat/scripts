@@ -250,6 +250,7 @@ class DropConstraint:
                             ErrorMsg = Message.GetErrorMessage(
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
+                            ErrorMsg='ErrorMsg'
                             #Output = ErrorMsg
                 # query_result = Sql.GetList(
                 #     "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
