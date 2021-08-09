@@ -2110,6 +2110,7 @@ def Related_Sub_Banner(
                 
 
                 elif CurrentRecordId == "SYOBJR-98800" and TreeParam != "Fab Locations":
+                    Trace.Write('98800=====')
                     sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                     if sale_type == 'TOOL RELOCATION':
                         sec_rel_sub_bnr += ''
