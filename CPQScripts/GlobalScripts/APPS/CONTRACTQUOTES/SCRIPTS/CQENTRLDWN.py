@@ -461,6 +461,7 @@ def Request_access_token():
 	)
 	return eval(response)
 def get_config_id():
+	newConfigurationid  =""
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
 	#Log.Info(response["access_token"])
@@ -742,11 +743,12 @@ try:
 			where_condition = SAQITMWhere.replace('A.','')
 			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 			#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-			Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
-			
-					
+							
 			Sql.RunQuery(UpdateEntitlement)
-			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+			if newConfigurationid and 'Z0016' in get_serviceid::
+				Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+				Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+			
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			if objectName == 'SAQTSE' and GetXMLsecField:
@@ -833,8 +835,8 @@ try:
 						Sql.RunQuery(UpdateEntitlement)
 				
 				elif 'Z0016' in get_serviceid:
-					cpsmatc_incr = 11
-					newConfigurationid	= get_config_id()
+					#cpsmatc_incr = 11
+					#newConfigurationid	= get_config_id()
 					where_condition = SAQITMWhere.replace('A.','')
 					fab_val = where_cond.split('AND ')
 					where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
@@ -1070,8 +1072,8 @@ try:
 					Sql.RunQuery(UpdateEntitlement)
 				
 			elif 'Z0016' in get_serviceid and objectName == 'SAQSCE':
-				cpsmatc_incr = 11
-				newConfigurationid	= get_config_id()
+				#cpsmatc_incr = 11
+				#newConfigurationid	= get_config_id()
 				where_condition = SAQITMWhere.replace('A.','')
 				fab_val = where_cond.split('AND ')
 				where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
