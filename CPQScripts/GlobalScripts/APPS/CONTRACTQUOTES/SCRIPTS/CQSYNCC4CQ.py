@@ -5,9 +5,10 @@
 #   __create_date :25-10-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import sys
+import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
@@ -434,7 +435,7 @@ class ContractQuoteC4CSync:
                 #inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
                 Log.Info('inseryservice_ent-----369--------'+str(tbrow))
                 #Sql.RunQuery(inseryservice_ent)
-                    """if PRODUCT_ATTRIBUTES is not None:
+                """if PRODUCT_ATTRIBUTES is not None:
                         Trace.Write("DType--"+DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC])
                         tbrow["ENTITLEMENT_TYPE"]=DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC]
                     tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()

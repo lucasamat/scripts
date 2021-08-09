@@ -13,7 +13,7 @@ Param = Param  # pylint: disable=E0602
 ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 # pylint: disable = import-error
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import clr

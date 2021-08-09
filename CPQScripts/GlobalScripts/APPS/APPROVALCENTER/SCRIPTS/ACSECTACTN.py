@@ -7,7 +7,7 @@
 #   __create_date :14-02-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 import sys
 import datetime

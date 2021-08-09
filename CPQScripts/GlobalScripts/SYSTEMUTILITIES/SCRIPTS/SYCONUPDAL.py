@@ -8,6 +8,7 @@
 # ==========================================================================================================================================
 
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
 Sql = SQL()
 Param = Param
@@ -44,7 +45,13 @@ class ConfigUpdateScript:
 		elif Param.CurrentTab == "Role":
 			self.current_tab_name = "Role"
 		elif Param.CurrentTab == "Currency":
-			self.current_tab_name = "Currency"				
+			self.current_tab_name = "Currency"
+		elif Param.CurrentTab == "Message":
+			self.current_tab_name = "Message"
+		elif Param.CurrentTab == "Error Log":
+			self.current_tab_name = "Error Log"	
+		elif Param.CurrentTab == "Variable":
+			self.current_tab_name = "Variable"		
 		else:
 			self.current_tab_name = "Contract"
 	def get_obj_name(self):

@@ -6,6 +6,7 @@
 #   __create_date : 06/04/2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ====================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 from datetime import datetime
 from SYDATABASE import SQL

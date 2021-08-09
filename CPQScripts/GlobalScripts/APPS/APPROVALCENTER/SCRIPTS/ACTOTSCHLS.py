@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 # [CPQ-COM] CATEGORY (AND SUBCATEGORY)
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 from datetime import datetime
 from SYDATABASE import SQL
 

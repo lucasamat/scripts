@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 # pylint: noqa: E501
 # pylint: disable=unused-variable
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace  # pylint: disable=E0602
 Webcom = Webcom  # pylint: disable=E0602
 Product = Product  # pylint: disable=E0602
@@ -57,7 +58,7 @@ def CommonTreeViewHTMLDetail(
 	auto_field = ""
 	date_field = []
 	primary_value = RECORD_ID
-	#Trace.Write("Recordid"+str(primary_value))
+	Trace.Write("Recordid"+str(primary_value))
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
@@ -73,7 +74,9 @@ def CommonTreeViewHTMLDetail(
 	action_visible_str = contract_quote_record_id = ""
 	queryStr = ""
 	add_style = ""
-	
+	if Product.GetGlobal("TreeParentLevel0") == 'Sending Equipment':
+		ObjectName = "SAQSSF"
+		SectionList = ["CD4AEEE6-54EC-4C7A-8103-F9D76843632B","A88CBAD1-1EC2-43A4-A953-FF100D9D89CF"]
 	Account_Id_Query = Sql.GetFirst("SELECT PARTY_ID, PARTY_NAME FROM SAQTIP (NOLOCK) WHERE QUOTE_INVOLVED_PARTY_RECORD_ID = '"+str(primary_value)+"'")
 	if Account_Id_Query:
 		Account_Id = Account_Id_Query.PARTY_ID
@@ -264,16 +267,12 @@ def CommonTreeViewHTMLDetail(
 	get_user_id = userId
 	#section level permissions start	
 	if ( ObjectName == "SYSECT" or ObjectName == "SYSEFL") and (crnt_prd_val == "SY"):		
-		QStr1 = (
-			"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
-			+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
-			+ " JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYSECT.PRIMARY_OBJECT_NAME = '"
-			+ str(ObjectName)
-			+ "' AND SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
+		#Below query is in the logic to remove duplicate if the user is in more than one profile
+		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT WHERE SYSECT.RECORD_ID IN (SELECT DISTINCT SECTION_RECORD_ID FROM SYPRSN (NOLOCK) JOIN USERS_PERMISSIONS (NOLOCK) up ON UP.PERMISSION_ID = SYPRSN.PROFILE_RECORD_ID WHERE SYPRSN.TAB_RECORD_ID = '' AND SYPRSN.VISIBLE = 'True' AND UP.USER_ID = '"
 			+ str(get_user_id)
-			+ "' "
-			+ " ORDER BY ABS(SYSECT.DISPLAY_ORDER)"
-		)
+			+ "') AND SYSECT.PRIMARY_OBJECT_NAME = '"
+			+ str(ObjectName)
+			+ "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 		# QStr1 = (
 		# 	"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 		# 	+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
@@ -386,6 +385,7 @@ def CommonTreeViewHTMLDetail(
 		# 	)
 		# )
 		data_obj = Sql.GetList(QuStr)
+		Trace.Write('388-----------')
 		API_NAMES = ",".join(str(data.API_NAME) for data in data_obj if data.DATA_TYPE != "DATE")
 
 		for data in data_obj:
@@ -411,9 +411,11 @@ def CommonTreeViewHTMLDetail(
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
 				else:					
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
-
-		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
-
+		Trace.Write("main container"+str(a))
+		if str(a)=="g4 F43725A0-056D-473B-BC90-0065CCCF9D13" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):
+			sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '" style ="display:none" >'
+		else:
+			sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
 		action_visible_obj = ""
 		SecEdiApp = ["SYSTEM ADMIN", "SALES"]
 		if current_prod not in SecEdiApp:
@@ -543,6 +545,7 @@ def CommonTreeViewHTMLDetail(
 			
 			sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"		
 		else:			
+			Trace.Write("astrl"+str(TreeParam))
 			if sec.SECTION_NAME =="BASIC INFORMATION" and TreeParentParam == "Field Dependencies":
 				'''sec_str += (
 					'<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
@@ -560,7 +563,8 @@ def CommonTreeViewHTMLDetail(
 					+ "</div> </label></div>"
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
-			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam == 'Z0007' or TreeParam == 'Z0007_AG'):	
+			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):	
+				Trace.Write("astrl2"+str(sec.SECTION_NAME))
 				sec_str += ("") 		
 			else:				
 				sec_str += (
@@ -578,8 +582,11 @@ def CommonTreeViewHTMLDetail(
 					+ str(editclick)
 					+ '">EDIT</a></li></ul></div></div>'
 				)'''
-
-		sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
+		Trace.Write("astrl3"+str(b))
+		if str(b) =="sec_F43725A0-056D-473B-BC90-0065CCCF9D13" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):
+			sec_str += '<div id="' + str(b) + '" class="collapse in" style ="display:none"> <table  class="wth100mrg8">'
+		else:
+			sec_str += '<div id="' + str(b) + '" class="collapse in"> <table  class="wth100mrg8">'
 		sec_str += auto_field
 					
 		query_value = Sql.GetFirst(
@@ -796,6 +803,7 @@ def CommonTreeViewHTMLDetail(
 						+ "' AND RELOCATION_TYPE LIKE '%RECEIVING%'"
 					)
 			elif ObjectName == "SAQITM":
+				Trace.Write("test74_J "+str(RECORD_ID))
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -810,6 +818,22 @@ def CommonTreeViewHTMLDetail(
 					+ " = '"
 					+ str(RECORD_ID) 
 					+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
+				)
+			elif ObjectName == "SAQICO":
+				RECORD_ID = primary_value
+				Trace.Write("line_item--quote_record_id--00--------"+str(RECORD_ID))
+				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				Trace.Write("line_item---quote_record_id-----"+str(quote_record_id))
+				script = (
+					"SELECT "
+					+ str(API_NAMES)
+					+ " FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) WHERE "
+					+ str(autoNumber)
+					+ " = '"
+					+ str(RECORD_ID)
+					+ "'"
 				)
 			else:	
 				Trace.Write("test746")		
@@ -836,7 +860,9 @@ def CommonTreeViewHTMLDetail(
 				"SELECT * FROM " + str(ObjectName) + " (NOLOCK) WHERE " + str(autoNumber) + " = '" + str(RECORD_ID) + "'"
 			)
 			Custom_obj = Sql.GetFirst(script)
-		if data_obj is not None:			
+		Trace.Write('862-----------')
+		if data_obj is not None:
+			Trace.Write('862----864-------')			
 			for val in data_obj:				
 				readonly = "readonly"
 				disable = "disabled"
@@ -877,7 +903,7 @@ def CommonTreeViewHTMLDetail(
 					except UnicodeEncodeError:
 						current_obj_value = current_obj_value
 					except:
-						Trace.Write("Error")
+						Trace.Write("Error--900")
 				if action_visible_str:
 					edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
 					
@@ -1448,7 +1474,8 @@ def CommonTreeViewHTMLDetail(
 								+ str(edit_warn_icon)
 								+ "</td>"
 							)
-				elif data_type == "CHECKBOX":					
+				elif data_type == "CHECKBOX":
+					Trace.Write('1472----------'+str(current_obj_value))					
 					if str(current_obj_value).upper() == "TRUE" or current_obj_value == "1":
 						sec_str += (
 							'<td><input id="'
@@ -1461,6 +1488,32 @@ def CommonTreeViewHTMLDetail(
 							+ disable
 							+ ' checked><span class="lbl"></span></td>'
 						)
+					elif str(ObjectName) == "USERS":
+						Trace.Write('1472----USERSA------'+str(current_obj_value))
+						if str(current_obj_value).upper() == "TRUE" or current_obj_value == "1":
+							sec_str += (
+								'<td><input id="'
+								+ str(current_obj_api_name)
+								+ '" type="'
+								+ str(data_type)
+								+ '" value="'
+								+ current_obj_value
+								+ '" class="custom" '
+								+ disable
+								+ ' checked><span class="lbl"></span></td>'
+							)
+						else:
+							sec_str += (
+								'<td><input id="'
+								+ str(current_obj_api_name)
+								+ '" type="'
+								+ str(data_type)
+								+ '" value="'
+								+ current_obj_value
+								+ '" class="custom" '
+								+ disable
+								+ '><span class="lbl"></span></td>'
+							)
 					else:
 						sec_str += (
 							'<td><input id="'
@@ -2023,17 +2076,17 @@ def CommonTreeViewHTMLDetail(
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
 		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID= 'Z0016_AG'")
 		if SAQTSVObj:
-			sec_str = ''
+			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		else:
 			sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 	if RECORD_ID and ObjectName == 'SAQTBP':
 		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
 						FROM SAQTBP (NOLOCK) 
 						WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
-		if date_diff_obj:
-			if date_diff_obj.IS_CHANGED:
-				notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
-				sec_str = notification+sec_str
+		# if date_diff_obj:
+		# 	if date_diff_obj.IS_CHANGED:
+		# 		notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
+		# 		sec_str = notification+sec_str
 	
 	# To Hide Add On Products Subtab
 	try:
@@ -2260,7 +2313,7 @@ def EntitlementTreeViewHTMLDetail(
 	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Other Products'):
 		TreeSuperParentParam = ProductPartnumber = TreeTopSuperParentParam
 		Trace.Write('comes1'+str(ProductPartnumber))
-	GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
+	#GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
 	if EntitlementType == "EQUIPMENT":
 		### add on product entitilement starts		
 		if str(TreeParentParam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
@@ -2354,84 +2407,96 @@ def EntitlementTreeViewHTMLDetail(
 		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 		join = ''		
 	OBJDObjd = Sql.GetList("select * from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "'")
-	
-	if TableObj is None and (EntitlementType == "EQUIPMENT"):
-		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-		Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
-	else:		
-		if TableObj:
-			cpsConfigID = TableObj.CPS_CONFIGURATION_ID
-		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-		Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
+	if EntitlementType != "SENDING_LEVEL":
+		if TableObj is None and (EntitlementType == "EQUIPMENT"):
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+			Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
+		else:		
+			if TableObj:
+				cpsConfigID = TableObj.CPS_CONFIGURATION_ID
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
+			Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
-	attributesdisallowedlst = []
-	attributeReadonlylst = attributes_disallowed_list = []
-	attributeEditlst = list_of_tabs = []
-	attributevalues = {}
-	get_lastsection_val = attrcode = disable_edit = ""
-	# where = ""
-	Trace.Write("Fullresponse_J "+str(Fullresponse))
-	for rootattribute, rootvalue in Fullresponse.items():
-		if rootattribute == "rootItem":
-			for Productattribute, Productvalue in rootvalue.items():
-				if Productattribute == "characteristics":
-					for prdvalue in Productvalue:
-						if prdvalue["visible"] == "false":
-							attributesdisallowedlst.append(prdvalue["id"])
-						if prdvalue["readOnly"] == "true":
-							attributeReadonlylst.append(prdvalue["id"])
-						if prdvalue["readOnly"] == "false":
-							attributeEditlst.append(prdvalue["id"])
-						for attribute in prdvalue["values"]:
-							attributevalues[str(prdvalue["id"])] = attribute["value"]
-	Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-	Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
-	Trace.Write('attributevalues'+str(attributevalues))
+		attributesdisallowedlst = []
+		attributeReadonlylst = attributes_disallowed_list = []
+		attributeEditlst = list_of_tabs = []
+		attributevalues = {}
+		attributedefaultvalue = []
+		dropdowndisallowlist = []
+		dropdownallowlist = []
+		get_lastsection_val = attrcode = disable_edit = ""
+		# where = ""
+		Trace.Write("Fullresponse_J "+str(Fullresponse))
+		for rootattribute, rootvalue in Fullresponse.items():
+			if rootattribute == "rootItem":
+				for Productattribute, Productvalue in rootvalue.items():
+					if Productattribute == "characteristics":
+						for prdvalue in Productvalue:
+							if prdvalue["visible"] == "false":
+								attributesdisallowedlst.append(prdvalue["id"])
+							if prdvalue["readOnly"] == "true":
+								attributeReadonlylst.append(prdvalue["id"])
+							if prdvalue["readOnly"] == "false":
+								attributeEditlst.append(prdvalue["id"])
+							if prdvalue["possibleValues"]:
+								for i in prdvalue["possibleValues"]:
+									if i['selectable'] == 'false' and 'valueLow' in i.keys():
+										dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+									# else:
+									# 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+							for attribute in prdvalue["values"]:
+								attributevalues[str(prdvalue["id"])] = attribute["value"]
+								if attribute["author"] in ('User','Default'):
+									attributedefaultvalue.append(prdvalue["id"])
+		#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
+		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
+		Trace.Write('attributevalues'+str(attributevalues))
+		Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
 
 
-	product_obj = Sql.GetFirst("""SELECT 
-								MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
-							FROM PRODUCTS PDS 
-							INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
-							WHERE SYSTEM_ID ='{SystemId}' 
-							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber)))
-	
-	product_tabs_obj = Sql.GetList("""SELECT 
-											TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
-										FROM TAB_PRODUCTS
-										JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
-										WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
-										ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
-	
-	product_attributes_obj = Sql.GetList("""SELECT TOP 1000 PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE, 
-												TAB_PRODUCTS.TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE, ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,PRODUCT_ATTRIBUTES.LABEL AS LABEL, ATTRIBUTE_DEFN.SYSTEM_ID AS SYSTEM_ID, ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+		product_obj = Sql.GetFirst("""SELECT 
+									MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+								FROM PRODUCTS PDS 
+								INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+								WHERE SYSTEM_ID ='{SystemId}' and PRVS.SAPKBVersion = '{kb_version}'
+								GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
+		
+		product_tabs_obj = Sql.GetList("""SELECT 
+												TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
 											FROM TAB_PRODUCTS
-											LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
-											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
-											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
-											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
-											 
-											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
+											JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
+											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
 											ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
-	tabwise_product_attributes = {}
-	#overall_attribute_list = []	
-	if product_attributes_obj:
-		for product_attribute_obj in product_attributes_obj:
-			overall_attribute ={}
-			attr_detail = {'attribute_name':str(product_attribute_obj.STANDARD_ATTRIBUTE_NAME), 
-						'attribute_label':str(product_attribute_obj.LABEL), 
-						'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
-						'attribute_dtype':str(product_attribute_obj.ATT_DISPLAY_DESC),
-						'attribute_code':str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)
-						
-						}
-			# overall_attribute[str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)] = str(product_attribute_obj.SYSTEM_ID)
-			# overall_attribute_list.append(overall_attribute)
-			if product_attribute_obj.TAB_PROD_ID in tabwise_product_attributes:
-				tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
-			else:
-				tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-	Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
+		
+		product_attributes_obj = Sql.GetList("""SELECT TOP 1000 PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE, 
+													TAB_PRODUCTS.TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE, ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,PRODUCT_ATTRIBUTES.LABEL AS LABEL, ATTRIBUTE_DEFN.SYSTEM_ID AS SYSTEM_ID, ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
+												ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
+		tabwise_product_attributes = {}
+		#overall_attribute_list = []	
+		if product_attributes_obj:
+			for product_attribute_obj in product_attributes_obj:
+				overall_attribute ={}
+				attr_detail = {'attribute_name':str(product_attribute_obj.STANDARD_ATTRIBUTE_NAME), 
+							'attribute_label':str(product_attribute_obj.LABEL), 
+							'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
+							'attribute_dtype':str(product_attribute_obj.ATT_DISPLAY_DESC),
+							'attribute_code':str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)
+							
+							}
+				# overall_attribute[str(product_attribute_obj.STANDARD_ATTRIBUTE_CODE)] = str(product_attribute_obj.SYSTEM_ID)
+				# overall_attribute_list.append(overall_attribute)
+				if product_attribute_obj.TAB_PROD_ID in tabwise_product_attributes:
+					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
+				else:
+					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
+		Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 	
 	#Trace.Write('overall_attribute_list'+str(overall_attribute_list))
 
@@ -2445,30 +2510,31 @@ def EntitlementTreeViewHTMLDetail(
 
 	# attr_dict = {}
 	# ServiceContainer = Product.GetContainerByName("Services")
-	sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
-	multi_select_attr_list = {}
-	getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
-	if getregion:
-		getregionval = getregion.REGION
-		
-	GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid))
+		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
+		multi_select_attr_list = {}
+		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
+		if getregion:
+			getregionval = getregion.REGION
+			
+		GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid))
 
-	if GetCPSVersion:
-		if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
-			sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
+		if GetCPSVersion :
+			if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
+				sec_str += '<div id="Headerbnr" class="mart_col_back disp_blk"><div class="col-md-12" id="PageAlert_not"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down"></i><i class="pull-right fa fa-chevron-up"></i></div><div id="Alert_notifcatio6" class="col-md-12 alert-notification brdr collapse in"><div class="col-md-12 alert-info"><label title=" Information : The Knowledge Base of the VC Characteristics has been updated in CPS."><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> Information : The Knowledge Base of the VC Characteristics has been updated in CPS.</label></div></div></div></div>'
+			else:
+				sec_str += ''
 		else:
-			sec_str += ''
-	else:
-		Trace.Write("GETCPS VERSION EMPTY!")	
-	
-	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+			Trace.Write("GETCPS VERSION EMPTY!")	
+		
+		#desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+		desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 
-	
-	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
-	date_field = []
-	
-	insertservice = ""
-	Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
+		#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+		attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+		date_field = []
+		
+		insertservice = ""
+		Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
 	if TableObj is None and (EntitlementType == "EQUIPMENT"): 
 		
 		getnameentallowed = []
@@ -2508,7 +2574,7 @@ def EntitlementTreeViewHTMLDetail(
 							Section_id = sysectObj.RECORD_ID
 							Section_desc = sysectObj.SECTION_DESC.split('_')
 							Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
-				add_style =  ""
+				add_style =  add_style_color = ""
 				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
 				for key, invs in enumerate(list(desc_list)):
 					invs = str(invs).strip()
@@ -2544,18 +2610,25 @@ def EntitlementTreeViewHTMLDetail(
 						Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
 						Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
 						if attrSysId in attributesdisallowedlst:
-							add_style = "display:none"
+							if attrSysId in attributedefaultvalue:
+								add_style = "display:none;color:#1B78D2"
+							else:
+								add_style = "display:none;"
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							add_style = ""
-						
+						Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
+						# if attrSysId in attributedefaultvalue:
+						# 	add_style_color = ";color: red"
+						# else:
+						# 	add_style_color = ""
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
-							edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
 							
 						else:
 							disable_edit = ''
-							edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						Trace.Write('attrValueSysId'+str(attrValueSysId))
 						if DType == 'Check Box' and attrValueSysId is None:
@@ -2590,20 +2663,20 @@ def EntitlementTreeViewHTMLDetail(
 							Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
 							#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 							STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+							, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+							, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+							, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+							, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+							FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+							INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+							LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+							LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+							LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+							LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+							WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 							VAR1 = sec_str1 = selected_option = ""
 							if STDVALUES:
 								if attributevalues.get(attrSysId) is not None:
@@ -2615,10 +2688,14 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 									selected_option = ' title="Select" '
 								VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 								for value in STDVALUES:
+									if value.SYSTEM_ID in dropdowndisallowlist:
+										disallow_style = "style = 'display:none'"
+									else:	
+										disallow_style = ""
 									if str(selected_option)=='selected':
 										selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 									VAR1 += (
-										'<option id="'+str(value.SYSTEM_ID)+'"  value = "'
+										'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
 										+ '"'+str(select_option)+'>'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -2636,26 +2713,31 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 								#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 							#sec_str += "</select></td>"
 						elif DType == "Check Box":
-							Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId))
+							multi_select_attr_list[attrSysId] = ""
+							Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId)+'---'+str(multi_select_attr_list))
 							#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 							STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+							, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+							, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+							, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+							, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+							FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+							INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+							LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+							LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+							LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+							LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+							WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 							VAR1 = sec_str1 = ""
 							if STDVALUES:
 								for value in STDVALUES:
+									if value.SYSTEM_ID in dropdowndisallowlist:
+										disallow_style = "style = 'display:none'"
+									else:	
+										disallow_style = ""
 									#if attrValue == value.STANDARD_ATTRIBUTE_VALUE:
 										#Trace.Write("SYSTEM_ID"+str(value.SYSTEM_ID))
 										#get_code = Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '{sys_id}' ".format(sys_id = str(value.SYSTEM_ID) )  )
@@ -2663,7 +2745,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 										#getnameentallowed.append(value.SYSTEM_ID)
 										#Trace.Write('valueeeee----'+str(getnameentallowed))
 									VAR1 += (
-										'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
+										'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 										+ '">'
 										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -2717,10 +2799,10 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 							new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 						else:
 							new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-						new_value_dicta["FACTOR CURRENCY"] = ""
+						#new_value_dicta["FACTOR CURRENCY"] = ""
 						new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
-						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
-						new_value_dicta["DATA TYPE"] = ""
+						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
+						#new_value_dicta["DATA TYPE"] = ""
 						new_value_dicta["CALCULATION FACTOR"] = ""
 						if new_value_dicta:
 							date_boot_field.append(new_value_dicta)
@@ -2735,7 +2817,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 				getdividbtn = '#sc_'+Section_id+' #btn_ent .sec_edit_sty_btn'
 				getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dict_new-2190--',dict_new);}catch{console.log('')}")
 				dbl_clk_function += (
-					"try { var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value---',this.value);localStorage.setItem('EDITENT_SEC','EDIT'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('.sec_edit_sty_btn').css('display','block');$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(getdivid)+"').css('display','block');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow ').addClass('light_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('.MultiCheckBox').css('pointer-events','auto');var getmanualip = $('#ADDL_PERF_GUARANTEE_91_1').find(':selected').text();if(getmanualip.toUpperCase() == 'MANUAL INPUT'){ $('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('remove_yellow ').addClass('light_yellow');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeClass('remove_yellow ').addClass('light_yellow');}$('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
+					"try { var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value---',this.value);localStorage.setItem('EDITENT_SEC','EDIT'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('.sec_edit_sty_btn').css('display','block');$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(getdivid)+"').css('display','block');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow ').addClass('light_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('"+str(table_ids)+" .MultiCheckBox').css('pointer-events','auto');var getmanualip = $('#ADDL_PERF_GUARANTEE_91_1').find(':selected').text();if(getmanualip.toUpperCase() == 'MANUAL INPUT'){ $('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('remove_yellow ').addClass('light_yellow');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeClass('remove_yellow ').addClass('light_yellow');}$('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
 				)
 				'''dbl_clk_function += (
 					"try {var getentedict = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+" tbody  tr td input').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('"+str(table_ids)+" .disable_edit').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');});}catch {console.log('error---')}"
@@ -2796,7 +2878,9 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 			totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
 			Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
 	elif EntitlementType == "SENDING_LEVEL":
-		getnameentallowed = multi_select_attr_list = []
+		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
+		multi_select_attr_list = {}
+		getnameentallowed = []
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		#sec_str = "Entitlements are not applicable at this level"
@@ -2809,6 +2893,11 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 		getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
 		GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 		inserted_value_list = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
+		for val in GetXMLsecField:
+			if val.IS_DEFAULT == '1':
+
+				attributedefaultvalue = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
+		Trace.Write('attributedefaultvalue--'+str(attributedefaultvalue))
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
@@ -2820,8 +2909,9 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 		getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 		if str(TreeParentParam).upper() == "ADD-ON PRODUCTS":
 			TreeSuperParentParam = ""
+		Trace.Write('TreeParam----'+str(TreeParam)+'--'+str(ProductPartnumber))
 		if TreeParam.upper() == ProductPartnumber or TreeParentParam.upper() == ProductPartnumber or TreeSuperParentParam == ProductPartnumber:	
-			#Trace.Write("@2756------->"+str(TreeParentParam))
+			Trace.Write("@2756------->"+str(TreeParentParam))
 			'''if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.GetFirst("SELECT PLATFORM, WAFER_SIZE FROM SAQSCO WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{}'".format(RECORD_ID))
@@ -2973,20 +3063,20 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 						attribute_code = attribute['attribute_code']
 						#Trace.Write('attrSysId---looping0507--'+str(attrSysId))
 						STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+						A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+						, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL,V.SYSTEM_ID , V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+						, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL,V.SYSTEM_ID , V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+						, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+						, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+						FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+						INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+						LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+						LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+						LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+						LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+						WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 						#STDVALUES =  Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES  where  STANDARD_ATTRIBUTE_CODE = {sys_id} ".format(sys_id = attribute_code)  )
 						if STDVALUES:
 							attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
@@ -2997,19 +3087,25 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 						DType = attribute['attribute_dtype']
 						Trace.Write("attrValue_else_j "+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
-							
-							add_style = "display:none"
+							if attrSysId in attributedefaultvalue:
+								add_style = "display:none;color:#1B78D2"
+							else:
+								add_style = ""
 							attributes_disallowed_list.append(attrSysId)
 						else:
 							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
-							add_style = ""	
+							add_style = ""
+						if attrSysId in attributedefaultvalue:
+							Trace.Write("add_style----3077----- "+str(attrSysId))
+							add_style = "color:#1B78D2"
+						Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
-							edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
 							
 						else:
 							disable_edit = ''
-							edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
+							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 					
 						disp_val = ""
@@ -3018,7 +3114,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 						
 						#userselectedvalue = [val.ENTITLEMENT_DESCRIPTION for val in GetXMLsecField if GetXMLsecField]
 						sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
-						
+						#Trace.Write("inserted_value_list--"+str(inserted_value_list))
 						if GetXMLsecField and attrSysId in inserted_value_list:
 							# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 							# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
@@ -3029,25 +3125,26 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 								# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 								#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 								#Trace.Write("dtype-----before if"+str(DType))
+								
 								if DType == "Drop Down" :
 									
 									
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+									, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+									, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+									, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+									FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+									INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+									LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+									LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
 										VAR1 = sec_str1 = ""
 										selected_option = "Select"
@@ -3057,24 +3154,44 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 											default = 'selected'
 										VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 										for value in STDVALUES:
-											Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-											if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
-												selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
-												VAR1 += (
+											if value.SYSTEM_ID in dropdowndisallowlist:
+												disallow_style = "style = 'display:none'"
+											else:	
+												disallow_style = ""
+											try:
+												#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+												if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
+													selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
+													VAR1 += (
 														'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
 														+ '" selected>'
 														+ str(val.ENTITLEMENT_DISPLAY_VALUE)
 														+ "</option>"
-												)
-											else:
-												VAR1 += (
-													'<option  id="'+str(attrSysId)+'" value = "'
-													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-													+ '">'
-													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-													+ "</option>"
-												)
+													)
+												else:
+													VAR1 += (
+														'<option '
+														+ str(disallow_style)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "'
+														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														+ '">'
+														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														+ "</option>"
+													)
+											except:
+												if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
+													selected_option = val.ENTITLEMENT_DISPLAY_VALUE
+													VAR1 += (
+														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
+													)
+												else:
+													VAR1 += (
+														'<option '
+														+ str(disallow_style)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
+													)
+
 										sec_str1 += (
 										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 										+ str(attrSysId)
@@ -3087,15 +3204,15 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 										
 										#Trace.Write("curr = "+str(curr))
 										
-										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
+										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
-										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
-										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and val.ENTITLEMENT_DISPLAY_VALUE== 'Included':
-											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										else:
 											sec_str_imt += ""
@@ -3109,20 +3226,20 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 
 								elif DType == "Check Box" :
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL,V.SYSTEM_ID, V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+									, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL,V.SYSTEM_ID, V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+									, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+									, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+									FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+									INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+									LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+									LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
 									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
 										try:
@@ -3142,6 +3259,10 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 										Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
 										VAR1 = sec_str1 = selected_option = ""
 										for value in STDVALUES:
+											if value.SYSTEM_ID in dropdowndisallowlist:
+												disallow_style = "style = 'display:none'"
+											else:	
+												disallow_style = ""
 											Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
 											try:
 												if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float'):
@@ -3167,7 +3288,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() not in value_code :
 													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
-														'<option id="'+str(value.SYSTEM_ID)+'" value = "'
+														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														+ '">'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3189,7 +3310,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() != value_code :
 													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
-														'<option id="'+str(value.SYSTEM_ID)+'" value = "'
+														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														+ '">'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3251,25 +3372,31 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 											)
 										#cost_impact  = val.ENTITLEMENT_COST_IMPACT
 										try:
-											#Trace.Write("@@3087")
+											#Trace.Write("@@3087"+str(attrSysId))
 											if val.ENTITLEMENT_COST_IMPACT:
-												#Trace.Write("@@3089")
-												sec_str_imt += str("{:,}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+												#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
+												#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+												sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 												
-											else:
-												#Trace.Write("@@3093")
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
+											# else:
+											# 	#Trace.Write("@@3093")
+											# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+											# 	sec_str_imt += 
 												
 										except Exception, e:
-											Trace.Write(str(e)+'error1111')
+											Trace.Write(str(e)+'error1111'+str(attrSysId))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 										#price_impact = val.ENTITLEMENT_PRICE_IMPACT
 										try:
 											if val.ENTITLEMENT_PRICE_IMPACT:
-												sec_str_primp += str("{:,}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-											else:
-												sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
+												#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+												sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
+											# else:
+											# 	Trace.Write("else price")
+											# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+											# 	sec_str_primp += ""
 										except Exception, e:
+											sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
 											
 										#calc_factor = val.CALCULATION_FACTOR
@@ -3321,37 +3448,93 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
 								Trace.Write("@3323-----"+str(sec_str_imt))
-								new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
+								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
-								new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
-								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr title='"+str(sec_str_primp)+"'>"+str(sec_str_primp)+"</abbr>")
+								#new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
+								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title='"+str(sec_str_primp)+"'>"+str(sec_str_primp)+"</abbr>")+str(edit_pencil_icon)
 								new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")
 						
 						
 						else:
+							attributesdisallowedlst.append(attrSysId)
+							add_style = "display:none"
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
-							if attrSysId in attributesdisallowedlst:						
-								add_style = "display:none"
-							else:
-								add_style = ""
+							# if attrSysId in attributesdisallowedlst:						
+							# 	add_style = "display:none"
+							# else:
+							# 	add_style = ""
+							if DType == "Drop Down":
+								#Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
+								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+
+									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+
+									, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+									, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+									, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+									FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+									INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+									LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+									LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+								VAR1 = sec_str1 = selected_option = ""
+								if STDVALUES:
+									if attributevalues.get(attrSysId) is not None:
+										select_option = 'selected'
+										default = ''
+									else:
+										select_option = ""
+										default = 'selected'
+										selected_option = ' title="Select" '
+									VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
+									for value in STDVALUES:
+										if value.SYSTEM_ID in dropdowndisallowlist:
+											disallow_style = "style = 'display:none'"
+										else:	
+											disallow_style = ""
+										if str(selected_option)=='selected':
+											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
+										VAR1 += (
+											'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
+											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
+											+ '"'+str(select_option)+'>'
+											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+											+ "</option>"
+										)
+								sec_str1 += (
+									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  data-content ="'
+									+ str(attrSysId)
+									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+									+ str(VAR1)
+									+ "</select>"
+								)
+									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
+								#sec_str += "</select></td>"
+						
 							if DType == "Check Box":
 								#Trace.Write('attrSysId--2324---'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
- A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+								A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+								, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
- FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-  INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-  LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-  LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-  LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-  LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+								, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+								, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+								, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+								FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+								INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+								LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+								LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+								LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+								LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+								WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 								VAR1 = sec_str1 = ""
 								if STDVALUES:
 									for value in STDVALUES:
@@ -3368,7 +3551,7 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" class="form-control" onchange="editent_bt(this)" disabled>'
+									+ '" class="form-control" onchange="editent_bt(this)" >'
 									+ str(VAR1)
 									+ "</select>"
 								)
@@ -3377,11 +3560,11 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
 								sec_str1 += (
-									'<input class="form-control '+str(disable_edit)+'" id = "'
+									'<input class="form-control '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onclick="editent_bt(this)" disabled>'
+									+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onclick="editent_bt(this)" >'
 									+ "</input>"
 								)
 							
@@ -3391,12 +3574,14 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-							new_value_dicta["FACTOR CURRENCY"] = ""
+							#new_value_dicta["FACTOR CURRENCY"] = ""
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
-							new_value_dicta["DATA TYPE"] = ""
+							#new_value_dicta["DATA TYPE"] = ""
 							new_value_dicta["CALCULATION FACTOR"] = ""	
+						Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 						totaldisallowlist = [item for item in attributesdisallowedlst]
+
 						#getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
 						#Trace.Write("check all-----"+str(attrLabel)+"userselectedvalue"+str(userselectedvalue)+str(totaldisallowlist)+str(getnameentallowed))
 						# if  str(attrLabel) not in userselectedvalue and len(userselectedvalue) > 0:							
@@ -3488,17 +3673,21 @@ WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER
 					dbl_clk_function = ""
 				else:
 					#dbl_clk_function += ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  $(this).find('td:nth-child(3) select').children(':selected').attr('id');});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2818--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
-					dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('.MultiCheckBox').css('pointer-events','auto');$('"+str(table_ids)+" tbody tr:visible').each(function () {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val()+'||'+getcostimpact+'||'+getpriceimpact;});var arr = [];$('"+str(table_ids)+" tbody tr:visible').each(function () {if ($(this).find('td:nth-child(3) input') && !($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') ){var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val()+'||'+getcostimpact+'||'+getpriceimpact;}else if ($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();$(this).find('.mulinput:checked').each(function () {arr.push($(this).val());console.log('arr',arr) });dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  arr+'||'+getcostimpact+'||'+getpriceimpact;};});console.log('dblclk_dict_new-28002--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch(e){console.log('error---12',e)}")
+					dbl_clk_function +=   ("try{var dict_new = {};localStorage.setItem('editfirst','true');$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { localStorage.setItem('AddNew','false');$('"+str(table_ids)+" tbody tr:visible').each(function () {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val()+'||'+getcostimpact+'||'+getpriceimpact;});var arr = [];$('"+str(table_ids)+" tbody tr:visible').each(function () {if ($(this).find('td:nth-child(3) input') && !($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') ){var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val()+'||'+getcostimpact+'||'+getpriceimpact;}else if ($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();$(this).find('.mulinput:checked').each(function () {arr.push($(this).val());console.log('arr',arr) });dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  arr+'||'+getcostimpact+'||'+getpriceimpact;};});console.log('dblclk_dict_new-28002--',dict_new,'--',"+str(dropdowndisallowlist)+");localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch(e){console.log('error---12',e)}")
 					#dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dblclk_dict_new-2800--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch{console.log('')}")
 					dbl_clk_function += (
-						"try { $('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value--2300-',this.value);localStorage.setItem('EDITENT_SEC','EDIT');$('"+str(getdivid)+"').css('display','block');$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow').addClass('light_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(7) input').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(table_ids)+"  tbody tr td:nth-child(7) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(8) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(6) input').attr('disabled', 'disabled');$('#T2_LABOR_TYPE_calc').removeAttr('disabled');$('#T3_LABOR_TYPE_calc').removeAttr('disabled');$('#LABOR_TYPE_calc').removeAttr('disabled');$('#T0_T1_LABOR_TYPE_calc').removeAttr('disabled');$('"+str(table_ids)+" tbody tr td:nth-child(8) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');var testperf = $('#ADDL_PERF_GUARANTEE_91_1').val();console.log('testperf--1---',testperf);if(testperf != undefined && testperf != ''){ if(testperf.toUpperCase() == 'MANUAL INPUT'){console.log('manual input val on donble click---');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');}else{$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('light_yellow')};};$('#ADDL_PERF_GUARANTEE_91_1_dt').attr('disabled', 'disabled');$('#ADDL_PERF_GUARANTEE_91_1_calc').attr('disabled', 'disabled');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');console.log('manual input----');var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
+						"try {var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {localStorage.setItem('AddNew','false');if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value--2300-',this.value);localStorage.setItem('EDITENT_SEC','EDIT');$('"+str(getdivid)+"').css('display','block');$('"+str(getdividbtn)+"').css('display','block');$('"+str(table_ids)+" .MultiCheckBox').css('pointer-events','auto');$('#entsave').css('display','block');$('#entcancel').css('display','block'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow').addClass('light_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(7) input').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(table_ids)+"  tbody tr td:nth-child(7) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(8) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(6) input').attr('disabled', 'disabled');$('#T2_LABOR_TYPE_calc').removeAttr('disabled');$('#T3_LABOR_TYPE_calc').removeAttr('disabled');$('#LABOR_TYPE_calc').removeAttr('disabled');$('#T0_T1_LABOR_TYPE_calc').removeAttr('disabled');$('"+str(table_ids)+" tbody tr td:nth-child(8) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');var testperf = $('#ADDL_PERF_GUARANTEE_91_1').val();console.log('testperf--1---',testperf);if(testperf != undefined && testperf != ''){ if(testperf.toUpperCase() == 'MANUAL INPUT'){console.log('manual input val on donble click---');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');}else{$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('light_yellow')};};$('#ADDL_PERF_GUARANTEE_91_1_dt').attr('disabled', 'disabled');$('#ADDL_PERF_GUARANTEE_91_1_calc').attr('disabled', 'disabled');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');console.log('manual input----');var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
 					)
 				Trace.Write('dbl_clk_function---'+str(dbl_clk_function))
 				'''dbl_clk_function += (
 					"try {var getentedict = [];$('"+str(table_ids)+"').on('click-row.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#AGS_CON_DAY').prop('disabled', true);$('select').on('focus', function () { var previousval = this.value;console.log('previous1---',previousval);localStorage.setItem('previousval', previousval);}).change(function() {var entchanged = this.value;console.log('previous--previous-----',entchanged);var getatbleid =  $(this).closest('table').attr('id');localStorage.setItem('getatbleid', getatbleid);console.log('getatbleid----',getatbleid);var getseltabledesc = this.id;console.log('getseltableid---',getseltabledesc);var previousval = localStorage.getItem('previousval');var concate_data = getatbleid +'='+previousval+'='+getseltabledesc+'='+entchanged;if(!getentedict.includes(concate_data)){getentedict.push(concate_data)};console.log('getentedict---',getentedict);getentedict = JSON.stringify(getentedict);localStorage.setItem('getentedict', getentedict);localStorage.setItem('previousval', '');});});}catch {console.log('error---')}"
 				)'''
 			
-	
+	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+	if quote_status.QUOTE_STATUS == "APPROVED":
+		Trace.Write('dbl_click123====')
+		dbl_clk_function = ""
+
 		
 	date_field = ""
 	new_value_dict = ""
@@ -3662,10 +3851,11 @@ def ContractEntitlementTreeViewHTMLDetail(
 	else:
 		Trace.Write("GETCPS VERSION EMPTY!")'''	
 
-	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
-
+	#desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+	desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 	
-	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+	#attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+	attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
 	date_field = []
 	getnameentallowed = []
 	insertservice = ""
@@ -3680,7 +3870,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 				for tab in tabs:
 					list_of_tabs.append(tab.Name)
 					sysectObj = Sql.GetFirst(
-						"SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(tab.Name) + "'"
+						"SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(tab.Name) + "'  "
 					)
 					Section_id = sysectObj.RECORD_ID
 					Section_desc = sysectObj.SECTION_DESC
@@ -4018,9 +4208,9 @@ def ContractEntitlementTreeViewHTMLDetail(
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
-							new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
+							#new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= sec_str_imt
-							new_value_dicta["DATA TYPE"] = sec_str_dt
+							#new_value_dicta["DATA TYPE"] = sec_str_dt
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= sec_str_primp
 							new_value_dicta["CALCULATION FACTOR"] = sec_str_cf
 					totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
@@ -4079,9 +4269,9 @@ def ContractEntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 						else:
 							new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-						new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
+						#new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
 						new_value_dicta["ENTITLEMENT COST IMPACT"]= sec_str_imt
-						new_value_dicta["DATA TYPE"] = sec_str_dt
+						#new_value_dicta["DATA TYPE"] = sec_str_dt
 						new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 						new_value_dicta["CALCULATION FACTOR"] = sec_str_cf
 					if new_value_dicta:

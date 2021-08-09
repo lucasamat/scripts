@@ -9,7 +9,7 @@
 # ====================================================================================================
 
 import datetime
-
+#import Webcom.Configurator.Scripting.Test.TestProduct
 
 class SQL:
     """Model to handle custom table transactions."""
@@ -92,7 +92,8 @@ class SQL:
                 row["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
                 row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
                 row["CpqTableEntryDateModified"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-                row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
+                #row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
+                row["ADDUSR_RECORD_ID"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
             else:
                 row["CpqTableEntryId"] = tableInfo.TableDataRows.Item[rows].CpqTableEntryId
                 row["CpqTableEntryModifiedBy"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
@@ -142,7 +143,7 @@ class SQL:
         QueryStatement = str(query)
         QueryStatement = QueryStatement.replace("'", "''")
         try:
-            # Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : " + query)
+            Trace.Write("SYDATABASE : RunQuery : RUNNING QUERY : " + query)
             query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(QueryStatement) + "'")
             return query_result
         except Exception, e:

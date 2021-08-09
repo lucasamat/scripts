@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import SYTABACTIN as Table
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 Sql = SQL()
 

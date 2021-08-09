@@ -12,7 +12,6 @@ from System import Convert
 import sys
 
 #result=ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':'MAQ000001-RW000-06012020','Fun_type':'cpq_to_crm'})
-
 try:	
 
 	def cpq_to_crm(Qt_id):

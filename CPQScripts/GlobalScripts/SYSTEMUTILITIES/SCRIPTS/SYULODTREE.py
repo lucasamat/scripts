@@ -8,6 +8,7 @@
 # ==========================================================================================================================================
 # from CPQScripts.GlobalScripts.SYSTEMUTILITIES.SCRIPTS.SYULODTRND import Product
 import SYCNGEGUID as CPQID
+import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 from SYDATABASE import SQL
 from datetime import date
@@ -15,7 +16,7 @@ from datetime import date
 Sql = SQL()
 
 c_total = 0
-
+g_total = 0
 
 
 class TreeView:
@@ -401,396 +402,14 @@ class TreeView:
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		Trace.Write("returnList-----> " + str(returnList))
 		return returnList, objrList
-
-
-
-	def ProfileTreeView(self):	
-		Trace.Write('ProfileTreeView')	
-		ProfileRecId = Product.GetGlobal("ProfileRecId")		
-		objR_obj = []
-		try:
-			current_prod = Product.Name
-		except Exception:
-			current_prod = ""
-
-		objR_obj = []
-
-		nodeId = 0
-		objrList = ["Profile Information", "Assigned Members", "App Level Permissions", "Object Level Permissions"]
-
-		ProductDict = {}
-		ChildList = []
-		returnList = []
-		ProductList = []
-		Firstnode = "Profile Information"
-		returnList = []
-
-		proff_per_id = ""
-		primary_data = ""
-		# A043S001P01-9518 start
-		permissionid = ""
-		profile_Name = Product.GetGlobal("Profile_Name")
-		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()	
-		if "cpq" not in permissions_id_val:
-			permissions_id_val = permissions_id_val
-
-		cpq_permission_val = Sql.GetFirst(
-			"Select permission_id from cpq_permissions where permission_name ='" + str(profile_Name) + "'"
-		)
-		if cpq_permission_val:
-			proff_per_id = cpq_permission_val.permission_id
-
-		proff_id = Product.GetGlobal("Profile_ID_val")		
-		Product.SetGlobal("proff_per_id", str(proff_per_id))
-		
-		if proff_id == "":
-
-			proff_id = proff_per_id
-		else:
-
-			proff_id = Product.GetGlobal("Profile_ID_val")
-		# A043S001P01-9518 end
-
-		for data in objrList:
-			ProductDict = {}
-			ProductDict["text"] = str(data)
-			ProductDict["nodeId"] = int(nodeId)
-			nodeId = int(nodeId) + 1
-			AppsubDict = {}
-			Appsublist = []
-			childsublist = []
-			listvar = []
-			if data == "App Level Permissions":
-				objrrec_id = "SYOBJR-93121"
-				ProductDict["id"] = "SYOBJR-93121"
-				ProductDict["objname"] = "SYPRAP"
-				app_load_list = Sql.GetList(
-					"SELECT DISTINCT top 1000 APP_ID,PROFILE_APP_RECORD_ID FROM SYPRAP where PROFILE_ID='"
-					+ str(permissions_id_val)
-					+ "' "
-				)
-
-				if app_load_list is not None:
-					for val in app_load_list:
-						childsublist = []
-						if val.APP_ID:
-							subDict = {
-								"text": str(val.APP_ID).upper(),
-								"nodeId": int(nodeId),
-								"id": str(val.PROFILE_APP_RECORD_ID),
-								"objname": "SYPRAP",
-							}
-							nodeId = int(nodeId) + 1
-							#Trace.Write("nodeId " + str(nodeId))
-
-							tab_load_list = Sql.GetList(
-								"SELECT DISTINCT top 1000 p.TAB_ID,p.TAB_RECORD_ID,p.PROFILE_TAB_RECORD_ID,S.DISPLAY_ORDER FROM SYPRTB p WITH (NOLOCK) inner join SYTABS S on S.RECORD_ID =p.TAB_RECORD_ID  WHERE p.APP_ID='"
-								+ str(val.APP_ID)
-								+ "' and p.PROFILE_ID='"
-								+ str(permissions_id_val)
-								+ "' order by S.DISPLAY_ORDER"
-							)
-
-							tablist = []
-							tablist1 = []
-							tabdict1 = {}
-							tabdict1 = {"text": "Tabs", "nodeId": int(nodeId), "objname": "SYPRTB", "id": "SYOBJR-93159"}
-							nodeId = int(nodeId) + 1
-							for tab in tab_load_list:
-								tabdict = {}
-								tabdict = {
-									"text": str(tab.TAB_ID),
-									"id": tab.PROFILE_TAB_RECORD_ID,
-									"nodeId": int(nodeId),
-									"objname": "SYPRTB",
-								}
-								nodeId = int(nodeId) + 1
-
-								sec_load_list = Sql.GetList(
-									"SELECT DISTINCT top 1000 p.SECTION_ID,p.PROFILE_SECTION_RECORD_ID,p.SECTION_RECORD_ID,s.DISPLAY_ORDER FROM SYPRSN p WITH (NOLOCK) inner join SYSECT s on s.RECORD_ID = p.SECTION_RECORD_ID WHERE p.TAB_ID='"
-									+ str(tab.TAB_ID)
-									+ "' and p.TAB_RECORD_ID = '"
-									+ str(tab.TAB_RECORD_ID)
-									+ "' and p.PROFILE_ID='"
-									+ str(permissions_id_val)
-									+ "' order by s.DISPLAY_ORDER"
-								)
-								seclist = []
-								Seclist1 = []
-								Secdict1 = {}
-								Secdict1 = {
-									"text": "Sections",
-									"nodeId": int(nodeId),
-									"objname": "SYPRSN",
-									"id": "SYOBJR-93160",
-								}
-								nodeId = int(nodeId) + 1
-								if sec_load_list is not None:
-									for sect in sec_load_list:
-										secdict = {}
-										if str(sect.SECTION_ID) not in secdict:
-											secdict = {
-												"text": str(sect.SECTION_ID),
-												"id": sect.PROFILE_SECTION_RECORD_ID,
-												"nodeId": int(nodeId),
-												"objname": "SYPRSN",
-											}
-											nodeId = int(nodeId) + 1
-
-										secactlist1 = []
-										secactdict1 = {}
-										seclstact = []
-										secactdict1 = {
-											"text": "Actions",
-											"nodeId": int(nodeId),
-											"objname": "SYPRAC",
-											"id": "SYOBJR-93169",
-										}
-										actionquery = Sql.GetList(
-											"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER,SEC_REC_ID,SECTION_NAME from SYPRAC where SEC_REC_ID = '"
-											+ str(sect.SECTION_RECORD_ID)
-											+ "' and PROFILE_ID='"
-											+ str(permissions_id_val)
-											+ "' order by DISPLAY_ORDER"
-										)
-										if actionquery:
-											nodeId = int(nodeId) + 1
-											for val in actionquery:
-												secdictact = {}
-												secdictact = {
-													"text": str(val.ACTION_NAME),
-													"id": val.PROFILE_ACTION_RECORD_ID,
-													"nodeId": int(nodeId),
-													"objname": "SYPRAC",
-												}
-												nodeId = int(nodeId) + 1
-												seclstact.append(secdictact)
-
-											secactdict1["nodes"] = seclstact
-
-										secactlist1.append(secactdict1)
-										nodeId = int(nodeId) + 1
-
-										secdict["nodes"] = secactlist1
-
-										qst_load_list = Sql.GetList(
-											"SELECT DISTINCT top 1000 p.SECTION_FIELD_ID ,p.SECTIONFIELD_RECORD_ID,p.PROFILE_SECTIONFIELD_RECORD_ID,s.DISPLAY_ORDER FROM SYPRSF p WITH (NOLOCK) inner join SYSEFL s on s.RECORD_ID = p.SECTIONFIELD_RECORD_ID WHERE  p.SECTION_RECORD_ID = '"
-											+ str(sect.SECTION_RECORD_ID)
-											+ "' and p.PROFILE_ID='"
-											+ str(permissions_id_val)
-											+ "' order by s.DISPLAY_ORDER"
-										)
-										qstlist = []
-										qstlist1 = []
-										qstdict1 = {}
-										qstdict1 = {
-											"text": "Fields",
-											"nodeId": int(nodeId),
-											"id": "SYOBJR-93162",
-											"objname": "SYPRSF",
-										}
-										nodeId = int(nodeId) + 1
-										if qst_load_list is not None:
-											for qst in qst_load_list:
-												qstdict = {}
-												qstdict = {
-													"text": str(qst.SECTION_FIELD_ID),
-													"id": qst.PROFILE_SECTIONFIELD_RECORD_ID,
-													"nodeId": int(nodeId),
-													"objname": "SYPRSF",
-												}
-												nodeId = int(nodeId) + 1
-												qstlist.append(qstdict)
-												qstdict1["nodes"] = qstlist
-											qstlist1.append(qstdict1)
-											if secdict.get("nodes"):
-												secdict["nodes"].extend(qstlist1)
-											else:
-												# secdict['nodes'].extend(qstlist1
-												secdict["nodes"].append(qstlist1)
-
-										seclist.append(secdict)
-									# if secdict1.get('nodes'):
-									Secdict1["nodes"] = seclist
-									# Secdict1['nodes'].extend(SYOBJSlistheaderload)
-									Seclist1.append(Secdict1)
-								SYOBJSdictheaderload = {
-									"text": "Actions",
-									"id": "SYOBJR-93169",
-									"nodeId": int(nodeId),
-									"objname": "SYPRAC",
-								}
-								SYOBJSlistheaderload = []
-								SYOBJSlistdataload = []
-								# SYOBJSdictdataload ={}
-								nodeId = int(nodeId) + 1
-								# A043S001P01-9098 Start
-								querySYOBJS = Sql.GetList(
-									"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER from SYPRAC where TAB_RECORD_ID = '"
-									+ str(tab.TAB_RECORD_ID)
-									+ "' and PROFILE_ID='"
-									+ str(permissions_id_val)
-									+ "' order by DISPLAY_ORDER"
-								)
-
-								# Trace.Write(
-								# 	"SELECT DISTINCT top 1000 ACTION_NAME,RECORD_ID,PROFILE_ACTION_RECORD_ID,DISPLAY_ORDER from SYPRAC where TAB_RECORD_ID = '"
-								# 	+ str(tab.TAB_RECORD_ID)
-								# 	+ "' and PROFILE_ID='"
-								# 	+ str(permissions_id_val)
-								# 	+ "' order by DISPLAY_ORDER"
-								# )
-
-								if querySYOBJS:
-									for val in querySYOBJS:
-										SYOBJSdictdataload = {}
-										SYOBJSdictdataload = {
-											"text": str(val.ACTION_NAME),
-											"id": val.PROFILE_ACTION_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPRAC",
-										}
-										nodeId = int(nodeId) + 1
-
-										SYOBJSlistdataload.append(SYOBJSdictdataload)
-									# A043S001P01-9098 End
-
-									SYOBJSdictheaderload["nodes"] = SYOBJSlistdataload
-
-								SYOBJSlistheaderload.append(SYOBJSdictheaderload)
-								tabdict["nodes"] = Seclist1
-								if tabdict.get("nodes"):
-									tabdict["nodes"].extend(SYOBJSlistheaderload)
-								else:
-									tabdict["nodes"].append(SYOBJSlistheaderload)
-								tablist.append(tabdict)
-							tabdict1["nodes"] = tablist
-							if tabdict1.get("nodes"):
-								tablist1.append(tabdict1)
-								subDict["nodes"] = tablist1
-							Appsublist.append(subDict)
-					ProductDict["nodes"] = Appsublist
-					# Trace.Write("Appsublist " + str(Appsublist))
-			elif data == "Assigned Members":
-				
-				objrrec_id = "SYOBJR-95800"
-				ProductDict["id"] = "SYOBJR-95800"
-				ProductDict["objname"] = "USERS"
-				newPRFRECID = Product.GetGlobal("PF_REC_ID")
-
-				user_load_list = Sql.GetList(
-					"SELECT DISTINCT top 1000 US.USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and cp.SYSTEM_ID = '"
-					+ str(permissions_id_val)
-					+ "' order by USERNAME"
-				)
-				# RD_ID,NAME FROM SYPRUS WITH (NOLOCK) WHERE PROFILE_RECORD_ID='"+str(newPRFRECID)+"' order by USER_NAME")
-				if user_load_list is not None:
-					for val in user_load_list:
-						if val.USERNAME != "":
-							childsublist.append(
-								{
-									"text": str(val.USERNAME).upper(),
-									"nodeId": int(nodeId),
-									"objname": "USERS",
-									"id": str(val.ID),
-								}
-							)
-							nodeId = int(nodeId) + 1
-					ProductDict["nodes"] = childsublist
-			elif data == "Object Level Permissions":
-				ProductDict["id"] = "SYOBJR-93122"
-				ProductDict["objname"] = "SYPROH"
-				objsublist = []
-				objfieldlist = []
-				objsubdict = {}
-
-				obj_load_list = Sql.GetList(
-					"SELECT DISTINCT TOP 1000 OBJECT_NAME, OBJECT_RECORD_ID FROM SYPROH  WITH (NOLOCK) WHERE PROFILE_ID = '"
-					+ str(permissions_id_val)
-					+ "' AND OBJECT_NAME NOT LIKE 'SYPR%' GROUP BY OBJECT_NAME, OBJECT_RECORD_ID ORDER BY OBJECT_NAME "
-				)
-
-				if obj_load_list is not None:
-					for val in obj_load_list:
-						if val.OBJECT_NAME != "":
-							objsubdict = {
-								"text": str(val.OBJECT_NAME).upper(),
-								"nodeId": int(nodeId),
-								"id": str(val.OBJECT_RECORD_ID),
-								"objname": "SYPROH",
-							}
-							nodeId = int(nodeId) + 1
-							objrlist = []
-							objfieldlist = []
-							objrlistheader = []
-							objrdictheader = {}
-							objrfieldlistheader = []
-							objfieldlist = []
-							objrfielddictheader = {}
-							"""objrdictheader = {"text": "Related List", "nodeId": int(nodeId), "objname": "SYPROH"}
-							nodeId = int(nodeId) + 1"""
-
-							objrfielddictheader = {
-								"text": "Fields",
-								"nodeId": int(nodeId),
-								"objname": "SYPROD",
-								"id": "SYOBJR-93130",
-							}
-							nodeId = int(nodeId) + 1
-							queryfields = Sql.GetList(
-								"SELECT DISTINCT TOP 1000 p.PROFILE_OBJECTFIELD_RECORD_ID, p.OBJECT_RECORD_ID,p.OBJECT_FIELD_ID,p.OBJECTFIELD_RECORD_ID,p.OBJECT_FIELD_ID,s.DISPLAY_ORDER FROM SYPROD p  WITH (NOLOCK) inner join SYOBJD s on s.RECORD_ID = p.OBJECTFIELD_RECORD_ID WHERE PROFILE_ID = '"
-								+ str(permissions_id_val)
-								+ "' and OBJECT_NAME = '"
-								+ str(val.OBJECT_NAME)
-								+ "' ORDER BY s.DISPLAY_ORDER "
-							)
-							if queryfields is not None:
-								for val in queryfields:
-									objfielddict = {}
-									if val.OBJECT_FIELD_ID is not None and val.OBJECT_FIELD_ID != "":
-										objfielddict = {
-											"text": val.OBJECT_FIELD_ID,
-											"id": val.PROFILE_OBJECTFIELD_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPROD",
-										}
-									else:
-										objfielddict = {
-											"text": val.OBJECT_FIELD_ID,
-											"id": val.PROFILE_OBJECTFIELD_RECORD_ID,
-											"nodeId": int(nodeId),
-											"objname": "SYPROD",
-										}
-									nodeId = int(nodeId) + 1
-									objfieldlist.append(objfielddict)
-							# if queryvalsyprjd is not None:
-							# for val in queryvalsyprjd:
-							# objfielddict = {}
-							# if val.FIELD_LABEL:
-							# objfielddict={"text":val.FIELD_LABEL,"id": val.SYOBJD_RECORD_ID,"nodeId":int(nodeId)}
-							# nodeId = int(nodeId) + 1
-							# objfieldlist.append(objfielddict)
-							objrfielddictheader["nodes"] = objfieldlist
-							objrfieldlistheader.append(objrfielddictheader)
-
-							if objsubdict.get("nodes"):
-								objsubdict["nodes"].extend(objrfieldlistheader)
-							else:
-								objsubdict["nodes"] = objrfieldlistheader
-							objsublist.append(objsubdict)
-
-					ProductDict["nodes"] = list(objsublist)
-			returnList.append(ProductDict)
-			# ## #TREE NODE STRUCTURE CODE ENDS
-		Product.SetGlobal("CommonTreeList", str(returnList))
-		#Trace.Write("returnList-------> " + str(returnList))
-		# ## #TREE NODE STRUCTURE CODE ENDS
-		return returnList, objrList
-
+	
 	def CommonDynamicLeftTreeView(self):
-		TreeParam = Product.GetGlobal("TreeParam")
-		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")		
+		try:
+			TreeParam = Product.GetGlobal("TreeParam")
+			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+		except:
+			Trace.Write("Error in Treeparam GetGlobal")
 		objR_obj = list2 = []
 		try:
 			#crnt_prd_val = prod.APP_ID
@@ -828,7 +447,7 @@ class TreeView:
 			crnt_prd_val = "QT"
 		quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
-			Trace.Write("SET GLOBAL----")
+			#Trace.Write("SET GLOBAL----")
 			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
 			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 		returnList = []
@@ -937,6 +556,7 @@ class TreeView:
 							RelatedId = getRightView.RELATED_RECORD_ID
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ProductDict["id"] = RelatedId
+
 							if subTabName:
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
@@ -1060,20 +680,38 @@ class TreeView:
 									# 	str(PageRecId)+"===="+
 									# 	str(ObjectRecId)+"===="+
 									# 	str(ordersBy))                
-									ChildListData = self.getChildOne(
-										NodeType,
-										NodeName,
-										RecAttValue,
-										nodeId,
-										ParRecId,
-										DynamicQuery,
-										ObjectName,
-										RecId,
-										where_string,
-										PageRecId,
-										ObjectRecId,
-										ordersBy,
-									)
+									Trace.Write('3333333333333333@@@@ '+str(NodeName))
+									if TabName == 'Profile':
+										ChildListData = self.getProfileChildOne(
+											NodeType,
+											NodeName,
+											RecAttValue,
+											nodeId,
+											ParRecId,
+											DynamicQuery,
+											ObjectName,
+											RecId,
+											where_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)	
+									else:
+										Trace.Write('700')
+										ChildListData = self.getChildOne(
+											NodeType,
+											NodeName,
+											RecAttValue,
+											nodeId,
+											ParRecId,
+											DynamicQuery,
+											ObjectName,
+											RecId,
+											where_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
@@ -1086,6 +724,615 @@ class TreeView:
 		Product.SetGlobal("CommonTreeList", str(returnList))
 		Trace.Write("returnList----------------> " + str(returnList))
 		return returnList, ""
+	
+	
+	def getProfileChildOne(
+		self,
+		NodeType,
+		NodeName,
+		RecAttValue,
+		nodeId,
+		ParRecId,
+		DynamicQuery,
+		ObjectName,
+		RecId,
+		where_string,
+		PageRecId,
+		ObjectRecId,
+		ordersBy,
+	):
+		NodeValue = ""
+		NodeText1 = ""
+		ChildList = []
+		NewList = []
+				
+		if str(NodeType) == "DYNAMIC":			
+			try:
+				ContAtt = Product.Attributes.GetByName('QSTN_SYSEFL_QT_016909')
+				ContAttValue = ContAtt.GetValue()	
+			except:
+				ContAtt = ""
+				ContAttValue = ""
+				
+			pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")
+			if pageDetails is not None:
+				OBJECT_RECORD_ID = pageDetails.OBJECT_RECORD_ID
+				ObjName = pageDetails.OBJECT_APINAME					
+				CurrentTabName = pageDetails.TAB_NAME
+				
+				if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+"'")			
+				elif str(ObjName).strip() == 'SYPRSF':
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")			
+				elif str(ObjName).strip() == "SYPSAC" and CurrentTabName == 'App':
+					getsectrec = Product.GetGlobal("NodeRecIdS")
+					where_string += " AND SECTION_RECORD_ID = '"+str(getsectrec)+"'"
+				elif str(ObjName).strip() == 'SYPSAC':
+					ObjectName = 'SYSECT'
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")			
+				else:                    
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
+				
+				CurrentTabName = TestProduct.CurrentTab
+				
+				if objd_where_obj is not None:
+					if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                        
+						Wh_API_NAME = ""
+						where_string = where_string				
+					elif str(ObjName).strip() == "SYPRTB":
+						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+						where_string = '1=1 AND'
+						getapptext = Product.GetGlobal('setappname')
+						where_string += "  APP_ID = '"+str(getapptext)+"' AND  PROFILE_RECORD_ID = '"+str(RecAttValue)+"'"
+					elif str(ObjName).strip() == "SYPRSN":
+						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+						where_string = '1=1 AND'
+						gettabtext = Product.GetGlobal('settabname')						
+						getpagename  = Sql.GetFirst("select TAB_RECORD_ID from SYPRTB where TAB_ID = '"+str(gettabtext)+"'")
+						if getpagename:
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and TAB_RECORD_ID = '"+str(getpagename.TAB_RECORD_ID)+"'"
+						else:
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"'"
+					elif str(ObjName).strip() == "SYPRSF" and CurrentTabName == 'Profile':					
+						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+						where_string = '1=1 AND'
+						gettabtext = Product.GetGlobal('settabname')
+						getsectid = Product.GetGlobal("NodeSecRecIdS")					
+						
+						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
+						if getsectname:
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"' ORDER BY SECTION_FIELD_ID ASC"
+						else:
+							where_string += " PROFILE_RECORD_ID = '"+str(RecAttValue)+"' and SECTION_RECORD_ID = '"+str(getsectname.SECTION_RECORD_ID)+"' ORDER BY SECTION_FIELD_ID ASC"
+					else:
+						Wh_API_NAME = objd_where_obj.API_NAME					
+						if RecAttValue: 
+							where_string = " " + str(where_string) + " AND " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+						else:						
+							where_string = where_string
+					
+					childRecName = Sql.GetFirst(
+						"select * from SYOBJD (nolock) where OBJECT_NAME = '"
+						+ str(ObjName)
+						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
+					)                    
+					
+					if DynamicQuery is not None and len(DynamicQuery) > 0:
+						DynamicQuery = (
+							DynamicQuery.replace("{", "")
+							.replace("}", "")
+							.replace("RecAttValue", RecAttValue)
+							.replace("ContAttValue", ContAttValue)
+							.replace("where_string", where_string)
+						)
+						childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
+					else:
+						if NodeName.find("-") == -1:
+							NodeValue = NodeName
+						else:
+							NodeValuesplit = NodeName.split("-")
+							if len(NodeValuesplit) > 1:
+								NodeValue = NodeValuesplit[1]
+						if ordersBy:                            
+							ordersByQuery = " ORDER BY " + str(ordersBy)                            
+							if NodeValue != ordersBy:
+								childQuery = Sql.GetList(
+									"select distinct top 1000 "
+									+ str(NodeValue)
+									+ ", "
+									+ str(ordersBy)
+									+ " from "
+									+ str(ObjName)
+									+ " (nolock) where "
+									+ str(where_string)
+									+ " "
+									+ str(ordersByQuery)
+									+ ""
+								)                                  
+							else:
+								childQuery = Sql.GetList(
+									"select distinct top 1000 "
+									+ str(NodeValue)
+									+ " from "
+									+ str(ObjName)
+									+ " (nolock) where "
+									+ str(where_string)
+									+ " "
+									+ str(ordersByQuery)
+									+ ""
+								)
+						elif str(ObjName) == "SYPSAC":
+							where_string = where_string    
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							)
+						elif str(ObjName).strip() == "SYPGAC":						
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							)					
+						elif str(ObjName) == "SYPRSF":							
+							where_string += where_string
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select top 1000 "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							)
+						#SUBNODE IS NOT LOADING ISSUE FOR SECTIONS NODE IN PAGES TAB - START    
+						elif str(ObjName) == "SYSECT":				                          
+							where_string = " PAGE_RECORD_ID = '"+str(RecAttValue)+"'"		
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							) 
+						#SUBNODE IS NOT LOADING ISSUE FOR SECTIONS NODE IN PAGES TAB - END        
+						elif str(ObjName) == "USERS":
+							ordersByQuery = ""
+							childQuery = Sql.GetList("SELECT DISTINCT top 1000 UPPER(US.USERNAME) AS USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and up.permission_id = '"+ str(RecAttValue)+ "' order by USERNAME") 
+						
+						elif str(ObjName) == "SYPRAP":				                    
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select top 1000 "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							)
+						else:		
+							Trace.Write("ObjName_chk "+str(ObjName))		                    
+							ordersByQuery = ""
+							childQuery = Sql.GetList(
+								"select distinct "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ ""
+							)
+					flag = 1				
+					if childQuery is not None:
+						for childdata in childQuery:							
+							ChildDict = {}
+							SubChildData = []
+							
+							if NodeName.find(",") == -1 and NodeName.find("-") == -1:                               
+								if str(NodeName) == "OBJECT_NAME" and TabName == 'Profile': 
+									NodeText = str(eval("childdata." + str(NodeName)))
+								else:
+									NodeText = str(eval("childdata." + str(NodeName))).upper()									
+								
+								if str(NodeName) == "APP_ID" and TabName == "Profile":
+									Product.SetGlobal('setappname',str(NodeText))
+								elif str(NodeName) == "TAB_ID" and TabName == "Profile":
+									Product.SetGlobal('settabname',str(NodeText))							
+								
+								childQueryObj = Sql.GetFirst(
+									"select * from "
+									+ str(ObjName)
+									+ " (nolock) where "
+									+ str(where_string)
+									+ " AND "
+									+ str(NodeName)
+									+ " = '"
+									+ str(NodeText)
+									+ "'"
+								)							
+							elif NodeName.find(",") > 0:                                
+								Nodesplit = NodeName.split(",")
+								if len(Nodesplit) > 1:
+									NodeName1 = Nodesplit[0]
+									NodeText = str(eval("childdata." + str(NodeName1))).title()									
+									childQueryObj = Sql.GetFirst(
+										"select * from "
+										+ str(ObjName)
+										+ " (nolock) where "
+										+ str(where_string)
+										+ " AND "
+										+ str(NodeName1)
+										+ " = '"
+										+ (NodeText)
+										+ "'"
+									)
+									NodeText += " - "
+									NodeName1 = Nodesplit[1]
+									NodeText += str(eval("childdata." + str(NodeName1)))									
+									childQueryObj = SqlHelper.GetFirst(
+										"select * from "
+										+ str(ObjName)
+										+ " (nolock) where "
+										+ str(where_string)
+										+ " AND "
+										+ str(NodeName1)
+										+ " = '"
+										+ str(eval("childdata." + str(NodeName1)))
+										+ "'"
+									)
+							elif NodeName.find("-") > 0:
+								Nodesplit = NodeName.split("-")                                
+								if len(Nodesplit) > 1:
+									NodeName1 = Nodesplit[0]
+									NodeName2 = Nodesplit[1]
+									NodeText1 = str(eval("childdata." + str(NodeName2))).title()
+									NodeText = NodeName1 + "-" + NodeText1									
+									childQueryObj = Sql.GetFirst(
+										"select * from "
+										+ str(ObjName)
+										+ " (nolock) where "
+										+ str(where_string)
+										+ " AND "
+										+ str(NodeName2)
+										+ " = '"
+										+ str(NodeText1)
+										+ "'"
+									)
+							
+							if childQueryObj is not None:
+								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))                               
+								ChildDict["id"] = str(NodeRecId)							
+								if str(NodeName) == "SECTION_ID" and TabName == "Profile":
+									Product.SetGlobal("NodeSecRecIdS",NodeRecId)
+							if NodeText == "True":
+								NodeRecId = ""
+								ChildDict["text"] = "Active"
+							elif NodeText == "False":
+								NodeRecId = ""
+								ChildDict["text"] = "Inactive"
+							else:                                
+								NodeRecId = ""
+								ChildDict["text"] = NodeText
+							ChildDict["nodeId"] = int(nodeId)
+							objQuery = Sql.GetFirst(
+								"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
+							)
+							if objQuery is not None:
+								ChildDict["objname"] = objQuery.OBJECT_NAME
+								parObjName = objQuery.OBJECT_NAME
+							SubTabList = []
+							getParentObjRightView = Sql.GetList(
+								"SELECT top 1000 * FROM SYSTAB (nolock) where TREE_NODE_RECORD_ID = '"
+								+ str(ParRecId)
+								+ "' ORDER BY abs(DISPLAY_ORDER) "
+							)
+							if getParentObjRightView is not None and len(getParentObjRightView) > 0:
+								for getRightView in getParentObjRightView:
+									type = str(getRightView.SUBTAB_TYPE)
+									subTabName = str(getRightView.SUBTAB_NAME)
+									ObjRecId = getRightView.OBJECT_RECORD_ID								
+										
+									RelatedId = getRightView.RELATED_RECORD_ID
+									RelatedName = getRightView.RELATED_LIST_NAME
+									
+									if subTabName:
+										SubTabList.append(
+											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
+										)
+							else:                                
+								if pageDetails is not None:
+									pageType = pageDetails.PAGE_TYPE
+									subTabName = "No SubTab"
+									objRecId = pageDetails.OBJECT_RECORD_ID
+									querystr = ""
+									SubTabList.append(
+										self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
+									)
+							ChildDict["SubTabs"] = SubTabList
+							
+							
+							findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)
+							
+							# PROFILE EXPLORER
+							if NodeText == 'SYSTEM ADMIN':
+								Product.SetGlobal("APPS",NodeText)
+							
+							# To fetch pages based on Tabs in System Admin						
+							pages_tab = Sql.GetList("SELECT TAB_LABEL,PRIMARY_OBJECT_NAME FROM SYTABS (NOLOCK)")
+							tab_list= [(tab.TAB_LABEL).upper() for tab in pages_tab]
+							object_list = [tab.PRIMARY_OBJECT_NAME for tab in pages_tab]
+							tab_obj_dict = {tab_list[i]: object_list[i] for i in range(len(tab_list))}
+							
+							if NodeText in tab_list:
+								Product.SetGlobal("page_tab",NodeText)							
+								Product.SetGlobal("object_name",tab_obj_dict[NodeText])						
+
+							if findSubChildAvailable is not None:								
+								for findSubChildOne in findSubChildAvailable:									
+									parobj = str(findSubChildOne.PARENTNODE_OBJECT)
+									NodeType = str(findSubChildOne.NODE_TYPE)
+									NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
+									DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+									PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
+									ordersBy = str(findSubChildOne.ORDERS_BY)
+									if parobj == "True":
+										if NodeValue != "":
+											Node_name = NodeValue
+										else:
+											Node_name = NodeName
+										if NodeText1 != "":
+											NodeText = NodeText1
+										childwhere_string = (
+											" " + str(where_string) + " AND " + str(Node_name) + " = '" + str(NodeText) + "'"
+										)                                        
+										SubChildData = self.getChildFromParentObj(
+											NodeText,
+											NodeType,
+											Node_name,
+											RecAttValue,
+											nodeId,
+											ParRecId,
+											DynamicQuery,
+											ObjectName,
+											RecId,
+											childwhere_string,
+											PageRecId,
+											ObjectRecId,
+											NodeApiName,
+											ordersBy,
+										)
+									else:                                                                            
+										SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
+										SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
+										SubChildDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+										SubNodeType = str(findSubChildOne.NODE_TYPE)
+										nodeId = str(findSubChildOne.NODE_ID)
+										PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
+										RecAttValue = NodeRecId                                        
+										ObjectName = parObjName
+										Subwhere_string = "" + str(where_string) + ""										
+										
+										SubChildData = self.getProfileChildOne(
+											SubNodeType,
+											SubNodeName,
+											RecAttValue,
+											nodeId,
+											SubParRecId,
+											SubChildDynamicQuery,
+											ObjectName,
+											ParRecId,
+											Subwhere_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)
+									
+									if len(SubChildData) > 0:
+										NewList.append(SubChildData)
+										list2 = []
+										for sublist in NewList:
+											for item in sublist:
+												list2.append(item)
+										ChildDict["nodes"] = list2
+								NewList = []                                
+								ChildList.append(ChildDict)
+								
+		else:
+			findChildOneObj = Sql.GetList(
+			"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
+			+ str(ParRecId)
+			+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
+			)
+			
+			if findChildOneObj is not None and len(findChildOneObj) > 0:
+				for findChildOne in findChildOneObj:
+					if DynamicQuery is not None and len(DynamicQuery) > 0:
+						DynamicQuery = (
+							DynamicQuery.replace("{", "")
+							.replace("}", "")
+							.replace("RecAttValue", RecAttValue)
+							.replace("where_string", where_string)
+						)
+						childQuery = Sql.GetList("" + str(DynamicQuery) + "")
+					ChildDict = {}
+					SubChildData = []
+					ParRecId = str(findChildOne.TREE_NODE_RECORD_ID)
+					NodeText = str(findChildOne.NODE_DISPLAY_NAME)					
+					ChildDict["text"] = NodeText
+					ChildDict["id"] = str(ParRecId)
+					ChildDict["nodeId"] = str(findChildOne.NODE_ID)
+					ParpageRecId = str(findChildOne.NODE_PAGE_RECORD_ID)
+					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(ParpageRecId) + "'")
+					if pageDetails is not None:
+						objRecId = pageDetails.OBJECT_RECORD_ID
+						objQuery = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(objRecId) + "'")
+						if objQuery is not None:
+							ChildDict["objname"] = objQuery.OBJECT_NAME
+					SubTabList = []
+					getParentObjRightView = Sql.GetList(
+						"SELECT top 1000 * FROM SYSTAB (nolock) where TREE_NODE_RECORD_ID = '"
+						+ str(ParRecId)
+						+ "' ORDER BY abs(DISPLAY_ORDER) "
+					)
+					if getParentObjRightView is not None and len(getParentObjRightView) > 0:
+						for getRightView in getParentObjRightView:                            
+							type = str(getRightView.SUBTAB_TYPE)
+							subTabName = str(getRightView.SUBTAB_NAME)
+							ObjRecId = getRightView.OBJECT_RECORD_ID
+							RelatedId = getRightView.RELATED_RECORD_ID
+							RelatedName = getRightView.RELATED_LIST_NAME
+							ChildDict["id"] = RelatedId
+							if subTabName:							
+								SubTabList.append(
+									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
+								)
+					else:
+						if pageDetails is not None:
+							pageType = pageDetails.PAGE_TYPE
+							subTabName = "No SubTab"
+							objRecId = pageDetails.OBJECT_RECORD_ID
+							if NodeText == "Variable":
+								querystr = "AND NAME = '" + str(NodeText) + "'"
+							else:
+								querystr = ""
+							SubTabList.append(
+								self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
+							)
+							RelatedObj = Sql.GetFirst(
+								"SELECT RECORD_ID, SAPCPQ_ATTRIBUTE_NAME, NAME FROM SYOBJR WHERE PARENT_LOOKUP_REC_ID = '"
+								+ str(ObjectRecId)
+								+ "' AND OBJ_REC_ID = '"
+								+ str(objRecId)
+								+ "' AND VISIBLE = 'True'"
+							)
+							if RelatedObj is not None:
+								ChildDict["id"] = RelatedObj.SAPCPQ_ATTRIBUTE_NAME
+					ChildDict["SubTabs"] = SubTabList
+					
+					findSubChildAvailable = Sql.GetList(
+								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
+								+ str(ParRecId)
+								+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' ORDER BY abs(DISPLAY_ORDER) "
+							)		
+											
+					if findSubChildAvailable is not None:
+						for findSubChildOne in findSubChildAvailable:
+							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
+							NodeType = str(findSubChildOne.NODE_TYPE)
+							NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
+							DynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+							PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)
+							ordersBy = str(findSubChildOne.ORDERS_BY)
+							ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)                            
+							if parobj == "True":
+								childwhere_string = " " + str(where_string) + ""
+								
+								SubChildData = self.getChildFromParentObj(
+									NodeText,
+									NodeType,
+									NodeName,
+									RecAttValue,
+									nodeId,
+									ParRecId,
+									DynamicQuery,
+									ObjectName,
+									RecId,
+									childwhere_string,
+									PageRecId,
+									ObjectRecId,
+									NodeApiName,
+									ordersBy,
+								)
+							else:
+								SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
+								SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
+								
+								subDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
+								SubNodeType = str(findSubChildOne.NODE_TYPE)
+								nodeId = str(findSubChildOne.NODE_ID)
+								where_string = " 1=1"
+								Subwhere_string = str(where_string)
+								# Filter based on service type - Services Node - Start
+															
+								CurrentTabName = TestProduct.CurrentTab 
+												
+								if NodeText in ('Actions','Tabs'):
+									if NodeText == "Tabs":
+										apps = Product.GetGlobal("APPS")
+										Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
+									else:									
+										Subwhere_string += " AND SERVICE_TYPE = '{}'".format(NodeText)
+								elif NodeText in  ("Pages"):								
+									if NodeText == "Pages":
+										page_tab = Product.GetGlobal("page_tab")									
+										Subwhere_string += " AND TAB_LABEL = '{}'".format(page_tab) 
+																		
+								elif NodeText in ("Tree Node"):
+									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
+									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
+									for tree in getpagename:                 
+										
+										Tree_Node = str(tree.TREE_RECORD_ID)
+									Subwhere_string += " AND TREE_RECORD_ID = '"+str(Tree_Node)+"'" 
+								
+								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
+								# Filter based on service type - Services Node - End
+								SubChildData = self.getProfileChildOne(
+									SubNodeType,
+									SubNodeName,
+									RecAttValue,
+									nodeId,
+									SubParRecId,
+									subDynamicQuery,
+									ObjectName,
+									RecId,
+									Subwhere_string,
+									PageRecId,
+									ObjectRecId,
+									ordersBy,
+								)
+							
+							if len(SubChildData) > 0:
+								NewList.append(SubChildData)
+								list2 = []
+								for sublist in NewList:
+									for item in sublist:
+										list2.append(item)
+								ChildDict["nodes"] = list2
+					NewList = []                    
+					ChildList.append(ChildDict)
+		return ChildList
 
 	def getChildOne(
 		self,
@@ -1106,12 +1353,11 @@ class TreeView:
 		NodeText1 = ""
 		ChildList = []
 		NewList = []
-		
 		try:
 			getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		except:
 			getAccounts = ""
-
+		#Trace.Write("=================>> ParRecId "+str(ParRecId))
 		# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1119,16 +1365,16 @@ class TreeView:
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
-		Trace.Write("NodeName---1073----"+str(NodeName))
-		pagerecordid = ""
-		if NodeName == 'FIELD_LABEL':
-			global c_total
-			c_total += 1
-			if c_total > 5:
-				return ChildList
+		#Trace.Write("NodeName---1073----"+str(NodeName))
+		#pagerecordid = ""
+		# if NodeName == 'FIELD_LABEL':
+		# 	global c_total
+		# 	c_total += 1
+		# 	if c_total > 5:
+		# 		return ChildList
 		if str(NodeType) == "DYNAMIC":
 			# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
-			#Trace.Write("where_string"+str(where_string))
+			Trace.Write("1377-where_string"+str(where_string))
 			try:
 				ContAtt = Product.Attributes.GetByName('QSTN_SYSEFL_QT_016909')
 			except:
@@ -1144,9 +1390,9 @@ class TreeView:
 			if pageDetails is not None:
 				OBJECT_RECORD_ID = pageDetails.OBJECT_RECORD_ID
 				ObjName = pageDetails.OBJECT_APINAME
-				pagerecordid = pageDetails.RECORD_ID				
+				#pagerecordid = pageDetails.RECORD_ID				
 				CurrentTabName = pageDetails.TAB_NAME
-				Trace.Write('CurrentTabName==='+str(CurrentTabName)+'pagerecordid---'+str(pagerecordid)+'ObjName--'+str(ObjName)+'OBJECT_RECORD_ID---'+str(OBJECT_RECORD_ID))
+				#Trace.Write('CurrentTabName==='+str(CurrentTabName)+'pagerecordid---'+str(pagerecordid)+'ObjName--'+str(ObjName)+'OBJECT_RECORD_ID---'+str(OBJECT_RECORD_ID))
 				if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                   
 					#objd_where_obj = Sql.GetFirst("SELECT DISTINCT top 1000 US.USERNAME,US.ID,US.NAME,US.ACTIVE FROM USERS US WITH (NOLOCK) inner join users_permissions up on us.id = up.user_id inner join cpq_permissions cp on cp.permission_id = up.permission_id where cp.permission_type= '0' and up.permission_id = '"+ str(RecAttValue)+ "' order by USERNAME")
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+"'")
@@ -1162,6 +1408,9 @@ class TreeView:
 					ObjectName = 'SAQTMT'
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
 				elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID':
+					ObjectName = 'SAQTMT'
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
+				elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
 					ObjectName = 'SAQTMT'
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
 			   	elif str(ObjName).strip() == "SYPSAC" and CurrentTabName == 'App':
@@ -1200,7 +1449,7 @@ class TreeView:
 					if str(ObjName) == "USERS" and str(ObjectName) == "cpq_permissions":                        
 						Wh_API_NAME = ""
 						where_string = where_string
-					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'SNDFBL_ID':
+					elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
 					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID':
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != ''".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
@@ -1250,7 +1499,7 @@ class TreeView:
 						where_string = '1=1 AND'
 						gettabtext = Product.GetGlobal('settabname')
 						getsectid = Product.GetGlobal("NodeSecRecIdS")
-						Trace.Write("getsectid-----638---"+str(getsectid))
+						#Trace.Write("getsectid-----638---"+str(getsectid))
 						
 						getsectname  = Sql.GetFirst("select SECTION_RECORD_ID from SYPRSN where PROFILE_SECTION_RECORD_ID = '"+str(getsectid)+"' and PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
 						if getsectname:
@@ -1285,13 +1534,16 @@ class TreeView:
 						#getpagename = Sql.GetFirst("select * from SYPAGE where TAB_RECORD_ID = '"+str(RecAttValue) +"'")                     
 						where_string =  where_string 
 						#where_string += " AND PAGE_NAME = '"+str(getpagename.PAGE_NAME)+"'"
-					elif str(ObjName).strip() == 'SYTRND' and CurrentTabName == 'Page':	 	
-						where_string = where_string
-						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-						getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
-						for tree in getpagename:                 
-						 	#where_string =  where_string 
-						 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
+					elif str(ObjName).strip()=="SYTRND" and str(NodeName).strip()=="NODE_NAME" and CurrentTabName=="Page":
+						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue()
+						where_string += " AND NODE_PAGE_RECORD_ID = '"+str(RecAttValue)+"' " 
+					# elif str(ObjName).strip() == 'SYTRND' and CurrentTabName == 'Page':	 	
+					# 	where_string = where_string
+					# 	RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
+					# 	getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
+					# 	for tree in getpagename:                 
+					# 	 	#where_string =  where_string 
+					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
 					 		 
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
 						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%') ".format(Quote.GetGlobal("contract_quote_record_id"))
@@ -1331,8 +1583,7 @@ class TreeView:
 							.replace("ContAttValue", ContAttValue)
 							.replace("where_string", where_string)
 						)
-						#("DynamicQueryCHK1"+str(DynamicQuery))
-
+						#("DynamicQueryCHK1"+str(DynamicQuery))						
 						childQuery = Sql.GetList("" + str(DynamicQuery) + "")                        
 					else:
 						if NodeName.find("-") == -1:
@@ -1487,35 +1738,7 @@ class TreeView:
 									+ str(NodeText)
 									+ "' ORDER BY ACAPCH.APRCHN_ID,ACAPMA.APRCHN_RECORD_ID"
 								)
-
-							''' elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
-								NodeText = str(eval("childdata." + str(NodeName))).title()
-								childQueryObj = Sql.GetFirst( "select TOP 10 APRCHNSTP_NAME, APPROVAL_CHAIN_STEP_RECORD_ID FROM ACACST (nolock) inner join ACAPMA (nolock) on ACACST.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )  
-							elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
-								NodeText = str(eval("childdata." + str(NodeName)))
-								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.APRCHNSTPTRX_ID, ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID  = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID inner join ACAPMA (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPMA.APRCHNSTP_RECORD_ID where "
-								+ str(where_string)
-								+ " ORDER BY ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.APRCHNSTPTRX_ID, ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT") '''
-							''' elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-								NodeText = "Round "+str(eval("childdata." + str(NodeName))).title()
-								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID,ACACHR.APPROVAL_ROUND, ACACHR.APPROVAL_ID,ACACHR.CpqTableEntryId FROM ACACHR (nolock) inner join ACAPTX (nolock) on ACAPTX.APRCHN_ID = ACACHR.APRCHN_ID where ACACHR.APPROVAL_ROUND = '{approval_round}' AND ".format(approval_round = NodeText.split(' ')[1])
-								+ str(where_string)) 
-								##for showing relevent subtab for approval in quote starts
-								try:
-									#Trace.Write("try"+str(where_string))
-									if "APRCHN_ID" in str(where_string).strip().split(" ")[0]:
-										#Trace.Write("if"+str(where_string).strip().split(" ")[0])
-										aprchn_id = "AND ACAPCH.APRCHN_ID = {}".format(str(where_string).strip().split(" ")[2])
-									else:
-										#Trace.Write("else"+str(where_string))
-										aprchn_id = ""
-								except:
-									#Trace.Write("except")
-									aprchn_id = ""
-								#Trace.Write("aprchn_id"+str(aprchn_id))
-								##for showing relevent subtab for approval in quote ends '''
-
-							if str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
+							elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst( "select TOP 10 ACACSA.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID, ACACSA.APRCHN_ID,ACACSA.APRCHNSTP_RECORD_ID FROM ACACSA (nolock) inner join ACACST (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACACSA.APRCHNSTP_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )
 							elif str(ObjName).strip() == 'ACAPTF' and str(NodeName).strip() == 'TRKOBJ_TRACKEDFIELD_LABEL' and str(ProductName).upper() == "APPROVAL CENTER":
@@ -1604,8 +1827,9 @@ class TreeView:
 									+ " = '"
 									+ str(NodeText)
 									+ "'"
-								)
-							
+								)				
+								if(str(NodeName)=="TREE_NAME"):
+									Product.SetGlobal('TreeName',str(NodeText))
 							elif NodeName.find(",") > 0:                                
 								Nodesplit = NodeName.split(",")
 								if len(Nodesplit) > 1:
@@ -1695,6 +1919,8 @@ class TreeView:
 										subTabName = str(NodeText) + " : " + str(subTabName)
 									elif (str(ObjRecId) == '354C16C4-BDCA-4045-BC4A-40F1A6600AFD' and  str(getRightView.SUBTAB_TYPE) == 'OBJECT RELATED LAYOUT'):
 										subTabName = str(NodeText) + " : " + str(subTabName)
+									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+										subTabName = ""
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
@@ -1859,15 +2085,15 @@ class TreeView:
 										RecAttValue = NodeRecId                                        
 										ObjectName = parObjName
 										Subwhere_string = "" + str(where_string) + ""
-										Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
+										#Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
 										addon_obj = None
 										if NodeText.startswith('Z'):
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText))
 										
-										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG'):                                      
+										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
-											service_id_1 = str(NodeText)
+											#service_id_1 = str(NodeText)
 										elif addon_obj:											
 											if 'SERVICE_ID' in Subwhere_string:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
@@ -1889,7 +2115,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										
+										Trace.Write('2121')
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -1981,6 +2207,8 @@ class TreeView:
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ChildDict["id"] = RelatedId
 							if subTabName:
+								if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+									subTabName = ""
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
@@ -2094,31 +2322,52 @@ class TreeView:
 										                                   
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
-									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"'") 
-									for tree in getpagename:                 
-										#where_string =  where_string 
-										Tree_Node = str(tree.TREE_RECORD_ID)
-									Subwhere_string += " AND TREE_RECORD_ID = '"+str(Tree_Node)+"'" 
+									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
+									if getpagename:
+										for tree in getpagename:                 
+											#where_string =  where_string 
+											Tree_Node = str(tree.TREE_RECORD_ID)
+										Subwhere_string += " AND TREE_RECORD_ID = '"+str(Tree_Node)+"'" 
 								elif str(NodeText) in ["Sending Equipment", "Receiving Equipment"]:
 									Quote.SetGlobal("Equipment",NodeText) 
 								PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                
 								# Filter based on service type - Services Node - End
-								#Trace.Write("check----"+str(NodeText))
-								
-								SubChildData = self.getChildOne(
-									SubNodeType,
-									SubNodeName,
-									RecAttValue,
-									nodeId,
-									SubParRecId,
-									subDynamicQuery,
-									ObjectName,
-									RecId,
-									Subwhere_string,
-									PageRecId,
-									ObjectRecId,
-									ordersBy,
-								)
+								#Trace.Write("check----"+str(NodeText))										
+								try:			   
+									CurrentTabName = TestProduct.CurrentTab
+								except:
+									CurrentTabName = ""			
+								if CurrentTabName == 'Profile':	
+									SubChildData = self.getProfileChildOne(
+										SubNodeType,
+										SubNodeName,
+										RecAttValue,
+										nodeId,
+										SubParRecId,
+										subDynamicQuery,
+										ObjectName,
+										RecId,
+										Subwhere_string,
+										PageRecId,
+										ObjectRecId,
+										ordersBy,
+									)	
+								else:
+									Trace.Write('2358'+str(Product.GetGlobal('TreeName')))
+									SubChildData = self.getChildOne(
+										SubNodeType,
+										SubNodeName,
+										RecAttValue,
+										nodeId,
+										SubParRecId,
+										subDynamicQuery,
+										ObjectName,
+										RecId,
+										Subwhere_string,
+										PageRecId,
+										ObjectRecId,
+										ordersBy,
+									)
 							
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
@@ -2290,6 +2539,8 @@ class TreeView:
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
 								if subTabName:
+									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
+										subTabName = ""
 									SubTabList.append(
 										self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 									)
@@ -2415,7 +2666,8 @@ class TreeView:
 												+ "'"
 											)											
 											Subwhere_string = str(where_string)
-											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)                                     
+											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)	
+											Trace.Write('2672')									                              
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,

@@ -8,6 +8,7 @@
 import math
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
 
 Sql = SQL()
 
@@ -103,7 +104,7 @@ def POPUPLISTVALUEADDNEW(
 		CurrentTab = TestProduct.CurrentTab
 	except:
 		CurrentTab = 'Quotes'    
-	
+	Trace.Write('TABLEID----'+str(TABLEID))
 	table1 = table[2] + "-" + table[3]
 	popup_table_id = table[0] + "-" + table[1]
 
@@ -799,7 +800,9 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			pagedata = ""
-			if QryCount < int(PerPage):
+			if QryCount == 0:
+				pagedata = str(QryCount) + " - " + str(QryCount) + " of "
+			elif QryCount < int(PerPage):
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
@@ -2058,7 +2061,7 @@ def POPUPLISTVALUEADDNEW(
 				dbl_clk_function = (
 					'$("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); });  $(".bs-checkbox input").addClass("custom"); $("'
+					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); var count = 0; var selectAll = false; $("#add-offerings").css("display","none"); $("#offerings-addnew-model").find(\'[type="checkbox"]:checked\').map(function () {var sel_val = $(this).closest("tr").find("td:nth-child(2)").text(); count = 1; console.log("popu_upid3333 ============>"+$(this).attr("name")); if ($(this).attr("name") == "btSelectAll"){console.log("popu_up1111 ============>"); var selectAll = true; $("#add-offerings").css("display","block");} else if (sel_val != "") {console.log("popu_up222 ============>"); $("#add-offerings").css("display","block");} else{$("#add-offerings").css("display","none");}});if(count == 0){$("#add-offerings").css("display","none");}}); $(".bs-checkbox input").addClass("custom"); $("'
 					+ str(table_ids)
 					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 					+ str(table_id)
@@ -2068,6 +2071,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_id)
 					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
 					)
+				
 
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
@@ -2085,13 +2089,13 @@ def POPUPLISTVALUEADDNEW(
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,additional_where
 					)
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "", Product.GetGlobal("TreeParam"),ObjectName, contract_quote_record_id,additional_where
 					)
 				)
@@ -2123,11 +2127,11 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			if TreeParam == "Product Offerings":
-				where_string += """ ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )""".format(
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )""".format(
 					contract_quote_record_id
 				)
 			else:
-				where_string += """ ISNULL(IS_SPARE_PART,0) = 0 AND PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
+				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
 					Product.GetGlobal("TreeParam"), contract_quote_record_id
 				)
 				
@@ -2507,8 +2511,8 @@ def POPUPLISTVALUEADDNEW(
 				if TreeParam == 'Sending Equipment' or TreeParam == "Receiving Equipment":
 					
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParentParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam
 					)
 					)
 					""" elif TreeParam == 'Receiving Equipment':
@@ -2549,11 +2553,11 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			
 			if TreeParam == 'Sending Equipment':
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT')".format(
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
 				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam
 			)
 			elif TreeParam == 'Receiving Equipment':
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT')".format(
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
 				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam
 			)
 			else:
@@ -3148,11 +3152,11 @@ def POPUPLISTVALUEADDNEW(
 				+ " ORDER BY abs(DISPLAY_ORDER) "
 			)
 
-			lookup_val = [val.LOOKUP_API_NAME for val in Sqq_obj]
+			lookup_val = [val.LOOKUP_API_NAME for val in Sqq_obj]			
 			if ObjectName == "ACACST":
 				lookup_val.append("APROBJ_LABEL")
-			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}
-			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}
+			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}			
+			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}			
 			new_value_dict = {}
 			new_value_dict1 = {}
 			val_list = []
@@ -3169,11 +3173,12 @@ def POPUPLISTVALUEADDNEW(
 					)
 					new_value_dict1 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 			
-			else:               
+			else:				               
 				result = ScriptExecutor.ExecuteGlobal(
 					"SYPARCEFMA", {"Object": str(ObjectName), "API_Name": record_field, "API_Value": str(primary_value),},
 				)
 				new_value_dict1 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
+				Trace.Write("new_value_dict1==111"+str(new_value_dict1))
 				attrval_obj = Sql.GetFirst(
 					"SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE OBJECT_NAME='"
 					+ str(ObjectName)
@@ -3214,7 +3219,31 @@ def POPUPLISTVALUEADDNEW(
 					
 				Product.SetGlobal("Flag_value", "false")
 				
-			
+			if str(ObjectName)  == "SYSEFL":
+				Trace.Write("Pers Attr Value--->")
+				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+				Getapiname = Sql.GetFirst(
+					"SELECT RECORD_ID FROM SYSECT (NOLOCK) WHERE SECTION_NAME = '"
+					+ str(TreeParentParam)
+					+ "' AND PAGE_NAME = '"
+					+ str(TreeTopSuperParentParam)
+					+"'"
+				)
+				if Getapiname is not None:
+					PersAttVal_rec_id = str(Getapiname.RECORD_ID)
+					result = ScriptExecutor.ExecuteGlobal(
+						"SYPARCEFMA",
+						{
+							"Object": str(ObjectName),
+							"API_Name": "SECTION_RECORD_ID",
+							"API_Value": str(PersAttVal_rec_id),
+						},
+					)
+					new_value_dict3 = {}
+					new_value_dict3["SECTION_RECORD_ID"] = str(PersAttVal_rec_id)
+					new_value_dict2 = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
+					new_value_dict1.update(new_value_dict2)
+					new_value_dict1.update(new_value_dict3)
 			if TreeParentParam == "Approval Chain Steps":
 				TreeParam = Product.GetGlobal("TreeParam")
 				StepRecordId = Sql.GetFirst(
@@ -3256,6 +3285,7 @@ def POPUPLISTVALUEADDNEW(
 						new_value_dict["PROFILE_RECORD_ID"] = str(getcpqpermission.permission_id)
 
 			if NEWVALUE != "":
+				Trace.Write("else1====NEWVALUE")
 				if str(OPER) == "CLEAR SELECTION":
 					attrval_obj = Sql.GetFirst(
 						"SELECT API_NAME FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
@@ -3405,7 +3435,7 @@ def POPUPLISTVALUEADDNEW(
 							if TABLEID == 'ADDNEW__SYOBJR_00014_SYOBJ_01024' and LOOKUPAPI == 'PROFILE_ID':
 								#Trace.Write("2116---ADDNEW__SYOBJR_00014_SYOBJ_01024")
 								api_name = 'PROFILE_RECORD_ID'
-			else:
+			else:				
 				attrval_obj = Sql.GetFirst(
 					"SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE OBJECT_NAME='"
 					+ str(ObjectName)
@@ -3422,6 +3452,7 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict_new[api_name] = str(primary_value)
 					new_value_dict = {API_Names.get("API_NAME"): API_Names.get("FORMULA_RESULT") for API_Names in result}
 					new_value_dict.update(new_value_dict_new)
+					
 					# A043S001P01-12265 Start
 					if str(ObjectName) == "ACACSA" or str(ObjectName) == "ACAPTF":
 						ChainRec = new_value_dict.get("APRCHN_RECORD_ID")
@@ -3495,9 +3526,9 @@ def POPUPLISTVALUEADDNEW(
 				)
 			sec_str += '<table class="width100">'
 
-			if Sqq_obj is not None:
-				for val in Sqq_obj:
-					current_obj_api_name = val.API_NAME.strip()
+			if Sqq_obj is not None:				
+				for val in Sqq_obj:					
+					current_obj_api_name = val.API_NAME.strip()					
 					readonly_val = val.PERMISSION.strip()
 					current_obj_field_lable = val.FIELD_LABEL.strip()
 					data_type = val.DATA_TYPE.strip()
@@ -3706,12 +3737,14 @@ def POPUPLISTVALUEADDNEW(
 								sec_str += '<span class="req-field mrg3fltltmt7">*</span>'
 							sec_str += "</a></td>"
 
-						if data_type == "LOOKUP":
-							if current_obj_api_name in new_value_dict:
-								current_obj_value = new_value_dict[current_obj_api_name]
+						if data_type == "LOOKUP":	
+							Trace.Write("new_value_dict==="+str(new_value_dict))						
+							if current_obj_api_name in new_value_dict:								
+								current_obj_value = new_value_dict[current_obj_api_name]							
 
 							try:
-								if current_obj_api_name in new_value_dict1:
+								Trace.Write("new_value_dict1==="+str(new_value_dict1))
+								if current_obj_api_name in new_value_dict1:									
 									current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 
 							except:
@@ -3853,6 +3886,14 @@ def POPUPLISTVALUEADDNEW(
 									+ str(TreeParentParam)
 									+"' class='form-control related_popup_css' disabled>"
 								)
+							elif current_obj_api_name == "PAGE_NAME" and str(ObjectName) == "SYPGAC":
+								sec_str += (
+									"<td><input id='"
+									+ str(current_obj_api_name)
+									+ "' type='text' value='"
+									+ str(TreeParentParam)
+									+"' class='form-control related_popup_css' disabled>"
+								)	
 							elif current_obj_api_name == "PAGE_LABEL" and str(ObjectName) == "SYSECT":
 								sec_str += (
 									"<td><input id='"
@@ -3906,6 +3947,7 @@ def POPUPLISTVALUEADDNEW(
 									and current_obj_api_name in lookup_val
 									and readonly != "readonly"
 								):
+									Trace.Write('cm to this if====')
 									formula_disabled = "disabled"
 									sec_str += (
 										"<td><input id='"
@@ -3933,6 +3975,7 @@ def POPUPLISTVALUEADDNEW(
 										)
 								else:
 									try:
+										Trace.Write('cm to this else====')
 										if current_obj_api_name in new_value_dict1:
 											current_obj_value = new_value_dict1.get(str(current_obj_api_name))
 											Trace.Write("--3742---current_obj_value--->" + str(current_obj_value))
@@ -4029,6 +4072,7 @@ def POPUPLISTVALUEADDNEW(
 							)
 
 						elif data_type == "PICKLIST":
+							Trace.Write('4036---------')
 							if ObjectName == "SYOBJD" or ObjectName == "ACACSA":
 								sec_str += (
 									'<td><select id="'
@@ -4056,13 +4100,22 @@ def POPUPLISTVALUEADDNEW(
 								+ str(current_obj_api_name)
 								+ "' "
 							)
+							Trace.Write('4063----')
+							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
-							send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
-							if send_n_receive_acnt:
-								for acnt in send_n_receive_acnt:
-									if acnt.PARTY_ROLE == "SENDING ACCOUNT" or acnt.PARTY_ROLE == "RECEIVING ACCOUNT":
-										Tier_List1.remove(acnt.PARTY_ROLE)
+							Trace.Write('4063--Tier_List1-----'+str(TabName))
+							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id))
+							if str(TabName) == "Quote":
+								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+								list_of_role = []
+								if send_n_receive_acnt:
+									for acnt in send_n_receive_acnt:
+										list_of_role.append(acnt.PARTY_ROLE)
+										if acnt.PARTY_ROLE == "SENDING ACCOUNT" or acnt.PARTY_ROLE == "RECEIVING ACCOUNT":
+											Tier_List1.remove(acnt.PARTY_ROLE)
+									if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
+										Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))
 							for req1 in Tier_List1:
 								sec_str += "<option>" + str(req1) + "</option>"
@@ -4107,6 +4160,7 @@ def POPUPLISTVALUEADDNEW(
 				cancel_button = ""
 				save_button = ""
 				event_name = "loadRelatedList('" + str(popup_table_id) + "','" + str(DIVNAME) + "')"
+				
 
 				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"'")
 

@@ -5,7 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 from SYDATABASE import SQL
 import SYCNGEGUID as CPQID
@@ -72,8 +72,6 @@ def GSCONTLOOKUPPOPUP(
         pass
     if tableId == "":
         Header_Obj = Sql.GetFirst("SELECT LABEL,RECORD_NAME FROM SYOBJH (nolock) WHERE OBJECT_NAME='" + str(TABLEID) + "'")
- 
-    
     DATA_OBJ = Sql.GetFirst(
         "SELECT COLUMNS FROM SYOBJS (nolock) WHERE CONTAINER_NAME='" + str(TABLEID) + "' AND NAME='Lookup list'"
     )
@@ -225,6 +223,25 @@ def GSCONTLOOKUPPOPUP(
         )
         sec_str += "</div></div>"
         sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+    elif LOOKUP_ID == "PARTY_ID":
+        sec_str += (
+            '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
+            + str(eval("Header_Obj.LABEL")).upper()
+            + " LOOKUP LIST"
+            + '<button type="button" style="float:right;" class="close"  data-dismiss= "modal">X</button></div>'
+        )
+        sec_str += '<div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Acoount ID</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Account Name</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><button type="button" class="btnconfig" id="' + str(TABLEID) + "|" + str(str(Header_Obj.RECORD_NAME)) + '" onclick="' + btn_clear + '">CLEAR SELECTION</button>'
+        # sec_str += (
+        #     '<button type="button" class="btnconfig" id="'
+        #     + str(TABLEID)
+        #     + "|"
+        #     + str(str(Header_Obj.RECORD_NAME))
+        #     + '" onclick="'
+        #     + btn_clear
+        #     + '">CLEAR SELECTION</button>'
+        # )
+        sec_str += "</div></div>"
+        sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
     else:
         sec_str += (
             '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
@@ -271,7 +288,7 @@ def GSCONTLOOKUPPOPUP(
         if TABLEID == "SVPGAL":
             NAME = str(DATA_OBJ[1:-1])
         else:
-            NAME = str(DATA_OBJ.COLUMNS[1:-1]).replace('"', "'")
+            NAME = str(DATA_OBJ.COLUMNS[1:-1]).replace('"', "'").replace("[","").replace("]","")
         if tab_Name == "Set" and str(TABLEID) == "MAATTR":
             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_MA_00263").GetValue()
             Atrribute_Obj = Sql.GetList(
@@ -291,6 +308,7 @@ def GSCONTLOOKUPPOPUP(
         RelTABEL_NAME = ""
         API_NAME_list = [ins.API_NAME for ins in END_OBJ]
         API_NAME_str = ",".join(API_NAME_list)
+        Trace.Write('API_NAME_str==='+str(API_NAME_str))
         FIELD_LABEL_list = [ins.FIELD_LABEL for ins in END_OBJ]
         LABEL_list = [{ins.FIELD_LABEL: ins.API_NAME} for ins in END_OBJ]
         FIELD_LABEL_str = ",".join(FIELD_LABEL_list)
@@ -299,6 +317,7 @@ def GSCONTLOOKUPPOPUP(
             if str(ins.DATA_TYPE) == "CHECKBOX":
                 CHECKBOX_LIST.append(str(ins.API_NAME))
         RelTABEL_NAME = ""
+        Trace.Write('RelTABEL_NAME==='+str(RelTABEL_NAME))
         if RelTABEL_NAME != "QSTN_R_SYOBJR_80011":
             SegmentsClickParam = Product.GetGlobal("TreeParam")
             TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -416,6 +435,7 @@ def GSCONTLOOKUPPOPUP(
                 VAL_Obj = Sql.GetList(VAL_Str)
                 count_query=SqlHelper.GetList("SELECT COUNT(*) as cnt FROM cpq_permissions where permission_type ='0'")
             else:
+                Trace.Write('At 437')
                 if str(where).strip() != "":
                     where = " where " + str(where)
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID) + " " + str(where)
@@ -426,6 +446,12 @@ def GSCONTLOOKUPPOPUP(
                 elif str(TABLEID) == "SAQSCO":
                     VAL_Str = "SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id"))
                     VAL_Obj = Sql.GetList(VAL_Str)
+                # elif str(TABLEID) == "SYOBJR":
+                #     VAL_Str = "SELECT top 10 * " + " FROM " + str(TABLEID)
+                #     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
+                elif str(TABLEID) == "SYOBJR":
+                    VAL_Str = "SELECT " + str(API_NAME_str) + " FROM " + str(TABLEID)
+                    count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))    
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
@@ -816,6 +842,9 @@ def GSCONTLOOKUPPOPUPFILTER(
                     account_id = quote_obj.ACCOUNT_ID   
                     VAL_Str = ("SELECT top 1000 * FROM MAFBLC WHERE "+ str(ATTRIBUTE_VALUE_STR)+ " AND ACCOUNT_ID like '%{account_id}%'".format(account_id = account_id))
                     VAL_Obj = Sql.GetList(VAL_Str)
+                elif str(TABLEID) == "SAQSCO":
+                    VAL_Str = ("SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND {} AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id"),ATTRIBUTE_VALUE_STR))
+                    VAL_Obj = Sql.GetList(VAL_Str)   
                 elif str(TABLEID) == "cpq_permissions":
                     VAL_Str = "SELECT top 10000 permission_id,SYSTEM_ID,permission_name FROM cpq_permissions where "+ str(ATTRIBUTE_VALUE_STR)+ " and permission_type ='0'"
                     VAL_Obj = Sql.GetList(VAL_Str)                     
@@ -848,7 +877,7 @@ def GSCONTLOOKUPPOPUPFILTER(
                     VAL_Obj = Sql.GetList(VAL_Str) 
                 if str(where).strip() != "" :
                     where = " and " + str(where)
-                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
+                if str(TABLEID) != "SYOBJD" and str(TABLEID) != "PRTXCL" and str(TABLEID) != "MAFBLC" and str(TABLEID) != "SAQSCO" and (str(TreeParentParam) != "Approval Chain Steps" or str(SegmentsClickParam) == "Approval Chain Steps") and TESTEDOBJECT !="SOURCE ACCOUNT":    
                     VAL_Str = "SELECT top 100 " + COLUMNS_NAME + " FROM " + TABLEID + " where " + ATTRIBUTE_VALUE_STR + where
                     VAL_Obj = Sql.GetList(VAL_Str) 
 
@@ -895,8 +924,9 @@ def GSCONTLOOKUPPOPUPFILTER(
                         + str(PRICE_MOD_ID)
                         + "' AND ACTIVE = 1 and PROCEDURE_ID !='UNASGN' "
                     )
-
-
+                elif str(TABLEID) == "SAQSCO":
+                    VAL_Str = ("SELECT DISTINCT *  from SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' ".format(Quote.GetGlobal("contract_quote_record_id")))
+                    VAL_Obj = Sql.GetList(VAL_Str)
                 elif str(tab_Name) == "Approval Chain" and str(TABLEID) == "SYOBJD" and str(TreeParentParam) == "Approval Chain Status Mappings":
                     Header_Obj = Sql.GetFirst("SELECT OBJECT_NAME FROM SYOBJH WHERE LABEL = '{}'".format(MAPPINGSAPPROVALOBJECT))
                     object_name = Header_Obj.OBJECT_NAME

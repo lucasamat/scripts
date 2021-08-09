@@ -5,6 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 Product.Attributes.GetByName("MA_MTR_TAB_ACTION").AssignValue("ADDNEW")
 Action = "ADDNEW"

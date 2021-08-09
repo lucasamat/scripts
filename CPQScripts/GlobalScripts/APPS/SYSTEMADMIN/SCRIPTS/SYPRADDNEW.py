@@ -5,6 +5,7 @@
 #   __create_date : 31/08/2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ===========================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 Webcom = Webcom  # pylint: disable=E0602
 Trace = Trace  # pylint: disable=E0602
 User = User  # pylint: disable=E0602

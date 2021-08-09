@@ -10,6 +10,8 @@ TestProduct=Webcom.Configurator.Scripting.Test.TestProduct()
 CurrentTabName=TestProduct.CurrentTab
 Trace.Write("---Tab Name is---" + str(CurrentTabName))"""
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
+
 
 Sql = SQL()
 

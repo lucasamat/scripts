@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 from SYDATABASE import SQL
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 if Product.PartNumber =="QT" and Product.Attributes.GetByName('Services') is not None:
 	Log.Info('script called--87-inside script---')

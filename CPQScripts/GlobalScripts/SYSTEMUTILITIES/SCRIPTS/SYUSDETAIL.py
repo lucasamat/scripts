@@ -5,6 +5,7 @@
 #   __create_date : 08/27/2020
 #   © BOSTON HARBOR CONSULTING INC - ALL RIGHTS RESERVED
 # ====================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 Param = Param  # pylint: disable=E0602
 User = User  # pylint: disable=E0602
 

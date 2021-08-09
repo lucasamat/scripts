@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 from datetime import datetime
@@ -1285,7 +1286,11 @@ class SYLDRTLIST:
                             elif str(RECORD_ID) == "SYOBJR-95840": 
                                 Wh_API_NAMEs = "PAGEACTION_RECORD_ID"                       
                                 RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00723").GetValue()
-                                Qustr =  " where SCRIPT_RECORD_ID = '" + str(RecAttValue) + "'"     
+                                Qustr =  " where SCRIPT_RECORD_ID = '" + str(RecAttValue) + "'"
+                            elif str(RECORD_ID) == "SYOBJR-98867":
+                                TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
+                                Wh_API_NAMEs = "PAGE_NAME"                       
+                                Qustr =  " where PAGE_NAME = '" + str(TreeParentParam) + "'"         
                             else:    
                                 Trace.Write("check1234")                         
                                 Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
@@ -1960,7 +1965,7 @@ class SYLDRTLIST:
                             + str(ObjectName)
                             + " (nolock) "
                             + str(Qustr)
-                            + " ) m where m.ROW BETWEEN "
+                            + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
                             + str(Page_End)
@@ -2394,7 +2399,7 @@ class SYLDRTLIST:
                     TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
                     
                     app_ObjectName = Sql.GetFirst("select PRIMARY_OBJECT_NAME FROM SYTABS INNER JOIN SYAPPS ON SYTABS.APP_LABEL = SYAPPS.APP_LABEL WHERE SYTABS.TAB_LABEL = '"+str(TopTreeSuperParentParam)+"' AND SYAPPS.APP_LABEL = '"+str(TreeSecondSuperTopParentParam)+"'")
-                    Qustr = " WHERE SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(ObjectName)+"' "
+                    Qustr = " WHERE SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(app_ObjectName.PRIMARY_OBJECT_NAME)+"' "
                     Qury_str = (
                         "select DISTINCT top "
                         + str(PerPage)
@@ -2406,7 +2411,7 @@ class SYLDRTLIST:
                         + str(ObjectName)
                         + " (nolock) "
                         + str(Qustr)
-                        + " ) m where m.ROW BETWEEN "
+                        + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                         + str(Page_start)
                         + " and "
                         + str(Page_End)
@@ -2953,7 +2958,7 @@ class SYLDRTLIST:
                                 + "' and SE.SECTION_NAME ='BASIC INFORMATION'"
                             )
                         else:
-                            Trace.Write('At line 2805 -- Else')
+                            Trace.Write('At line 2805 ---2960----- Else')
                             imgValue = ''
                             if value1234.startswith("<img"):
                                 # value1234 = value1234.replace('"', "&quot;")
@@ -3026,7 +3031,7 @@ class SYLDRTLIST:
                                         seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                         seg_pric["PRICE_FACTOR"] = PriceFactor
                                     else:
-                                        if str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']:
+                                        if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                             
                                             new_dict[value123] = (
                                                 '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
@@ -3068,12 +3073,12 @@ class SYLDRTLIST:
                                                     
                                                     if value1234 is not None and value1234 != '':
                                                         new_dict[value123] = (
-                                                            '<abbr id ="' + key_value + '" title="' + value1234 +'">' + value1234 +  ' %' +  "</abbr>"
+                                                            '<abbr id ="' + key_value + '" title="' + str(value1234).upper() +'">' + str(value1234).upper() +  ' %' +  "</abbr>"
                                                         )
                                                         Trace.Write('At line 2899')
                                                     else:
                                                         new_dict[value123] = (
-                                                        '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                                                        '<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                                                     )    
                                                         Trace.Write('At line 2904')
                                                 else:
@@ -3088,15 +3093,15 @@ class SYLDRTLIST:
                                                         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
                                                     # for redirecting the left tree node while viewing record from listgrid - start    
                                                     elif ObjectName in value1234: 
-                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>") 
+                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
                                                         Trace.Write('At line 2918')
                                                     # for redirecting the left tree node while viewing record from listgrid - end       
                                                     elif ObjectName == "SAQSAO":
                                                         
-                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>") 
+                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
                                                     else:
                                                         Trace.Write('At line 2924')
-                                                        new_dict[value123] = ('<abbr title="' + value1234 + '">' + value1234 + "</abbr>")
+                                                        new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
@@ -3625,54 +3630,98 @@ class SYLDRTLIST:
                 + str(table_id)
                 + "'); }); "
             )
+            Trace.Write("@3633------->"+str(dbl_clk_function))
 
         else:
-            
-            dbl_clk_function += (
-                'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-                + str(table_ids)
-                + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-                + str(cls)
-                + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-                + str(table_ids)
-                + '").on("check-all.bs.table", function (e) { var table = $("'
-                + str(table_ids)
-                + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-                + str(table_ids)
-                + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
-                + str(table_ids)
-                + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
-                + str(cls)
-                + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
-            )
-            dbl_clk_function += (
-                '$("'
-                + str(table_ids)
-                + '").on("dbl-click-cell.bs.table", onClickCell); $("'
-                + str(table_ids)
-                + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
-                + str(table_ids)
-                + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
-                + str(cls)
-                + '").text());  data1 = $element.closest("tr").find("td:'
-                + str(cls)
-                + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
-                + str(cls)
-                + '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
-                + str(table_id)
-                + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
-                + str(table_id)
-                + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (sparePartsBulkAddBtn.length == 0 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","none");} else if(sparePartsBulkAddBtn.length == 1 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","block");$("#spare-parts-bulk-edit-btn").css("display","none");$("#spare-parts-bulk-add-modal-btn").css("display","none");}; if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
-                + str(table_ids)
-                + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
-                + str(table_id)
-                + "_SortColumn', name); localStorage.setItem('"
-                + str(table_id)
-                + "_SortColumnOrder', order); RelatedContainerSorting(name, order, '"
-                + str(table_id)
-                + "'); }); "
-            )            
-        
+            if RECORD_ID != "SYOBJR-00009":
+                dbl_clk_function += (
+                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+                    + str(table_ids)
+                    + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("check-all.bs.table", function (e) { var table = $("'
+                    + str(table_ids)
+                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+                )
+                dbl_clk_function += (
+                    '$("'
+                    + str(table_ids)
+                    + '").on("dbl-click-cell.bs.table", onClickCell); $("'
+                    + str(table_ids)
+                    + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+                    + str(table_ids)
+                    + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text());  data1 = $element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+                    + str(table_id)
+                    + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
+                    + str(table_id)
+                    + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");TreeParam = localStorage.getItem("CommonTreeParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (sparePartsBulkAddBtn.length == 0 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","none");} else if(sparePartsBulkAddBtn.length == 1 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","block");$("#spare-parts-bulk-edit-btn").css("display","none");$("#spare-parts-bulk-add-modal-btn").css("display","none");};if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
+                    + str(table_ids)
+                    + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+                    + str(table_id)
+                    + "_SortColumn', name); localStorage.setItem('"
+                    + str(table_id)
+                    + "_SortColumnOrder', order); RelatedContainerSorting(name, order, '"
+                    + str(table_id)
+                    + "'); }); "
+                )  
+            else:
+                dbl_clk_function += (
+                    'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+                    + str(table_ids)
+                    + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("check-all.bs.table", function (e) { var table = $("'
+                    + str(table_ids)
+                    + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+                    + str(table_ids)
+                    + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+                )
+                dbl_clk_function += (
+                    'debugger; $("'
+                    + str(table_ids)
+                    + '").on("dbl-click-cell.bs.table", onClickCell); $("'
+                    + str(table_ids)
+                    + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+                    + str(table_ids)
+                    + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text());  data1 = $element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'
+                    + str(cls)
+                    + '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'
+                    + str(table_id)
+                    + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
+                    + str(table_id)
+                    + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = ""; $("input").prop("readonly",false); document.getElementById("cont_multiEditModalSection").style.display = "none"; var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");TreeParam = localStorage.getItem("CommonTreeParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (sparePartsBulkAddBtn.length == 0 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","none");} else if(sparePartsBulkAddBtn.length == 1 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","block");$("#spare-parts-bulk-edit-btn").css("display","none");$("#spare-parts-bulk-add-modal-btn").css("display","none");};if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
+                    + str(table_id)
+                    + "_SortColumn', name); localStorage.setItem('"
+                    + str(table_id)
+                    + "_SortColumnOrder', order); RelatedContainerSorting(name, order, '"
+                    + str(table_id)
+                    + "'); }); "
+                )                      
+                Trace.Write("@3681-------->"+str(dbl_clk_function))
         
 
         NORECORDS = ""
@@ -4021,6 +4070,7 @@ class SYLDRTLIST:
                 + str(cls)
                 + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
             )
+            buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>"
             SAQICO_dbl_clk_function += (	
                 '$("'	
                 + str(table_ids)	
@@ -4038,7 +4088,7 @@ class SYLDRTLIST:
                 + str(table_id)	
                 + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'	
                 + str(table_id)	
-                + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
+                + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "input#"+data3;localStorage.setItem("value_tag", inp); $("#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F").find(inp).prop("disabled", false); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	RecId = "SYOBJR-00009";RecName = "div_CTR_Assemblies";$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'loadRelatedList(RecId,RecName);\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");$("#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F").find(inp).addClass("fltltlightyello");} document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
                 + str(table_ids)	
                 + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"	
                 + str(table_id)	
@@ -4046,6 +4096,7 @@ class SYLDRTLIST:
                 + str(table_id)	
                 + "_SortColumnOrder', order); }); "	
             )	
+            Trace.Write("@4099----->"+str(SAQICO_dbl_clk_function))
 
             SAQICO_dbl_clk_function += (
                     '$("'
@@ -4853,6 +4904,8 @@ class SYLDRTLIST:
                         + " from "
                         + str(ObjectName)
                         + " (nolock) WHERE "
+                        +str(ATTRIBUTE_VALUE_STR)
+                        +""
                         + str(Wh_API_NAME)
                         + " = '"
                         + str(RecAttValue)
@@ -4865,6 +4918,8 @@ class SYLDRTLIST:
                             "select count(*) as cnt from "
                             + str(ObjectName)
                             + " (nolock) WHERE "
+                            +str(ATTRIBUTE_VALUE_STR)
+                            +""
                             + str(Wh_API_NAME)
                             + " = '"
                             + str(RecAttValue)
@@ -4899,7 +4954,46 @@ class SYLDRTLIST:
                             tabRecord = str(gettabres.RECORD_ID)
 
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" SECTION_RECORD_ID = '" + str(tabRecord) + "'"
-
+                    elif RECORD_ID == "SYOBJR-93121":
+                        proff_per_id = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+                        Profile_ID_PERMISSION = Product.GetGlobal("Profile_ID_PERMISSION")                        
+                        if proff_per_id != "":
+                            Qury_str = (
+                                "select top "
+                                + str(PerPage)
+                                + " PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId from ( select ROW_NUMBER() OVER( order by APP_ID) AS ROW, PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId  from SYPRAP (nolock) where "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(proff_per_id)
+                                + "') m where m.ROW BETWEEN "
+                                + str(Page_start)
+                                + " and "
+                                + str(Page_End)
+                            )
+                            QuryCount_str = (
+                                "select count(*) as cnt from "
+                                + str(ObjectName)
+                                + " (nolock) where  "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(proff_per_id)
+                                + "' "
+                            )
+                        else:
+                            proff_id = Product.GetGlobal("Profile_ID")
+                            Qury_str = (
+                                "select top "
+                                + str(PerPage)
+                                + " PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId from ( select ROW_NUMBER() OVER( order by APP_ID) AS ROW, PROFILE_APP_RECORD_ID,APP_ID,VISIBLE,[DEFAULT],PROFILE_RECORD_ID, CpqTableEntryId  from SYPRAP (nolock) where "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(Profile_ID_PERMISSION)
+                                + "') m where m.ROW BETWEEN "
+                                + str(Page_start)
+                                + " and "
+                                + str(Page_End)
+                            )
+                            QuryCount_str = (
+                                "select count(*) as cnt from "
+                                + str(ObjectName)
+                                + " (nolock) where  "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_RECORD_ID = '"
+                                + str(Profile_ID_PERMISSION)
+                                + "' "
+                            )
                     elif RECORD_ID == "SYOBJR-95800":                        
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
                         permiss_id = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
@@ -5946,7 +6040,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-93123":
                         app_ObjectName = Sql.GetFirst("select PRIMARY_OBJECT_NAME FROM SYTABS INNER JOIN SYAPPS ON SYTABS.APP_LABEL = SYAPPS.APP_LABEL WHERE SYTABS.TAB_LABEL = '"+str(TopTreeSuperParentParam)+"' AND SYAPPS.APP_LABEL = '"+str(TreeFirstSuperTopParentParam)+"'")
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-                        Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR) +" SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(ObjectName)+"' "
+                        Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR) +" SECTION_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"' AND OBJECT_NAME = '"+str(app_ObjectName.PRIMARY_OBJECT_NAME)+"' "
                         Qury_str = (
                             "select DISTINCT top "
                             + str(PerPage)
@@ -5958,7 +6052,7 @@ class SYLDRTLIST:
                             + str(ObjectName)
                             + " (nolock) "
                             + str(Qustr)
-                            + " ) m where m.ROW BETWEEN "
+                            + " ORDER BY SECTION_FIELD_ID ASC ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
                             + str(Page_End)
@@ -6196,7 +6290,16 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-95890": 
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                    elif str(RECORD_ID) == "SYOBJR-95826":
+                        RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00701").GetValue()
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"                  
+                    elif str(RECORD_ID) == "SYOBJR-95976":
+                        RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00701").GetValue()
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                    elif str(RECORD_ID) == "SYOBJR-95985":
+                        Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR)+" TREE_NAME = '"+str(TreeParentParam)+"'"
                     else:    
+                        Trace.Write('Record Id -->'+str(RECORD_ID))
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
                         Trace.Write("sort param 2 "+str(Wh_API_NAMEs))                                        
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
@@ -7385,6 +7488,8 @@ class SYLDRTLIST:
                             Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
                         elif  str(RECORD_ID) == "SYOBJR-98789" and "Receiving Account -" in TreeParam :
                             Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"   
+                        elif str(RECORD_ID) == "SYOBJR-95985":
+                            Qustr += " WHERE TREE_NAME = '"+str(TreeParentParam)+"'"
                         else:
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                             Trace.Write("7100"+str(Qustr))
@@ -7507,7 +7612,8 @@ class SYLDRTLIST:
                     if ObjectName != "SAQIBP" :
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
-
+                if str(Action_permission.get("Edit")).upper() == "TRUE":
+                    Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'
                 if str(Action_permission.get("Delete")).upper() == "TRUE":
                     Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
 
@@ -7733,7 +7839,7 @@ class SYLDRTLIST:
                         value1234 = value1234.replace("<p>", " ")
                         value1234 = value1234.replace("</p>", " ")                        
                         new_dict[value123] = (
-                            '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                            '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                         )                        
 
                     else:               
@@ -7765,7 +7871,7 @@ class SYLDRTLIST:
                                     seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                     seg_pric["PRICE_FACTOR"] = PriceFactor
                                 else:                                    
-                                    if str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']:
+                                    if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                         new_dict[value123] = (
                                             '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" disabled>' + value1234 + "</input>"
                                         )
@@ -7807,7 +7913,7 @@ class SYLDRTLIST:
                                                 
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
-                                                        new_dict[value123] = value1234                                                        
+                                                        new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids

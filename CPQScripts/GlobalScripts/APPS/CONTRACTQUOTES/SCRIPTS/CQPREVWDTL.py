@@ -4,7 +4,7 @@
 #   __primary_author__ : WASIM ABDUL
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 import datetime
 from datetime import datetime
@@ -13,7 +13,6 @@ import SYCNGEGUID as CPQID
 import CQVLDRIFLW
 
 # import CMGTRULRAC as CMRUL
-# Get_UserID = ScriptExecutor.ExecuteGlobal("SYGETUSDID")
 try:
 	userId = str(User.Id)
 	userName = str(User.UserName)
@@ -135,7 +134,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 				+ str(sefl.FIELD_LABEL)
 				+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
 				+ str(sefl.FIELD_LABEL)
-				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i  class='fa fa-info-circle fltlt'></i></a> </div>"
+				+ "</label> </abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
 			col_name = Sql.GetFirst("SELECT * FROM SAOPQT WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
@@ -154,7 +153,9 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' tabindex='' disabled=''> </div>"
 					)
 			else:
 
@@ -312,7 +313,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# if sefl_api != "REGION":
 					Trace.Write('At line 289-->'+str(sefl_api))
 					sec_str += (
-						"<div class='col-md-3 pad-0'> <input type='text' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)

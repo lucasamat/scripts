@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
+import Webcom.Configurator.Scripting.Test.TestProduct
 
 Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()

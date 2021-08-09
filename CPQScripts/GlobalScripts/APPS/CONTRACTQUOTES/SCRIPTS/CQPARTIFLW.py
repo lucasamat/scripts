@@ -5,6 +5,7 @@
 #   __create_date :23-10-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
@@ -42,10 +43,10 @@ def iflow_pricing_call(user,entries):
 
         authorization = Convert.ToBase64String(binaryAuthorization)
         authorization = "Basic " + authorization
-    Log.Info("testing.............")
+    Log.Info("testing............."+str(requestdata))
     webclient = System.Net.WebClient()
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
     response = webclient.UploadString(URL, requestdata)
-    Trace.Write("33333333333333333    " + str(response))
+    Log.Info("33333333333333333    " + str(response))
     

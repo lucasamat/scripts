@@ -5,7 +5,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace.Write('BULK EDIT SAVE BILLING MATRIX')
 import math
 import SYCNGEGUID as CPQID
@@ -31,8 +31,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear):
 		valuedate = value[1][0:3]
 		getamtval = re.findall(r"\d",str(totalyear))
 		SubTab = getamtval[0]
-		
-		
+				
 		getfinalmonth = 'MONTH_'+str(int(valuedate)).strip()
 		
 		sqlforupdatePT = "UPDATE SAQIBP SET BILLING_AMOUNT = {BT} where QUOTE_RECORD_ID ='{CT}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1])

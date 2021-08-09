@@ -7,7 +7,7 @@
 # ==========================================================================================================================================
 from SYDATABASE import SQL
 import SYCNGEGUID as CPQID
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 Sql = SQL()
 #Product_name = Product.Name
 
@@ -116,6 +116,8 @@ class DeleteConfirmPopup:
         ban_str += "CONFIRMATION : DELETE " + str(LABLE)
         # ban_str += '<button type="button" class="close" data-dismiss="modal">X</button>'
         ban_str += "</div>"
+        Trace.Write('GridName----'+str(GridName))
+        Trace.Write('LABLE----'+str(LABLE))
         sec_str += (
             "<div> Are you sure you would like to delete this " + str(GridName).title() + " " + str(LABLE) + " ?</div>"
         )
@@ -161,6 +163,12 @@ class DeleteConfirmPopup:
                     ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(
                         RecordValue=str(details[1])
                     )
+                elif ObjName.startswith("SYOBJX"):
+                    deleteFunction = 'CommonDeleteRecord("{RecordId}", "{ObjName}")'.format(
+                        RecordId=RecordId, ObjName=ObjName
+                    )
+                    Buttons = self.DynamicButton({"DELETE": str(deleteFunction), "Cancel": ""})
+                    ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(RecordValue=RecordValue.split('#')[0])
                 # elif ObjName.startswith("SYSCRP"):
                 #     Trace.Write("Check")
                 #     details = RecordValue.split('#')
@@ -180,6 +188,7 @@ class DeleteConfirmPopup:
                     Buttons = self.DynamicButton({"DELETE": str(deleteFunction), "Cancel": ""})
                     ErrorMsg = "Are you sure you would like to delete {RecordValue} record?".format(RecordValue=RecordValue)
                     #ErrorMsg = "Are you sure you would like to delete these records?"
+                    Trace.Write('REcordValue--->'+str(RecordValue))
             elif str(Message) == "INFO":
                 InfoIcon = "mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg"
                 InfoMsg = "CONFIRMATION : INFO"

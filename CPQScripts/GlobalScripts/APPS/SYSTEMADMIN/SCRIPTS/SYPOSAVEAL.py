@@ -6,7 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 # GS_POPUP_SAVE_ALL
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
@@ -127,9 +127,9 @@ def Calcfctrs(TreeParam, Treeparent, TreesuperParent, TopParentparam, query_resu
 )'''
 def do_process(TABLEID, LABLE, VALUE):
     
-    # Trace.Write("VALUE------------" + str(VALUE))
-    # Trace.Write("TABLEID------------" + str(TABLEID))
-    # Trace.Write("LABLE------------" + str(LABLE))
+    Trace.Write("VALUE------------" + str(VALUE))
+    Trace.Write("TABLEID------------" + str(TABLEID))
+    Trace.Write("LABLE------------" + str(LABLE))
 
     if len(VALUE) > 0:
         if VALUE[0] != "":
@@ -247,6 +247,8 @@ def do_process(TABLEID, LABLE, VALUE):
 
             
             row = dict(zip(LABLE, VALUE))
+            Trace.Write("Line no:250")
+            Trace.Write(row)
             ##auto populate SAPCPQ_ATTRIBUTE_NAME starts
             
             if str(TABLEID) == "SYSECT":
@@ -256,6 +258,9 @@ def do_process(TABLEID, LABLE, VALUE):
                 page_rec_id=Sql.GetFirst("SELECT RECORD_ID from SYPAGE where PAGE_NAME = '"+str(row["PAGE_NAME"])+"'")
                 row["PAGE_RECORD_ID"]=str(page_rec_id.RECORD_ID)
             #Trace.Write("------1904----" + str(TABLEID)+str(row))
+            elif str(TABLEID) == "SYTRND":
+                get_tree_rec_id=Sql.GetFirst("SELECT TREE_RECORD_ID from SYTREE where TREE_NAME = '"+str(row["TREE_NAME"])+"'")
+                row["TREE_RECORD_ID"]=str(get_tree_rec_id.TREE_RECORD_ID)
             try:
                 
                 if ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPSAC":
@@ -292,7 +297,7 @@ def do_process(TABLEID, LABLE, VALUE):
                             row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
                 elif ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPGAC":
                     if str(row.get("TAB_RECORD_ID")) != "":
-                        sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
+                        sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYTABS (NOLOCK) WHERE RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
                         APP_ID = "SYPGAC-{}-".format(sytabs_app_id.APP_ID)
                         cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYPGAC (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
                         if sytabs_app_id is not None and cpq_attr_name is not None:
@@ -322,6 +327,7 @@ def do_process(TABLEID, LABLE, VALUE):
             elif str(TABLEID) == "SYPGAC":
                 if ("ACTION_NAME" in row):
                     row["ACTION_NAME"] = row["ACTION_NAME"].title()
+                    Trace.Write('@@@@@@@@@'+str(row["ACTION_NAME"]))
 
                  
 

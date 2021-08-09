@@ -5,6 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 RecordId = Param.Primary_Data
 TabName = Param.TabNAME
 Action = Param.ACTION

@@ -4,6 +4,7 @@
 #   __primary_author__ : KRISHNA CHAITANYA
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 from datetime import datetime
 from datetime import timedelta

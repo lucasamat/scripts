@@ -9,7 +9,7 @@
 # ==========================================================================================================================================
 
 # import Webcom
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 info = ""
 UserType = SqlHelper.GetFirst("select * from users (nolock) where id ='" + str(User.Id) + "' ")
 GetVal = Product.GetGlobal("ApprovalMasterRecId")

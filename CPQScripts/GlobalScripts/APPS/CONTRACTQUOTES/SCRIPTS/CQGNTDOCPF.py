@@ -1,3 +1,4 @@
+import Webcom.Configurator.Scripting.Test.TestProduct
 GDLIST = Quote.GetGeneratedDocumentList('AMAT Quote')
 
 

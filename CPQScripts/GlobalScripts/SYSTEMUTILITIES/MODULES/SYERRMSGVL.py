@@ -5,14 +5,14 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-Webcom = Webcom  # pylint: disable=E0602
+import Webcom.Configurator.Scripting.Test.TestProduct
+#Webcom = Webcom  # pylint: disable=E0602
 Trace = Trace  # pylint: disable=E0602
 Log = Log  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 # Product = Product   # pylint: disable=E0602
 # Param = Param   # pylint: disable=E0602
 # ApiResponseFactory = ApiResponseFactory   # pylint: disable=E0602
-
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 #from datetime import timedelta

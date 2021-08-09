@@ -5,7 +5,7 @@
 #   __create_date :01-10-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 import time
 from SYDATABASE import SQL
@@ -14,6 +14,8 @@ import sys
 import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
+import re
+from datetime import timedelta , date
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -120,12 +122,12 @@ class SyncQuoteAndCustomTables:
         return date_str
     def CreateEntitlements(self,quote_record_id):
         SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=quote_record_id))
-        Log.Info("quote_record_id---123------"+str(quote_record_id))
+        #Log.Info("quote_record_id---123------"+str(quote_record_id))
         tableInfo = SqlHelper.GetTable("SAQTSE")
         x = datetime.datetime.today()
         x= str(x)
         y = x.split(" ")
-        ent_disp_val =''
+        ent_disp_val = ent_val_code = ''
         for OfferingRow_detail in SAQTSVObj:
             #Log.Info("SERVICE_ID--130----"+str(OfferingRow_detail.SERVICE_ID))
             webclient = System.Net.WebClient()
@@ -148,14 +150,14 @@ class SyncQuoteAndCustomTables:
             attributesdisallowedlst=[]
             attributeReadonlylst=[]
             attributesallowedlst=[]
-            overallattributeslist =[]
+            #overallattributeslist =[]
             attributevalues={}
             for rootattribute, rootvalue in Fullresponse.items():
                 if rootattribute=="rootItem":
                     for Productattribute, Productvalue in rootvalue.items():
                         if Productattribute=="characteristics":
                             for prdvalue in Productvalue:
-                                overallattributeslist.append(prdvalue['id'])
+                                #overallattributeslist.append(prdvalue['id'])
                                 if prdvalue['visible'] =='false':
                                     attributesdisallowedlst.append(prdvalue['id'])
                                 else:
@@ -167,74 +169,84 @@ class SyncQuoteAndCustomTables:
                                     attributevalues[str(prdvalue['id'])]=attribute['value']
             
             attributesallowedlst = list(set(attributesallowedlst))
-            overallattributeslist = list(set(overallattributeslist))
+            #overallattributeslist = list(set(overallattributeslist))
+            Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
             HasDefaultvalue=False
-            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
+            ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
             if ProductVersionObj is not None:
                 tbrow={}
                 insertservice =ent_disp_valdate =  ""
                 tblist = []
                 #Log.Info("178----")
-                for attrs in overallattributeslist:
+                for attrs in attributesallowedlst:
                     #tbrow1 = {}
                     #Log.Info("191----")
                     if attrs in attributevalues:
                         HasDefaultvalue=True
                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
                         ent_disp_val = attributevalues[attrs]
+                        ent_val_code = attributevalues[attrs]
                     else:
                         HasDefaultvalue=False
                         ent_disp_val = ""
+                        ent_val_code = ""
                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
                     ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
                     PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
-                    
-                    if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
-                        get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-                        ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+                    if PRODUCT_ATTRIBUTES:
+                        if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+                            get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+                            ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 
-                    #Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
-                    if str(attrs) == 'AGS_REL_STDATE' and OfferingRow_detail.SERVICE_ID == 'Z0007_AG':
-                        try:
-                            Trace.Write('except-try----date-------')
-                            HasDefaultvalue = True
-                            QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-                            ent_disp_val = 	str(QuoteStartDate)
-                            Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
-                        except:
-                            #HasDefaultvalue==True
-                            Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
-                            ent_disp_val = ent_disp_val	
-                    else:
-                        Trace.Write('208-----'+str(ent_disp_val))
-                        ent_disp_val = ent_disp_val
-                    Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
-                    if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.SERVICE_ID == 'Z0016_AG': 
-                        try:
-                            QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-                            QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-                            contract_days = (QuoteEndDate - QuoteStartDate).days
-                            ent_disp_val = 	str(contract_days)
-                        except:
-                            #Log.Info('except-----')
-                            ent_disp_val = ent_disp_val	
-                    else:
-                        ent_disp_val = ent_disp_val	
-                    
-                    DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
-                    Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
-                    insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-                    <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-                    <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-                    <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-                    <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-                    <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-                    <IS_DEFAULT>{is_default}</IS_DEFAULT>
-                    <PRICE_METHOD>{pm}</PRICE_METHOD>
-                    <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                        #Log.Info(str(OfferingRow_detail.SERVICE_ID)+'---194----attrs--')
+                        if str(attrs) == 'AGS_REL_STDATE' and "Z0007" in OfferingRow_detail.SERVICE_ID:
+                            try:
+                                #Trace.Write('except-try----date-------')
+                                HasDefaultvalue = True
+                                QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                                ent_disp_val = 	str(QuoteStartDate)
+                                ent_val_code = ''
+                                #Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
+                            except:
+                                #HasDefaultvalue==True
+                                #Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
+                                ent_disp_val = ent_disp_val
+                                ent_val_code = ''
+                        else:
+                            Trace.Write('208--attrs---'+str(attrs))
+                            ent_disp_val = ent_disp_val
+                            ent_val_code = ent_val_code
+                        #Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
+                        if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.SERVICE_ID: 
+                            try:
+                                QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
+                                Trace.Write('208--attrs---date check')
+                                QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                                contract_days = (QuoteEndDate - QuoteStartDate).days
+                                ent_disp_val = 	str(contract_days)
+                                Trace.Write('208--attrs---date check--ent_disp_val--'+str(ent_disp_val))
+                            except:
+                                #Log.Info('except-----')
+                                ent_disp_val = ent_disp_val 
+                                    
+                        else:
+                            ent_disp_val = ent_disp_val
+                        
+                        DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+                        #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
+                        #Trace.Write("ent_name--"+str(attrs))
+                        insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+                        <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+                        <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+                        <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+                        <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+                        <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+                        <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+                        <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+                        <IS_DEFAULT>{is_default}</IS_DEFAULT>
+                        <PRICE_METHOD>{pm}</PRICE_METHOD>
+                        <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+                        </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
                 Trace.Write('238--insertservice----'+str(insertservice))   
                 tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
                 tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
@@ -251,14 +263,17 @@ class SyncQuoteAndCustomTables:
                 tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
                 tbrow["CPS_MATCH_ID"] = 11
                 #tbrow["IS_DEFAULT"] = '1'
-                Trace.Write('254----')
+                #Trace.Write('254----')
                 columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
                 values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-                Trace.Write('257----')
+                #Trace.Write('257----')
                 insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
                 Sql.RunQuery(insert_qtqtse_query)
+                Trace.Write('269-addednew trace---')
                 try:
-                    if OfferingRow_detail.SERVICE_ID == 'Z0016_AG':
+                    Trace.Write('269--')
+                    if 'Z0016' in OfferingRow_detail.SERVICE_ID:
+                        Trace.Write('269--OfferingRow_detail--')
                         try:
                             QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
                             QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
@@ -267,13 +282,12 @@ class SyncQuoteAndCustomTables:
                         except:
                             #Log.Info('except-----')
                             ent_disp_val = ent_disp_val
-                        #Log.Info('except-ent_disp_val-------'+str(ent_disp_val))
-                        Log.Info("---requestdata--244-matc----"+str(tbrow["CPS_MATCH_ID"]))
+                        Trace.Write('269--OfferingRow_detail-ent_disp_val----'+str(ent_disp_val))
                         cpsmatchID = tbrow["CPS_MATCH_ID"]
                         cpsConfigID = Fullresponse['id']
-                        #Log.Info("---requestdata--244-cpsConfigID0-----"+str(cpsConfigID))
                         if int(ent_disp_val) > 364:
-                            Log.Info("---requestdata--244-cpsConfigID0-----")
+                            
+                            Trace.Write("---requestdata--244-cpsConfigID0-----")
                             webclient = System.Net.WebClient()
                             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
@@ -289,11 +303,11 @@ class SyncQuoteAndCustomTables:
                                     
                             AttributeID = 'AGS_CON_DAY'
                             NewValue = ent_disp_val
-                            #Log.Info("---requestdata--252-NewValue-----"+str(NewValue))
-                            whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = 'Z0016_AG'"
-
+                            #Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
+                            whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"
+                            #Trace.Write('whereReq---'+str(whereReq))
                             requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-                            #Log.Info("---eqruestdata---requestdata----"+str(requestdata))
+                            #Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
                             response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
                             #requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
 
@@ -305,20 +319,20 @@ class SyncQuoteAndCustomTables:
                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
                             #Log.Info("requestdata---180--265----" + str(requestdata))
                             response2 = webclient.DownloadString(Request_URL)
-                            #Log.Info('response2--182----267-----'+str(response2))
+                            Trace.Write('response2--182----267-----'+str(response2))
                             response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
                             Fullresponse= eval(response2)
                             attributesdisallowedlst=[]
                             attributeReadonlylst=[]
                             attributesallowedlst=[]
-                            overallattributeslist =[]
+                            #overallattributeslist =[]
                             attributevalues={}
                             for rootattribute, rootvalue in Fullresponse.items():
                                 if rootattribute=="rootItem":
                                     for Productattribute, Productvalue in rootvalue.items():
                                         if Productattribute=="characteristics":
                                             for prdvalue in Productvalue:
-                                                overallattributeslist.append(prdvalue['id'])
+                                                #overallattributeslist.append(prdvalue['id'])
                                                 if prdvalue['visible'] =='false':
                                                     attributesdisallowedlst.append(prdvalue['id'])
                                                 else:
@@ -330,16 +344,17 @@ class SyncQuoteAndCustomTables:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
                             
                             attributesallowedlst = list(set(attributesallowedlst))
-                            overallattributeslist = list(set(overallattributeslist))
+                            #overallattributeslist = list(set(overallattributeslist))
+                            Trace.Write('attributesallowedlst---'+str(attributesallowedlst)) 
                             HasDefaultvalue=False
-                            #Log.Info('response2--182----315---')
+                            #Trace.Write('response2--182----315---')
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
                             if ProductVersionObj is not None:
-                                tbrow={}
+                                tbrow={}   
                                 insertservice = ""
                                 tblist = []
                                 #Log.Info('response2--182----321-')
-                                for attrs in overallattributeslist:
+                                for attrs in attributesallowedlst:
                                     #tbrow1 = {}
                                     if attrs in attributevalues:
                                         HasDefaultvalue=True
@@ -360,6 +375,7 @@ class SyncQuoteAndCustomTables:
                                     
                                     DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                                     #Log.Info('response2--182----342-')
+                                    #Trace.Write("ent_name--"+str(attrs))
                                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -370,15 +386,17 @@ class SyncQuoteAndCustomTables:
                                     <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
                                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                                     <PRICE_METHOD>{pm}</PRICE_METHOD>
-                                    <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+                                    <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR> 
                                     </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
                                     cpsmatc_incr = int(cpsmatchID) + 10
-                                    Log.Info('cpsmatc_incr'+str(cpsmatc_incr))
+                                    Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
+                                    Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Sql.RunQuery(Updatecps)
                         
 
                 except:
+                    Trace.Write('except scenario----final--')
                     cpsmatc_incr = ''
 
                 #inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
@@ -454,12 +472,18 @@ class SyncQuoteAndCustomTables:
                                 }
                             ) """
                     if custom_fields_detail.get("PaymentTerms"):
+                        payid =""
+                        paydesc = ""
+                        payrec = ""
                         payterm_obj = Sql.GetFirst(
-                            "SELECT PAYMENT_TERM_ID, PAYMENT_TERM_NAME,NUMBER_OF_DAYS,PAYMENT_TERM_RECORD_ID FROM PRPTRM (NOLOCK) WHERE PAYMENT_TERM_ID = '{}'".format(
+                            "SELECT PAYMENT_TERM_ID, PAYMENT_TERM_NAME,NUMBER_OF_DAYS,PAYMENT_TERM_RECORD_ID,DESCRIPTION FROM PRPTRM (NOLOCK) WHERE PAYMENT_TERM_ID = '{}'".format(
                                 custom_fields_detail.get("PaymentTerms")
                             )
                         )
                         if payterm_obj:
+                            payid =payterm_obj.PAYMENT_TERM_ID
+                            paydesc = payterm_obj.DESCRIPTION
+                            payrec = payterm_obj.PAYMENT_TERM_RECORD_ID
                             contract_quote_data.update(
                                 {
                                     "PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
@@ -468,8 +492,14 @@ class SyncQuoteAndCustomTables:
                                     "PAYMENTTERM_RECORD_ID": payterm_obj.PAYMENT_TERM_RECORD_ID,
                                 }
                             )
+                    else:
+                        payid =""
+                        paydesc = ""
+                        payrec = ""
                     # self.quote.OrderStatus.Name
-
+                    Log.Info("expired"+str(start_date))
+                    edat = date.today()+ timedelta(days=90)
+                    Log.Info("expired2"+str(edat))
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
                     quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
                     opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
@@ -490,6 +520,7 @@ class SyncQuoteAndCustomTables:
                             else "SALES ORG LEVEL",
                             "CONTRACT_VALID_FROM": start_date,
                             "CONTRACT_VALID_TO": end_date,
+                            "QUOTE_EXPIRE_DATE":str(edat),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
                             #"EMPLOYEE_ID": custom_fields_detail.get("SalesPerson"),
@@ -498,7 +529,7 @@ class SyncQuoteAndCustomTables:
                             "QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
                             "GLOBAL_CURRENCY":"USD",
                             "INCOTERMS":custom_fields_detail.get("Incoterms"),
-                            #"INCOTERMS_NOTES":custom_fields_detail.get("IncotermsLocation"),
+                            "INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
                             #"PRICING_DATE":pricing_date,
                             #"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
                             
@@ -594,7 +625,10 @@ class SyncQuoteAndCustomTables:
                                     salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
                                 TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
                                 if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
+                                    QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                                    Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
                                     salesorg_data.update({'EXCHANGE_RATE':'1'})
+                                    salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
                                 #commented the below code we updated the exchange rate type from Custom field.	
                                 #exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
                                 
@@ -682,11 +716,25 @@ class SyncQuoteAndCustomTables:
                             """.format(RecordId=NewSalesAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME))
 
                             if not getDiv or not getDistr:
+                                if custom_fields_detail.get("Incoterms"):
+                                    incid = ""
+                                    incdesc = ""
+                                    increc = ""
+                                    getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
+                                    if getInc:
+                                        incid = getInc.INCOTERM_ID
+                                        incdesc = getInc.DESCRIPTION
+                                        increc = getInc.INCOTERM_RECORD_ID
+                                else:
+                                    incid = ""
+                                    incdesc = ""
+                                    increc = ""
+                                
 
                                 NewSalesAreaAccountRecordId = str(Guid.NewGuid()).upper()
-                                Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}')
-                                """.format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing))
-
+                                insert = Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE,INCOTERM_ID,INCOTERM_DESCRIPTION,INCOTERM_RECORD_ID,PAYMENTTERM_ID,PAYMENTTERM_DESCRIPTION,PAYMENTTERM_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}','{incid}','{incdesc}','{increc}','{payid}','{paydesc}','{payrec}')
+                                """.format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing,incid=incid,incdesc=incdesc,increc=increc,payid=payid,paydesc=paydesc,payrec=payrec))
+                                Log.Info("@@@728------>"+str(insert))
                                 getCtry = Sql.GetFirst("SELECT COUNTRY_RECORD_ID FROM SACTRY WHERE COUNTRY = '{}'".format(custom_fields_detail.get("PayerCountry")))
                                 NewRecordId = str(Guid.NewGuid()).upper()
                                 Sql.RunQuery("""INSERT INTO SAASCT (ACCOUNT_SALES_AREA_COUNTRY_TAX_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,COUNTRY,COUNTRY_NAME,COUNTRY_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Country}','{CountryName}','{CountryRecordId}')
@@ -1130,7 +1178,7 @@ class SyncQuoteAndCustomTables:
                                 self.CreateEntitlements(quote_record_id)
                                 entitle_end_time = time.time()
                                 Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
-
+                            Trace.Write("EQUIPMENT DATA------->>"+str(equipment_data))
                             if equipment_data:
                                 Log.Info(""""EQUIPMENTS INSERT""")
                                 count = 0
@@ -1142,9 +1190,9 @@ class SyncQuoteAndCustomTables:
                                     SAQFEQ_start = time.time()
                                     equipment_insert = Sql.RunQuery("""
                                                                     INSERT SAQFEQ
-                                                                    (EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,  WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+                                                                    (EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,SNDACC_ID,SNDACC_NAME,SNDACC_RECORD_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,  WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
                                                                 SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-                                                                    SELECT DISTINCT EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK)
+                                                                    SELECT DISTINCT EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK)
                                                                     JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
                                                                     ) A
                                                                 """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value)))

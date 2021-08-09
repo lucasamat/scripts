@@ -7,6 +7,8 @@
 # ==========================================================================================================================================
 # pylint: noqa: E501
 # pylint: disable=unused-variable
+import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace  # pylint: disable=E0602
 # Log = Log  # pylint: disable=E0602
 # SqlHelper = SqlHelper  # pylint: disable=E0602
@@ -21,6 +23,7 @@ ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
 
 import re
+
 import SYCNGEGUID as keyid
 from SYDATABASE import SQL
 
@@ -1272,7 +1275,7 @@ class CONTAINER:
                                 + "\").bootstrapTable(\"load\", datas1 ); eval(datas5);  } if (document.getElementById('totalItemCount')) { document.getElementById('totalItemCount').innerHTML = datas6; } if (document.getElementById('NumberofItem')) { document.getElementById('NumberofItem').innerHTML = dataset[11]; } if(document.getElementById('page_count')) { document.getElementById('page_count').innerHTML = '1'; }    $(\"#PageCountValue\").val(dataset[12]);norcordsget();filter_search_click();}); fullTableListGridWidth(); });"
                             )
 
-                            if str(tab_name) not in ( "Error Logs","Roles","My Approval Queue","Quotes","Team Approval Queue","Contracts"):
+                            if str(tab_name) not in ("Roles","My Approval Queue","Quotes","Team Approval Queue","Contracts"):
                                 
                                 a_txt = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="view_list"><a class="dropdown-item" href="#" onclick="Material_view_obj(this)">VIEW</a></li>'
 

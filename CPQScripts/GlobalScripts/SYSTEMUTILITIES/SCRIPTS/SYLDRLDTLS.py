@@ -9,6 +9,7 @@ TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 import unicodedata
+import Webcom.Configurator.Scripting.Test.TestProduct
 
 Sql = SQL()
 

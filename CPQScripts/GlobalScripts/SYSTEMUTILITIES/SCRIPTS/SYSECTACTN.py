@@ -5,8 +5,8 @@
 #   __create_date :
 #   � BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-
-
+#import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
 from datetime import timedelta
 from datetime import datetime as date
 from SYDATABASE import SQL
@@ -42,7 +42,7 @@ Log = Log  # pylint: disable=E0602
 Param = Param  # pylint: disable=E0602
 ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 Guid = Guid  # pylint: disable=E0602
-Webcom = Webcom  # pylint: disable=E0602
+#Webcom = Webcom  # pylint: disable=E0602
 # pylint: disable = no-name-in-module, import-error, multiple-imports, pointless-string-statement, wrong-import-order
 Sql = SQL()
 # violationruleInsert = ACVIORULES.ViolationConditions()
@@ -120,7 +120,7 @@ def nativeProfileUpdate(newdict):
     # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
     # Trace.Write('156-------------------------'+str(setPermissionURL))
 
- 	prfname = profile_id_gen = prfid = ""
+	prfname = profile_id_gen = prfid = ""
 	Trace.Write('64----nativeProfileSave-------'+str(newdict))
 	prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 	prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()

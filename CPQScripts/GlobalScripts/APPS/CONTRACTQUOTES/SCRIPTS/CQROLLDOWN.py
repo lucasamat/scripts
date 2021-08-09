@@ -5,6 +5,7 @@
 #   __create_date :16-11-2020
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 import clr
 import System.Net
 import sys
@@ -173,7 +174,7 @@ def CoveredObjEntitlement():
 		FROM	
 		SAQTSE (NOLOCK)
 		JOIN SAQSCO (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-		WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ""".format(
+		WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}')) IQ""".format(
 		UserId=User.Id, 
 		QuoteRecordId=Qt_rec_id, 
 		ServiceId=TreeParam)

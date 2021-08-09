@@ -5,6 +5,9 @@
 #   __primary_author__ : JOE EBENEZER
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
+
 Webcom = Webcom  # pylint: disable=E0602
 Trace = Trace  # pylint: disable=E0602
 User = User  # pylint: disable=E0602
@@ -357,14 +360,16 @@ class ButtonAction:
                         all_lookuplist = []  # A043S001P01-15458
                         sec_loouplist = []
                         if SYACTI_OBJNAME is not None:
+                            Trace.Write("Value_Test222")
                             attributeDictionary = {}
                             for ACTItem in SYACTI_OBJNAME:
+                                Trace.Write("Value_Test111")
                                 # GET ACTION BUTTON ATTRIBUTE NAME
                                 ACTIONRECORDID = str(ACTItem.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_")
                                 ACTIONNAME = str(ACTItem.ACTION_NAME).replace(" ", "")
                                 actRawAttributeName = "BTN_" + (ACTIONRECORDID + "_" + ACTIONNAME).upper()
-                                #Trace.Write("Button ID--actRawAttributeName----" + str(actRawAttributeName))
-                                #Trace.Write("Value_Test" + str(value))
+                                Trace.Write("Button ID--actRawAttributeName----" + str(actRawAttributeName))
+                                Trace.Write("Value_Test" + str(value))
                                 actAttributeName = productAttributesGetByName(str(actRawAttributeName))
                                 #Trace.Write("Button attr ID--" + str(actAttributeName))
                                 #attr_list = ['BTN_SYACTI_QT_00011_ADDFAB']
@@ -406,8 +411,8 @@ class ButtonAction:
                                         btnactn.setAllowedAttribute(actAttributeName, False)
 
                                 if value == "VIEW" or value == "SEG_EDIT":
-                                    #Trace.Write(str(flag)+'------424---------------'+str(value))
-                                    #Trace.Write("value------" + str(value))
+                                    Trace.Write(str(flag)+'------424---------------'+str(value))
+                                    Trace.Write("value------" + str(value))
                                     if str(ACTItem.ACTION_NAME) == "DELETE" and actAttributeName is not None:
                                         actAttributeName.Allowed = (
                                             True if DELETE.upper() == "TRUE" and flag == "True" else False

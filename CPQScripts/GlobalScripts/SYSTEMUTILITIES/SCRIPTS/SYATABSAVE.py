@@ -8,6 +8,7 @@ DESCRIPTION : To save the details of all the tabs in all modules
 ------------------------------------------------------------------------------------------------
 """
 ###save functionality
+import Webcom.Configurator.Scripting.Test.TestProduct
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 
 import System.Net
@@ -1044,9 +1045,11 @@ for tab in Product.Tabs:
                                                 #     + str(row)
                                                 # )
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
+                                                    Trace.Write("row_row_ADD NE1111W")
                                                     flag = "False"
                                                     break
                                                 else:
+                                                    Trace.Write("row_row_ADD NE1111W2222")
                                                     flag = "True"
 
                                         for req_add_new in Required_obj:
@@ -1064,19 +1067,21 @@ for tab in Product.Tabs:
                                         iskey = Sql.GetFirst(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
                                             + str(TABLE_NAME)
-                                            + "'and IS_KEY='True' "
+                                            + "' and IS_KEY='True' "
                                         )
                                         Trace.Write(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
                                             + str(TABLE_NAME)
                                             + "'and IS_KEY='True' "
                                         )
+                                        Trace.Write(str("---is_key---1694---"+str(flag)))
                                         if iskey is not None and flag == "True":
+                                            Trace.Write(str("---is_key---1694---"))
                                             Trace.Write(str(iskey.API_NAME) + "---is_key---1695---")
                                             col_name = (iskey.API_NAME).strip()
                                             #Trace.Write(str(col_name) + "---col_name---16996--" + str(row))
                                             unique_val = row[col_name]
-                                            #Trace.Write("unique_val" + str(unique_val))
+                                            Trace.Write("unique_val" + str(unique_val))
                                             if unique_val is not None and unique_val != "":
                                                 is_key_table = Sql.GetFirst(
                                                     "select "
@@ -1097,7 +1102,7 @@ for tab in Product.Tabs:
                                                         row.pop("CPQTABLEENTRYMODIFIEDBY")
                                                         row.pop("CPQTABLEENTRYDATEMODIFIED")
                                                         
-                                                    #Trace.Write(str(CurrentTabName) + "ROW----754------" + str(row))
+                                                    Trace.Write(str(CurrentTabName) + "ROW----754------" + str(row))
                                                     if str(CurrentTabName) == "Profile":                                                   
                                                         Trace.Write(
                                                             str(CurrentTabName) + "---CurrentTabName--768---" + str(row)
@@ -1206,6 +1211,7 @@ for tab in Product.Tabs:
                                                                                                        
                                                     else:
                                                         ##CPQ Attribute name starts
+                                                        Trace.Write('###SAP')
                                                         if ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYTABS":
                                                             if (str(row["APP_ID"]) != ""):
                                                                 APP_ID = str(TABLE_NAME)+"-"+str(row["APP_ID"])+"-"
@@ -1294,6 +1300,7 @@ for tab in Product.Tabs:
                                                         ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert11" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert11" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : This "Role Id & Name" Already exists </label></div></div></div>'
                                                                                           
                                             else:
+                                                Trace.Write('kkkkk=======')
                                                 if (
                                                     Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                     and flag == "True"
@@ -1303,6 +1310,7 @@ for tab in Product.Tabs:
                                                         "SEC_N_TAB_PAGE_ALERT"
                                                     ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert12" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert12" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>'
                                         else:
+                                            Trace.Write("sec-alrt===")
                                             col_name = (iskey.API_NAME).strip()
                                             if (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None

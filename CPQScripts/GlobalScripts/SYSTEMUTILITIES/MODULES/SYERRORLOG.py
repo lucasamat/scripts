@@ -9,7 +9,7 @@ Trace = Trace  # pylint: disable=E0602
 SqlHelper = SqlHelper  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 Guid = Guid  # pylint: disable=E0602
-
+import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 
 
@@ -94,6 +94,7 @@ class SYELOG:
                                         newrow["ERRORMESSAGE_DESCRIPTION"] = str(ErrorMessageObj.MESSAGE_TEXT)
                                         newrow["OBJECT_TYPE"] = str(ErrorMessageObj.MESSAGE_TYPE)
                                         newrow["OBJECT_VALUE_REC_ID"] = str(RecordId)
+                                        newrow["ERRORMESSAGE_ID"] = str(ErrorMessageObj.MESSAGE_CODE)
                                         newrow["CPQTABLEENTRYADDEDBY"] = str(Get_UserID)
                                         newrow["CPQTABLEENTRYDATEADDED"] = datetime_value
                                         newrow["CpqTableEntryModifiedBy"] = str(Get_UserID)

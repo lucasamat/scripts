@@ -5,6 +5,7 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 from SYDATABASE import SQL
 
@@ -156,6 +157,8 @@ def BuildListTabAttributes(TabRecordNo, TabFullName, TabName, Tabrank):
 		+ "' and PARENT_SECTION_RECORD_ID=''  ORDER BY abs(DISPLAY_ORDER)"
 	)"""
 	OBJNAME_FIRST_RECORS = "TRUE"
+	Trace.Write('Tab Record No'+str(TabRecordNo))
+	Trace.Write('At 160--Section REcords-->'+str(SectionRecord))
 	for SCEItem in SectionRecord:
 		if OBJNAME_FIRST_RECORS == "TRUE":
 			SECTION_PRIMARY_OBJNAME = str(SCEItem.PRIMARY_OBJECT_NAME).strip()
@@ -163,6 +166,7 @@ def BuildListTabAttributes(TabRecordNo, TabFullName, TabName, Tabrank):
 			SYOBJH_RECORDS = Sql.GetFirst(
 				"select RECORD_ID,PLURAL_LABEL FROM SYOBJH (NOLOCK) where OBJECT_NAME='" + str(SECTION_PRIMARY_OBJNAME) + "'"
 			)
+			Trace.Write('At line 169-->'+str(SYOBJH_RECORDS))
 			if SYOBJH_RECORDS is not None:
 				SYOBJH_RecordId = str(SYOBJH_RECORDS.RECORD_ID)
 				SYOBJS_RECORDS = Sql.GetFirst(
@@ -170,7 +174,7 @@ def BuildListTabAttributes(TabRecordNo, TabFullName, TabName, Tabrank):
 					+ str(SYOBJH_RecordId)
 					+ "' AND upper(NAME)='TAB LIST'"
 				)
-
+				Trace.Write('At line 177-->'+str(SYOBJS_RECORDS))
 				if (
 					str(TabFullName) == "Roles"
 				):

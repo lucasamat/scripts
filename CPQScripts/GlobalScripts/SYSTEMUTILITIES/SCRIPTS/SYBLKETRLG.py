@@ -7,6 +7,7 @@
 # ==========================================================================================================================================
 import datetime
 import System.Net
+import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 import CQTVLDRIFW
@@ -143,7 +144,7 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 	
 			
 			
-def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
+def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
@@ -157,6 +158,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 	pricbkst_lock = "FALSE"
 	pricbk_lock = "FALSE"
 	date_field = []
+	key = ""
 	VALUE = remove_html_tags(VALUE)
 	rec_ids = ",".join(RECORDID)
 	
@@ -169,8 +171,9 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 		
 	if str(CLICKEDID) == "SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305":
 		TITLE = "BILLING_DATE"
-	if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and TreeParentParam != 'Quote Items':
-		canedit = "FALSE"	
+	#if str(CLICKEDID) == "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F" and (TreeParentParam != 'Quote Items' and TreeParentParam != ''):
+	#canedit = "FALSE"	
+	Trace.Write("@175----canedit-------->"+str(canedit))
 	if objh_obj is not None and str(canedit).upper() == "TRUE":
 		obj_obj = str(objh_obj.OBJECT_NAME)
 		
@@ -191,132 +194,150 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 				pick_val = str(objd_obj.PICKLIST_VALUES)
 				field_lable = str(objd_obj.FIELD_LABEL)
 				datepicker = "onclick_datepicker('" + api_name + "')"
-				edt_str += (
-					'<div   class="row modulebnr brdr">EDIT '
-					+ str(field_lable).upper()
-					+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
-				)
-				edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
-				edt_str += '<table class="wdth100" id="bulk_edit">'
-				edt_str += (
-					'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
-					+ str(field_lable)
-					+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
-				)
-				if len(list(RECORDID)) > 1:
-					if data_type.upper() == "TEXT":
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					elif data_type.upper() == "NUMBER":
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+				if SELECTALL != "noselection":
+					if TITLE != 'SALES_PRICE':
 						edt_str += (
-							'<input class="custom light_yellow wth_80"  id="'
-							+ str(api_name)
-							+ '" type="checkbox"><span class="lbl"></span>'
+							'<div   class="row modulebnr brdr">EDIT '
+							+ str(field_lable).upper()
+							+ ' <button type="button"   class="close fltrt" onclick="multiedit_RL_cancel();">X</button></div>'
 						)
-					elif data_type.upper() == "FORMULA":
-						if  obj_obj == 'SAQSTE':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
-						elif obj_obj == 'SAQICO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-						elif obj_obj == 'SAQSCO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-							Trace.Write("EDITSTR"+str(edt_str))	
-					elif data_type.upper() == "PICKLIST":
-						edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
-						pick_val = pick_val.split(",")
-						for value in pick_val:
-							edt_str += "<option>" + str(value) + "</option>"
-						edt_str += "</select>"
-					elif data_type.upper() == "DATE":
-						date_field.append(api_name)
+						edt_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+						edt_str += '<table class="wdth100" id="bulk_edit">'
 						edt_str += (
-							'<input id="'
-							+ str(api_name)
-							+ '" type="text" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
-							+ str(datepicker)
-							+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							'<tbody><tr class="fieldRow"><td   class="wth50txtcein labelCol">'
+							+ str(field_lable)
+							+ '</td><td class="dataCol"><div id="massEditFieldDiv" class="inlineEditRequiredDiv">'
 						)
-					else:
-						edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
-					edt_str += '</div></td></tr><tr class="selectionRow">'
-					edt_str += (
-						'<td   class="labelCol wth50txtcein">Apply changes to</td><td class="dataCol"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All '
-						+ str(len(list(RECORDID)))
-						+ " selected records</label>"
-					)
-				else:
-					
-					if data_type.upper() == "TEXT":
+						Trace.Write("list(RECORDID)_CHECK__J "+str(len(list(RECORDID))))
+					if len(list(RECORDID)) > 1:
+						Trace.Write("data_type_CHECK__J "+str(data_type))
+						if data_type.upper() == "TEXT":
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						elif data_type.upper() == "NUMBER":
+							Trace.Write("@215 inside number")
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+							edt_str += (
+								'<input class="custom light_yellow wth_80"  id="'
+								+ str(api_name)
+								+ '" type="checkbox"><span class="lbl"></span>'
+							)
+						elif data_type.upper() == "FORMULA":
+							if  obj_obj == 'SAQSTE':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
+							elif obj_obj == 'SAQICO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+							elif obj_obj == 'SAQSCO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))	
+							elif obj_obj == 'SYROUS':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SYROMA|SYROUS" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))	
+						elif data_type.upper() == "PICKLIST":
+							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
+							pick_val = pick_val.split(",")
+							for value in pick_val:
+								edt_str += "<option>" + str(value) + "</option>"
+							edt_str += "</select>"
+						elif data_type.upper() == "DATE":
+							date_field.append(api_name)
+							edt_str += (
+								'<input id="'
+								+ str(api_name)
+								+ '" type="text" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
+								+ str(datepicker)
+								+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							)
+						else:
+							edt_str += '<input class="form-control light_yellow wth_80"   id="' + str(api_name) + '" type="text">'
+						edt_str += '</div></td></tr><tr class="selectionRow">'
 						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '">'
-						)
-					elif data_type.upper() == "FORMULA" and obj_obj == 'SAQSTE':
-						edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-						edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-					elif data_type.upper() == "NUMBER":
-						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" value="'
-							+ str(VALUE)
-							+ '" type="text">'
-						)
-					elif data_type.upper() == "FORMULA":
-						if  obj_obj == 'SAQSTE':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
-						elif obj_obj == 'SAQICO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-						elif obj_obj == 'SAQSCO':
-							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
-							edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
-							Trace.Write("EDITSTR"+str(edt_str))
-					elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
-						if str(VALUE).upper() == "TRUE":
-							checked = "checked"
-						edt_str += (
-							'<input class="custom light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="checkbox" '
-							+ str(checked)
-							+ '><span class="lbl"></span>'
-						)
-					elif data_type.upper() == "PICKLIST":
-						edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
-						pick_val = pick_val.split(",")
-						for value in pick_val:
-							edt_str += "<option>" + str(value) + "</option>"
-						edt_str += "</select>"
-					elif data_type.upper() == "DATE":
-						date_field.append(api_name)
-						edt_str += (
-							'<input id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
-							+ str(datepicker)
-							+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							'<td   class="labelCol wth50txtcein">Apply changes to</td><td class="dataCol"><div class="radio"><input type="radio" name="massOrSingleEdit" id="singleEditRadio" checked="checked"><label for="singleEditRadio">The record clicked</label></div><div class="radio"><input type="radio" name="massOrSingleEdit" id="massEditRadio"><label for="massEditRadio">All '
+							+ str(len(list(RECORDID)))
+							+ " selected records</label>"
 						)
 					else:
-						edt_str += (
-							'<input class="form-control light_yellow wth_80"   id="'
-							+ str(api_name)
-							+ '" type="text" value="'
-							+ str(VALUE)
-							+ '">'
-						)
-				edt_str += "</div></td></tr></tbody></table>"
-				edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+						
+						if data_type.upper() == "TEXT":
+							edt_str += (
+								'<input class="form-control light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '">'
+							)
+						elif data_type.upper() == "FORMULA" and obj_obj == 'SAQSTE':
+							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+						elif data_type.upper() == "NUMBER":
+							if TITLE != 'SALES_PRICE':
+								Trace.Write("inside number")
+								edt_str += (
+									'<input class="form-control light_yellow wth_80"   id="'
+									+ str(api_name)
+									+ '" value="'
+									+ str(VALUE)
+									+ '" type="text">'
+								)
+						elif data_type.upper() == "FORMULA":
+							if  obj_obj == 'SAQSTE':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'
+							elif obj_obj == 'SAQICO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="PRTXCL|SAQICO" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+							elif obj_obj == 'SAQSCO':
+								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
+								edt_str += '<input  id="SAQSCO|SAQFEQ" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
+								Trace.Write("EDITSTR"+str(edt_str))
+						elif data_type.upper() == "CHECKBOX" or formula_data_type.upper() == "CHECKBOX":
+							if str(VALUE).upper() == "TRUE":
+								checked = "checked"
+							edt_str += (
+								'<input class="custom light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="checkbox" '
+								+ str(checked)
+								+ '><span class="lbl"></span>'
+							)
+						elif data_type.upper() == "PICKLIST":
+							edt_str += '<select class="form-control light_yellow wth150"   id="' + str(api_name) + '">'
+							pick_val = pick_val.split(",")
+							for value in pick_val:
+								edt_str += "<option>" + str(value) + "</option>"
+							edt_str += "</select>"
+						elif data_type.upper() == "DATE":
+							date_field.append(api_name)
+							edt_str += (
+								'<input id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '" class="form-control light_yellow wth155hit26"  ><span   class="pad4wth0 input-group-addon" onclick="'
+								+ str(datepicker)
+								+ '"><i class="glyphicon glyphicon-calendar"></i></span>'
+							)
+						else:
+							edt_str += (
+								'<input class="form-control light_yellow wth_80"   id="'
+								+ str(api_name)
+								+ '" type="text" value="'
+								+ str(VALUE)
+								+ '">'
+							)
+					if TITLE != 'SALES_PRICE' and TITLE != 'DISCOUNT':
+						edt_str += "</div></td></tr></tbody></table>"
+						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
+					else:
+						k = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+						Trace.Write("query---->"+str(k))
+						key = str(k.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
+				if SELECTALL == "noselection":
+					edt_str = "NO"
 			else:
 				edt_str = "NO"
 		else:
@@ -324,7 +345,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID):
 			Trace.Write("EDITSTR"+str(edt_str))	
 	else:
 		edt_str = "NO"
-	return edt_str, date_field
+	return edt_str, date_field,key
 
 
 def remove_html_tags(text):
@@ -335,7 +356,7 @@ def remove_html_tags(text):
 	return re.sub(clean, "", text)
 
 
-def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
+def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 	TreeParam = Product.GetGlobal("TreeParam")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
@@ -354,7 +375,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 	if objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
-		
+		Trace.Write("selected_rows"+str(selected_rows))
 		item_lines_record_ids = []
 		for rec in selected_rows:
 			row = {}
@@ -391,6 +412,18 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 				
 				tableInfo.AddRow(row)
 				Sql.Upsert(tableInfo)
+			##multi select bulk edit..
+			elif obj_name == "SAQSCO":
+				recordslist = []
+				for val in selectPN:
+					ObjectName = val.split('-')[0].strip()
+					cpqid = val.split('-')[1].strip()
+					recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+					recordslist.append(recid)
+				Trace.Write("recccccccc"+str(recordslist))	
+				recordslist = str(tuple(recordslist)).replace(',)',')')
+				Trace.Write("recordslist--->"+str(recordslist))
+			##multi select bulk edit..	
 			elif str(obj_name) == "SAQSPT":
 				
 				getserid = row.get("QUOTE_SERVICE_PART_RECORD_ID")
@@ -419,19 +452,187 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 					Sql.RunQuery(sqlforupdate)
 
 			else:
-				
+				Trace.Write("selected_rows"+str(row))
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
-			prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
-			line_items_obj = """UPDATE SAQICO SET SRVTAXCLA_ID = '{TAX_CLASSIFICATION_ID}', SRVTAXCLA_RECORD_ID = '{SRVTAXCLA_RECORD_ID}' WHERE SRVTAXCLA_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(TAX_CLASSIFICATION_ID = prtxcl_obj.TAX_CLASSIFICATION_ID,SRVTAXCLA_RECORD_ID = prtxcl_obj.TAX_CLASSIFICATION_RECORD_ID,SRVTAXCLA_DESCRIPTION = str(VALUE),quote_record_id = str(ContractRecordId))
-			Sql.RunQuery(line_items_obj)
-			quote_id = quote_id
-			quote_record_id = str(Qt_rec_id)
-			getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
-		if obj_name == "SAQSCO":
-			Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""))
+			if TITLE != 'SALES_PRICE' and TITLE != 'DISCOUNT':
+				prtxcl_obj = Sql.GetFirst("Select TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE  TAX_CLASSIFICATION_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}'".format(SRVTAXCLA_DESCRIPTION = str(VALUE)))
+				line_items_obj = """UPDATE SAQICO SET SRVTAXCLA_ID = '{TAX_CLASSIFICATION_ID}', SRVTAXCLA_RECORD_ID = '{SRVTAXCLA_RECORD_ID}' WHERE SRVTAXCLA_DESCRIPTION = '{SRVTAXCLA_DESCRIPTION}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(TAX_CLASSIFICATION_ID = prtxcl_obj.TAX_CLASSIFICATION_ID,SRVTAXCLA_RECORD_ID = prtxcl_obj.TAX_CLASSIFICATION_RECORD_ID,SRVTAXCLA_DESCRIPTION = str(VALUE),quote_record_id = str(ContractRecordId))
+				Sql.RunQuery(line_items_obj)
+				quote_id = quote_id
+				quote_record_id = str(Qt_rec_id)
+				getting_cps_tax(quote_id,quote_record_id,item_lines_record_ids)
+			elif TITLE == 'SALES_PRICE':
+				
+				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				
+				if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
+					discount =(float(a.SALES_DISCOUNT_PRICE)-float(VALUE))/float(a.SALES_DISCOUNT_PRICE)
+					Trace.Write("discount1="+str(discount))
+					discount = discount*100.00
+					Trace.Write("discount2="+str(discount))
+				else:
+					discount = 0.00
+				
+				getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
+				
+				
+				import datetime as dt
+				fmt = '%m/%d/%Y'
+				d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+				d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+				days = (d2 - d1).days
+				Trace.Write("number of days---------------->"+str((d2 - d1).days))
+				
+				
+				yoy = float(a.YEAR_OVER_YEAR)
+				#VALUE = float(a.SALES_DISCOUNT_PRICE)-amt
+				year1 = float(VALUE)
+				year2 = 0.00
+				year3 = 0.00
+				year4 = 0.00
+				year5 = 0.00
+				dec1 = (float(VALUE)*yoy)/100
+				Trace.Write("dec1---"+str(dec1))
 
+				if days > 365:
+					year2 = float(VALUE) - dec1
+					dec2 = (year2*yoy)/100
+					Trace.Write("dec2---"+str(dec2))
+				if days > 730:
+					year3 = year2 - dec2
+					dec3 = (year3*yoy)/100
+					Trace.Write("dec3---"+str(dec3))
+				if days > 1095:
+					year4 = year3 - dec3
+					dec4 = (year4*yoy)/100
+				if days > 1460:
+					year5 = year4 - dec4
+				
+				ext_price = year1 + year2 + year3 + year4 + year5
+
+				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
+
+				b = Sql.GetFirst("SELECT SUM(SALES_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
+
+				c = Sql.GetFirst("SELECT SUM(SALES_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK))
+				
+				saqitm_extprice = b.YEAR1 + b.YEAR2 + b.YEAR3 + b.YEAR4 + b.YEAR5
+
+				Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}, EXTENDED_PRICE = {ext}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,y1=b.YEAR1,y2=b.YEAR2,y3=b.YEAR3,y4=b.YEAR4,y5=b.YEAR5,ext=saqitm_extprice))
+
+				
+				Sql.RunQuery("UPDATE SAQIGB SET SALES_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.GREENBOOK,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5))
+				
+				get_curr = str(Quote.GetCustomField('Currency').Content)
+
+				#Quote.GetCustomField('SALE_PRICE').Content =str(b.SUM_PRICE) + " " + get_curr
+				Quote.GetCustomField('YEAR_1').Content =str(b.YEAR1) + " " + get_curr
+				Quote.GetCustomField('YEAR_2').Content =str(b.YEAR2) + " " + get_curr
+				for item in Quote.MainItems:
+					if item.PartNumber == a.SERVICE_ID:
+						item.SALES_PRICE.Value = str(b.SUM_PRICE)
+						item.YEAR_1.Value = str(b.YEAR1)
+						item.YEAR_2.Value = str(b.YEAR2)
+						item.YEAR_3.Value = str(b.YEAR3)
+						item.YEAR_4.Value = str(b.YEAR4)
+						item.YEAR_5.Value = str(b.YEAR5)
+				Quote.Save()
+				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
+				try:
+					if float(getPRCFVA.FACTOR_PCTVAR) < discount:
+						Sql.RunQuery("UPDATE SAQICO SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
+						Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				except:
+					Trace.Write("NO STATUS UPDATE")
+			elif TITLE == 'DISCOUNT':
+				
+				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
+				if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
+					#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
+					amt = (float(VALUE)*float(a.SALES_DISCOUNT_PRICE))/100
+
+				else:
+					amt = 0.00
+				
+				Sql.RunQuery("UPDATE SAQICO SET SALES_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(a.SALES_DISCOUNT_PRICE)-amt,cpqid=cpqid,discount=float(VALUE)))
+
+				b = Sql.GetFirst("SELECT SUM(SALES_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
+
+				#Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+				getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
+				
+				
+				import datetime as dt
+				fmt = '%m/%d/%Y'
+				d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+				d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+				days = (d2 - d1).days
+				Trace.Write("number of days---------------->"+str((d2 - d1).days))
+				
+				
+				yoy = float(a.YEAR_OVER_YEAR)
+				VALUE = float(a.SALES_DISCOUNT_PRICE)-amt
+				year1 = float(VALUE)
+				year2 = 0.00
+				year3 = 0.00
+				year4 = 0.00
+				year5 = 0.00
+				dec1 = (float(VALUE)*yoy)/100
+				Trace.Write("dec1---"+str(dec1))
+
+				if days > 365:
+					year2 = float(VALUE) - dec1
+					dec2 = (year2*yoy)/100
+					Trace.Write("dec2---"+str(dec2))
+				if days > 730:
+					year3 = year2 - dec2
+					dec3 = (year3*yoy)/100
+					Trace.Write("dec3---"+str(dec3))
+				if days > 1095:
+					year4 = year3 - dec3
+					dec4 = (year4*yoy)/100
+				if days > 1460:
+					year5 = year4 - dec4
+				
+				ext_price = year1 + year2 + year3 + year4 + year5
+
+
+				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
+
+				#if float(getPRCFVA.FACTOR_PCTVAR) < discount:
+				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+		if obj_name == "SAQSCO":
+			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
+			fabname = getfab.FABLOCATION_NAME
+			fabrec = getfab.FABLOCATION_RECORD_ID		
+			if 	SELECTALL != "no":
+				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}'".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+
+				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+				if geteqp:
+					recordslist = str(tuple([fab.EQUIPMENT_ID for fab in geteqp])).replace(",)",')')
+
+					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+			else:
+				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+
+				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+				if geteqp:
+					recordslist = str(tuple([fab.EQUIPMENT_ID for fab in geteqp])).replace(",)",')')
+
+					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+					
+			'''Sql.RunQuery("UPDATE SAQSFE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+			Sql.RunQuery("UPDATE SAQSGE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+			Sql.RunQuery("""UPDATE SAQSCE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID= '{ServiceId}' {SingleRow}""".format(
+			VALUE=VALUE,
+			UserId=User.Id, 
+			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			name=fabname,
+			rec=fabrec,
+			ServiceId=Quote.GetGlobal("TreeParentLevel0"),SingleRow=" AND SAQSCO.CpqTabl """eEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""))'''
 			Sql.RunQuery(
 				"""INSERT SAQSFB(
 					FABLOCATION_ID,
@@ -525,13 +726,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 			FROM
 			SAQTSE (NOLOCK)
 			JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-			WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment') IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0")))
+			WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' ) IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0")))
 
-			Sql.RunQuery("""UPDATE SAQSCE SET FABLOCATION_ID = '{VALUE}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID= '{ServiceId}'""".format(
-			VALUE=VALUE,
-			UserId=User.Id, 
-			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), 
-			ServiceId=Quote.GetGlobal("TreeParentLevel0"),SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""))
+			
 			Sql.RunQuery(
 				"""
 					INSERT SAQSGB (
@@ -597,22 +794,22 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID):
 						)
 			)
 			# ###SAQSCE and SAQSAE insert for assembly and entitlement 
-			# qtqsce_query="""
-			# 	INSERT SAQSCE
-			# 	(KB_VERSION,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
-			# 	SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
-			# 	SELECT 
-			# 	DISTINCT
-			# 	SAQTSE.KB_VERSION,SAQTSE.ENTITLEMENT_XML,SAQSCO.EQUIPMENT_ID,SAQSCO.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID as QTESRVCOB_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID as QTESRVENT_RECORD_ID,SAQSCO.SERIAL_NO,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID,SAQSCO.FABLOCATION_ID,SAQSCO.FABLOCATION_NAME,SAQSCO.FABLOCATION_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID
-			# 	FROM	
-			# 	SAQTSE (NOLOCK)
-			# 	JOIN SAQSCO (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-			# 	WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ""".format(
-			# 	UserId=User.Id, 
-			# 	QuoteRecordId=Qt_rec_id, 
-			# 	ServiceId=Quote.GetGlobal("TreeParentLevel0") )
-			# Trace.Write('qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
-			# Sql.RunQuery(qtqsce_query)
+			qtqsce_query="""
+			 	INSERT SAQSCE
+				(KB_VERSION,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
+				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
+				SELECT 
+			 	DISTINCT
+			 	SAQTSE.KB_VERSION,SAQTSE.ENTITLEMENT_XML,SAQSCO.EQUIPMENT_ID,SAQSCO.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID as QTESRVCOB_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID as QTESRVENT_RECORD_ID,SAQSCO.SERIAL_NO,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID,SAQSCO.FABLOCATION_ID,SAQSCO.FABLOCATION_NAME,SAQSCO.FABLOCATION_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID
+				FROM	
+			 	SAQTSE (NOLOCK)
+				JOIN SAQSCO (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
+				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCE WHERE QUOTE_RECORD_ID  = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}')) IQ""".format(
+			 	UserId=User.Id, 
+				QuoteRecordId=Qt_rec_id, 
+			 	ServiceId=Quote.GetGlobal("TreeParentLevel0") )
+			 	#Trace.Write('qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
+			Sql.RunQuery(qtqsce_query)
 			# SAQSAE_insert = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.SERVICE_ID = '{serviceId}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(
 			# 	UserId=User.Id, 
 			# 	ContractId=Qt_rec_id, 
@@ -695,9 +892,9 @@ except:
 #Trace.Write("RECORDID--------xxx-----" + str(RECORDID))
 if ELEMENT == "RELATEDEDIT":
 	
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL))
 elif ELEMENT == "SAVE":
-	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID))
+	ApiResponse = ApiResponseFactory.JsonResponse(RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse("")
 

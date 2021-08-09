@@ -6,6 +6,8 @@
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+import Webcom
+import Webcom.Configurator.Scripting.Test.TestProduct
 Trace = Trace  # pylint: disable=E0602
 Webcom = Webcom  # pylint: disable=E0602
 Product = Product  # pylint: disable=E0602
@@ -227,8 +229,8 @@ def process_view(details_and_qstns_obj, record_obj, record_id, tab_name, product
             Product.ResetAttr(str(app_attr_name))
             
             get_record_val = get_value_from_obj(record_obj, str(detail_and_qstn_obj.API_FIELD_NAME))
+            Trace.Write('get_record_val@@@'+str(get_record_val))
             if qstn_custom_object_field.upper() == "CPQTABLEENTRYMODIFIEDBY":
-                Trace.Write('get_record_val@@@'+str(get_record_val))
                 if str(get_record_val) != "" and get_record_val is not None:
                     Trace.Write('get_record_val####'+str(get_record_val))
                     try:
@@ -295,6 +297,9 @@ def process_view(details_and_qstns_obj, record_obj, record_id, tab_name, product
                     Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("0")
                     Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
                     # Product.Attributes.GetByName(app_attr_name).Access = 0
+                elif str(get_record_val)=="":
+                    Trace.Write('Empty get_rec_val')
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
                     
                     
             elif data_type == "NUMBER" or data_type == "CURRENCY":
@@ -761,6 +766,7 @@ Trace.Write("record_name-------------" + str(record_id))
 tab_name = str(Param.TabNAME).strip()
 Trace.Write("tab_name-------------" + str(tab_name))
 action = str(Param.ACTION).strip()
+Trace.Write('Action--------'+str(action))
 try:
     product_name = Product.Name 
 except:
