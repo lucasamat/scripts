@@ -677,17 +677,17 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                 # attributevalues[str(prdvalue['id'])]=attribute['value']
                                                 # for attribute in prdvalue['values']:
                                                 if len(prdvalue["values"]) == 1:
-                                                    Trace.Write('ifffff'+str(prdvalue["id"]))
+                                                   # Trace.Write('ifffff'+str(prdvalue["id"]))
                                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
                                                 elif len(prdvalue["values"]) > 1:
-                                                    Trace.Write('else if'+str(prdvalue["id"]))
+                                                    #Trace.Write('else if'+str(prdvalue["id"]))
                                                     for attribute in prdvalue["values"]:
                                                         #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
                                                         value_list = [attribute["value"] for attribute in prdvalue["values"]]
                                                         #value_list = str(value_list)
                                                     attributevalues[str(prdvalue["id"])] = value_list
-                                                else:
-                                                    Trace.Write('else'+str(prdvalue["id"]))
+                                                # else:
+                                                #     Trace.Write('else'+str(prdvalue["id"]))
 
                             
                             attributesallowedlst = list(set(attributesallowedlst))
@@ -702,7 +702,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                 tblist = []
                                 #Log.Info('response2--182----321-')
                                 for attrs in attributesallowedlst:
-                                    Trace.Write('value code---'+str(attrs))
+                                    #Trace.Write('value code---'+str(attrs))
                                     #tbrow1 = {}
                                     if attrs in attributevalues:
                                         HasDefaultvalue=True
@@ -732,7 +732,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                     
                                     DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
                                     #Log.Info('response2--182----342-')
-                                    Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
+                                    #Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
                                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1005,7 +1005,7 @@ elif TreeParam == "Quote Information":
     
 elif TreeParam == "Approval Chain Information":
     ObjectName = "ACAPCH"
-      
+    
 elif TreeSuperParentParam == "Constraints":
     ObjectName = "SYOBJC"
     
