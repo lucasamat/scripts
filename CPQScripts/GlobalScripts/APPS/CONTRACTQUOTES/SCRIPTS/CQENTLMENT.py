@@ -125,6 +125,7 @@ class Entitlements:
 								
 								requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
 								if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+									Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 									for code in eval(row.ENTITLEMENT_VALUE_CODE):
 										requestdata += '{"value":"' + str(code) + '","selected":true}'
 										requestdata +=','
