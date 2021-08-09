@@ -258,6 +258,9 @@ def do_process(TABLEID, LABLE, VALUE):
                 page_rec_id=Sql.GetFirst("SELECT RECORD_ID from SYPAGE where PAGE_NAME = '"+str(row["PAGE_NAME"])+"'")
                 row["PAGE_RECORD_ID"]=str(page_rec_id.RECORD_ID)
             #Trace.Write("------1904----" + str(TABLEID)+str(row))
+            elif str(TABLEID) == "SYTRND":
+                get_tree_rec_id=Sql.GetFirst("SELECT TREE_RECORD_ID from SYTREE where TREE_NAME = '"+str(row["TREE_NAME"])+"'")
+                row["TREE_RECORD_ID"]=str(get_tree_rec_id.TREE_RECORD_ID)
             try:
                 
                 if ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPSAC":
