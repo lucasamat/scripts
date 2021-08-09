@@ -236,7 +236,7 @@ class DropConstraint:
                                 ErrorMsg='ErrorMsg'
                             else:
                                 ErrorMsg='ErrorMsg'
-
+                            ErrorMsg='ErrorMsg'
                         if foreignKey == 0:
                             Trace.Write('209--211--2144------')
                             if UqforeignKey == 0:
