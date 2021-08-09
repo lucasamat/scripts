@@ -199,10 +199,10 @@ class DropConstraint:
                 for loop in query_result:
                     Trace.Write('not null messgae---199----')
                     FK_CONSTRAINT = Sql.GetFirst(
-                        "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
-                        + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.OBJECT_APINAME='"
+                        "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME  "
+                        + "    WHERE CON.OBJECT_APINAME='"
                         + str(self.ObjectName)
-                        + "' AND CON.OBJECTFIELD_APINAME = '"
+                        + "' AND CON.CONSTRAINT_TYPE LIKE '%FOREIGN%' AND CON.OBJECTFIELD_APINAME = '"
                         + str(objectApiName)
                         + "'"
                     )
