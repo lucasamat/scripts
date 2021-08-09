@@ -544,7 +544,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                 Trace.Write("1237------5444------------" + str(newdict))
                 newdict.update(RECORD)
                 Trace.Write("1237------5444------------" + str(newdict))
-                activeval = newdict.get("ACTIVE")
+                activeval = newdict.get("Active")
                 idval = newdict.get("ID")
                 UPDATE_USERS = "UPDATE USERS SET Active = '{}' WHERE ID = '{}'".format(activeval,idval)
                 Sql.RunQuery(UPDATE_USERS)
