@@ -222,9 +222,10 @@ class DropConstraint:
                             Trace.Write('209--UNIQUEE----')
                             ErrorMsg='ErrorMsg'
                         else:
-                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
-                            Sql.RunQuery(delete_query_string)
-                            ErrorMsg=''
+                            if foreignKey == 0:
+                                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                                Sql.RunQuery(delete_query_string)
+                                ErrorMsg=''
                         if foreignKey == 0:
                             Trace.Write('209--UNIQUEEEEE------')
                             delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
