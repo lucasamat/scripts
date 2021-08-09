@@ -69,21 +69,52 @@ class DropConstraint:
                 for loop in query_result:
                     query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + ""
                     queryStatement = Sql.RunQuery(query)
-                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                    objectname=str(self.ObjectName),apiname_column = str(objectApiName)
-                )
-                Sql.RunQuery(delete_query_string)
-                #self.deleteRecord(cpqEntryId)
+
+                self.deleteRecord(cpqEntryId)
                 Output = "True"
+
+                # query_result = Sql.GetList(
+                #     "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
+                #     + "FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME= "
+                #     + " CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%FK_%' WHERE CONSTRAINT_TYPE='FOREIGN KEY' AND REFOBJECT_APINAME = '"
+                #     + str(self.ObjectName)
+                #     + "' AND REFOBJECTFIELD_APINAME='"
+                #     + str(objectApiName)
+                #     + "' "
+                # )
+                # for loop in query_result:
+                #     query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + " "
+                #     queryStatement = Sql.RunQuery(query)
+
+                # # DROP FOREIGN KEY
+                # query_result = Sql.GetList(
+                #     "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
+                #     + "FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME = "
+                #     + " CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%FK_%' WHERE CONSTRAINT_TYPE='FOREIGN KEY' AND OBJECT_APINAME ='"
+                #     + str(self.ObjectName)
+                #     + "'  AND OBJECTFIELD_APINAME ='"
+                #     + str(objectApiName)
+                #     + "' "
+                # )
+
+                # for loop in query_result:
+                #     query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + ""
+                #     queryStatement = Sql.RunQuery(query)
+                # delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
+                #     objectname=str(self.ObjectName),apiname_column = str(objectApiName)
+                # )
+                # Sql.RunQuery(delete_query_string)
+                # #self.deleteRecord(cpqEntryId)
+                # Output = "True"
 
             elif constraintType == "UNIQUE":
                 # DROP UNIQUE KEY
                 #Trace
                 FK_CONSTRAINT = Sql.GetList(
                     "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
-                    + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND SCHCON.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
+                    + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
                     + str(self.ObjectName)
-                    + "' AND CON.REFOBJECTFIELD_APINAME = '"
+                    + "' CON.REFOBJECTFIELD_APINAME = '"
                     + str(objectApiName)
                     + "'"
                 )
@@ -94,7 +125,7 @@ class DropConstraint:
                             query_result = Sql.GetList(
                                 "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
                                 + " FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME = "
-                                + " CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%UQ_%' WHERE CON.CONSTRAINT_TYPE='UNIQUE' AND CON.OBJECT_APINAME ='"
+                                + " CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%UQ_%' WHERE CONSTRAINT_TYPE='UNIQUE' AND OBJECT_APINAME ='"
                                 + str(self.ObjectName)
                                 + "'  AND OBJECTFIELD_APINAME ='"
                                 + str(objectApiName)
@@ -104,18 +135,53 @@ class DropConstraint:
                             for loop in query_result:
                                 query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + " "
                                 queryStatement = Sql.RunQuery(query)
-                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
-                                objectname=str(self.ObjectName),apiname_column = str(objectApiName)
-                            )
-                            Sql.RunQuery(delete_query_string)
-                            #self.deleteRecord(cpqEntryId)
+
+                            self.deleteRecord(cpqEntryId)
                             Output = "True"
-                            
+
                         else:
                             ErrorMsg = Message.GetErrorMessage(
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
                             Output = ErrorMsg
+
+                # FK_CONSTRAINT = Sql.GetList(
+                #     "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
+                #     + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND SCHCON.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
+                #     + str(self.ObjectName)
+                #     + "' AND CON.REFOBJECTFIELD_APINAME = '"
+                #     + str(objectApiName)
+                #     + "'"
+                # )
+                # if FK_CONSTRAINT is not None:
+                #     for fkey in FK_CONSTRAINT:
+                #         result = fkey.Result
+                #         if result == 0:
+                #             query_result = Sql.GetList(
+                #                 "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
+                #                 + " FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME = "
+                #                 + " CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%UQ_%' WHERE CON.CONSTRAINT_TYPE='UNIQUE' AND CON.OBJECT_APINAME ='"
+                #                 + str(self.ObjectName)
+                #                 + "'  AND OBJECTFIELD_APINAME ='"
+                #                 + str(objectApiName)
+                #                 + "' "
+                #             )
+
+                #             for loop in query_result:
+                #                 query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + " "
+                #                 queryStatement = Sql.RunQuery(query)
+                #             delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
+                #                 objectname=str(self.ObjectName),apiname_column = str(objectApiName)
+                #             )
+                #             Sql.RunQuery(delete_query_string)
+                #             #self.deleteRecord(cpqEntryId)
+                #             Output = "True"
+                            
+                #         else:
+                #             ErrorMsg = Message.GetErrorMessage(
+                #                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
+                #             )
+                #             Output = ErrorMsg
 
             elif constraintType == "NOT NULL":
                 # DROP NOT NULL
@@ -128,30 +194,27 @@ class DropConstraint:
                     + str(objectApiName)
                     + "' "
                 )
-               
+                Trace.Write('197----')
                 for loop in query_result:
                     FK_CONSTRAINT = Sql.GetFirst(
                         "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
-                        + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%FOREIGN%'  WHERE CON.OBJECT_APINAME='"
+                        + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
                         + str(self.ObjectName)
-                        + "' AND CON.OBJECTFIELD_APINAME = '"
+                        + "' CON.REFOBJECTFIELD_APINAME = '"
                         + str(objectApiName)
                         + "'"
                     )
                     if FK_CONSTRAINT is not None:
-                        Trace.Write('142-----')
                         foreignKey = FK_CONSTRAINT.Result
                         if foreignKey == 0:
-                            Trace.Write('142-145---145555---'+str(self.ObjectName))
                             UQ_CONSTRAINT = Sql.GetFirst(
-                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE CONSTRAINT_COLUMN_USAGE.CONSTRAINT_NAME LIKE '%UNIQUE%' AND COLUMN_NAME = '"
-                                + loop.OBJECTFIELD_APINAME
+                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
+                                + loop.COLUMN_NAME
                                 + "' AND TABLE_NAME= '"
-                                + loop.OBJECT_APINAME
+                                + loop.TABLE_NAME
                                 + "' "
                             )
                             if UQ_CONSTRAINT is not None:
-                                Trace.Write('failyere---')
                                 uniqueKey = UQ_CONSTRAINT.Result
                                 if uniqueKey == 0:
                                     query = (
@@ -162,16 +225,66 @@ class DropConstraint:
                                         + " NVARCHAR(250) NULL"
                                     )
                                     queryStatement = Sql.RunQuery(query)
-                                    #self.deleteRecord(cpqEntryId)
-                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
-                            Sql.RunQuery(delete_query_string)
-                            Trace.Write('142-167---167777----'+str(objectApiName))
-                            Output = "True"
+                                    self.deleteRecord(cpqEntryId)
+                                    Output = "True"
 
                         else:
                             ErrorMsg = Message.GetErrorMessage(
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
+                            Output = ErrorMsg
+                # query_result = Sql.GetList(
+                #     "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
+                #     + str(self.ObjectName)
+                #     + "' "
+                #     + " AND OBJECTFIELD_APINAME ='"
+                #     + str(objectApiName)
+                #     + "' "
+                # )
+               
+                # for loop in query_result:
+                #     FK_CONSTRAINT = Sql.GetFirst(
+                #         "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
+                #         + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%FOREIGN%'  WHERE CON.OBJECT_APINAME='"
+                #         + str(self.ObjectName)
+                #         + "' AND CON.OBJECTFIELD_APINAME = '"
+                #         + str(objectApiName)
+                #         + "'"
+                #     )
+                #     if FK_CONSTRAINT is not None:
+                #         Trace.Write('142-----')
+                #         foreignKey = FK_CONSTRAINT.Result
+                #         if foreignKey == 0:
+                #             Trace.Write('142-145---145555---'+str(self.ObjectName))
+                #             UQ_CONSTRAINT = Sql.GetFirst(
+                #                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE CONSTRAINT_COLUMN_USAGE.CONSTRAINT_NAME LIKE '%UNIQUE%' AND COLUMN_NAME = '"
+                #                 + loop.OBJECTFIELD_APINAME
+                #                 + "' AND TABLE_NAME= '"
+                #                 + loop.OBJECT_APINAME
+                #                 + "' "
+                #             )
+                #             if UQ_CONSTRAINT is not None:
+                #                 Trace.Write('failyere---')
+                #                 uniqueKey = UQ_CONSTRAINT.Result
+                #                 if uniqueKey == 0:
+                #                     query = (
+                #                         "ALTER TABLE "
+                #                         + loop.OBJECT_APINAME
+                #                         + " ALTER COLUMN "
+                #                         + loop.OBJECTFIELD_APINAME
+                #                         + " NVARCHAR(250) NULL"
+                #                     )
+                #                     queryStatement = Sql.RunQuery(query)
+                #                     #self.deleteRecord(cpqEntryId)
+                #             delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                #             Sql.RunQuery(delete_query_string)
+                #             Trace.Write('142-167---167777----'+str(objectApiName))
+                #             Output = "True"
+
+                #         else:
+                #             ErrorMsg = Message.GetErrorMessage(
+                #                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
+                #             )
                             #Output = ErrorMsg
             elif constraintType == "PRIMARY KEY":
                 Trace.Write('174----'+ str(objectApiName))
