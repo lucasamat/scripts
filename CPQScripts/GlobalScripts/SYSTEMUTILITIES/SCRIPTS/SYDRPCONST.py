@@ -217,7 +217,9 @@ class DropConstraint:
                                 + loop.TABLE_NAME
                                 + "' "
                             )
+                            Trace.Write('209--211--------')
                             if UQ_CONSTRAINT is not None:
+                                Trace.Write('22222-----')
                                 uniqueKey = UQ_CONSTRAINT.Result
                                 if uniqueKey == 0:
                                     query = (
@@ -230,6 +232,9 @@ class DropConstraint:
                                     queryStatement = Sql.RunQuery(query)
                                     self.deleteRecord(cpqEntryId)
                                     Output = "True"
+                                    Trace.Write('235----235---------')
+                                    delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                                    Sql.RunQuery(delete_query_string)
 
                         else:
                             Trace.Write('209--211--ERROR THROWn MESSAGE------')
