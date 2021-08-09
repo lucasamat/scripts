@@ -2555,7 +2555,7 @@ if CurrentTab == 'Quotes':
         ObjName = "SAQFEQ"
     if TreeParentParam == "Quote Items" and (subTabName == "Spare Part Details" or subTabName == "Entitlements") and getQuotetype == "ZWK1 - SPARES":
         ObjName = "SAQIFP"
-    if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")):
+    if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")) and subTabName != "Sending Equipment":
         ObjectName = "SAQSRA"	    
     # if crnt_Qry is not None:
     # 	if str(ObjName) != "SAQTBP":
