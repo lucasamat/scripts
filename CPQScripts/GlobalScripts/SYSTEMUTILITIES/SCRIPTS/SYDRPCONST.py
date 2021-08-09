@@ -206,6 +206,24 @@ class DropConstraint:
                         + str(objectApiName)
                         + "'"
                     )
+                    UQ_CONSTRAINT = Sql.GetFirst(
+                        "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME  "
+                        + "    WHERE CON.OBJECT_APINAME='"
+                        + str(self.ObjectName)
+                        + "' AND CON.CONSTRAINT_TYPE LIKE '%UNIQUE%' AND CON.OBJECTFIELD_APINAME = '"
+                        + str(objectApiName)
+                        + "'"
+                    )
+                    if UQ_CONSTRAINT is not None:
+                        foreignKey = UQ_CONSTRAINT.Result
+                        if foreignKey != 0:
+                            Trace.Write('209--UNIQUEE----')
+                            ErrorMsg='ErrorMsg'
+                        if foreignKey == 0:
+                            Trace.Write('209--UNIQUEEEEE------')
+                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                            Sql.RunQuery(delete_query_string)
+                            ErrorMsg=''
                     if FK_CONSTRAINT is not None:
                         foreignKey = FK_CONSTRAINT.Result
                         Trace.Write('209--foreignKey----'+str(foreignKey))
