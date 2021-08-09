@@ -215,9 +215,10 @@ class DropConstraint:
                         + str(objectApiName)
                         + "'"
                     )
+                    UqforeignKey = ''
                     if UQ_CONSTRAINT is not None:
-                        foreignKey = UQ_CONSTRAINT.Result
-                        if foreignKey != 0:
+                        UqforeignKey = UQ_CONSTRAINT.Result
+                        if UqforeignKey != 0:
                             Trace.Write('209--UNIQUEE----')
                             ErrorMsg='ErrorMsg'
                         if foreignKey == 0:
@@ -227,14 +228,20 @@ class DropConstraint:
                             ErrorMsg=''
                     if FK_CONSTRAINT is not None:
                         foreignKey = FK_CONSTRAINT.Result
+                        UqforeignKey = UQ_CONSTRAINT.Result
                         Trace.Write('209--foreignKey----'+str(foreignKey))
                         if foreignKey != 0:
-                            Trace.Write('209--211--2144---213-----')
-                            ErrorMsg='ErrorMsg'
+                            if UqforeignKey != 0:
+                                Trace.Write('209--211--2144---213-----')
+                                ErrorMsg='ErrorMsg'
+                            else:
+                                ErrorMsg='ErrorMsg'
+
                         if foreignKey == 0:
                             Trace.Write('209--211--2144------')
-                            delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
-                            Sql.RunQuery(delete_query_string)
+                            if UqforeignKey == 0:
+                                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                                Sql.RunQuery(delete_query_string)
                             ErrorMsg=''
                             Trace.Write('209--215-----ErrorMsg--------'+str(ErrorMsg))
                             UQ_CONSTRAINT = Sql.GetFirst(
