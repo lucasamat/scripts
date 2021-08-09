@@ -236,7 +236,7 @@ class DropConstraint:
                                     Trace.Write('235----235---------')
                                     delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
                                     Sql.RunQuery(delete_query_string)
-
+                            ErrorMsg='ErrorMsg'
                         else:
                             Trace.Write('209--211--ERROR THROWn MESSAGE------')
                             ErrorMsg = Message.GetErrorMessage(
