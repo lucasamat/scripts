@@ -6296,7 +6296,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-95976":
                         RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00701").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-                    elif str(RECORD_ID) == "SYOBJR-95985" and str(current_tab) == "Page":
+                    elif str(RECORD_ID) == "SYOBJR-95985":
                         Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR)+" TREE_NAME = '"+str(TreeParentParam)+"' 
                     else:    
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
