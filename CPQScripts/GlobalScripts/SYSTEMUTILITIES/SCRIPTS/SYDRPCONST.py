@@ -210,15 +210,15 @@ class DropConstraint:
                         foreignKey = FK_CONSTRAINT.Result
                         Trace.Write('209--foreignKey----'+str(foreignKey))
                         if foreignKey == 0:
-                            Trace.Write('209--211--------')
+                            Trace.Write('209--211--2144------')
                             UQ_CONSTRAINT = Sql.GetFirst(
-                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ_%' AND COLUMN_NAME = '"
+                                "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE FK.CONSTRAINT_NAME LIKE '%UQ%' AND COLUMN_NAME = '"
                                 + loop.COLUMN_NAME
                                 + "' AND TABLE_NAME= '"
                                 + loop.TABLE_NAME
                                 + "' "
                             )
-                            Trace.Write('209--211--------')
+                            Trace.Write('209--211----221----')
                             if UQ_CONSTRAINT is not None:
                                 Trace.Write('22222-----')
                                 uniqueKey = UQ_CONSTRAINT.Result
