@@ -122,6 +122,17 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	SUM(ISNULL(YEAR_5, 0)) as YEAR_5
 	FROM SAQITM (NOLOCK)
 	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
+	Trace.Write("""SELECT 
+	SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
+	SUM(ISNULL(SALES_PRICE, 0)) as SALES_PRICE,
+	SUM(ISNULL(YEAR_OVER_YEAR, 0)) as YEAR_OVER_YEAR,
+	SUM(ISNULL(YEAR_1, 0)) as YEAR_1,
+	SUM(ISNULL(YEAR_2, 0)) as YEAR_2,
+	SUM(ISNULL(YEAR_3, 0)) as YEAR_3,
+	SUM(ISNULL(YEAR_4, 0)) as YEAR_4,
+	SUM(ISNULL(YEAR_5, 0)) as YEAR_5
+	FROM SAQITM (NOLOCK)
+	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
 	if total_item_obj is not None:
 		Quote.GetCustomField('SALE_PRICE').Content = str(total_item_obj.SALES_PRICE)
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
