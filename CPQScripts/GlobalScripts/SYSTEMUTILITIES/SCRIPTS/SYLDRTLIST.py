@@ -7488,6 +7488,8 @@ class SYLDRTLIST:
                             Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
                         elif  str(RECORD_ID) == "SYOBJR-98789" and "Receiving Account -" in TreeParam :
                             Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"   
+                        elif str(RECORD_ID) == "SYOBJR-95985":
+                            Qustr _= " WHERE TREE_NAME = '"+str(TreeParentParam)+"'"
                         else:
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                             Trace.Write("7100"+str(Qustr))
