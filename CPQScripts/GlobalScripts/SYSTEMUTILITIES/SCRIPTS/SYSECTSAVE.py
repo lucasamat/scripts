@@ -677,7 +677,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                 # attributevalues[str(prdvalue['id'])]=attribute['value']
                                                 # for attribute in prdvalue['values']:
                                                 if len(prdvalue["values"]) == 1:
-                                                     Trace.Write('ifffff'+str(prdvalue["id"]))
+                                                    Trace.Write('ifffff'+str(prdvalue["id"]))
                                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
                                                 elif len(prdvalue["values"]) > 1:
                                                     Trace.Write('else if'+str(prdvalue["id"]))
