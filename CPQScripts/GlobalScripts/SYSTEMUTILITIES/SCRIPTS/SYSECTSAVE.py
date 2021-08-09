@@ -677,19 +677,24 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                 # attributevalues[str(prdvalue['id'])]=attribute['value']
                                                 # for attribute in prdvalue['values']:
                                                 if len(prdvalue["values"]) == 1:
+                                                     Trace.Write('ifffff'+str(prdvalue["id"]))
                                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
                                                 elif len(prdvalue["values"]) > 1:
-                                                    Trace.Write('else'+str(prdvalue["id"]))
+                                                    Trace.Write('else if'+str(prdvalue["id"]))
                                                     for attribute in prdvalue["values"]:
                                                         #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
                                                         value_list = [attribute["value"] for attribute in prdvalue["values"]]
                                                         #value_list = str(value_list)
                                                     attributevalues[str(prdvalue["id"])] = value_list
+                                                else:
+                                                    Trace.Write('else'+str(prdvalue["id"]))
+
                             
                             attributesallowedlst = list(set(attributesallowedlst))
                             #overallattributeslist = list(set(overallattributeslist))
                             HasDefaultvalue=False
-                            #Trace.Write('response2--182----315---')
+                            Trace.Write('response2--182----315---'+str(attributesallowedlst))
+                            Trace.Write('attributevalues--182----315---'+str(attributevalues))
                             ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
                             if ProductVersionObj is not None:
                                 #tbrow={}
