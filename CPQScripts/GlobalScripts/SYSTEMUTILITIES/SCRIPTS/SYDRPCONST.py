@@ -115,7 +115,7 @@ class DropConstraint:
                     "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
                     + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
                     + str(self.ObjectName)
-                    + "' CON.REFOBJECTFIELD_APINAME = '"
+                    + "' AND CON.REFOBJECTFIELD_APINAME = '"
                     + str(objectApiName)
                     + "'"
                 )
@@ -145,7 +145,8 @@ class DropConstraint:
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
                             Output = ErrorMsg
-
+                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and CONSTRAINT_TYPE = 'UNIQUE'  and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                Sql.RunQuery(delete_query_string)
                 # FK_CONSTRAINT = Sql.GetList(
                 #     "SELECT Result=COUNT(1) FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE SCHCON ON SCHCON.TABLE_NAME = CON.OBJECT_APINAME AND "
                 #     + " SCHCON.COLUMN_NAME = CON.OBJECTFIELD_APINAME AND SCHCON.CONSTRAINT_NAME LIKE '%FK_%'  WHERE CON.REFOBJECT_APINAME='"
