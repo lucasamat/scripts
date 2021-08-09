@@ -1361,7 +1361,10 @@ try:
 				where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID')
 				#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
 				update_entitlement_price_impact(where_condition)
-except:
+	sendEmail(level)
+
+except Exception,e:
+	Log.Info("error on roll up--"+str(e))
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")	
 	ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")	
 #Log.Info('Log before calling ftscostcalc--')
@@ -1371,6 +1374,6 @@ if ent_temp:
 if ent_roll_temp:
 	ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")
 #Log.Info("level1---"+str(level))
-sendEmail(level)
+#sendEmail(level)
 
 
