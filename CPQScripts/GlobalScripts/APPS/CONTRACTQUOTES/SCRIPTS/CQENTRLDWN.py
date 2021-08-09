@@ -745,7 +745,7 @@ try:
 			#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
 							
 			Sql.RunQuery(UpdateEntitlement)
-			if newConfigurationid and 'Z0016' in get_serviceid:
+			if 'Z0016' in get_serviceid:
 				Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
 				Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 			
