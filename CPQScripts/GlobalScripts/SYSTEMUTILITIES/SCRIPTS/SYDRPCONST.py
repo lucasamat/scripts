@@ -72,7 +72,7 @@ class DropConstraint:
 
                 self.deleteRecord(cpqEntryId)
                 Output = "True"
-
+                
                 # query_result = Sql.GetList(
                 #     "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
                 #     + "FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME= "
@@ -207,7 +207,7 @@ class DropConstraint:
                     )
                     if FK_CONSTRAINT is not None:
                         foreignKey = FK_CONSTRAINT.Result
-                        Trace.Write('209---')
+                        Trace.Write('209--foreignKey----'+str(foreignKey))
                         if foreignKey == 0:
                             Trace.Write('209--211--------')
                             UQ_CONSTRAINT = Sql.GetFirst(
@@ -241,7 +241,7 @@ class DropConstraint:
                             ErrorMsg = Message.GetErrorMessage(
                                 "BE3705B4-B532-4D9E-9790-17742318DC7B", "OBJECT_APINAME", self.ObjectName, "ERROR"
                             )
-                            Output = ErrorMsg
+                            #Output = ErrorMsg
                 # query_result = Sql.GetList(
                 #     "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
                 #     + str(self.ObjectName)
