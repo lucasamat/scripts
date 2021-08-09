@@ -702,6 +702,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                 tblist = []
                                 #Log.Info('response2--182----321-')
                                 for attrs in attributesallowedlst:
+                                    Trace.Write('value code---'+str(attrs))
                                     #tbrow1 = {}
                                     if attrs in attributevalues:
                                         HasDefaultvalue=True
