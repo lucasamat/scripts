@@ -56,7 +56,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 		Trace.Write("Quote Quote Quote")
 		item_number = int(item.RolledUpQuoteItem)
 		service_id = item.PartNumber
-		if  service_id == item.PartNumber:
+		if  service_id == item.PartNumber and item_number == lineitemid:
 			Trace.Write("service_id")
 			item.YEAR_OVER_YEAR.Value = yoy
 			item.SALES_PRICE.Value = saleprice
@@ -98,6 +98,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	FROM SAQIGB (NOLOCK)
 	INNER JOIN (SELECT SAQICO.QUOTE_RECORD_ID,
 	SAQICO.GREENBOOK_RECORD_ID,
+	SAQICO.DISCOUNT,
 	SUM(ISNULL(SAQICO.EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
 	SUM(ISNULL(SAQICO.SALES_DISCOUNT_PRICE, 0)) as SALES_DISCOUNT_PRICE,
 	SUM(ISNULL(SAQICO.YEAR_1, 0)) as YEAR_1,
