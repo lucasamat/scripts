@@ -147,7 +147,8 @@ def Related_Sub_Banner(
                                 div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
                                 if "div_id" in str(btn.HTML_CONTENT):
                                     add_button = add_button.format(div_id = div_id)
-                            multi_buttons.append(add_button)
+                            if quote_status.QUOTE_STATUS != 'APPROVED':        
+                                multi_buttons.append(add_button)
                             
                     else:					
                         if str(btn.HTML_CONTENT) != "" and str(btn.RELATED_LIST_RECORD_ID) != "":
