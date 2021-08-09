@@ -209,9 +209,13 @@ class DropConstraint:
                     if FK_CONSTRAINT is not None:
                         foreignKey = FK_CONSTRAINT.Result
                         Trace.Write('209--foreignKey----'+str(foreignKey))
+                        if foreignKey != 0:
+                            Trace.Write('209--211--2144---213-----')
+                            ErrorMsg='ErrorMsg'
                         if foreignKey == 0:
                             Trace.Write('209--211--2144------')
-                            ErrorMsg='ErrorMsg'
+
+                            ErrorMsg=''
                             Trace.Write('209--215-----ErrorMsg--------'+str(ErrorMsg))
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK WHERE FK.CONSTRAINT_NAME LIKE '%UQ%' AND COLUMN_NAME = '"
