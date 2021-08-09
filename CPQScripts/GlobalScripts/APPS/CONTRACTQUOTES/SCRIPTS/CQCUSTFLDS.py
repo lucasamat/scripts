@@ -140,7 +140,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 		Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
 		Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)
 		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_item_obj.EXTENDED_PRICE)
-	pricefactor_obj = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}'".format(service_id))
+	pricefactor_obj = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(service_id))
 	if float(pricefactor_obj.FACTOR_PCTVAR) < discount:
 	   Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 	Sql.RunQuery("""UPDATE SAQICO SET
