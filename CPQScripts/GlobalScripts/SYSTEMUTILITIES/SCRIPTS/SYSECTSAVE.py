@@ -705,8 +705,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 
                                 
                                     
-                                    DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+                                    DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
                                     #Log.Info('response2--182----342-')
+                                    Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
                                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
