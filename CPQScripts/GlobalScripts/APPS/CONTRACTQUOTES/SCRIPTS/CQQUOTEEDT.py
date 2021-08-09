@@ -45,7 +45,7 @@ def bannerdetails(Quoteid,active_tab_name):
 			Log.Info("MatchObj:" + qid)
 			Trace.Write("==> Quote Id ==> "+str(qid))
 			try:
-				Quote = QuoteHelper.Edit(qid)
+				Quote = QuoteHelper.Edit(str(qid))
 			except Exception:
 				Trace.Write("Quote Edit Exception")
 			Log.Info(str(Quote))
