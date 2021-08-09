@@ -597,93 +597,134 @@ GetXMLsecField = Sql.GetList("SELECT * from {} ".format(ent_roll_temp))
 
 fab_dict = {}
 grnbk_dict = {}
-
-for obj in obj_list:
-	join =""
-	update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userId,datetimenow)
-	if objectName == 'SAQSGE' and obj == 'SAQIEN':
-		join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
-	# elif objectName == 'SAQSGE':
-	# 	join = " AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID AND SRC.GREENBOOK = TGT.GREENBOOK "    
-	# elif objectName == 'SAQSFE':
-	# 	join = " AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID "
-	elif objectName == 'SAQSCE' and obj == 'SAQIEN':
-		join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND SAQICO.EQUIPMENT_ID = SRC.EQUIPMENT_ID AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
-	elif objectName == 'SAQSCE' and obj == 'SAQSAE':
-		join = "  AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND SAQICO.EQUIPMENT_ID = SRC.EQUIPMENT_ID "
-	elif objectName == 'SAQSAE':
-		join = " AND SRC.GREENBOOK =TGT.GREENBOOK AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID  AND SRC.ASSEMBLY_ID = TGT.ASSEMBLY_ID "
-	#elif objectname == 'SAQTSE':
-	
-	
-	if is_changed and obj == "SAQSCE":
-		update_fields += ",IS_CHANGED = 1"
-	
-	###roll down and up for all levels starts
-	if obj == 'SAQTSE'  and GetXMLsecField :
-		where_condition = SAQITMWhere.replace('A.','')
-		# " WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId, serviceId)	
+try:
+	for obj in obj_list:
+		join =""
+		update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userId,datetimenow)
+		if objectName == 'SAQSGE' and obj == 'SAQIEN':
+			join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
+		# elif objectName == 'SAQSGE':
+		# 	join = " AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID AND SRC.GREENBOOK = TGT.GREENBOOK "    
+		# elif objectName == 'SAQSFE':
+		# 	join = " AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID "
+		elif objectName == 'SAQSCE' and obj == 'SAQIEN':
+			join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND SAQICO.EQUIPMENT_ID = SRC.EQUIPMENT_ID AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
+		elif objectName == 'SAQSCE' and obj == 'SAQSAE':
+			join = "  AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND SAQICO.EQUIPMENT_ID = SRC.EQUIPMENT_ID "
+		elif objectName == 'SAQSAE':
+			join = " AND SRC.GREENBOOK =TGT.GREENBOOK AND SRC.FABLOCATION_ID = TGT.FABLOCATION_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID  AND SRC.ASSEMBLY_ID = TGT.ASSEMBLY_ID "
+		#elif objectname == 'SAQTSE':
 		
-		if 'Z0016' in get_serviceid:
-			cpsmatc_incr = 11
-			newConfigurationid	= get_config_id()
-			#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE {} ".format(where_condition) )
-			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
-			# Log.Info('getxml----'+str("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition)))
-			updateentXML = ""
-			if GetXMLsec:
-				for value in GetXMLsec:
-					where_condtn = SAQITMWhere.replace('A.','')
-					where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
-					#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-					get_currency = value.PRICE_METHOD
-					GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
-					
-					if GetXML:
-						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-						get_calc_factor = GetXML.CALCULATION_FACTOR 
-						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-						get_code = GetXML.ENTITLEMENT_VALUE_CODE
-					else:
-						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
-						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-						get_calc_factor = GetXML.CALCULATION_FACTOR 
-						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-						get_code = GetXML.ENTITLEMENT_VALUE_CODE
-					#try:
-					
-					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
+		
+		if is_changed and obj == "SAQSCE":
+			update_fields += ",IS_CHANGED = 1"
+		
+		###roll down and up for all levels starts
+		if obj == 'SAQTSE'  and GetXMLsecField :
+			where_condition = SAQITMWhere.replace('A.','')
+			# " WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId, serviceId)	
+			
+			if 'Z0016' in get_serviceid:
+				cpsmatc_incr = 11
+				newConfigurationid	= get_config_id()
+				#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE {} ".format(where_condition) )
+				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
+				# Log.Info('getxml----'+str("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition)))
+				updateentXML = ""
+				if GetXMLsec:
+					for value in GetXMLsec:
+						where_condtn = SAQITMWhere.replace('A.','')
+						where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
+						#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
+						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+						get_currency = value.PRICE_METHOD
+						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
+						
+						if GetXML:
+							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+							get_calc_factor = GetXML.CALCULATION_FACTOR 
+							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+							get_code = GetXML.ENTITLEMENT_VALUE_CODE
+						else:
+							GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
+							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+							get_calc_factor = GetXML.CALCULATION_FACTOR 
+							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+							get_code = GetXML.ENTITLEMENT_VALUE_CODE
+						#try:
+						
+						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
-						get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
+							get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp} {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
 
-						if get_value_qry:
-							#if get_value_diff != 0.00:
-							get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
-							if value.ENTITLEMENT_COST_IMPACT and get_value:
-								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-							else:
-								get_price_impact = 0.00
-							#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-							
-						# else:
-						# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
-							#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-					elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-						get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
-						getvalue = []
-						getcode = []
-						for val in get_value_qry:
-							#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
-							if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
-								getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+							if get_value_qry:
+								#if get_value_diff != 0.00:
+								get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
+								if value.ENTITLEMENT_COST_IMPACT and get_value:
+									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+								else:
+									get_price_impact = 0.00
+								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								
-							if val.ENTITLEMENT_DISPLAY_VALUE and val.ENTITLEMENT_DISPLAY_VALUE != 'undefined':
-								getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
-						get_val = list(set(getvalue) )
-						get_cod = list(set(getcode))
-						get_value = str(get_val).replace("'", '"')
-						get_code = str(get_cod).replace("'", '"')
+							# else:
+							# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
+								#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+						elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+							get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
+							getvalue = []
+							getcode = []
+							for val in get_value_qry:
+								#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+								if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
+									getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+									
+								if val.ENTITLEMENT_DISPLAY_VALUE and val.ENTITLEMENT_DISPLAY_VALUE != 'undefined':
+									getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
+							get_val = list(set(getvalue) )
+							get_cod = list(set(getcode))
+							get_value = str(get_val).replace("'", '"')
+							get_code = str(get_cod).replace("'", '"')
+						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+							<IS_DEFAULT>{is_default}</IS_DEFAULT>
+							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+							<PRICE_METHOD>{pm}</PRICE_METHOD>
+							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+						
+						
+						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+						cpsmatc_incr = cpsmatchID
+						
+
+			else:
+				updateentXML = ""
+				for value in GetXMLsecField:
+					get_value = value.ENTITLEMENT_DISPLAY_VALUE
+					get_calc_factor = value.CALCULATION_FACTOR 
+					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+					#try:
+					get_currency = value.PRICE_METHOD
+					#except:
+					#get_currency = ""
+					#Log.Info('ENTITLEMENT_COST_IMPACT-----'+str(value.ENTITLEMENT_COST_IMPACT))
+								
+					if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and 'Z0007' in get_serviceid and value.ENTITLEMENT_COST_IMPACT):
+						#if (value.ENTITLEMENT_COST_IMPACT and get_serviceid =='Z0007_AG'):
+						#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT distinct e.QUOTE_RECORD_ID, e.EQUIPMENT_RECORD_ID, e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.EQUIPMENT_RECORD_ID, SAQSCE.EQUIPMENT_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}'  ".format(where_condition,value.ENTITLEMENT_NAME))
+						GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+
+						if GetXMLfab:
+							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+						#Log.Info("get_calc_factor---"+str(get_calc_factor))
+
+						
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -695,120 +736,316 @@ for obj in obj_list:
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
 					
+			#Log.Info('updateentXML--ser-'+str(updateentXML))
+			where_condition = SAQITMWhere.replace('A.','')
+			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+			#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
+			Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+			
 					
-					cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
-					cpsmatc_incr = cpsmatchID
-					
+			Sql.RunQuery(UpdateEntitlement)
+			Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
-		else:
-			updateentXML = ""
-			for value in GetXMLsecField:
-				get_value = value.ENTITLEMENT_DISPLAY_VALUE
-				get_calc_factor = value.CALCULATION_FACTOR 
-				get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-				get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-				#try:
-				get_currency = value.PRICE_METHOD
-				#except:
-				#get_currency = ""
-				#Log.Info('ENTITLEMENT_COST_IMPACT-----'+str(value.ENTITLEMENT_COST_IMPACT))
+		elif obj == 'SAQSFE' and GetXMLsecField:
+			if objectName == 'SAQTSE' and GetXMLsecField:
+				#Log.Info('fab_dict----'+str(grnbk_dict))
+				get_value_query = Sql.GetList("select * from SAQSFB {} ".format(where_cond))
+				updateentXML = ""
+				for fab in get_value_query:
+					where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
+					get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
+					for value in GetXMLsecField:
+						get_value = value.ENTITLEMENT_DISPLAY_VALUE
+						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+						get_currency = value.PRICE_METHOD
+						get_calc_factor = value.CALCULATION_FACTOR 
+						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
+								get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
+								if value.ENTITLEMENT_COST_IMPACT and get_value:
+									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+								else:
+									get_price_impact = 0.00
+								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 							
-				if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and 'Z0007' in get_serviceid and value.ENTITLEMENT_COST_IMPACT):
-					#if (value.ENTITLEMENT_COST_IMPACT and get_serviceid =='Z0007_AG'):
-					#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT distinct e.QUOTE_RECORD_ID, e.EQUIPMENT_RECORD_ID, e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.EQUIPMENT_RECORD_ID, SAQSCE.EQUIPMENT_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}'  ".format(where_condition,value.ENTITLEMENT_NAME))
-					GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
-
-					if GetXMLfab:
-						get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-					#Log.Info("get_calc_factor---"+str(get_calc_factor))
-
+							#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
+						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+								<IS_DEFAULT>{is_default}</IS_DEFAULT>
+								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<PRICE_METHOD>{pm}</PRICE_METHOD>
+								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
+					#Log.Info('updateentXML--fab1-'+str(updateentXML))
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 					
-				updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-					<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-					<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-					<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-					<IS_DEFAULT>{is_default}</IS_DEFAULT>
-					<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-					<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-					<PRICE_METHOD>{pm}</PRICE_METHOD>
-					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
-				
-		#Log.Info('updateentXML--ser-'+str(updateentXML))
-		where_condition = SAQITMWhere.replace('A.','')
-		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-		#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-		Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
-		
-				
-		Sql.RunQuery(UpdateEntitlement)
-		Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
-
-	elif obj == 'SAQSFE' and GetXMLsecField:
-		if objectName == 'SAQTSE' and GetXMLsecField:
-			#Log.Info('fab_dict----'+str(grnbk_dict))
-			get_value_query = Sql.GetList("select * from SAQSFB {} ".format(where_cond))
-			updateentXML = ""
-			for fab in get_value_query:
-				where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
-				get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
-				for value in GetXMLsecField:
-					get_value = value.ENTITLEMENT_DISPLAY_VALUE
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					get_currency = value.PRICE_METHOD
-					get_calc_factor = value.CALCULATION_FACTOR 
-					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
-							get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
-							if value.ENTITLEMENT_COST_IMPACT and get_value:
-								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-							else:
-								get_price_impact = 0.00
-							#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+					#Log.Info("UpdateEntitlement---"+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))	
+					Sql.RunQuery(UpdateEntitlement)
+			else: 				
+				if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
+					where_condition = SAQITMWhere.replace('A.','')
+					#fab_val = where_cond.split('AND ')
+					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
+					#Log.Info('where_condition-----1307--'+str(where_condition))	
+					get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
+					
+					for fab in get_value_query:
+						where_condition = SAQITMWhere.replace('A.','')
+						updateentXML = ""
+						where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
+						for value in GetXMLsecField:
+							get_value = value.ENTITLEMENT_DISPLAY_VALUE
+							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+							get_calc_factor = value.CALCULATION_FACTOR 
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+							
+							if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown')  and value.ENTITLEMENT_COST_IMPACT):
+								#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID,e.EQUIPMENT_ID, e.FABLOCATION_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.EQUIPMENT_ID,SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID   ".format(where_condition,value.ENTITLEMENT_NAME))
+								GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+								if GetXMLfab:
+									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+								#Log.Info("get_calc_factor---"+str(get_calc_factor))
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+								<IS_DEFAULT>{is_default}</IS_DEFAULT>
+								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<PRICE_METHOD>{pm}</PRICE_METHOD>
+								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 						
-						#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-							<IS_DEFAULT>{is_default}</IS_DEFAULT>
-							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-							<PRICE_METHOD>{pm}</PRICE_METHOD>
-							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
-				#Log.Info('updateentXML--fab1-'+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+						#Log.Info('updateentXML--fab2-'+str(updateentXML))
+					
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+									
+						Sql.RunQuery(UpdateEntitlement)
 				
-				#Log.Info("UpdateEntitlement---"+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))	
-				Sql.RunQuery(UpdateEntitlement)
-		else: 				
+				elif 'Z0016' in get_serviceid:
+					cpsmatc_incr = 11
+					newConfigurationid	= get_config_id()
+					where_condition = SAQITMWhere.replace('A.','')
+					fab_val = where_cond.split('AND ')
+					where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
+					#Log.Info('where_condition-----1307--'+str(where_condition))	
+					get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
+					
+					#for fab in get_value_query:
+
+					#where_condition = SAQITMWhere.replace('A.','')
+					updateentXML = ""
+					#where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
+					GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
+					if GetXMLsec:
+						for value in GetXMLsec:
+							where_condtn = SAQITMWhere.replace('A.','')
+							where_condtn += " AND FABLOCATION_ID = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,value.ENTITLEMENT_NAME) 
+							#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+							get_currency = value.PRICE_METHOD
+							GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
+							if GetXML:
+								get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+								get_calc_factor = GetXML.CALCULATION_FACTOR 
+								get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+								get_code = GetXML.ENTITLEMENT_VALUE_CODE
+							else:
+								GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
+								get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
+								get_calc_factor = GetXML.CALCULATION_FACTOR 
+								get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
+								get_code = GetXML.ENTITLEMENT_VALUE_CODE
+
+						
+						
+							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
+
+								get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp}  {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
+
+								if get_value_qry:
+									#if get_value_diff != 0.00:
+									get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
+									if value.ENTITLEMENT_COST_IMPACT and get_value:
+										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+									else:
+										get_price_impact = 0.00
+									#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+									
+								# else:
+								# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
+									#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+							elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') :
+								get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
+								getvalue = []
+								getcode = []
+								for val in get_value_qry:
+								#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
+									if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
+										getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
+										
+									if val.ENTITLEMENT_DISPLAY_VALUE and val.ENTITLEMENT_DISPLAY_VALUE != 'undefined':
+										getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
+								get_val = list(set(getvalue) )
+								get_cod = list(set(getcode))
+								get_value = str(get_val).replace("'", '"')
+								get_code = str(get_cod).replace("'", '"')
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+								<IS_DEFAULT>{is_default}</IS_DEFAULT>
+								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<PRICE_METHOD>{pm}</PRICE_METHOD>
+								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+
+							# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+							# cpsmatc_incr = cpsmatchID
+
+					#Log.Info('updateentXML--fab2-'+str(updateentXML))
+				
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+								
+					Sql.RunQuery(UpdateEntitlement)
+					# Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+			
+				# else:
+				# 	where_condition = SAQITMWhere.replace('A.','')
+				# 	fab_val = where_cond.split('AND ')
+				# 	where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
+				# 	#Log.Info('where_condition-----1307--'+str(where_condition))	
+				# 	get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSFE {} ".format(where_condition) )
+				# 	updateentXML = ""
+					
+				# 	for value in GetXMLsecField:
+				# 		get_value = value.ENTITLEMENT_DISPLAY_VALUE
+				# 		get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+				# 		get_currency = value.PRICE_METHOD
+				# 		get_calc_factor = value.CALCULATION_FACTOR 
+				# 		get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+				# 		if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+				# 			if value.ENTITLEMENT_DISPLAY_VALUE:
+				# 				if value.ENTITLEMENT_NAME in get_prev_dict.keys():
+				# 					get_value_diff = float(value.ENTITLEMENT_DISPLAY_VALUE) -  float(get_prev_dict[value.ENTITLEMENT_NAME].split('||')[0])
+				# 					GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
+				# 					if get_value_diff != 0.00:
+				# 						get_calc_factor = get_value = int(round(float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff) )
+				# 						if value.ENTITLEMENT_COST_IMPACT and get_value:
+				# 							get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+				# 						else:
+				# 							get_price_impact = 0.00
+				# 						#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+				# 					else:
+				# 						get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
+				# 					Log.Info('get_value--fab-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
+						
+						
+				# 		updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+				# 			<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+				# 			<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+				# 			<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+				# 			<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+				# 			<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+				# 			<IS_DEFAULT>{is_default}</IS_DEFAULT>
+				# 			<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+				# 			<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+				# 			<PRICE_METHOD>{pm}</PRICE_METHOD>
+				# 			<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+				# 			</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+					
+				# 	#Log.Info('updateentXML--fab2-'+str(updateentXML))
+				
+				# 	UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+								
+				# 	Sql.RunQuery(UpdateEntitlement)
+					
+				
+
+		elif obj == 'SAQSGE' and GetXMLsecField:
+			# if objectName == 'SAQSCE' and GetXMLsecField and ('Z0007','Z0016') not in get_serviceid:
+			# 	where_condition = SAQITMWhere.replace('A.','')
+			# 	fab_val = where_cond.split('AND ')
+			# 	where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
+			# 	#where_condition = " WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId, serviceId, self.treeparentparam,self.treeparam)	
+			# 	get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSGE {} ".format(where_condition) )
+			# 	updateentXML = ""
+			# 	for value in GetXMLsecField:
+			# 		get_value = value.ENTITLEMENT_DISPLAY_VALUE
+			# 		get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+			# 		get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+			# 		#try:
+			# 		get_currency = value.PRICE_METHOD
+			# 		#except:
+			# 		#	get_currency = ""
+			# 		get_calc_factor = value.CALCULATION_FACTOR
+			# 		if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+			# 			if value.ENTITLEMENT_DISPLAY_VALUE:
+			# 				if value.ENTITLEMENT_NAME in get_prev_dict.keys():
+			# 					get_value_diff = float(value.ENTITLEMENT_DISPLAY_VALUE) -  float(get_prev_dict[value.ENTITLEMENT_NAME].split('||')[0])
+								
+			# 					GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
+			# 					if get_value_diff != 0.00:
+			# 						get_val = float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff
+			# 						if value.ENTITLEMENT_COST_IMPACT and get_val:
+			# 							get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+			# 						else:
+			# 							get_price_impact = 0.00
+			# 						get_calc_factor = get_value = round(get_val,2)
+			# 					else:
+			# 						get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
+			# 					#Log.Info('get_value--grn-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
+
+			# 		updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+			# 			<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+			# 			<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+			# 			<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+			# 			<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+			# 			<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+			# 			<IS_DEFAULT>{is_default}</IS_DEFAULT>
+			# 			<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+			# 			<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+			# 			<PRICE_METHOD>{pm}</PRICE_METHOD>
+			# 			<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+			# 			</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+			# 	Log.Info('updateentXML--grn1-'+str(updateentXML))
+				
+			# 	UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+							
+			# 	Sql.RunQuery(UpdateEntitlement)
+			
 			if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
 				where_condition = SAQITMWhere.replace('A.','')
 				#fab_val = where_cond.split('AND ')
 				#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
 				#Log.Info('where_condition-----1307--'+str(where_condition))	
-				get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 				
+				get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
 				for fab in get_value_query:
-					where_condition = SAQITMWhere.replace('A.','')
 					updateentXML = ""
-					where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
+					where_condition = SAQITMWhere.replace('A.','')
+					where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
 					for value in GetXMLsecField:
 						get_value = value.ENTITLEMENT_DISPLAY_VALUE
 						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 						get_calc_factor = value.CALCULATION_FACTOR 
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 						
-						if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown')  and value.ENTITLEMENT_COST_IMPACT):
-							#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID,e.EQUIPMENT_ID, e.FABLOCATION_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.EQUIPMENT_ID,SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID   ".format(where_condition,value.ENTITLEMENT_NAME))
+						if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and value.ENTITLEMENT_COST_IMPACT):
+							#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID,e.GREENBOOK,e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.EQUIPMENT_ID,SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID,SAQSCE.GREENBOOK, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID, GREENBOOK ".format(where_condition,value.ENTITLEMENT_NAME))
 							GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
 							if GetXMLfab:
 								get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
@@ -831,30 +1068,30 @@ for obj in obj_list:
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 								
 					Sql.RunQuery(UpdateEntitlement)
-			
-			elif 'Z0016' in get_serviceid:
+				
+			elif 'Z0016' in get_serviceid and objectName == 'SAQSCE':
 				cpsmatc_incr = 11
 				newConfigurationid	= get_config_id()
 				where_condition = SAQITMWhere.replace('A.','')
 				fab_val = where_cond.split('AND ')
-				where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
+				where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
 				#Log.Info('where_condition-----1307--'+str(where_condition))	
-				get_value_query = Sql.GetList("select QUOTE_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 				
+				#get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
 				#for fab in get_value_query:
-
-				#where_condition = SAQITMWhere.replace('A.','')
 				updateentXML = ""
-				#where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
+				#where_condition = SAQITMWhere.replace('A.','')
+				#where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
 				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
 				if GetXMLsec:
 					for value in GetXMLsec:
 						where_condtn = SAQITMWhere.replace('A.','')
-						where_condtn += " AND FABLOCATION_ID = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,value.ENTITLEMENT_NAME) 
+						where_condtn += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK,value.ENTITLEMENT_NAME) 
 						#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 						get_currency = value.PRICE_METHOD
 						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
+
 						if GetXML:
 							get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
 							get_calc_factor = GetXML.CALCULATION_FACTOR 
@@ -866,7 +1103,6 @@ for obj in obj_list:
 							get_calc_factor = GetXML.CALCULATION_FACTOR 
 							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
 							get_code = GetXML.ENTITLEMENT_VALUE_CODE
-
 					
 					
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
@@ -922,446 +1158,212 @@ for obj in obj_list:
 							
 				Sql.RunQuery(UpdateEntitlement)
 				# Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
-		
-			# else:
-			# 	where_condition = SAQITMWhere.replace('A.','')
-			# 	fab_val = where_cond.split('AND ')
-			# 	where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
-			# 	#Log.Info('where_condition-----1307--'+str(where_condition))	
-			# 	get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSFE {} ".format(where_condition) )
-			# 	updateentXML = ""
-				
-			# 	for value in GetXMLsecField:
-			# 		get_value = value.ENTITLEMENT_DISPLAY_VALUE
-			# 		get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-			# 		get_currency = value.PRICE_METHOD
-			# 		get_calc_factor = value.CALCULATION_FACTOR 
-			# 		get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-			# 		if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-			# 			if value.ENTITLEMENT_DISPLAY_VALUE:
-			# 				if value.ENTITLEMENT_NAME in get_prev_dict.keys():
-			# 					get_value_diff = float(value.ENTITLEMENT_DISPLAY_VALUE) -  float(get_prev_dict[value.ENTITLEMENT_NAME].split('||')[0])
-			# 					GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
-			# 					if get_value_diff != 0.00:
-			# 						get_calc_factor = get_value = int(round(float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff) )
-			# 						if value.ENTITLEMENT_COST_IMPACT and get_value:
-			# 							get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-			# 						else:
-			# 							get_price_impact = 0.00
-			# 						#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-			# 					else:
-			# 						get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
-			# 					Log.Info('get_value--fab-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
-					
-					
-			# 		updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-			# 			<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-			# 			<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-			# 			<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-			# 			<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-			# 			<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-			# 			<IS_DEFAULT>{is_default}</IS_DEFAULT>
-			# 			<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-			# 			<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-			# 			<PRICE_METHOD>{pm}</PRICE_METHOD>
-			# 			<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-			# 			</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-				
-			# 	#Log.Info('updateentXML--fab2-'+str(updateentXML))
-			
-			# 	UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-							
-			# 	Sql.RunQuery(UpdateEntitlement)
-				
 			
 
-	elif obj == 'SAQSGE' and GetXMLsecField:
-		# if objectName == 'SAQSCE' and GetXMLsecField and ('Z0007','Z0016') not in get_serviceid:
-		# 	where_condition = SAQITMWhere.replace('A.','')
-		# 	fab_val = where_cond.split('AND ')
-		# 	where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
-		# 	#where_condition = " WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND GREENBOOK ='{}' ".format(self.ContractRecordId, serviceId, self.treeparentparam,self.treeparam)	
-		# 	get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQSGE {} ".format(where_condition) )
-		# 	updateentXML = ""
-		# 	for value in GetXMLsecField:
-		# 		get_value = value.ENTITLEMENT_DISPLAY_VALUE
-		# 		get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-		# 		get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-		# 		#try:
-		# 		get_currency = value.PRICE_METHOD
-		# 		#except:
-		# 		#	get_currency = ""
-		# 		get_calc_factor = value.CALCULATION_FACTOR
-		# 		if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-		# 			if value.ENTITLEMENT_DISPLAY_VALUE:
-		# 				if value.ENTITLEMENT_NAME in get_prev_dict.keys():
-		# 					get_value_diff = float(value.ENTITLEMENT_DISPLAY_VALUE) -  float(get_prev_dict[value.ENTITLEMENT_NAME].split('||')[0])
+			else:
+				#Log.Info('grnbk_dict----'+str(grnbk_dict))
+				#where_condition = where_cond 
+				get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
+				for grnbk in get_value_query:
+					# fab_dict[fab.FABLOCATION_ID] = fab.cnt
+					where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
+					updateentXML = ""
+					for value in GetXMLsecField:
+						get_value = value.ENTITLEMENT_DISPLAY_VALUE
+						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+						get_calc_factor = value.CALCULATION_FACTOR
+						get_currency = value.PRICE_METHOD
+						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 							
-		# 					GetXMLfab = Sql.GetFirst("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(get_value_query.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(get_value_query.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) WHERE X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)') ='"+str(value.ENTITLEMENT_NAME)+"'  ")
-		# 					if get_value_diff != 0.00:
-		# 						get_val = float(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE) + get_value_diff
-		# 						if value.ENTITLEMENT_COST_IMPACT and get_val:
-		# 							get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-		# 						else:
-		# 							get_price_impact = 0.00
-		# 						get_calc_factor = get_value = round(get_val,2)
-		# 					else:
-		# 						get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
-		# 					#Log.Info('get_value--grn-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
-
-		# 		updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-		# 			<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-		# 			<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-		# 			<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-		# 			<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-		# 			<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-		# 			<IS_DEFAULT>{is_default}</IS_DEFAULT>
-		# 			<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-		# 			<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-		# 			<PRICE_METHOD>{pm}</PRICE_METHOD>
-		# 			<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-		# 			</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-		# 	Log.Info('updateentXML--grn1-'+str(updateentXML))
-			
-		# 	UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-						
-		# 	Sql.RunQuery(UpdateEntitlement)
-		
-		if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
-			where_condition = SAQITMWhere.replace('A.','')
-			#fab_val = where_cond.split('AND ')
-			#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
-			#Log.Info('where_condition-----1307--'+str(where_condition))	
-			
-			get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
-			for fab in get_value_query:
-				updateentXML = ""
-				where_condition = SAQITMWhere.replace('A.','')
-				where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
-				for value in GetXMLsecField:
-					get_value = value.ENTITLEMENT_DISPLAY_VALUE
-					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					get_calc_factor = value.CALCULATION_FACTOR 
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
+								get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
+								if value.ENTITLEMENT_COST_IMPACT and get_val:
+									get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+								else:
+									get_price_impact = 0.00
+								get_calc_factor = get_value = round(get_val,2)
+								#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
+						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+							<IS_DEFAULT>{is_default}</IS_DEFAULT>
+							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+							<PRICE_METHOD>{pm}</PRICE_METHOD>
+							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
 					
-					if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and value.ENTITLEMENT_COST_IMPACT):
-						#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID,e.GREENBOOK,e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.EQUIPMENT_ID,SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID,SAQSCE.GREENBOOK, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID, GREENBOOK ".format(where_condition,value.ENTITLEMENT_NAME))
-						GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
-						if GetXMLfab:
-							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-						#Log.Info("get_calc_factor---"+str(get_calc_factor))
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-						<IS_DEFAULT>{is_default}</IS_DEFAULT>
-						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-						<PRICE_METHOD>{pm}</PRICE_METHOD>
-						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-				
-				#Log.Info('updateentXML--fab2-'+str(updateentXML))
+					Log.Info('updateentXML--grn2-'+str(updateentXML))
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+					Log.Info('UpdateEntitlement_grn---'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
+					Sql.RunQuery(UpdateEntitlement)
+
+		elif obj == 'SAQSCE' and GetXMLsecField:
+			# if objectName == 'SAQSGE':
+			# 	get_fab_query = Sql.GetList("select FABLOCATION_ID,count(*) as cnt from SAQSGB  {} group by FABLOCATION_ID".format(where_cond))
+			# 	for fab in get_fab_query:
+			# 		fab_dict[fab.FABLOCATION_ID] = fab.cnt
+
+			get_value_query = Sql.GetFirst("select count(*) as cnt from SAQSCO  {}   ".format(where_cond))
 			
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-							
-				Sql.RunQuery(UpdateEntitlement)
-			
-		elif 'Z0016' in get_serviceid and objectName == 'SAQSCE':
-			cpsmatc_incr = 11
-			newConfigurationid	= get_config_id()
-			where_condition = SAQITMWhere.replace('A.','')
-			fab_val = where_cond.split('AND ')
-			where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
-			#Log.Info('where_condition-----1307--'+str(where_condition))	
-			
-			#get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
-			#for fab in get_value_query:
+			# for grnbk in get_value_query:
+			# 	where_condition = where_cond + " AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
+			where_condition = where_cond
 			updateentXML = ""
-			#where_condition = SAQITMWhere.replace('A.','')
-			#where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
-			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
-			if GetXMLsec:
-				for value in GetXMLsec:
-					where_condtn = SAQITMWhere.replace('A.','')
-					where_condtn += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK,value.ENTITLEMENT_NAME) 
-					#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-					get_currency = value.PRICE_METHOD
-					GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
-
-					if GetXML:
-						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-						get_calc_factor = GetXML.CALCULATION_FACTOR 
-						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-						get_code = GetXML.ENTITLEMENT_VALUE_CODE
-					else:
-						GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_temp,value.ENTITLEMENT_NAME))
-						get_value = GetXML.ENTITLEMENT_DISPLAY_VALUE
-						get_calc_factor = GetXML.CALCULATION_FACTOR 
-						get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
-						get_code = GetXML.ENTITLEMENT_VALUE_CODE
-				
-				
-					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
-
-						get_value_qry = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_DISPLAY_VALUE) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_DISPLAY_VALUE) ELSE 0 END) AS ENTITLEMENT_DISPLAY_VALUE from {pricetemp}  {where_condition} ".format(pricetemp = ent_temp,where_condition = where_condtn))
-
-						if get_value_qry:
-							#if get_value_diff != 0.00:
-							get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
-							if value.ENTITLEMENT_COST_IMPACT and get_value:
-								get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-							else:
-								get_price_impact = 0.00
-							#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-							
-						# else:
-						# 	get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
-							#get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
-					elif value.ENTITLEMENT_TYPE in ('Check Box','CheckBox') :
-						get_value_qry = Sql.GetList("select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE from {pricetemp} where ENTITLEMENT_NAME = '{ent_name}' ".format(pricetemp = ent_temp,ent_name = value.ENTITLEMENT_NAME))
-						getvalue = []
-						getcode = []
-						for val in get_value_qry:
-						#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
-							if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
-								getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
-								
-							if val.ENTITLEMENT_DISPLAY_VALUE and val.ENTITLEMENT_DISPLAY_VALUE != 'undefined':
-								getvalue.extend(eval(val.ENTITLEMENT_DISPLAY_VALUE) )
-						get_val = list(set(getvalue) )
-						get_cod = list(set(getcode))
-						get_value = str(get_val).replace("'", '"')
-						get_code = str(get_cod).replace("'", '"')
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-						<IS_DEFAULT>{is_default}</IS_DEFAULT>
-						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-						<PRICE_METHOD>{pm}</PRICE_METHOD>
-						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
-
-					# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
-					# cpsmatc_incr = cpsmatchID
-
-			#Log.Info('updateentXML--fab2-'+str(updateentXML))
-		
+			for value in GetXMLsecField:
+				get_value = value.ENTITLEMENT_DISPLAY_VALUE
+				get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+				get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+				get_calc_factor = value.CALCULATION_FACTOR
+				#try:
+				get_currency = value.PRICE_METHOD
+				#except:
+				#	get_currency = ""
+				if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+					if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
+						get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
+						grnbk_dict[value.ENTITLEMENT_NAME] = get_val
+						if value.ENTITLEMENT_COST_IMPACT and get_val:
+							get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+						else:
+							get_price_impact = 0.00
+						get_calc_factor = get_value = round(get_val,2)
+				updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+					<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+					<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+					<IS_DEFAULT>{is_default}</IS_DEFAULT>
+					<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+					<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+					<PRICE_METHOD>{pm}</PRICE_METHOD>
+					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+			Log.Info('updateentXML--equp-'+str(updateentXML))
 			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-						
+			Log.Info("UpdateEntitlement_tst---"+" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition))
 			Sql.RunQuery(UpdateEntitlement)
-			# Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
-		
+
+			##temp table creation for z0016
+			if 'Z0016' in get_serviceid:
+				where_condition = SAQITMWhere.replace('A.','').replace("'","''")
+				#get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
+				ent_temp = "SAQSCE_ENT1_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+				ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
+
+
 
 		else:
-			#Log.Info('grnbk_dict----'+str(grnbk_dict))
-			#where_condition = where_cond 
-			get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
-			for grnbk in get_value_query:
-				# fab_dict[fab.FABLOCATION_ID] = fab.cnt
-				where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
-				updateentXML = ""
-				for value in GetXMLsecField:
-					get_value = value.ENTITLEMENT_DISPLAY_VALUE
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					get_calc_factor = value.CALCULATION_FACTOR
-					get_currency = value.PRICE_METHOD
-					if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-						
-						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
-							get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
-							if value.ENTITLEMENT_COST_IMPACT and get_val:
-								get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-							else:
-								get_price_impact = 0.00
-							get_calc_factor = get_value = round(get_val,2)
-							#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-						<IS_DEFAULT>{is_default}</IS_DEFAULT>
-						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-						<PRICE_METHOD>{pm}</PRICE_METHOD>
-						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
-				
-				Log.Info('updateentXML--grn2-'+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-				Log.Info('UpdateEntitlement_grn---'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
-				Sql.RunQuery(UpdateEntitlement)
+			Log.Info('else part roll down')
+			update_field_str = ""
+			update_query = """ UPDATE TGT 
+			SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+			TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+			TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+			TGT.CpqTableEntryModifiedBy = {},
+			TGT.CpqTableEntryDateModified = '{}'
+			{}
+			FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+			ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
+			Sql.RunQuery(update_query)
+			
 
-	elif obj == 'SAQSCE' and GetXMLsecField:
-		# if objectName == 'SAQSGE':
-		# 	get_fab_query = Sql.GetList("select FABLOCATION_ID,count(*) as cnt from SAQSGB  {} group by FABLOCATION_ID".format(where_cond))
-		# 	for fab in get_fab_query:
-		# 		fab_dict[fab.FABLOCATION_ID] = fab.cnt
+		##roll down and up for all levels ends
+		if (obj == "SAQSCE" or objectName == "SAQSCE"):            
+			where_string_splitted = ''
+			where_str = where.split('AND')
+			if where_str:
+				where_string_splitted = 'AND'.join(where_str[0:2])
+			Log.Info("""UPDATE SAQSCE
+								SET
+								ENTITLEMENT_GROUP_ID = OQ.RowNo                            
+								FROM SAQSCE (NOLOCK)
+								INNER JOIN (
+									SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
+									SELECT DISTINCT SRC.QUOTE_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
+									FROM SAQSCE (NOLOCK) SRC
+									JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
+									{WhereString} )AS IQ
+								)AS OQ
+								ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
+			Sql.RunQuery("""UPDATE SAQSCE
+								SET
+								ENTITLEMENT_GROUP_ID = OQ.RowNo,
+								IS_CHANGED = 1                            
+								FROM SAQSCE (NOLOCK)
+								INNER JOIN (
+									SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
+									SELECT DISTINCT SRC.QUOTE_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
+									FROM SAQSCE (NOLOCK) SRC
+									JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
+									{WhereString} )AS IQ
+								)AS OQ
+								ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
+			# Is Changed Information Notification - Start
+			quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=getinnercon.QUOTE_RECORD_ID))		
+			if quote_item_obj:
+				Sql.RunQuery("DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.OBJECT_APINAME = 'SAQSCE' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
 
-		get_value_query = Sql.GetFirst("select count(*) as cnt from SAQSCO  {}   ".format(where_cond))
-		
-		# for grnbk in get_value_query:
-		# 	where_condition = where_cond + " AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
-		where_condition = where_cond
-		updateentXML = ""
-		for value in GetXMLsecField:
-			get_value = value.ENTITLEMENT_DISPLAY_VALUE
-			get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-			get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-			get_calc_factor = value.CALCULATION_FACTOR
-			#try:
-			get_currency = value.PRICE_METHOD
-			#except:
-			#	get_currency = ""
-			if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-				if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
-					get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
-					grnbk_dict[value.ENTITLEMENT_NAME] = get_val
-					if value.ENTITLEMENT_COST_IMPACT and get_val:
-						get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-					else:
-						get_price_impact = 0.00
-					get_calc_factor = get_value = round(get_val,2)
-			updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-				<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-				<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-				<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-				<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-				<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-				<IS_DEFAULT>{is_default}</IS_DEFAULT>
-				<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-				<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-				<PRICE_METHOD>{pm}</PRICE_METHOD>
-				<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-				</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-		Log.Info('updateentXML--equp-'+str(updateentXML))
-		UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-		Log.Info("UpdateEntitlement_tst---"+" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition))
-		Sql.RunQuery(UpdateEntitlement)
+				Sql.RunQuery("""INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+								SELECT
+									CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
+									RECORD_ID as ERRORMESSAGE_RECORD_ID,
+									MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
+									OBJECT_APINAME as OBJECT_NAME,
+									MESSAGE_TYPE as OBJECT_TYPE,
+									OBJECT_RECORD_ID as OBJECT_RECORD_ID,
+									'{QuoteRecordId}' as OBJECT_VALUE_REC_ID,
+									'{QuoteId}' as OBJECT_VALUE,
+									1 as ACTIVE,
+									'{UserId}' as CPQTABLEENTRYADDEDBY, 
+									'{DateTimeValue}' as CPQTABLEENTRYDATEADDED, 
+									'{UserId}' as CpqTableEntryModifiedBy, 
+									'{DateTimeValue}' as CpqTableEntryDateModified
+								FROM SYMSGS (nolock)
+								WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
+							""".format(
+								QuoteRecordId=getinnercon.QUOTE_RECORD_ID,
+								QuoteId=getinnercon.QUOTE_ID,
+								UserId=userId,
+								DateTimeValue=datetimenow
+							))
+			# Is Changed Information Notification - End
 
-		##temp table creation for z0016
-		if 'Z0016' in get_serviceid:
-			where_condition = SAQITMWhere.replace('A.','').replace("'","''")
-			#get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
-			ent_temp = "SAQSCE_ENT1_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
-			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
-			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
-
-
-
-	else:
-		Log.Info('else part roll down')
-		update_field_str = ""
-		update_query = """ UPDATE TGT 
-		SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
-		TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
-		TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
-		TGT.CpqTableEntryModifiedBy = {},
-		TGT.CpqTableEntryDateModified = '{}'
-		{}
-		FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-		ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
-		Sql.RunQuery(update_query)
-		
-
-	##roll down and up for all levels ends
-	if (obj == "SAQSCE" or objectName == "SAQSCE"):            
-		where_string_splitted = ''
-		where_str = where.split('AND')
-		if where_str:
-			where_string_splitted = 'AND'.join(where_str[0:2])
-		Log.Info("""UPDATE SAQSCE
-							SET
-							ENTITLEMENT_GROUP_ID = OQ.RowNo                            
-							FROM SAQSCE (NOLOCK)
-							INNER JOIN (
-								SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
-								SELECT DISTINCT SRC.QUOTE_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
-								FROM SAQSCE (NOLOCK) SRC
-								JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
-								{WhereString} )AS IQ
-							)AS OQ
-							ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
-		Sql.RunQuery("""UPDATE SAQSCE
-							SET
-							ENTITLEMENT_GROUP_ID = OQ.RowNo,
-							IS_CHANGED = 1                            
-							FROM SAQSCE (NOLOCK)
-							INNER JOIN (
-								SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
-								SELECT DISTINCT SRC.QUOTE_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
-								FROM SAQSCE (NOLOCK) SRC
-								JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
-								{WhereString} )AS IQ
-							)AS OQ
-							ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
-		# Is Changed Information Notification - Start
-		quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=getinnercon.QUOTE_RECORD_ID))		
-		if quote_item_obj:
-			Sql.RunQuery("DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.OBJECT_APINAME = 'SAQSCE' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
-
-			Sql.RunQuery("""INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-							SELECT
-								CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
-								RECORD_ID as ERRORMESSAGE_RECORD_ID,
-								MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
-								OBJECT_APINAME as OBJECT_NAME,
-								MESSAGE_TYPE as OBJECT_TYPE,
-								OBJECT_RECORD_ID as OBJECT_RECORD_ID,
-								'{QuoteRecordId}' as OBJECT_VALUE_REC_ID,
-								'{QuoteId}' as OBJECT_VALUE,
-								1 as ACTIVE,
-								'{UserId}' as CPQTABLEENTRYADDEDBY, 
-								'{DateTimeValue}' as CPQTABLEENTRYDATEADDED, 
-								'{UserId}' as CpqTableEntryModifiedBy, 
-								'{DateTimeValue}' as CpqTableEntryDateModified
-							FROM SYMSGS (nolock)
-							WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
-						""".format(
-							QuoteRecordId=getinnercon.QUOTE_RECORD_ID,
-							QuoteId=getinnercon.QUOTE_ID,
-							UserId=userId,
-							DateTimeValue=datetimenow
-						))
-		# Is Changed Information Notification - End
-
-	for attribute in attributeList:
-		if "calc" in attribute:
-			attribute = attribute.replace("_calc","")
-		
-		
-		
-		
-		
-		# update_query = """ UPDATE TGT 
-		# 	SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
-		# 	TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
-		# 	TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
-		# 	TGT.CpqTableEntryModifiedBy = {},
-		# 	TGT.CpqTableEntryDateModified = '{}'
-		# 	{}
-		# 	FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-		# 	ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
-		#Log.Info("ENTITLEMENT IFLOW-548-------update_query-------------- "+str(update_query))
-		#Sql.RunQuery(update_query)
-		#Log.Info("ENTITLEMENT IFLOW--update_query1-- "+str(update_query1))
-		
-		#update SAQICO after reprice based on entitlement 
-		if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
-			where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID')
-			#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
-			update_entitlement_price_impact(where_condition)
-	
+		for attribute in attributeList:
+			if "calc" in attribute:
+				attribute = attribute.replace("_calc","")
+			
+			
+			
+			
+			
+			# update_query = """ UPDATE TGT 
+			# 	SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+			# 	TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+			# 	TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+			# 	TGT.CpqTableEntryModifiedBy = {},
+			# 	TGT.CpqTableEntryDateModified = '{}'
+			# 	{}
+			# 	FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+			# 	ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
+			#Log.Info("ENTITLEMENT IFLOW-548-------update_query-------------- "+str(update_query))
+			#Sql.RunQuery(update_query)
+			#Log.Info("ENTITLEMENT IFLOW--update_query1-- "+str(update_query1))
+			
+			#update SAQICO after reprice based on entitlement 
+			if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
+				where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID')
+				#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
+				update_entitlement_price_impact(where_condition)
+except:
+	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")	
+	ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")	
 #Log.Info('Log before calling ftscostcalc--')
 #FTSCostCalc("SAQTSE")
 if ent_temp:
