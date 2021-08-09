@@ -673,8 +673,18 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                     attributesallowedlst.append(prdvalue['id'])
                                                 if prdvalue['readOnly'] =='true':
                                                     attributeReadonlylst.append(prdvalue['id'])
-                                                for attribute in prdvalue['values']:
-                                                    attributevalues[str(prdvalue['id'])]=attribute['value']
+                                                #for attribute in prdvalue['values']:
+                                                # attributevalues[str(prdvalue['id'])]=attribute['value']
+                                                # for attribute in prdvalue['values']:
+                                                if len(prdvalue["values"]) == 1:
+                                                    attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
+                                                elif len(prdvalue["values"]) > 1:
+                                                    Trace.Write('else'+str(prdvalue["id"]))
+                                                    for attribute in prdvalue["values"]:
+                                                        #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
+                                                        value_list = [attribute["value"] for attribute in prdvalue["values"]]
+                                                        #value_list = str(value_list)
+                                                    attributevalues[str(prdvalue["id"])] = value_list
                             
                             attributesallowedlst = list(set(attributesallowedlst))
                             #overallattributeslist = list(set(overallattributeslist))
@@ -692,16 +702,25 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                         HasDefaultvalue=True
                                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
                                         ent_disp_val = attributevalues[attrs]
+                                        ent_val_code = attributevalues[attrs]
                                     else:
                                         HasDefaultvalue=False
                                         ent_disp_val = ""
+                                        ent_val_code = ""
                                         STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
                                     ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
                                     PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
                                     
-                                    if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+                                    if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down') and ent_disp_val:
                                         get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
                                         ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+                                    elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val:
+                                        ent_val_code = str(tuple(ent_val_code)).replace(',)',')')
+                                        get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val_code ) )
+                                        ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val ]
+                                        ent_disp_val = str(ent_disp_val).replace("'", '"')
+                                        ent_val_code = str(ent_val_code).replace("'", '"')
+
 
                                 
                                     
@@ -719,7 +738,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
                                     cpsmatc_incr = int(cpsmatchID) + 10
                                     Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
