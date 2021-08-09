@@ -69,7 +69,7 @@ class DropConstraint:
                 # for loop in query_result:
                 #     query = "ALTER TABLE " + loop.TABLE_NAME + " DROP CONSTRAINT " + loop.CONSTRAINT_NAME + ""
                 #     queryStatement = Sql.RunQuery(query)
-                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
+                delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and CONSTRAINT_TYPE='FOREIGN KEY' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
                 Sql.RunQuery(delete_query_string)
                 #self.deleteRecord(cpqEntryId)
                 #Output = "True"
@@ -310,7 +310,7 @@ class DropConstraint:
                     query = ( "ALTER TABLE "+ loop.OBJECT_APINAME+ " ALTER COLUMN "+ loop.OBJECTFIELD_APINAME+ " NVARCHAR(250) NULL")
                     queryStatement = Sql.RunQuery(query)
                     #self.deleteRecord(cpqEntryId)
-                    delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
+                    delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and CONSTRAINT_TYPE='PRIMARY KEY'and OBJECTFIELD_APINAME = '{apiname_column}'""".format(
                         objectname=str(self.ObjectName),apiname_column = str(objectApiName)
                     )
                     Sql.RunQuery(delete_query_string)
