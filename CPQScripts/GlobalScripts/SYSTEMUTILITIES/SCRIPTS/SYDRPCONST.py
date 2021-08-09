@@ -94,7 +94,7 @@ class DropConstraint:
                             query_result = Sql.GetList(
                                 "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME, "
                                 + " FK.CONSTRAINT_NAME FROM SYOBJC CON INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK ON FK.TABLE_NAME=CON.OBJECT_APINAME AND FK.COLUMN_NAME = "
-                                + " CON.OBJECTFIELD_APINAME AND FK.CONSTRAINT_NAME LIKE '%UQ_%' WHERE CONSTRAINT_TYPE='UNIQUE' AND OBJECT_APINAME ='"
+                                + " CON.OBJECTFIELD_APINAME AND CON.CONSTRAINT_NAME LIKE '%UQ_%' WHERE CON.CONSTRAINT_TYPE='UNIQUE' AND CON.OBJECT_APINAME ='"
                                 + str(self.ObjectName)
                                 + "'  AND OBJECTFIELD_APINAME ='"
                                 + str(objectApiName)
