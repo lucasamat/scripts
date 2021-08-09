@@ -211,6 +211,8 @@ class DropConstraint:
                         Trace.Write('209--foreignKey----'+str(foreignKey))
                         if foreignKey == 0:
                             Trace.Write('209--211--2144------')
+                            ErrorMsg='ErrorMsg'
+                            Trace.Write('209--215-----ErrorMsg--------'+str(ErrorMsg))
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK WHERE FK.CONSTRAINT_NAME LIKE '%UQ%' AND COLUMN_NAME = '"
                                 + loop.COLUMN_NAME
@@ -218,6 +220,7 @@ class DropConstraint:
                                 + loop.TABLE_NAME
                                 + "' "
                             )
+                            
                             Trace.Write('209--211----221----')
                             if UQ_CONSTRAINT is not None:
                                 Trace.Write('22222-----')
@@ -236,7 +239,7 @@ class DropConstraint:
                                     Trace.Write('235----235---------')
                                     delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
                                     Sql.RunQuery(delete_query_string)
-                            ErrorMsg='ErrorMsg'
+                            
                         else:
                             Trace.Write('209--211--ERROR THROWn MESSAGE------')
                             ErrorMsg = Message.GetErrorMessage(
