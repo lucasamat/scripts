@@ -1614,9 +1614,7 @@ def CommonTreeViewHTMLDetail(
 						+ current_obj_value
 						+ '" type="text"  onclick="'
 						+ str(datepicker)
-						+ '" onchange="'
-						+ str(datepicker_onchange)
-						+ '" class="form-control datePickerField wth157fltltbrdbt"   '
+						+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
 						+ disable
 						+ " ></td>"
 					)
@@ -3350,7 +3348,7 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(attrSysId)
 												+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 												+ str(attr_value)
-												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="'+str(datepicker_onchange)+'" disabled>'									
+												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'									
 												+ "</input> "
 											)
 											# sec_str1 += (
