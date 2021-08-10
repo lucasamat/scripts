@@ -4114,8 +4114,8 @@ def POPUPLISTVALUEADDNEW(
 										list_of_role.append(acnt.PARTY_ROLE)
 										if acnt.PARTY_ROLE == "SENDING ACCOUNT" or acnt.PARTY_ROLE == "RECEIVING ACCOUNT":
 											Tier_List1.remove(acnt.PARTY_ROLE)
-									if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
-										Tier_List1.remove("RECEIVING ACCOUNT")
+									# if "SENDING ACCOUNT" not in list_of_role and "RECEIVING ACCOUNT" not in list_of_role:
+									# 	Tier_List1.remove("RECEIVING ACCOUNT")
 							Trace.Write("CHKNG_J "+str(Tier_List1))
 							for req1 in Tier_List1:
 								sec_str += "<option>" + str(req1) + "</option>"
