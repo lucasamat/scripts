@@ -835,11 +835,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                 # for attribute in prdvalue['values']:
                                                 if len(prdvalue["values"]) == 1:
                                                     multi_value = "false"
-                                                   # Trace.Write('ifffff'+str(prdvalue["id"]))
+                                                   Trace.Write('ifffff'+str(prdvalue["id"]))
                                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
                                                 elif len(prdvalue["values"]) > 1:
                                                     multi_value = "true"
-                                                    #Trace.Write('else if'+str(prdvalue["id"]))
+                                                    Trace.Write('else if'+str(prdvalue["id"]))
                                                     for attribute in prdvalue["values"]:
                                                         #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
                                                         value_list = [attribute["value"] for attribute in prdvalue["values"]]
