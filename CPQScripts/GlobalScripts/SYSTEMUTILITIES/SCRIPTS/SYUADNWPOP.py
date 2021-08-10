@@ -2082,7 +2082,7 @@ def POPUPLISTVALUEADDNEW(
 			additional_where = ""
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
-			if TreeParam in ("Comprehensive Services","Product Offerings","Other Products"):
+			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
 				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTSO WHERE QUOTE_RECORD_ID = '{}' ".format(contract_quote_record_id) )
 				if get_sales_org :
 					inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID "
