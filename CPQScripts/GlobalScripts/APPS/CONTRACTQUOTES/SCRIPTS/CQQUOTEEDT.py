@@ -41,11 +41,11 @@ def bannerdetails(Quoteid,active_tab_name):
 		
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
-			qid=str(matchObj.group(1))
-			Log.Info("MatchObj:" + qid)
-			Trace.Write("==> Quote Id ==> "+str(qid))
+			qid=str(matchObj.group(1))			
 			try:
 				Quote = QuoteHelper.Edit(str(qid))
+				Log.Info("MatchObj:" + qid)
+				Trace.Write("==> Quote Id ==> "+str(qid))
 			except Exception:
 				Trace.Write("Quote Edit Exception")
 			Log.Info(str(Quote))
