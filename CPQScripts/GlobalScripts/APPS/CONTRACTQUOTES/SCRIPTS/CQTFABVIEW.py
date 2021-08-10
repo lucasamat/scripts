@@ -241,11 +241,11 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			dbl_clk_function = ""	
 	
 	else:
-		if (TreeTopSuperParentParam == "Other Products" and subtab == "Fab Value Drivers" and TreeParentParam.startswith("Sending")):
+		if (TreeTopSuperParentParam == "Complementary Products" and subtab == "Fab Value Drivers" and TreeParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Fab Value Drivers are not applicable at this level</div>'
-		elif (TreeSuperTopParentParam == "Other Products" and subtab == "Greenbook Fab Value Drivers" and TreeSuperParentParam.startswith("Sending")):
+		elif (TreeSuperTopParentParam == "Complementary Products" and subtab == "Greenbook Fab Value Drivers" and TreeSuperParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Greenbook Fab Value Drivers are not applicable at this level</div>'
-		elif (TreeSuperParentParam == 'Other Products' and subtab == 'Service Fab Value Drivers' and TreeParam.startswith("Sending")):
+		elif (TreeSuperParentParam == 'Complementary Products' and subtab == 'Service Fab Value Drivers' and TreeParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Service Fab Value Drivers are not applicable at this level</div>'	
 		else:
 			sec_str += '<div class="noRecDisp">No Records to Display</div>'
@@ -367,7 +367,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 		dbl_clk_function = ""	
 	
 	if len(date_field) == 0:
-		if (TreeSuperTopParentParam == "Other Products" and subtab == "Equipment Fab Value Drivers" and TreeSuperParentParam.startswith("Sending")):
+		if (TreeSuperTopParentParam == "Complementary Products" and subtab == "Equipment Fab Value Drivers" and TreeSuperParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Equipment Fab Value Drivers are not applicable at this level</div>'
 		else:
 			sec_str += '<div class="noRecDisp">No Records to Display</div>'
@@ -591,7 +591,7 @@ def costfabview(ACTION,CurrentRecordId):
 		dbl_clk_function = ""	
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
-		if (TreeSuperParentParam == 'Other Products' and subtab == 'Service Cost and Value Drivers' and TreeParam.startswith("Sending")):
+		if (TreeSuperParentParam == 'Complementary Products' and subtab == 'Service Cost and Value Drivers' and TreeParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Service Cost and Value Drivers are not applicable at this level</div>'
 		else:
 			sec_str += '<div class="noRecDisp">Service Cost and Value Drivers are not applicable for this Product Offering</div>'
@@ -926,7 +926,7 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 		)
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
-		if (TreeTopSuperParentParam == "Other Products" and subtab == "Fab Cost and Value Drivers" and TreeParentParam.startswith("Sending")):
+		if (TreeTopSuperParentParam == "Complementary Products" and subtab == "Fab Cost and Value Drivers" and TreeParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Fab Cost and Value Drivers are not applicable at this level</div>'
 		else:
 			sec_str += '<div class="noRecDisp">Fab Cost and Value Drivers are not applicable for this Product Offering</div>'
@@ -2199,7 +2199,7 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 	
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
-		if (TreeSuperTopParentParam == "Other Products" and subtab == "Greenbook Cost and Value Drivers" and TreeSuperParentParam.startswith("Sending")):
+		if (TreeSuperTopParentParam == "Complementary Products" and subtab == "Greenbook Cost and Value Drivers" and TreeSuperParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Greenbook Cost and Value Drivers are not applicable at this level</div>'
 		else:
 			sec_str += '<div class="noRecDisp">Greenbook Cost and Value Drivers are not applicable for this Product Offering</div>'
@@ -2326,7 +2326,7 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 	
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
-		if (TreeSuperTopParentParam == "Other Products" and subtab == "Equipment Cost and Value Drivers" and TreeSuperParentParam.startswith("Sending")):
+		if (TreeSuperTopParentParam == "Complementary Products" and subtab == "Equipment Cost and Value Drivers" and TreeSuperParentParam.startswith("Sending")):
 			sec_str += '<div class="noRecDisp">Equipment Cost and Value Drivers are not applicable at this level</div>'
 		else:	
 			sec_str += '<div class="noRecDisp">Equipment Cost and Value Drivers are not applicable for this Product Offering</div>'
