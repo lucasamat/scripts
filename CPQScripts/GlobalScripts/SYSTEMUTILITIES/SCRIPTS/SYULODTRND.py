@@ -3353,7 +3353,7 @@ def EntitlementTreeViewHTMLDetail(
 										attr_value = val.ENTITLEMENT_DISPLAY_VALUE
 										Trace.Write("DType free1---"+str(attr_value)+str(attrSysId)+str(add_style))
 										if str(attrSysId) == "AGS_REL_STDATE":
-											datepicker = "onclick_datepicker('" + attrSysId + "')"
+											datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 											datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
 											sec_str1 += (
