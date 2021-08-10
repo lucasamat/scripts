@@ -876,7 +876,7 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 			+ "'and REQUIRED='TRUE' "
 		)
 		# Ramesh A043S001P01-6083 END 05-12-11-2019  ADD SEGMENT REQUIRED FIELDS
-
+		Field_Labels = []
 		if Required_obj:			
 			for x in Required_obj:
 				api_name = str(x.API_NAME)
@@ -886,12 +886,14 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 				if api_name in row and str(api_name) != "":
 					API_NAME_val = row[x.API_NAME]					
 					if API_NAME_val == "":
+						Field_Labels.append(x.FIELD_LABEL)
 						is_required = "TRUE"
 						break
 					else:
 						is_required = "FALSE"
 
 		requiredDict = GetErrorMsg.GetQuestionlevelMessage(TABLE_NAME, row, SEC_REC_ID)
+		Trace.Write("Field_Labels" + str(Field_Labels))	
 		Trace.Write("requiredDict" + str(requiredDict))		
 		Trace.Write(str(is_key_Flag) + "aaaaaaaaa" + str(is_required))
 		if is_key_Flag == "TRUE" or is_required == "TRUE" or is_Past_Date == "TRUE":			
