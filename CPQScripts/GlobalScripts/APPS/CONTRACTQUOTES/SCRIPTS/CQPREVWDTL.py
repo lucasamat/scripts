@@ -282,7 +282,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						sec_str += (
 							"<div class='col-md-3 pad-0'> <input type='text' title = '"+ str(sefl_api)+"' value = '"
 							+ str(eval("col_name." + str(sefl_api)))
-							+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+							+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='"+str(sefl.API_FIELD_NAME)+"' title='' tabindex='' disabled=''> </div>"
 						)  
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
