@@ -2676,7 +2676,7 @@ class SYLDRTLIST:
                         elif str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
                             Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
                         elif ObjectName == "SAQTRV":
-                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="">EDIT DESC</a></li>'    
+                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
                     else:
                         if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
@@ -2700,7 +2700,7 @@ class SYLDRTLIST:
                             elif ObjectName == "SAQSAO":
                                 Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             elif ObjectName == "SAQTRV":
-                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="">EDIT DESC</a></li>'    
+                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
 
                     Trace.Write("12111111===3=====>"+str(Action_permission.get("Edit")).upper())
@@ -2748,7 +2748,7 @@ class SYLDRTLIST:
                             elif ObjectName == "SYPROF":
                                 Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
                             elif ObjectName == "SAQTRV":
-                                Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="">SET AS ACTIVE</a></li>'    
+                                Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'    
                             else:
                                 if str(current_tab).upper() == "PROFILE":
                                     Action_str += (
