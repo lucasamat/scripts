@@ -335,7 +335,7 @@ class Entitlements:
 			getregionval = getregion.REGION		
 		
 		### tool relocation receiving entitilement starts
-		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Other Products' or self.treetopsuperparentparam == 'Other Products' or self.treesupertopparentparam == 'Other Products' ):
+		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Productss' or self.treetopsuperparentparam == 'Complementary Productss' or self.treesupertopparentparam == 'Complementary Productss' ):
 			Trace.Write('inside')
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQTSE'
@@ -1336,7 +1336,7 @@ class Entitlements:
 		join =''	
 		Trace.Write("getprevent_xml--> "+str(getprevent_xml))
 		###tool relocation receiving entitilement starts
-		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Other Products' or self.treetopsuperparentparam == 'Other Products' or self.treesupertopparentparam == 'Other Products' ):
+		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Productss' or self.treetopsuperparentparam == 'Complementary Productss' or self.treesupertopparentparam == 'Complementary Productss' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				tableName = 'SAQTSE'
 				serviceId = self.treeparentparam
@@ -1573,7 +1573,7 @@ class Entitlements:
 		except:
 			Getprevdict = {}
 		###tool relocation receiving entitilement starts
-		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Other Products' or self.treetopsuperparentparam == 'Other Products' or self.treesupertopparentparam == 'Other Products' ):
+		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Productss' or self.treetopsuperparentparam == 'Complementary Productss' or self.treesupertopparentparam == 'Complementary Productss' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQTSE'
 				serviceId = self.treeparentparam
