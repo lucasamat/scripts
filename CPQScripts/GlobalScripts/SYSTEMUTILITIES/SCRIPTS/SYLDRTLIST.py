@@ -7629,9 +7629,13 @@ class SYLDRTLIST:
                     Trace.Write('ObjectName--7353----'+str(ObjectName))                  
                     if ObjectName != "SAQIBP" :
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+                    elif ObjectName == "SAQTRV" :
+                        Action_str += '<li><a class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
                 if str(Action_permission.get("Edit")).upper() == "TRUE":
                     Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'
+                    if ObjectName == "SAQTRV" :
+                        Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)">SET AS ACTIVE</a></li>' 
                 if str(Action_permission.get("Delete")).upper() == "TRUE":
                     Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
 
