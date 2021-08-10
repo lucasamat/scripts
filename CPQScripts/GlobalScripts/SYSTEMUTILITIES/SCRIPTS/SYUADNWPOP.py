@@ -3929,15 +3929,15 @@ def POPUPLISTVALUEADDNEW(
 										+ str(current_obj_api_name)
 										+ "' type='text' value='"
 										+ str(gettabname.PRIMARY_OBJECT_NAME)
-										+"' class='form-control related_popup_css'>"
+										+"' class='form-control related_popup_css' disabled>"
 									)
 								else:
 									sec_str += (
 										"<td><input id='"
 										+ str(current_obj_api_name)
 										+ "' type='text' value='"
-										+ str(TreeParentParam)
-										+"' class='form-control related_popup_css'>"
+										+ str(ObjectName)
+										+"' class='form-control related_popup_css' disabled>"
 									)
 							else:
 								# if str(current_obj_api_name) == "APROBJ_LABEL":
