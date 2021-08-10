@@ -900,13 +900,20 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 			if Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None:
 				Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
 				# Ramesh A043S001P01-6083 START 05-12-11-2019  ADD SEGMENT REQUIRED FIELDS
-				Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
-				Product.Attributes.GetByName(
-					"SEC_N_TAB_PAGE_ALERT"
-				).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>'{}' is a required field</label></div></div></div>".format(
-					str(SEC_TAB_PAGE_ALERT)
-				)
-				flag = "FALSE"
+				if len(Field_Labels) == 1:
+					Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
+					Product.Attributes.GetByName(
+						"SEC_N_TAB_PAGE_ALERT"
+					).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>'{}' is a required field</label></div></div></div>".format(
+						str(SEC_TAB_PAGE_ALERT)
+					)
+					flag = "FALSE"
+				elif len(Field_Labels) >1:
+					Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
+					Product.Attributes.GetByName(
+						"SEC_N_TAB_PAGE_ALERT"
+					).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>"
+					flag = "FALSE"
 		elif is_required == "FALSE" and TABLE_NAME == "SYROMA":
 			Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
 			tableInfo = Sql.GetTable(TABLE_NAME)
