@@ -2761,16 +2761,29 @@ def EntitlementTreeViewHTMLDetail(
 								#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 							#sec_str += "</select></td>"
 						elif DType == "Free Input, no Matching":
-							STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
-							sec_str1 = ""
-							sec_str1 += (
-								'<input class="form-control '+str(disable_edit)+'" id = "'
-								+ str(attrSysId)
-								+ '" type="text"  data-content ="'
-								+ str(attrSysId)
-								+ '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
-								+ "</input>"
-							)
+							if str(attrSysId) == "AGS_REL_STDATE":
+								datepicker = "onclick_datepicker('" + attrSysId + "')"
+								datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
+
+								sec_str1 += (
+									'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+									+ str(attr_value)
+									+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
+									+ "</input> "
+								)
+							else:
+								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+								sec_str1 = ""
+								sec_str1 += (
+									'<input class="form-control '+str(disable_edit)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  data-content ="'
+									+ str(attrSysId)
+									+ '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
+									+ "</input>"
+								)
 						else:
 							getinval = ''
 							Trace.Write('attrSysId--input-----'+str(attrSysId))
