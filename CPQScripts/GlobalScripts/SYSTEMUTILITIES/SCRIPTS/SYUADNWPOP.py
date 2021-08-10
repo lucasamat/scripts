@@ -3929,7 +3929,7 @@ def POPUPLISTVALUEADDNEW(
 										+ str(current_obj_api_name)
 										+ "' type='text' value='"
 										+ str(gettabname.PRIMARY_OBJECT_NAME)
-										+"' class='form-control related_popup_css' disabled>"
+										+"' class='form-control related_popup_css'>"
 									)
 								else:
 									sec_str += (
