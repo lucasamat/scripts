@@ -288,13 +288,13 @@ def do_process(TABLEID, LABLE, VALUE):
                 
                 elif ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLEID) == "SYSECT":
                     if str(row.get("PAGE_RECORD_ID")) != "":
-                        sypage_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYTABS.RECORD_ID = SYPAGE.TAB_RECORD_ID WHERE SYPAGE.RECORD_ID = '{}'".format(str(row.get("PAGE_RECORD_ID"))))
-                        APP_ID = "SYSECT-{}-".format(sypage_app_id.APP_ID)
-                        cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYSECT (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
-                        if sypage_app_id is not None and cpq_attr_name is not None:
-                            x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
-                            length = len(x[len(x)-1])
-                            row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
+                        # sypage_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYTABS.RECORD_ID = SYPAGE.TAB_RECORD_ID WHERE SYPAGE.RECORD_ID = '{}'".format(str(row.get("PAGE_RECORD_ID"))))
+                        APP_ID = "SYSECT-SY-"
+                        cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYSECT (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like 'SY%'")
+                        # if sypage_app_id is not None and cpq_attr_name is not None:
+                        x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
+                        length = len(x[len(x)-1])
+                        row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
                 elif ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPGAC":
                     if str(row.get("TAB_RECORD_ID")) != "":
                         sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYTABS (NOLOCK) WHERE RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
