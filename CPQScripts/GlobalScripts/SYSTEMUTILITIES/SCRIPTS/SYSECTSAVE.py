@@ -629,7 +629,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                 Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
                                 #Trace.Write("where------ "+str(where))
                                 if Parentgetdata:
-                                    updateentXML = ""	
+                                    insertservice = ""	
                                     for value in Parentgetdata:
                                         get_code = value.ENTITLEMENT_VALUE_CODE
                                         get_value = value.ENTITLEMENT_DISPLAY_VALUE
