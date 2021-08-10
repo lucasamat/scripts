@@ -2675,6 +2675,8 @@ class SYLDRTLIST:
                             )
                         elif str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
                             Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
+                        elif ObjectName == "SAQTRV":
+                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="">EDIT DESC</a></li>'    
 
                     else:
                         if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
