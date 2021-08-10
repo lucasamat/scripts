@@ -834,12 +834,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                 # attributevalues[str(prdvalue['id'])]=attribute['value']
                                                 # for attribute in prdvalue['values']:
                                                 if len(prdvalue["values"]) == 1:
-                                                    multi_value = "false"
-                                                    Trace.Write('ifffff'+str(prdvalue["id"]))
+                                                    #Trace.Write('ifffff'+str(prdvalue["id"]))
                                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
                                                 elif len(prdvalue["values"]) > 1:
-                                                    multi_value = "true"
-                                                    Trace.Write('else if'+str(prdvalue["id"]))
+                                                    #Trace.Write('else if'+str(prdvalue["id"]))
                                                     for attribute in prdvalue["values"]:
                                                         #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
                                                         value_list = [attribute["value"] for attribute in prdvalue["values"]]
@@ -881,8 +879,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                         get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
                                         ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
                                     elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-                                        Trace.Write('multi_value---'+str(multi_value))
-                                        if multi_value == 'true':
+                                        if type(eval(a)) is list:
                                             ent_val = str(tuple(ent_val_code)).replace(',)',')')
                                             get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
                                             ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val ]
