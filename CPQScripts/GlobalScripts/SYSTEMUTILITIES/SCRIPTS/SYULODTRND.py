@@ -2101,7 +2101,7 @@ def CommonTreeViewHTMLDetail(
 			Ad_on_prd = "False"
 	else:
 		Ad_on_prd = ""
-	if	TreeParentParam == "Other Products" and TreeSuperParentParam == "Product Offerings":
+	if	TreeParentParam == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id))
 		if entitlement_obj:
 			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
@@ -2262,7 +2262,7 @@ def EntitlementTreeViewHTMLDetail(
 		else:	
 			ProductPartnumber = TreeParentParam
 			###receiving equp entitilement starts
-			if TreeSuperParentParam == 'Other Products' and TreeParam == 'Receiving Equipment':
+			if TreeSuperParentParam == 'Complementary Products' and TreeParam == 'Receiving Equipment':
 				objname_ent = 'SAQSCO'
 			###receiving equp entitilement ends
 	elif TreeSuperTopParentParam == "Product Offerings":
@@ -2273,7 +2273,7 @@ def EntitlementTreeViewHTMLDetail(
 			### add on product entitilement starts
 		else:	
 			ProductPartnumber = TreeSuperParentParam
-			if (TreeParentParam == 'Receiving Equipment' and TreeTopSuperParentParam == 'Other Products'):
+			if (TreeParentParam == 'Receiving Equipment' and TreeTopSuperParentParam == 'Complementary Products'):
 				TreeParentParam = ProductPartnumber
 
 	elif TreeParentParam == "Quote Items":
@@ -2308,7 +2308,7 @@ def EntitlementTreeViewHTMLDetail(
 	elif str(TreeTopSuperTopParentParam).upper() == "COMPREHENSIVE SERVICES" and str(TreeTopSuperParentParam).upper() == "ADD-ON PRODUCTS":		
 		ProductPartnumber = TreeSuperParentParam		
 	##addon product fab and greenbook level 
-	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Other Products'):
+	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Complementary Products'):
 		TreeSuperParentParam = ProductPartnumber = TreeTopSuperParentParam
 		Trace.Write('comes1'+str(ProductPartnumber))
 	#GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
