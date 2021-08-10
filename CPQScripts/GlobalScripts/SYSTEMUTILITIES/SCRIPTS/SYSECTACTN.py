@@ -888,7 +888,7 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 					if API_NAME_val == "":
 						Field_Labels.append(x.FIELD_LABEL)
 						is_required = "TRUE"
-						break
+						# break
 					else:
 						is_required = "FALSE"
 
