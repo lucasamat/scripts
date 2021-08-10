@@ -2762,7 +2762,7 @@ def EntitlementTreeViewHTMLDetail(
 							#sec_str += "</select></td>"
 						elif DType == "Free Input, no Matching":
 							if str(attrSysId) == "AGS_REL_STDATE":
-								datepicker = "onclick_datepicker('" + attrSysId + "')"
+								datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 								datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
 								sec_str1 += (
