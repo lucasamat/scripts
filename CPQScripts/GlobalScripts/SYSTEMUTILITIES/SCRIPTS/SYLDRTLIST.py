@@ -2703,6 +2703,7 @@ class SYLDRTLIST:
                     if str(Action_permission.get("Edit")).upper() == "TRUE":
                         if related_list_edit_permission:
                             if primary_view != "":
+                                Trace.Write('other_tab==='+str(other_tab))
                                 if other_tab == "1":
                                     Action_str += (
                                         '<li><a class="dropdown-item curptr"  href="../Configurator.aspx?pid='
