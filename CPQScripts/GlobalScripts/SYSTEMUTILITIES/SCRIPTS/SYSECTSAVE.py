@@ -679,7 +679,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                         <PRICE_METHOD>{pm}</PRICE_METHOD>
                                         <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
                                         </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = value.ENTITLEMENT_COST_IMPACT ,pi = value.ENTITLEMENT_PRICE_IMPACT ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= value.CALCULATION_FACTOR, ent_type = value.ENTITLEMENT_TYPE)
-                                    Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, where_condition)
+                                    Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, where_condition)
                                     Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Sql.RunQuery(Updatecps)
 
