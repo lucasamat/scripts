@@ -893,7 +893,7 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 
 		requiredDict = GetErrorMsg.GetQuestionlevelMessage(TABLE_NAME, row, SEC_REC_ID)
 		Trace.Write("requiredDict" + str(requiredDict))		
-		Trace.Write(str(is_key_Flag) + "�aaaaaaaaa" + str(is_required))
+		Trace.Write(str(is_key_Flag) + "aaaaaaaaa" + str(is_required))
 		if is_key_Flag == "TRUE" or is_required == "TRUE" or is_Past_Date == "TRUE":			
 			if Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None:
 				Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
