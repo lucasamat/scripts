@@ -36,7 +36,7 @@ except:
     nativeProfileSave = ""
 Trace.Write("row "+str(row)+"nativeProfileUpdate"+str(nativeProfileUpdate)+"nativeProfileSave"+str(nativeProfileSave))
 if nativeProfileUpdate == "Yes":
-    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0120226'")
+    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
     if LOGIN_CREDENTIALS is not None:
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
         Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
@@ -128,7 +128,7 @@ if nativeProfileUpdate == "Yes":
         Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
     
 elif  nativeProfileSave == "Yes":
-    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0120226'")
+    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
     if LOGIN_CREDENTIALS is not None:
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
         Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
