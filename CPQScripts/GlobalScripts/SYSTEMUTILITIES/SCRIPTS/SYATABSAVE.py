@@ -1,714 +1,119 @@
-""" 
-SCRIPT NAME : SYATABSAVE
-CREATE BY   : JOE EBENEZER
-CREATE DATE :
-DESCRIPTION : To save the details of all the tabs in all modules
 
-
-------------------------------------------------------------------------------------------------
-"""
-###save functionality
+# =========================================================================================================================================
+#   __script_name : SYATABSAVE.PY
+#   __script_description : THIS SCRIPT IS USED TO SAVE THE RECORDS FROM THE TABLIST ADD NEW.
+#   __primary_author__ :AYYAPPAN SUBRAMANIYAN
+#   __create_date :
+#   Ã‚Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-
-import System.Net
-
-
-import clr
-
-clr.AddReference("System.Net")
-from System.Net import *
-from System.Text.Encoding import UTF8
-from System import Convert
-
-
 import SYTABACTIN as Table
 import datetime
 import re
-import SYCNGEGUID as CPQID
-
-
-import datetime
-from datetime import timedelta
 from SYDATABASE import SQL
 
 Sql = SQL()
-
 UserId = str(User.Id)
 UserName = str(User.Name)
-#now = datetime.now()
-#datetime_value = now.strftime("%m/%d/%Y %H:%M:%S")
-#Trace = Trace  # pylint: disable=E0602
-#SqlHelper = SqlHelper  # pylint: disable=E0602
-#WebRequest = WebRequest  # pylint: disable=E0602
-#CookieContainer = CookieContainer  # pylint: disable=E0602
-#StreamReader = StreamReader  # pylint: disable=E0602
-# create Profiles 9517 start
-def nativeProfileSave(newdict):
-    Login_Username = 'X0116955'
-    #Login_Password = 'Joseph@2020'
-    Login_Password = 'Welcome@123'
-    Login_Domain = 'appliedmaterials_tst'
-    #LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
-    #if LOGIN_CREDENTIALS is not None:
-        #Login_Username = str(LOGIN_CREDENTIALS.Username)
-        #Login_Password = str(LOGIN_CREDENTIALS.Password)
-        #Login_Domain = str(LOGIN_CREDENTIALS.Domain)
-    URL = 'https://sandbox.webcomcpq.com'
-    sandboxBaseURL = URL
-    authenticationUrl = (
-        sandboxBaseURL
-        + "/api/rd/v1/Core/Login?username="
-        + Login_Username
-        + "&password="
-        + Login_Password
-        + "&domain="
-        + Login_Domain
-    )
-    prfname = profile_id_gen = prfid = ""
-    prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-    prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
-    prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
-    profile_id_gen = prfid
-    Product.SetGlobal("SYSTEM_ID_PRF", str(profile_id_gen))
-    PROFILE_NAME = prfname
-    #Trace.Write('url check----authenticationUrl-76-------------'+str(authenticationUrl))
-    authRequest = WebRequest.Create(str(authenticationUrl))
-    authRequest.Method = "POST"
-    authRequest.CookieContainer = CookieContainer()
-    authRequest.ContentLength = 0
-    authResponse = authRequest.GetResponse()
-    cookies = authResponse.Cookies
-    authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
-    xcrf = str(authResponseData).replace('"', "")
-    #Trace.Write("X-CSRF-Token 85--: " + str(xcrf))
 
-    # cookies
-    coookies = ""
-    if cookies is not None:
-        for cookie in cookies:
-            coookies = coookies + str(cookie) + ";"
-    #Trace.Write("COOKIES : " + coookies)
-
-    data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
-    #Trace.Write("53--data-----" + str(data))
-    # authentication api token creation start
-    authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
-    authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
-    authRequesttoken.Method = "POST"
-    webclienttoken = System.Net.WebClient()
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-    webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-    webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
-    response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
-    accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
-    
-    setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
-    
-    
-    datasave = """{
-        
-        "Name": "%s",
-        "Description": "%s",
-        "SystemId": "%s",
-        "Condition": "%s",
-        "SelectedPermissions": {
-        "ManualPermissions": [],
-        "CompanyPermissions": [],
-        "MarketPermissions": [],
-        "MultiBrandingPermissions": [],
-        "UserTypePermissions": [],
-        "Users": [136]
-        }
-        
-        
-    }""" % (
-        prfname,
-        prfdesc,
-        profile_id_gen,
-        prfid,
-    )
-    #Trace.Write("68---data----" + str(datasave))
-    setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
-    #Trace.Write("68---data--setPermissionURL----" + str(setPermissionURL))
-    webclient = System.Net.WebClient()
-    webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-    webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-    webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-    webclient.Headers.Add("X-CSRF-Token", xcrf)
-    webclient.Headers.Add("Authorization", accessToken)
-    response = webclient.UploadString(str(setPermissionURL), datasave)
-    Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
-    Product.SetGlobal("Profile_ID_val", str(response.encode("ascii", "ignore")))
-    return "response"
-
-
-# create Profiles-Native tables-- 9517 End
-def nativeProfileUpdate(newdict):
-    Login_Username = 'X0116955'
-    #Login_Password = 'Joseph@2020'
-    Login_Password = 'Welcome@123'
-    Login_Domain = 'appliedmaterials_tst'
-    
-    URL = 'https://sandbox.webcomcpq.com'
-    '''LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
-    if LOGIN_CREDENTIALS is not None:
-        Login_Username = str(LOGIN_CREDENTIALS.Username)
-        Login_Password = str(LOGIN_CREDENTIALS.Password)
-        Login_Domain = str(LOGIN_CREDENTIALS.Domain)
-        URL = str(LOGIN_CREDENTIALS.URL)'''
-
-    sandboxBaseURL = URL
-    authenticationUrl = (
-        sandboxBaseURL
-        + "/api/rd/v1/Core/Login?username="
-        + Login_Username
-        + "&password="
-        + Login_Password
-        + "&domain="
-        + Login_Domain
-    )
-    #Trace.Write('url check----authenticationUrl--'+str(authenticationUrl))
-    authRequest = WebRequest.Create(str(authenticationUrl))
-    authRequest.Method = "POST"
-    authRequest.CookieContainer = CookieContainer()
-    authRequest.ContentLength = 0
-    authResponse = authRequest.GetResponse()
-    cookies = authResponse.Cookies
-    authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
-    xcrf = str(authResponseData).replace('"', "")
-    #Trace.Write("X-CSRF-Token : " + str(xcrf))
-    
-    # cookies
-    coookies = ""
-    if cookies is not None:
-        for cookie in cookies:
-            coookies = coookies + str(cookie) + ";"
-    #Trace.Write("COOKIES : " + coookies)
-
-    data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
-    # authentication api token creation start
-    authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
-    authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
-    authRequesttoken.Method = "POST"
-    webclienttoken = System.Net.WebClient()
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-    webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-    webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-    webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
-    response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
-    accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
-    
-
-    # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
-
-    profile_id_gen = newdict.get("PROFILE_ID")
-    #Trace.Write("159----------" + str(profile_id_gen))
-    PROFILE_NAME = newdict.get("PROFILE_NAME")
-    prf_ID = ""
-    prfname = profile_id_gen = prfid = ""
-    #Trace.Write('64----nativeProfileSave-------'+str(newdict))
-    prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-    prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
-    prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
-    profile_id_gen = prfid
-    permissionQuery = Sql.GetFirst(
-        "Select permission_id from cpq_permissions where permission_name ='" + str(prfname) + "'"
-    )
-    if permissionQuery:
-        prf_ID = permissionQuery.permission_id
-    
-    # Trace.Write("52----PROFILE_NAME--------" + str(PROFILE_NAME))
-    # Trace.Write("52--newdict-------" + str(newdict))
-    prf_ID = newdict.get("permission_id")
-    #Trace.Write("52----prf_ID--------" + str(prf_ID))
-    # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
-    
-    datasave = """{
-        "Id":%s,
-        "Name": "%s",
-        "Description": "%s",
-        "SystemId": "%s",
-        "Condition": "%s",
-        "SelectedPermissions": {
-        "ManualPermissions": [],
-        "CompanyPermissions": [],
-        "MarketPermissions": [],
-        "MultiBrandingPermissions": [],
-        "UserTypePermissions": [],
-        "Users": [136]
-        }
-        
-        
-    }""" % (
-        prf_ID,
-        prfname,
-        prfdesc,
-        prfid,
-        prfdesc,
-    )
-    #Trace.Write("188-------------datasave----" + str(datasave))
-    setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
-    #Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
-    webclient = System.Net.WebClient()
-    webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-    webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-    webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-    webclient.Headers.Add("X-CSRF-Token", xcrf)
-    webclient.Headers.Add("Authorization", accessToken)
-    #Trace.Write("261----setPermissionURL---272-" + str(setPermissionURL))
-    response = webclient.UploadString(str(setPermissionURL), datasave)
-    Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
-    return "response"
-
-
-# update profiles 9517 End
-# A043S001P01-11419-Profie Explorer-Dhurga-End
-####variable declaration
-MM_MOD_ATTR_NAME = (
-    MM_MOD_CUS_OBJ
-) = (
-    TABLE_NAME
-) = (
-    ATTR_Value
-) = (
-    Rec_Id_Value
-) = (
-    REC_NO
-) = (
-    API_Value
-) = (
-    RESULT
-) = Tree = API_NAME = str1 = RecId = Selected_List = CurrentTime = AutoFieldId = Model_Type_letter = Price_Model_ID = ""
+REC_NO = RecId = ""
 Field_Labels = []
 row = {}
-"""MM_MOD_CUS_OBJ = ""
-TABLE_NAME = ""
-ATTR_Value = ""
-Rec_Id_Value = ""
-REC_NO = ""
-API_Value = ""
-RESULT = ""
-Tree = ""
-API_NAME = ""
-str1 = ""
-RecId = ""
-Selected_List = CurrentTime = AutoFieldId = Model_Type_letter =Price_Model_ID = "" """
+
 Product_name = Product.Name
 flag = "True"
 for tab in Product.Tabs:
-    tab_name = tab.Name
-    #Trace.Write("INSIDE_FOR" + str(tab_name))
+    tab_name = tab.Name    
     if tab.IsSelected == True:
-        CurrentTabName = (tab.Name).strip()
-        Product_Type_letter = ""
-
-        sql_obj = Sql.GetFirst(
+        CurrentTabName = tab_name.strip()
+        
+        tab_obj = Sql.GetFirst(
             "select RECORD_ID,TAB_LABEL from SYTABS (nolock) where SAPCPQ_ALTTAB_NAME = '"
             + str(CurrentTabName)
             + "' and RTRIM(LTRIM(APP_LABEL))='"
             + str(Product_name)
             + "'"
         )
-        if sql_obj is not None:
-            str1 = sql_obj.TAB_LABEL            
+        if tab_obj:
+            tab_label = tab_obj.TAB_LABEL            
             SYSECT_OBJNAME = Sql.GetList(
                     "select SYSECT.RECORD_ID,SYSECT.PRIMARY_OBJECT_NAME FROM SYSECT (nolock) INNER JOIN SYPAGE ON SYSECT.PAGE_RECORD_ID = SYPAGE.RECORD_ID where SYPAGE.TAB_RECORD_ID ='"
-                    + str(sql_obj.RECORD_ID).strip()
+                    + str(tab_obj.RECORD_ID).strip()
                     + "' "
-            )            
-            #Trace.Write("str1------->" + str(str1.upper()))
+            )
             if SYSECT_OBJNAME is not None:
                 ##TO GET THE SECTION INFORMATION
                 for secobj in SYSECT_OBJNAME:
                     TABLE_NAME = str(secobj.PRIMARY_OBJECT_NAME).strip()
                     REC_ID_OBJ = Sql.GetFirst(
                         "Select RECORD_ID,RECORD_NAME from SYOBJH (nolock) where RTRIM(LTRIM(OBJECT_NAME))='"
-                        + str(TABLE_NAME).strip()
+                        + TABLE_NAME
                         + "'"
                     )
-                    if REC_ID_OBJ is not None:
+                    if REC_ID_OBJ:
                         SYOBJH_OBJ = REC_ID_OBJ.RECORD_ID
                         QUE_OBJ = Sql.GetFirst(
                             "Select RECORD_ID,SAPCPQ_ATTRIBUTE_NAME from SYSEFL (nolock) where API_FIELD_NAME='"
                             + str(REC_ID_OBJ.RECORD_NAME).strip()
                             + "' and API_NAME='"
-                            + str(TABLE_NAME).strip()
+                            + TABLE_NAME
                             + "' and SECTION_RECORD_ID='"
                             + str(secobj.RECORD_ID)
                             + "' "
                         )
                         ###TO GET THE QUESTION INFORMATION
-                        if QUE_OBJ is not None:
+                        if QUE_OBJ:
                             RECORDID = str(QUE_OBJ.SAPCPQ_ATTRIBUTE_NAME).replace("-", "_").replace(" ", "")
-                            ATTRIBUTENAME = (RECORDID).upper()
-                            RECORD_ID = "QSTN_" + str(ATTRIBUTENAME).strip()
-                            RecId = str(REC_ID_OBJ.RECORD_NAME).strip()
-                            Trace.Write("str(RecId)" + str(RecId))
-
-                            ####ACTION OF TABS
-                            curr = Product.Attributes.GetByName("MA_MTR_TAB_ACTION").GetValue()
-
-                            #####CLONE SAVE ACTION
-                            if curr == "CLONE":
-                                Product.SetGlobal("clone", "yes")
-                                clone_id = Product.GetGlobal("clone_id")
-                                SYOBJD_OBJNAME = Sql.GetList(
-                                    "SELECT OBJECT_NAME,API_NAME, DATA_TYPE,FORMULA_LOGIC,LOOKUP_API_NAME FROM  SYOBJD where RTRIM(LTRIM(OBJECT_NAME))  ='"
-                                    + str(TABLE_NAME).strip()
-                                    + "' and PARENT_OBJECT_RECORD_ID='"
-                                    + str(SYOBJH_OBJ)
-                                    + "'"
-                                )
-
-                                if SYOBJD_OBJNAME is not None:
-                                    for SYOBJD_Details in SYOBJD_OBJNAME:
-                                        # A043S001P01-7458 - Segment Clone - STP Account Editable - Start                                        
-                                        SECT_OBJNAME = Sql.GetList(
-                                                "select RECORD_ID FROM SYSECT (nolock) where RTRIM(LTRIM(TAB_NAME)) ='"
-                                                + str(str1)
-                                                + "' and TAB_RECORD_ID ='"
-                                                + str(sql_obj.RECORD_ID).strip()
-                                                + "'"
-                                        )
-                                        
-                                        # A043S001P01-7458 - Segment Clone - STP Account Editable - End
-
-                                        if SECT_OBJNAME is not None:
-                                            for SECT in SECT_OBJNAME:
-                                                SYSEFL_OBJNAME = Sql.GetFirst(
-                                                    "SELECT RECORD_ID,FIELD_LABEL,SAPCPQ_ATTRIBUTE_NAME, API_NAME,API_NAME,SECTION_NAME,FLDDEF_VARIABLE_RECORD_ID,FLDDEF_VARIABLE_NAME FROM SYSEFL (nolock) where API_NAME ='"
-                                                    + str(SYOBJD_Details.OBJECT_NAME).strip()
-                                                    + "' and API_FIELD_NAME='"
-                                                    + str(SYOBJD_Details.API_NAME).strip()
-                                                    + "' and SECTION_RECORD_ID='"
-                                                    + str(SECT.RECORD_ID)
-                                                    + "'"
-                                                )
-
-                                                if SYSEFL_OBJNAME is not None and str(SYSEFL_OBJNAME.API_NAME) != "":
-                                                    MM_MOD_CUS_OBJ = (SYSEFL_OBJNAME.API_NAME).strip()
-                                                    SECTIONQSTNRECORDID = (
-                                                        str(SYSEFL_OBJNAME.SAPCPQ_ATTRIBUTE_NAME)
-                                                        .replace("-", "_")
-                                                        .replace(" ", "")
-                                                    )
-                                                    SECQSTNATTRIBUTENAME = SECTIONQSTNRECORDID.upper()
-                                                    MM_MOD_ATTR_NAME = "QSTN_" + str(SECQSTNATTRIBUTENAME)
-                                                    Trace.Write(
-                                                        "MM_MOD_ATTR_NAME____MM_MOD_ATTR_NAME___MM_MOD_ATTR_NAME"
-                                                        + str(MM_MOD_ATTR_NAME)
-                                                    )
-                                                    ###AUTONUMBER DATATYPE QUESTION
-                                                    if SYOBJD_Details.DATA_TYPE == "AUTO NUMBER":
-                                                        REC_NO = str(Guid.NewGuid()).upper()
-                                                        row[RecId] = str(REC_NO)
-                                                        Trace.Write("row_row____row" + str(row))
-                                                    ###LOOKUP DATATYPE QUESTION
-                                                    elif (
-                                                        SYOBJD_Details.DATA_TYPE != "LOOKUP"
-                                                        and SYOBJD_Details.DATA_TYPE != "FORMULA"
-                                                    ):
-                                                        if (
-                                                            Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None
-                                                            and str(SYSEFL_OBJNAME.FLDDEF_VARIABLE_RECORD_ID) == ""
-                                                        ):
-                                                            ATTR_Value = (
-                                                                Product.Attributes.GetByName(
-                                                                    str(MM_MOD_ATTR_NAME)
-                                                                ).GetValue()
-                                                                or ""
-                                                            )
-                                                            if str(MM_MOD_CUS_OBJ) == "SETBAR_1PC":
-                                                                if (str(ATTR_Value)).upper() == "TRUE" or str(
-                                                                    ATTR_Value
-                                                                ) == "1":
-                                                                    row[MM_MOD_CUS_OBJ] = "001"
-                                                                else:
-                                                                    row[MM_MOD_CUS_OBJ] = ""
-                                                            else:
-                                                                row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                        elif (
-                                                            Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None
-                                                            and str(SYSEFL_OBJNAME.FLDDEF_VARIABLE_RECORD_ID) != ""
-                                                        ):
-                                                            FLDDEF_VARIABLE_RECORD_ID = (
-                                                                SYSEFL_OBJNAME.FLDDEF_VARIABLE_RECORD_ID
-                                                            )
-
-                                                            CTX_Logic = Sql.GetFirst(
-                                                                "select CPQ_CALCULATION_LOGIC from SYVABL (nolock) where RECORD_ID = '"
-                                                                + str(FLDDEF_VARIABLE_RECORD_ID)
-                                                                + "' "
-                                                            )
-                                                            result = ScriptExecutor.ExecuteGlobal(
-                                                                "SYPARVRLLG",
-                                                                {
-                                                                    "CTXLogic": str(CTX_Logic.CPQ_CALCULATION_LOGIC),
-                                                                    "Obj_Name": TABLE_NAME,
-                                                                },
-                                                            )
-                                                            if result != "":
-                                                                ATTR_Value = str(result)
-                                                                row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                    ###FORMULA DATATYPE QUESTION
-                                                    elif SYOBJD_Details.DATA_TYPE == "FORMULA":
-                                                        if (
-                                                            SYOBJD_Details.FORMULA_LOGIC != ""
-                                                            and "select" in str(SYOBJD_Details.FORMULA_LOGIC).lower()
-                                                        ):
-                                                            SECTIONQSTNRECORDID = (
-                                                                str(SYSEFL_OBJNAME.SAPCPQ_ATTRIBUTE_NAME)
-                                                                .replace("-", "_")
-                                                                .replace(" ", "")
-                                                            )
-                                                            SECQSTNATTRIBUTENAME = (SECTIONQSTNRECORDID).upper()
-                                                            MM_MOD_ATTR_NAME = "QSTN_LKP_" + str(SECQSTNATTRIBUTENAME)
-                                                            if (
-                                                                Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
-                                                                is not None
-                                                            ):
-                                                                API_Value = str(
-                                                                    Product.Attributes.GetByName(
-                                                                        str(MM_MOD_ATTR_NAME)
-                                                                    ).HintFormula
-                                                                )
-                                                                API_obj = Sql.GetFirst(
-                                                                    "select API_NAME from  SYOBJD (nolock) where LOOKUP_API_NAME ='"
-                                                                    + str(MM_MOD_CUS_OBJ)
-                                                                    + "' "
-                                                                )
-                                                                if API_obj is not None and API_Value != "":
-                                                                    API_Name = str(API_obj.API_NAME).strip()
-                                                                    row[API_Name] = str(API_Value)
-                                                                    result = ScriptExecutor.ExecuteGlobal(
-                                                                        "SYPARCEFMA",
-                                                                        {
-                                                                            "Object": TABLE_NAME,
-                                                                            "API_Name": str(API_Name),
-                                                                            "API_Value": API_Value,
-                                                                        },
-                                                                    )
-                                                                    for API_Names in result:
-                                                                        API_NAME = str(API_Names["API_NAME"]).strip()
-                                                                        RESULT = str(API_Names["FORMULA_RESULT"])
-                                                                        row[API_NAME] = str(RESULT)
-                                                        elif (
-                                                            SYOBJD_Details.FORMULA_LOGIC != ""
-                                                            and "select" not in str(SYOBJD_Details.FORMULA_LOGIC).lower()
-                                                        ):
-                                                            ATTR_Value = str(SYOBJD_Details.FORMULA_LOGIC).strip()
-                                                            row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                        elif SYOBJD_Details.FORMULA_LOGIC == "":
-                                                            ATTR_Value = Product.Attributes.GetByName(
-                                                                str(MM_MOD_ATTR_NAME)
-                                                            ).GetValue()
-                                                            row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-
-                                    #Trace.Write("ROW-----" + str(dict(row)))
-                                    
-                                    Product.Attributes.GetByName(str(RECORD_ID)).AssignValue(str(REC_NO))
-                                    Table.TableActions.Create(TABLE_NAME, row)
-                                    try:                                        
-                                        result = ScriptExecutor.ExecuteGlobal(
-                                            "SYPARCEFMA",
-                                            {"Object": TABLE_NAME, "API_Name": str(RecId), "API_Value": REC_NO},
-                                        )
-                                        new_value_dict = {
-                                            API_Names["API_NAME"]: API_Names["FORMULA_RESULT"]
-                                            for API_Names in result
-                                            if API_Names["FORMULA_RESULT"] != ""
-                                        }
-                                        if new_value_dict is not None:
-                                            row = {RecId: str(REC_NO)}
-                                            row.update(new_value_dict)
-                                            #Trace.Write("Updated 111")
-                                            Table.TableActions.Update(TABLE_NAME, RecId, row)
-                                    except:
-                                        Trace.Write("NOT SELF REFERENCE RECORD")
-                                    
-                                    #####TO CREATE THE DATA IN THE CUSTOM TABLE
-                                    OBJD_OBJ = Sql.GetList(
-                                        "Select OBJECT_NAME from  SYOBJD (nolock) where LOOKUP_OBJECT='"
-                                        + str(TABLE_NAME).strip()
-                                        + "' "
-                                    )
-                                    if OBJD_OBJ is not None:
-                                        for OBJD_Details in OBJD_OBJ:
-                                            row = {}
-                                            REL_TAB_NAME = str(OBJD_Details.OBJECT_NAME).strip()
-                                            REL_OBJ = Sql.GetFirst(
-                                                "Select RECORD_NAME from SYOBJH (nolock) where RTRIM(LTRIM(OBJECT_NAME))='"
-                                                + str(TABLE_NAME).strip()
-                                                + "'"
-                                            )
-                                            if REL_OBJ is not None:
-                                                COL_NAME = str(REL_OBJ.RECORD_NAME).strip()
-                                                SQLobj = Sql.GetList(
-                                                        "Select * from "
-                                                        + str(REL_TAB_NAME)
-                                                        + " (nolock) where "
-                                                        + str(COL_NAME)
-                                                        + "= '"
-                                                        + str(clone_id)
-                                                        + "'"
-                                                    )
-                                                if SQLobj is not None:
-                                                    for inc in SQLobj:
-                                                        SYOBJD_OBJNAME = Sql.GetList(
-                                                            "SELECT OBJECT_NAME,API_NAME, DATA_TYPE,FORMULA_LOGIC,LOOKUP_API_NAME FROM  SYOBJD (nolock) where RTRIM(LTRIM(OBJECT_NAME)) ='"
-                                                            + str(REL_TAB_NAME).strip()
-                                                            + "' "
-                                                        )
-                                                        if SYOBJD_OBJNAME is not None:
-                                                            for SYOBJD_Details in SYOBJD_OBJNAME:
-                                                                if str(SYOBJD_Details.API_NAME) != "":
-                                                                    MM_MOD_CUS_OBJ = (SYOBJD_Details.API_NAME).strip()
-                                                                    #####AUTO NUMBER DATATYPE QUESTION
-                                                                    if SYOBJD_Details.DATA_TYPE == "AUTO NUMBER":
-                                                                        REL_COL = Sql.GetFirst(
-                                                                            "Select RECORD_NAME from SYOBJH (nolock) where RTRIM(LTRIM(OBJECT_NAME))='"
-                                                                            + str(REL_TAB_NAME).strip()
-                                                                            + "'"
-                                                                        )
-                                                                        if REL_COL is not None:
-                                                                            REC_NO1 = str(Guid.NewGuid()).upper()
-                                                                    elif (
-                                                                        str(MM_MOD_CUS_OBJ).strip()
-                                                                        == str(COL_NAME).strip()
-                                                                    ):
-                                                                        row[MM_MOD_CUS_OBJ] = str(REC_NO)
-                                                                    ####TO OBTAIN RESULT FOR FORMULA LOGIC
-                                                                    elif str(COL_NAME).strip() in str(
-                                                                        SYOBJD_Details.FORMULA_LOGIC
-                                                                    ):
-                                                                        result = ScriptExecutor.ExecuteGlobal(
-                                                                            "SYPARCEFMA",
-                                                                            {
-                                                                                "Object": REL_TAB_NAME,
-                                                                                "API_Name": str(COL_NAME),
-                                                                                "API_Value": str(REC_NO),
-                                                                            },
-                                                                        )
-                                                                        for API_Names in result:
-                                                                            API_NAME = str(API_Names["API_NAME"]).strip()
-                                                                            RESULT = str(API_Names["FORMULA_RESULT"])
-                                                                            row[API_NAME] = str(RESULT)
-                                                                    elif not str(COL_NAME).strip() in str(
-                                                                        SYOBJD_Details.FORMULA_LOGIC
-                                                                    ):
-                                                                        
-                                                                        if str(MM_MOD_CUS_OBJ) not in (
-                                                                            "CPQTABLEENTRYMODIFIEDBY",
-                                                                            "CPQTABLEENTRYDATEMODIFIED",
-                                                                            "CPQTABLEENTRYADDEDBY",
-                                                                            "CPQTABLEENTRYDATEADDED",
-                                                                        ):
-                                                                            VAL_CUS_OBJ = eval(
-                                                                                str("inc." + str(MM_MOD_CUS_OBJ))
-                                                                            )
-                                                                            row[MM_MOD_CUS_OBJ] = str(VAL_CUS_OBJ)
-                                                                        
-                                                        Table.TableActions.Create(REL_TAB_NAME, row)
-                                                        row1 = {}
-                                                        ####TO OBTAIN RESULT FOR FORMULA LOGIC
-                                                        try:
-                                                            result = ScriptExecutor.ExecuteGlobal(
-                                                                "SYPARCEFMA",
-                                                                {
-                                                                    "Object": REL_TAB_NAME,
-                                                                    "API_Name": str(REC_NO1),
-                                                                    "API_Value": REC_NO1,
-                                                                },
-                                                            )
-                                                            new_value_dict = {
-                                                                API_Names["API_NAME"]: API_Names["FORMULA_RESULT"]
-                                                                for API_Names in result
-                                                                if API_Names["FORMULA_RESULT"] != ""
-                                                            }
-                                                            if new_value_dict is not None:
-                                                                row1 = {OBJ_COL: str(REC_NO1)}
-                                                                row1.update(new_value_dict)
-                                                                Trace.Write("Updated 222")
-                                                                Table.TableActions.Update(REL_TAB_NAME, OBJ_COL, row1)
-                                                        except:
-                                                            Trace.Write("NOT SELF REFERENCE RECORD")
-
-                                    ScriptExecutor.ExecuteGlobal(
-                                        "SYALLTABOP",
-                                        {"Primary_Data": str(REC_NO), "TabNAME": str1, "ACTION": "VIEW", "RELATED": ""},
-                                    )
-                            #####main SAVE ACTION
-                            elif Product.Attributes.GetByName(str(RECORD_ID)) is not None:
-                                Rec_Id_Value = Product.Attributes.GetByName(str(RECORD_ID)).GetValue()
-                                #Trace.Write("=====Rec_Id_Value"+str(Rec_Id_Value))
+                            ATTRIBUTENAME = RECORDID.upper()
+                            RECORD_ID = "QSTN_" + ATTRIBUTENAME.strip()
+                            RecId = str(REC_ID_OBJ.RECORD_NAME).strip()                            
+                            Rec_Id_Value = ""
+                            ####ACTION OF TABS                                                       
+                            if Product.Attributes.GetByName(RECORD_ID) is not None:
+                                Rec_Id_Value = Product.Attributes.GetByName(RECORD_ID).GetValue()
+                                
                             #####add SAVE ACTION
                             if Rec_Id_Value == "":
-                                SYOBJD_OBJNAME = Sql.GetList(
-                                    "SELECT OBJECT_NAME,API_NAME, DATA_TYPE,FORMULA_LOGIC,LOOKUP_API_NAME FROM  SYOBJD (nolock) where RTRIM(LTRIM(OBJECT_NAME)) ='"
-                                    + str(TABLE_NAME).strip()
+                                details_obj = Sql.GetList(
+                                    "SELECT OBJECT_NAME as TABLE_NAME ,API_NAME, DATA_TYPE,FORMULA_LOGIC,LOOKUP_API_NAME FROM  SYOBJD (nolock) where RTRIM(LTRIM(OBJECT_NAME)) ='"
+                                    + TABLE_NAME
                                     + "' and LTRIM(RTRIM(PARENT_OBJECT_RECORD_ID))='"
                                     + str(SYOBJH_OBJ).strip()
                                     + "' "
                                 )
                                 
-                                if SYOBJD_OBJNAME is not None:
-                                    for SYOBJD_Details in SYOBJD_OBJNAME:
-                                        Trace.Write(
-                                            str(SYOBJD_Details.API_NAME)
-                                            + " SYOBJD_Details-------476------> "
-                                            + str(SYOBJD_Details.DATA_TYPE)
-                                        )
-                                        SECT_OBJNAME = Sql.GetList(
+                                if details_obj is not None:
+                                    for detail_obj in details_obj:
+                                        
+                                        section_obj = Sql.GetList(
                                             "select SE.RECORD_ID  FROM SYSECT (nolock)SE inner join SYPAGE(nolock)PG on SE.PAGE_RECORD_ID = PG.RECORD_ID where RTRIM(LTRIM(PG.TAB_NAME)) ='"
-                                            + str(str1)
+                                            + str(tab_label)
                                             + "' and PG.TAB_RECORD_ID ='"
-                                            + str(sql_obj.RECORD_ID).strip()
+                                            + str(tab_obj.RECORD_ID).strip()
                                             + "'"
                                         )
-                                        if SECT_OBJNAME is not None:
-                                            for SECT in SECT_OBJNAME:
+                                        if section_obj:
+                                            for SECT in section_obj:
                                                 SYSEFL_OBJNAME12 = Sql.GetList(
-                                                    "SELECT RECORD_ID,FIELD_LABEL, API_NAME,API_FIELD_NAME,SECTION_NAME,FLDDEF_VARIABLE_RECORD_ID,FLDDEF_VARIABLE_NAME,SAPCPQ_ATTRIBUTE_NAME FROM SYSEFL (nolock) where LTRIM(RTRIM(API_NAME)) ='"
-                                                    + str(SYOBJD_Details.OBJECT_NAME).strip()
-                                                    + "' and LTRIM(RTRIM(API_FIELD_NAME))='"
-                                                    + str(SYOBJD_Details.API_NAME)
-                                                    + "' and LTRIM(RTRIM(SECTION_RECORD_ID))='"
-                                                    + str(SECT.RECORD_ID)
-                                                    + "'"
+                                                    "SELECT RECORD_ID,FIELD_LABEL, API_NAME,API_FIELD_NAME,SECTION_NAME,FLDDEF_VARIABLE_RECORD_ID,FLDDEF_VARIABLE_NAME,SAPCPQ_ATTRIBUTE_NAME FROM SYSEFL (nolock) where LTRIM(RTRIM(API_NAME)) ='{}' and LTRIM(RTRIM(API_FIELD_NAME))='{}' and LTRIM(RTRIM(SECTION_RECORD_ID))='{}'".format(str(detail_obj.TABLE_NAME).strip(), detail_obj.API_NAME, SECT.RECORD_ID)
                                                 )
                                                 if SYSEFL_OBJNAME12 is not None and len(SYSEFL_OBJNAME12) > 0:
-                                                    for SYSEFL_OBJNAME in SYSEFL_OBJNAME12:
-                                                        Trace.Write("Yes")
+                                                    for SYSEFL_OBJNAME in SYSEFL_OBJNAME12:                                                        
                                                         MM_MOD_CUS_OBJ = (SYSEFL_OBJNAME.API_FIELD_NAME).strip()
                                                         SECTIONQSTNRECORDID = (
                                                             str(SYSEFL_OBJNAME.SAPCPQ_ATTRIBUTE_NAME)
                                                             .replace("-", "_")
                                                             .replace(" ", "")
-                                                        )
-                                                        Trace.Write("MM_MOD_CUS_OBJ__MM_MOD_CUS_OBJ" + str(MM_MOD_CUS_OBJ))
-                                                        Trace.Write(
-                                                            "str(SYOBJD_Details.DATA_TYPE)" + str(SYOBJD_Details.DATA_TYPE)
-                                                        )
+                                                        )                                                        
                                                         SECQSTNATTRIBUTENAME = SECTIONQSTNRECORDID.upper()                                                    
-                                                        if str(SYOBJD_Details.DATA_TYPE) == "LONG TEXT AREA":
-                                                            MM_MOD_ATTR_NAME = "QSTN_" + str(SECQSTNATTRIBUTENAME) + "_LONG"
+                                                        if str(detail_obj.DATA_TYPE) == "LONG TEXT AREA":
+                                                            MM_MOD_ATTR_NAME = "QSTN_" + SECQSTNATTRIBUTENAME + "_LONG"
                                                         else:
-                                                            MM_MOD_ATTR_NAME = "QSTN_" + str(SECQSTNATTRIBUTENAME)
-                                                        Trace.Write(
-                                                            "MM_MOD_ATTR_NAME__MM_MOD_ATTR_NAME" + str(MM_MOD_ATTR_NAME)
-                                                        )
-                                                        
-                                                        if SYOBJD_Details.DATA_TYPE == "AUTO NUMBER":
+                                                            MM_MOD_ATTR_NAME = "QSTN_" + SECQSTNATTRIBUTENAME  
+                                                        if detail_obj.DATA_TYPE == "AUTO NUMBER":
                                                             REC_NO = str(Guid.NewGuid()).upper()
                                                             row[RecId] = str(REC_NO)
-                                                        elif (
-                                                            SYOBJD_Details.DATA_TYPE != "LOOKUP"
-                                                            and SYOBJD_Details.DATA_TYPE != "FORMULA"
-                                                            and SYOBJD_Details.DATA_TYPE != "PICKLIST"
-                                                            and SYOBJD_Details.DATA_TYPE != "CHECKBOX"
-                                                        ):
+                                                        elif detail_obj.DATA_TYPE not in ("LOOKUP","FORMULA","PICKLIST","CHECKBOX"):
                                                             if (
                                                                 Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
                                                                 is not None
@@ -716,20 +121,18 @@ for tab in Product.Tabs:
                                                             ):
                                                                 Attr_qstn1 = ""
                                                                 Attr_qstn2 = ""
+                                                                ATTR_Value = ""
                                                                 if str(MM_MOD_CUS_OBJ) == "ATTRIBUTE_NAME":
-                                                                    row[MM_MOD_CUS_OBJ] = str(Attr_qstn1).title()
+                                                                    row[MM_MOD_CUS_OBJ] = Attr_qstn1
                                                                 if str(MM_MOD_CUS_OBJ) == "ATTRIBUTE_DESCRIPTION":
-                                                                    row[MM_MOD_CUS_OBJ] = str(Attr_qstn2).title()
+                                                                    row[MM_MOD_CUS_OBJ] = Attr_qstn2
                                                                 else:
                                                                     if MM_MOD_ATTR_NAME == "QSTN_SYSEFL_AC_00067_LONG":
                                                                         msgbody = str(
                                                                             Product.GetGlobal("RichTextVaslue").encode(
                                                                                 "ASCII", "ignore"
                                                                             )
-                                                                        )
-                                                                        # Trace.Write(
-                                                                        #     "------------VJ-----------" + str(len(msgbody))
-                                                                        # )
+                                                                        )                                                                        
                                                                         if len(msgbody) <= 8000:
                                                                             ATTR_Value = str(msgbody)
                                                                             row["MESSAGE_BODY_2"] = ""
@@ -783,8 +186,7 @@ for tab in Product.Tabs:
                                                                             ).GetValue()
                                                                             or ""
                                                                         )
-                                                                row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                                #Trace.Write("rowwe" + str(dict(row)))
+                                                                row[MM_MOD_CUS_OBJ] = str(ATTR_Value)                                                                
                                                             elif (
                                                                 Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
                                                                 is not None
@@ -811,20 +213,14 @@ for tab in Product.Tabs:
                                                                     row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
                                                                 else:
                                                                     row[MM_MOD_CUS_OBJ] = ""
-                                                        elif (SYOBJD_Details.DATA_TYPE).strip() == "PICKLIST (MULTI-SELECT)":
-                                                            # if (str(MM_MOD_CUS_OBJ) == "ATTRIBUTE_TYPE"):
-                                                            attr_val = Product.GetGlobal("ATTR_VAL")
-                                                            #Trace.Write("ATTR_VAL--" + ATTR_VAL)
+                                                        elif (detail_obj.DATA_TYPE).strip() == "PICKLIST (MULTI-SELECT)":                                                         
+                                                            attr_val = Product.GetGlobal("ATTR_VAL")                                                        
                                                             if attr_val == "":
                                                                 attr_val = "MATERIAL ATTRIBUTE"
-                                                            #Trace.Write(
-                                                            #     str(MM_MOD_CUS_OBJ) + "is the field which is a picklist!!!"
-                                                            # )
+                                                            
                                                             row[MM_MOD_CUS_OBJ] = attr_val
-                                                            #Trace.Write(str(attr_val) + "---->multi-select values")
-                                                        elif (SYOBJD_Details.DATA_TYPE).strip() == "PICKLIST":
-                                                            # if (str("MM_MOD_ATTR_NAME") != "QSTN_SYSEFL_MA_04885"):
-                                                            #Trace.Write("str(MM_MOD_ATTR_NAME)" + str(MM_MOD_ATTR_NAME))
+                                                            
+                                                        elif (detail_obj.DATA_TYPE).strip() == "PICKLIST":                                                            
                                                             ATTR_Value = Product.Attributes.GetByName(
                                                                 str(MM_MOD_ATTR_NAME)
                                                             ).GetValue()
@@ -832,7 +228,7 @@ for tab in Product.Tabs:
                                                                 row[MM_MOD_CUS_OBJ] = ATTR_Value
                                                             except:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                        elif SYOBJD_Details.DATA_TYPE == "CHECKBOX":
+                                                        elif detail_obj.DATA_TYPE == "CHECKBOX":
                                                             if (
                                                                 Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
                                                                 is not None
@@ -899,10 +295,10 @@ for tab in Product.Tabs:
                                                                     ATTR_Value = str(result)
                                                                     row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
 
-                                                        elif SYOBJD_Details.DATA_TYPE == "FORMULA":
+                                                        elif detail_obj.DATA_TYPE == "FORMULA":
                                                             if (
-                                                                SYOBJD_Details.FORMULA_LOGIC != ""
-                                                                and "select" in str(SYOBJD_Details.FORMULA_LOGIC).lower()
+                                                                detail_obj.FORMULA_LOGIC != ""
+                                                                and "select" in str(detail_obj.FORMULA_LOGIC).lower()
                                                             ):
                                                                 if TABLE_NAME != "PRPRCL":
                                                                     SECTIONQSTNRECORDID = (
@@ -913,12 +309,7 @@ for tab in Product.Tabs:
                                                                     SECQSTNATTRIBUTENAME = (SECTIONQSTNRECORDID).upper()
                                                                     MM_MOD_ATTR_NAME = "QSTN_LKP_" + str(
                                                                         SECQSTNATTRIBUTENAME
-                                                                    )
-                                                                    Trace.Write(
-                                                                        "MM_MOD_ATTR_NAME____MM_MOD_ATTR_NAMEXXXXXXX"
-                                                                        + str(MM_MOD_ATTR_NAME)
-                                                                    )
-                                                                    Trace.Write("API_Value_______API_Value" + str(API_Value))
+                                                                    )                                                                    
                                                                     if (
                                                                         Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
                                                                         is not None
@@ -932,17 +323,9 @@ for tab in Product.Tabs:
                                                                             "select API_NAME from  SYOBJD (nolock) where LOOKUP_API_NAME ='"
                                                                             + str(MM_MOD_CUS_OBJ)
                                                                             + "'and OBJECT_NAME='"
-                                                                            + str(TABLE_NAME)
+                                                                            + TABLE_NAME
                                                                             + "' "
-                                                                        )
-                                                                        Trace.Write(
-                                                                            "LOOKUP CLEAR TEST select API_NAME from  SYOBJD (nolock) where LOOKUP_API_NAME ='"
-                                                                            + str(MM_MOD_CUS_OBJ)
-                                                                            + "'and OBJECT_NAME='"
-                                                                            + str(TABLE_NAME)
-                                                                            + "' "
-                                                                        )                                                                    
-                                                                        # if API_obj is not None and API_Value != "":
+                                                                        ) 
                                                                         if API_obj is not None:                                                                    
                                                                             API_Name = str(API_obj.API_NAME).strip()
                                                                             if str(API_Value).upper() == "LOOKUP":
@@ -958,7 +341,7 @@ for tab in Product.Tabs:
                                                                                 "SYPARCEFMA",
                                                                                 {
                                                                                     "Object": TABLE_NAME,
-                                                                                    "API_Name": str(API_Name),
+                                                                                    "API_Name": API_Name,
                                                                                     "API_Value": API_Value,
                                                                                 },
                                                                             )
@@ -974,12 +357,12 @@ for tab in Product.Tabs:
                                                                 else:
                                                                     row[MM_MOD_CUS_OBJ] = ""
                                                             elif (
-                                                                SYOBJD_Details.FORMULA_LOGIC != ""
-                                                                and "select" not in str(SYOBJD_Details.FORMULA_LOGIC).lower()
+                                                                detail_obj.FORMULA_LOGIC != ""
+                                                                and "select" not in str(detail_obj.FORMULA_LOGIC).lower()
                                                             ):
-                                                                ATTR_Value = str(SYOBJD_Details.FORMULA_LOGIC).strip()
+                                                                ATTR_Value = str(detail_obj.FORMULA_LOGIC).strip()
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                            elif SYOBJD_Details.FORMULA_LOGIC == "":
+                                                            elif detail_obj.FORMULA_LOGIC == "":
                                                                 if Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)):
                                                                     ATTR_Value = Product.Attributes.GetByName(
                                                                         str(MM_MOD_ATTR_NAME)
@@ -987,8 +370,8 @@ for tab in Product.Tabs:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
                                                             else:
                                                                 row[MM_MOD_CUS_OBJ] = ""
-                                    #Trace.Write("ROW ADDNEW SAVE-----" + str(dict(row)))
-                                    if str(TABLE_NAME) == "ACAPCH":
+                                    
+                                    if TABLE_NAME == "ACAPCH":
                                         row["APRCHN_ID"] = row['APRCHN_ID'].upper()
                                         datetime_value = datetime.datetime.now()
                                         Get_UserID = User.Id
@@ -1021,73 +404,40 @@ for tab in Product.Tabs:
                                             a = Sql.RunQuery(InsertStatus)
                                     Required_obj = Sql.GetList(
                                         "select top 1000 API_NAME,FIELD_LABEL,DISPLAY_ORDER,REQUIRED from  SYOBJD (nolock) where LTRIM(RTRIM(OBJECT_NAME)) ='"
-                                        + str(TABLE_NAME)
+                                        + TABLE_NAME
                                         + "'and LTRIM(RTRIM(UPPER(REQUIRED)))='1' ORDER BY DISPLAY_ORDER "
                                     )
-                            
-                                    
-                                    #Trace.Write("flag_value" + str(flag))
-                                    if Required_obj is not None and Required_obj != "":
+                                    if Required_obj:
                                         for x in Required_obj:
-                                            
-                                            #Trace.Write("Len_len" + str(len(Required_obj)))
                                             sectalert = x.FIELD_LABEL
-                                            #Trace.Write("sectalert_sectalert" + str(sectalert))
-                                            #Trace.Write("x.FIELD_LABEL_x.FIELD_LABEL" + str(x.FIELD_LABEL))
                                             if x.API_NAME in row.keys():
-                                                API_NAME_val = row[x.API_NAME]
-                                                # Trace.Write(
-                                                #     "x.API_NAME"
-                                                #     + str(x.API_NAME)
-                                                #     + " --- API_NAME_val---->"
-                                                #     + str(API_NAME_val)
-                                                #     + "rows-->"
-                                                #     + str(row)
-                                                # )
-                                                if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
-                                                    Trace.Write("row_row_ADD NE1111W")
+                                                API_NAME_val = row[x.API_NAME]                                                
+                                                if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":                                                    
                                                     flag = "False"
                                                     break
-                                                else:
-                                                    Trace.Write("row_row_ADD NE1111W2222")
+                                                else:                                                    
                                                     flag = "True"
 
                                         for req_add_new in Required_obj:
                                             if req_add_new.API_NAME in row.keys():
-                                                API_NAME_val = row[req_add_new.API_NAME]
-                                                Trace.Write(
-                                                    "API_NAME_val  "
-                                                    + str(API_NAME_val)
-                                                    + "	row_API_NAME"
-                                                    + str(req_add_new.API_NAME)
-                                                )
-                                                Trace.Write("row_row_ADD NEW" + str(row))
+                                                API_NAME_val = row[req_add_new.API_NAME]                                                
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
                                                     Field_Labels.append(req_add_new.FIELD_LABEL)
                                         iskey = Sql.GetFirst(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
-                                            + str(TABLE_NAME)
+                                            + TABLE_NAME
                                             + "' and IS_KEY='True' "
                                         )
-                                        Trace.Write(
-                                            "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
-                                            + str(TABLE_NAME)
-                                            + "'and IS_KEY='True' "
-                                        )
-                                        Trace.Write(str("---is_key---1694---"+str(flag)))
-                                        if iskey is not None and flag == "True":
-                                            Trace.Write(str("---is_key---1694---"))
-                                            Trace.Write(str(iskey.API_NAME) + "---is_key---1695---")
-                                            col_name = (iskey.API_NAME).strip()
-                                            #Trace.Write(str(col_name) + "---col_name---16996--" + str(row))
-                                            unique_val = row[col_name]
-                                            Trace.Write("unique_val" + str(unique_val))
+                                                                           
+                                        if iskey is not None and flag == "True":                                            
+                                            col_name = (iskey.API_NAME).strip()                                            
+                                            unique_val = row[col_name]                                            
                                             if unique_val is not None and unique_val != "":
                                                 is_key_table = Sql.GetFirst(
                                                     "select "
                                                     + col_name
                                                     + " from "
-                                                    + str(TABLE_NAME)
+                                                    + TABLE_NAME
                                                     + " (nolock)  where "
                                                     + col_name
                                                     + " ='"
@@ -1100,14 +450,9 @@ for tab in Product.Tabs:
                                                         and "CPQTABLEENTRYDATEMODIFIED" in row.keys()
                                                     ):
                                                         row.pop("CPQTABLEENTRYMODIFIEDBY")
-                                                        row.pop("CPQTABLEENTRYDATEMODIFIED")
-                                                        
-                                                    Trace.Write(str(CurrentTabName) + "ROW----754------" + str(row))
-                                                    if str(CurrentTabName) == "Profile":                                                   
-                                                        Trace.Write(
-                                                            str(CurrentTabName) + "---CurrentTabName--768---" + str(row)
-                                                        )
-                                                        
+                                                        row.pop("CPQTABLEENTRYDATEMODIFIED")                                                        
+                                                    
+                                                    if str(CurrentTabName) == "Profile":
                                                         prfid = Product.Attributes.GetByName(
                                                             "QSTN_SYSEFL_SY_00128"
                                                         ).GetValue()
@@ -1118,19 +463,15 @@ for tab in Product.Tabs:
                                                             "Select * from cpq_permissions where SYSTEM_ID ='"
                                                             + str(prfid)
                                                             + "'"
-                                                        )
-                                                        #if existprofilecheck is None:
-
-                                                        nativeProfileSave(row)
-                                                        
-                                                        # nativeProfileSave(row)
-                                                        # permiss_id = Product.GetGlobal('Profile_ID_val')
-                                                        # system_id_prf = Product.GetGlobal('SYSTEM_ID_PRF')
-                                                        # row['PROFILE_RECORD_ID'] = permiss_id
-                                                        # row['PROFILE_ID'] = system_id_prf
-                                                        # Table.TableActions.Create(TABLE_NAME,row)
-                                                        # to save in SYPRAP Start
-
+                                                        )                                                        
+                                                        #nativeProfileSave(row)
+                                                        ScriptExecutor.ExecuteGlobal(
+                                                                                "SYAPROFILES",
+                                                                                {
+                                                                                    "row": row,
+                                                                                    "nativeProfileSave":"Yes"
+                                                                                },
+                                                                            )
                                                         query = Sql.GetList(
                                                             "SELECT APP_LABEL,APP_ID,APP_DESCRIPTION FROM SYAPPS"
                                                         )
@@ -1210,23 +551,21 @@ for tab in Product.Tabs:
 
                                                                                                        
                                                     else:
-                                                        ##CPQ Attribute name starts
-                                                        Trace.Write('###SAP')
-                                                        if ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYTABS":
+                                                        ##CPQ Attribute name starts                                                        
+                                                        if ("SAPCPQ_ATTRIBUTE_NAME" in row) and TABLE_NAME == "SYTABS":
                                                             if (str(row["APP_ID"]) != ""):
-                                                                APP_ID = str(TABLE_NAME)+"-"+str(row["APP_ID"])+"-"
+                                                                APP_ID = TABLE_NAME+"-"+str(row["APP_ID"])+"-"
                                                                 cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYTABS (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
                                                                 x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
                                                                 length = len(x[len(x)-1])
                                                                 row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
-                                                        elif ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLE_NAME) == "SYOBJH":
+                                                        elif ("SAPCPQ_ATTRIBUTE_NAME" in row) and TABLE_NAME == "SYOBJH":
                                                             cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYOBJH (NOLOCK)")
                                                             x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
                                                             length = len(x[len(x)-1])
                                                             row["SAPCPQ_ATTRIBUTE_NAME"] = "SYOBJ-"+ str(int(x[len(x)-1])+1).zfill(length)
                                                         ##CPQ Attribute name ends
-                                                        tableInfo = Sql.GetTable(str(TABLE_NAME))
-                                                        
+                                                        tableInfo = Sql.GetTable(TABLE_NAME)                                                        
                                                         tableInfo.AddRow(row)
                                                         
                                                         Sql.Upsert(tableInfo)
@@ -1265,7 +604,7 @@ for tab in Product.Tabs:
                                                                 "SYALLTABOP",
                                                                 {
                                                                     "Primary_Data": str(REC_NO),
-                                                                    "TabNAME": str(str1),
+                                                                    "TabNAME": str(tab_label),
                                                                     "ACTION": "VIEW",
                                                                     "RELATED": "",
                                                                 },
@@ -1277,7 +616,7 @@ for tab in Product.Tabs:
                                                                 "SYALLTABOP",
                                                                 {
                                                                     "Primary_Data": str(per_id),
-                                                                    "TabNAME": str(str1),
+                                                                    "TabNAME": str(tab_label),
                                                                     "ACTION": "VIEW",
                                                                     "RELATED": "",
                                                                 },
@@ -1299,8 +638,7 @@ for tab in Product.Tabs:
                                                             "SEC_N_TAB_PAGE_ALERT"
                                                         ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert11" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert11" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : This "Role Id & Name" Already exists </label></div></div></div>'
                                                                                           
-                                            else:
-                                                Trace.Write('kkkkk=======')
+                                            else:                                                
                                                 if (
                                                     Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                     and flag == "True"
@@ -1309,20 +647,17 @@ for tab in Product.Tabs:
                                                     Product.Attributes.GetByName(
                                                         "SEC_N_TAB_PAGE_ALERT"
                                                     ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert12" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert12" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>'
-                                        else:
-                                            Trace.Write("sec-alrt===")
+                                        else:                                            
                                             col_name = (iskey.API_NAME).strip()
                                             if (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                 and flag == "False"
-                                            ):
-                                                #Trace.Write("insideifflag")
+                                            ):                                                
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
 
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(sectalert)
                                                 sectalert = ", ".join(Field_Labels)
-                                                #Trace.Write("sectalert_sectalert12" + str(sectalert)+str(Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula))
-
+                                                
                                                 if len(Field_Labels) > 1:
                                                     Product.Attributes.GetByName(
                                                         "SEC_N_TAB_PAGE_ALERT"
@@ -1337,33 +672,18 @@ for tab in Product.Tabs:
                                                         ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : Please select an Approval Method from the list for Approval Chain</label></div></div></div>".format(
                                                             sectalert
                                                         )    
-                                                if len(Field_Labels) <= 1:
-                                                    # Trace.Write("Else Error Message"+str(Product.Attributes.GetByName(
-                                                    #     "SEC_N_TAB_PAGE_ALERT"
-                                                    # ).Allowed))
+                                                if len(Field_Labels) <= 1:                                                    
                                                     Product.Attributes.GetByName(
                                                         "SEC_N_TAB_PAGE_ALERT"
                                                     ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
                                                         sectalert
-                                                    )
-                                            # commented this code because of not defined flag = 'Falsep'
-                                            # if (
-                                            #     Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
-                                            #     and flag == "Falsep"
-                                            # ):
-                                            #     Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
-                                            #     Product.Attributes.GetByName(
-                                            #         "SEC_N_TAB_PAGE_ALERT"
-                                            #     ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'> ERROR :  '{}' should be a 6 character alphabet only value</label></div></div></div>".format(
-                                            #         sectalert
-                                            #     )
+                                                    )                                            
                                             elif (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                 and flag == "null"
                                             ):
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
-                                                sectalert = ", ".join(Field_Labels)
-                                                #Trace.Write("len____sectalert_sectalert1234" + str(len(Field_Labels)))
+                                                sectalert = ", ".join(Field_Labels)                                                
 
                                                 if len(Field_Labels) > 1:
                                                     Product.Attributes.GetByName(
@@ -1378,41 +698,33 @@ for tab in Product.Tabs:
                                                     ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
                                                         sectalert
                                                     )
-
-                                                
-                                                """Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
-                                                Product.Attributes.GetByName(
-                                                    "SEC_N_TAB_PAGE_ALERT"
-                                                ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'> ERROR :  '{}' is a required field</label></div></div></div>".format(
-                                                    sectalert
-                                                )"""
-                                            # A043S001P01-10904 - End
+                                        # A043S001P01-10904 - End
                             #####EDIT SAVE ACTION
                             else:
                                 row[RecId] = str(Rec_Id_Value)
-                                SYOBJD_OBJNAME = Sql.GetList(
+                                details_obj = Sql.GetList(
                                     "SELECT OBJECT_NAME,API_NAME, DATA_TYPE,FORMULA_LOGIC, LOOKUP_API_NAME FROM  SYOBJD (nolock) where LTRIM(RTRIM(OBJECT_NAME)) ='"
-                                    + str(TABLE_NAME).strip()
+                                    + TABLE_NAME
                                     + "' and LTRIM(RTRIM(PARENT_OBJECT_RECORD_ID))='"
                                     + str(SYOBJH_OBJ).strip()
                                     + "' "
                                 )
-                                if SYOBJD_OBJNAME is not None:
-                                    for SYOBJD_Details in SYOBJD_OBJNAME:
+                                if details_obj is not None:
+                                    for detail_obj in details_obj:
                                         SECT_OBJNAME = Sql.GetList(
                                             "select SYSECT.RECORD_ID  FROM SYSECT (nolock) INNER JOIN SYPAGE ON SYSECT.PAGE_RECORD_ID = SYPAGE.RECORD_ID where RTRIM(LTRIM(TAB_NAME)) ='"
-                                            + str(str1)
+                                            + str(tab_label)
                                             + "' and SYPAGE.TAB_RECORD_ID ='"
-                                            + str(sql_obj.RECORD_ID).strip()
+                                            + str(tab_obj.RECORD_ID).strip()
                                             + "'"
                                         )
                                         if SECT_OBJNAME is not None:
                                             for SECT in SECT_OBJNAME:
                                                 SYSEFL_OBJNAME = Sql.GetFirst(
                                                     "SELECT RECORD_ID,FIELD_LABEL,SAPCPQ_ATTRIBUTE_NAME,API_FIELD_NAME, API_NAME,SECTION_NAME,FLDDEF_VARIABLE_RECORD_ID,FLDDEF_VARIABLE_NAME FROM SYSEFL (nolock) where API_NAME ='"
-                                                    + str(SYOBJD_Details.OBJECT_NAME).strip()
+                                                    + str(detail_obj.OBJECT_NAME).strip()
                                                     + "' and API_FIELD_NAME='"
-                                                    + str(SYOBJD_Details.API_NAME).strip()
+                                                    + str(detail_obj.API_NAME).strip()
                                                     + "' and  SECTION_RECORD_ID='"
                                                     + str(SECT.RECORD_ID)
                                                     + "'"
@@ -1426,23 +738,17 @@ for tab in Product.Tabs:
                                                     )
                                                     SECQSTNATTRIBUTENAME = SECTIONQSTNRECORDID.upper()
                                                     # A043S001P01-11384 Start
-                                                    if str(SYOBJD_Details.DATA_TYPE) == "LONG TEXT AREA":
+                                                    if str(detail_obj.DATA_TYPE) == "LONG TEXT AREA":
                                                         MM_MOD_ATTR_NAME = "QSTN_" + str(SECQSTNATTRIBUTENAME) + "_LONG"
                                                     else:
                                                         MM_MOD_ATTR_NAME = "QSTN_" + str(SECQSTNATTRIBUTENAME)
                                                     # A043S001P01-11384 End
-                                                    if (
-                                                        SYOBJD_Details.DATA_TYPE != "LOOKUP"
-                                                        and SYOBJD_Details.DATA_TYPE != "AUTO NUMBER"
-                                                        and SYOBJD_Details.DATA_TYPE != "FORMULA"
-                                                        and SYOBJD_Details.DATA_TYPE != "PICKLIST"
-                                                        and SYOBJD_Details.DATA_TYPE != "CHECKBOX"
-                                                        and SYOBJD_Details.DATA_TYPE != "CURRENCY"
+                                                    if detail_obj.DATA_TYPE not in ("LOOKUP","AUTO NUMBER","FORMULA","PICKLIST","CHECKBOX","CURRENCY"
                                                     ):
                                                         if (
                                                             Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None
                                                             and SYSEFL_OBJNAME.FLDDEF_VARIABLE_RECORD_ID == ""
-                                                        ):
+                                                        ):      
                                                             if MM_MOD_ATTR_NAME == "QSTN_SYSEFL_AC_00067_LONG":
                                                                 msgbody = str(
                                                                     Product.GetGlobal("RichTextVaslue").encode(
@@ -1490,10 +796,10 @@ for tab in Product.Tabs:
                                                                         str(MM_MOD_ATTR_NAME)
                                                                     ).GetValue()
                                                                     or ""
-                                                                )  ## A043S001P01-11384 end
+                                                                )  
                                                             try:
                                                                 row[MM_MOD_CUS_OBJ] = ATTR_Value
-                                                            except:
+                                                            except Exception:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
                                                         elif (
                                                             Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None
@@ -1511,18 +817,16 @@ for tab in Product.Tabs:
                                                                 "SYPARVRLLG",
                                                                 {
                                                                     "CTXLogic": str(CTX_Logic.CPQ_CALCULATION_LOGIC),
-                                                                    "Obj_Name": str(TABLE_NAME).strip(),
+                                                                    "Obj_Name": TABLE_NAME,
                                                                 },
                                                             )
                                                             if result != "":
                                                                 ATTR_Value = str(result)
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                    elif SYOBJD_Details.DATA_TYPE == "PICKLIST (MULTI-SELECT)":
-                                                        
-                                                        # if (MM_MOD_CUS_OBJ == "ATTRIBUTE_TYPE"):
+                                                    elif detail_obj.DATA_TYPE == "PICKLIST (MULTI-SELECT)":
                                                         attr_val = Product.GetGlobal("ATTR_VAL")
                                                         row[MM_MOD_CUS_OBJ] = attr_val
-                                                    elif SYOBJD_Details.DATA_TYPE == "PICKLIST":               
+                                                    elif detail_obj.DATA_TYPE == "PICKLIST":               
                                                         sec_attr = []
                                                         Calc_fctr_array = {}
                                                         if str(SECQSTNATTRIBUTENAME) not in sec_attr:
@@ -1531,13 +835,13 @@ for tab in Product.Tabs:
                                                             ).GetValue()
                                                             try:
                                                                 row[MM_MOD_CUS_OBJ] = ATTR_Value
-                                                            except:
+                                                            except Exception:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
                                                         if str(SECQSTNATTRIBUTENAME) in sec_attr:
                                                             row[MM_MOD_CUS_OBJ] = str(
                                                                 dict(Calc_fctr_array).get(SECQSTNATTRIBUTENAME)
                                                             )
-                                                    elif SYOBJD_Details.DATA_TYPE == "CURRENCY":
+                                                    elif detail_obj.DATA_TYPE == "CURRENCY":
                                                         if Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None:
                                                             ATTR_Value = Product.Attributes.GetByName(
                                                                 str(MM_MOD_ATTR_NAME)
@@ -1547,23 +851,20 @@ for tab in Product.Tabs:
                                                                 ATTR_Value = ATTR_Value[2:]
                                                             try:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                            except:
+                                                            except Exception:
                                                                 row[MM_MOD_CUS_OBJ] = ATTR_Value
-                                                    elif SYOBJD_Details.DATA_TYPE == "CHECKBOX":
-
+                                                    elif detail_obj.DATA_TYPE == "CHECKBOX":
                                                         if (
                                                             Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME)) is not None
                                                             and str(SYSEFL_OBJNAME.FLDDEF_VARIABLE_RECORD_ID) == ""
                                                         ):
-
                                                             ATTR_Value = Product.Attributes.GetByName(
                                                                 str(MM_MOD_ATTR_NAME)
                                                             ).GetValue()
                                                             if ATTR_Value == "1":
                                                                 ATTR_Value = "True"
                                                             else:
-                                                                ATTR_Value = "False"
-                                                            # Log.Info("checkbox ATTr"+str(ATTR_Value))
+                                                                ATTR_Value = "False"                                                            
                                                             row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
 
                                                         elif (
@@ -1594,7 +895,7 @@ for tab in Product.Tabs:
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
 
                                                     elif (
-                                                        SYOBJD_Details.DATA_TYPE == "FORMULA"
+                                                        detail_obj.DATA_TYPE == "FORMULA"
                                                         and str(MM_MOD_CUS_OBJ) != "EMPLOYEE_STATUS"
                                                     ):
                                                         OBJD_OBJ = Sql.GetFirst(
@@ -1606,42 +907,32 @@ for tab in Product.Tabs:
                                                         )
                                                         if OBJD_OBJ is not None and OBJD_OBJ.PERMISSION != "READ ONLY":
                                                             if (
-                                                                SYOBJD_Details.FORMULA_LOGIC != ""
-                                                                and "select" in str(SYOBJD_Details.FORMULA_LOGIC).lower()
+                                                                detail_obj.FORMULA_LOGIC != ""
+                                                                and "select" in str(detail_obj.FORMULA_LOGIC).lower()
                                                             ):
                                                                 SECTIONQSTNRECORDID = (
                                                                     str(SYSEFL_OBJNAME.SAPCPQ_ATTRIBUTE_NAME)
                                                                     .replace("-", "_")
                                                                     .replace(" ", "")
                                                                 )
-
                                                                 SECQSTNATTRIBUTENAME = (SECTIONQSTNRECORDID).upper()
-
                                                                 MM_MOD_ATTR_NAME = "QSTN_LKP_" + str(SECQSTNATTRIBUTENAME)
-
-                                                                
-
                                                                 if (
                                                                     Product.Attributes.GetByName(str(MM_MOD_ATTR_NAME))
                                                                     is not None
-                                                                ):
-
-                                                                    
+                                                                ):                                                                    
                                                                     API_Value = str(
                                                                         Product.Attributes.GetByName(
                                                                             str(MM_MOD_ATTR_NAME)
                                                                         ).HintFormula
                                                                     )
-
                                                                     API_obj = Sql.GetFirst(
                                                                         "select API_NAME,DATA_TYPE from  SYOBJD (nolock) where LOOKUP_API_NAME ='"
                                                                         + str(MM_MOD_CUS_OBJ)
                                                                         + "' and OBJECT_NAME ='"
-                                                                        + str(TABLE_NAME).strip()
+                                                                        + TABLE_NAME
                                                                         + "' "
                                                                     )
-                                                                    
-
                                                                     if API_obj is not None:
                                                                         API_Name = str(API_obj.API_NAME).strip()
                                                                         if str(API_Value).upper() == "LOOKUP":
@@ -1666,15 +957,12 @@ for tab in Product.Tabs:
 
                                                                             
                                                             elif (
-                                                                SYOBJD_Details.FORMULA_LOGIC != ""
-                                                                and "select" not in str(SYOBJD_Details.FORMULA_LOGIC).lower()
+                                                                detail_obj.FORMULA_LOGIC != ""
+                                                                and "select" not in str(detail_obj.FORMULA_LOGIC).lower()
                                                             ):
-                                                                ATTR_Value = str(SYOBJD_Details.FORMULA_LOGIC).strip()
-
-                                                                
-
+                                                                ATTR_Value = str(detail_obj.FORMULA_LOGIC).strip()
                                                                 row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
-                                                            elif SYOBJD_Details.FORMULA_LOGIC == "":
+                                                            elif detail_obj.FORMULA_LOGIC == "":
                                                                 ATTR_Value = Product.Attributes.GetByName(
                                                                     str(MM_MOD_ATTR_NAME)
                                                                 ).GetValue()
@@ -1691,20 +979,18 @@ for tab in Product.Tabs:
                                                         ).GetValue()
                                                         row[MM_MOD_CUS_OBJ] = str(ATTR_Value)
                                                         
-
-                                    Trace.Write("ROW5-----"+str(dict(row)))
                                     if "CPQTABLEENTRYMODIFIEDBY" in row.keys() and "CPQTABLEENTRYDATEMODIFIED" in row.keys():
                                         row.pop("CPQTABLEENTRYMODIFIEDBY")
                                         row.pop("CPQTABLEENTRYDATEMODIFIED")
 
                                     is_key = Sql.GetFirst(
                                         "select API_NAME from  SYOBJD where OBJECT_NAME ='"
-                                        + str(TABLE_NAME)
+                                        + TABLE_NAME
                                         + "'and IS_KEY='True' "
                                     )
                                     if is_key:
                                         col_name = (is_key.API_NAME).strip()
-                                        if str(tab_name) not in  ["Tab","Page","Object","Variable","Script","Email Template","Role","Currency"]:
+                                        if str(tab_name) not in ("Tab","Page","Object","Variable","Script","Email Template","Role","Currency"):
                                             row[col_name] = str(col_name)
                                         unique_val = row[col_name]
                                         if (
@@ -1716,25 +1002,19 @@ for tab in Product.Tabs:
 
                                                 REC_OBJ = Sql.GetFirst(
                                                     "select RECORD_NAME from SYOBJH where OBJECT_NAME ='"
-                                                    + str(TABLE_NAME)
+                                                    + TABLE_NAME
                                                     + "' "
                                                 )
 
                                                 Required_obj1 = Sql.GetList(
                                                     "select API_NAME,REQUIRED,FIELD_LABEL from  SYOBJD where LTRIM(RTRIM(OBJECT_NAME)) ='"
-                                                    + str(TABLE_NAME)
+                                                    + TABLE_NAME
                                                     + "'and REQUIRED='TRUE' "
                                                 )
 
                                                 if Required_obj1 :
                                                     for x in Required_obj1:
-                                                        API_NAME_val = row[x.API_NAME]
-                                                        Trace.Write(
-                                                            "API_NAME_val"
-                                                            + str(API_NAME_val)
-                                                            + "x.API_NAME"
-                                                            + str(x.API_NAME)
-                                                        )
+                                                        API_NAME_val = row[x.API_NAME]                                                        
                                                         if API_NAME_val == "":
                                                             flag = "False"
                                                             break
@@ -1746,36 +1026,16 @@ for tab in Product.Tabs:
                                                         if API_NAME_val == "":
                                                             Field_Labels.append(req_fields.FIELD_LABEL)
 
-                                                    #Trace.Write("Field_Labels_Field_Labels_Final" + str(Field_Labels))
-
                                                 if REC_OBJ is not None:
                                                     Auto_Col = (REC_OBJ.RECORD_NAME).strip()
 
-                                                    REC_VAL = row[Auto_Col]
-                                                    #Trace.Write("REC_VAL_REC_VAL" + str(REC_VAL))
-                                                    # REC_VAL=CPQID.KeyCPQId.GetKEYId(str(TABLE_NAME),str(REC_VALUE))
-
-                                                    if REC_VAL != "":
-                                                        Trace.Write(
-                                                            "selectqwe "
-                                                            + col_name
-                                                            + " from "
-                                                            + str(TABLE_NAME)
-                                                            + "  where "
-                                                            + col_name
-                                                            + " ='"
-                                                            + str(unique_val)
-                                                            + "' and "
-                                                            + Auto_Col
-                                                            + "!='"
-                                                            + str(REC_VAL)
-                                                            + "'"
-                                                        )
+                                                    REC_VAL = row[Auto_Col]                                                    
+                                                    if REC_VAL != "":                                                        
                                                         is_key_table = Sql.GetFirst(
                                                             "select "
                                                             + col_name
                                                             + " from "
-                                                            + str(TABLE_NAME)
+                                                            + TABLE_NAME
                                                             + "  where "
                                                             + col_name
                                                             + " ='"
@@ -1786,9 +1046,7 @@ for tab in Product.Tabs:
                                                             + str(REC_VAL)
                                                             + "'"
                                                         )
-
                                                         if is_key_table and flag == "False":
-
                                                             if (
                                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT")
                                                                 is not None
@@ -1820,92 +1078,52 @@ for tab in Product.Tabs:
                                                                 "SEC_N_TAB_PAGE_ALERT"
                                                             ).Allowed = False
                                                             if TABLE_NAME == "cpq_permissions":
-                                                                nativeProfileUpdate(row)
-                                                            else:
-                                                                Trace.Write(str(TABLE_NAME)+"========>>>>> "+str(RecId)+"========>>>>> "+str(row))
+                                                                #nativeProfileUpdate(row)
+                                                                ScriptExecutor.ExecuteGlobal(
+                                                                                "SYAPROFILES",
+                                                                                {
+                                                                                    "row": row,
+                                                                                    "nativeProfileUpdate":"Yes"
+                                                                                },
+                                                                            )
+                                                            else:                                                                
                                                                 Table.TableActions.Update(
                                                                     TABLE_NAME, RecId, row,
+                                                                )                                                       
+                                                            try:
+                                                                result = ScriptExecutor.ExecuteGlobal(
+                                                                    "SYPARCEFMA",
+                                                                    {
+                                                                        "Object": TABLE_NAME,
+                                                                        "API_Name": str(RecId),
+                                                                        "API_Value": Rec_Id_Value,
+                                                                    },
                                                                 )
+
+                                                                new_value_dict = {
+                                                                    API_Names["API_NAME"]: API_Names["FORMULA_RESULT"]
+                                                                    for API_Names in result
+                                                                    if API_Names["FORMULA_RESULT"] != ""
+                                                                }
+
+                                                                if new_value_dict is not None:
+                                                                    row = {RecId: str(Rec_Id_Value)}
+                                                                    row.update(new_value_dict)                                                                    
+                                                                    Table.TableActions.Update(
+                                                                        TABLE_NAME, RecId, row,
+                                                                    )                                                                    
+                                                            except Exception:
+                                                                Trace.Write("NOT SELF REFERENCE RECORD")                               
                                                             
-                                                            ####TO UPDATE THE EMBLEM TABLE
-                                                            '''if Selected_List != "":
-                                                                ScriptExecutor.ExecuteGlobal(
-                                                                    "MAETEMBTBL",
-                                                                    {"Primary_Data": Rec_Id_Value, "List": Selected_List,},
-                                                                )'''
-                                                            ####TO OBTAIN RESULT FOR FORMULA LOGIC                                      
-
-                                                            if (
-                                                                TABLE_NAME != "PASGMT"
-                                                                and TABLE_NAME != "PAACSO"
-                                                                and TABLE_NAME != "COPART"
-                                                            ):
-                                                                Trace.Write('1918--------Rec_Id_Value---------------'+str(Rec_Id_Value))
-                                                                try:
-                                                                    result = ScriptExecutor.ExecuteGlobal(
-                                                                        "SYPARCEFMA",
-                                                                        {
-                                                                            "Object": TABLE_NAME,
-                                                                            "API_Name": str(RecId),
-                                                                            "API_Value": Rec_Id_Value,
-                                                                        },
-                                                                    )
-
-                                                                    new_value_dict = {
-                                                                        API_Names["API_NAME"]: API_Names["FORMULA_RESULT"]
-                                                                        for API_Names in result
-                                                                        if API_Names["FORMULA_RESULT"] != ""
-                                                                    }
-
-                                                                    if new_value_dict is not None:
-                                                                        row = {RecId: str(Rec_Id_Value)}
-                                                                        row.update(new_value_dict)
-                                                                        #Trace.Write("rowrow------cmcmfma" + str(row))
-                                                                        Table.TableActions.Update(
-                                                                            TABLE_NAME, RecId, row,
-                                                                        )
-                                                                        Trace.Write(
-                                                                            "oldVal-"
-                                                                            + str(oldVal)
-                                                                            + " newVal -"
-                                                                            + str(newVal)
-                                                                        )
-                                                                        
-                                                                except:
-                                                                    Trace.Write("NOT SELF REFERENCE RECORD")
-
-                                                            ###TO SET THE PAGE TO VIEW MODE
-                                                            Tree = Product.GetGlobal("SegmentsClickParam")
-                                                            TreeParent = Product.GetGlobal("SegmentTreeParentParam")
-                                                            RecordId = Product.GetGlobal("segment_rec_id")
-                                                            if Tree == "SEG_EDIT" and TreeParent == "Sales Orgs":
-                                                                Product.SetGlobal(
-                                                                    "SegmentsClickParam", "SEG_VIEW",
-                                                                )
-                                                                Product.SetGlobal(
-                                                                    "SegmentTreeParentParam", "Sales Orgs",
-                                                                )
-                                                                ScriptExecutor.ExecuteGlobal(
-                                                                    "SYALLTABOP",
-                                                                    {
-                                                                        "Primary_Data": RecordId,
-                                                                        "salesorg_data": Rec_Id_Value,
-                                                                        "TabNAME": str1,
-                                                                        "ACTION": "VIEW",
-                                                                        "RELATED": "",
-                                                                    },
-                                                                )
-
-                                                            else:
-                                                                ScriptExecutor.ExecuteGlobal(
-                                                                    "SYALLTABOP",
-                                                                    {
-                                                                        "Primary_Data": Rec_Id_Value,
-                                                                        "TabNAME": str1,
-                                                                        "ACTION": "VIEW",
-                                                                        "RELATED": "",
-                                                                    },
-                                                                )
+                                                            ScriptExecutor.ExecuteGlobal(
+                                                                "SYALLTABOP",
+                                                                {
+                                                                    "Primary_Data": Rec_Id_Value,
+                                                                    "TabNAME": tab_label,
+                                                                    "ACTION": "VIEW",
+                                                                    "RELATED": "",
+                                                                },
+                                                            )
                                                             
                                                             if (
                                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT")
@@ -1944,15 +1162,7 @@ for tab in Product.Tabs:
                                                                             "API_Value": Rec_Id_Value,
                                                                         },
                                                                     )
-
-                                                                    '''new_value_dict = {
-                                                                        API_Names["API_NAME"]: API_Names["FORMULA_RESULT"]
-                                                                        for API_Names in result
-                                                                        if API_Names["FORMULA_RESULT"] != ""
-                                                                    }
-                                                                    if new_value_dict is not None:
-                                                                        row = {RecId: str(Rec_Id_Value)}
-                                                                        row.update(new_value_dict)'''
+                                                                    
                                                                     Table.TableActions.Update(
                                                                         TABLE_NAME, RecId, row,
                                                                     )
@@ -1961,7 +1171,7 @@ for tab in Product.Tabs:
                                                                         "SYALLTABOP",
                                                                         {
                                                                             "Primary_Data": Rec_Id_Value,
-                                                                            "TabNAME": str1,
+                                                                            "TabNAME": tab_label,
                                                                             "ACTION": "VIEW",
                                                                             "RELATED": "",
                                                                         },
@@ -1970,11 +1180,9 @@ for tab in Product.Tabs:
                                                                     if Field_Labels:
                                                                         Product.Attributes.GetByName(
                                                                             "SEC_N_TAB_PAGE_ALERT"
-                                                                        ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert18" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert18" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/OCTANNER_DEV/Additionalfiles/stopicon1.svg" alt="Error"> ERROR : "{0}" are required fields </label></div></div></div>'.format(
+                                                                        ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert18" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert18" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error"> ERROR : "{0}" are required fields </label></div></div></div>'.format(
                                                                             sectalert
                                                                     )
-                                                            
-                                                                
                                         else:
                                             if Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None:
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
@@ -1991,4 +1199,3 @@ for tab in Product.Tabs:
                                                     ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert19" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert19" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error"> ERROR :"{0}" is a required field  </label></div></div></div>'.format(
                                                         sectalert
                                                     )
-
