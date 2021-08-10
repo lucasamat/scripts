@@ -3937,7 +3937,7 @@ def POPUPLISTVALUEADDNEW(
 										+ str(current_obj_api_name)
 										+ "' type='text' value='"
 										+ str(TreeParentParam)
-										+"' class='form-control related_popup_css' disabled>"
+										+"' class='form-control related_popup_css'>"
 									)
 							else:
 								# if str(current_obj_api_name) == "APROBJ_LABEL":
