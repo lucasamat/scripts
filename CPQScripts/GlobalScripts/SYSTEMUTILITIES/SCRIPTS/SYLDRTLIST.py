@@ -2677,7 +2677,7 @@ class SYLDRTLIST:
                         elif str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
                             Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
                         elif ObjectName == "SAQTRV":
-                                Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
+                                Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
                     else:
                         Trace.Write('pim====')
@@ -2689,7 +2689,7 @@ class SYLDRTLIST:
                                 '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)"  >VIEW<a><li>'
                             )
                         elif ObjectName == "SAQTRV":
-                            Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'     
+                            Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'     
                         
                         # elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
                         #     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
