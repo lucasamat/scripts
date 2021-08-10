@@ -186,6 +186,7 @@ class SYLDRTLIST:
             Product_Name = TestProduct.Name
             #Trace.Write('TestProduct--'+str(TestProduct))
         except:
+            Trace.Write('TestProduct--'+str(TestProduct))
             Product_Name = "Sales"
         try:
 
