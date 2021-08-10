@@ -203,7 +203,7 @@ class SyncQuoteAndCustomTables:
                             try:
                                 #Trace.Write('except-try----date-------')
                                 HasDefaultvalue = True
-                                QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+                                QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%m-%d-%Y').date()
                                 ent_disp_val = 	str(QuoteStartDate)
                                 ent_val_code = ''
                                 #Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
