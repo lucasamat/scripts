@@ -741,7 +741,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
                 lookup_disply_list.append(str(attr.API_NAME))
         checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-#        if (("Sending Equipment" in TreeParam) or ("Receiving Equipment" in TreeParam)) and TreeSuperParentParam == 'Other Products':
+#        if (("Sending Equipment" in TreeParam) or ("Receiving Equipment" in TreeParam)) and TreeSuperParentParam == 'Complementary Products':
 #            Trace.Write('attr_list'+str(attr_list))
 #            if 'FABLOCATION_ID' in attr_list:
 #                fab_location_id  = attr_list['FABLOCATION_ID']
@@ -801,7 +801,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         QueryCountObj = Sql.GetFirst(
             """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParentParam = TreeParentParam,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "" ,where_string = " AND "+str(where_string) if str(where_string)!="" else "") )
 
-    elif TreeParentParam == "Other Products":
+    elif TreeParentParam == "Complementary Products":
         Qstr = (
             """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string=" AND "+str(where_string) if str(where_string)!="" else ""))
 
@@ -2260,14 +2260,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     else:
         sale_type = None
     if sale_type != "TOOL RELOCATION":
-        if TreeParentParam == 'Other Products':
+        if TreeParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
                 "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
                     EquipmentId=recid,
                 )
             )
-        elif TreeSuperParentParam == 'Other Products':
+        elif TreeSuperParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
                 "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -2306,14 +2306,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     #             )
     #         )
     elif sale_type == "TOOL RELOCATION":
-        if TreeParentParam == 'Other Products':
+        if TreeParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
                 "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
                     EquipmentId=recid,
                 )
             )
-        elif TreeSuperParentParam == 'Other Products':
+        elif TreeSuperParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
                 "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -2342,7 +2342,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             # child_obj_recid = Sql.GetList("select  top 5 EQUIPMENT_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(EquipmentID = Parent_Equipmentid.EQUIPMENT_ID,ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),FablocationId = Product.GetGlobal("TreeParam")))
         if sale_type != "TOOL RELOCATION":
             Trace.Write("NON_TOOL_RELOCATION")
-            if TreeParentParam == 'Other Products':
+            if TreeParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
@@ -2360,7 +2360,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + str(EquipmentID)
                 + "'"
                 ) 
-            elif TreeSuperParentParam == 'Other Products':
+            elif TreeSuperParentParam == 'Complementary Products':
                     child_obj_recid = Sql.GetList(
                         "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                         + str(recid)
@@ -2466,7 +2466,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             # )
         elif sale_type == "TOOL RELOCATION":
             Trace.Write("TOOL_RELOCATION")
-            if TreeParentParam == 'Other Products':
+            if TreeParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
@@ -2485,7 +2485,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     + "'"
                     ) 
 
-            elif TreeSuperParentParam == 'Other Products':
+            elif TreeSuperParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
@@ -3775,7 +3775,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
         checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
-    if TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Other Products":
+    if TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Complementary Products":
         Qstr = (
             "select top "
             + str(PerPage)
@@ -4601,7 +4601,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 
     else:
         #Trace.Write("conditional searh --->")
-        if TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
+        if TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
                 + str(ATTRIBUTE_VALUE_STR)
@@ -6000,7 +6000,7 @@ def UpdateBreadcrumb():
     qry = ""
     eq_id = ""
     Action_Str = ""
-    if (TreeParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Comprehensive Services" or TreeParentParam == "Other Products" or TreeTopSuperParentParam == "Other Products") and TABLENAME == 'SAQSCO' and CurrentTabName == "Quote" : 
+    if (TreeParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products" or TreeTopSuperParentParam == "Complementary Products") and TABLENAME == 'SAQSCO' and CurrentTabName == "Quote" : 
         qry = Sql.GetFirst(
             "SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO (NOLOCK) WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
         )
@@ -6276,7 +6276,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
-    if ((active_subtab == "Sending Equipment") or (active_subtab == "Receiving Equipment")) and TreeParentParam == 'Other Products':
+    if ((active_subtab == "Sending Equipment") or (active_subtab == "Receiving Equipment")) and TreeParentParam == 'Complementary Products':
         #Trace.Write('attr_list'+str(attr_list))
         if 'FABLOCATION_ID' in attr_list:
             fab_location_id  = attr_list['FABLOCATION_ID']
@@ -6371,7 +6371,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + " and "
                 + str(Page_End)
             )
-        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
+        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
             if TreeParentParam == "Receiving Equipment":
                 Qstr = (
                     "select top "
@@ -6409,7 +6409,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                     + str(Page_End)
                 )
         
-        elif TreeTopSuperParentParam == "Other Products" and TreeSuperParentParam in ("Receiving Equipment","Sending Equipment"):
+        elif TreeTopSuperParentParam == "Complementary Products" and TreeSuperParentParam in ("Receiving Equipment","Sending Equipment"):
             Qstr = (
                 "select top "
                 + str(PerPage)
@@ -6490,7 +6490,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(TreeParam)
                 + "'"
             )
-        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products":
+        elif TreeTopSuperParentParam == "Add-On Products" or TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
             if TreeParentParam == "Receiving Equipment":
                 QueryCountObj = Sql.GetFirst(
                     "select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
@@ -6516,7 +6516,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                     + "' and GREENBOOK = '"
                     + str(TreeParam) +"' "
                 )
-        elif TreeTopSuperParentParam == "Other Products":
+        elif TreeTopSuperParentParam == "Complementary Products":
             QueryCountObj = Sql.GetFirst(
                 "select count(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
@@ -7671,7 +7671,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + str(TreeParentParam)
                 + "'"
             )
-        elif (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Other Products") and TreeParentParam != "Receiving Equipment":
+        elif (TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products") and TreeParentParam != "Receiving Equipment":
             child_obj_recid = Sql.GetList(
                 "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' AND FABLOCATION_ID = '{fab}') m where m.ROW BETWEEN ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
@@ -13056,7 +13056,7 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
             Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SERVICE_ID = '" + str(TreeParentParam) + "' ")
             if Count:
                 QueryCount = Count.cnt
-        elif TreeParentParam == "Other Products":
+        elif TreeParentParam == "Complementary Products":
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
