@@ -186,13 +186,14 @@ class SYLDRTLIST:
             Product_Name = TestProduct.Name
             #Trace.Write('TestProduct--'+str(TestProduct))
         except:
-            Trace.Write('TestProduct--'+str(TestProduct))
+            Trace.Write('TestProduct-')
             Product_Name = "Sales"
         try:
 
             current_tab = str(TestProduct.CurrentTab)            
         except:            
-            current_tab = "Quote"              
+            current_tab = "Quote" 
+        Trace.Write('TestProduct--'+str(Product_Name))                 
         Tree_Enable = ""
         Tree_Enable = Sql.GetFirst(
             "select ENABLE_TREE FROM SYTABS (NOLOCK) where UPPER(SAPCPQ_ALTTAB_NAME) ='"
