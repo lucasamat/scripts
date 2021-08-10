@@ -1557,7 +1557,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		#overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-		is_default = ''			
+		is_default = ent_val_code = ''			
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
@@ -1572,10 +1572,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					HasDefaultvalue=True					
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
 					ent_disp_val = attributevalues[attrs]
+					ent_val_code = attributevalues[attrs]
 					Trace.Write("ent_disp_val----"+str(ent_disp_val))
 				else:					
 					HasDefaultvalue=False
 					ent_disp_val = ""
+					ent_val_code = ""
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
 					
 				ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
@@ -1588,11 +1590,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				if str(attrs) == 'AGS_REL_STDATE' and 'Z0007' in OfferingRow_detail.SERVICE_ID:
 					try:						
 						QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-						ent_disp_val = 	str(QuoteStartDate)						
+						ent_disp_val = 	str(QuoteStartDate)
+						ent_val_code = ''					
 					except:						
-						ent_disp_val = ent_disp_val	
+						ent_disp_val = ent_disp_val
+						ent_val_code = ''
 				else:
-					ent_disp_val = ent_disp_val	
+					ent_disp_val = ent_disp_val
+					ent_val_code = ent_val_code
 				if str(attrs) == 'AGS_CON_DAY' and OfferingRow_detail.get("SERVICE_ID") == 'Z0016_AG': 
 					try:						
 						QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
@@ -1615,7 +1620,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					<IS_DEFAULT>{is_default}</IS_DEFAULT>
 					<PRICE_METHOD>{pm}</PRICE_METHOD>
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = is_default,pm = '',cf = '')
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = is_default,pm = '',cf = '')
 			
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 			tbrow["QUOTE_ID"]=OfferingRow_detail.get("QUOTE_ID")
