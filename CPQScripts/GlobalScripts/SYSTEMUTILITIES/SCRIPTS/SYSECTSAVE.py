@@ -633,7 +633,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                     for value in Parentgetdata:
                                         get_code = value.ENTITLEMENT_VALUE_CODE
                                         get_value = value.ENTITLEMENT_DISPLAY_VALUE
-                                        if row.ENTITLEMENT_NAME == 'AGS_CON_DAY':
+                                        if value.ENTITLEMENT_NAME == 'AGS_CON_DAY':
                                             webclient = System.Net.WebClient()
                                             webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
                                             webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
@@ -649,7 +649,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                                     
                                             # AttributeID = row.ENTITLEMENT_NAME
                                             get_code = get_value = ent_disp_val
-                                            requestdata = '{"characteristics":[{"id":"'+str(row.ENTITLEMENT_NAME)+'","values":[{"value":"'+str(ent_disp_val)+'","selected":true}]}]}'
+                                            requestdata = '{"characteristics":[{"id":"'+str(value.ENTITLEMENT_NAME)+'","values":[{"value":"'+str(ent_disp_val)+'","selected":true}]}]}'
                                             #Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
                                             response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
                                             cpsmatc_incr = cpsmatchID +10
