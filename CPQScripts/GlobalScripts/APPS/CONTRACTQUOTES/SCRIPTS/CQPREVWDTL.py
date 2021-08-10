@@ -295,7 +295,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' title = '"+ str(datetime_value)+"' value = '"
 						+ str(datetime_value)
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='"+ str(sefl_api)+"' title='' tabindex='' disabled=''> </div>"
 					)
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO ends
 				elif sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
