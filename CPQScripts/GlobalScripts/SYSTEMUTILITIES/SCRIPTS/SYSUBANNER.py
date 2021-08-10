@@ -1095,7 +1095,7 @@ def Related_Sub_Banner(
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
                         # FifthValue = "ALL" 
-                if (TreeTopSuperParentParam == "Other Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
+                if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
                     Trace.Write("Fab2333")
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
                         if TreeParam == "Receiving Equipment":			
@@ -1511,7 +1511,7 @@ def Related_Sub_Banner(
         # else:
         #     SixthLable = ""
         #     SixthValue = ""
-    #elif str(TreeParentParam) == "Other Products" or str(TreeParentParam) == "Comprehensive Services":
+    #elif str(TreeParentParam) == "Complementary Products" or str(TreeParentParam) == "Comprehensive Services":
         #Trace.Write('-----------'+str(TreeParentParam)+str(TreeParam))
     elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":		
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
@@ -1559,7 +1559,7 @@ def Related_Sub_Banner(
         Trace.Write("check345"+str(FifthValue))
         #FourthLable = "Equipment"
         #FourthValue = "ALL"
-    elif (TreeSuperParentParam == "Sending Equipment" and TreeSuperTopParentParam =="Other Products" and (subTabName == "Details")):		
+    elif (TreeSuperParentParam == "Sending Equipment" and TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Details")):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         Trace.Write("1359")
         PrimaryLable = "Product Offering ID"
@@ -1568,7 +1568,7 @@ def Related_Sub_Banner(
         SecondValue = str(TreeParentParam)
         ThirdLable = "Greenbook"
         ThirdValue = str(TreeParam)
-    elif TreeTopSuperParentParam == "Other Products"  and (subTabName == "Details"):		
+    elif TreeTopSuperParentParam == "Complementary Products"  and (subTabName == "Details"):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         Trace.Write("1359===========")
         PrimaryLable = "Product Offering ID"
@@ -1578,7 +1578,7 @@ def Related_Sub_Banner(
         ThirdLable = ""
         ThirdValue = ""	
 
-    elif (TreeSuperParentParam == "Sending Equipment" or TreeSuperTopParentParam =="Other Products" and (subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" )):		
+    elif (TreeSuperParentParam == "Sending Equipment" or TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" )):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         Trace.Write("1358")
         PrimaryLable = "Product Offering ID"
