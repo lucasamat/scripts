@@ -21,7 +21,7 @@ from System.Net import *
 
 
 def nativeProfileDelete(RecordId):
-    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME,Password,Domain FROM SYCONF (nolock)")
+    LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0120226'")
     if LOGIN_CREDENTIALS is not None:
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
         Login_Password = str(LOGIN_CREDENTIALS.Password)
