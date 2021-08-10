@@ -4162,7 +4162,7 @@ def POPUPLISTVALUEADDNEW(
 				event_name = "loadRelatedList('" + str(popup_table_id) + "','" + str(DIVNAME) + "')"
 				
 
-				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"'")
+				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"' AND TAB_NAME LIKE '%"+str(TabName)+"%'")
 
 				for btn in html_content:
 					try:
