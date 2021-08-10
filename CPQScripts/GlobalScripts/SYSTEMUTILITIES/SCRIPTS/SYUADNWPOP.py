@@ -3712,7 +3712,7 @@ def POPUPLISTVALUEADDNEW(
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
-							+ '" type="text" value = "'+str(Guid.NewGuid()).upper()+'" class="form-control related_popup_css" hidden disabled></td>'
+							+ '" type="text" class="form-control related_popup_css" hidden disabled></td>'
 						)
 						#Trace.Write("!!!!!!!!!"+str(current_obj_api_name))
 						sec_str += '<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>'
