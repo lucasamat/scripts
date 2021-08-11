@@ -13297,7 +13297,10 @@ Trace.Write("TABNAME-----" + str(TABNAME))
 Trace.Write("ACTION-----" + str(ACTION))
 Trace.Write("ATTRIBUTE_NAME" + str(ATTRIBUTE_NAME))
 Trace.Write("ATTRIBUTE_NAME" + str(list(ATTRIBUTE_NAME)))
-ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
+try:
+    ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
+except:
+    ATTRIBUTE_VALUE = ""
 # Trace.Write("bbbbbbbbbbbbbbb" + str(list(ATTRIBUTE_VALUE)))
 # Trace.Write("SORT KITID-----"+str(KITID))
 # Trace.Write("SORT KITNUMBER -----"+str(KITNUMBER))
