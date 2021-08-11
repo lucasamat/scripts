@@ -2372,6 +2372,35 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				Sql.Upsert(tableInfo2)
 		elif self.action_type == "ADD_EQUIPMENTS":
 			self._add_equipment()
+		elif self.action_type == "ADD_UNMAPPED_EQUIPMENTS":
+			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
+			Trace.Write("Unmapped_chk_j "+str(Values))
+			# unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
+			# fab_table ={
+			# 	"QUOTE_FABLOCATION_RECORD_ID":
+			# 	"FABLOCATION_ID":
+			# 	"FABLOCATION_NAME":
+			# 	"FABLOCATION_RECORD_ID":
+			# 	"QUOTE_ID":
+			# 	"QUOTE_NAME":
+			# 	"QUOTE_RECORD_ID":
+			# 	"COUNTRY":
+			# 	"COUNTRY_RECORD_ID":
+			# 	"MNT_PLANT_ID":
+			# 	"MNT_PLANT_NAME":
+			# 	"MNT_PLANT_RECORD_ID":
+			# 	"SALESORG_ID":
+			# 	"SALESORG_NAME":
+			# 	"SALESORG_RECORD_ID":
+			# 	"FABLOCATION_STATUS":
+			# 	"ADDRESS_1":
+			# 	"ADDRESS_2":
+			# 	"CITY":
+			# 	"STATE":
+			# 	"STATE_RECORD_ID":
+
+			# }
+			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS ENDS
 		return True
 
 	def _add_equipment(self,auto_equp_insert = None,fab_list= None):
