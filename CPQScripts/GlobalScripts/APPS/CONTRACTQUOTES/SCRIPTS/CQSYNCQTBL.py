@@ -232,7 +232,7 @@ class SyncQuoteAndCustomTables:
                         else:
                             ent_disp_val = ent_disp_val
 
-                        if str(attrs) == 'AGS_POA_PROD_TYPE':
+                        if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
                             Log.Info("ENTERED POA----------->")
                             Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(ent_disp_val,quote_record_id))                   
                         DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
@@ -1056,6 +1056,7 @@ class SyncQuoteAndCustomTables:
                             fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
                         if payload_json.get('SERVICE_IDS'):	
                             service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
+                            Log.Info("SERVICE IDS-------->"+str(service_ids))
                         if payload_json.get('SAQFEQ'):
                             for equipment_json_data in payload_json.get('SAQFEQ'):                        
                                 if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
