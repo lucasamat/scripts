@@ -484,6 +484,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                 Trace.Write("data_chk_j---"+str(data)+" datas_chk_j---"+str(datas))
                                 if data in required_val:
                                     for req in required_val:
+                                        Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
                                         if tablerow[req] == "":
                                             Trace.Write(
                                                 "955---------------------------"
