@@ -496,7 +496,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                     # Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(data)
                                     field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
                                     warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
-                                    break
+                                    # break
                                 else:
                                     Req_Flag = 0
                                     warning_msg = ""
