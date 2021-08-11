@@ -13218,6 +13218,8 @@ def UpdateAssemblyLevel(Values):
 			]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
+    Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
+    return True
 		
     
 
