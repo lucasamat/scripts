@@ -13208,6 +13208,9 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
 
     return data_list,QueryCount,page 
 
+def UpdateAssemblyLevel(Values):
+    Trace.Write('Values------inside-'+str(Values))
+
 # Param Variable
 TABNAME = Param.TABNAME
 Trace.Write('TABNAME###==='+str(TABNAME))
@@ -13277,6 +13280,10 @@ try:
 except:
     active_subtab = ""
 Trace.Write('active_subtab'+str(active_subtab))
+try:
+    selected_values= Param.Values
+except:
+    selected_values =""
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
 # Trace.Write("Current Rec Id is " + str(CURR_REC_ID))
@@ -13552,3 +13559,6 @@ elif ACTION == 'SERVICE FAB DETAILS':
 elif ACTION == 'BUNDLE CALC':
     REC_ID = Param.REC_ID
     ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
+elif ACTION == 'UPDATE_ASSEMBLY':
+    Trace.Write('values----'+str(selected_values))
+    ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
