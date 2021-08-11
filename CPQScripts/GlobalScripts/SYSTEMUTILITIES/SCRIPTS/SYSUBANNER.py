@@ -524,7 +524,7 @@ def Related_Sub_Banner(
                 if TreeParam != 'Revisions':
                     PrimaryLable = str(TreeParam)
                     PrimaryValue = "ALL"
-                elif (rev_quote is None or rev_quote = '') and TreeParam == 'Revisions':
+                elif (rev_quote is None or rev_quote == '') and TreeParam == 'Revisions':
                     PrimaryLable = str(TreeParam)
                     PrimaryValue = "ALL"    
                 if (
