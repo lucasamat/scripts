@@ -2247,7 +2247,7 @@ def Related_Sub_Banner(
                                         sec_rel_sub_bnr += ""
                                 else:
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
-                                        sec_rel_sub_bnr += ""
+                                        sec_rel_sub_bnr += str(add_button)
 
 
 
