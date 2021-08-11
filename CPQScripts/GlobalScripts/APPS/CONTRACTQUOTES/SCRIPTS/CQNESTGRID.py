@@ -13219,8 +13219,16 @@ def UpdateAssemblyLevel(Values):
     record_ids = str(tuple(record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
     Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
+    #get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'")
     return True
-		
+def EditAssemblyLevel(Values):
+    Trace.Write('Values----'+str(Values))
+    get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'")
+    chamber_res_list = [str(i.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)+'|SAQSSA' for i in get_rec]
+    Trace.Write('bb--'+str(chamber_res_list))
+    return chamber_res_list
+
+    
     
 
 # Param Variable
@@ -13578,3 +13586,6 @@ elif ACTION == 'BUNDLE CALC':
 elif ACTION == 'UPDATE_ASSEMBLY':
     Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
+elif ACTION == 'EDIT_ASSEMBLY':
+    Trace.Write('values----'+str(selected_values))
+    ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel())
