@@ -13282,8 +13282,9 @@ except:
 Trace.Write('active_subtab'+str(active_subtab))
 try:
     selected_values= Param.Values
+    Trace.Write('selected_values-----'+str(eval(selected_values)))
 except:
-    selected_values =""
+    selected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
 # Trace.Write("Current Rec Id is " + str(CURR_REC_ID))
