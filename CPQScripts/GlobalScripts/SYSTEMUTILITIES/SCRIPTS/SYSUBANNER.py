@@ -352,8 +352,7 @@ def Related_Sub_Banner(
                     
             elif (
                 CurrentRecordId.startswith("SYOBJR", 0) == True and str(TreeParentNodeRecId) != ""
-            ) and TreeParam == 'Documents' and TabName == "Quote":
-                Trace.Write('pre====')
+            ) and TreeParam == 'Documents' and TabName == "Quote":                
                 PrimaryLable = str(TreeParam)
                 PrimaryValue = "ALL"
             elif (
@@ -522,9 +521,9 @@ def Related_Sub_Banner(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
             )
                 
-                
-                PrimaryLable = str(TreeParam)
-                PrimaryValue = "ALL"
+                if TreeParam != 'Revisions':
+                    PrimaryLable = str(TreeParam)
+                    PrimaryValue = "ALL"
                 if (
                     ThirdQuery is not None
                 ):
