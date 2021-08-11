@@ -481,7 +481,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                             required_val = [str(i.API_NAME) for i in req_obj]
                             
                             for data, datas in tablerow.items():
-                                
+                                Trace.Write("data_chk_j---"+str(data)+" datas_chk_j---"+str(datas))
                                 if data in required_val and datas == "":
                                     Trace.Write(
                                         "955---------------------------"
