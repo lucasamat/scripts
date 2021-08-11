@@ -2946,7 +2946,7 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				if TABLE_ID.startswith('UNMAPPED'):
+				if TABLEID.startswith('UNMAPPED'):
 					where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 						account_id,
 						contract_quote_record_id,
