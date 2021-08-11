@@ -228,7 +228,16 @@ def Related_Sub_Banner(
             ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
             )
-            rev_quote = Sql.GetList(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+            rev_quote = Sql.GetFirsst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+            if rev_quote: 
+                PrimaryLable = 'Acitve Revision'
+                PrimaryValue = rev_quote.QTEREV_ID
+                SecondLable = 'Revision Creation Date'
+                SecondValue = rev_quote.REV_CREATE_DATE
+                # ThirdLable = 'Revision Description'
+                # ThirdValue = 
+                ThirdLable = 'Status'
+                ThirdValue = rev_quote.REVISION_STATUS
             if str(CurrentRecordId) == 'SYOBJR-98799' and str(ObjName) == 'SAQDOC':                
                 PrimaryLable = "Documents"
                 PrimaryValue = "All"
