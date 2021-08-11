@@ -2914,7 +2914,7 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				if TableId.startswith("UNMAPPED"):
+				if TABLEID.startswith("UNMAPPED"):
 					Pagination_M = Sql.GetFirst(
 						"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 							ObjectName = ObjectName,
