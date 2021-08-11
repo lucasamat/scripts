@@ -13589,4 +13589,4 @@ elif ACTION == 'UPDATE_ASSEMBLY':
     ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
 elif ACTION == 'EDIT_ASSEMBLY':
     Trace.Write('values----'+str(selected_values))
-    ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel())
+    ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
