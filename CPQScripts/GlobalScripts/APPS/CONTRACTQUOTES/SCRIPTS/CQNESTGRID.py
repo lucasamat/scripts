@@ -13290,8 +13290,8 @@ except:
     active_subtab = ""
 Trace.Write('active_subtab'+str(active_subtab))
 try:
-    selected_values= Param.Values
-    Trace.Write('selected_values-----'+str(list(selected_values)))
+    selected_values= list(Param.Values)
+    Trace.Write('selected_values-----'+str(selected_values))
 except:
     selected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
