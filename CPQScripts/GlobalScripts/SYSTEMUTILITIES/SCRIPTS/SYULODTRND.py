@@ -491,7 +491,7 @@ def CommonTreeViewHTMLDetail(
 				
 				else:
 					# cancel_btn = save_btn = ''	
-					sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sec.RECORD_ID)+"' AND TAB_NAME = '"+str(CurrentTab)+"'")
+					sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sec.RECORD_ID)+"'")
 					if sec_html_btn:
 						for btn in sec_html_btn:											
 							if "EDIT" in btn.HTML_CONTENT and (MODE == 'VIEW' or MODE == 'CANCEL'):
