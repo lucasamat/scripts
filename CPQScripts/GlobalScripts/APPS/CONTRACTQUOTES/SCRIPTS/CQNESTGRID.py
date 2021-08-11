@@ -2488,7 +2488,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     ) 
 
             elif TreeSuperParentParam == 'Complementary Products':
-                edit_button = '<button id="assembly_edit" onclick="SendEqupAssemblyEdit()" class="btnconfig">EDIT</button><button id="assembly_save" onclick="SendEqupAssemblySave()" class="btnconfig">SAVE</button><button id="assembly_cancel" onclick="SendEqupAssemblySave()" class="btnconfig">CANCEL</button>'
+                edit_button = '<button id="assembly_edit" onclick="SendEqupAssemblyEdit()" class="btnconfig">EDIT</button><button id="assembly_save" style="display:none" onclick="SendEqupAssemblySave()" class="btnconfig">SAVE</button><button id="assembly_cancel" style="display:none" onclick="SendEqupAssemblyCancel()" class="btnconfig">CANCEL</button>'
                 
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
