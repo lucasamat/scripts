@@ -3286,23 +3286,14 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				if TABLEID.startswith("UNMAPPED"):
-					Pagination_M = Sql.GetFirst(
-						"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
-							ObjectName = ObjectName,
-							account_id = account_id,
-							contract_quote_record_id = contract_quote_record_id,
-						)
-					)  
-				else:
-					Pagination_M = Sql.GetFirst(
-						"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
-							ObjectName = ObjectName,
-							account_id = account_id,
-							get_fab = get_fab,
-							contract_quote_record_id = contract_quote_record_id,
-						)
-					)   
+				Pagination_M = Sql.GetFirst(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+						ObjectName = ObjectName,
+						account_id = account_id,
+						get_fab = get_fab,
+						contract_quote_record_id = contract_quote_record_id,
+					)
+				)   
 			else:
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
@@ -3318,34 +3309,19 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				if TABLEID.startswith('UNMAPPED'):
-					where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
-						account_id,
-						contract_quote_record_id,
+				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+					account_id,
+					contract_quote_record_id,
+				)
+				table_data = Sql.GetList(
+					"select {} from {} (NOLOCK) {} {} {}".format(
+						", ".join(ordered_keys),
+						ObjectName,
+						"WHERE " + where_string if where_string else "",
+						order_by,
+						pagination_condition,
 					)
-					table_data = Sql.GetList(
-						"select {} from {} (NOLOCK) {} {} {}".format(
-							", ".join(ordered_keys),
-							ObjectName,
-							"WHERE " + where_string if where_string else "",
-							order_by,
-							pagination_condition,
-						)
-					)	
-				else:
-					where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
-						account_id,
-						contract_quote_record_id,
-					)
-					table_data = Sql.GetList(
-						"select {} from {} (NOLOCK) {} {} {}".format(
-							", ".join(ordered_keys),
-							ObjectName,
-							"WHERE " + where_string if where_string else "",
-							order_by,
-							pagination_condition,
-						)
-					)	
+				)	
 			else:
 				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
