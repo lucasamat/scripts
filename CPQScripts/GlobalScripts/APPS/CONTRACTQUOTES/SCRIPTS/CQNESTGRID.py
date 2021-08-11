@@ -6289,6 +6289,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
             fab_location_id  = attr_list['FABLOCATION_ID']
             attr_list['FABLOCATION_ID'] = 'Sending Fab Location' if active_subtab == "Sending Equipment" else 'Receiving Fab Location' if active_subtab == "Receiving Equipment" else fab_location_id
     Trace.Write('attr_list1221'+str(attr_list))
+    Trace.Write('checkbox_list'+str(checkbox_list))
     orderby = ""
     if SortColumn != '' and SortColumnOrder !='':
         orderby = SortColumn + " " + SortColumnOrder
