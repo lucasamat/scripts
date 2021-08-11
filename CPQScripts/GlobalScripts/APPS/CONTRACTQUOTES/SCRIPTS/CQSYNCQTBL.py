@@ -1056,7 +1056,7 @@ class SyncQuoteAndCustomTables:
                             fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
                         if payload_json.get('SERVICE_IDS'):	
                             service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
-                            Log.Info("SERVICE IDS-------->"+str(service_ids))
+                            #Log.Info("SERVICE IDS-------->"+str(service_ids))
                         if payload_json.get('SAQFEQ'):
                             for equipment_json_data in payload_json.get('SAQFEQ'):                        
                                 if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
@@ -1077,7 +1077,7 @@ class SyncQuoteAndCustomTables:
                                 Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("SalesType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
                                 Sql.RunQuery(Opportunity_obj)
                         Log.Info("fab_location_ids ===> "+str(fab_location_ids))
-                        Log.Info("service_ids ===> "+str(service_ids))	
+                        Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
                         Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
 
                         if  str(payload_json.get('SalesType')) == 'Z19':
