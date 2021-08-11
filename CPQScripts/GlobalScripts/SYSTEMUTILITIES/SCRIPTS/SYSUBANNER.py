@@ -2068,11 +2068,11 @@ def Related_Sub_Banner(
                         send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
                         sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                         if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
-                            if sale_type.SALE_TYPE == "NEW":
-                                for btn in multi_buttons:
-                                    if "ADD FAB" in btn:
-                                        if quote_status.QUOTE_STATUS != 'APPROVED':
-                                            sec_rel_sub_bnr += (str(btn))
+                            # if sale_type.SALE_TYPE == "NEW":
+                            for btn in multi_buttons:
+                                if "ADD FAB" in btn:
+                                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                                        sec_rel_sub_bnr += (str(btn))
                         else:
                             sec_rel_sub_bnr += ""
                         # sec_rel_sub_bnr += (
