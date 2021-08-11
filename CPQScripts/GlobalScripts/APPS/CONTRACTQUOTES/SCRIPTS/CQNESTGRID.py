@@ -13301,7 +13301,7 @@ except:
     active_subtab = ""
 Trace.Write('active_subtab'+str(active_subtab))
 try:
-    selected_values= list(Param.Values)
+    selected_values= eval(Param.Values)
     Trace.Write('selected_values-----'+str(selected_values))
 except:
     selected_values =[]
@@ -13584,6 +13584,7 @@ elif ACTION == 'BUNDLE CALC':
     REC_ID = Param.REC_ID
     ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
 elif ACTION == 'UPDATE_ASSEMBLY':
+    #selected_values = list(selected_values)
     Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
 elif ACTION == 'EDIT_ASSEMBLY':
