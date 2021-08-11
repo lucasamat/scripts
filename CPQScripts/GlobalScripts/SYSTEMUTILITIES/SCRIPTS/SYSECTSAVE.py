@@ -501,6 +501,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                                             warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
                                             # break
                                         else:
+                                            Trace.Write("else_chk_j---")
                                             Req_Flag = 0
                                             warning_msg = ""
                                             
