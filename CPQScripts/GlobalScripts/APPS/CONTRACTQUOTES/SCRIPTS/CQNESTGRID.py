@@ -13216,6 +13216,7 @@ def UpdateAssemblyLevel(Values):
 				else value
 				for value in Values
 			]
+    record_ids = str(tuple(record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
 		
     
