@@ -7625,7 +7625,7 @@ class SYLDRTLIST:
                     Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
                 else:
                     Trace.Write('ObjectName--7353----'+str(ObjectName))                  
-                    if ObjectName != "SAQIBP" :
+                    if ObjectName != "SAQIBP" and ObjectName != "SAQTRV":
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
                     elif ObjectName == "SAQTRV" :
