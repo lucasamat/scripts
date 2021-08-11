@@ -353,6 +353,7 @@ def Related_Sub_Banner(
             elif (
                 CurrentRecordId.startswith("SYOBJR", 0) == True and str(TreeParentNodeRecId) != ""
             ) and TreeParam == 'Documents' and TabName == "Quote":
+                Trace.Write('pre====')
                 PrimaryLable = str(TreeParam)
                 PrimaryValue = "ALL"
             elif (
