@@ -6549,6 +6549,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     if QueryCountObj is not None:
         QueryCount = QueryCountObj.cnt
     parent_obj = Sql.GetList(Qstr)
+    Trace.Write('Qstr---'+str(Qstr))
     for par in parent_obj:
         data_id = str(par.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
 
