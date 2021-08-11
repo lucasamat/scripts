@@ -13209,7 +13209,16 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
     return data_list,QueryCount,page 
 
 def UpdateAssemblyLevel(Values):
-    Trace.Write('Values------inside-'+str(Values))
+    
+    record_ids = [
+				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+				if value.strip() != "" and 'SAQSSA' in value
+				else value
+				for value in Values
+			]
+    Trace.Write('record_ids------inside-'+str(record_ids))
+		
+    
 
 # Param Variable
 TABNAME = Param.TABNAME
