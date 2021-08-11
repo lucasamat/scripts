@@ -6892,6 +6892,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         Test,
         Action_Str,
         Ad_on_prd,
+        checkbox_list
     )
 
 def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInform):
