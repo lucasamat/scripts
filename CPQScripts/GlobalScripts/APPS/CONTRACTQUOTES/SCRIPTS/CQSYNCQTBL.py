@@ -1037,6 +1037,7 @@ class SyncQuoteAndCustomTables:
                         Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
                         
                         requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n}'
+                        Trace.Write("REQUEST DATA----> "+str(requestdata))
                         
                         response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
 
