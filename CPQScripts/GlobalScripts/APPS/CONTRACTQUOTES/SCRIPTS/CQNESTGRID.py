@@ -2225,6 +2225,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
         + '" data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
     )
     Columns = [
+        "INCLUDED",
         "QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID",
         "EQUIPMENTCATEGORY_ID",
         "SND_ASSEMBLY_ID",
@@ -2344,7 +2345,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             Trace.Write("NON_TOOL_RELOCATION")
             if TreeParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
@@ -2362,7 +2363,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 ) 
             elif TreeSuperParentParam == 'Complementary Products':
                     child_obj_recid = Sql.GetList(
-                        "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                        "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                         + str(recid)
                         + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam
@@ -2382,7 +2383,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     ) 
             elif TreeParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam = TreeSuperParentParam,TreeParam=TreeParam
@@ -2404,7 +2405,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 ) 
             elif TreeSuperParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeTopSuperParentParam = TreeTopSuperParentParam,TreeParentParam=TreeParentParam
@@ -2468,7 +2469,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             Trace.Write("TOOL_RELOCATION")
             if TreeParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
@@ -2487,7 +2488,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
 
             elif TreeSuperParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam=TreeParentParam
@@ -2507,7 +2508,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     ) 
             elif TreeParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam=TreeSuperParentParam,TreeParam=TreeParam
@@ -2529,7 +2530,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     ) 
             elif TreeSuperParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
+                    "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeTopSuperParentParam=TreeTopSuperParentParam,TreeParentParam=TreeParentParam
@@ -2635,6 +2636,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             # data formation in Dictonary format.
             chld_dict["ids"] = str(data_id)
             chld_dict["ACTIONS"] = str(Action_str1)
+            chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
             chld_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
                 "SAQSSA", str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
             )
@@ -6955,7 +6957,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
     if ATTRIBUTE_VALUE is None or ATTRIBUTE_VALUE == "" or ATTRIBUTE_VALUE_STR is None or ATTRIBUTE_VALUE_STR == "":
         Trace.Write("empty search")
         if TreeSuperParentParam == "Product Offerings":
-            parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
+            parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
                 )
             )
             
@@ -6969,7 +6971,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
             
         else:
             if TreeTopSuperParentParam == "Product Offerings":
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam,ord_by = orderby
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{recid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParentParam,ord_by = orderby
                     )
                 )
                 
@@ -6980,7 +6982,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
             
             else:
                 Trace.Write("5 level empty search --->")
-                parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                parent_obj = Sql.GetList("select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where   QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by} ".format( ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
                         recid=RECID,
                         service_id=TreeSuperParentParam,
                         fablocation_id = TreeParentParam,
@@ -7001,7 +7003,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
         Trace.Write("search with condition")
         if TreeSuperParentParam == "Product Offerings":
             parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "
+                "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where  "
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by} ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), recid=RECID, treeparam=TreeParam,ord_by = orderby
@@ -7014,14 +7016,14 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
                 QueryCount = QueryCountObj.cnt
         else:
             if TreeTopSuperParentParam == "Product Offerings":
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,treeparam=TreeParentParam,ord_by = orderby))
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}' ORDER BY {ord_by}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,treeparam=TreeParentParam,ord_by = orderby))
                 
                 QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  " + str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{treeparam}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,            treeparam=TreeParentParam, ))
                 if QueryCountObj is not None:
                     QueryCount = QueryCountObj.cnt
             else:   
                 Trace.Write("5 level coditional search --->")
-                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by}".format(                   ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,ord_by = orderby  ))   
+                parent_obj = Sql.GetList( "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}' ORDER BY {ord_by}".format(                   ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,ord_by = orderby  ))   
                 
                 QueryCountObj = Sql.GetFirst("select count(*) as cnt from SAQSSA (NOLOCK) where  "+ str(ATTRIBUTE_VALUE_STR) + " 1=1 and QUOTE_RECORD_ID = '{ContractRecordId}' and SND_EQUIPMENT_ID = '{recid}' and SERVICE_ID = '{service_id}'and SNDFBL_ID = '{fablocation_id}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),recid=RECID,service_id=TreeSuperParentParam,fablocation_id = TreeParentParam,))
                 if QueryCountObj is not None:
@@ -7053,6 +7055,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
         data_dict = {}
         data_dict["ids"] = str(data_id)
         data_dict["ACTIONS"] = str(Action_str)
+        data_dict["INCLUDED"] = str(par.INCLUDED)
         data_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
             "SAQSSA", str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
         )
