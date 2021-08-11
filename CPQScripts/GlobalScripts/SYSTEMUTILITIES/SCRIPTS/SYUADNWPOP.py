@@ -3922,14 +3922,14 @@ def POPUPLISTVALUEADDNEW(
 									)
 							elif current_obj_api_name == "PRIMARY_OBJECT_NAME" and str(ObjectName) == "SYSECT":
 								TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-								gettabname = Sql.GetFirst("SELECT OBJECT_NAME FROM SYPAGE (NOLOCK) WHERE RECORD_ID = '"+str(new_value_dict['PAGE_RECORD_ID']+"'"))
+								gettabname = Sql.GetFirst("SELECT OBJECT_APINAME FROM SYPAGE (NOLOCK) WHERE RECORD_ID = '"+str(new_value_dict['PAGE_RECORD_ID']+"'"))
 								# gettabname = Sql.GetFirst("select PRIMARY_OBJECT_NAME from SYTABS where TAB_LABEL = '"+ str(TreeTopSuperParentParam)+ "'")
 								if gettabname:
 									sec_str += (
 										"<td><input id='"
 										+ str(current_obj_api_name)
 										+ "' type='text' value='"
-										+ str(gettabname.OBJECT_NAME)
+										+ str(gettabname.OBJECT_APINAME)
 										+"' class='form-control related_popup_css' disabled>"
 									)
 								else:
