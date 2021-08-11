@@ -6550,10 +6550,10 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     if QueryCountObj is not None:
         QueryCount = QueryCountObj.cnt
     parent_obj = Sql.GetList(Qstr)
-    Trace.Write('Qstr---'+str(Qstr))
+    
     for par in parent_obj:
         data_id = str(par.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
-
+        Trace.Write('Qstr-WARRANTY_END_DATE_ALERT ----'+str(par.WARRANTY_END_DATE_ALERT))
         Action_str = (
             '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
             + str(data_id)
