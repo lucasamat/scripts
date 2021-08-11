@@ -2946,19 +2946,34 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
-					account_id,
-					contract_quote_record_id,
-				)
-				table_data = Sql.GetList(
-					"select {} from {} (NOLOCK) {} {} {}".format(
-						", ".join(ordered_keys),
-						ObjectName,
-						"WHERE " + where_string if where_string else "",
-						order_by,
-						pagination_condition,
+				if TABLE_ID.startswith('UNMAPPED'):
+					where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+						account_id,
+						contract_quote_record_id,
 					)
-				)	
+					table_data = Sql.GetList(
+						"select {} from {} (NOLOCK) {} {} {}".format(
+							", ".join(ordered_keys),
+							ObjectName,
+							"WHERE " + where_string if where_string else "",
+							order_by,
+							pagination_condition,
+						)
+					)	
+				else:
+					where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+						account_id,
+						contract_quote_record_id,
+					)
+					table_data = Sql.GetList(
+						"select {} from {} (NOLOCK) {} {} {}".format(
+							", ".join(ordered_keys),
+							ObjectName,
+							"WHERE " + where_string if where_string else "",
+							order_by,
+							pagination_condition,
+						)
+					)	
 			else:
 				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
