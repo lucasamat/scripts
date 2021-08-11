@@ -482,26 +482,48 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                             
                             for data, datas in tablerow.items():
                                 Trace.Write("data_chk_j---"+str(data)+" datas_chk_j---"+str(datas))
-                                if data in required_val and datas == "":
-                                    Trace.Write(
-                                        "955---------------------------"
-                                        + str(datas)
-                                        + "--required_val--"
-                                        + str(required_val)
-                                        + "--data--"
-                                        + str(data)
-                                    )
-                                    Req_Flag = 1
+                                if data in required_val:
+                                    for req in required_val:
+                                        if tablerow[req] == "":
+                                            Trace.Write(
+                                                "955---------------------------"
+                                                + str(datas)
+                                                + "--required_val--"
+                                                + str(required_val)
+                                                + "--data--"
+                                                + str(data)
+                                            )
+                                            Req_Flag = 1
 
-                                    # Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(data)
-                                    field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
-                                    warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
-                                    # break
-                                else:
-                                    Req_Flag = 0
-                                    warning_msg = ""
+                                            # Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(data)
+                                            field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
+                                            warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
+                                            # break
+                                        else:
+                                            Req_Flag = 0
+                                            warning_msg = ""
+                                            
+                                            Sql.Upsert(tableInfo)
+                                # if data in required_val and datas == "":
+                                #     Trace.Write(
+                                #         "955---------------------------"
+                                #         + str(datas)
+                                #         + "--required_val--"
+                                #         + str(required_val)
+                                #         + "--data--"
+                                #         + str(data)
+                                #     )
+                                #     Req_Flag = 1
+
+                                #     # Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(data)
+                                #     field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
+                                #     warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
+                                #     # break
+                                # else:
+                                #     Req_Flag = 0
+                                #     warning_msg = ""
                                     
-                                    Sql.Upsert(tableInfo)
+                                #     Sql.Upsert(tableInfo)
                         else:
                             Sql.Upsert(tableInfo)
                         # sectional edit error message - ends
