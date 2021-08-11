@@ -2639,7 +2639,8 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             # data formation in Dictonary format.
             chld_dict["ids"] = str(data_id)
             chld_dict["ACTIONS"] = str(Action_str1)
-            chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
+            included_id = str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) + "|INCLUDED"
+            chld_dict["INCLUDED"] = ('<abbr id ="'+str(included_id)+'" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
             chld_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
                 "SAQSSA", str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
             )
@@ -13224,7 +13225,7 @@ def UpdateAssemblyLevel(Values):
 def EditAssemblyLevel(Values):
     Trace.Write('Values----'+str(Values))
     get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'".format(Values))
-    chamber_res_list = [str(i.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)+'|SAQSSA' for i in get_rec]
+    chamber_res_list = [str(i.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)+'|INCLUDED' for i in get_rec]
     Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
 
