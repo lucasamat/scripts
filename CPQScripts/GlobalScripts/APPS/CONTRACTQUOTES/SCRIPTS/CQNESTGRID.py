@@ -13210,7 +13210,10 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
     return data_list,QueryCount,page 
 
 def UpdateAssemblyLevel(Values):
-    
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
     record_ids = [
 				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
 				if value.strip() != "" and 'SAQSSA' in value
@@ -13219,12 +13222,26 @@ def UpdateAssemblyLevel(Values):
 			]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
-    Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
+    try:
+        equipment_id = Param.equipment_id
+    except:
+        equipment_id =""
+    Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
+    get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+    included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+    if get_total_count.cnt == included_count.cnt:
+        Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+
+
     #get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'")
     return True
 def EditAssemblyLevel(Values):
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
     Trace.Write('Values----'+str(Values))
-    get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'".format(Values))
+    get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId,TreeParentParam))
     chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
     Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
