@@ -2639,14 +2639,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             # data formation in Dictonary format.
             chld_dict["ids"] = str(data_id)
             chld_dict["ACTIONS"] = str(Action_str1)
-            included_id = str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) + "|INCLUDED"
-            chld_dict["INCLUDED"] = ('<abbr id ="'+str(included_id)+'" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
+            #included_id = str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) + "|INCLUDED"
+            chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
             chld_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
                 "SAQSSA", str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
             )
             chld_dict["EQUIPMENTCATEGORY_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTCATEGORY_ID) + '">' + str(child.EQUIPMENTCATEGORY_ID) + "</abbr>") 
             # chld_dict["SERIAL_NUMBER"] = ('<abbr id ="" title="' + str(child.SERIAL_NUMBER) + '">' + str(child.SERIAL_NUMBER) + "</abbr>") 
-            chld_dict["SND_ASSEMBLY_ID"] = ('<abbr id ="" title="' + str(child.SND_ASSEMBLY_ID) + '">' + str(child.SND_ASSEMBLY_ID) + "</abbr>")
+            chld_dict["SND_ASSEMBLY_ID"] = ('<abbr id ="'+str(child.SND_ASSEMBLY_ID)+'" title="' + str(child.SND_ASSEMBLY_ID) + '">' + str(child.SND_ASSEMBLY_ID) + "</abbr>")
             chld_dict["EQUIPMENTTYPE_ID"] = ('<abbr id ="" title="' + str(child.EQUIPMENTTYPE_ID) + '">' + str(child.EQUIPMENTTYPE_ID) + "</abbr>")
             chld_dict["SND_ASSEMBLY_DESCRIPTION"] = ('<abbr id ="" title="' + str(child.SND_ASSEMBLY_DESCRIPTION) + '">' + str(child.SND_ASSEMBLY_DESCRIPTION) + "</abbr>")
             chld_dict["GOT_CODE"] = ('<abbr id ="" title="' + str(child.GOT_CODE) + '">' + str(child.GOT_CODE) + "</abbr>")
