@@ -2219,6 +2219,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     can_add1 = str(objs_obj1.CAN_ADD)
     can_delete1 = str(objs_obj1.CAN_DELETE)
     table_id = "table_sending_equipment_child_"+str(recid)
+    edit_button =""
     table_header = (
         '<table id="'
         + str(table_id)
@@ -2466,7 +2467,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             #     + "'"
             # )
         elif sale_type == "TOOL RELOCATION":
-            Trace.Write("TOOL_RELOCATION")
+            Trace.Write("TOOL_RELOCATION"+str(TreeSuperParentParam))
             if TreeParentParam == 'Complementary Products':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
@@ -2921,6 +2922,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
         RelatedDrop_str,
         Test,
         Action_Str,
+        edit_button
     )
 
 def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
