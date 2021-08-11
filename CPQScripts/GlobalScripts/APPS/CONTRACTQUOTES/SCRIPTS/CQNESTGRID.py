@@ -13224,8 +13224,8 @@ def UpdateAssemblyLevel(Values):
     return True
 def EditAssemblyLevel(Values):
     Trace.Write('Values----'+str(Values))
-    get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'".format(Values))
-    chamber_res_list = [str(i.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)+'|INCLUDED' for i in get_rec]
+    get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'".format(Values))
+    chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
     Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
 
