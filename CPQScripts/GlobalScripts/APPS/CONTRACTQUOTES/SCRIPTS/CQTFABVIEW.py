@@ -28,6 +28,10 @@ TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 
 
 def fabview(ACTION,CurrentRecordId,subtab):	
+	Trace.Write("THIS FUNCTION====fabview")
+	Trace.Write("THIS FUNCTION====ACTION"+str(ACTION))
+	Trace.Write("THIS FUNCTION====subtab"+str(subtab))
+	Trace.Write("THIS FUNCTION====CurrentRecordId"+str(CurrentRecordId))
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
