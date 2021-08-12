@@ -853,7 +853,7 @@ try:
 					if GetXMLsec:
 						for value in GetXMLsec:
 							where_condtn = SAQITMWhere.replace('A.','')
-							where_condtn += " AND FABLOCATION_ID = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,value.ENTITLEMENT_NAME) 
+							where_condtn += " AND {} AND ENTITLEMENT_NAME = '{}'".format(fab_val[len(fab_val)-1],value.ENTITLEMENT_NAME) 
 							#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_currency = value.PRICE_METHOD
@@ -1089,7 +1089,7 @@ try:
 				if GetXMLsec:
 					for value in GetXMLsec:
 						where_condtn = SAQITMWhere.replace('A.','')
-						where_condtn += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}' AND ENTITLEMENT_NAME = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK,value.ENTITLEMENT_NAME) 
+						where_condtn += " AND {} and {} AND ENTITLEMENT_NAME = '{}'".format(fab_val[len(fab_val)-1], fab_val[len(fab_val)-2],value.ENTITLEMENT_NAME) 
 						#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 						get_currency = value.PRICE_METHOD
