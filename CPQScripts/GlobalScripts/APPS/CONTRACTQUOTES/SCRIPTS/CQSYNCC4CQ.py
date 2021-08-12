@@ -104,7 +104,7 @@ class ContractQuoteC4CSync:
                 )
                 if SalesOrg_obj:
                     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
-                                        "SORGCURRENCY_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})				                        
+                                        "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})				                        
             if quote_data.get('Division'):
                 division_obj = Sql.GetFirst(
                     "SELECT DIVISION_RECORD_ID, DIVISION_ID FROM SADIVN (NOLOCK) WHERE DIVISION_ID = '{}'".format(
