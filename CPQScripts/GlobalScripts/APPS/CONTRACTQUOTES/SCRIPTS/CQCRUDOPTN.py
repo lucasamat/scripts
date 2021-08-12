@@ -2457,7 +2457,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						"TECHNOLOGY": str(maequp_data.TECHNOLOGY)
 					}
 					unmapped_equp_table_info.AddRow(equp_table)
-					Sql.Upsert(unmapped_equp_table_info)
+					SqlHelper.Upsert(unmapped_equp_table_info)
 				
 
 			# 						) SELECT
