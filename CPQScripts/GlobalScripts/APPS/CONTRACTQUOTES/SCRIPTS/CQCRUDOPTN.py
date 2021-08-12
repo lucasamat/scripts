@@ -2391,7 +2391,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"COUNTRY_RECORD_ID": str(master_fab.COUNTRY_RECORD_ID),
 				"MNT_PLANT_ID": str(master_fab.MNT_PLANT_ID),
 				"MNT_PLANT_NAME": str(master_fab.MNT_PLANT_NAME),
-				"MNT_PLANT_RECORD_ID": str(MNT_PLANT_RECORD_ID),
+				"MNT_PLANT_RECORD_ID": str(master_fab.MNT_PLANT_RECORD_ID),
 				"SALESORG_ID": str(master_fab.SALESORG_ID),
 				"SALESORG_NAME": str(master_fab.SALESORG_NAME),
 				"SALESORG_RECORD_ID": str(master_fab.SALESORG_RECORD_ID),
