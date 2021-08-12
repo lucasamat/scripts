@@ -3414,6 +3414,22 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 						)
 			)
+			get_contract_date = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+			get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+			update_warranty_enddate_alert = ''
+			for val in get_warrent_dates:
+				
+				if val.WARRANTY_START_DATE:
+					if val.WARRANTY_START_DATE >= get_contract_date.CONTRACT_VALID_FROM:
+						if val.WARRANTY_END_DATE:
+							if val.WARRANTY_END_DATE >= get_contract_date.CONTRACT_VALID_TO:
+								Trace.Write('QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID---'+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID))
+								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+						else:
+							update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+							Trace.Write('no end date--')
+						Sql.RunQuery(update_warranty_enddate_alert)
+		
 	
 	def _insert_quote_service_covered_assembly(self, **kwargs):		
 		self._process_query(
