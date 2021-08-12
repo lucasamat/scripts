@@ -2505,7 +2505,6 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								treeparam=self.tree_param,
 								treeparentparam=self.tree_parent_level_0,
 								QuoteId=self.contract_quote_id,
-								BatchGroupRecordId=batch_group_record_id,
 								UserName=self.user_name,
 								UserId=self.user_id,
 								QuoteRecId=self.contract_quote_record_id,
