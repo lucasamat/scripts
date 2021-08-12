@@ -2374,7 +2374,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			self._add_equipment()
 		elif self.action_type == "ADD_UNMAPPED_EQUIPMENTS":
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
-			Trace.Write("Unmapped_chk_j "+str(self.values))
+			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
 			# unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
 			# fab_table ={
 			# 	"QUOTE_FABLOCATION_RECORD_ID":
