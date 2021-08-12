@@ -2407,6 +2407,113 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			unmapped_fab_table_info.AddRow(fab_table)
 			Sql.Upsert(unmapped_fab_table_info)
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS ENDS
+
+
+			batch_group_record_id = str(Guid.NewGuid()).upper()
+			record_ids = str(str(record_ids)[1:-1].replace("'",""))
+			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+			SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
+
+			self._process_query(
+							"""
+								INSERT SAQFEQ (
+									QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
+									EQUIPMENT_ID,
+									EQUIPMENT_RECORD_ID,
+									EQUIPMENT_DESCRIPTION,                            
+									FABLOCATION_ID,
+									FABLOCATION_NAME,
+									FABLOCATION_RECORD_ID,
+									SERIAL_NUMBER,
+									QUOTE_RECORD_ID,
+									QUOTE_ID,
+									QUOTE_NAME,
+									SNDACC_ID,
+									SNDACC_NAME,
+									SNDACC_RECORD_ID,
+									PLATFORM,
+									EQUIPMENTCATEGORY_RECORD_ID,
+									EQUIPMENTCATEGORY_ID,
+									EQUIPMENTCATEGORY_DESCRIPTION,
+									EQUIPMENT_STATUS,
+									PBG,
+									GREENBOOK,
+									GREENBOOK_RECORD_ID,
+									MNT_PLANT_RECORD_ID,
+									MNT_PLANT_ID,
+									MNT_PLANT_NAME,
+									WARRANTY_START_DATE,
+									WARRANTY_END_DATE,
+									SALESORG_ID,
+									SALESORG_NAME,
+									SALESORG_RECORD_ID,
+									CUSTOMER_TOOL_ID,
+									CPQTABLEENTRYADDEDBY,
+									CPQTABLEENTRYDATEADDED,
+									CpqTableEntryModifiedBy,
+									CpqTableEntryDateModified,
+									RELOCATION_FAB_TYPE,
+									RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
+									TECHNOLOGY
+									) SELECT
+										CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
+										MAEQUP.EQUIPMENT_ID,
+										MAEQUP.EQUIPMENT_RECORD_ID,
+										MAEQUP.EQUIPMENT_DESCRIPTION,                                
+										MAEQUP.FABLOCATION_ID,
+										MAEQUP.FABLOCATION_NAME,
+										MAEQUP.FABLOCATION_RECORD_ID,
+										MAEQUP.SERIAL_NO,
+										'{QuoteRecId}' as QUOTE_RECORD_ID,
+										'{QuoteId}' as QUOTE_ID,
+										'{QuoteName}' as QUOTE_NAME,
+										MAEQUP.ACCOUNT_ID,
+										MAEQUP.ACCOUNT_NAME,
+										MAEQUP.ACCOUNT_RECORD_ID,
+										MAEQUP.PLATFORM,
+										MAEQUP.EQUIPMENTCATEGORY_RECORD_ID,
+										MAEQUP.EQUIPMENTCATEGORY_ID,
+										MAEQCT.EQUIPMENTCATEGORY_DESCRIPTION,
+										MAEQUP.EQUIPMENT_STATUS,
+										MAEQUP.PBG,
+										MAEQUP.GREENBOOK,
+										MAEQUP.GREENBOOK_RECORD_ID,
+										MAEQUP.MNT_PLANT_RECORD_ID,
+										MAEQUP.MNT_PLANT_ID,
+										MAEQUP.MNT_PLANT_NAME,
+										MAEQUP.WARRANTY_START_DATE,
+										MAEQUP.WARRANTY_END_DATE,
+										MAEQUP.SALESORG_ID,
+										MAEQUP.SALESORG_NAME,
+										MAEQUP.SALESORG_RECORD_ID,
+										MAEQUP.CUSTOMER_TOOL_ID,
+										'{UserName}' AS CPQTABLEENTRYADDEDBY,
+										GETDATE() as CPQTABLEENTRYDATEADDED,
+										{UserId} as CpqTableEntryModifiedBy,
+										GETDATE() as CpqTableEntryDateModified,
+										'{relocation_fab_type}' AS RELOCATION_FAB_TYPE,
+										'{relocation_equp_type}' AS RELOCATION_EQUIPMENT_TYPE,
+										MAEQUP.SUBSTRATE_SIZE,
+										MAEQUP.TECHNOLOGY
+										FROM MAEQUP (NOLOCK)
+										JOIN SYSPBT (NOLOCK) ON SYSPBT.BATCH_RECORD_ID = MAEQUP.EQUIPMENT_RECORD_ID JOIN MAEQCT(NOLOCK)
+										ON MAEQUP.EQUIPMENTCATEGORY_ID = MAEQCT.EQUIPMENTCATEGORY_ID
+										WHERE 
+										SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}'
+										AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
+								""".format(
+								treeparam=self.tree_param,
+								treeparentparam=self.tree_parent_level_0,
+								QuoteId=self.contract_quote_id,
+								BatchGroupRecordId=batch_group_record_id,
+								UserName=self.user_name,
+								UserId=self.user_id,
+								QuoteRecId=self.contract_quote_record_id,
+								QuoteName=self.contract_quote_name,
+								relocation_fab_type = "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
+								relocation_equp_type = "SENDING EQUIPMENT" if "Sending Account -" in self.tree_param else "RECEIVING EQUIPMENT" if "Receiving Account -" in self.tree_param else "",
+							)
+						)
 		return True
 
 	def _add_equipment(self,auto_equp_insert = None,fab_list= None):
