@@ -2917,7 +2917,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID = 'UNMAPPED')".format(
 						ObjectName = ObjectName,
 						account_id = account_id,
 						contract_quote_record_id = contract_quote_record_id,
@@ -2938,7 +2938,7 @@ def POPUPLISTVALUEADDNEW(
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED')""".format(
 					account_id,
 					contract_quote_record_id,
 				)
