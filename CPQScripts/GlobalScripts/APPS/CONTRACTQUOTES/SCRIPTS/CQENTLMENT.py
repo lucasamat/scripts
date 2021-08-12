@@ -584,8 +584,8 @@ class Entitlements:
 						data_dict = {'key':attr}
 						data_dict.update(attr_value)
 						attr_level_pricing.append(data_dict)
-				else:
-					attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
+				# else:
+				# 	attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
 					
 			Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
 			ServiceContainer = Product.GetContainerByName("Services")
