@@ -2377,7 +2377,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
 			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
 			Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
-			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"')")
 			if master_fab:
 				unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
 				fab_table ={
