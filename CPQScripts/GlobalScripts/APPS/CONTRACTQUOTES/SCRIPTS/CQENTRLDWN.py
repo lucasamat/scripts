@@ -489,18 +489,6 @@ def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cps
 			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
 			#if Parentgetdata:					
 			response = Request_access_token()					
-			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
-			#cpsmatchID=11
-			#for row in Parentgetdata:
-			webclient = System.Net.WebClient()
-			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-			webclient.Headers[
-				System.Net.HttpRequestHeader.Authorization
-			] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-			response = webclient.DownloadString(
-				"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
-			)
-			response = eval(response)	
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 			if value_code and value_code !='undefined' and attribute_id !='undefined' and display_name !='select':	
 			#webclient.Headers.Add("If-Match", "111")
