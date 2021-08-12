@@ -1041,7 +1041,7 @@ class SyncQuoteAndCustomTables:
                         Trace.Write("REQUEST DATA----> "+str(requestdata))
                         
                         response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
-
+                        Trace.Write("response_SAQTMT_chk_J"+str(response_SAQTMT))
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
                     if payload_json_obj:
                         contract_quote_obj = None
