@@ -2406,39 +2406,42 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			}
 			unmapped_fab_table_info.AddRow(fab_table)
 			Sql.Upsert(unmapped_fab_table_info)
+
+
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS ENDS
 
-			# master_object_name = "MAEQUP"
-			# if self.values:
-			# 	record_ids = []
-			# 	if self.all_values:               
-			# 		# query_string = "select MAEQUP.EQUIPMENT_RECORD_ID from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND isnull(MAEQUP.PAR_EQUIPMENT_ID,'') = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' where MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND NOT EXISTS (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}') ".format(
-			# 		# self.contract_quote_record_id,
-			# 		# self.contract_quote_record_id
-			# 		# )
-			# 		query_string = "select MAEQUP.EQUIPMENT_RECORD_ID from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND isnull(MAEQUP.PAR_EQUIPMENT_ID,'') = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' where MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}') ".format(
-			# 		self.contract_quote_record_id,
-			# 		self.contract_quote_record_id
-			# 		)
-			# 		query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
-			# 			Query_String=query_string
-			# 		)
-			# 		table_count_data = Sql.GetFirst(query_string_for_count)
-			# 		if table_count_data is not None:
-			# 			table_total_rows = table_count_data.count
-			# 		if table_total_rows:
-			# 			record_ids = [data for data in self.get_res(query_string, table_total_rows)]                    
-			# 	else:                    
-			# 		record_ids = [
-			# 			CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
-			# 			if value.strip() != "" and master_object_name in value
-			# 			else value
-			# 			for value in self.values
-			# 		]
-			# batch_group_record_id = str(Guid.NewGuid()).upper()
-			# record_ids = str(str(record_ids)[1:-1].replace("'",""))
-			# parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
-			# SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
+			master_object_name = "MAEQUP"
+			if self.values:
+				record_ids = []
+				if self.all_values:               
+					# query_string = "select MAEQUP.EQUIPMENT_RECORD_ID from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND isnull(MAEQUP.PAR_EQUIPMENT_ID,'') = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' where MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND NOT EXISTS (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}') ".format(
+					# self.contract_quote_record_id,
+					# self.contract_quote_record_id
+					# )
+					query_string = "select MAEQUP.EQUIPMENT_RECORD_ID from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND isnull(MAEQUP.PAR_EQUIPMENT_ID,'') = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' where MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}') ".format(
+					self.contract_quote_record_id,
+					self.contract_quote_record_id
+					)
+					query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
+						Query_String=query_string
+					)
+					table_count_data = Sql.GetFirst(query_string_for_count)
+					if table_count_data is not None:
+						table_total_rows = table_count_data.count
+					if table_total_rows:
+						record_ids = [data for data in self.get_res(query_string, table_total_rows)]                    
+				else:                    
+					record_ids = [
+						CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+						if value.strip() != "" and master_object_name in value
+						else value
+						for value in self.values
+					]
+				batch_group_record_id = str(Guid.NewGuid()).upper()
+				record_ids = str(str(record_ids)[1:-1].replace("'",""))
+				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+				SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
+				
 
 			# self._process_query(
 			# 				"""
