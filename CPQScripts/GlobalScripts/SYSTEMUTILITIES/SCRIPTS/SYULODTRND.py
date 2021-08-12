@@ -2197,7 +2197,7 @@ def UpdateBreadcrumb(REC_ID):
 		qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_SALESORG_RECORD_ID ='{recid}'".format(recid=RECORD_ID))
 		# ObjectName = "SAQTSO"
 		#RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(REC_ID))
-		# qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO WHERE SALESORG_ID = '{}' AND SORG_CURRENCY = '{}'".format(str(QRE.SALESORG_ID), str(QRE.SORG_CURRENCY)))
+		# qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO WHERE SALESORG_ID = '{}' AND DOC_CURRENCY = '{}'".format(str(QRE.SALESORG_ID), str(QRE.SORG_CURRENCY)))
 		if qry:
 				bc_id = str(qry.QUOTE_ID)
 	elif TreeParam == "Exchange Rates":

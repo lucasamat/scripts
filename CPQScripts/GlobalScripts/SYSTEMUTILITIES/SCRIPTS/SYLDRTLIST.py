@@ -1278,7 +1278,7 @@ class SYLDRTLIST:
                             elif str(RECORD_ID) == "SYOBJR-98815":
                                 splitTP = TP.split('-')
                                 TP = splitTP[1]
-                                Qustr = "where SALESORG_ID = '"+str(TP)+"' and SORG_CURRENCY='"+str(PR_CURR)+"'"
+                                Qustr = "where SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
                             elif str(RECORD_ID) == "SYOBJR-95824":
                                 Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"                                   
                             # elif str(RECORD_ID) == "SYOBJR-93123":
@@ -6218,20 +6218,20 @@ class SYLDRTLIST:
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)+ " AND SERVICE_ID NOT LIKE '%BUNDLE%' "
 
                     elif str(RECORD_ID) == "SYOBJR-98815":                        
-                        #Qustr = "where SALESORG_ID = '"+str(TP)+"' and SORG_CURRENCY='"+str(PR_CURR)+"'"
+                        #Qustr = "where SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
                         splitTP = TP.split('-')
                         TP = splitTP[1]
                         Qury_str = (
                             "SELECT DISTINCT TOP "
                             + str(PerPage)
-                            + "QUOTE_SALESORG_RECORD_ID,QUOTE_ID,QUOTE_NAME,SALESORG_ID,SALESORG_NAME,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,SALESOFFICE_ID,SALESOFFICE_NAME,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQTSO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and SORG_CURRENCY='"+str(PR_CURR)+"') m where m.ROW BETWEEN "
+                            + "QUOTE_SALESORG_RECORD_ID,QUOTE_ID,QUOTE_NAME,SALESORG_ID,SALESORG_NAME,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,SALESOFFICE_ID,SALESOFFICE_NAME,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQTSO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"') m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " AND "
                             + str(Page_End)
                             + ""
                         )
                         QuryCount_str = (
-                            "SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTSO (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and SORG_CURRENCY='"+str(PR_CURR)+"'"
+                            "SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTSO (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
                         )
 
                     elif RECORD_ID == "SYOBJR-95866":                        
@@ -7465,7 +7465,7 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-98815":                            
                             splitTP = TP.split('-')
                             TP = splitTP[1]
-                            Qustr = "where SALESORG_ID = '"+str(TP)+"' and SORG_CURRENCY='"+str(PR_CURR)+"'"
+                            Qustr = "where SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
                         elif str(RECORD_ID) == "SYOBJR-98862":
                             RecAttValue=Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
                             Qustr = " WHERE "+str(ATTRIBUTE_VALUE_STR)+" APP_ID = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"

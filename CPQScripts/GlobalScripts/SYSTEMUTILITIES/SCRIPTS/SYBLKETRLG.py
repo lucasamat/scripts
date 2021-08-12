@@ -44,10 +44,10 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 	x = datetime.datetime.today()
 	x= str(x)
 	y = x.split(" ")
-	GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(EXCHANGE_RATE_TYPE,'') as EXCHANGE_RATE_TYPE, ISNULL(DIVISION_ID, '') as DIVISION_ID, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(SORG_CURRENCY,'') as SORG_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(quote_id))
+	GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(EXCHANGE_RATE_TYPE,'') as EXCHANGE_RATE_TYPE, ISNULL(DIVISION_ID, '') as DIVISION_ID, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(DOC_CURRENCY,'') as DOC_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(quote_id))
 	if GetPricingProcedure is not None:			
 		PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
-		curr = GetPricingProcedure.SORG_CURRENCY
+		curr = GetPricingProcedure.DOC_CURRENCY
 		dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 		salesorg = GetPricingProcedure.SALESORG_ID
 		div = GetPricingProcedure.DIVISION_ID
