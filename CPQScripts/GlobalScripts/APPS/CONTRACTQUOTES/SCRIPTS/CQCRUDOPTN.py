@@ -2377,35 +2377,36 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
 			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
 			Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
-			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED'")
-			unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
-			fab_table ={
-				"QUOTE_FABLOCATION_RECORD_ID": str(Guid.NewGuid()).upper(),
-				"FABLOCATION_ID": str(master_fab.FAB_LOCATION_ID),
-				"FABLOCATION_NAME": str(master_fab.FAB_LOCATION_NAME),
-				"FABLOCATION_RECORD_ID": str(master_fab.FAB_LOCATION_RECORD_ID),
-				"QUOTE_ID": str(self.contract_quote_id),
-				"QUOTE_NAME": str(self.contract_quote_name),
-				"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
-				"COUNTRY": str(master_fab.COUNTRY),
-				"COUNTRY_RECORD_ID": str(master_fab.COUNTRY_RECORD_ID),
-				"MNT_PLANT_ID": str(master_fab.MNT_PLANT_ID),
-				"MNT_PLANT_NAME": str(master_fab.MNT_PLANT_NAME),
-				"MNT_PLANT_RECORD_ID": str(master_fab.MNT_PLANT_RECORD_ID),
-				"SALESORG_ID": str(master_fab.SALESORG_ID),
-				"SALESORG_NAME": str(master_fab.SALESORG_NAME),
-				"SALESORG_RECORD_ID": str(master_fab.SALESORG_RECORD_ID),
-				"FABLOCATION_STATUS": "",
-				"ADDRESS_1": str(master_fab.ADDRESS_1),
-				"ADDRESS_2": str(master_fab.ADDRESS_2),
-				"CITY": str(master_fab.CITY),
-				"STATE": str(master_fab.STATE),
-				"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID),
-				"RELOCATION_FAB_TYPE": "SENDING FAB"
+			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+			if master_fab:
+				unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
+				fab_table ={
+					"QUOTE_FABLOCATION_RECORD_ID": str(Guid.NewGuid()).upper(),
+					"FABLOCATION_ID": str(master_fab.FAB_LOCATION_ID),
+					"FABLOCATION_NAME": str(master_fab.FAB_LOCATION_NAME),
+					"FABLOCATION_RECORD_ID": str(master_fab.FAB_LOCATION_RECORD_ID),
+					"QUOTE_ID": str(self.contract_quote_id),
+					"QUOTE_NAME": str(self.contract_quote_name),
+					"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
+					"COUNTRY": str(master_fab.COUNTRY),
+					"COUNTRY_RECORD_ID": str(master_fab.COUNTRY_RECORD_ID),
+					"MNT_PLANT_ID": str(master_fab.MNT_PLANT_ID),
+					"MNT_PLANT_NAME": str(master_fab.MNT_PLANT_NAME),
+					"MNT_PLANT_RECORD_ID": str(master_fab.MNT_PLANT_RECORD_ID),
+					"SALESORG_ID": str(master_fab.SALESORG_ID),
+					"SALESORG_NAME": str(master_fab.SALESORG_NAME),
+					"SALESORG_RECORD_ID": str(master_fab.SALESORG_RECORD_ID),
+					"FABLOCATION_STATUS": "",
+					"ADDRESS_1": str(master_fab.ADDRESS_1),
+					"ADDRESS_2": str(master_fab.ADDRESS_2),
+					"CITY": str(master_fab.CITY),
+					"STATE": str(master_fab.STATE),
+					"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID),
+					"RELOCATION_FAB_TYPE": "SENDING FAB"
 
-			}
-			unmapped_fab_table_info.AddRow(fab_table)
-			Sql.Upsert(unmapped_fab_table_info)
+				}
+				unmapped_fab_table_info.AddRow(fab_table)
+				Sql.Upsert(unmapped_fab_table_info)
 
 
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS ENDS
