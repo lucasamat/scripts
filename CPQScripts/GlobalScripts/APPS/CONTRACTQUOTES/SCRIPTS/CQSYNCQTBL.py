@@ -614,7 +614,7 @@ class SyncQuoteAndCustomTables:
                             
                             if SalesOrg_obj:
                                 
-                                salesorg_data.update({"SORG_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
+                                salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
                                                     "SORGCURRENCY_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
                                 exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 ".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY))
                                 
@@ -666,7 +666,7 @@ class SyncQuoteAndCustomTables:
                                 )
                             )
                             if salesorg_obj:
-                                salesorg_data.update({"SORG_CURRENCY":salesorg_obj.DEF_CURRENCY , 
+                                salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
                                                     "SORGCURRENCY_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
                                                     })
                         if str(salesorg_data.get('SALESORG_ID')):

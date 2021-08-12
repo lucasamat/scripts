@@ -991,7 +991,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						SAQSPT.MATPRIGRP_ID,
 						SAQSPT.MATPRIGRP_RECORD_ID,
 						'{status}' AS PRICING_STATUS,
-						'{currency}' AS SORG_CURRENCY,
+						'{currency}' AS DOC_CURRENCY,
 						'{currency_rec_id}' AS SORGCURRENCY_RECORD_ID,
 						'{UserName}' as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED,
