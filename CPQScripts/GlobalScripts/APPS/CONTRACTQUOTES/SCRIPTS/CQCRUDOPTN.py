@@ -2414,51 +2414,52 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			if self.values:
 				record_ids = [value for value in self.values]
 				Trace.Write("record_ids_chk_j "+str(record_ids))
-				          
-				
+				for rec in record_ids:
+					obj = rec.split('-')[0]
+					cpq_entry = rec.split('-')[1].lstrip('0')
+					Trace.Write("cpq_entry_Chk_J"+str(cpq_entry))
+					maequp_data = Sql.GetFirst("SELECT * FROM MAEQUP (NOLOCK) WHERE CpqTableEntryId = '"+str(cpq_entry)+"'")
+					unmapped_equp_table_info = SqlHelper.GetTable("SAEQUP")
+					equp_table ={
+						"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID": str(Guid.NewGuid()).upper(),
+						"EQUIPMENT_ID": str(maequp_data.EQUIPMENT_ID),
+						"EQUIPMENT_RECORD_ID": str(maequp_data.EQUIPMENT_RECORD_ID),
+						"FABLOCATION_ID": str(maequp_data.FABLOCATION_ID),
+						"FABLOCATION_NAME": str(maequp_data.FABLOCATION_NAME),
+						"FABLOCATION_RECORD_ID": str(maequp_data.FABLOCATION_RECORD_ID),
+						"SERIAL_NUMBER": str(maequp_data.SERIAL_NO),
+						"QUOTE_RECORD_ID": str(self.contract_quote_record_id),
+						"QUOTE_ID": str(self.contract_quote_id),
+						"QUOTE_NAME": str(self.contract_quote_name),
+						"SNDACC_ID": str(maequp_data.ACCOUNT_ID),
+						"SNDACC_NAME": str(maequp_data.ACCOUNT_NAME),
+						"SNDACC_RECORD_ID": str(maequp_data.ACCOUNT_RECORD_ID),
+						"PLATFORM": str(maequp_data.PLATFORM),
+						"EQUIPMENTCATEGORY_RECORD_ID": str(maequp_data.EQUIPMENTCATEGORY_RECORD_ID),
+						"EQUIPMENTCATEGORY_ID": str(maequp_data.EQUIPMENTCATEGORY_ID),
+						"EQUIPMENTCATEGORY_DESCRIPTION": str(maequp_data.EQUIPMENTCATEGORY_DESCRIPTION),
+						"EQUIPMENT_STATUS": str(maequp_data.EQUIPMENT_STATUS),
+						"PBG": str(maequp_data.PBG),
+						"GREENBOOK": str(maequp_data.GREENBOOK),
+						"GREENBOOK_RECORD_ID": str(maequp_data.GREENBOOK_RECORD_ID),
+						"MNT_PLANT_RECORD_ID": str(maequp_data.MNT_PLANT_RECORD_ID),
+						"MNT_PLANT_ID": str(maequp_data.MNT_PLANT_ID),
+						"MNT_PLANT_NAME": str(maequp_data.MNT_PLANT_NAME),
+						"WARRANTY_START_DATE": str(maequp_data.WARRANTY_START_DATE),
+						"WARRANTY_END_DATE": str(maequp_data.WARRANTY_END_DATE),
+						"SALESORG_ID": str(maequp_data.SALESORG_ID),
+						"SALESORG_NAME": str(maequp_data.SALESORG_NAME),
+						"SALESORG_RECORD_ID": str(maequp_data.SALESORG_RECORD_ID),
+						"CUSTOMER_TOOL_ID": str(maequp_data.CUSTOMER_TOOL_ID),
+						"RELOCATION_FAB_TYPE": "SENDING FAB",
+						"RELOCATION_EQUIPMENT_TYPE": "SENDING EQUIPMENT",
+						"WAFER_SIZE": str(maequp_data.SUBSTRATE_SIZE),
+						"TECHNOLOGY": str(maequp_data.TECHNOLOGY)
+					}
+					unmapped_equp_table_info.AddRow(equp_table)
+					Sql.Upsert(unmapped_equp_table_info)
 				
 
-			# self._process_query(
-			# 				"""
-			# 					INSERT SAQFEQ (
-			# 						QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
-			# 						EQUIPMENT_ID,
-			# 						EQUIPMENT_RECORD_ID,
-			# 						EQUIPMENT_DESCRIPTION,                            
-			# 						FABLOCATION_ID,
-			# 						FABLOCATION_NAME,
-			# 						FABLOCATION_RECORD_ID,
-			# 						SERIAL_NUMBER,
-			# 						QUOTE_RECORD_ID,
-			# 						QUOTE_ID,
-			# 						QUOTE_NAME,
-			# 						SNDACC_ID,
-			# 						SNDACC_NAME,
-			# 						SNDACC_RECORD_ID,
-			# 						PLATFORM,
-			# 						EQUIPMENTCATEGORY_RECORD_ID,
-			# 						EQUIPMENTCATEGORY_ID,
-			# 						EQUIPMENTCATEGORY_DESCRIPTION,
-			# 						EQUIPMENT_STATUS,
-			# 						PBG,
-			# 						GREENBOOK,
-			# 						GREENBOOK_RECORD_ID,
-			# 						MNT_PLANT_RECORD_ID,
-			# 						MNT_PLANT_ID,
-			# 						MNT_PLANT_NAME,
-			# 						WARRANTY_START_DATE,
-			# 						WARRANTY_END_DATE,
-			# 						SALESORG_ID,
-			# 						SALESORG_NAME,
-			# 						SALESORG_RECORD_ID,
-			# 						CUSTOMER_TOOL_ID,
-			# 						CPQTABLEENTRYADDEDBY,
-			# 						CPQTABLEENTRYDATEADDED,
-			# 						CpqTableEntryModifiedBy,
-			# 						CpqTableEntryDateModified,
-			# 						RELOCATION_FAB_TYPE,
-			# 						RELOCATION_EQUIPMENT_TYPE,WAFER_SIZE,
-			# 						TECHNOLOGY
 			# 						) SELECT
 			# 							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
 			# 							MAEQUP.EQUIPMENT_ID,
