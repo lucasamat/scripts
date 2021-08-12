@@ -2372,34 +2372,39 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				Sql.Upsert(tableInfo2)
 		elif self.action_type == "ADD_EQUIPMENTS":
 			self._add_equipment()
+		
 		elif self.action_type == "ADD_UNMAPPED_EQUIPMENTS":
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
 			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
-			# unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
-			# fab_table ={
-			# 	"QUOTE_FABLOCATION_RECORD_ID":
-			# 	"FABLOCATION_ID":
-			# 	"FABLOCATION_NAME":
-			# 	"FABLOCATION_RECORD_ID":
-			# 	"QUOTE_ID":
-			# 	"QUOTE_NAME":
-			# 	"QUOTE_RECORD_ID":
-			# 	"COUNTRY":
-			# 	"COUNTRY_RECORD_ID":
-			# 	"MNT_PLANT_ID":
-			# 	"MNT_PLANT_NAME":
-			# 	"MNT_PLANT_RECORD_ID":
-			# 	"SALESORG_ID":
-			# 	"SALESORG_NAME":
-			# 	"SALESORG_RECORD_ID":
-			# 	"FABLOCATION_STATUS":
-			# 	"ADDRESS_1":
-			# 	"ADDRESS_2":
-			# 	"CITY":
-			# 	"STATE":
-			# 	"STATE_RECORD_ID":
 
-			# }
+			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED'")
+			unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
+			fab_table ={
+				"QUOTE_FABLOCATION_RECORD_ID": str(Guid.NewGuid()).upper()
+				"FABLOCATION_ID": str(master_fab.FAB_LOCATION_ID)
+				"FABLOCATION_NAME": str(master_fab.FAB_LOCATION_NAME)
+				"FABLOCATION_RECORD_ID": str(master_fab.FAB_LOCATION_RECORD_ID)
+				"QUOTE_ID": str(QuoteId)
+				"QUOTE_NAME": str(QuoteName)
+				"QUOTE_RECORD_ID": str(QuoteRecordId)
+				"COUNTRY": str(master_fab.COUNTRY)
+				"COUNTRY_RECORD_ID": str(master_fab.COUNTRY_RECORD_ID)
+				"MNT_PLANT_ID": str(master_fab.MNT_PLANT_ID)
+				"MNT_PLANT_NAME": str(master_fab.MNT_PLANT_NAME)
+				"MNT_PLANT_RECORD_ID": str(MNT_PLANT_RECORD_ID)
+				"SALESORG_ID": str(master_fab.SALESORG_ID)
+				"SALESORG_NAME": str(master_fab.SALESORG_NAME)
+				"SALESORG_RECORD_ID": str(master_fab.SALESORG_RECORD_ID)
+				"FABLOCATION_STATUS": ""
+				"ADDRESS_1": str(master_fab.ADDRESS_1)
+				"ADDRESS_2": str(master_fab.ADDRESS_2)
+				"CITY": str(master_fab.CITY)
+				"STATE": str(master_fab.STATE)
+				"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID)
+
+			}
+			unmapped_fab_table_info.AddRow(fab_table)
+			Sql.Upsert(unmapped_fab_table_info)
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS ENDS
 		return True
 
