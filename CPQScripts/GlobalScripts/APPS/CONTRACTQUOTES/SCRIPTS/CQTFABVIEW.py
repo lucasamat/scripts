@@ -49,7 +49,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  > <thead><tr>')
-	sec_str += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>')
+	
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
 		qstring = attr_dict.get(str(invs)) or ""
@@ -63,6 +63,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ "</th>"
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
+	sec_str += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>')
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
 			sec_str1 = sec_str_eff = ""
