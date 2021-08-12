@@ -2400,7 +2400,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"ADDRESS_2": str(master_fab.ADDRESS_2),
 				"CITY": str(master_fab.CITY),
 				"STATE": str(master_fab.STATE),
-				"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID)
+				"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID),
+				"RELOCATION_FAB_TYPE": "SENDING FAB"
 
 			}
 			unmapped_fab_table_info.AddRow(fab_table)
