@@ -2378,6 +2378,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
 			Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
 			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"')")
+			acunt_info = Sql.GetFirst("SELECT ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(self.tree_param).split('-')[1]+"'")
 			if master_fab:
 				unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
 				fab_table ={
@@ -2403,9 +2404,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					"STATE": str(master_fab.STATE),
 					"STATE_RECORD_ID": str(master_fab.STATE_RECORD_ID),
 					"RELOCATION_FAB_TYPE": "SENDING FAB",
-					"ACCOUNT_ID": str(master_fab.ACCOUNT_ID),
-					"ACCOUNT_NAME": str(master_fab.ACCOUNT_NAME),
-					"ACCOUNT_RECORD_ID": str(master_fab.ACCOUNT_RECORD_ID)
+					"ACCOUNT_ID": str(acunt_info.ACCOUNT_ID),
+					"ACCOUNT_NAME": str(acunt_info.ACCOUNT_NAME),
+					"ACCOUNT_RECORD_ID": str(acunt_info.ACCOUNT_RECORD_ID)
 
 				}
 				unmapped_fab_table_info.AddRow(fab_table)
