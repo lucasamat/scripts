@@ -29,18 +29,13 @@ def bannerdetails(Quoteid,active_tab_name):
 			contract_record_id = str(get_contract_rec_id.CONTRACT_RECORD_ID)			
 		###ends
 		Quoteid = SQLObj.QUOTE_ID
-		Log.Info("FetchQID:"+str(Quoteid))
 		matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
 		
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
 			qid=str(matchObj.group(1))			
-			try:
-				Quote = QuoteHelper.Edit(str(qid))				
-			except Exception:
-				Trace.Write("Quote Edit Exception")			
+			Quote = QuoteHelper.Edit(str(qid))				
 			Quote.RefreshActions()			
-			#time.sleep(5)
 			##getting contarct rec id as global
 			if contract_record_id:
 				Quote.SetGlobal("contract_record_id",contract_record_id)
