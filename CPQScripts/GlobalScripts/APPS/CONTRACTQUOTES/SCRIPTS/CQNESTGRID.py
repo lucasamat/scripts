@@ -2640,7 +2640,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             chld_dict["ids"] = str(data_id)
             chld_dict["ACTIONS"] = str(Action_str1)
             #included_id = str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) + "|INCLUDED"
-            chld_dict["INCLUDED"] = ('<abbr id ="" title="' + str(child.INCLUDED) + '">' + str(child.INCLUDED) + "</abbr>") 
+            chld_dict["INCLUDED"] = str(child.INCLUDED)
             chld_dict["QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID"] = CPQID.KeyCPQId.GetCPQId(
                 "SAQSSA", str(child.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
             )
