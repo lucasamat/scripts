@@ -2507,7 +2507,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								QuoteId=self.contract_quote_id,
 								UserName=self.user_name,
 								UserId=self.user_id,
-								cpq_entry=self.cpq_entry,
+								cpq_entry=cpq_entry,
 								QuoteRecId=self.contract_quote_record_id,
 								QuoteName=self.contract_quote_name,
 								relocation_fab_type = "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
