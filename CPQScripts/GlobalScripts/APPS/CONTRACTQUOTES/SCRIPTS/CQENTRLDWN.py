@@ -489,7 +489,7 @@ def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cps
 			#Parentgetdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(ent_temp,where))
 			#if Parentgetdata:					
 			response = Request_access_token()	
-			# Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
+			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
 			# #cpsmatchID=11
 			# #for row in Parentgetdata:
 			webclient = System.Net.WebClient()
