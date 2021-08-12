@@ -1783,7 +1783,17 @@ def Related_Sub_Banner(
         FifthValue = "All"
         SixthLable = "Equipment"
         SixthValue = "All"
-       
+    elif TreeParentParam == 'Contract Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
+        Trace.Write("1207")	
+        PrimaryLable = ListKey[0]
+        PrimaryValue = PrimaryValue
+        SecondLable = ListKey[1]
+        SecondValue = ListVal[1]
+        ThirdLable = ListKey[2]
+        ThirdValue = ListVal[2]
+        FourthValue = ListKey[4]
+        FourthValue = ListVal[4]
+        
     # elif  TreeSuperParentParam == "Quote Items" and ObjName == "SAQICO" and TabName == "Quote" and str(TreeParam) != "":
     #     PrimaryLable = ListKey[0]
     #     PrimaryValue = PrimaryValue
