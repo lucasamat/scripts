@@ -63,7 +63,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ "</th>"
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
-	sec_str += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>')
+	
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
 			sec_str1 = sec_str_eff = ""
