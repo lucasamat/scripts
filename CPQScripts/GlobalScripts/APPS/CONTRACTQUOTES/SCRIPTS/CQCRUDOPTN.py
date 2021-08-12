@@ -2412,7 +2412,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 			master_object_name = "MAEQUP"
 			if self.values:
-				record_ids = [value for value in values]
+				record_ids = [value for value in self.values]
 				Trace.Write("record_ids_chk_j "+str(record_ids))
 				          
 				
