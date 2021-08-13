@@ -143,7 +143,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             QueryCountObj = Sql.GetFirst(
                 """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{get_fab}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,get_fab = TreeParam,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "" )
             )
-          
+        
         else:
             Trace.Write('ggggggggg')
             Qstr = (
@@ -209,7 +209,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
     #     )
     elif (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
         Trace.Write("Fab44")
-          
+        
         account_id = TreeParam.split(' - ')
 
         account_id = account_id[len(account_id)-1]
@@ -765,7 +765,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
     Trace.Write('where string--->'+str(where_string))
     if (("Sending Equipment" in TreeParentParam) or ("Receiving Equipment" in TreeParentParam)):
 
-          
+        
         account_id = TreeParam.split(' - ')
 
         account_id = account_id[len(account_id)-1]
@@ -1664,7 +1664,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     lookup_str = ",".join(list(lookup_disply_list))
     GetSaleType = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
     GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-		#Trace.Write("count--"+str(list(GetToolReloc)))
+        #Trace.Write("count--"+str(list(GetToolReloc)))
     GetSaleType = list(GetSaleType)
     if len(GetSaleType) == 2:
         sale_type = "TOOL RELOCATION"
@@ -2255,7 +2255,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     lookup_str = ",".join(list(lookup_disply_list))
     GetSaleType = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
     GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-		#Trace.Write("count--"+str(list(GetToolReloc)))
+        #Trace.Write("count--"+str(list(GetToolReloc)))
     GetSaleType = list(GetSaleType)
     if len(GetSaleType) == 2:
         sale_type = "TOOL RELOCATION"
@@ -11457,7 +11457,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
         "YEAR_5",
         "TAX_PERCENTAGE",
         "TAX",
-		"EXTENDED_PRICE"
+        "EXTENDED_PRICE"
         
     ]
 
@@ -11523,7 +11523,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
-                              
+                            
             #To show currency symbol and decimal places for columns in SAQICO quote Items node - end   
         text_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "TEXT"]  
         checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
@@ -11985,7 +11985,7 @@ def SparesChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
         "ANNUAL_QUANTITY",
         "TAX_PERCENTAGE",
         "TAX",
-		"EXTENDED_PRICE"
+        "EXTENDED_PRICE"
     ]
 
     Objd_Obj = Sql.GetList(
@@ -12019,7 +12019,7 @@ def SparesChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
-                              
+                            
             #To show currency symbol and decimal places for columns in SAQIFP quote Items node - end    
         checkbox_list = [inn.API_NAME for inn in Objd_Obj if inn.DATA_TYPE == "CHECKBOX"]
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
@@ -12612,8 +12612,8 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
                     elif ("ASSEMBLY MISSING" in line_items_status_list ) and ('ACQUIRING'  in line_items_status_list and "ERROR" not in line_items_status_list) :
                         icon = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
                         status_update=SqlHelper.GetFirst("sp_executesql @statement = N'UPDATE SAQITM SET PRICING_STATUS=''ASSEMBLY MISSING'' WHERE QUOTE_RECORD_ID =''"+str(Quote.GetGlobal("contract_quote_record_id"))+"'' AND SERVICE_ID LIKE ''%BASE%'' '")    
-                       
-                           
+                    
+                        
 
             else:
                 icon = str(child.PRICING_STATUS)
@@ -13219,17 +13219,17 @@ def UpdateAssemblyLevel(Values):
     # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
     record_ids = [
-				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
-				if value.strip() != "" and 'SAQSSA' in value
-				else value
-				for value in Values
-			]
+                CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+                if value.strip() != "" and 'SAQSSA' in value
+                else value
+                for value in Values
+            ]
     un_selected_record_ids = [
-				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
-				if value.strip() != "" and 'SAQSSA' in value
-				else value
-				for value in unselected_list
-			]
+                CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+                if value.strip() != "" and 'SAQSSA' in value
+                else value
+                for value in unselected_list
+            ]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
@@ -13589,7 +13589,7 @@ elif ACTION == "CHILDLOAD":
             except:
                 ATTR_NAME = ATTRIBUTE_NAME
         else:
-             ATTR_NAME = ATTRIBUTE_NAME
+            ATTR_NAME = ATTRIBUTE_NAME
         Trace.Write("ATTR_NAME--- "+str(ATTR_NAME)+"--"+str(pagination_flag))
         find_item_record_id = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID from SAQITM (NOLOCK) where QUOTE_ITEM_RECORD_ID = '{Quote_Record_id}' ".format(
             Quote_Record_id=CPQID.KeyCPQId.GetKEYId('SAQITM', str(ATTR_NAME)),
@@ -13611,7 +13611,7 @@ elif ACTION == "CHILDLOAD":
             except:
                 ATTR_NAME = ATTRIBUTE_NAME
         else:
-             ATTR_NAME = ATTRIBUTE_NAME
+            ATTR_NAME = ATTRIBUTE_NAME
         ApiResponse = ApiResponseFactory.JsonResponse(WithBundleParentTable(ATTR_NAME, PerPage, PageInform, A_Keys, A_Values))    
 elif ACTION == "BREADCRUMB":
     if TABNAME == "Tools":
