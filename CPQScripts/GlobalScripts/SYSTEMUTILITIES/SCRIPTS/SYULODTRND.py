@@ -3509,13 +3509,21 @@ def EntitlementTreeViewHTMLDetail(
 											disallow_style = ""
 										if str(selected_option)=='selected':
 											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
-										VAR1 += (
-											'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
-											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
-											+ '"'+str(select_option)+'>'
-											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-											+ "</option>"
-										)
+										try:
+											VAR1 += (
+												'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
+												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
+												+ '"'+str(select_option)+'>'
+												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+												+ "</option>"
+											)
+										except:
+											
+											VAR1 += (
+												'<option '
+												+ str(disallow_style)
+												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.ENTITLEMENT_DISPLAY_VALUE,select = select_option)
+											)
 								sec_str1 += (
 									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
 									+ str(attrSysId)
