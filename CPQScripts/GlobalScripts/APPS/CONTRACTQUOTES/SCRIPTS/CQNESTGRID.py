@@ -13347,7 +13347,7 @@ try:
     unselected_values= eval(Param.unselected_list)
     Trace.Write('unselected_list-----'+str(unselected_list))
 except Exception,e:
-    Trace.Write('unselected_values--error-'+str(e)))
+    Trace.Write('unselected_values--error-'+str(e))
     unselected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
