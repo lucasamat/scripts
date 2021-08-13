@@ -13224,8 +13224,16 @@ def UpdateAssemblyLevel(Values):
 				else value
 				for value in Values
 			]
+    un_selected_record_ids = [
+				CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
+				if value.strip() != "" and 'SAQSSA' in value
+				else value
+				for value in unselected_list
+			]
     record_ids = str(tuple(record_ids)).replace(",)",")")
+    un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
     Trace.Write('record_ids------inside-'+str(record_ids))
+    Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
     try:
         equipment_id = Param.equipment_id
     except:
@@ -13330,6 +13338,11 @@ try:
     Trace.Write('selected_values-----'+str(selected_values))
 except:
     selected_values =[]
+    try:
+    unselected_values= eval(Param.unselected_list)
+    Trace.Write('unselected_list-----'+str(unselected_list))
+except:
+    unselected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
 # Trace.Write("Current Rec Id is " + str(CURR_REC_ID))
