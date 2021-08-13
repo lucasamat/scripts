@@ -6598,7 +6598,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         data_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(par.MNT_PLANT_ID) + '">' + str(par.MNT_PLANT_ID) + "</abbr>") 
         data_dict["WARRANTY_START_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_START_DATE) + '">' + str(par.WARRANTY_START_DATE) + "</abbr>")
         data_dict["WARRANTY_END_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_END_DATE) + '">' + str(par.WARRANTY_END_DATE) + "</abbr>") 
-        data_dict["WARRANTY_END_DATE_ALERT"] = str(par.WARRANTY_END_DATE_ALERT) +"<i class='fa fa-exclamation-circle' style='font-size:24px;color:red'></i>"
+        data_dict["WARRANTY_END_DATE_ALERT"] = (str(par.WARRANTY_END_DATE_ALERT) +"<i class='fa fa-exclamation-circle' style='font-size:24px;color:red'></i>")
         data_list.append(data_dict)
     Trace.Write('data_list--'+str(data_list))
     hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
