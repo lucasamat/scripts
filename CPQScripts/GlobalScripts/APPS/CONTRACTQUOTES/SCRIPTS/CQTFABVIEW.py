@@ -63,7 +63,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ "</th>"
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
-	disabled_edit_rivers = ''
+	disabled_edit_drivers = ''
 	get_editable_list = []
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
@@ -102,10 +102,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					for qstns in GetDRIVNAME:
 						if qstn.EDITABLE:
 							Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
-							disabled_edit_rivers = 'disabled_edit_rivers'
+							disabled_edit_drivers = ''
 						else:
 							Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
-							disabled_edit_rivers = ''
+							disabled_edit_drivers = 'disabled'
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
 								'<option value = "'
@@ -248,7 +248,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		
 		if str(TreeSuperParentParam).strip() != 'Quote Items':
 			dbl_clk_function += (
-				"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+				"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#disabled_edit_drivers').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
 			)
 			#Trace.Write('date_field---'+str(date_field))
 		if str(CurrentTabName) == "Contract":
