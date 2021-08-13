@@ -329,6 +329,7 @@ class SyncQuoteAndCustomTables:
                             attributesdisallowedlst=[]
                             attributeReadonlylst=[]
                             attributesallowedlst=[]
+                            attributedefaultvalue = []
                             #overallattributeslist =[]
                             attributevalues={}
                             for rootattribute, rootvalue in Fullresponse.items():
@@ -346,6 +347,9 @@ class SyncQuoteAndCustomTables:
                                                     attributeReadonlylst.append(prdvalue['id'])
                                                 for attribute in prdvalue['values']:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
+                                                    if attribute["author"] in ("Default"):
+										                Trace.Write('524------'+str(prdvalue["id"]))
+										                attributedefaultvalue.append(prdvalue["id"])
                             
                             attributesallowedlst = list(set(attributesallowedlst))
                             #overallattributeslist = list(set(overallattributeslist))
@@ -391,7 +395,7 @@ class SyncQuoteAndCustomTables:
                                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR> 
-                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
                                     cpsmatc_incr = int(cpsmatchID) + 10
                                     Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
