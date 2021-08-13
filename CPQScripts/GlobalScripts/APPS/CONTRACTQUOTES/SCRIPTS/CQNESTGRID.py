@@ -2685,7 +2685,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             table_header += (
                 '<th data-field="'
                 + str(invs)
-                + '" data-filter-control="input" data-formatter="sendingequipmentchildHyperLink" data-sortable="true"><abbr title="'
+                + '" data-filter-control="input" data-formatter="sendingequipmentchildHyperLink" data-sortable="true"><abbr class ="hyperlink" title="'
                 + str(qstring)
                 + '">'
                 + str(qstring)
