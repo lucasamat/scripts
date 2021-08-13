@@ -1168,7 +1168,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			Getchildtable = Sql.GetFirst(
-				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED' AND VALUE_DRIVER_ID ='"
+				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
 				+ "' "
 			)
@@ -1267,7 +1267,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			GETFBVD = Sql.GetFirst(
-				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED' AND VALUE_DRIVER_ID ='"
+				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
 				+ "' "
 			)
