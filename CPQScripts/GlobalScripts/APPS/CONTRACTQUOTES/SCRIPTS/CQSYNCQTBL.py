@@ -501,7 +501,7 @@ class SyncQuoteAndCustomTables:
                         paydesc = ""
                         payrec = ""
                     # self.quote.OrderStatus.Name
-                    Log.Info("expired"+str(start_date))
+                    Log.Info("expired"+str(start_date)+"sdate---"+str(sdat))
                     sdat = datetime.now()
                     edat = date.today()+ timedelta(days=90)
                     Log.Info("expired2"+str(edat))
@@ -524,8 +524,7 @@ class SyncQuoteAndCustomTables:
                             if custom_fields_detail.get("QuoteLevel")
                             else "SALES ORG LEVEL",
                             "CONTRACT_VALID_FROM": start_date,
-                            "CONTRACT_VALID_TO": end_date,
-                            "QUOTE_CREATED_DATE": str(sdat),
+                            "CONTRACT_VALID_TO": end_date,                            
                             "QUOTE_EXPIRE_DATE":str(edat),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
