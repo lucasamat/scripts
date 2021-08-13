@@ -3517,6 +3517,15 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 												+ "</option>"
 											)
+											sec_str1 += (
+												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+												+ str(VAR1)
+												+ "</select>"
+											)
 										except:
 											
 											VAR1 += (
@@ -3524,15 +3533,16 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(disallow_style)
 												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
 											)
-								sec_str1 += (
-									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-									+ str(attrSysId)
-									+ '" type="text"  data-content ="'
-									+ str(attrSysId)
-									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
-									+ str(VAR1)
-									+ "</select>"
-								)
+											
+											sec_str1 += (
+												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+											)
+
+								
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 								#sec_str += "</select></td>"
 						
