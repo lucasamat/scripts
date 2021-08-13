@@ -2909,7 +2909,7 @@ def EntitlementTreeViewHTMLDetail(
 			if val.IS_DEFAULT == '1':
 				Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
 				attributedefaultvalue = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
-		Trace.Write('attributedefaultvalue--'+str(attributedefaultvalue))
+		Trace.Write('attributedefaultvalue--2912---'+str(attributedefaultvalue))
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
