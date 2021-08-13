@@ -7069,7 +7069,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
             "SAQSSA", str(par.QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID)
         )
         data_dict["SND_EQUIPMENT_ID"] = str(par.SND_EQUIPMENT_ID)
-        data_dict["SND_ASSEMBLY_ID"] = str(par.SND_ASSEMBLY_ID)
+        data_dict["SND_ASSEMBLY_ID"] = ('<abbr id ="'+str(par.SND_ASSEMBLY_ID)+'" title="' + str(par.SND_ASSEMBLY_ID) + '">' + str(par.SND_ASSEMBLY_ID) + "</abbr>")
         data_dict["SND_ASSEMBLY_DESCRIPTION"] = str(par.SND_ASSEMBLY_DESCRIPTION)
         data_dict["SND_EQUIPMENT_DESCRIPTION"] = str(par.SND_EQUIPMENT_DESCRIPTION)
         data_dict["GOT_CODE"] = str(par.GOT_CODE)
