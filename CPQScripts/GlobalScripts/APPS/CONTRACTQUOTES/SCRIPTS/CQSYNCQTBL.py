@@ -524,7 +524,8 @@ class SyncQuoteAndCustomTables:
                             if custom_fields_detail.get("QuoteLevel")
                             else "SALES ORG LEVEL",
                             "CONTRACT_VALID_FROM": start_date,
-                            "CONTRACT_VALID_TO": end_date,                            
+                            "CONTRACT_VALID_TO": end_date,
+                            "QUOTE_CREATED_DATE": str(sdat),                            
                             "QUOTE_EXPIRE_DATE":str(edat),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
