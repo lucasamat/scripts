@@ -7011,7 +7011,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
     else:
         Trace.Write("search with condition-")
         if TreeSuperParentParam == "Product Offerings":
-            Trace.Write('check-TreeSuperParentParam'+str(TreeSuperParentParam))
+            #Trace.Write('check-TreeSuperParentParam'+str(TreeSuperParentParam))
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED,GREENBOOK,EQUIPMENTTYPE_ID,EQUIPMENTCATEGORY_ID from SAQSSA (NOLOCK) where  "
                 + str(ATTRIBUTE_VALUE_STR)
@@ -13235,6 +13235,9 @@ def UpdateAssemblyLevel(Values):
     included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
     if get_total_count.cnt == included_count.cnt:
         Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+    else:
+        Sql.RunQuery("update SAQSSE set INCLUDED = '' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+
 
 
     #get_rec = Sql.GetList("select QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER'")
@@ -13607,8 +13610,8 @@ elif ACTION == 'BUNDLE CALC':
     ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
 elif ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
-    Trace.Write('values----'+str(selected_values))
+    #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
 elif ACTION == 'EDIT_ASSEMBLY':
-    Trace.Write('values----'+str(selected_values))
+    #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
