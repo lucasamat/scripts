@@ -607,6 +607,7 @@ def costfabview(ACTION,CurrentRecordId):
 	return sec_str,table_id,date_field,dbl_clk_function
 
 def Comp_fabview(ACTION,CurrentRecordId):	
+	Trace.Write("@@@610")
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
