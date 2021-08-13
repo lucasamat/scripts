@@ -13224,6 +13224,7 @@ def UpdateAssemblyLevel(Values):
                 else value
                 for value in Values
             ]
+    Trace.Write('unselected_values---'+str(unselected_values))
     un_selected_record_ids = [
                 CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
                 if value.strip() != "" and 'SAQSSA' in value
@@ -13345,7 +13346,8 @@ except:
 try:
     unselected_values= eval(Param.unselected_list)
     Trace.Write('unselected_list-----'+str(unselected_list))
-except:
+except Exception,e:
+    Trace.Write('unselected_values--error-'+str(e)))
     unselected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
