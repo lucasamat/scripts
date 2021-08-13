@@ -63,7 +63,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ "</th>"
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
-	disable_edit = ''
+	disabled_edit_rivers = ''
 	get_editable_list = []
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
@@ -102,10 +102,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					for qstns in GetDRIVNAME:
 						if qstn.EDITABLE:
 							Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
-							disable_edit = 'disabled'
+							disabled_edit_rivers = 'disabled_edit_rivers'
 						else:
 							Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
-							disable_edit = ''
+							disabled_edit_rivers = ''
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
 								'<option value = "'
@@ -123,7 +123,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 								+ "</option>"
 							)
 					sec_str1 += (
-						'<select class="form-control '+str(disable_edit)+'" id = "'
+						'<select class="form-control '+str(disabled_edit_rivers)+'" id = "'
 						+ str(field_name).replace(" ", "_")
 						+ '" disabled><option value="Select">..Select</option>'
 						+ str(VAR1)
