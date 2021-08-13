@@ -63,7 +63,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ "</th>"
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
-	
+	disable_edit = ''
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
 			sec_str1 = sec_str_eff = ""
@@ -79,7 +79,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			new_value_dict = {}
 			if str(TreeParam).upper() == "QUOTE INFORMATION":				
 				GetDRIVNAME = Sql.GetList(
-					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,EDITABLE FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
 					+ "' AND VALUEDRIVER_RECORD_ID = '"
 					+ str(mastername)
@@ -97,6 +97,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
 					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
 				for qstns in GetDRIVNAME:
+					if qstns.EDITABLE:
+						disable_edit = 'disable_edit'
+					else:
+						disable_edit = ''
 					if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 						VAR1 += (
 							'<option value = "'
@@ -114,7 +118,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 							+ "</option>"
 						)
 				sec_str1 += (
-					'<select class="form-control" id = "'
+					'<select class="form-control '+str(disable_edit)+'" id = "'
 					+ str(field_name).replace(" ", "_")
 					+ '" disabled><option value="Select">..Select</option>'
 					+ str(VAR1)
