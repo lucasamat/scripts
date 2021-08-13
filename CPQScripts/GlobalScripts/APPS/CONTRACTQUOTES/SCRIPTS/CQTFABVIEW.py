@@ -123,7 +123,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 								+ "</option>"
 							)
 					sec_str1 += (
-						'<select class="form-control '+str(disabled_edit_rivers)+'" id = "'
+						'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
 						+ str(field_name).replace(" ", "_")
 						+ '" disabled><option value="Select">..Select</option>'
 						+ str(VAR1)
