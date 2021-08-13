@@ -505,7 +505,7 @@ class SyncQuoteAndCustomTables:
                         paydesc = ""
                         payrec = ""
                     # self.quote.OrderStatus.Name
-                    Log.Info("expired"+str(start_date)+"sdate---"+str(sdat))
+                    #Log.Info("expired"+str(start_date)+"sdate---"+str(sdat))
                     sdat = datetime.now()
                     edat = date.today()+ timedelta(days=90)
                     Log.Info("expired2"+str(edat))
