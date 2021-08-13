@@ -1550,7 +1550,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 								attributeReadonlylst.append(prdvalue['id'])
 							for attribute in prdvalue['values']:								
 								attributevalues[str(prdvalue['id'])]=attribute['value']
-								if attribute["author"] == 'Default':
+								if attribute["author"] in ('Default'):
 									Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
 									attributedefaultvalue[str(prdvalue['id'])]=attribute['author']
 		attributesallowedlst = list(set(attributesallowedlst))
