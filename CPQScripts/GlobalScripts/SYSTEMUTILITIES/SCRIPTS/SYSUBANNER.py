@@ -1783,6 +1783,13 @@ def Related_Sub_Banner(
         SecondValue = "ALL"
         ThirdLable = ""
         ThirdValue = ""
+    elif TreeParam == 'Contract Items':
+        PrimaryLable = "Contract Items"
+        PrimaryValue = "ALL"
+        SecondLable = "Product Offering ID"
+        SecondValue = "ALL"
+        ThirdLable = ""
+        ThirdValue = ""
     elif TreeParentParam == 'Quote Items' and (subTabName == 'Equipment' or subTabName == 'Quote Item Fab Value Drivers' or subTabName == 'Quote Item Cost and Value Drivers'):
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
@@ -1794,7 +1801,7 @@ def Related_Sub_Banner(
         SixthLable = "Equipment"
         SixthValue = "All"
     elif TreeParentParam == 'Contract Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
-        Trace.Write("1207")	
+        Trace.Write("1797")	
         PrimaryLable = ListKey[0]
         PrimaryValue = PrimaryValue
         SecondLable = ListKey[1]
