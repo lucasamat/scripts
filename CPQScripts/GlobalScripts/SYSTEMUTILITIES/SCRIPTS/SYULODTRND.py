@@ -3522,7 +3522,7 @@ def EntitlementTreeViewHTMLDetail(
 											VAR1 += (
 												'<option '
 												+ str(disallow_style)
-												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.ENTITLEMENT_DISPLAY_VALUE,select = select_option)
+												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
 											)
 								sec_str1 += (
 									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
