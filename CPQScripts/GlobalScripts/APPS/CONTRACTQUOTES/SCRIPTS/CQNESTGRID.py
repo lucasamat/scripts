@@ -7009,8 +7009,9 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
                     QueryCount = QueryCountObj.cnt
                 
     else:
-        Trace.Write("search with condition")
+        Trace.Write("search with condition-")
         if TreeSuperParentParam == "Product Offerings":
+            Trace.Write('check-TreeSuperParentParam'+str(TreeSuperParentParam))
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+"  QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE, SND_EQUIPMENT_DESCRIPTION,SNDFBL_ID,INCLUDED from SAQSSA (NOLOCK) where  "
                 + str(ATTRIBUTE_VALUE_STR)
