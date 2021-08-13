@@ -105,7 +105,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 							disabled_edit_drivers = ''
 						else:
 							Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
-							disabled_edit_drivers = 'disabled'
+							disabled_edit_drivers = 'disabled_edit_drivers'
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
 								'<option value = "'
