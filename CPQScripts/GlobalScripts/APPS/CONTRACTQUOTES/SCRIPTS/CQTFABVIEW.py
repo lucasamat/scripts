@@ -96,34 +96,35 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				if selecter:
 					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
 					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-				for qstns in GetDRIVNAME:
-					if qstns.EDITABLE:
-						disable_edit = 'disable_edit'
-					else:
-						disable_edit = ''
-					if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
-						VAR1 += (
-							'<option value = "'
-							+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
-							+ '" selected>'
-							+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
-							+ "</option>"
-						)
-					else:
-						VAR1 += (
-							'<option value = "'
-							+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
-							+ '">'
-							+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
-							+ "</option>"
-						)
-				sec_str1 += (
-					'<select class="form-control '+str(disable_edit)+'" id = "'
-					+ str(field_name).replace(" ", "_")
-					+ '" disabled><option value="Select">..Select</option>'
-					+ str(VAR1)
-					+ "</select>"
-				)
+				if GetDRIVNAME:
+					for qstns in GetDRIVNAME:
+						if qstns.EDITABLE:
+							disable_edit = 'disable_edit'
+						else:
+							disable_edit = ''
+						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
+							VAR1 += (
+								'<option value = "'
+								+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
+								+ '" selected>'
+								+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
+								+ "</option>"
+							)
+						else:
+							VAR1 += (
+								'<option value = "'
+								+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
+								+ '">'
+								+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
+								+ "</option>"
+							)
+					sec_str1 += (
+						'<select class="form-control '+str(disable_edit)+'" id = "'
+						+ str(field_name).replace(" ", "_")
+						+ '" disabled><option value="Select">..Select</option>'
+						+ str(VAR1)
+						+ "</select>"
+					)
 			elif str(TreeParentParam).upper() == "FAB LOCATIONS" or str(TreeSuperParentParam) == 'Quote Items':
 				GetDRIVNAME = SqlHelper.GetList(
 						"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
