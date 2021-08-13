@@ -13338,7 +13338,7 @@ try:
     Trace.Write('selected_values-----'+str(selected_values))
 except:
     selected_values =[]
-    try:
+try:
     unselected_values= eval(Param.unselected_list)
     Trace.Write('unselected_list-----'+str(unselected_list))
 except:
