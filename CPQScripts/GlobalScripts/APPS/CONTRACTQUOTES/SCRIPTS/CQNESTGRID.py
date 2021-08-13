@@ -13224,7 +13224,7 @@ def UpdateAssemblyLevel(Values):
                 else value
                 for value in Values
             ]
-    Trace.Write('unselected_values---'+str(unselected_values))
+    #Trace.Write('unselected_values---'+str(unselected_values))
     un_selected_record_ids = [
                 CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
                 if value.strip() != "" and 'SAQSSA' in value
@@ -13233,8 +13233,8 @@ def UpdateAssemblyLevel(Values):
             ]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
-    Trace.Write('record_ids------inside-'+str(record_ids))
-    Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
+   # Trace.Write('record_ids------inside-'+str(record_ids))
+    #Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
     try:
         equipment_id = Param.equipment_id
     except:
@@ -13249,7 +13249,7 @@ def UpdateAssemblyLevel(Values):
         if get_total_count.cnt == included_count.cnt:
             Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
         else:
-            Sql.RunQuery("update SAQSSE set INCLUDED = '' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSSE set INCLUDED = 0 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
 
 
 
