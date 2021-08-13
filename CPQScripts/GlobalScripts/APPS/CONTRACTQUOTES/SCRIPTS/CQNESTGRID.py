@@ -13228,7 +13228,7 @@ def UpdateAssemblyLevel(Values):
                 CPQID.KeyCPQId.GetKEYId('SAQSSA', str(value))
                 if value.strip() != "" and 'SAQSSA' in value
                 else value
-                for value in unselected_list
+                for value in unselected_values
             ]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
@@ -13238,13 +13238,17 @@ def UpdateAssemblyLevel(Values):
         equipment_id = Param.equipment_id
     except:
         equipment_id =""
-    Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
-    get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
-    included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
-    if get_total_count.cnt == included_count.cnt:
-        Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
-    else:
-        Sql.RunQuery("update SAQSSE set INCLUDED = '' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+    if record_ids:
+        Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
+    if un_selected_record_ids :
+        Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
+    if equipment_id:
+        get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        if get_total_count.cnt == included_count.cnt:
+            Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+        else:
+            Sql.RunQuery("update SAQSSE set INCLUDED = '' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
 
 
 
