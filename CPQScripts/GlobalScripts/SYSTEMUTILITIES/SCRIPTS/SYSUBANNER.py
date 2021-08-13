@@ -585,7 +585,9 @@ def Related_Sub_Banner(
                                 if "ADD UNMAPPED EQUIPMENTS":
                                     sec_rel_sub_bnr += (str(btn))
                             else:
-                                if "ADD FROM LIST" in btn:        
+                                Trace.Write("btn_chk_1")
+                                if "ADD FROM LIST" in btn:      
+                                    Trace.Write("btn_chk_2")  
                                     sec_rel_sub_bnr += (str(btn))
                                     Trace.Write(str(btn))
 
