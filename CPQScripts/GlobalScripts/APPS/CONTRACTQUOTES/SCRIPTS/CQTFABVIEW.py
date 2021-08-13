@@ -380,6 +380,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 
 
 def servicefabview(ACTION,CurrentRecordId):		
+	Trace.Write("@@383")
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
@@ -390,7 +391,7 @@ def servicefabview(ACTION,CurrentRecordId):
 				}
 	date_field = []
 	
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE LIKE '%QUOTE BASED%'")
 	Trace.Write("379")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
@@ -618,7 +619,7 @@ def Comp_fabview(ACTION,CurrentRecordId):
 				}
 	date_field = []
 	
-	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE LIKE '%QUOTE BASED%'")
+	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
