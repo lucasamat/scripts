@@ -46,7 +46,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		#table_id = 'fabvaldrives'
 	else:
 		#table_id = 'fabvaluedrives'
-		GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'FAB BASED SURVEY'")
+		GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'FAB BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  > <thead><tr>')
 	
@@ -64,11 +64,13 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		)
 	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
 	disable_edit = ''
+	get_editable_list = []
 	if GetPRVLDR:
 		for qstn in GetPRVLDR:
 			sec_str1 = sec_str_eff = ""
 			VAR1 = coeffval = ""
 			userselectedeffi = []
+			
 			if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
 				mastername = str(qstn.VALUEDRIVER_RECORD_ID)
 				field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
@@ -79,7 +81,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			new_value_dict = {}
 			if str(TreeParam).upper() == "QUOTE INFORMATION":				
 				GetDRIVNAME = Sql.GetList(
-					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,EDITABLE FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
 					+ "' AND VALUEDRIVER_RECORD_ID = '"
 					+ str(mastername)
@@ -98,11 +100,11 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
 				if GetDRIVNAME:
 					for qstns in GetDRIVNAME:
-						if qstns.EDITABLE:
-							Trace.Write('102---if----'+str(qstns.VALUEDRIVER_VALUE_DESCRIPTION))
+						if qstn.EDITABLE:
+							Trace.Write('102---if----'+str(qstn.field_name))
 							disable_edit = 'disabled'
 						else:
-							Trace.Write('102----else---'+str(qstns.VALUEDRIVER_VALUE_DESCRIPTION))
+							Trace.Write('102----else---'+str(qstn.field_name))
 							disable_edit = ''
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
