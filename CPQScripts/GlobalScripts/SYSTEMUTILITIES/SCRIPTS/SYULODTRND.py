@@ -2906,7 +2906,7 @@ def EntitlementTreeViewHTMLDetail(
 		inserted_value_list = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
 		for val in GetXMLsecField:
 			Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
-			if val.IS_DEFAULT == 1:
+			if val.IS_DEFAULT == '1':
 
 				attributedefaultvalue = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
 		Trace.Write('attributedefaultvalue--'+str(attributedefaultvalue))
