@@ -99,8 +99,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				if GetDRIVNAME:
 					for qstns in GetDRIVNAME:
 						if qstns.EDITABLE:
-							disable_edit = 'disable_edit'
+							Trace.Write('102---if----'+str(qstns.VALUEDRIVER_VALUE_DESCRIPTION))
+							disable_edit = 'disabled'
 						else:
+							Trace.Write('102----else---'+str(qstns.VALUEDRIVER_VALUE_DESCRIPTION))
 							disable_edit = ''
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
