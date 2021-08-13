@@ -13238,9 +13238,9 @@ def UpdateAssemblyLevel(Values):
         equipment_id = Param.equipment_id
     except:
         equipment_id =""
-    if record_ids:
+    if record_ids != '()':
         Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
-    if un_selected_record_ids :
+    if un_selected_record_ids != '()':
         Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
     if equipment_id:
         get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
