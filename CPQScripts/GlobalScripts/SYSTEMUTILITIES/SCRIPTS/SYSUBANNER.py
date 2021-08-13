@@ -581,9 +581,13 @@ def Related_Sub_Banner(
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         Trace.Write("Inside addbut")  
                         for btn in multi_buttons:
-                            if "ADD FROM LIST" in btn:        
-                                sec_rel_sub_bnr += (str(btn))
-                                Trace.Write(str(btn))
+                            if "Sending Account" in btn:
+                                if "ADD UNMAPPED EQUIPMENTS":
+                                    sec_rel_sub_bnr += (str(btn))
+                            else:
+                                if "ADD FROM LIST" in btn:        
+                                    sec_rel_sub_bnr += (str(btn))
+                                    Trace.Write(str(btn))
 
             elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
                 if ObjName == 'CTCTIP' and subTabName == 'Detail':
