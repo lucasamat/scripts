@@ -2301,7 +2301,7 @@ class TreeView:
 									CurrentTabName = TestProduct.CurrentTab 
 								except:
 									CurrentTabName = "Quotes"                          
-								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Complementary Products'):									
+								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Complementary Products','Other Products'):									
 									if Currenttab == "Contracts":
 										Subwhere_string += " AND PRODUCT_TYPE = '{}'".format(NodeText)
 									elif NodeText == "Add-On Products":
