@@ -534,7 +534,7 @@ class Entitlements:
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
-									if attribute["author"] in ("Default"):
+									if attribute["author"] in ("Default","System"):
 										Trace.Write('524------'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
 								
@@ -663,7 +663,7 @@ class Entitlements:
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
 								for attribute in prdvalue["values"]:									
-									if attribute["author"] in ("Default"):
+									if attribute["author"] in ("Default","System"):
 										Trace.Write('524---658---'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
 			
@@ -1487,7 +1487,7 @@ class Entitlements:
 									for attribute in prdvalue["values"]:
 										#Trace.Write("attribute---"+str(attribute))
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										if attribute["author"] in ("Default"):
+										if attribute["author"] in ("Default","System"):
 											attributedefaultvalue.append(prdvalue["id"])
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
