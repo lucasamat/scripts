@@ -511,7 +511,7 @@ class SyncQuoteAndCustomTables:
                     # self.quote.OrderStatus.Name
                     #Log.Info("expired"+str(start_date)+"sdate---"+str(sdat))
                     #sdat = datetime.now()
-                    #edat = date.today()+ timedelta(days=90)
+                    expired_date = date.today()+ timedelta(days=90)
                     #Log.Info("expired2"+str(edat))
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
                     quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
@@ -534,7 +534,7 @@ class SyncQuoteAndCustomTables:
                             "CONTRACT_VALID_FROM": start_date,
                             "CONTRACT_VALID_TO": end_date,
                             #"QUOTE_CREATED_DATE": str(sdat),                            
-                            #"QUOTE_EXPIRE_DATE":str(edat),
+                            "QUOTE_EXPIRE_DATE":str(expired_date),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
                             #"EMPLOYEE_ID": custom_fields_detail.get("SalesPerson"),
