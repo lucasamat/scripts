@@ -412,6 +412,7 @@ for tab in Product.Tabs:
                                             sectalert = x.FIELD_LABEL
                                             Trace.Write("row----"+str(row))
                                             if x.API_NAME in row.keys():
+                                                Trace.Write("API_NAME_val==="+str(API_NAME_val))
                                                 API_NAME_val = row[x.API_NAME]                                                
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":                                                    
                                                     flag = "False"
@@ -648,6 +649,30 @@ for tab in Product.Tabs:
                                                     Product.Attributes.GetByName(
                                                         "SEC_N_TAB_PAGE_ALERT"
                                                     ).HintFormula = '<div class="col-md-12"   id="PageAlert"  ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert12" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert12" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"    ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>'
+
+                                                else:                                            
+                                                    col_name = (iskey.API_NAME).strip()
+                                                    if (
+                                                        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
+                                                        and flag == "True"
+                                                    ):                                                
+                                                        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
+
+                                                        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(sectalert)
+                                                        sectalert = ", ".join(Field_Labels)
+                                                        
+                                                        if len(Field_Labels) > 1:
+                                                            Product.Attributes.GetByName(
+                                                                "SEC_N_TAB_PAGE_ALERT"
+                                                            ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{0}' are required fields </label></div></div></div>".format(
+                                                                sectalert
+                                                            )                                                   
+                                                        if len(Field_Labels) <= 1:                                                    
+                                                            Product.Attributes.GetByName(
+                                                                "SEC_N_TAB_PAGE_ALERT"
+                                                            ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
+                                                                sectalert
+                                                            )    
                                         else:                                            
                                             col_name = (iskey.API_NAME).strip()
                                             if (
