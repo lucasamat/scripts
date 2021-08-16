@@ -754,7 +754,7 @@ try:
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			if objectName == 'SAQTSE' and GetXMLsecField:
 				#Log.Info('fab_dict----'+str(grnbk_dict))
-				get_value_query = Sql.GetList("select * from SAQSFB {} ".format(where_cond))
+				get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
 				#updateentXML = ""
 				for fab in get_value_query:
 					where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
