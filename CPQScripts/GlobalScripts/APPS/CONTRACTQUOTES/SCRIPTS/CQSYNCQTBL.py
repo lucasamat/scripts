@@ -509,8 +509,8 @@ class SyncQuoteAndCustomTables:
                         paydesc = ""
                         payrec = ""
                     # self.quote.OrderStatus.Name
-                    #Log.Info("expired"+str(start_date)+"sdate---"+str(sdat))
-                    #sdat = datetime.now()
+                    #Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
+                    created_date = datetime.now()
                     expired_date = date.today()+ timedelta(days=90)
                     #Log.Info("expired2"+str(edat))
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
@@ -533,7 +533,7 @@ class SyncQuoteAndCustomTables:
                             else "SALES ORG LEVEL",
                             "CONTRACT_VALID_FROM": start_date,
                             "CONTRACT_VALID_TO": end_date,
-                            #"QUOTE_CREATED_DATE": str(sdat),                            
+                            "QUOTE_CREATED_DATE": str(created_date),                            
                             "QUOTE_EXPIRE_DATE":str(expired_date),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
