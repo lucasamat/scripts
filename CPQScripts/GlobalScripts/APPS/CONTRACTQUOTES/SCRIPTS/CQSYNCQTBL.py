@@ -168,7 +168,7 @@ class SyncQuoteAndCustomTables:
                                     attributeReadonlylst.append(prdvalue['id'])
                                 for attribute in prdvalue['values']:
                                     attributevalues[str(prdvalue['id'])]=attribute['value']
-                                    if attribute["author"] in ("Default"):
+                                    if attribute["author"] in ("Default","System"):
                                         Trace.Write('524------'+str(prdvalue["id"]))
                                         attributedefaultvalue.append(prdvalue["id"])
             
@@ -351,7 +351,7 @@ class SyncQuoteAndCustomTables:
                                                     attributeReadonlylst.append(prdvalue['id'])
                                                 for attribute in prdvalue['values']:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
-                                                    if attribute["author"] in ("Default"):
+                                                    if attribute["author"] in ("Default","System"):
 										                Trace.Write('524------'+str(prdvalue["id"]))
 										                attributedefaultvalue.append(prdvalue["id"])
                             
