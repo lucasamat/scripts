@@ -456,18 +456,18 @@ class Entitlements:
 				else:
 					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
 		Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
-		if GetDefault:
-			#Trace.Write("GetDefault------")
-			if GetDefault.PRICE_METHOD:
-				pricemethodupdate = GetDefault.PRICE_METHOD
-			else:
-				pricemethodupdate = ''
-			if GetDefault.IS_DEFAULT == 0:
-				defaultval = '0'
-			else:
-				defaultval = '1'
-		else:
-			defaultval = '0'
+		# if GetDefault:
+		# 	#Trace.Write("GetDefault------")
+		# 	if GetDefault.PRICE_METHOD:
+		# 		pricemethodupdate = GetDefault.PRICE_METHOD
+		# 	else:
+		# 		pricemethodupdate = ''
+		# 	if GetDefault.IS_DEFAULT == 0:
+		# 		defaultval = '0'
+		# 	else:
+		# 		defaultval = '1'
+		# else:
+		# 	defaultval = '0'
 		attr_level_pricing = []
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
@@ -646,6 +646,17 @@ class Entitlements:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = ""
 			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
+			getval = Product.GetGlobal('Fullresponse')
+			for rootattribute, rootvalue in Fullresponse.items():
+				if rootattribute == "rootItem":
+					for Productattribute, Productvalue in rootvalue.items():
+						if Productattribute == "characteristics":
+							for prdvalue in Productvalue:
+								for attribute in prdvalue["values"]:									
+									if attribute["author"] in ("Default"):
+										Trace.Write('524---658---'+str(prdvalue["id"]))
+										attributedefaultvalue.append(prdvalue["id"])
+			Trace.Write("attributedefaultvalue------660------"+str(attributedefaultvalue))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
