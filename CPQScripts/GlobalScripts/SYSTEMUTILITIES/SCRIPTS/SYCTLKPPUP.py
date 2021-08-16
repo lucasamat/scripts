@@ -450,7 +450,7 @@ def GSCONTLOOKUPPOPUP(
                 #     VAL_Str = "SELECT top 10 * " + " FROM " + str(TABLEID)
                 #     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
                 elif str(TABLEID) == "SYOBJR":
-                    VAL_Str = "SELECT " + str(API_NAME_str) + " FROM " + str(TABLEID)
+                    VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))    
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
