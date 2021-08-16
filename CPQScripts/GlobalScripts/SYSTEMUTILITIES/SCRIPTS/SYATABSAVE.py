@@ -433,7 +433,8 @@ for tab in Product.Tabs:
                                             + "' and IS_KEY='True' "
                                         )
                                                                            
-                                        if iskey is not None and flag == "True":                                            
+                                        if iskey is not None and flag == "True": 
+                                            Trace.Write("99999")                                           
                                             col_name = (iskey.API_NAME).strip()                                            
                                             unique_val = row[col_name]                                            
                                             if unique_val is not None and unique_val != "":
