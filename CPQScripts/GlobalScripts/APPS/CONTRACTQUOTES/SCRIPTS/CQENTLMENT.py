@@ -646,7 +646,8 @@ class Entitlements:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = ""
 			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
-			getval = Product.GetGlobal('Fullresponse')
+			Fullresponse = Product.GetGlobal('Fullresponse')
+			Fullresponse = eval(Fullresponse)
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
