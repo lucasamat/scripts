@@ -645,7 +645,7 @@ class Entitlements:
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = ""
-			Trace.Write("-----------AttributeID----------------"+str(AttributeID))
+			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
