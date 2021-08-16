@@ -21,7 +21,7 @@ productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByNa
 
 
 class SYLDRTLIST:
-    def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP): 
+    def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id): 
         #current_prod = Product.Name or "Sales" 
         TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or ""
         materialRecID = useridval = getyears = col_year = footer_tot = ""
@@ -2098,6 +2098,8 @@ class SYLDRTLIST:
                             Qustr += " AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
                         elif  str(RECORD_ID) == "SYOBJR-98789" and "Receiving Account -" in TreeParam :
                             Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
+                        elif str(RECORD_ID) == "SYOBJR-98868":
+                            Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
                         Trace.Write('In 1958---'+str(Qustr))
                         Qury_str = (
                             "select DISTINCT top "
@@ -8044,7 +8046,11 @@ try:
 except:
     PR_CURR = ""
     TP= ""
-
+try:
+    equipment_id = Param.equipment_id
+    Trace.Write("EQUIPM_ID_CHK "+str(equipment_id))
+except:
+    equipment_id = ""
 try:
     Currenttab = Param.Currenttab    
 except:
@@ -8054,7 +8060,7 @@ except:
 
 
 if ACTION == "PRODUCT_ONLOAD": 
-    ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP))
+    ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
    
     ATTRIBUTE_NAME = Param.ATTRIBUTE_NAME
