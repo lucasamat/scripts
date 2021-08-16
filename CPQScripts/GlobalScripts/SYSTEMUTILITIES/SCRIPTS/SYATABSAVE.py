@@ -432,7 +432,7 @@ for tab in Product.Tabs:
                                             + TABLE_NAME
                                             + "' and IS_KEY='True' "
                                         )
-                                                                           
+                                        Trace.Write("99999888"+str(flag))                                   
                                         if iskey is not None and flag == "True": 
                                             Trace.Write("99999")                                           
                                             col_name = (iskey.API_NAME).strip()                                            
@@ -676,7 +676,8 @@ for tab in Product.Tabs:
                                                             ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
                                                                 sectalert
                                                             )    
-                                        else:                                            
+                                        else:   
+                                            Trace.Write("888")                                         
                                             col_name = (iskey.API_NAME).strip()
                                             if (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
