@@ -410,6 +410,7 @@ for tab in Product.Tabs:
                                     if Required_obj:
                                         for x in Required_obj:
                                             sectalert = x.FIELD_LABEL
+                                            Trace.Write("row----"+str(row))
                                             if x.API_NAME in row.keys():
                                                 API_NAME_val = row[x.API_NAME]                                                
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":                                                    
