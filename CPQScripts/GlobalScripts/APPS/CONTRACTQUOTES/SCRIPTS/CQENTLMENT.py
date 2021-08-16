@@ -657,7 +657,7 @@ class Entitlements:
 									if attribute["author"] in ("Default"):
 										Trace.Write('524---658---'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
-			Trace.Write("attributedefaultvalue------660------"+str(attributedefaultvalue))
+			
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
@@ -839,11 +839,11 @@ class Entitlements:
 						getcostbaborimpact = "{0:.2f}".format(EntCost4)
 						pricemethodupdate = curr """
 						#get_curr = curr
-					#Trace.Write("Cost---->"+str(getcostbaborimpact))
+					Trace.Write("key---->"+str(key))
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					
+					Trace.Write("attributedefaultvalue----846---"+str(attributedefaultvalue))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
