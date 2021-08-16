@@ -412,12 +412,14 @@ for tab in Product.Tabs:
                                             sectalert = x.FIELD_LABEL
                                             Trace.Write("row----"+str(row))
                                             if x.API_NAME in row.keys():
-                                                Trace.Write("API_NAME_val==="+str(API_NAME_val))
+                                                
                                                 API_NAME_val = row[x.API_NAME]                                                
-                                                if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":                                                    
+                                                if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
+                                                    Trace.Write("False111===")                                                    
                                                     flag = "False"
                                                     break
-                                                else:                                                    
+                                                else:
+                                                    Trace.Write("False===")                                                    
                                                     flag = "True"
 
                                         for req_add_new in Required_obj:
