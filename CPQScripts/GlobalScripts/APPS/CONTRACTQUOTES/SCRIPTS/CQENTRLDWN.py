@@ -755,10 +755,11 @@ try:
 			if objectName == 'SAQTSE' and GetXMLsecField:
 				#Log.Info('fab_dict----'+str(grnbk_dict))
 				get_value_query = Sql.GetList("select * from SAQSFB {} ".format(where_cond))
-				updateentXML = ""
+				#updateentXML = ""
 				for fab in get_value_query:
 					where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
 					get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
+					updateentXML = ""
 					for value in GetXMLsecField:
 						get_value = value.ENTITLEMENT_DISPLAY_VALUE
 						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
