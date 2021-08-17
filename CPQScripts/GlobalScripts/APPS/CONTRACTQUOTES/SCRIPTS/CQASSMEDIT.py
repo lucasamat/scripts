@@ -73,7 +73,7 @@ def UpdateAssemblyLevel(Values):
                     ##Assembly level roll down
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
-
+                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
                     update_query = """ UPDATE TGT 
                         SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
                         TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
@@ -81,7 +81,7 @@ def UpdateAssemblyLevel(Values):
                         TGT.CpqTableEntryModifiedBy = {},
                         TGT.CpqTableEntryDateModified = '{}'
                         FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
-                        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,whereReq)
+                        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
                     Sql.RunQuery(update_query)
    
     return True
