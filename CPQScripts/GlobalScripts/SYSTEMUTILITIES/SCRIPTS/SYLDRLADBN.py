@@ -474,9 +474,8 @@ btnactn = ButtonAction()
 
 # BY DEFAULT NOTIFICATION BANNER SETS TO FALSE
 myAttribute = productAttributesGetByName("SEC_N_TAB_PAGE_ALERT")
-# if myAttribute  and myAttribute.HintFormula == "TAB PAGE ALERT":
-    # myAttribute.HintFormula, myAttribute.Allowed = "", False
-    # myAttribute.Allowed = True 
+if myAttribute  and myAttribute.HintFormula == "TAB PAGE ALERT":
+    myAttribute.HintFormula, myAttribute.Allowed = "", False     
 # DECLARE LOCAL VARIABLES
 QuestionRecId, val, TabName, TABLE_RECORDID = "", "Tab list", "", ""
 # GET CURRENT ACTION
