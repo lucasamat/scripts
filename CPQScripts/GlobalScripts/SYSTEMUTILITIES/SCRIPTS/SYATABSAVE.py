@@ -435,9 +435,9 @@ for tab in Product.Tabs:
                                         Trace.Write("99999888"+str(flag))                                   
                                         if iskey is not None and flag == "True": 
                                             Trace.Write("99999")                                           
-                                            col_name = (iskey.API_NAME).strip()
-                                            col_name = col_name.upper()                                                                                        
-                                            unique_val = row[col_name]                                            
+                                            col_name = (iskey.API_NAME).strip()                                                                                                                                    
+                                            unique_val = row[col_name] 
+                                            unique_val = unique_val.upper()                                           
                                             if unique_val is not None and unique_val != "":
                                                 is_key_table = Sql.GetFirst(
                                                     "select "
