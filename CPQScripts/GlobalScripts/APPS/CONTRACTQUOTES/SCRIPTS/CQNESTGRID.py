@@ -12,6 +12,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
 import SYCNGEGUID as CPQID
+import System.Net
 
 
 def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
