@@ -244,7 +244,7 @@ class SyncQuoteAndCustomTables:
                                 val = "COMPREHENSIVE SERVICES"
                             elif str(ent_disp_val) == 'Complementary':
                                 val = "COMPLEMENTARY PRODUCTS"
-                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(str(val),quote_record_id))
+                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID))
                                                
                         DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                         #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
