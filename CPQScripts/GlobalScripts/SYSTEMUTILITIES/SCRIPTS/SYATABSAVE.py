@@ -556,6 +556,7 @@ for tab in Product.Tabs:
 
                                                                                                        
                                                     else:
+                                                        Trace.Write('123456')
                                                         ##CPQ Attribute name starts                                                        
                                                         if ("SAPCPQ_ATTRIBUTE_NAME" in row) and TABLE_NAME == "SYTABS":
                                                             if (str(row["APP_ID"]) != ""):
