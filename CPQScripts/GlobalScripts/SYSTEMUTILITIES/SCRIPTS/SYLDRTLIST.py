@@ -3070,7 +3070,7 @@ class SYLDRTLIST:
                                                 except:
                                                     value1234
                                             new_dict[value123] = (
-                                                '<abbr id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>' + value1234 + '</abbr>'
+                                                '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>' + value1234 + '</input>'
                                             )
                                         else:                                            
                                             if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
