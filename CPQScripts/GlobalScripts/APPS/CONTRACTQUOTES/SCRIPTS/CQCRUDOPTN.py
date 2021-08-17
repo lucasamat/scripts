@@ -1603,9 +1603,15 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						ent_disp_val = ent_disp_val	
 				else:
 					ent_disp_val = ent_disp_val	
-				""" if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
-					#Log.Info("ENTERED POA----------->")
-					Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(ent_disp_val,self.contract_quote_record_id)) """ 
+				#A055S000P01-7401 START
+				if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
+					val = ""
+					if str(ent_disp_val) == 'Comprehensive':
+						val = "COMPREHENSIVE SERVICES"
+					elif str(ent_disp_val) == 'Complementary':
+						val = "COMPLEMENTARY PRODUCTS"
+					Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),self.contract_quote_record_id,OfferingRow_detail.SERVICE_ID))
+				#A055S000P01-7401 END
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
