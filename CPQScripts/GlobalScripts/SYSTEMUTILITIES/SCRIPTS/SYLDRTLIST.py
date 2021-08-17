@@ -3073,7 +3073,7 @@ class SYLDRTLIST:
                                             #     '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>'
                                             # )        
                                             new_dict[value123] = (
-                                                '<abbr type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>' + value1234 + '</abbr>'
+                                                '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled></input>'
                                             )
                                         else:                                            
                                             if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
