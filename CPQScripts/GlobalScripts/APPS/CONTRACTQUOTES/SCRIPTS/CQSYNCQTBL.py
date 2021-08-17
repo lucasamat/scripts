@@ -238,7 +238,7 @@ class SyncQuoteAndCustomTables:
                             ent_disp_val = ent_disp_val
 
                         if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
-                            Log.Info("ENTERED POA----------->")
+                            #Log.Info("ENTERED POA----------->")
                             val = ""
                             if str(ent_disp_val) == 'Comprehensive':
                                 val = "COMPREHENSIVE SERVICES"
