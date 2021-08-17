@@ -526,7 +526,7 @@ def costfabview(ACTION,CurrentRecordId):
 		TP = str(TreeParam)
 		TP1 = TP.split('-')
 		TreeParam = TP1[1].strip()
-	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeParam)+"'")
+	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
