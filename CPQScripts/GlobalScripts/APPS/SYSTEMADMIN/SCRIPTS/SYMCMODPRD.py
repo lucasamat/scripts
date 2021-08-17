@@ -1760,7 +1760,7 @@ if str(RecordNo) == "":
 	RecordNo = Param.Primary_Data
 
 if str(RecordNo) != "":
-	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME,PASSWORD,DOMAIN FROM SYCONF (NOLOCK)")
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
 	if LOGIN_CREDENTIALS is not None:
 		Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
 		Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
