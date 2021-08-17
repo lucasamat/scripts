@@ -620,15 +620,7 @@ class Entitlements:
 							Trace.Write('except'+str(e))
 							ent_disp_val = 	attrValue
 							ent_val_code = attrValue
-						if attrSysId == "AGS_KPI_BNS_PNL" and ent_disp_val == "Yes":
-							Trace.Write("YES to Bonus & Penalty Tied to KPI")
-							getAddOn = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO WHERE ADNPRD_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
-							if getAddOn is None:
-								GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
-								Sql.RunQuery("INSERT INTO SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_ID,ADNPRD_DESCRIPTION,ADNPRD_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID) SELECT CONVERT(VARCHAR(4000),NEWID()),'Z0046','{description}','{recordid}',SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID FROM SAQTSV (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID WHERE SAQTSV.SERVICE_ID = 'Z0091' AND SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{quote}'".format(description=GetMaterial.SAP_DESCRIPTION,recordid=GetMaterial.MATERIAL_RECORD_ID,quote=self.ContractRecordId))
-						elif attrSysId == "AGS_KPI_BNS_PNL" and ent_disp_val == "No":
-							Trace.Write("NO to Bonus & Penalty Tied to KPI")
-							Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))
+						
 						
 
 						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
