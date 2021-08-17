@@ -687,6 +687,7 @@ class SyncQuoteAndCustomTables:
                                 salesorg_data.update({"CUSTAXCAT_ID": tax_details.TAXCATEGORY_ID,"CUSTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "CUSTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "CUSTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
                         quote_salesorg_table_info.AddRow(salesorg_data)
                         Log.Info('salesorg_data---443--'+str(salesorg_data))
+                        Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
                         Sql.Upsert(quote_salesorg_table_info)
                         ##Commented the condition to update the pricing procedure for both spare and tool based quote
                         #if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
