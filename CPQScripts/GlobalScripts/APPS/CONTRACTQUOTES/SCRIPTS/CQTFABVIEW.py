@@ -210,6 +210,12 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				else:
 					userselectedeff = ''
 				for qstns in GetDRIVNAME:					
+					if qstn.EDITABLE:
+						Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
+						disabled_edit_drivers = ''
+					else:
+						Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
+						disabled_edit_drivers = 'disabled_edit_drivers'
 					if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 						VAR1 += (
 							'<option value = "'
@@ -229,7 +235,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 						)
 				
 				sec_str1 += (
-					'<select class="form-control" id = "'
+					'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
 					+ str(field_name).replace(" ", "_")
 					+ '" disabled><option value="Select">..Select</option>'
 					+ str(VAR1)
