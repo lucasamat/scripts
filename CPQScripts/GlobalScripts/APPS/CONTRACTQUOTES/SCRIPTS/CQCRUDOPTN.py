@@ -3142,7 +3142,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							CPQTABLEENTRYADDEDBY,
 							CPQTABLEENTRYDATEADDED,
 							CpqTableEntryModifiedBy,
-							CpqTableEntryDateModified
+							CpqTableEntryDateModified,
+							INCLUDED
 							) SELECT
 								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 								EQUIPMENT_ID,
@@ -3176,7 +3177,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								'{UserName}' AS CPQTABLEENTRYADDEDBY,
 								GETDATE() as CPQTABLEENTRYDATEADDED,
 								{UserId} as CpqTableEntryModifiedBy,
-								GETDATE() as CpqTableEntryDateModified
+								GETDATE() as CpqTableEntryDateModified,
+								'TOOL' as INCLUDED
 								FROM SAQFEQ (NOLOCK) JOIN SAQTSV (NOLOCK) ON
 								SAQFEQ.QUOTE_ID = SAQTSV.QUOTE_ID AND
 								SAQTSV.SERVICE_ID = '{TreeParam}' AND
@@ -3196,7 +3198,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 							)
 				)
-				# Trace.Write("Added for sending equip insert issue "+str(self.tree_parent_level_0))
+				Trace.Write("Added for sending equip insert issue "+str(self.tree_parent_level_0))
 				# self._process_query(
 				# 	"""
 				# 		INSERT SAQSCO (
@@ -3351,7 +3353,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						CpqTableEntryDateModified,
 						FABLOCATION_ID,
 						FABLOCATION_NAME,
-						FABLOCATION_RECORD_ID
+						FABLOCATION_RECORD_ID,
+						INCLUDED
 						) SELECT
 							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 							EQUIPMENT_ID,
@@ -3397,7 +3400,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							GETDATE() as CpqTableEntryDateModified,
 							'' AS FABLOCATION_ID,
 							'' AS FABLOCATION_NAME,
-							'' AS FABLOCATION_RECORD_ID
+							'' AS FABLOCATION_RECORD_ID,
+							'TOOL' as INCLUDED
 							FROM 
 							SYSPBT (NOLOCK)
 							JOIN SAQFEQ (NOLOCK) ON SAQFEQ.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID AND SAQFEQ.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
