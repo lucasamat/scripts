@@ -1608,20 +1608,21 @@ def Related_Sub_Banner(
 
     elif (TreeSuperParentParam == "Sending Equipment" or TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" )):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        Trace.Write("1358")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        Trace.Write("check345"+str(FifthValue))
-        #FourthLable = "Equipment"
-        #FourthValue = "ALL"
+        if str(subTabName) != "Equipment":
+            Trace.Write("1358")
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(TreeTopSuperParentParam)
+            SecondLable = "Fab Location ID"
+            SecondValue = str(TreeParentParam)
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParam)
+            FourthLable = "Equipment ID"
+            FourthValue = str(EquipmentId)
+            FifthLable = "Serial Number"
+            FifthValue = str(SerialNumber)
+            Trace.Write("check345"+str(FifthValue))
+            #FourthLable = "Equipment"
+            #FourthValue = "ALL"
     elif (TreeTopSuperParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Equipment Details' or subTabName == 'Greenbook Fab Value Drivers' or subTabName == 'Details'  or subTabName == 'Equipment Fab Value Drivers')) and ("Sending" not in TreeParam or "Receiving" not in TreeParam):
         if ("Sending" not in TreeParam and "Receiving" not in TreeParam) and ("Sending" not in TreeParentParam and "Receiving" not in TreeParentParam):
             getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
