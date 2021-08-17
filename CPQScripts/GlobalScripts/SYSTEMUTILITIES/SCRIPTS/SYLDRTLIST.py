@@ -223,7 +223,7 @@ class SYLDRTLIST:
                         Product.GetGlobal("TreeParentLevel3"),
                         Product.GetGlobal("TreeParentLevel4"),
                     )
-                 
+                
 
                 else:
                     Trace.Write('kkkkkkk')
@@ -762,7 +762,7 @@ class SYLDRTLIST:
                         + "'"
                     )
                     
-                   
+                
                 elif RECORD_ID == "SYOBJR-94441":
                     Trace.Write('94441###------')                    
                     RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00152").GetValue()
@@ -801,11 +801,11 @@ class SYLDRTLIST:
                     )
                     if gettabval:
                         getrecordpage = gettabval.PAGE_NAME
-                  
+                
                     Qustr = " where PAGE_NAME = '" + str(getrecordpage) + "'"
                 elif RECORD_ID == "SYOBJR-94490":
                     tabRecord = ""
-                   
+                
                     GetappValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00154").GetValue()                   
                     gettabres = Sql.GetFirst(
                         "Select RECORD_ID from SYSECT where PAGE_LABEL = '"
@@ -862,7 +862,7 @@ class SYLDRTLIST:
                         getpagename = gettabval.PAGE_NAME
                     Qustr = " where PAGE_NAME = '" + str(getpagename) + "'"                    
                 # elif RECORD_ID == "SYOBJR-98788":
-                  
+                
                 #     if ObjectName == 'SAQTSV'and TreeParentParam == 'Offerings':
                 #         Qustr = " WHERE SERVICE_TYPE = '{}'".format(TreeParam)
                 else:                    
@@ -1156,7 +1156,7 @@ class SYLDRTLIST:
                     #elif RECORD_ID == "SYOBJR-95843":     
                         
                         #RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00200").GetValue()
-   
+
                     elif RECORD_ID == "SYOBJR-93123":
                         Wh_API_NAME = "PROFILE_ID"
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
@@ -1303,9 +1303,9 @@ class SYLDRTLIST:
                     TreeParam = Product.GetGlobal("TreeParam")
                     TreeParentParam = Product.GetGlobal("TreeParentLevel0")
                     try:
-		                CurrentTabName = TestProduct.CurrentTab
+                        CurrentTabName = TestProduct.CurrentTab
                     except:
-		                CurrentTabName = "Quotes"
+                        CurrentTabName = "Quotes"
                     if str(RECORD_ID) == "SYOBJR-98795":                                           
                         qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
                             contract_quote_record_id) + "'")
@@ -1772,7 +1772,7 @@ class SYLDRTLIST:
                             + "' "
                         )
                     elif str(RECORD_ID) == "SYOBJR-98816":
-                                               
+                                            
                         #contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                         contract_quote_record_id = Quote.GetGlobal("contract_record_id")
                         Trace.Write("Contract "+str(contract_quote_record_id))
@@ -1803,8 +1803,8 @@ class SYLDRTLIST:
                         )
                         
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
-                                      
-                     ## involved parties equipmemt starts
+                                    
+                    ## involved parties equipmemt starts
                     elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start                        
                         pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
                         if Qustr:
@@ -2067,7 +2067,7 @@ class SYLDRTLIST:
                         
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     elif str(RECORD_ID) == "SYOBJR-98817":
-                                               
+                                            
                         #contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                         contract_quote_record_id = Quote.GetGlobal("contract_record_id")
                         Trace.Write("Contract"+str(contract_quote_record_id))
@@ -2093,7 +2093,7 @@ class SYLDRTLIST:
                         )
                         
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)   
-                   
+                
 
                     else:
                         if  str(RECORD_ID) == "SYOBJR-98789" and "Sending Account -" in TreeParam :
@@ -2446,7 +2446,7 @@ class SYLDRTLIST:
                     QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                 elif str(RECORD_ID) == "SYOBJR-95985" and str(current_tab) == "Page":
                     #tree_var = Sql.GetFirst("SELECT * FROM SYTREE WHERE PAGE_RECORD_ID = '"+str(RecAttValue)+"'") 
-                      
+                    
                     Qustr = "WHERE TREE_NAME = '"+str(TreeParentParam)+"' "
                     Qury_str = (
                         "select DISTINCT top "
@@ -2618,7 +2618,7 @@ class SYLDRTLIST:
                     if QueryCount_Obj is not None:
                         QueryCount = QueryCount_Obj.cnt
             
-          
+        
             tab_obj1 = Sql.GetFirst(
                 "SELECT PG.TAB_NAME,PG.TAB_RECORD_ID FROM SYSECT (nolock) SE INNER JOIN SYPAGE (nolock) PG on SE.PAGE_RECORD_ID = PG.RECORD_ID WHERE SE.PRIMARY_OBJECT_NAME='"
                 + str(ObjectName)
@@ -2705,7 +2705,7 @@ class SYLDRTLIST:
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             elif ObjectName == "SAQSAO":
                                 Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
-                               
+                            
 
 
                     Trace.Write("12111111===3=====>"+str(Action_permission.get("Edit")).upper())
@@ -3247,7 +3247,7 @@ class SYLDRTLIST:
             )
             filter_control_function +=("$('#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F_RelatedMutipleCheckBoxDrop_0').on('checkChange', function (event){ setTimeout(function () { try{ var GetValInput = $('#dropdownlistContentSYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F_RelatedMutipleCheckBoxDrop_0 span').text(); gevalSplit = GetValInput.split(','); if(gevalSplit[0].indexOf('>') != -1){ var RemoveImg = (GetValInput).split('>'); if(gevalSplit[1] != undefined) imgtext = RemoveImg[1]+','+gevalSplit[1]; else imgtext = RemoveImg[1]; } else if(gevalSplit[1].indexOf('>') != -1){ var RemoveImg = (GetValInput).split('>'); if(gevalSplit[0] != undefined) imgtext = gevalSplit[0]+','+RemoveImg[1]; else imgtext = RemoveImg[1]; } else{ imgtext = GetValInput; } $('#dropdownlistContentSYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F_RelatedMutipleCheckBoxDrop_0 span').text(imgtext); } catch(err){ console.log('wrong---'); } }, 600); });")                                      
                     
-           
+        
             # Item Covered Object Column Grouping - Start
             table_group_columns = ''
             
@@ -3258,7 +3258,7 @@ class SYLDRTLIST:
                 qstring = attr_list.get(str(invs)) or ""
                 if qstring == "":
                     qstring = invs.replace("_", " ")
-               
+            
                 rowspan = ''
                 if RECORD_ID == 'SYOBJR-00009':
                     rowspan = 'rowspan="2"'
@@ -3342,7 +3342,7 @@ class SYLDRTLIST:
                             )
                         else:
                             if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP"):
-                               
+                            
                                 table_header += (
                                     '<th  data-field="'
                                     + str(invs)
@@ -3397,7 +3397,7 @@ class SYLDRTLIST:
                 elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
                     
                     align = ''
-                   
+                
                     if not table_group_columns:
                         table_header += '<th colspan="7" data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
                     if str(invs) in right_align_list:
@@ -3501,7 +3501,7 @@ class SYLDRTLIST:
                     )
                                         
                 else:
-                                       
+                                    
                     dblclick_ele.append(invs)
                     if str(invs) in right_align_list:                        
                         visible = ""
@@ -3782,7 +3782,7 @@ class SYLDRTLIST:
             )           
             if objss_obj:
                 try:
-                     
+                    
                     FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
                     FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
                     FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
@@ -3810,7 +3810,7 @@ class SYLDRTLIST:
                         filter_level_list.append(filter_level_data)
                 except:
                     if str(objss_obj.PICKLIST).upper() == "TRUE": 
-                                         
+                                        
                         filter_level_data = "select"
                         filter_clas_name = (
                             '<div  id = "'
@@ -4058,17 +4058,17 @@ class SYLDRTLIST:
                 + str(table_id)
                 + '").colResizable({ resizeMode:"overflow"}); }, 5000); }'
             )
-              
+            
         filter_control_function += (
             "try {$('#SYOBJR_00005_7EAA11B4_82C9_400B_8E48_65497373A578').on('check-all.bs.table', function (e, row) {console.log('spare test edit----');$('#spare-parts-bulk-edit-btn').css('display','block') ;var selectedspares = []; var selectAll = false; $('#SYOBJR_00005_7EAA11B4_82C9_400B_8E48_65497373A578').find('[type =\"checkbox\"]:checked').map(function () { console.log('checked checkbox select------');if ($(this).attr('name') == 'btSelectAll'){ selectAll = true; } var sel_val = $(this).closest('tr').find('td:nth-child(3)').text(); if (sel_val != '') { selectedspares.push(sel_val);$('#spare-parts-bulk-edit-btn').css('display','block'); }else{$('#spare-parts-bulk-edit-btn').css('display','none');} }); console.log('selectedspares---',selectedspares); localStorage.setItem('selectedspares', selectedspares);if(selectedspares){console.log('indide spares--selectAll---',selectAll);}$('#SYOBJR_00005_7EAA11B4_82C9_400B_8E48_65497373A578').find('[type =\"checkbox\"]:not(:checked)').map(function () {console.log('indide spares--selectAll---',selectAll); if ($(this).attr('name') == 'btSelectAll'){$('#spare-parts-bulk-edit-btn').css('display','none');} })}) }catch (err){console.log('catch-----')}"
         )
         filter_control_function += ("try {$('#SYOBJR_95825_CD53CDDF_4575_493A_AFEF_BE4811E922FA').on('check-all.bs.table', function (e, row) {console.log('spare test edit----');var selectedconstriants= []; var selectAll = false; $('#SYOBJR_95825_CD53CDDF_4575_493A_AFEF_BE4811E922FA').find('[type =\"checkbox\"]:checked').map(function () { console.log('checked checkbox select------');if ($(this).attr('name') == 'btSelectAll'){ selectAll = true; } var sel_val = $(this).closest('tr').find('td:nth-child(3)').text(); if (sel_val != '') { $('#DROP_CONSTRAINT_BTN').css('display','block');$('#RECREATE_CONSTRAINT_BTN').css('display','none');$('#ADDNEW__SYOBJR_95825_SYOBJ_00426').css('display','none'); }else{$('#spare-parts-bulk-edit-btn').css('display','none');} }); console.log('selectedspares---',selectedspares); $('#SYOBJR_95825_CD53CDDF_4575_493A_AFEF_BE4811E922FA').find('[type =\"checkbox\"]:not(:checked)').map(function () {console.log('indide spares--selectAll---',selectAll); if ($(this).attr('name') == 'btSelectAll'){$('#DROP_CONSTRAINT_BTN').css('display','none');$('#RECREATE_CONSTRAINT_BTN').css('display','none');$('#ADDNEW__SYOBJR_95825_SYOBJ_00426').css('display','block');} })}) }catch (err){console.log('catch-----')}")
         
-  
+
         dbl_clk_function += (
             "try {var bildict = [];$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').on('click-row.bs.table', function (e, row, $element) { $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').find(':input(:disabled)').prop('disabled', false);$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); $('.billclassedit').parent().css('background-color','lightyellow');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305  tbody  tr td input').css('background-color','lightyellow');$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); var BillingmatrixBtn = $('.secondary_highlight_panel').find('button#REFRESH_MATRIX'); var billsave = $('.secondary_highlight_panel').find('button#billingmatrix_save'); var billcan = $('.secondary_highlight_panel').find('button#billingmatrix_cancel'); if (BillingmatrixBtn.length == 1){ BillingmatrixBtn.remove() } $('#billingmatrix_save').css('display','block'); $('#billingmatrix_cancel').css('display','block');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 tbody tr td input').change(function () {console.log('on change function--');var getbillamt = $(this).val();console.log('getbillamt-------',getbillamt);var equipid = $(this).closest('tr').find('td:nth-child(4)').text();console.log('eduip-----',equipid);var test = $(this).closest('td').index();var getindex = test+1;var getheaderdate = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();var getannualtotal = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();console.log('getannualtotal----',getannualtotal);var concate_data = equipid+ ' - '+getheaderdate+ '- '+getbillamt;if(!bildict.includes(concate_data)){bildict.push(concate_data)};getbilldictdata = JSON.stringify(bildict);localStorage.setItem('getbilldictdata', getbilldictdata);}); })}catch (err){console.log('catch-----')}"
         )
-                         
+                        
         if ObjectName == 'SAQICO':
             cls = "eq(3)"
             SAQICO_dbl_clk_function += (
@@ -4410,7 +4410,7 @@ class SYLDRTLIST:
                 Qstn_REC_ID = Qstn_where_obj.SAPCPQ_ATTRIBUTE_NAME
                 if Qstn_REC_ID != "":
                     wh_Qstn_REC_ID = "QSTN_" + Qstn_REC_ID.replace("-", "_")  
-                                     
+                                    
                     RecAttValue = ""
                     try:
                         RecAtt = productAttributesGetByName(str(wh_Qstn_REC_ID))
@@ -4561,11 +4561,11 @@ class SYLDRTLIST:
                             Wh_API_NAMEs = Wh_API_NAMEs + " ASC"
                     else:                        
                         Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper() 
-                                              
+                                            
                 Trace.Write('Sort param '+str(Wh_API_NAMEs))
                 ATTRIBUTE_VALUE_STR = ""
                 Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
-                              
+                            
 
                 if ATTRIBUTE_NAME:
                     if ObjectName == 'SAQICO' and RECORD_ID == 'SYOBJR-00009': #added the code for pricing status image filters
@@ -4657,7 +4657,7 @@ class SYLDRTLIST:
                                 else str(SYOBJD_obj.FORMULA_DATA_TYPE)
                             )
                             picklist_data = str(SYOBJD_obj.PICKLIST)
-                                                      
+                                                    
                         if str(quer_values).find(",") == -1:
                             
                             if str(picklist_data).upper() == "TRUE":
@@ -4733,7 +4733,7 @@ class SYLDRTLIST:
                                 else:
                                     ATTRIBUTE_VALUE_STR += str(quer_value) + " = '" + str(quer_values) + "' and "
                             else:
-                                                             
+                                                            
                                 if re.search(r"(\d+/\d+/\d+)", quer_values) and api_data_type in ("DATE"):
                                     if api_data_type == "DATE":
                                         re_format = r"^(((0)[0-9])|((1)[0-2]))(\/)([0-2][0-9]|(3)[0-1])(\/)\d{4}$"
@@ -5031,7 +5031,7 @@ class SYLDRTLIST:
                         )
                         QuryCount_str = (
                             "select count(U.ID) as cnt from USERS U (nolock)  inner join users_permissions up on U.id = up.user_id  where "
-                             + str(ATTRIBUTE_VALUE_STR)
+                            + str(ATTRIBUTE_VALUE_STR)
                             + " up.permission_id = '"
                             + str(permiss_id)
                             + "'  "
@@ -6031,7 +6031,7 @@ class SYLDRTLIST:
                             + str(Page_End)
                             + ""
                         )
-                     
+                    
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     
                     elif str(RECORD_ID) == "SYOBJR-98864":
@@ -6289,7 +6289,7 @@ class SYLDRTLIST:
                     elif RECORD_ID == "SYOBJR-94452":                        
                         Wh_API_NAME = "ROLE_RECORD_ID"
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00001").GetValue()
-                          
+                        
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"                             
                     elif RECORD_ID == "SYOBJR-98782":
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" TAB_LABEL = '" + str(TreeParentParam) + "'"
@@ -6409,7 +6409,7 @@ class SYLDRTLIST:
                         + str(TreeParentParam)
                         + "') m where m.ROW BETWEEN 1 and 10"
                         )
-                       
+                    
                         QuryCount_str = (
                             "select count(*) as cnt from SYSECT (nolock) where PAGE_LABEL = '" + str(TreeParentParam) + "'"
                         )
@@ -6923,7 +6923,7 @@ class SYLDRTLIST:
                             else:
                                 col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'        
                             if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
-                                                              
+                                                            
                                 imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                                 acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                                 exclamation = '<img title="Approval Required" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
@@ -7367,7 +7367,7 @@ class SYLDRTLIST:
                                 icon = '<img title="Approval Required" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
                             else:
                                 icon = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg'
-                           
+                        
 
 
                             if TreeParam == "Quote Items":                                
@@ -7403,7 +7403,7 @@ class SYLDRTLIST:
                                 Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id, chain_step_name = step_id,chain_id = TreeParentParam,step_value = round_value ) + str(Page_start) + " and " + str(Page_End))
                                 QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,chain_step_name = step_id,chain_id =  TreeParentParam,step_value = round_value)
                             else:
-                               
+                            
                                 Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY {Wh_API_NAMEs}) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{Chain}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,Chain = TreeParam,Wh_API_NAMEs = Wh_API_NAMEs ) + str(Page_start) + " and " + str(Page_End))
                                 QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{Chain}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,Chain = TreeParam)
                         elif RECORD_ID == 'SYOBJR-98841':
@@ -7532,7 +7532,7 @@ class SYLDRTLIST:
                 
                 if str(Qury_str) == "" and str(QuryCount_str) == "": 
                     Trace.Write("7105")
-                         
+                        
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]")
                     Qury_str = (
                         "select top "
@@ -7558,7 +7558,7 @@ class SYLDRTLIST:
                 try:
                     Query_Obj = Sql.GetList(Qury_str)
                     Query_CountObj = Sql.GetFirst(QuryCount_str)
-                   
+                
                 except:
                                     
                     Query_Obj = Sql.GetList(
@@ -7595,7 +7595,7 @@ class SYLDRTLIST:
                     pass
                 Action_str = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton">'
                 for inm in ik:
-                   
+                
                     value123 = str(inm).split(",")[0].replace("[", "").lstrip()
                     value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
                     
@@ -7741,7 +7741,7 @@ class SYLDRTLIST:
                     ):
                         decimal_place = 3
                         percentSymbol = "%"
-                       
+                    
                         if value1234 is not None and value1234 != '':
                             my_format = "{:." + str(decimal_place) + "f}"
                             value1234 = str(my_format.format(round(float(value1234), int(decimal_place)))) + " %"
@@ -7821,7 +7821,7 @@ class SYLDRTLIST:
                             tab_val = str(tab_obj1.TAB_NAME)
                             if tab_val in list_of_tabs:
                                 primary = value1234 + "|" + tab_val 
-                                                          
+                                                        
                                 new_dict[value123] = (
                                     '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                                 )                                
@@ -7923,7 +7923,7 @@ class SYLDRTLIST:
                                     else:
                                         
                                         #valueGUID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(value1234))
-                                       
+                                    
                                         if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":                                                
                                                 precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT']
                                                 if value123 in precentage_columns:
@@ -7948,11 +7948,11 @@ class SYLDRTLIST:
                                                     if str(ObjectName) == "SAQIFP":
                                                         img_list.append('PRICING_STATUS')
                                                     if value123 in img_list:
-                                                       
+                                                    
                                                         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
                                                     # if str(ObjectName) == "SAQIFP":
                                                     #     image_list = ['SERVICE_ID']
-                                                      
+                                                    
                                                     #     if value123 in image_list:
                                                 
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
@@ -8027,7 +8027,7 @@ class SYLDRTLIST:
 ObjSYLDRTLIST = SYLDRTLIST()
 if hasattr(Param, "REC_ID"):
     RECORD_ID = Param.REC_ID
-   
+
     Product.SetGlobal("REC_ID", str(RECORD_ID))
 else:
     RECORD_ID = ""
@@ -8036,7 +8036,7 @@ ACTION = Param.ACTION
 try:
     PerPage = Param.PerPage
     PageInform = Param.PageInform
-   
+
 
 except:
     PerPage = ""
@@ -8049,7 +8049,7 @@ except:
     SortColumnOrder = ""
 try:
     subTab = Param.SUBTAB
-   
+
 except Exception:
     subTab = "Year 1"
     
@@ -8076,7 +8076,7 @@ except:
 if ACTION == "PRODUCT_ONLOAD": 
     ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
-   
+
     ATTRIBUTE_NAME = Param.ATTRIBUTE_NAME
     
     ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
