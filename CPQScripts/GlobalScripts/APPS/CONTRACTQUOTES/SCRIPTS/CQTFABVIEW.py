@@ -870,7 +870,7 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 		TP = str(TreeParentParam)
 		TP1 = TP.split('-')
 		TreeParentParam = TP1[1].strip()
-	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeParentParam)+"'")
+	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParentParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
@@ -1594,7 +1594,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			
 			if str(getdescription) == "Customer's ability to self-service":
 					getdescription = "Customer''s ability to self-service"
-			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
+			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
 				"Select QUOTE_SERVICE_TOOL_VALUE_DRIVER_RECORD_ID FROM SAQSVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND QTESRV_RECORD_ID ='{}'".format(
 					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.QUOTE_SERVICE_RECORD_ID)
@@ -1733,7 +1733,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			
 			if str(getdescription) == "Customer's ability to self-service":
 					getdescription = "Customer''s ability to self-service"
-			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
+			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
 				"Select QUOTE_SERVICE_FBL_TOOL_VAL_DRV_RECORD_ID FROM SAQSFD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND FABLOCATION_ID ='{}' AND SERVICE_ID = '{}'".format(
 					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(TreeParam),str(TreeParentParam)
@@ -1877,7 +1877,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			+ str(Parameter.QUERY_CRITERIA_1)
 			+ " SAQSGB (SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_SERVICE_GREENBOOK_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.SERVICE_ID,A.SERVICE_DESCRIPTION,A.SERVICE_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQSCO A left join SAQSGB b on a.QUOTE_RECORD_ID = ''2CA6A7C0-6526-4829-AFEB-767DC9A72CF8'' and a.QUOTE_ID = b.QUOTE_ID and a.SERVICE_RECORD_ID =b.SERVICE_RECORD_ID AND a.FABLOCATION_ID = b.FABLOCATION_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.SERVICE_ID = ''{treeSuperParentParam}''AND a.FABLOCATION_ID =''{treeparentparam}'' AND a.GREENBOOK = ''{treeparam}'')A ' ".format(treeparentparam=TreeParentParam,treeparam=TreeParam,treeSuperParentParam=TreeSuperParentParam))
 			GETSEVC = Sql.GetFirst ("SELECT * from SAQSGB where QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
-			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
+			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
 				"Select QUOTE_SERVICE_GREENBOOK_VAL_DRV_RECORD_ID FROM SAQSGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND SERVICE_RECORD_ID ='{}' and FABLOCATION_ID ='{}' and GREENBOOK = '{}'".format(
 					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.SERVICE_RECORD_ID),str(TreeParentParam),str(TreeParam)
@@ -2144,7 +2144,7 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 	if TreeTopSuperParentParam == 'Quote Items':
 		TreeSuperParentParam = str(TreeSuperParentParam.split('-')[1]).strip()
 	#GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeParam)+"'")
-	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -2271,7 +2271,7 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 		TP = str(TreeSuperParentParam)
 		TP1 = TP.split('-')
 		TreeSuperParentParam = TP1[1].strip()
-	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
