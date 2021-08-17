@@ -170,11 +170,12 @@ def Related_Sub_Banner(
                                 if "div_id" in add_button:
                                     add_button = add_button.format(div_id = div_id)
                 else:
+                    Trace.Write('173--'+str(subTabName))
                     add_button = ""
         else:
             add_button = ""
 
-        Trace.Write("ADD+BUT_J "+str(add_button))
+        Trace.Write(str(ObjName)+"--ObjName---178--ADD+BUT_J "+str(add_button))
         Trace.Write("Multi buttons--> "+str(multi_buttons))
             
             # Getting Dynamic buttons for secondary banner -  Ends
