@@ -189,11 +189,11 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				)
 			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":				
 				GetDRIVNAME = Sql.GetList(
-					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRBDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
 					+ "' AND VALUEDRIVER_RECORD_ID = '"
 					+ str(mastername)
-					+ "' AND BUSINESSUNIT_ID = '"
+					+ "' AND GREENBOOK = '"
 					+ str(TreeParam)
 					+ "'"
 				)
