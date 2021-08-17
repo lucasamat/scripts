@@ -13252,7 +13252,7 @@ def UpdateAssemblyLevel(Values):
         if get_total_count.cnt == included_count.cnt:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
             Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
-            if 'Z0007' in SERVICE_ID:
+            if 'Z0007' in TreeParentParam:
                 whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
@@ -13261,7 +13261,7 @@ def UpdateAssemblyLevel(Values):
         else:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
             Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
-            if 'Z0007' in SERVICE_ID:
+            if 'Z0007' in TreeParentParam:
                 whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
                 add_where = "and INCLUDED = 'CHAMBER'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
