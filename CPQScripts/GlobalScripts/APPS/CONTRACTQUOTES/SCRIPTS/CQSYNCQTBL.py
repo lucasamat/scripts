@@ -239,7 +239,12 @@ class SyncQuoteAndCustomTables:
 
                         if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
                             Log.Info("ENTERED POA----------->")
-                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(str(ent_disp_val).upper() + " SERVICES",quote_record_id))
+                            val = ""
+                            if str(ent_disp_val) == 'Comprehensive':
+                                val = "COMPREHENSIVE SERVICES"
+                            elif str(ent_disp_val) == 'Complementary':
+                                val = "COMPLEMENTARY PRODUCTS"
+                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(str(val),quote_record_id))
                                                
                         DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                         #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
