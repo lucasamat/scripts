@@ -43,7 +43,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 	date_field = []
 	if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
-		###NEW GREEN BOOK TABLE
+		###NEW GREEN BOOK TABLE#
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
 		#table_id = 'fabvaldrives'
 	else:
