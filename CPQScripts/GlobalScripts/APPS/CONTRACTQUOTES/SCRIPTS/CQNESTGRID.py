@@ -13263,10 +13263,10 @@ def EditAssemblyLevel(Values):
     # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-    Trace.Write('Values----'+str(Values))
+    #Trace.Write('Values----'+str(Values))
     get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId,TreeParentParam))
     chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
-    Trace.Write('bb--'+str(chamber_res_list))
+    #Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
 
 #A055S000P01-6826- Relocation chamber Ends..
