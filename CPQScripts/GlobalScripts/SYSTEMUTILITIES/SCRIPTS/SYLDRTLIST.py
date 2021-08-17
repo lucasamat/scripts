@@ -1366,6 +1366,7 @@ class SYLDRTLIST:
                             except:
                                 ServiceId = TreeParentParam.split("-")[1].strip()
                             fab_location_id = Product.GetGlobal("TreeParentLevel0")                    
+                            Trace.Write("ServiceID :: {}".format(str(ServiceId)))
                             Qury_str = (
                                     "SELECT DISTINCT TOP "
                                     + str(PerPage)
@@ -1480,7 +1481,7 @@ class SYLDRTLIST:
                                 )
                     elif str(RECORD_ID) == "SYOBJR-91822":
                         contractrecid = Product.GetGlobal("contract_record_id")
-                            
+                        Trace.Write("LineNo: 1483")    
                         if Product.GetGlobal("TreeParentLevel1") == "Contract Items":                                                     
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
