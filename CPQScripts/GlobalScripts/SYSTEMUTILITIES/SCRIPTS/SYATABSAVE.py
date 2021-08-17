@@ -402,6 +402,8 @@ for tab in Product.Tabs:
                                                 ApprovalObjectRecId=ApprovalObjectRecId,
                                             )
                                             a = Sql.RunQuery(InsertStatus)
+                                    elif TABLE_NAME == "SYVABL":
+                                        row["VARIABLE_NAME"] = row["VARIABLE_NAME"].upper()     
                                     Required_obj = Sql.GetList(
                                         "select top 1000 API_NAME,FIELD_LABEL,DISPLAY_ORDER,REQUIRED from  SYOBJD (nolock) where LTRIM(RTRIM(OBJECT_NAME)) ='"
                                         + TABLE_NAME
