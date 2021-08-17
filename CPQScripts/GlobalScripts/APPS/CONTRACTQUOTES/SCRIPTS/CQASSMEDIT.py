@@ -243,7 +243,27 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+try:
+    ACTION = Param.ACTION
+except:
+    ACTION = ""
 
+try:
+    TABNAME = Param.TABNAME
+except:
+    ACTION = ""
+
+try:
+    selected_values= eval(Param.Values)
+    Trace.Write('selected_values-----'+str(selected_values))
+except:
+    selected_values =[]
+try:
+    unselected_values= eval(Param.unselected_list)
+    Trace.Write('unselected_list-----'+str(unselected_values))
+except Exception,e:
+    Trace.Write('unselected_values--error-'+str(e))
+    unselected_values =[]
 if ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
     #Trace.Write('values----'+str(selected_values))
