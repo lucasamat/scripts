@@ -176,12 +176,19 @@ def Related_Sub_Banner(
                             Trace.Write('176---------------')
                             add_button = '<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
                     except:
+                        Trace.Write('176--------EXCEPT-------')
                         add_button = ""
                     add_button = ""
         else:
             add_button = ""
-
-        Trace.Write(str(ObjName)+"--ObjName---178--ADD+BUT_J "+str(add_button))
+        try:
+            if subTabName.startswith("Year") and str(ObjName) == "SAQTBP":
+                Trace.Write('176---------------')
+                add_button = '<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
+        except:
+            Trace.Write('176--------EXCEPT-------')
+            add_button = ""
+        Trace.Write(str(ObjName)+"--ObjName---178--ADD+BUT_J----"+str(add_button))
         Trace.Write("Multi buttons--> "+str(multi_buttons))
             
             # Getting Dynamic buttons for secondary banner -  Ends
