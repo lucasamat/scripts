@@ -290,8 +290,9 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
 				}
 	date_field = []
-	
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
+	disabled_edit_drivers = ''
+	#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' ")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
@@ -320,11 +321,11 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 		
 		
 		GetDRIVNAME = Sql.GetList(
-			"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRBDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+			"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 			+ str(field_name)
 			+ "' AND VALUEDRIVER_RECORD_ID = '"
 			+ str(mastername)
-			+ "' AND BUSINESSUNIT_ID = '"
+			+ "' AND GREENBOOK = '"
 			+ str(TreeParam)
 			+ "'"
 		)
@@ -345,6 +346,12 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 		else:
 			userselectedeff = ''
 		for qstns in GetDRIVNAME:			
+			if qstn.EDITABLE:
+				Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
+				disabled_edit_drivers = ''
+			else:
+				Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
+				disabled_edit_drivers = 'disabled_edit_drivers'
 			if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 				VAR1 += (
 					'<option value = "'
@@ -364,7 +371,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 				)
 		
 		sec_str1 += (
-			'<select class="form-control" id = "'
+			'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
 			+ str(field_name).replace(" ", "_")
 			+ '" disabled><option value="Select">..Select</option>'
 			+ str(VAR1)
@@ -388,7 +395,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 	
 	if TreeTopSuperParentParam != 'Quote Items':
 		dbl_clk_function += (
-			"try {var fablocatedict = [];$('#nestedfabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#nestedfabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#nestedfabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#nestedfabvaldrives').addClass('header_section_div  header_section_div_pad_bt10');$('#nestedfabvaldrives  tbody tr td select').addClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+			"try {var fablocatedict = [];$('#nestedfabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#nestedfabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#nestedfabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#nestedfabvaldrives').addClass('header_section_div  header_section_div_pad_bt10');$('#nestedfabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
 		)
 		#Trace.Write('date_field---'+str(date_field))
 	if str(CurrentTabName) == "Contract":
