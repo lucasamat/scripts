@@ -232,16 +232,14 @@ class SyncQuoteAndCustomTables:
                             except:
                                 #Log.Info('except-----')
                                 ent_disp_val = ent_disp_val 
-                        if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
-                            Log.Info("ENTERED POA----------->")
-                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(ent_disp_val,quote_record_id))    
+                           
                                     
                         else:
                             ent_disp_val = ent_disp_val
 
-                        '''if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
+                        if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
                             Log.Info("ENTERED POA----------->")
-                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(ent_disp_val,quote_record_id))'''
+                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}'".format(ent_disp_val,quote_record_id))
                                                
                         DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                         #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
