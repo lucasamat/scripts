@@ -13214,7 +13214,7 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
 
     return data_list,QueryCount,page 
 
-    
+     
 
 # Param Variable
 TABNAME = Param.TABNAME
