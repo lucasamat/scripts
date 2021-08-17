@@ -13256,7 +13256,7 @@ def UpdateAssemblyLevel(Values):
                 whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
-                NewValue = 'Tool based'
+                NewValue = 'Tool based' 
                 update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue)
         else:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
