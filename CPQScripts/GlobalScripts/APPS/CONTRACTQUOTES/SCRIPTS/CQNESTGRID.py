@@ -13213,6 +13213,7 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
 
     return data_list,QueryCount,page 
 
+#A055S000P01-6826- Relocation chamber starts...
 def UpdateAssemblyLevel(Values):
     TreeParentParam = Product.GetGlobal("TreeParentLevel0")
     # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
@@ -13247,9 +13248,11 @@ def UpdateAssemblyLevel(Values):
         get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
         included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
         if get_total_count.cnt == included_count.cnt:
-            Sql.RunQuery("update SAQSSE set INCLUDED = 1 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
         else:
-            Sql.RunQuery("update SAQSSE set INCLUDED = 0 where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
 
 
 
@@ -13266,7 +13269,8 @@ def EditAssemblyLevel(Values):
     Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
 
-    
+#A055S000P01-6826- Relocation chamber Ends..
+   
     
 
 # Param Variable
@@ -13627,6 +13631,8 @@ elif ACTION == 'SERVICE FAB DETAILS':
 elif ACTION == 'BUNDLE CALC':
     REC_ID = Param.REC_ID
     ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
+#A055S000P01-6826- Relocation chamber starts
+
 elif ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
     #Trace.Write('values----'+str(selected_values))
@@ -13634,3 +13640,4 @@ elif ACTION == 'UPDATE_ASSEMBLY':
 elif ACTION == 'EDIT_ASSEMBLY':
     #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
+#A055S000P01-6826- Relocation chamber ends
