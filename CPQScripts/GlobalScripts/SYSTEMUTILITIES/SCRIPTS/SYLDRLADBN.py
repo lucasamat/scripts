@@ -242,6 +242,7 @@ class ButtonAction:
                                                     #Product.Attributes.GetByName(str("QSTN_SYSEFL_SE_03346")).Access = AttributeAccess.ReadOnly"""
 
                                                 recIdAttributes.Allowed = True
+                                                Trace.Write("Audit information")
                                                 if attributeIdAttributes is not None and TABLE_NAME != "PRLPBS":
                                                     attributeIdAttributes.Access = AttributeAccess.ReadOnly
                                                 if str(QUE_OBJ.FIELD_LABEL) in [
