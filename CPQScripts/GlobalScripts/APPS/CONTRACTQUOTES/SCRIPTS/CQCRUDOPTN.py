@@ -1441,8 +1441,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					if cart_obj:
 						self._delete_quote_line_items(cart_obj.CART_ID, cart_obj.USERID)						
 						self._insert_quote_line_items(cart_obj.CART_ID, cart_obj.USERID)
-						self._delete_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
-						self._insert_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
+						#self._delete_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
+						#self._insert_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
 				else:
 					# UPDATE SAQITM FOR SPARE PARTS
 					ifp_obj = Sql.GetFirst("SELECT COUNT(QUOTE_ITEM_FORECAST_PART_RECORD_ID) as COUNT_QUOTE_ITEM_FORECAST_PART_RECORD_ID, ISNULL(SUM(CONVERT(int, ISNULL(EXTENDED_PRICE, 0))), 0) as TOTAL_COST, ISNULL(SUM(CONVERT(int, ISNULL(EXTENDED_PRICE, 0))), 0) as EXTENDED_PRICE FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '{QUOTE_ID}' AND SERVICE_RECORD_ID = '{SERVICE_RECORD_ID}'".format(
