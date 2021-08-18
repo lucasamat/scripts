@@ -2076,8 +2076,8 @@ def CommonTreeViewHTMLDetail(
 		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID like '%Z0016%'")
 		if SAQTSVObj:
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
-		else:
-			sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
+		#else:
+			#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 	if RECORD_ID and ObjectName == 'SAQTBP':
 		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
 						FROM SAQTBP (NOLOCK) 
