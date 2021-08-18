@@ -3049,7 +3049,7 @@ class SYLDRTLIST:
                                     value1234 = value1234.replace('"', "&quot;")
                                     value1234 = value1234.replace("<p>", " ")
                                     value1234 = value1234.replace("</p>", " ")
-
+                                     Trace.Write(str(value123)+'3107--3051---'+str(value1234))
                                     if value123 in [
                                         "ERROR",
                                         "MINIMUM_PRICE",
@@ -3104,7 +3104,7 @@ class SYLDRTLIST:
                                                     string_val1 = string_val.split('.')
                                                     str_val = string_val1[0]
                                                     value1234 = str_val
-                                                    
+                                                    Trace.Write(str(value123)+'3107-----'+str(value1234))
                                                     if value1234 is not None and value1234 != '':
                                                         new_dict[value123] = (
                                                             '<abbr id ="' + key_value + '" title="' + str(value1234).upper() +'">' + str(value1234).upper() +  ' %' +  "</abbr>"
