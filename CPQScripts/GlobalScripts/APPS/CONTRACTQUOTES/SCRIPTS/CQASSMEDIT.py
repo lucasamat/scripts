@@ -13,6 +13,8 @@ import time
 Sql = SQL()
 import SYCNGEGUID as CPQID
 import System.Net
+import sys
+
 
 
 #A055S000P01-6826- Relocation chamber starts...
