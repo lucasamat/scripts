@@ -82,7 +82,8 @@ try:
 
                 
         for Question_Permission in Question_Permission_Query:
-            #Trace.Write("EDITABLE_ONINSERT-->" + str(Question_Permission.EDITABLE_ONINSERT))
+            Trace.Write("SECTION_NAME-->" + str(Question_Permission.SECTION_NAME))
+            Trace.Write("FIELD_LABEL-->" + str(Question_Permission.FIELD_LABEL))
             if (
                 str(Question_Permission.data_type) == "LONG TEXT AREA"
                 or str(Question_Permission.data_type) == "RICH TEXT AREA"
@@ -110,6 +111,7 @@ try:
                 "Last Modified By",
                 "Last Modified Date",
             ]:
+                Trace.Write("Audit Information")
                 if Product.Attributes.GetByName(str(AttrName)) is not None:
                     Product.Attributes.GetByName(str(AttrName)).Allowed = False
             elif (
