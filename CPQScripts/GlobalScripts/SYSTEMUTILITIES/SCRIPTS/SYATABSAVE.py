@@ -667,6 +667,10 @@ for tab in Product.Tabs:
                                                 Trace.Write("88877")                                              
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
                                                 Trace.Write("88866")
+                                                myAttribute = Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT")
+                                                if myAttribute  and myAttribute.HintFormula == "TAB PAGE ALERT":
+                                                    #myAttribute.HintFormula, myAttribute.Allowed = "", False
+                                                    myAttribute.Allowed = True 
 
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert' style='display':'block'; ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(sectalert)
                                                 sectalert = ", ".join(Field_Labels)
