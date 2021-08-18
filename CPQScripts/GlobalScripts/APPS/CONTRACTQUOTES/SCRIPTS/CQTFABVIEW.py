@@ -521,12 +521,13 @@ def costfabview(ACTION,CurrentRecordId):
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
 				}
 	date_field = []
+	disabled_edit_drivers = ''
 	TreeParam = Product.GetGlobal("TreeParam")
 	if TreeParentParam == "Quote Items":
 		TP = str(TreeParam)
 		TP1 = TP.split('-')
 		TreeParam = TP1[1].strip()
-	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
+	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
@@ -588,6 +589,12 @@ def costfabview(ACTION,CurrentRecordId):
 			userselectedeff = [str(float(Valuedrivereff.VALUEDRIVER_COEFFICIENT)*float(100))+" %" for Valuedrivereff in selecter]
 			
 		for qstns in GetDRIVNAME:
+			if qstn.EDITABLE:
+				Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
+				disabled_edit_drivers = ''
+			else:
+				Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
+				disabled_edit_drivers = 'disabled_edit_drivers'
 			if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 				VAR1 += (
 					'<option value = "'
@@ -605,7 +612,7 @@ def costfabview(ACTION,CurrentRecordId):
 					+ "</option>"
 				)
 		sec_str1 += (
-			'<select class="form-control" disabled id = "'
+			'<select class="form-control '+str(disabled_edit_drivers)+'" disabled id = "'
 			+ str(field_name).replace(" ", "_")
 			+ '" disabled><option value="Select">..Select</option>'
 			+ str(VAR1)
@@ -620,7 +627,7 @@ def costfabview(ACTION,CurrentRecordId):
 		date_field.append(new_value_dict)
 	if TreeParentParam != "Quote Items":
 		dbl_clk_function += (
-			"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#servicecostvaldrives').addClass('header_section_div  header_section_div_pad_bt10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+			"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#servicecostvaldrives').addClass('header_section_div  header_section_div_pad_bt10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
 		)
 		
 	
