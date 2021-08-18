@@ -1274,18 +1274,18 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				tableInfo2.AddRow(tablerow2)
 				Sql.Upsert(tableInfo2)
 
-			try:				
-				quote = Qt_rec_id
-				level = "QUOTE VALUE DRIVER"
-				userId = str(User.Id)
-				userName = str(User.UserName)
-				TreeParam = Product.GetGlobal("TreeParam")
-				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
-			except:
-				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
+			# try:				
+			# 	quote = Qt_rec_id
+			# 	level = "QUOTE VALUE DRIVER"
+			# 	userId = str(User.Id)
+			# 	userName = str(User.UserName)
+			# 	TreeParam = Product.GetGlobal("TreeParam")
+			# 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+			# 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+			# 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+			# 	CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			# except:
+			# 	Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
