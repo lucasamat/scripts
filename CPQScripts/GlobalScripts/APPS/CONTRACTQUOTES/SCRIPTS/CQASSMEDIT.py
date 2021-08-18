@@ -42,17 +42,37 @@ def UpdateAssemblyLevel(Values):
         equipment_id = Param.equipment_id
     except:
         equipment_id =""
+    ##update for selected assembly
     if record_ids != '()':
-        Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
-        #Sql.RunQuery("update SAQSCA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(record_ids,ContractRecordId,TreeParentParam))
+        Sql.RunQuery("update SAQSSA set INCLUDED = 1 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(record_ids))
+        
+        get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(record_ids))
+        get_assembly = [val for val.SND_ASSEMBLY_ID in get_assembly_query]
+        get_assembly = str(tuple(get_assembly)).replace(',)',')')
+        if equipment_id:
+            Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,TreeParentParam,equipment_id))
+    ##update for un selected assembly
     if un_selected_record_ids != '()':
-        Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(un_selected_record_ids,ContractRecordId,TreeParentParam))
-        #Sql.RunQuery("update SAQSCA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(un_selected_record_ids,ContractRecordId,TreeParentParam))
+        #update SAQSSA
+        Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(un_selected_record_ids,ContractRecordId,TreeParentParam))
+        
+        #update SAQSCA
+        get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(un_selected_record_ids))
+        get_assembly = [val for val.SND_ASSEMBLY_ID in get_assembly_query]
+        get_assembly = str(tuple(get_assembly)).replace(',)',')')
+        if equipment_id:
+            Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,TreeParentParam,equipment_id))
+        
     if equipment_id:
-        get_total_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
-        included_count = SqlHelper.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        get_total_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        
+        included_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        
+        ###updating equipment level tables
         if get_total_count.cnt == included_count.cnt:
+            #update SAQSSE
             Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            #update SAQSCO
             Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
             if 'Z0007' in TreeParentParam:
                 whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
@@ -105,7 +125,7 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
     get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM SAQSCE where {}".format(whereReq))
     get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
     if get_equp_xml and get_query:
-        Trace.Write('inside')
+        #Trace.Write('inside')
         cpsmatchID = get_equp_xml.CPS_MATCH_ID
         cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
         try:       
