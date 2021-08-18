@@ -669,7 +669,7 @@ for tab in Product.Tabs:
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
                                                 Trace.Write("88866")
 
-                                                # Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert' style='display':'block'; ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(sectalert)
+                                                Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = """<div class='col-md-12' id='PageAlert' style='display':'block'; ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  ERROR : '{}' is a required field </label></div></div></div>""".format(sectalert)
                                                 sectalert = ", ".join(Field_Labels)
                                                 product = Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula
                                                 Trace.Write("prod999==="+str(product))
@@ -688,6 +688,8 @@ for tab in Product.Tabs:
                                                     ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' are required fields </label></div></div></div>".format(
                                                         sectalert
                                                     )
+                                                    product = Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula
+                                                Trace.Write("prod888==="+str(product))
                                                 if Product.Attributes.GetByName("QSTN_SYSEFL_AC_00006"):
                                                     ApprovalMethod =  Product.Attributes.GetByName("QSTN_SYSEFL_AC_00006")
                                                     if ApprovalMethod == "":
