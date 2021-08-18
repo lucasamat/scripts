@@ -1494,7 +1494,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				getdescription = "Quality required by the clients'' customers"
 			
 			GETEQP = Sql.GetFirst("SELECT * FROM SAQFEQ(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '"+ str(CurrentRecordId)+ "'")
-			GETPRVD = Sql.GetFirst("SELECT * FROM PRBUVD (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND BUSINESSUNIT_ID ='"+str(TreeParam)+"' ")
+			GETPRVD = Sql.GetFirst("SELECT * FROM PRGBVD (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND GREENBOOK ='"+str(TreeParam)+"' ")
 			SAQFEDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_EQUIP_VAL_DRIVER_RECORD_ID FROM SAQFED(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND EQUIPMENT_ID ='{}' ".format(str(GETEQP.QUOTE_RECORD_ID), str(GETPRVD.VALUEDRIVER_RECORD_ID), str(GETEQP.EQUIPMENT_ID)))
 			GETFABDRIVER = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID = '"+str(TreeParentParam)+"' ")
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1527,7 +1527,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				tableInfo.AddRow(tablerow)
 				Sql.Upsert(tableInfo)
 				#Trace.Write("EVD ADDED" + str(tablerow))
-			GETVALSDV = Sql.GetFirst("SELECT * from PRBDVL where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and  BUSINESSUNIT_ID = '"+str(TreeParam)+"'")
+			GETVALSDV = Sql.GetFirst("SELECT * from PRGBVL where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and  GREENBOOK = '"+str(TreeParam)+"'")
 			# Trace.Write("drivervalueSELECT * from PRBDVL where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and  BUSINESSUNIT_ID = '"+str(TreeParam)+"'")
 			if GETVALSDV is not None:
 				GETDRISVD = Sql.GetFirst("SELECT * FROM SAQFED where QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID ='"+(GETEQP.EQUIPMENT_ID)+"'and VALUEDRIVER_ID = '"+str(getdescription)+"' ")
@@ -1556,7 +1556,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"GREENBOOK": str(GETDRISVD.GREENBOOK),
 						"GREENBOOK_RECORD_ID":str(GETDRISVD.GREENBOOK_RECORD_ID),
 						"VALUEDRIVER_COEFFICIENT": str(GETVALSDV.VALUEDRIVER_COEFFICIENT),
-						"VALUEDRIVER_COEFFICIENT_RECORD_ID": str(GETVALSDV.BU_VALUEDRIVER_VALUE_RECORD_ID),
+						"VALUEDRIVER_COEFFICIENT_RECORD_ID": str(GETVALSDV.GBLVDRVAL_RECORD_ID),
 						"FABLOCATION_ID": str(GETDRISVD.FABLOCATION_ID),
 						"FABLOCATION_RECORD_ID": str(GETDRISVD.FABLOCATION_RECORD_ID),
 						"FABLOCATION_NAME": str(GETDRISVD.FABLOCATION_NAME),
