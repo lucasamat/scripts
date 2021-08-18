@@ -2779,6 +2779,8 @@ def EntitlementTreeViewHTMLDetail(
 							else:
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
+								if attr_value == "DefaultValue":
+									attr_value = ''
 								sec_str1 += (
 									'<input class="form-control '+str(disable_edit)+'" id = "'
 									+ str(attrSysId)
