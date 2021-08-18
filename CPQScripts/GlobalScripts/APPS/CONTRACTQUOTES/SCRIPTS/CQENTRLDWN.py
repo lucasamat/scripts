@@ -768,7 +768,8 @@ try:
 						get_calc_factor = value.CALCULATION_FACTOR 
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
-								get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
+								#get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
+								get_calc_factor = get_value = round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt),2)
 								if value.ENTITLEMENT_COST_IMPACT and get_value:
 									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
@@ -879,7 +880,8 @@ try:
 
 								if get_value_qry:
 									#if get_value_diff != 0.00:
-									get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
+									#get_calc_factor = get_value = int(round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE) ) )
+									get_calc_factor = get_value = round(float(get_value_qry.ENTITLEMENT_DISPLAY_VALUE),2 )
 									if value.ENTITLEMENT_COST_IMPACT and get_value:
 										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 									else:
