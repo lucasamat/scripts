@@ -3705,7 +3705,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					GREENBOOK_RECORD_ID,
 					PAR_SERVICE_DESCRIPTION,
 					PAR_SERVICE_ID,
-					PAR_SERVICE_RECORD_ID
+					PAR_SERVICE_RECORD_ID,
+					INCLUDED
 					) SELECT
 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
 					'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -3747,7 +3748,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQSCO.GREENBOOK_RECORD_ID,
 					SAQTSV.PAR_SERVICE_DESCRIPTION,
 					SAQTSV.PAR_SERVICE_ID,
-					SAQTSV.PAR_SERVICE_RECORD_ID
+					SAQTSV.PAR_SERVICE_RECORD_ID,
+					{included} as INCLUDED
 					FROM SYSPBT (NOLOCK)
 					JOIN (select SAQFEA.* from SAQFEA(nolock) join SYSPBT (nolock) on SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID and SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID where  SAQFEA.QUOTE_RECORD_ID = '{QuoteRecordId}' ) SAQFEA ON SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID
 					JOIN SAQSCO (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
@@ -3759,7 +3761,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
 				TreeParentParam=self.tree_parent_level_1 if self.tree_param  == 'Sending Equipment' else self.tree_parent_level_0,
 				QuoteRecordId=self.contract_quote_record_id,
-				BatchGroupRecordId=kwargs.get('batch_group_record_id')
+				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
+				included = 1 if self.tree_param  == 'Sending Equipment' else ''
 			)
 		)
 		
