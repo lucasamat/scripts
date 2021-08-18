@@ -652,16 +652,17 @@ class Entitlements:
 			getvalue = ""
 			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
 			Fullresponse = Product.GetGlobal('Fullresponse')
-			Fullresponse = eval(Fullresponse)
-			for rootattribute, rootvalue in Fullresponse.items():
-				if rootattribute == "rootItem":
-					for Productattribute, Productvalue in rootvalue.items():
-						if Productattribute == "characteristics":
-							for prdvalue in Productvalue:
-								for attribute in prdvalue["values"]:									
-									if attribute["author"] in ("Default","System"):
-										Trace.Write('524---658---'+str(prdvalue["id"]))
-										attributedefaultvalue.append(prdvalue["id"])
+			if Fullresponse:
+				Fullresponse = eval(Fullresponse)
+				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "rootItem":
+						for Productattribute, Productvalue in rootvalue.items():
+							if Productattribute == "characteristics":
+								for prdvalue in Productvalue:
+									for attribute in prdvalue["values"]:									
+										if attribute["author"] in ("Default","System"):
+											Trace.Write('524---658---'+str(prdvalue["id"]))
+											attributedefaultvalue.append(prdvalue["id"])
 			
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
@@ -788,9 +789,9 @@ class Entitlements:
 
 					##assigning cost impact, price impact, calc factor value ends
 					
-					if getcostbaborimpact == "" or getcostbaborimpact == 'null':
+					if getcostbaborimpact == "" or getcostbaborimpact in ('NULL', 'null'):
 						getcostbaborimpact = 0.00
-					if getpriceimpact == "" or getpriceimpact == 'null':
+					if getpriceimpact == "" or getpriceimpact in ('NULL', 'null'):
 						getpriceimpact = 0.00
 					totalcostent += float(getcostbaborimpact)
 					totalpriceimpact += float(getpriceimpact)
@@ -1252,7 +1253,7 @@ class Entitlements:
 						Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
 						Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
 						Trace.Write("whereReq--894---"+str(whereReq))
-
+						Product.SetGlobal('Fullresponse',str(Fullresponse))
 						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 						Sql.RunQuery(Updatecps)
 						characteristics_attr_values = []
