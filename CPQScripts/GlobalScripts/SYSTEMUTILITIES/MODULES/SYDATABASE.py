@@ -100,6 +100,8 @@ class SQL:
                 row["CpqTableEntryDateModified"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
             newTableInfo = ""
             newTableInfo = SqlHelper.GetTable(tableName)
+            if tableName == 'SYVABL':
+                row["VARIABLE_NAME"] = row["VARIABLE_NAME"].upper()
             Trace.Write(str(tableName)+"---tableName---TRACE_TESTZ--102----" + str(row))
             newTableInfo.AddRow(row)
             sqlInfo = SqlHelper.Upsert(newTableInfo)
