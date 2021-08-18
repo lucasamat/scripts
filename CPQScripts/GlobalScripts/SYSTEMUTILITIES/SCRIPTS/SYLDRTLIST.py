@@ -7564,9 +7564,7 @@ class SYLDRTLIST:
                         + str(Page_start)
                         + " and "
                         + str(Page_End)
-                        + " order by "
-                        + str(Wh_API_NAMEs)
-                        + ""
+                        + " "
                     )
                     QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     
