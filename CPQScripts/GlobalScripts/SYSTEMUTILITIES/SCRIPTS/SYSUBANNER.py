@@ -2366,7 +2366,7 @@ def Related_Sub_Banner(
             # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
             Trace.Write("multi_buttons"+str(len(multi_buttons)))
             if len(multi_buttons) > 0:						
-                if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED":
+                if TreeParam == "Quote Items":
                     # Appending Price button in Quote Items Node
                     Trace.Write("inside---> quote item")
                     for btn in multi_buttons:
