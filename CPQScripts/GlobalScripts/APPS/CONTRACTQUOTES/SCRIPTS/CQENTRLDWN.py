@@ -1298,8 +1298,7 @@ try:
 								ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
 			Sql.RunQuery("""UPDATE SAQSCE
 								SET
-								ENTITLEMENT_GROUP_ID = OQ.RowNo,
-								IS_CHANGED = 1                            
+								ENTITLEMENT_GROUP_ID = OQ.RowNo
 								FROM SAQSCE (NOLOCK)
 								INNER JOIN (
 									SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
@@ -1309,6 +1308,12 @@ try:
 									{WhereString} )AS IQ
 								)AS OQ
 								ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML""".format(WhereString=where_string_splitted))
+			Sql.RunQuery("""UPDATE SAQSCE
+								SET								
+								IS_CHANGED = 1                            
+								FROM SAQSCE (NOLOCK)
+								{WhereString}								
+								""".format(WhereString=where_string_splitted))
 			# Is Changed Information Notification - Start
 			quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=getinnercon.QUOTE_RECORD_ID))		
 			if quote_item_obj:
