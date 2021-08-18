@@ -709,6 +709,7 @@ for tab in Product.Tabs:
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                 and flag == "null"
                                             ):
+                                                Trace.Write("flag999===")
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
                                                 sectalert = ", ".join(Field_Labels)                                                
 
