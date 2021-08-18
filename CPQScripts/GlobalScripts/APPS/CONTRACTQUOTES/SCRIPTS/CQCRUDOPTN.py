@@ -1055,9 +1055,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					where_condition="ExternalId = '{}'".format(self.c4c_quote_id),
 					single_record=True,
 				)
-				if cart_obj:
-					self._delete_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
-					self._insert_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
+				#if cart_obj:
+					#self._delete_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
+					#self._insert_quote_spare_parts(cart_obj.CART_ID, cart_obj.USERID)
 				# Native Quote Custom Table Insert - End
 				# INSERT PARTS IN SAQITM
 				#Get Service Level Details
