@@ -36,7 +36,7 @@ def UpdateAssemblyLevel(Values):
             ]
     record_ids = str(tuple(record_ids)).replace(",)",")")
     un_selected_record_ids = str(tuple(un_selected_record_ids)).replace(",)",")")
-   # Trace.Write('record_ids------inside-'+str(record_ids))
+    # Trace.Write('record_ids------inside-'+str(record_ids))
     #Trace.Write('un_selected_record_ids------inside-'+str(un_selected_record_ids))
     try:
         equipment_id = Param.equipment_id
@@ -88,7 +88,7 @@ def UpdateAssemblyLevel(Values):
                 add_where = "and INCLUDED = 'CHAMBER'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Chamber based'
-                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue)
+                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
@@ -103,7 +103,7 @@ def UpdateAssemblyLevel(Values):
                         FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
                         ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
                     Sql.RunQuery(update_query)
-   
+
     return True
 
 def EditAssemblyLevel(Values):
@@ -117,7 +117,92 @@ def EditAssemblyLevel(Values):
     #Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
 
-def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
+def Request_access_token():
+        webclient = System.Net.WebClient()
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+        webclient.Headers[
+            System.Net.HttpRequestHeader.Authorization
+        ] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+        response = webclient.DownloadString(
+            "https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+        )
+        return eval(response)
+
+
+def ChildEntRequest(tableName,where,serviceId):		
+    response = Request_access_token()
+    webclient = System.Net.WebClient()		
+    Trace.Write(response["access_token"])
+    Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+    webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
+    
+    ProductPartnumber = serviceId#'Z0035'
+    try:        
+        requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
+        Trace.Write("requestdata" + str(requestdata))
+        response1 = webclient.UploadString(Request_URL, str(requestdata))        
+        response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
+        Fullresponse = eval(response1)
+        Trace.Write("response.."+str(eval(response1)))
+        newConfigurationid = Fullresponse["id"]
+        Trace.Write("newConfigurationid.."+str(newConfigurationid))
+        if tableName!="":
+            get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
+            ent_temp = "ENT_ASSEM_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+            ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+            where_cond = where.replace("'","''")
+            Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+
+            Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
+            Trace.Write("where------ "+str(where))
+            if Parentgetdata:					
+                response = Request_access_token()					
+                Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
+                cpsmatchID=11
+                
+                for row in Parentgetdata:
+                    webclient = System.Net.WebClient()
+                        
+                    webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+                        
+                    webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+                        
+                    if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
+                        Trace.Write('row--'+str(row.ENTITLEMENT_NAME))
+                        try:
+                            requestdata = '{"characteristics":['
+                            
+                            requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+                            if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+                                Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+                                for code in eval(row.ENTITLEMENT_VALUE_CODE):
+                                    requestdata += '{"value":"' + str(code) + '","selected":true}'
+                                    requestdata +=','
+                                requestdata +=']},'	
+                            else:
+                                requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+                            requestdata += ']}'
+                            requestdata = requestdata.replace('},]','}]')
+                            Trace.Write("requestdata--child-- " + str(requestdata))
+                            response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+                            cpsmatchID = cpsmatchID + 10			
+                            
+                        except Exception:
+                            Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
+                            cpsmatchID = cpsmatchID
+
+        getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
+        cpsmatc_incr = cpsmatchID + 10
+        for data in getdata:
+            updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
+    except Exception:
+        Trace.Write("Patch Error-2-"+str(sys.exc_info()[1]))        
+    ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+    return newConfigurationid,cpsmatchID
+
+
+
+def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,service_id):
     #whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format('50243B0C-C53B-4BE5-8923-939BB9DCEB73','Z0007','100000181')
     #add_where = "and INCLUDED = 'CHAMBER'""
     #AttributeID = 'AGS_QUO_QUO_TYP'
@@ -126,14 +211,16 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
     get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
     if get_equp_xml and get_query:
         #Trace.Write('inside')
-        cpsmatchID = get_equp_xml.CPS_MATCH_ID
-        cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
+        cpsConfigID,cpsmatchID = ChildEntRequest('SAQSCE',whereReq,service_id)
+        # cpsmatchID = get_equp_xml.CPS_MATCH_ID
+        # cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
         try:       
             Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
-            webclient = System.Net.WebClient()
-            webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-            response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
+            # webclient = System.Net.WebClient()
+            # webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+            # webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+            # response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
+            response = Request_access_token()
             response = eval(response)
             webclient = System.Net.WebClient()		
             Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
@@ -164,6 +251,7 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
             Fullresponse= eval(response2)
             attributesdisallowedlst=[]
             attributesallowedlst=[]
+            attributedefaultvalue = []
             multi_value = ""
             #overallattributeslist =[]
             attributevalues={}
@@ -183,11 +271,17 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
                                 if len(prdvalue["values"]) == 1:
                                     #Trace.Write('ifffff'+str(prdvalue["id"]))
                                     attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
+                                    if prdvalue["values"][0]["author"] in ("Default","System"):
+                                        #Trace.Write('524------'+str(prdvalue["id"]))
+                                        attributedefaultvalue.append(prdvalue["id"])
                                 elif len(prdvalue["values"]) > 1:
                                     #Trace.Write('else if'+str(prdvalue["id"]))
                                     for attribute in prdvalue["values"]:
                                         #Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
                                         value_list = [attribute["value"] for attribute in prdvalue["values"]]
+                                        if attribute["author"] in ("Default","System"):
+                                            #Trace.Write('524------'+str(prdvalue["id"]))
+                                            attributedefaultvalue.append(prdvalue["id"])
                                         #value_list = str(value_list)
                                     attributevalues[str(prdvalue["id"])] = value_list
                                 # else:
@@ -250,7 +344,7 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue):
                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
                     cpsmatc_incr = int(cpsmatchID) + 10
                     #Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                 Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQSCE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
@@ -267,7 +361,7 @@ try:
     ACTION = Param.ACTION
 except:
     ACTION = ""
- 
+
 try:
     TABNAME = Param.TABNAME
 except:
