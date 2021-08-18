@@ -3472,7 +3472,7 @@ def EntitlementTreeViewHTMLDetail(
 						else:
 							attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
-							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
@@ -3591,6 +3591,7 @@ def EntitlementTreeViewHTMLDetail(
 							elif DType == "Free Input, no Matching":
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
+								Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
 								sec_str1 += (
 									'<input class="form-control '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
