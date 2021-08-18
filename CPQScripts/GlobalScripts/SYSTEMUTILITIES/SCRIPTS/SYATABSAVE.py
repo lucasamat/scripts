@@ -429,6 +429,7 @@ for tab in Product.Tabs:
                                                 API_NAME_val = row[req_add_new.API_NAME]                                                
                                                 if str(API_NAME_val) == "" or API_NAME_val.upper() == "NONE":
                                                     Field_Labels.append(req_add_new.FIELD_LABEL)
+                                                    Trace.Write('Field_Labels==='+str(Field_Labels))
                                         iskey = Sql.GetFirst(
                                             "select API_NAME from  SYOBJD (nolock) where OBJECT_NAME ='"
                                             + TABLE_NAME
