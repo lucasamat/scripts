@@ -58,7 +58,7 @@ def UpdateAssemblyLevel(Values):
         
         #update SAQSCA
         get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(un_selected_record_ids))
-        get_assembly = [val for val.SND_ASSEMBLY_ID in get_assembly_query]
+        get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
         get_assembly = str(tuple(get_assembly)).replace(',)',')')
         if equipment_id:
             Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,TreeParentParam,equipment_id))
