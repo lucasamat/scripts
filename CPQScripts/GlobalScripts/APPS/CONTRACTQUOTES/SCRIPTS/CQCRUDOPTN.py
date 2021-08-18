@@ -1488,11 +1488,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				#     sqlforupdate += "UPDATE SAQIFP SET ITEM_LINE_SEQUENCE = '{ITEM_LINE_SEQ}', PART_LINE_ID = {NEW_PART_LINE_ID}, ITEM_LINE_ID = '{ITEM_LINE_ID}', EXTENDED_UNIT_PRICE = '{EXTENDED_UNIT_PRICE}' WHERE QUOTE_ITEM_FORECAST_PART_RECORD_ID = '{QIFPRI}'; ".format(NEW_PART_LINE_ID=newid, ITEM_LINE_SEQ=str(mxval) + " - " + str(newid), QIFPRI = eachrow.QUOTE_ITEM_FORECAST_PART_RECORD_ID, ITEM_LINE_ID=mxval, EXTENDED_UNIT_PRICE=float(eachrow.UNIT_PRICE) * int(eachrow.ANNUAL_QUANTITY))
 				#     newid += 10
 				# Sql.RunQuery(sqlforupdate)
-				#self._process_query(
-					#"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						#BatchGroupRecordId=batch_group_record_id
-					#)
-				#)
+				self._process_query(
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id
+					)
+				)
 				
 				try:
 					entries = str(self.contract_quote_id)
