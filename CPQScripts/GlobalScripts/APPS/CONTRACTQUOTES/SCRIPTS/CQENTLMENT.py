@@ -835,34 +835,6 @@ class Entitlements:
 					#Trace.Write("getpriceimpact--1--"+str(getpriceimpact))
 					#if GetDefault:
 					#	pricemethodupdate = GetDefault.PRICE_METHOD
-					""" get_value = value.ENTITLEMENT_DISPLAY_VALUE
-					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-					get_curr = value.PRICE_METHOD """
-					""" if 'AGS_SFM_DEI_PAC' in key and 'Included' in val:
-						EntCost =(float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE))
-						Trace.Write("ENTCOST1---------->"+str(EntCost))
-						getcostbaborimpact = "{0:.2f}".format(EntCost)
-						pricemethodupdate = curr
-					if ('AGS_RFM_INS_T0' in key or 'AGS_RFM_INS_T1' in key) and 'Included' in val:
-						EntCost2 = (float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT)
-						Trace.Write("ENTCOST2---------->"+str(EntCost2))
-						getcostbaborimpact = "{0:.2f}".format(EntCost2)
-						pricemethodupdate = curr
-						#get_curr = curr
-					if 'AGS_RFM_INS_T2' in key and 'Included' in val:
-						EntCost3 = (float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE))
-						Trace.Write("ENTCOST3---------->"+str(EntCost3))
-						getcostbaborimpact = "{0:.2f}".format(EntCost3)
-						pricemethodupdate = curr
-						#get_curr = curr
-					if 'AGS_RFM_INS_T3' in key and 'Included' in val:
-						EntCost4 = (float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE))
-						Trace.Write("ENTCOST3---------->"+str(EntCost4))
-						getcostbaborimpact = "{0:.2f}".format(EntCost4)
-						pricemethodupdate = curr """
-						#get_curr = curr
-					Trace.Write("key---->"+str(key))
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
@@ -894,8 +866,8 @@ class Entitlements:
 				Trace.Write("TEST COMMIT")
 				where = " QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
-				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK,PLATFORM  FROM SAQSCO WHERE {where}".format(where=where))
-				GetRegion = Sql.GetFirst("SELECT REGION,GLOBAL_CURRENCY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
+				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK,PLATFORM  FROM SAQSCO (NOLOCK) WHERE {where}".format(where=where))
+				GetRegion = Sql.GetFirst("SELECT SAQTSO.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.REGION,SAQTMT.GLOBAL_CURRENCY FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
 				Region = GetRegion.REGION
 				getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
 				curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
@@ -903,10 +875,9 @@ class Entitlements:
 				list2 = {}
 				list3 = {}
 				list4 = {}
+
 				if getPlatform and 'Z0007' in serviceId:
-					#Log.Info("Entering if")
 					for a in getPlatform:
-					
 						getDeinstall = Sql.GetFirst("SELECT ISNULL(INSTALL_T0T1_CE_HRS,0) AS INSTALL_T0T1_CE_HRS,ISNULL(INSTALL_T0T1_TECH_HRS,0) AS INSTALL_T0T1_TECH_HRS ,ISNULL(INSTALL_T2_CE_HRS,0) AS INSTALL_T2_CE_HRS,ISNULL(INSTALL_T2_PSE_HRS,0) AS INSTALL_T2_PSE_HRS,ISNULL(INSTALL_T2_SSE_HRS,0) AS INSTALL_T2_SSE_HRS,ISNULL(INSTALL_T3_CE_HRS,0) AS INSTALL_T3_CE_HRS,ISNULL(INSTALL_T3_PSE_HRS,0) AS INSTALL_T3_PSE_HRS,ISNULL(INSTALL_T3_SSE_HRS,0) AS INSTALL_T3_SSE_HRS,ISNULL(DEINSTALL_CE_HRS,0) AS DEINSTALL_CE_HRS,DEINSTALL_PRICE,DEINSTALL_TECH_HRS,DEINSTALL_TRDPTY_AMOUNT FROM PRLPBK (NOLOCK) WHERE GREENBOOK = '{Greenbook}' AND SUBSTRATESIZE_ID = '{sub}' AND PLATFORM_ID = '{plt}' AND REGION = '{Region}'".format(Greenbook=a.GREENBOOK,sub=a.WAFER_SIZE,Region=Region,plt=a.PLATFORM))
 						if getDeinstall:
 							Trace.Write("if---")
