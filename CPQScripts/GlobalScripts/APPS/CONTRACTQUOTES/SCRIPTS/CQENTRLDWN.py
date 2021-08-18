@@ -1311,7 +1311,7 @@ try:
 			Sql.RunQuery("""UPDATE SAQSCE
 								SET								
 								IS_CHANGED = 1                            
-								FROM SAQSCE (NOLOCK)
+								FROM SAQSCE (NOLOCK) SRC
 								{WhereString}								
 								""".format(WhereString=where_string_splitted))
 			# Is Changed Information Notification - Start
