@@ -2039,7 +2039,8 @@ def CommonTreeViewHTMLDetail(
 				if RECORD_ID.startswith(ObjectName):					
 					if str(ObjectName) != "USERS" and str(ObjectName) != "SYSEFL":
 						RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
-		Trace.Write('Return list-->'+str(returnList)+', RECORD_ID--->'+str(RECORD_ID))
+		Trace.Write('Return list-->'+str(returnList))
+		Trace.Write('RECORD_ID--->'+str(RECORD_ID))
 		recur_func(returnList, RECORD_ID)
 	except:
 		Trace.Write("errrorr")
