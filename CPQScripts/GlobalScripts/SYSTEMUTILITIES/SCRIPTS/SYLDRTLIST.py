@@ -1527,6 +1527,20 @@ class SYLDRTLIST:
                                         "select count(*) as cnt FROM CTCICO where SERVICE_ID = '{}' and CONTRACT_ID = '{}'".format(
                                             LineAndEquipIDList[1], str(qt_rec_id.CONTRACT_ID))
                                 )
+                            elif TreeParam == "Contract Items":
+                                Qury_str = (
+                                    "select top "
+                                        + str(PerPage)
+                                        + " CASE WHEN DISCOUNT = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ imgstr +"' END AS EQUIPMENT_STATUS, CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,TOTAL_COST,LINE_ITEM_ID,DISCOUNT,TAX,EXTENDED_PRICE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,CONTRACT_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from CTCICO (NOLOCK) where CONTRACT_ID = '"
+                                        + str(qt_rec_id.CONTRACT_ID)
+                                        + "') m where m.ROW BETWEEN "
+                                        + str(Page_start)
+                                        + " and "
+                                        + str(Page_End)
+                                )
+                                QuryCount_str = (
+                                        "select count(*) as cnt FROM CTCICO where CONTRACT_ID = '{}'".format(     str(qt_rec_id.CONTRACT_ID))
+                                )
                             else:                                   
                                 Qury_str = (
                                     "select top "
