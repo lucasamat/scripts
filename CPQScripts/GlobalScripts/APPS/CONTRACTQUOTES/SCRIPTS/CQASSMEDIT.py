@@ -137,7 +137,7 @@ def ChildEntRequest(tableName,where,serviceId):
     Trace.Write(response["access_token"])
     Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
-    
+    gettodaydate = datetime.now().strftime("%Y-%m-%d")
     ProductPartnumber = serviceId#'Z0035'
     try:        
         requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
