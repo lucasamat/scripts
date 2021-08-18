@@ -189,7 +189,9 @@ class DropConstraint:
                 # DROP NOT NULL
                 Trace.Write('not null messgae---')
                 query_result = Sql.GetList(
-                    "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = 'QTQTBP' "
+                    "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE = 'NOT NULL' AND OBJECT_APINAME = '"
+                    + str(self.ObjectName)
+                    + "' "
                     + " AND OBJECTFIELD_APINAME ='"
                     + str(objectApiName)
                     + "' "
