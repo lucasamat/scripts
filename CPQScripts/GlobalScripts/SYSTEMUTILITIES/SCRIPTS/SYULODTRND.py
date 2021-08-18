@@ -3380,6 +3380,8 @@ def EntitlementTreeViewHTMLDetail(
 											# 	+ "</input> "
 											# )
 										else:
+											if attr_value == "DefaultValue":
+												attr_value = ''
 											sec_str1 += (
 												'<input class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 												+ str(attrSysId)
