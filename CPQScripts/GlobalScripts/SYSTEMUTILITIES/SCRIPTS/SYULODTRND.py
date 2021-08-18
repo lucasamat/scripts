@@ -2601,6 +2601,8 @@ def EntitlementTreeViewHTMLDetail(
 						STDVALUES =  Sql.GetFirst("SELECT * FROM STANDARD_ATTRIBUTE_VALUES WHERE SYSTEM_ID like '%{sys_id}%' ".format(sys_id = attrSysId)  )
 						if STDVALUES:
 							attrValue = STDVALUES.STANDARD_ATTRIBUTE_VALUE
+							if attrValue == "DefaultValue":
+								attrValue = ''
 						else:
 							attrValue = ''
 						
