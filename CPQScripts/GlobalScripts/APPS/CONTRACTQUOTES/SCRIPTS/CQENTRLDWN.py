@@ -482,7 +482,7 @@ def get_config_id():
 		pass
 	return newConfigurationid
 	
-def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID):		
+def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault):		
 	try:        
 		#Log.Info("newConfigurationid.."+str(config_id))
 		if attribute_id !="":
@@ -503,7 +503,8 @@ def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cps
 			# response = eval(response)
 
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-			if value_code and value_code !='undefined' and attribute_id !='undefined' and display_name !='select':	
+			if value_code and value_code not in ('undefined','None') and attribute_id !='undefined' and display_name !='select' and isdefault =='0':	
+				
 			#webclient.Headers.Add("If-Match", "111")
 				webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 			#Log.Info('row--'+str(row.ENTITLEMENT_NAME))	
@@ -700,7 +701,7 @@ try:
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 						
 						
-						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
+						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr,value.IS_DEFAULT)
 						cpsmatc_incr = cpsmatchID
 						
 
