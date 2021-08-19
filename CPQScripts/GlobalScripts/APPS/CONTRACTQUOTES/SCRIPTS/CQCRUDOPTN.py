@@ -5295,8 +5295,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 						{UserId} AS CpqTableEntryModifiedBy,
 						GETDATE() as CpqTableEntryDateModified
 						FROM SAQSPT (NOLOCK)
-						SAQSPT.QUOTE_RECORD_ID
-						WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}')A
+						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')A
 					""".format(
 						currency=self.contract_currency, 
 						currency_rec_id=self.contract_currency_record_id, 
