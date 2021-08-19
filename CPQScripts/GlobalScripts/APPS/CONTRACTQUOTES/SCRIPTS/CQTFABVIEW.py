@@ -1246,7 +1246,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 
 			Getchildtable2 = Sql.GetFirst(
 				"SELECT * FROM PRVDVL (NOLOCK) WHERE VALUEDRIVER_VALUE_DESCRIPTION ='" + str(getvaluedriv) + "'"
-			)
+			)			
 			if Getchildtable2:
 				tablerow2 = {}
 				tableInfo2 = SqlHelper.GetTable("SAQVDV")
@@ -1275,7 +1275,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"QTEVDR_RECORD_ID": str(Q.QUOTE_VALUEDRIVER_RECORD_ID),
 						"VALUEDRIVER_VALUE_DESCRIPTION": getvaluedriv,
 						"VALUEDRIVER_VALUE_RECORD_ID": str(Getchildtable2.VALUE_DRIVER_VALUE_RECORD_ID),
-						"VALUEDRIVER_COEFFICIENT":str(Getchildtable2.VALUEDRIVER_COEFFICIENT),
+						"VALUEDRIVER_COEFFICIENT":Getchildtable2.VALUEDRIVER_COEFFICIENT,
 						"VALUEDRIVER_TYPE": str(Getchildtable.VALUE_DRIVER_TYPE),
 						#"VALUEDRIVER_VALUE_CODE":str(Getchildtable.VALUEDRIVER_VALUE_CODE),
 						"SALESORG_ID":str(GetSalesOrg.SALESORG_ID),
