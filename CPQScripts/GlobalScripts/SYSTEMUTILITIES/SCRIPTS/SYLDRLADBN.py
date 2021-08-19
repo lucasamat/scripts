@@ -493,7 +493,7 @@ SYTABS_OBJNAME = Sql.GetFirst(
 if  SYTABS_OBJNAME:
     SYACTI_OBJNAME = Sql.GetList(
                             "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
-                            + TAB_RECID
+                            + str(SYTABS_OBJNAME.RECORD_ID)
                             + "' "
                         )
 if myAttribute is not None:
