@@ -153,7 +153,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				if selecter:
 					userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
 					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-
+					Trace.Write("userselectedeffi"+str(userselectedeffi))
 				
 				for qstns in GetDRIVNAME:
 					if qstn.EDITABLE:
@@ -243,7 +243,6 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
 				else:
-					Trace.Write("246line ELSE")
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
 					if len(userselectedeffi) != 0:
 						Trace.Write("249line if")
