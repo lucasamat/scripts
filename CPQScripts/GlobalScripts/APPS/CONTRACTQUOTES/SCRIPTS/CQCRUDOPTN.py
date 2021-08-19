@@ -75,6 +75,7 @@ class ContractQuoteCrudOpertion:
 			columns=[
 				"QUOTE_ID",
 				"QUOTE_NAME",
+				"QUOTE_TYPE",
 				#"SALESORG_ID",
 				#"SALESORG_NAME",
 				#"SALESORG_RECORD_ID",
@@ -119,6 +120,7 @@ class ContractQuoteCrudOpertion:
 		if contract_quote_record_obj:
 			self.contract_quote_id = contract_quote_record_obj.QUOTE_ID
 			self.contract_quote_name = contract_quote_record_obj.QUOTE_NAME
+			self.quote_type = contract_quote_record_obj.QUOTE_TYPE
 			self.salesorg_id = salesorg_obj.SALESORG_ID
 			self.salesorg_name = salesorg_obj.SALESORG_NAME
 			self.salesorg_record_id = salesorg_obj.SALESORG_RECORD_ID
