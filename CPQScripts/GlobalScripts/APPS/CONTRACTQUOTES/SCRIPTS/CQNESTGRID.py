@@ -13285,17 +13285,17 @@ try:
 except:
     active_subtab = ""
 Trace.Write('active_subtab'+str(active_subtab))
-try:
-    selected_values= eval(Param.Values)
-    Trace.Write('selected_values-----'+str(selected_values))
-except:
-    selected_values =[]
-try:
-    unselected_values= eval(Param.unselected_list)
-    Trace.Write('unselected_list-----'+str(unselected_values))
-except Exception,e:
-    Trace.Write('unselected_values--error-'+str(e))
-    unselected_values =[]
+# try:
+#     selected_values= eval(Param.Values)
+#     Trace.Write('selected_values-----'+str(selected_values))
+# except:
+#     selected_values =[]
+# try:
+#     unselected_values= eval(Param.unselected_list)
+#     Trace.Write('unselected_list-----'+str(unselected_values))
+# except Exception,e:
+#     Trace.Write('unselected_values--error-'+str(e))
+#     unselected_values =[]
 # Trace.Write("SORT SortPerPage-----"+str(SortPerPage))
 # Trace.Write("SORT SortPageInform -----"+str(SortPageInform))
 # Trace.Write("Current Rec Id is " + str(CURR_REC_ID))
