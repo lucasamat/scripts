@@ -138,7 +138,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 						+ str(mastername)
 						+ "'"
 					)
-				selecter = Sql.GetList(
+				selecter = Sql.GetFirst(
 					"SELECT VALUEDRIVER_VALUEDESC,VALUEDRIVER_COEFFICIENT FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
 					+ str(Qt_rec_id)
 					+ "' AND VALUEDRIVER_ID = '"
