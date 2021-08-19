@@ -562,7 +562,7 @@ class TreeView:
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
 						# Billing Matrix Dynamic Tabs - Start
-						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing Matrix':
+						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing':
 							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id")))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
