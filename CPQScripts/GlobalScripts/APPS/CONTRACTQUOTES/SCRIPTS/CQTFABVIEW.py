@@ -147,12 +147,24 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(TreeParam)
 					+ "'"
 				)
-				
-				userselecteddrive = []
-				
+				userselected = []
+				userselectedeff =[]
 				if selecter:
-					userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
-					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+					userselected.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+					#userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter if Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION]
+					#userselectedeff = [str(float(Valuedrivereff.VALUEDRIVER_COEFFICIENT)*float(100))+" %" for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+					
+					if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
+						userselectedeff ='0.0%'
+					else:
+						userselectedeff.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")	
+				else:
+					userselectedeff = ''
+				# userselecteddrive = []
+				
+				# if selecter:
+				# 	userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
+				# 	userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
 
 				
 				for qstns in GetDRIVNAME:
@@ -162,7 +174,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					else:
 						Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
 						disabled_edit_drivers = 'disabled_edit_drivers'
-					if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselecteddrive:
+					if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 						VAR1 += (
 							'<option  value = "'
 							+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
