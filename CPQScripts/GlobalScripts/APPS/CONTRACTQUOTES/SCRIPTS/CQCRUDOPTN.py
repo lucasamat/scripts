@@ -5235,7 +5235,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
-		Self._process_query("""
+		self._process_query("""
 					INSERT SAQITM (
 					QUOTE_ITEM_RECORD_ID,
 					QUOTE_RECORD_ID,
