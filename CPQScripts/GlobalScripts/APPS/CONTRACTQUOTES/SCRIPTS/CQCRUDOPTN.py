@@ -5081,7 +5081,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
-
+			Trace.Write("self.quote_type--->"+str(self.quote_type))
 			get_billing_matrix_year = self._quote_items_insert()
 			batch_group_record_id = str(Guid.NewGuid()).upper()
 			self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
