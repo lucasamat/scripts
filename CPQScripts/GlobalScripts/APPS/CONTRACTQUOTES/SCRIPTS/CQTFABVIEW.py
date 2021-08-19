@@ -152,8 +152,12 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				
 				if selecter:
 					userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
-					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-					Trace.Write("userselectedeffi"+str(userselectedeffi))
+					#userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+					if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
+						userselectedeffi ='0.0%'
+					else:
+						userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
+					#Trace.Write("userselectedeffi"+str(userselectedeffi))
 				
 				for qstns in GetDRIVNAME:
 					if qstn.EDITABLE:
