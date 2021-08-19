@@ -503,12 +503,17 @@ if myAttribute is not None:
  
     else:                     
                
-        if value == "ADDNEW" or value == "VIEW":
+        if value == "ADDNEW":
+            #Trace.Write('val00==='+str(value))
+            if myAttribute.HintFormula == "TAB PAGE ALERT":
+                myAttribute.Allowed = True
+            #myAttribute.HintFormula = ""
+            #Trace.Write("check allowed else"+ str(myAttribute.Allowed))
+        elif value == "VIEW":
             #Trace.Write('val00==='+str(value))
             # if myAttribute.HintFormula == "TAB PAGE ALERT":
             myAttribute.Allowed = False
-            myAttribute.HintFormula = ""
-            #Trace.Write("check allowed else"+ str(myAttribute.Allowed))
+            myAttribute.HintFormula = ""    
          
         elif value == "EDIT":
             if (
