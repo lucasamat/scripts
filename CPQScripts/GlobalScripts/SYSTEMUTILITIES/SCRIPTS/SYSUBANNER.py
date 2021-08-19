@@ -1818,6 +1818,7 @@ def Related_Sub_Banner(
         SixthLable = "Equipment"
         SixthValue = "All"
     elif TreeParentParam == 'Contract Items' and (subTabName == 'Equipment' or subTabName == 'Contract Item Fab Value Drivers' or subTabName == 'Contract Item Cost and Value Drivers'):
+        Trace.Write("Line No: 1821")
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
         PrimaryValue = TreeParam[0].strip()
