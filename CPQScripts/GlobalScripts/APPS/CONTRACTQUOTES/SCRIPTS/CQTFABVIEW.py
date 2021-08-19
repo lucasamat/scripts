@@ -150,7 +150,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				userselected = []
 				userselectedeff =[]
 				if selecter:
-					userselected.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+					userselected.append(selecter.VALUEDRIVER_VALUEDESC)
 					#userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter if Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION]
 					#userselectedeff = [str(float(Valuedrivereff.VALUEDRIVER_COEFFICIENT)*float(100))+" %" for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
 					
