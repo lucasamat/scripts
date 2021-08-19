@@ -508,7 +508,7 @@ if myAttribute is not None:
             myAttribute.Allowed = False
             myAttribute.HintFormula = ""
             #Trace.Write("check allowed else"+ str(myAttribute.Allowed))
-        if value == "ADDNEW" and str(ACTItem.ACTION_NAME) == "SAVE":
+        if value == "ADDNEW" and str(SYACTI_OBJNAME.ACTION_NAME) == "SAVE":
             Trace.Write('val00==='+str(value))
             if myAttribute.HintFormula == "TAB PAGE ALERT":
                 myAttribute.Allowed = True
