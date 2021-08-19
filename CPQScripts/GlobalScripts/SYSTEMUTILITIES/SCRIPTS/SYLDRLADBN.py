@@ -501,25 +501,8 @@ if myAttribute is not None:
                 myAttribute.Allowed = False
                 myAttribute.HintFormula = ""
  
-    else:
-        
-        SYTABS_OBJNAME = Sql.GetFirst(
-                    "select top 1 RECORD_ID from SYTABS (nolock) where  RTRIM(LTRIM(TAB_LABEL)) ='Tabs' and RTRIM(LTRIM(APP_LABEL))='"
-                    + str(productName)
-                    + "' order by DISPLAY_ORDER"
-                )
-        if  SYTABS_OBJNAME:
-            SYACTI_OBJNAME = Sql.GetList(
-                            "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
-                            + str(SYTABS_OBJNAME.RECORD_ID)
-                            + "' "
-                        )
-            if SYACTI_OBJNAME:
-                if value == "ADDNEW" and str(SYACTI_OBJNAME.ACTION_NAME) == "SAVE":
-                    Trace.Write('val00==='+str(value))
-                    if myAttribute.HintFormula == "TAB PAGE ALERT":
-                        myAttribute.Allowed = True
-            #myAttribute.HintFormula = ""               
+    else:     
+               
         if value == "ADDNEW" or value == "VIEW":
             #Trace.Write('val00==='+str(value))
             # if myAttribute.HintFormula == "TAB PAGE ALERT":
