@@ -3064,12 +3064,17 @@ class SYLDRTLIST:
                                         seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                         seg_pric["PRICE_FACTOR"] = PriceFactor
                                     else:
+                                        getindication = ''
                                         Trace.Write(str(value1234)+'---3067---'+str(value123))
                                         if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                             
                                             new_dict[value123] = (
                                                 '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
                                             )
+                                        if str(value123) == "WARRANTY_END_DATE":
+                                            Trace.Write('getindication--3075---'+str(getindication))
+                                            getindication = str(value1234)
+                                            Trace.Write('getindication---'+str(getindication))
                                         elif str(value123) in billing_date_column:
 
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
@@ -3096,10 +3101,15 @@ class SYLDRTLIST:
                                             #     '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>'
                                             # )
                                             
-                                            Trace.Write('key_value--3075--'+str(key_value))      
-                                            new_dict[value123] = (
-                                                '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
-                                            )
+                                            Trace.Write('key_value--3075--'+str(key_value))
+                                            if getindication:
+                                                new_dict[value123] = (
+                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                )
+                                            else:    
+                                                new_dict[value123] = (
+                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                )
                                         else:                                            
                                             if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
                                                 precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','YEAR_OVER_YEAR']
