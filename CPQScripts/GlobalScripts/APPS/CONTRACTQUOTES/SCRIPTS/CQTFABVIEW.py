@@ -243,11 +243,14 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
 				else:
+					Trace.Write("246line ELSE")
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
 					if len(userselectedeffi) != 0:
+						Trace.Write("249line if")
 						coeffval = str(userselectedeffi).replace("['","").replace("']","")
 						new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
 					else:
+						Trace.Write("253line ELSE")
 						new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
 				new_value_dict["VALUE DRIVER VALUE"] = sec_str1
 				
