@@ -89,7 +89,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(mastername)
 					+ "'"
 				)
-				selecter = Sql.GetList(
+				selecter = Sql.GetFirst(
 					"SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
 					+ str(Qt_rec_id)
 					+ "' AND VALUEDRIVER_ID = '"
@@ -98,9 +98,13 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				)
 				userselected = []
 				if selecter:
-					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
-					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-				
+					#userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
+					#userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+					userselected.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+					if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
+						userselectedeffi ='0.0%'
+					else:
+						userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
 				if GetDRIVNAME:
 					for qstns in GetDRIVNAME:
 						if qstn.EDITABLE:
