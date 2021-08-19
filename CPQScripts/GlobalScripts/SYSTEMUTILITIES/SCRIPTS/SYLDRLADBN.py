@@ -502,6 +502,7 @@ if myAttribute is not None:
                 myAttribute.HintFormula = ""
  
     else:
+        TabName = str(TestProduct.CurrentTab)
         SYTABS_OBJNAME = Sql.GetFirst(
                     "select top 1 RECORD_ID from SYTABS (nolock) where  RTRIM(LTRIM(TAB_LABEL)) ='"
                     + str(TabName).strip()
