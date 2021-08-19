@@ -483,7 +483,15 @@ QuestionRecId, val, TabName, TABLE_RECORDID = "", "Tab list", "", ""
 # GET CURRENT ACTION
 value = productAttributesGetByName("MA_MTR_TAB_ACTION").GetValue()
 Trace.Write('')
-SYACTI_OBJNAME = Sql.GetList(
+SYTABS_OBJNAME = Sql.GetFirst(
+                    "select top 1 RECORD_ID from SYTABS (nolock) where  RTRIM(LTRIM(TAB_LABEL)) ='"
+                    + str(TabName).strip()
+                    + "' and RTRIM(LTRIM(APP_LABEL))='"
+                    + str(productName)
+                    + "' order by DISPLAY_ORDER"
+                )
+if  SYTABS_OBJNAME:
+    SYACTI_OBJNAME = Sql.GetList(
                             "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
                             + TAB_RECID
                             + "' "
