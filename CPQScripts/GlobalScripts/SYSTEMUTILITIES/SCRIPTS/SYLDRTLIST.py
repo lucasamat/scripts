@@ -3072,11 +3072,11 @@ class SYLDRTLIST:
                                                 '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
                                             )
                                         if str(value123) == "WARRANTY_END_DATE":
-                                            Trace.Write('getindication--3075---'+str(getindication))
+                                            #Trace.Write('getindication--3075---'+str(getindication))
                                             getindication = str(value1234)
                                             Trace.Write('getindication---'+str(getindication))
                                         elif str(value123) in billing_date_column:
-
+                                            Trace.Write('value123-----'+str(value123))
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                                             curr_symbol_obj = Sql.GetFirst(
                                                 "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
