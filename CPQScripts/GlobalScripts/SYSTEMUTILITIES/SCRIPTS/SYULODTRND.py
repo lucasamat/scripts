@@ -1137,7 +1137,7 @@ def CommonTreeViewHTMLDetail(
 					if current_obj_value == "":
 						try:
 							if RECORD_ID.startswith(ObjectName):							
-								if str(ObjectName) == "USERS":
+								if str(ObjectName) != "USERS":
 
 									current_obj_value = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
 
