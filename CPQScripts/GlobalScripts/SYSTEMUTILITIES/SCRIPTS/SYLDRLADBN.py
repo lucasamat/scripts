@@ -483,7 +483,11 @@ QuestionRecId, val, TabName, TABLE_RECORDID = "", "Tab list", "", ""
 # GET CURRENT ACTION
 value = productAttributesGetByName("MA_MTR_TAB_ACTION").GetValue()
 Trace.Write('')
-
+SYACTI_OBJNAME = Sql.GetList(
+                            "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
+                            + TAB_RECID
+                            + "' "
+                        )
 if myAttribute is not None:
     Trace.Write("check inside else")
     if (str(TestProduct.CurrentTab) == 'Approval Chain' and str(TestProduct.Name) == 'APPROVAL CENTER'):
