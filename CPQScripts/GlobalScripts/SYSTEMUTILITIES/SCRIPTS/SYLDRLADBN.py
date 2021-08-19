@@ -502,7 +502,18 @@ if myAttribute is not None:
                 myAttribute.HintFormula = ""
  
     else:
-        TabName = str(TestProduct.CurrentTab)
+        getTabDetails = Sql.GetFirst(
+                    "SELECT TOP 1000 TAB_LABEL FROM SYTABS (NOLOCK) WHERE SAPCPQ_ALTTAB_NAME = '"
+                    + str(TabName)
+                    + "' AND RTRIM(LTRIM(APP_LABEL))='"
+                    + str(productName)
+                    + "' ORDER BY DISPLAY_ORDER "
+                )
+
+        if getTabDetails is not None:
+            found = (getTabDetails.TAB_LABEL).strip()
+            if found != TabName:
+                TabName = getTabDetails.TAB_LABEL
         SYTABS_OBJNAME = Sql.GetFirst(
                     "select top 1 RECORD_ID from SYTABS (nolock) where  RTRIM(LTRIM(TAB_LABEL)) ='"
                     + str(TabName).strip()
