@@ -41,6 +41,7 @@ try:
 	SAQIEN = "SAQIEN_BKP_1"+str(CRMQT.c4c_quote_id)
 	SAQSCA = "SAQSCA_BKP_1"+str(CRMQT.c4c_quote_id)
 	SAQSAP = "SAQSAP_BKP_1"+str(CRMQT.c4c_quote_id)
+	SAQSAE = "SAQSAE_BKP_1"+str(CRMQT.c4c_quote_id)
 	
 	SAQSCO_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCO)+"'' ) BEGIN DROP TABLE "+str(SAQSCO)+" END  ' ")
 	
@@ -50,16 +51,18 @@ try:
 
 	SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
 	
+	SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
+	
 	SAQSCO_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID INTO "+str(SAQSCO)+" from SAQSCO(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id[0])+"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSVDR(NOLOCK))   ' ")
+	
+	Sql = SqlHelper.GetFirst("sp_executesql @T=N'select * into "+str(SAQSAE)+" from  SAQSAE(nolock)a WHERE quote_id = ''"+str(Qt_id[0])+"'' '")
 
+	"""
 	start = 1
 	end = 1
-
 	Check_flag = 1
 	while Check_flag == 1:
-
 		ent_query = SqlHelper.GetFirst("SELECT DISTINCT QUOTE_ID,cpqtableentryid FROM (SELECT DISTINCT quote_id,cpqtableentryid, ROW_NUMBER()OVER(ORDER BY cpqtableentryid) AS SNO FROM SAQSAE (NOLOCK) where quote_id='"+str(Qt_id[0])+"' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSVDR(NOLOCK)) ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+" ")
-
 		if str(ent_query) != "None":
 			
 			start = start + 1
@@ -73,19 +76,20 @@ try:
 				SAQIEN_SEL = SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''<QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID><ASSEMBLY_ID>''+ASSEMBLY_ID+''</ASSEMBLY_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSAE(nolock) where quote_id=''"+str(Qt_id[0])+"'' AND cpqtableentryid = "+str(ent_query.cpqtableentryid)+" )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; insert "+str(SAQIEN)+" (QUOTE_ID,EQUIPMENT_ID,ASSEMBLY_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE) select QUOTE_ID,EQUIPMENT_ID,ASSEMBLY_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ASSEMBLY_ID VARCHAR(100) ''ASSEMBLY_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE''); exec sys.sp_xml_removedocument @H; '")
 		
 		else:
-			Check_flag=0
+			Check_flag=0 """
 	
 	SAQSCA_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,CONVERT(VARCHAR(100),NULL) AS COVERAGE,CONVERT(VARCHAR(100),NULL) AS WETCLEAN,CONVERT(VARCHAR(100),NULL) AS PERFGUARANTEE,CONVERT(VARCHAR(100),NULL) AS PMLABOR,CONVERT(VARCHAR(100),NULL) AS CMLABOR INTO "+str(SAQSCA)+" from SAQSCA(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id[0])+"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSVDR(NOLOCK)) ' ")
 	
-	SAQSCA_UPD = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET COVERAGE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN "+str(SAQIEN)+" B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Contract Coverage''  ' ") 
-	
-	SAQSCA_UPD = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET WETCLEAN=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN "+str(SAQIEN)+" B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Wet Cleans Labor''  ' ")
-	
-	SAQSCA_UPD = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PERFGUARANTEE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN "+str(SAQIEN)+" B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Primary KPI. Perf Guarantee''  ' ")
-	
-	SAQSCA_UPD = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN "+str(SAQIEN)+" B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Preventive Maintenance Labor''  ' ")
-	
-	SAQSCA_UPD = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET CMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN "+str(SAQIEN)+" B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Corrective Maintenance Labor''  ' ")
+	S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET COVERAGE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,assembly_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,assembly_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_CRT_CON_COV<'',entitlement_xml),charindex (''Contract Coverage</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_CRT_CON_COV<'',entitlement_xml)+len(''Contract Coverage</ENTITLEMENT_DESCRIPTION>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSAE_BKP(nolock)a WHERE quote_id=''SQ3050003246RV00-RW00AM00-20230201'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y))B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Contract Coverage'' '")
+
+	S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET WETCLEAN=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,assembly_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,assembly_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_NET_WETL<'',entitlement_xml),charindex (''Wet Cleans Labor</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_NET_WETL<'',entitlement_xml)+len(''Wet Cleans Labor</ENTITLEMENT_DESCRIPTION>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSAE_BKP(nolock)a WHERE quote_id=''SQ3050003246RV00-RW00AM00-20230201'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Wet Cleans Labor'' '")
+
+	S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,assembly_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT 	quote_ID,equipment_id,assembly_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI<'',entitlement_xml),charindex (''Preventive Maintenance Labor</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI<'',entitlement_xml)+len(''Preventive Maintenance Labor</ENTITLEMENT_DESCRIPTION>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSAE_BKP(nolock)a WHERE quote_id=''SQ3050003246RV00-RW00AM00-20230201'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Preventive Maintenance Labor''  '")
+
+	S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET CMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,assembly_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,assembly_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_LAB_COR_MAI<'',entitlement_xml),charindex (''Corrective Maintenance Labor</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_LAB_COR_MAI<'',entitlement_xml)+len(''Corrective Maintenance Labor</ENTITLEMENT_DESCRIPTION>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSAE_BKP(nolock)a WHERE quote_id=''SQ3050003246RV00-RW00AM00-20230201'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Corrective Maintenance Labor''  '")
+
+	S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PERFGUARANTEE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,assembly_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,assembly_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_KPI_PRI_PER<'',entitlement_xml),charindex (''Primary KPI. Perf Guarantee</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_KPI_PRI_PER<'',entitlement_xml)+len(''Primary KPI. Perf Guarantee</ENTITLEMENT_DESCRIPTION>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSAE_BKP(nolock)a WHERE quote_id=''SQ3050003246RV00-RW00AM00-20230201'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE B.ENTITLEMENT_DESCRIPTION=''Primary KPI. Perf Guarantee''  '")	
+
 
 	SAQSAP_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,PM_FREQUENCY, PM_NAME INTO "+str(SAQSAP)+" from SAQSAP(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id[0])+"'' AND PM_NAME = ''Wet Clean'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSVDR(NOLOCK) )' ")
 	
@@ -134,6 +138,8 @@ try:
 		SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
 
 		SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
+		
+		SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
 		
 		ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116959') AS OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_id[0])+"'  ") 
 
@@ -218,6 +224,8 @@ try:
 		SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
 
 		SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
+		
+		SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
 
 		ApiResponse = ApiResponseFactory.JsonResponse(
 			{"Response": [{"Status": "200", "Message": "No Data available to process the request."}]}
@@ -232,6 +240,7 @@ except:
 	SAQIEN = "SAQIEN_BKP_1"+str(CRMQT.c4c_quote_id)
 	SAQSCA = "SAQSCA_BKP_1"+str(CRMQT.c4c_quote_id)
 	SAQSAP = "SAQSAP_BKP_1"+str(CRMQT.c4c_quote_id)
+	SAQSAE = "SAQSAE_BKP_1"+str(CRMQT.c4c_quote_id)
 	
 	SAQSCO_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCO)+"'' ) BEGIN DROP TABLE "+str(SAQSCO)+" END  ' ")
 	
@@ -240,6 +249,8 @@ except:
 	SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
 
 	SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
+	
+	SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
 	
 	Log.Info("QTPOSTPRSM ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("QTPOSTPRSM ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
