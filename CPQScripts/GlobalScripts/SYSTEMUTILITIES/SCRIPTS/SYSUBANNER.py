@@ -1817,8 +1817,7 @@ def Related_Sub_Banner(
         FifthValue = "All"
         SixthLable = "Equipment"
         SixthValue = "All"
-    elif TreeParentParam == 'Contract Items' and (subTabName == 'Equipment' or subTabName == 'Contract Item Fab Value Drivers' or subTabName == 'Contract Item Cost and Value Drivers'):
-        Trace.Write("Line No: 1821")
+    elif TreeParentParam == 'Contract Items' and subTabName == 'Equipment':
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
         PrimaryValue = TreeParam[0].strip()
@@ -1828,8 +1827,20 @@ def Related_Sub_Banner(
         ThirdValue = "All"
         FourthLable = "Equipment"
         FourthValue = "All"
+    elif TreeParentParam == 'Contract Items' and (subTabName == 'Contract Item Fab Value Drivers' or subTabName == 'Contract Item Cost and Value Drivers'):
+        TreeParam = TreeParam.split('-')
+        PrimaryLable = "Line"
+        PrimaryValue = TreeParam[0].strip()
+        SecondLable = "Product Offering ID"
+        SecondValue = TreeParam[1].strip()
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from CTCTSV(nolock) where SERVICE_ID = '"+str(SecondValue)+"'")
+        ThirdLable = "Product Offering Description"
+        ThirdValue = getService.SERVICE_DESCRIPTION
+        FourthLable = "Greenbooks"
+        FourthValue = "All"
+        FifthLable = "Equipment"
+        FifthValue = "All"
     elif TreeParentParam == 'Contract Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
-        Trace.Write("1797")	
         PrimaryLable = ListKey[0]
         PrimaryValue = PrimaryValue
         SecondLable = ListKey[1]
@@ -1981,7 +1992,7 @@ def Related_Sub_Banner(
                 + str(ThirdValueDiv)
                 + "</abbr></div></div>"
             )
-            Trace.Write("Line no:1931")
+            Trace.Write("Line no:1995")
             Trace.Write(sec_rel_sub_bnr)
         else:
             sec_rel_sub_bnr += (
