@@ -151,7 +151,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				userselecteddrive = []
 				
 				if selecter:
-					userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
+					#userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
+					userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
 					#userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
 					if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
 						userselectedeffi ='0.0%'
