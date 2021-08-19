@@ -503,7 +503,7 @@ if myAttribute is not None:
  
     else:
         SYACTI_OBJNAME = Sql.GetList(
-                            "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
+                            "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_NAME='"
                             + str(TestProduct.CurrentTab)
                             + "' "
                         )
