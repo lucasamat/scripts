@@ -515,17 +515,19 @@ if myAttribute is not None:
                             + str(SYTABS_OBJNAME.RECORD_ID)
                             + "' "
                         )
+            if SYACTI_OBJNAME:
+                if value == "ADDNEW" and str(SYACTI_OBJNAME.ACTION_NAME) == "SAVE":
+                    Trace.Write('val00==='+str(value))
+                    if myAttribute.HintFormula == "TAB PAGE ALERT":
+                        myAttribute.Allowed = True
+            #myAttribute.HintFormula = ""               
         if value == "ADDNEW" or value == "VIEW":
             #Trace.Write('val00==='+str(value))
             # if myAttribute.HintFormula == "TAB PAGE ALERT":
             myAttribute.Allowed = False
             myAttribute.HintFormula = ""
             #Trace.Write("check allowed else"+ str(myAttribute.Allowed))
-        if value == "ADDNEW" and str(SYACTI_OBJNAME.ACTION_NAME) == "SAVE":
-            Trace.Write('val00==='+str(value))
-            if myAttribute.HintFormula == "TAB PAGE ALERT":
-                myAttribute.Allowed = True
-            #myAttribute.HintFormula = ""    
+         
         elif value == "EDIT":
             if (
                 len(str(myAttribute.HintFormula)) == "0"
