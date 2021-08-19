@@ -4165,6 +4165,93 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)AS IQ
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))
 	
+ 
+	def _insert_quote_item_forecast_parts(self, **kwargs):
+        Sql.RunQuery("""DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}'""".format(contract_quote_record_id = self.contract_quote_record_id))
+    	self._process_query(
+					"""
+					INSERT SAQIFP (
+						QUOTE_ITEM_FORECAST_PART_RECORD_ID,
+						DELIVERY_MODE,
+						EXTENDED_PRICE,
+						LINE_ITEM_ID,
+						PART_LINE_ID,
+						PART_DESCRIPTION,
+						PART_NUMBER,
+						PART_RECORD_ID,
+						QUOTE_ID,
+						QUOTE_NAME,
+						QUOTE_RECORD_ID,
+						SALESORG_ID,
+						SALESORG_RECORD_ID,
+						SALESUOM_ID,
+						SALESUOM_RECORD_ID,
+						SCHEDULE_MODE,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID,
+						UNIT_PRICE,
+						VALID_FROM_DATE,
+						VALID_TO_DATE,
+						BASEUOM_ID,
+						BASEUOM_RECORD_ID,
+						ANNUAL_QUANTITY,
+						MATPRIGRP_ID,
+						MATPRIGRP_RECORD_ID,
+						PRICING_STATUS,
+						SORG_CURRENCY,
+						SORGCURRENCY_RECORD_ID,
+						CPQTABLEENTRYADDEDBY, 
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified
+						)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID, A.* FROM( SELECT
+						DISTINCT
+						SAQSPT.DELIVERY_MODE,
+						SAQSPT.EXTENDED_UNIT_PRICE,
+						'10' as LINE_ITEM_ID,
+						ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) * 10 as PART_LINE_ID,
+						SAQSPT.PART_DESCRIPTION,
+						SAQSPT.PART_NUMBER,
+						SAQSPT.PART_RECORD_ID,
+						SAQSPT.QUOTE_ID,
+						SAQSPT.QUOTE_NAME,
+						SAQSPT.QUOTE_RECORD_ID,
+						SAQSPT.SALESORG_ID,
+						SAQSPT.SALESORG_RECORD_ID,
+						SAQSPT.SALESUOM_ID,
+						SAQSPT.SALESUOM_RECORD_ID,
+						SAQSPT.SCHEDULE_MODE,
+						SAQSPT.SERVICE_DESCRIPTION,
+						SAQSPT.SERVICE_ID,
+						SAQSPT.SERVICE_RECORD_ID,
+						SAQSPT.UNIT_PRICE,
+						SAQSPT.VALID_FROM_DATE,
+						SAQSPT.VALID_TO_DATE,
+						SAQSPT.BASEUOM_ID,
+						SAQSPT.BASEUOM_RECORD_ID,
+						SAQSPT.CUSTOMER_ANNUAL_QUANTITY,
+						SAQSPT.MATPRIGRP_ID,
+						SAQSPT.MATPRIGRP_RECORD_ID,
+						'{status}' AS PRICING_STATUS,
+						'{currency}' AS SORG_CURRENCY,
+						'{currency_rec_id}' AS SORGCURRENCY_RECORD_ID,
+						'{UserName}' as CPQTABLEENTRYADDEDBY, 
+						GETDATE() as CPQTABLEENTRYDATEADDED,
+						{UserId} AS CpqTableEntryModifiedBy,
+						GETDATE() as CpqTableEntryDateModified
+						FROM SAQSPT (NOLOCK)
+						SAQSPT.QUOTE_RECORD_ID
+						WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}')A
+					""".format(
+						currency=self.contract_currency, 
+						currency_rec_id=self.contract_currency_record_id, 
+						QuoteRecordId=self.contract_quote_record_id,
+						status='ACQUIRING...',
+						UserId=self.user_id,
+						UserName=self.user_name
+					)
+				)
 	def _create(self):
 		if self.action_type == "ADD_COVERED_OBJ":
 			covered_start_time = time.time()
@@ -5224,10 +5311,13 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
 			Trace.Write("self.quote_type--->"+str(self.quote_type))
-			get_billing_matrix_year = self._quote_items_insert()
-			batch_group_record_id = str(Guid.NewGuid()).upper()
-			self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
-			self._insert_quote_item_greenbook(batch_group_record_id=batch_group_record_id)
+			if self.quote_type == "ZWK1 - SPARES":
+				self._insert_quote_item_forecast_parts()
+			else:
+				get_billing_matrix_year = self._quote_items_insert()
+				batch_group_record_id = str(Guid.NewGuid()).upper()
+				self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
+				self._insert_quote_item_greenbook(batch_group_record_id=batch_group_record_id)
 			#self._insert_quote_item_greenbook()
 			return get_billing_matrix_year
 	
