@@ -3709,7 +3709,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									UserName=self.user_name,
 								)
 				)
-		 
+		
 	def _insert_quote_service_greenbook(self, **kwargs):
 		if self.sale_type == "TOOL RELOCATION":
 				self._process_query(
@@ -4165,10 +4165,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)AS IQ
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))
 	
- 
+
 	def _insert_quote_item_forecast_parts(self, **kwargs):
-        Sql.RunQuery("""DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}'""".format(contract_quote_record_id = self.contract_quote_record_id))
-    	self._process_query(
+		Sql.RunQuery("""DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}'""".format(contract_quote_record_id = self.contract_quote_record_id))
+		self._process_query(
 					"""
 					INSERT SAQIFP (
 						QUOTE_ITEM_FORECAST_PART_RECORD_ID,
