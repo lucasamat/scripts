@@ -5231,7 +5231,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
 		for table_name in ('SAQIFP', 'SAQITM'):
-				delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
+			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
