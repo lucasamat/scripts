@@ -3032,7 +3032,7 @@ class SYLDRTLIST:
                             #     '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                             # )
                             new_dict[value123] = (
-                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +"'>'
+                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
                             )                       
                             Trace.Write('At line 2848 edit field')     
                         else:
@@ -3053,7 +3053,7 @@ class SYLDRTLIST:
                                     value1234 = value1234.replace('"', "&quot;")
                                     value1234 = value1234.replace("<p>", " ")
                                     value1234 = value1234.replace("</p>", " ")
-                                     Trace.Write(str(value123)+'3107--3051---'+str(value1234))
+                                    Trace.Write(str(value123)+'3107--3051---'+str(value1234))
                                     if value123 in [
                                         "ERROR",
                                         "MINIMUM_PRICE",
@@ -7897,7 +7897,7 @@ class SYLDRTLIST:
                             #     '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                             # )
                             new_dict[value123] = (
-                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +"'>'
+                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
                             )  
                             
                 
