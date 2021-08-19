@@ -1824,10 +1824,10 @@ def Related_Sub_Banner(
         PrimaryValue = TreeParam[0].strip()
         SecondLable = "Product Offering ID"
         SecondValue = TreeParam[1].strip()
-        FifthLable = "Greenbooks"
-        FifthValue = "All"
-        SixthLable = "Equipment"
-        SixthValue = "All"
+        ThirdLable = "Greenbooks"
+        ThirdValue = "All"
+        FourthLable = "Equipment"
+        FourthValue = "All"
     elif TreeParentParam == 'Contract Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
         Trace.Write("1797")	
         PrimaryLable = ListKey[0]
