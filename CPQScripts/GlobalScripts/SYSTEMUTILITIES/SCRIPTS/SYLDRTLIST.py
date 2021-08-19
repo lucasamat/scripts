@@ -3016,7 +3016,7 @@ class SYLDRTLIST:
                             else:
                                 Trace.Write('At line 2832-- second else')
                                 # new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
-                                new_dict[value123] = ('<input id ="' + key_value + '" title="' + value1234 + '" value="' + value1234 + '">')                           
+                                new_dict[value123] = ('<input class="cust_info" id ="' + key_value + '" title="' + value1234 + '" value="' + value1234 + '" disabled>')                           
                         ## addon product hyperlink starts
                         if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'ADNPRD_ID':
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -3032,7 +3032,7 @@ class SYLDRTLIST:
                             #     '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                             # )
                             new_dict[value123] = (
-                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
+                                '<input class="cust_info" id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'" disabled>'
                             )                       
                             Trace.Write('At line 2848 edit field')     
                         else:
@@ -3152,7 +3152,7 @@ class SYLDRTLIST:
                                                     else:
                                                         Trace.Write('At line 2924')
                                                         # new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
-                                                        new_dict[value123] = ('<input title="' + str(value1234).upper() + '" value="'+ str(value1234).upper()+'">')
+                                                        new_dict[value123] = ('<input class="cust_info" title="' + str(value1234).upper() + '" value="'+ str(value1234).upper()+'" disabled>')
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
@@ -7921,7 +7921,7 @@ class SYLDRTLIST:
                         #     '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                         # )
                         new_dict[value123] = (
-                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
+                                '<input class="cust_info" id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'" disabled>'
                         )                          
 
                     else:               
@@ -7996,7 +7996,7 @@ class SYLDRTLIST:
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
                                                         # new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
-                                                        new_dict[value123] = ('<input id="'+key_value+'" title="'+str(value1234).upper()+'" value="'+str(value1234).upper()+'">')
+                                                        new_dict[value123] = ('<input class="cust_info" id="'+key_value+'" title="'+str(value1234).upper()+'" value="'+str(value1234).upper()+'" disabled>')
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
