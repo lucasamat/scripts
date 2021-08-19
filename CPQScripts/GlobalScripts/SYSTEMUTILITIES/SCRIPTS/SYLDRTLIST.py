@@ -7905,9 +7905,12 @@ class SYLDRTLIST:
                         value1234 = value1234.replace('"', "&quot;")
                         value1234 = value1234.replace("<p>", " ")
                         value1234 = value1234.replace("</p>", " ")                        
+                        # new_dict[value123] = (
+                        #     '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
+                        # )
                         new_dict[value123] = (
-                            '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
-                        )                        
+                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
+                        )                          
 
                     else:               
                         if value123 in checkbox_list:
@@ -7980,7 +7983,8 @@ class SYLDRTLIST:
                                                 
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
-                                                        new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
+                                                        # new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
+                                                        new_dict[value123] = ('<input id="'+key_value+'" title="'+str(value1234).upper()+'" value="'+str(value1234).upper()+'">')
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
