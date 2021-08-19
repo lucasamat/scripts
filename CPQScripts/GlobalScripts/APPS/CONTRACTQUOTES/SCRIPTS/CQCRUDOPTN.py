@@ -5313,6 +5313,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		if self.action_type == "INSERT_LINE_ITEMS":
 			Trace.Write("self.quote_type--->"+str(self.quote_type))
 			if self.quote_type == "ZWK1 - SPARES":
+				get_billing_matrix_year = ""
 				self._insert_quote_item_forecast_parts()
 			else:
 				get_billing_matrix_year = self._quote_items_insert()
