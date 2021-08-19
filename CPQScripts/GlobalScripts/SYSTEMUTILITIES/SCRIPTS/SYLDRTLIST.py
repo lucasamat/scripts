@@ -3031,9 +3031,8 @@ class SYLDRTLIST:
                             # new_dict[value123] = (
                             #     '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                             # )
-                            new_dict[value123] = (
-                                '<input class="cust_info" id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'" disabled>'
-                            )                       
+                            new_dict[value123] = value1234
+                                                  
                             Trace.Write('At line 2848 edit field')     
                         else:
                             if value123 in checkbox_list:
@@ -3152,7 +3151,7 @@ class SYLDRTLIST:
                                                     else:
                                                         Trace.Write('At line 2924')
                                                         # new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
-                                                        new_dict[value123] = ('<input class="cust_info" title="' + str(value1234).upper() + '" value="'+ str(value1234).upper()+'" disabled>')
+                                                        new_dict[value123] = value1234
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
@@ -7908,9 +7907,7 @@ class SYLDRTLIST:
                             # new_dict[value123] = (
                             #     '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
                             # )
-                            new_dict[value123] = (
-                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'">'
-                            )  
+                            new_dict[value123] = value1234 
                             
                 
                     if value123 in edit_field:                      
@@ -7920,9 +7917,7 @@ class SYLDRTLIST:
                         # new_dict[value123] = (
                         #     '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
                         # )
-                        new_dict[value123] = (
-                                '<input class="cust_info" id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +'" disabled>'
-                        )                          
+                        new_dict[value123] = value1234      
 
                     else:               
                         if value123 in checkbox_list:
@@ -7996,7 +7991,7 @@ class SYLDRTLIST:
                                                     #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                                                     else:    
                                                         # new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
-                                                        new_dict[value123] = ('<input class="cust_info" id="'+key_value+'" title="'+str(value1234).upper()+'" value="'+str(value1234).upper()+'" disabled>')
+                                                        new_dict[value123] = value1234
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
