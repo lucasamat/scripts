@@ -1024,7 +1024,7 @@ def CommonTreeViewHTMLDetail(
 					]
 					if current_obj_api_name in noninlist:						
 						add_style = "display: none;"	
-				if ObjectName == "SAQTBP" and TreeParam == "Billing Matrix":
+				if ObjectName == "SAQTBP" and TreeParam == "Billing":
 					noninlist = [						
 						"SALESORG_ID",
 						"SALESORG_NAME"					
@@ -1149,7 +1149,7 @@ def CommonTreeViewHTMLDetail(
 							Trace.Write('check error')
 					if current_obj_api_name == "approve_condition_id" and ObjectName == "approve_condition":
 						current_obj_value = current_obj_value
-					elif ObjectName == 'SAQTBP' and TreeParam == "Billing Matrix":		# Billing Matrix Details Load - Start				
+					elif ObjectName == 'SAQTBP' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
 						billing_plan_obj = Sql.GetFirst(
 									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(
 										ObjectName=ObjectName, QuoteRecordId=quote_record_id)
