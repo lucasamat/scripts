@@ -4688,11 +4688,11 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID
 					
 				WHERE 
-					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.INCLUDED != 'CHAMBER' {WhereString} {fts}
+					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString} {fts}
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, 
 				TempTable=quote_item_line_temp, JoinString=join_string, PriceTemp=price_temp, WhereString=where_string,
-				fts="" if self.sale_type != 'TOOL RELOCATION' else " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != ''")
+				fts="" if self.sale_type != 'TOOL RELOCATION' else "AND SAQSCO.INCLUDED != 'CHAMBER' AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != ''")
 			)
 		
 		##inserting assembly to SAQICO if a equipemnt is chamber based
