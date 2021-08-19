@@ -1079,7 +1079,8 @@ for tab in Product.Tabs:
                                                             if (
                                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT")
                                                                 is not None
-                                                            ):                                                               
+                                                            ):   
+                                                                Trace.Write('iskey_requ---')                                                            
                                                                 sectalert = ", ".join(Field_Labels)
                                                                 Product.Attributes.GetByName(
                                                                     "SEC_N_TAB_PAGE_ALERT"
