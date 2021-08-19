@@ -3139,7 +3139,8 @@ class SYLDRTLIST:
                                                         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
                                                     else:
                                                         Trace.Write('At line 2924')
-                                                        new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+                                                        # new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+                                                        new_dict[value123] = ('<input title="' + str(value1234).upper() + '" value="'+ str(value1234).upper +'">')
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
