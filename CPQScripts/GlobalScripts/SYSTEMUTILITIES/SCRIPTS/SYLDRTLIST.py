@@ -3015,8 +3015,8 @@ class SYLDRTLIST:
                                 new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
                             else:
                                 Trace.Write('At line 2832-- second else')
-                                # new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
-                                new_dict[value123] = ('<input class="cust_info" id ="' + key_value + '" title="' + value1234 + '" value="' + value1234 + '" disabled>')                           
+                                new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>")  
+                                #new_dict[value123] = value1234                           
                         ## addon product hyperlink starts
                         if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'ADNPRD_ID':
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -3028,10 +3028,10 @@ class SYLDRTLIST:
                             value1234 = value1234.replace("<p>", " ")
                             value1234 = value1234.replace("</p>", " ")
                             
-                            # new_dict[value123] = (
-                            #     '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
-                            # )
-                            new_dict[value123] = value1234
+                            new_dict[value123] = (
+                                '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                            )
+                            #new_dict[value123] = value1234
                                                   
                             Trace.Write('At line 2848 edit field')     
                         else:
@@ -3150,8 +3150,8 @@ class SYLDRTLIST:
                                                         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
                                                     else:
                                                         Trace.Write('At line 2924')
-                                                        # new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
-                                                        new_dict[value123] = value1234
+                                                        new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+                                                        #new_dict[value123] = value1234
                                                 
                         
                         new_dict["ACTIONS"] = Action_str   
