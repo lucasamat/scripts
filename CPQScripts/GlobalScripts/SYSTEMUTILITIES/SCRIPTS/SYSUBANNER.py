@@ -622,7 +622,7 @@ def Related_Sub_Banner(
             elif TreeSuperParentParam == "Fab Locations" and subTabName == "Equipment Fab Value Drivers":
                 PrimaryLable = ""
                 PrimaryValue = "" 
-            elif TreeParam == "Billing Matrix":
+            elif TreeParam == "Billing":
                 ObjName = "SAQTBP"
                 PrimaryLable = str(TreeParam)
                 PrimaryValue = "All"   
@@ -2098,7 +2098,7 @@ def Related_Sub_Banner(
                 elif CurrentRecordId == "SYOBJR-95825":					
                     for btn in multi_buttons:
                         sec_rel_sub_bnr += (btn)
-                elif TreeParam == "Billing Matrix" and ObjName == "SAQTBP":
+                elif TreeParam == "Billing" and ObjName == "SAQTBP":
                     Trace.Write("Billing")
                     for btn in multi_buttons:
                         sec_rel_sub_bnr += (btn)		
@@ -2326,7 +2326,7 @@ def Related_Sub_Banner(
                         + str(del_btn_id)
                         + '" class="btnconfig" onclick="relateListBulkDelete(this)" data-target="#related_delete_POPUP" data-toggle="modal" disabled>DELETE</button>'
                     )'''
-        elif TreeParam == "Billing Matrix":
+        elif TreeParam == "Billing":
             Trace.Write("BM 1740")
             for btn in multi_buttons:
                 sec_rel_sub_bnr += (btn)
@@ -2415,7 +2415,7 @@ def Related_Sub_Banner(
     if subTabName == 'Involved Parties' and TreeParam == "Quote Information":
         Trace.Write("Involved Parties button")
         sec_rel_sub_bnr += (add_button)
-    if TreeParam == "Billing Matrix" and subTabName =="Details" and ObjName == "SAQTBP":
+    if TreeParam == "Billing" and subTabName =="Details" and ObjName == "SAQTBP":
     # 	Trace.Write("button")
         if quote_status.QUOTE_STATUS != 'APPROVED':
             sec_rel_sub_bnr += (add_button)	
