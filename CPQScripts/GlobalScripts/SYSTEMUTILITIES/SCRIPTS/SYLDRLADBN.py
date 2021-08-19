@@ -501,7 +501,18 @@ if myAttribute is not None:
                 myAttribute.Allowed = False
                 myAttribute.HintFormula = ""
  
-    else:     
+    else:
+        SYACTI_OBJNAME = Sql.GetList(
+                            "SELECT PAGEACTION_RECORD_ID,SAPCPQ_ATTRIBUTE_NAME,ACTION_NAME, TAB_NAME FROM SYPGAC (NOLOCK) WHERE TAB_RECORD_ID='"
+                            + str(TestProduct.CurrentTab)
+                            + "' "
+                        )
+        for act_name in SYACTI_OBJNAME:                  
+            if  act_name:
+                if value == "ADDNEW" and act_name.ACTION_NAME == "SAVE":
+                    Trace.Write('val00==='+str(value))
+                    if myAttribute.HintFormula == "TAB PAGE ALERT":
+                #myAttribute.Allowed = False                    
                
         if value == "ADDNEW" or value == "VIEW":
             #Trace.Write('val00==='+str(value))
