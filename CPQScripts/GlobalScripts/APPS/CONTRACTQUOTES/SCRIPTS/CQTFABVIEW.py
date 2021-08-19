@@ -100,17 +100,12 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				if selecter:
 					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
 					userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-				if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
-					userselectedeffi ='0.0%'
-				else:
-					userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
+				
 				if GetDRIVNAME:
 					for qstns in GetDRIVNAME:
 						if qstn.EDITABLE:
-							Trace.Write(str(qstn.EDITABLE)+'---102---if----'+str(field_name))
 							disabled_edit_drivers = ''
 						else:
-							Trace.Write(str(qstn.EDITABLE)+'---102----else---'+str(field_name))
 							disabled_edit_drivers = 'disabled_edit_drivers'
 						if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 							VAR1 += (
