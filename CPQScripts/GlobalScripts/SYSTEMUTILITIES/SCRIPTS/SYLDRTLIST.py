@@ -3027,8 +3027,11 @@ class SYLDRTLIST:
                             value1234 = value1234.replace("<p>", " ")
                             value1234 = value1234.replace("</p>", " ")
                             
+                            # new_dict[value123] = (
+                            #     '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                            # )
                             new_dict[value123] = (
-                                '<abbr id ="' + value1234 + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +"'>'
                             )                       
                             Trace.Write('At line 2848 edit field')     
                         else:
@@ -7888,9 +7891,13 @@ class SYLDRTLIST:
                         #         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
                         else:                         
                                     
+                            # new_dict[value123] = (
+                            #     '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                            # )
                             new_dict[value123] = (
-                                '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
-                            )
+                                '<input id ="' + value1234 + '" title="' + value1234 + '" value="'+ value1234 +"'>'
+                            )  
+                            
                 
                     if value123 in edit_field:                      
                         value1234 = value1234.replace('"', "&quot;")
