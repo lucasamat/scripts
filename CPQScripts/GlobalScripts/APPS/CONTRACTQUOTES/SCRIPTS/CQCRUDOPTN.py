@@ -5230,8 +5230,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))	
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
-    	for table_name in ('SAQIFP', 'SAQITM'):
-    			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
+		for table_name in ('SAQIFP', 'SAQITM'):
+				delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
