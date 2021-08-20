@@ -388,10 +388,10 @@ try:
 except Exception,e:
     Trace.Write('unselected_values--error-'+str(e))
     unselected_values =[]
-try:
-    ent_params_list = Param.ent_params_list.split('||')
-except:
-    ent_params_list = []
+# try:
+#     ent_params_list = Param.ent_params_list.split('||')
+# except:
+#     ent_params_list = []
 if ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
     #Trace.Write('values----'+str(selected_values))
@@ -400,17 +400,17 @@ elif ACTION == 'EDIT_ASSEMBLY':
     #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
 
-elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
-    ent_where = ent_params_list[0]
-    ent_add_where = ent_params_list[1]
-    ent_attr_id = ent_params_list[2]
-    ent_newval = ent_params_list[3]
-    ent_serviceid = ent_params_list[4]
-    ApiResponse = ApiResponseFactory.JsonResponse(EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid ))
+# elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
+#     ent_where = ent_params_list[0]
+#     ent_add_where = ent_params_list[1]
+#     ent_attr_id = ent_params_list[2]
+#     ent_newval = ent_params_list[3]
+#     ent_serviceid = ent_params_list[4]
+#     ApiResponse = ApiResponseFactory.JsonResponse(EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid ))
 
-elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
-    ent_where = ent_params_list[0]  
-    ApiResponse = ApiResponseFactory.JsonResponse(RollDown(ent_where ))
+# elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
+#     ent_where = ent_params_list[0]  
+#     ApiResponse = ApiResponseFactory.JsonResponse(RollDown(ent_where ))
 
 
 
