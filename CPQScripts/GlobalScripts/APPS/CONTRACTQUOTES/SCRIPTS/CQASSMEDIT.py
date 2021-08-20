@@ -82,6 +82,7 @@ def UpdateAssemblyLevel(Values):
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
                 update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue)
+        ##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
         else:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
             Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
@@ -96,15 +97,8 @@ def UpdateAssemblyLevel(Values):
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
                     where_cond = "SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
-                    update_query = """ UPDATE TGT 
-                        SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
-                        TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
-                        TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
-                        TGT.CpqTableEntryModifiedBy = {},
-                        TGT.CpqTableEntryDateModified = '{}'
-                        FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
-                        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
-                    Sql.RunQuery(update_query)
+                    RollDown(where_cond)
+                    
 
     return True
 
@@ -204,7 +198,7 @@ def ChildEntRequest(tableName,where,serviceId):
 
 
 
-def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,service_id):
+def EntitlementUpdate(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None):
     #whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format('50243B0C-C53B-4BE5-8923-939BB9DCEB73','Z0007','100000181')
     #add_where = "and INCLUDED = 'CHAMBER'""
     #AttributeID = 'AGS_QUO_QUO_TYP'
@@ -357,6 +351,20 @@ def EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,service_id):
         except Exception,e:
             Trace.Write("except---"+str(e))
 
+def RollDown(where_cond):
+    userId = User.Id
+    datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
+    update_query = """ UPDATE TGT 
+        SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+        TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+        TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+        TGT.CpqTableEntryModifiedBy = {},
+        TGT.CpqTableEntryDateModified = '{}'
+        FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
+        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
+    Sql.RunQuery(update_query)
+
+
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 try:
@@ -371,15 +379,19 @@ except:
 
 try:
     selected_values= eval(Param.Values)
-    Trace.Write('selected_values-----'+str(selected_values))
+    #Trace.Write('selected_values-----'+str(selected_values))
 except:
     selected_values =[]
 try:
     unselected_values= eval(Param.unselected_list)
-    Trace.Write('unselected_list-----'+str(unselected_values))
+    #Trace.Write('unselected_list-----'+str(unselected_values))
 except Exception,e:
     Trace.Write('unselected_values--error-'+str(e))
     unselected_values =[]
+try:
+    ent_params_list = Param.ent_params_list.split('||')
+except:
+    ent_params_list = []
 if ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
     #Trace.Write('values----'+str(selected_values))
@@ -387,4 +399,19 @@ if ACTION == 'UPDATE_ASSEMBLY':
 elif ACTION == 'EDIT_ASSEMBLY':
     #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
+
+elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
+    ent_where = ent_params_list[0]
+    ent_add_where = ent_params_list[1]
+    ent_attr_id = ent_params_list[2]
+    ent_newval = ent_params_list[3]
+    ent_serviceid = ent_params_list[4]
+    ApiResponse = ApiResponseFactory.JsonResponse(EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid ))
+
+elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
+    ent_where = ent_params_list[0]  
+    ApiResponse = ApiResponseFactory.JsonResponse(RollDown(ent_where ))
+
+
+
 #A055S000P01-6826- Relocation chamber ends
