@@ -5229,7 +5229,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			)AS IQ
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))	
 	
-	def _insert_quote_item_forecast_parts(self, **kwargs):
+	def _insert_quote_item_forecast_parts(self, **kwargs): ##User story 4432 starts..
 		for table_name in ('SAQIFP', 'SAQITM'):
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
@@ -5429,11 +5429,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					)
 				)
 
-		# Native Cart Items Insert - Start
+		# Native Cart Items Insert for spare quotes- Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
-		for quote_item_obj in quote_items_obj:			
-			#product_native_obj = ProductHelper.CreateProduct(str(grouped_item_obj.SERVICE_ID))
-			#product_native_obj.AddToQuote()
+		for quote_item_obj in quote_items_obj:
 			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
 			if product_obj:
 				temp_product = Quote.AddItem('vc_config_cpq')
@@ -5443,9 +5441,10 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					product.QUOTE_ID.Value = self.contract_quote_id		
 					product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
 				Quote.Save()			
-		# Native Cart Items Insert - End
+		# Native Cart Items Insert for spare quotes- End
  
-		#assigning value to quote summary starts
+		#assigning value to custom fields(quote summary section) in quote items node starts
+		get_curr = str(Quote.GetCustomField('Currency').Content)
 		total_cost = 0.00
 		total_target_price = 0.00
 		total_ceiling_price = 0.00
@@ -5458,13 +5457,11 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_year_2 = 0.00
 		total_tax = 0.00
 		total_extended_price = 0.00
-		#getdecimalplacecurr =decimal_val = ''
 		items_data = {}
 		get_billing_matrix_year =[]
 		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, TOTAL_COST, TARGET_PRICE, YEAR_1, YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if items_obj:
 			for item_obj in items_obj:
-				#getdecimalplacecurr = item_obj.CURRENCY
 				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
 		for item in Quote.MainItems:
 			item_number = int(item.RolledUpQuoteItem)
@@ -5503,13 +5500,14 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
 		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_extended_price) + " " + get_curr
 		Quote.Save()
-		#assigning value to quote summary ends
+		#assigning value to custom fields(quote summary section) in quote items node ends
+		##User story 4432 ends..
+
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
-			Trace.Write("self.quote_type--->"+str(self.quote_type))
-			if self.quote_type == "ZWK1 - SPARES":
+			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..
 				get_billing_matrix_year = ""
-				self._insert_quote_item_forecast_parts()
+				self._insert_quote_item_forecast_parts() ##User story 4432 ends..
 			else:
 				get_billing_matrix_year = self._quote_items_insert()
 				batch_group_record_id = str(Guid.NewGuid()).upper()
