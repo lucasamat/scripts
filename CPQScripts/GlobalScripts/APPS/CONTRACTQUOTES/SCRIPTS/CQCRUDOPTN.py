@@ -925,14 +925,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						BatchGroupRecordId=batch_group_record_id
 					)
 				)
-				
-				try:
-					entries = str(self.contract_quote_id)
-					user = self.user_name
-					CQPARTIFLW.iflow_pricing_call(user,entries)
-				except:
-					Log.Info("PART PRICING IFLOW ERROR!")
-
 		return True
 
 	def _update(self):
@@ -5282,11 +5274,18 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))	
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs): ##User story 4432 starts..
+		##Deleteing the tables before insert the data starts..
 		for table_name in ('SAQIFP', 'SAQITM'):
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' {WhereCondition}".format(
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
+		##Deleteing the tables before insert the data ends..
+		##Delete the native product before adding the product starts..
+		for item in Quote.MainItems:
+    			item.Delete()
+       	##Delete the native product before adding the product ends..
+       	##quote item insert starts..
 		self._process_query("""
 					INSERT SAQITM (
 					QUOTE_ITEM_RECORD_ID,
@@ -5397,6 +5396,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				UserName=self.user_name,
 				ExistingCount=0
 			))
+		##quote item insert ends..
+		##quote item spare parts insert starts..
 		self._process_query(
 					"""
 					INSERT SAQIFP (
@@ -5480,7 +5481,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 						UserName=self.user_name
 					)
 				)
-
+		##quote item spart parts insert ends..
 		# Native Cart Items Insert for spare quotes- Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
 		for quote_item_obj in quote_items_obj:
@@ -5553,6 +5554,15 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_extended_price) + " " + get_curr
 		Quote.Save()
 		#assigning value to custom fields(quote summary section) in quote items node ends
+
+		##calling the iflow for pricing..
+		'''try:
+			entries = str(self.contract_quote_id)
+			user = self.user_name
+			CQPARTIFLW.iflow_pricing_call(user,entries)
+		except:
+			Log.Info("PART PRICING IFLOW ERROR!")'''
+
 		##User story 4432 ends..
 
 	def _create(self):
