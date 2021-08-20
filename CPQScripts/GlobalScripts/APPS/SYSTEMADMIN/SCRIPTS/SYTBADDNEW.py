@@ -31,10 +31,10 @@ try:
     )
 
     ## approval chain alert banner starts
-    if (str(CurrentTabName) == 'Approval Chains' and str(Product.Name) == 'APPROVAL CENTER') :
-                #Trace.Write("sql_obj.PRIMARY_OBJECT_NAME"+ str(sql_obj.PRIMARY_OBJECT_NAME))
-                Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ''
-                Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
+    if (str(CurrentTabName) == 'Approval Chains' and str(Product.Name) == 'APPROVAL CENTER') or str(Product.Name) == 'SYSTEM ADMIN' :
+        #Trace.Write("sql_obj.PRIMARY_OBJECT_NAME"+ str(sql_obj.PRIMARY_OBJECT_NAME))
+        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ''
+        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
     ## approval chain alert banner ends
 
     Product.Attributes.GetByName("MA_MTR_TAB_ACTION").AssignValue(Action)
