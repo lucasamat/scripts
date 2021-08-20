@@ -2639,6 +2639,10 @@ if CurrentTabName == "Quote":
         getQuotetype = ""
 
 if CurrentTab == 'Quotes':
+    try:
+        getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
+    except:
+        getQuotetype = ""
     # if str(ObjName) == "SAQTBP":
     # 	CurrentRecordId = "8A70EAA9-094B-4D42-AB91-111DCE26DD52"
     # 	crnt_Qry = Sql.GetFirst("SELECT SAPCPQ_ATTRIBUTE_NAME FROM SYOBJR (NOLOCK) WHERE RECORD_ID = '" + str(CurrentRecordId) + "'")
