@@ -586,6 +586,15 @@ def Related_Sub_Banner(
                 else:
                     ObjName = "SAQTMT"
 
+            elif (subTabName == "Equipment" or subTabName == "Fab Value Drivers") and TreeParam.startswith("Sending"):
+                Trace.Write('opp====')
+                PrimaryLable = "Sending Account ID"
+                PrimaryValue = str(TreeParam).split("-")[1].strip()
+                SecondLable = "Sending Fab Locations"
+                SecondValue = "ALL"
+                ThirdLable = "Equipment"
+                ThirdValue = "ALL"        
+
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
                 sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                 if sale_type == 'TOOL RELOCATION' or TreeParam.startswith('Z0007'):
