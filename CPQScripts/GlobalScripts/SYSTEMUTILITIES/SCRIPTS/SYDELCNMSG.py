@@ -24,7 +24,7 @@ def nativeProfileDelete(RecordId):
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
     if LOGIN_CREDENTIALS is not None:
         Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
-        Login_Password = str(LOGIN_CREDENTIALS.Password)
+        Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
         Login_Domain = str(LOGIN_CREDENTIALS.Domain)
     #Trace.Write("29---------" + str(Login_Username))
     sandboxBaseURL = "https://sandbox.webcomcpq.com"
