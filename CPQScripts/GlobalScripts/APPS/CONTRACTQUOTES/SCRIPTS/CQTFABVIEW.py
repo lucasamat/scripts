@@ -388,7 +388,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 				new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 				new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 			else:
-				new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
+				new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 				if len(userselectedeffi) != 0:
 					coeffval = str(userselectedeffi).replace("['","").replace("']","")
 					new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
