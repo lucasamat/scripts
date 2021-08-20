@@ -1998,8 +1998,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							FROM SAQFEQ (NOLOCK)
 							JOIN MAEQUP (NOLOCK) ON MAEQUP.SALESORG_ID = SAQFEQ.SALESORG_ID AND MAEQUP.EQUIPMENT_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID
 							
-							WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND MAEQUP.CpqTableEntryId = '{cpq_entry}' AND GREENBOOK
-							NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND FABLOCATION_ID !='UNMAPPED')
+							WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND MAEQUP.CpqTableEntryId = '{cpq_entry}' AND SAQFEQ.GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND FABLOCATION_ID !='UNMAPPED')
 							) FB""".format(
 											treeparam=self.tree_param,
 											QuoteRecordId=self.contract_quote_record_id,
