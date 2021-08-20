@@ -819,7 +819,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				ContractId=Qt_rec_id, 
 				serviceId=Quote.GetGlobal("TreeParentLevel0") )
 			Sql.RunQuery(SAQSAE_insert)
-			Trace.Write('SAQSAE_insert--'+str(SAQSAE_insert))
+			#Trace.Write('SAQSAE_insert--'+str(SAQSAE_insert))
+
+			##update SAQSCE and SAQSAE table as quote type 'chmaber based'
+			Trace.Write('cpqid---'+str(cpqid)+'--'+str(SELECTALL)+'---'+str(recordslist))
+			#result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
+		
+		
 		if obj_name == 'SAQSTE':
 			master_fab_object = Sql.GetFirst("Select FAB_LOCATION_NAME,FAB_LOCATION_RECORD_ID from MAFBLC where FAB_LOCATION_ID = '{fab_id}'".format(fab_id = str(VALUE)))
 			fab_name = master_fab_object.FAB_LOCATION_NAME
