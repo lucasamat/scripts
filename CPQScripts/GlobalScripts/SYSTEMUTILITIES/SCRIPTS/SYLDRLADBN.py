@@ -486,7 +486,7 @@ Trace.Write('')
 
 if myAttribute is not None:
     Trace.Write("check inside else")
-    if (str(TestProduct.CurrentTab) == 'Approval Chain' and str(TestProduct.Name) == 'APPROVAL CENTER'):
+    if (str(TestProduct.CurrentTab) == 'Approval Chain' and str(TestProduct.Name) == 'APPROVAL CENTER' and str(TestProduct.Name) == 'SYSTEM ADMIN'):
         #Trace.Write("check allowed view"+ str(myAttribute.Allowed)+str(myAttribute.HintFormula)+str(value))
         if value == "VIEW":
             myAttribute.Allowed = False
