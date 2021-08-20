@@ -216,8 +216,10 @@ class DropConstraint:
                         + "'"
                     )
                     UqforeignKey = ''
+                    foreignKey = ''
                     if UQ_CONSTRAINT is not None:
                         UqforeignKey = UQ_CONSTRAINT.Result
+                        foreignKey = FK_CONSTRAINT.Result
                         if UqforeignKey != 0:
                             Trace.Write('209--UNIQUEE----')
                             ErrorMsg='ErrorMsg'
