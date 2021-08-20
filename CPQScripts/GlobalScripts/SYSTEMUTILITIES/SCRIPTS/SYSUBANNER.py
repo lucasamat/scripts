@@ -1800,8 +1800,8 @@ def Related_Sub_Banner(
         SecondValue = "ALL"
         ThirdLable = ""
         ThirdValue = ""
-    elif TreeParam == 'Contract Items':
-        PrimaryLable = "Contract Items"
+    elif TreeParam == 'Cart Items':
+        PrimaryLable = "Cart Items"
         PrimaryValue = "ALL"
         SecondLable = "Product Offering ID"
         SecondValue = "ALL"
@@ -1817,7 +1817,7 @@ def Related_Sub_Banner(
         FifthValue = "All"
         SixthLable = "Equipment"
         SixthValue = "All"
-    elif TreeParentParam == 'Contract Items' and subTabName == 'Equipment':
+    elif TreeParentParam == 'Cart Items' and subTabName == 'Equipment':
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
         PrimaryValue = TreeParam[0].strip()
@@ -1827,7 +1827,7 @@ def Related_Sub_Banner(
         ThirdValue = "All"
         FourthLable = "Equipment"
         FourthValue = "All"
-    elif TreeParentParam == 'Contract Items' and (subTabName == 'Contract Item Fab Value Drivers' or subTabName == 'Contract Item Cost and Value Drivers'):
+    elif TreeParentParam == 'Cart Items' and (subTabName == 'Cart Item Fab Value Drivers' or subTabName == 'Cart Item Cost and Value Drivers'):
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
         PrimaryValue = TreeParam[0].strip()
@@ -1840,7 +1840,7 @@ def Related_Sub_Banner(
         FourthValue = "All"
         FifthLable = "Equipment"
         FifthValue = "All"
-    elif TreeParentParam == 'Contract Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
+    elif TreeParentParam == 'Cart Items' and ObjName == 'CTCITM' and subTabName == 'Details':	
         PrimaryLable = ListKey[0]
         PrimaryValue = PrimaryValue
         SecondLable = ListKey[1]

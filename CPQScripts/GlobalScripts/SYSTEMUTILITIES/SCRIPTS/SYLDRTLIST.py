@@ -310,7 +310,7 @@ class SYLDRTLIST:
                     getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"'")
                     getQuotetype = getQuote.QUOTE_TYPE
                     Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
-                    if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Contract Items','Contract Preview']:
+                    if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
                         if RECORD_ID == "SYOBJR-00006" and str(TreeParam) == "Quote Preview":
                             rem_list_sp = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID","ITEM_LINE_SEQUENCE","SCHEDULE_MODE","DELIVERY_MODE"]
                             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                            
@@ -329,7 +329,7 @@ class SYLDRTLIST:
                         else:
                             rem_list_sp = ['ITEM_TYPE','ITEM_STATUS','EQUIPMENT_QUANTITY','SALES_DISCOUNT_PRICE','DISCOUNT','UOM_ID']
                             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-                    elif str(getQuotetype).upper() == "ZTBC - TOOL BASED" and  str(TreeParam) in ['Quote Items','Quote Preview','Contract Items','Contract Preview']:
+                    elif str(getQuotetype).upper() == "ZTBC - TOOL BASED" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
                         if RECORD_ID == "SYOBJR-98795" and str(TreeParam) == "Quote Preview":
                             rem_list_sp = ["QUOTE_ITEM_COVERED_OBJECT_RECORD_ID","EQUIPMENT_STATUS","BD_DISCOUNT","DISCOUNT","BASE_PRICE","LIST_PRICE","BD_PRICE_MARGIN"]
                             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                                                 
@@ -358,7 +358,7 @@ class SYLDRTLIST:
             # elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
                 
             #     getContracttype = Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004").GetValue()
-            #     if str(getContracttype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Contract Items','Contract Preview']:
+            #     if str(getContracttype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Cart Items','Contract Preview']:
             #         if RECORD_ID == "SYOBJR-98837" and str(TreeParam) == "Contract Preview":
             #             rem_list_sp = ["CONTRACT_ITEM_FORECAST_PART_RECORD_ID","MATPRIGRP_ID","SCHEDULE_MODE","DELIVERY_MODE"]
             #             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])    
@@ -370,7 +370,7 @@ class SYLDRTLIST:
             #         else:
             #             rem_list_sp = ['ITEM_TYPE','ITEM_STATUS','DISCOUNT','UOM_ID']
             #             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                        
-            #     elif str(getContracttype).upper() == "ZTBC - TOOL BASED" and  str(TreeParam) in ['Contract Items','Contract Preview']:
+            #     elif str(getContracttype).upper() == "ZTBC - TOOL BASED" and  str(TreeParam) in ['Cart Items','Contract Preview']:
                     
             #         if RECORD_ID == "SYOBJR-98822" and str(TreeParam) == "Contract Preview":
             #             rem_list_sp = ["CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID","EQUIPMENT_STATUS"]
@@ -1482,7 +1482,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-91822":
                         contractrecid = Product.GetGlobal("contract_record_id")
                         Trace.Write("LineNo: 1483")    
-                        if Product.GetGlobal("TreeParentLevel1") == "Contract Items":                                                     
+                        if Product.GetGlobal("TreeParentLevel1") == "Cart Items":                                                     
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                             TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1503,14 +1503,14 @@ class SYLDRTLIST:
                                     + "'and GREENBOOK = '"+str(TreeParam)+"'and SERVICE_ID = '"+str(ServiceId)+"'"
                             )                                
                         else:
-                            Trace.Write("Contract Items -> Line Item Details")
+                            Trace.Write("Cart Items -> Line Item Details")
                             Trace.Write(TreeParam)                          
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                             qt_rec_id = SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID='" + str(
                             contractrecid) + "'")
                             LineAndEquipIDList = TreeParam.split(' - ')
-                            if TreeParentParam == "Contract Items":
+                            if TreeParentParam == "Cart Items":
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
@@ -1527,7 +1527,7 @@ class SYLDRTLIST:
                                         "select count(*) as cnt FROM CTCICO where SERVICE_ID = '{}' and CONTRACT_ID = '{}'".format(
                                             LineAndEquipIDList[1], str(qt_rec_id.CONTRACT_ID))
                                 )
-                            elif TreeParam == "Contract Items":
+                            elif TreeParam == "Cart Items":
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
@@ -1631,7 +1631,7 @@ class SYLDRTLIST:
                             + "'"
                         )
                     elif str(RECORD_ID) == "SYOBJR-98822":     
-                        if Product.GetGlobal("TreeParentLevel1") == "Contract Items":                            
+                        if Product.GetGlobal("TreeParentLevel1") == "Cart Items":                            
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                             
@@ -1661,7 +1661,7 @@ class SYLDRTLIST:
                                 SERV_DESC = "Z0091"
                             else:
                                 SERV_DESC = qt_rec_id.SERVICE_ID
-                            if TreeParentParam == "Contract Items":
+                            if TreeParentParam == "Cart Items":
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
@@ -2532,7 +2532,7 @@ class SYLDRTLIST:
                     acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 
                     
-                    if TreeParam == "Contract Items":                       
+                    if TreeParam == "Cart Items":                       
                         
                         Qury_str = (
                             "select DISTINCT top "
@@ -5368,7 +5368,7 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-91822":
                         contractrecid = Product.GetGlobal("contract_record_id")
                         
-                        if Product.GetGlobal("TreeParentLevel1") == "Contract Items": 
+                        if Product.GetGlobal("TreeParentLevel1") == "Cart Items": 
                                                 
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -5396,7 +5396,7 @@ class SYLDRTLIST:
                             qt_rec_id = SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID='" + str(
                             contractrecid) + "'")
                             LineAndEquipIDList = TreeParam.split(' - ')
-                            if TreeParentParam == "Contract Items":
+                            if TreeParentParam == "Cart Items":
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
@@ -5706,7 +5706,7 @@ class SYLDRTLIST:
                             + "'"
                         )  
                     elif str(RECORD_ID) == "SYOBJR-98822":     
-                        if Product.GetGlobal("TreeParentLevel1") == "Contract Items":                            
+                        if Product.GetGlobal("TreeParentLevel1") == "Cart Items":                            
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                             
@@ -5735,7 +5735,7 @@ class SYLDRTLIST:
                                 SERV_DESC = "Z0091"
                             else:
                                 SERV_DESC = qt_rec_id.SERVICE_ID                            
-                            if TreeParentParam == "Contract Items":                                
+                            if TreeParentParam == "Cart Items":                                
                                 Qury_str = (
                                     "select top "
                                         + str(PerPage)
@@ -6206,7 +6206,7 @@ class SYLDRTLIST:
                         imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                         acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                         
-                        if TreeParam == "Contract Items":
+                        if TreeParam == "Cart Items":
                             Qury_str = (
                                 "select DISTINCT top "
                                 + str(PerPage)
@@ -6879,7 +6879,7 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-91822":
                             contractrecid = Product.GetGlobal("contract_record_id")
                             
-                            if Product.GetGlobal("TreeParentLevel1") == "Contract Items": 
+                            if Product.GetGlobal("TreeParentLevel1") == "Cart Items": 
                                                     
                                 imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                                 acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -6907,7 +6907,7 @@ class SYLDRTLIST:
                                 qt_rec_id = SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID='" + str(
                                 contractrecid) + "'")
                                 LineAndEquipIDList = TreeParam.split(' - ')
-                                if TreeParentParam == "Contract Items":
+                                if TreeParentParam == "Cart Items":
                                     Qury_str = (
                                         "select top "
                                             + str(PerPage)
@@ -7126,7 +7126,7 @@ class SYLDRTLIST:
                                 + "'"
                             )    
                         elif str(RECORD_ID) == "SYOBJR-98822":     
-                            if Product.GetGlobal("TreeParentLevel1") == "Contract Items":                                
+                            if Product.GetGlobal("TreeParentLevel1") == "Cart Items":                                
                                 imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                                 acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                                 
@@ -7155,7 +7155,7 @@ class SYLDRTLIST:
                                     SERV_DESC = "Z0091"
                                 else:
                                     SERV_DESC = qt_rec_id.SERVICE_ID
-                                if TreeParentParam == "Contract Items":                                    
+                                if TreeParentParam == "Cart Items":                                    
                                     Qury_str = (
                                         "select top "
                                             + str(PerPage)
@@ -7442,7 +7442,7 @@ class SYLDRTLIST:
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
                             
-                            if TreeParam == "Contract Items":                                
+                            if TreeParam == "Cart Items":                                
                                 Qury_str = (
                                     "select DISTINCT top "
                                     + str(PerPage)

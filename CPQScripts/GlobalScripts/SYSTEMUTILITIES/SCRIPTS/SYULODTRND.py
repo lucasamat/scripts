@@ -113,8 +113,8 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName == 'SYPAGE' and CurrentTab == 'Tab':
 		#GetRec = Sql.GetFirst("SELECT SYPAGE.RECORD_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYPAGE.TAB_NAME = SYTABS.TAB_LABEL WHERE SYTABS.RECORD_ID = '{}' AND SYPAGE.PAGE_NAME = '{}'".format(Product.GetGlobal("TabId"),TreeParam))
 		GetRec = Sql.GetFirst("SELECT SYPAGE.RECORD_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYPAGE.TAB_NAME = SYTABS.TAB_LABEL WHERE SYTABS.RECORD_ID = '{}'".format(str(Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()) ))
-  		RECORD_ID = str(GetRec.RECORD_ID)
- 	if TableId is not None and  (ObjectName is None or str(ObjectName.isdigit()) == 'True'):	
+		RECORD_ID = str(GetRec.RECORD_ID)
+	if TableId is not None and  (ObjectName is None or str(ObjectName.isdigit()) == 'True'):	
 
 		objr_obj = Sql.GetFirst("select * FROM SYOBJR WITH (NOLOCK) where SAPCPQ_ATTRIBUTE_NAME = '" + str(TableId) + "' ")		
 		if objr_obj is not None:
@@ -128,7 +128,7 @@ def CommonTreeViewHTMLDetail(
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
 	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC"]:
-    		canedit = "TRUE"
+			canedit = "TRUE"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
 		if str(CurrentTab == "Object"):
@@ -177,7 +177,7 @@ def CommonTreeViewHTMLDetail(
 	else:
 		MODE = "VIEW"
 
-     
+	
 	
 	Sqq_obj = Sql.GetList(
 		"SELECT top 1000 API_NAME, DATA_TYPE, LOOKUP_OBJECT, PERMISSION, REQUIRED, LOOKUP_API_NAME, FIELD_LABEL,SOURCE_DATA FROM  SYOBJD WITH (NOLOCK) WHERE OBJECT_NAME='"
@@ -1983,7 +1983,6 @@ def CommonTreeViewHTMLDetail(
 						+ '" > <i class="glyphicon glyphicon-triangle-bottom"></i> </button> </div></div></div></td>'
 					)
 				elif str(current_obj_api_name) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
-    					Trace.Write('Date format check')
 					try:
 						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
 					except:
@@ -3262,14 +3261,14 @@ def EntitlementTreeViewHTMLDetail(
 									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
 										try:
 											display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
-										except Exception, e:
+										except Exception as e:
 											Trace.Write('except'+str(e))
 											try:
 												display_value_code = str(tuple(eval(val.ENTITLEMENT_VALUE_CODE))).replace(',)',')')
 												Trace.Write('display_value_code'+str(display_value_code))
 												display_value_query = Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' and STANDARD_ATTRIBUTE_VALUE in {code} ".format(attr_code = attribute_code,code = display_value_code )  )
 												display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in display_value_query]
-											except Exception, e:
+											except Exception as e:
 												Trace.Write('except1'+str(e))
 												display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
 										
@@ -3403,7 +3402,7 @@ def EntitlementTreeViewHTMLDetail(
 											# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 											# 	sec_str_imt += 
 												
-										except Exception, e:
+										except Exception as e:
 											Trace.Write(str(e)+'error1111'+str(attrSysId))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 										#price_impact = val.ENTITLEMENT_PRICE_IMPACT
@@ -3415,7 +3414,7 @@ def EntitlementTreeViewHTMLDetail(
 											# 	Trace.Write("else price")
 											# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 											# 	sec_str_primp += ""
-										except Exception, e:
+										except Exception as e:
 											sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
 											
@@ -3435,7 +3434,7 @@ def EntitlementTreeViewHTMLDetail(
 									# 		+ str(attr_value)
 									# 		+ '" value = "'+str(attr_value)+'" onclick="editent_bt(this)" disabled>'									
 									# 		+ "</input> "
-							 		# 	)
+									# 	)
 									
 									# Trace.Write("DType free3----"+str(attr_value)+str(attrSysId))
 									# STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
@@ -3801,13 +3800,13 @@ def ContractEntitlementTreeViewHTMLDetail(
 	elif TreeTopSuperParentParam == "Product Offerings":		
 		# requestdata= '{"productKey":"'+TreeParentParam+'","date":"2020-09-01","context":[{"name":"VBAP-MATNR","value":"'+TreeParentParam+'"}]}'		
 		ProductPartnumber = TreeParentParam
-	elif TreeParentParam == "Contract Items":
+	elif TreeParentParam == "Cart Items":
 		GetItem = Sql.GetFirst("select * from CTCICO (NOLOCK) where CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID = '" + str(RECORD_ID) + "'")
 		if GetItem is not None:
 			ProductPartnumber = GetItem.SERVICE_ID
 		if "-" in TreeParam:
 			TreeParam = TreeParam.split("-")[1].strip()
-	elif TreeSuperParentParam == "Contract Items":
+	elif TreeSuperParentParam == "Cart Items":
 		TreeParentParam = TreeParentParam.split("-")[1].strip()
 		ProductPartnumber = TreeParentParam
 
@@ -3864,7 +3863,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
 											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
 											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
-											 
+											
 											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
 											ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
 	tabwise_product_attributes = {}	

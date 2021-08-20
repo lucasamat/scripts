@@ -6057,7 +6057,7 @@ def UpdateBreadcrumb():
             eq_id = str(qry.EQUIPMENT_ID)+"-"+str(qry.SERIAL_NO)
         else:
             eq_id = "Equipment"
-    elif TreeSuperParentParam == "Contract Items":        
+    elif TreeSuperParentParam == "Cart Items":        
         qry = Sql.GetFirst(
         "SELECT EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO FROM CTCICO (NOLOCK) WHERE CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
         )
