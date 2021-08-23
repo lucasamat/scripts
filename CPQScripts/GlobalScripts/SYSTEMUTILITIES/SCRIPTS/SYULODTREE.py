@@ -644,7 +644,7 @@ class TreeView:
 							where_string = " 1=1 "                  
 							
 
-							if parobj == "True" and ACTION != 'ADD NEW':
+							if parobj == "True" and ACTION != 'ADDNEW':
 								ChildListData = self.getChildFromParentObj(
 									NodeText,
 									NodeType,
@@ -662,7 +662,7 @@ class TreeView:
 									ordersBy,
 								)
 							else:
-								if ACTION != 'ADD NEW':
+								if ACTION != 'ADDNEW':
 									NodeName = str(findChildOne.NODE_DISPLAY_NAME)
 									ParRecId = str(findChildOne.TREE_NODE_RECORD_ID)
 									DynamicQuery = str(findChildOne.DYNAMIC_NODEDATA_QUERY)
@@ -698,7 +698,7 @@ class TreeView:
 										)	
 									else:
 										Trace.Write('700')
-										if ACTION != 'ADD NEW':
+										if ACTION != 'ADDNEW':
 											ChildListData = self.getChildOne(
 												NodeType,
 												NodeName,
@@ -2126,7 +2126,7 @@ class TreeView:
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
 										Trace.Write('2121')
-										if ACTION != 'ADD NEW':
+										if ACTION != 'ADDNEW':
 											SubChildData = self.getChildOne(
 												SubNodeType,
 												SubNodeName,
@@ -2365,7 +2365,7 @@ class TreeView:
 									)	
 								else:
 									Trace.Write('2358'+str(Product.GetGlobal('TreeName')))
-									if ACTION != 'ADD NEW':
+									if ACTION != 'ADDNEW':
 										SubChildData = self.getChildOne(
 											SubNodeType,
 											SubNodeName,
@@ -2680,7 +2680,7 @@ class TreeView:
 											Subwhere_string = str(where_string)
 											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)	
 											Trace.Write('2672')			
-											if ACTION != 'ADD NEW':
+											if ACTION != 'ADDNEW':
 												SubChildData = self.getChildOne(
 													SubNodeType,
 													SubNodeName,
