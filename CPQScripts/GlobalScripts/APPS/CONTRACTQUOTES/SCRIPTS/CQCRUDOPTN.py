@@ -3225,7 +3225,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQTSV.PAR_SERVICE_DESCRIPTION,
 					SAQTSV.PAR_SERVICE_ID,
 					SAQTSV.PAR_SERVICE_RECORD_ID,
-					{included} as INCLUDED
+					{included} as INCLUDED 
 					FROM SYSPBT (NOLOCK)
 					JOIN (select SAQFEA.* from SAQFEA(nolock) join SYSPBT (nolock) on SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID and SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID where  SAQFEA.QUOTE_RECORD_ID = '{QuoteRecordId}' ) SAQFEA ON SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID
 					JOIN SAQSCO (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
@@ -3238,7 +3238,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				TreeParentParam=self.tree_parent_level_1 if self.tree_param  == 'Sending Equipment' else self.tree_parent_level_0,
 				QuoteRecordId=self.contract_quote_record_id,
 				BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-				included = 1 if self.tree_param  == 'Sending Equipment' else ''
+				included = 1 if self.tree_param  == 'Sending Equipment' else "''"
 			)
 		)
 		
