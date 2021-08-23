@@ -3078,7 +3078,9 @@ class SYLDRTLIST:
                                             getdate_indication = str(value1234)
                                             Trace.Write('getindication---'+str(getdate_indication))
                                         elif str(value123) in billing_date_column:
-                                            #Trace.Write('value123---3078--'+str(value123).split("-")[0])
+                                            Trace.Write('value123---3078--'+str(type(value123)))
+                                            getdate_indication_billing = datetime.datetime.strptime(str(value123), '%m/%d/%Y')
+                                            Trace.Write('getdate_indication_billing--'+str(getdate_indication_billing))
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                                             curr_symbol_obj = Sql.GetFirst(
                                                 "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
@@ -3106,7 +3108,7 @@ class SYLDRTLIST:
                                             Trace.Write(str(getdate_indication)+'---3103--key_value--3075--'+str(type(getdate_indication)))
                                             
                                             if getdate_indication:
-                                                getdate_indication = datetime.datetime.strptime(getdate_indication, '%m-%d-%Y').date()
+                                                getdate_indication = datetime.datetime.strptime(str(getdate_indication), '%m/%d/%Y')
                                                 Trace.Write(str(value1234)+'--getindication--'+str(getdate_indication))
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
