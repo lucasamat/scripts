@@ -456,7 +456,7 @@ def servicefabview(ACTION,CurrentRecordId):
 			+ str(mastername)
 			+ "'"
 		)
-		selecter = Sql.GetList(
+		selecter = Sql.GetFirst(
 			"SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
 			+ str(Qt_rec_id)
 			+ "' AND VALUEDRIVER_ID = '"
