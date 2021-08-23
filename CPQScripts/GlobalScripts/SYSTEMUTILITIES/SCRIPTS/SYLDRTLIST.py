@@ -3072,6 +3072,7 @@ class SYLDRTLIST:
                                             new_dict[value123] = (
                                                 '<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
                                             )
+                                        #the Billing Matrix based on the Warranty Date  start
                                         if str(value123) == "WARRANTY_END_DATE":
                                             #Trace.Write('getindication--3075---'+str(getindication))
                                             getdate_indication = str(value1234)
@@ -3122,6 +3123,7 @@ class SYLDRTLIST:
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
                                                 )
+                                            #the Billing Matrix based on the Warranty Date  start
                                         else:                                            
                                             if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":
                                                 precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','YEAR_OVER_YEAR']
