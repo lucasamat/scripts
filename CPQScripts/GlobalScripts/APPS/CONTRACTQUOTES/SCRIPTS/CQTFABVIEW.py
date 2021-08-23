@@ -1038,11 +1038,11 @@ def Offergreenfab(ACTION,CurrentRecordId):
 		
 		
 		GetDRIVNAME = Sql.GetList(
-				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRBDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 				+ str(field_name)
 				+ "' AND VALUEDRIVER_RECORD_ID = '"
 				+ str(mastername)
-				+ "' AND BUSINESSUNIT_ID = '"
+				+ "' AND GREENBOOK = '"
 				+ str(TreeParam)
 				+ "'"
 			)
