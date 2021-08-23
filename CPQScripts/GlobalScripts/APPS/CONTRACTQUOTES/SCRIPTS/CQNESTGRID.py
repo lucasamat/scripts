@@ -853,6 +853,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         # data_dict["SERIAL_NUMBER"] = ('<abbr id ="" title="' + str(par.SERIAL_NUMBER) + '">' + str(par.SERIAL_NUMBER) + "</abbr>")
         # data_dict["CUSTOMER_TOOL_ID"] = ('<abbr id ="" title="' + str(par.CUSTOMER_TOOL_ID) + '">' + str(par.CUSTOMER_TOOL_ID) + "</abbr>")
         data_dict["GREENBOOK"] = ('<abbr id ="" title="' + str(par.GREENBOOK) + '">' + str(par.GREENBOOK) + "</abbr>")
+        data_dict["SNDFBL_ID"] = ('<abbr id ="" title="' + str(par.SNDFBL_ID) + '">' + str(par.SNDFBL_ID) + "</abbr>")
         data_dict["EQUIPMENT_STATUS"] = ('<abbr id ="" title="' + str(par.EQUIPMENT_STATUS) + '">' + str(par.EQUIPMENT_STATUS) + "</abbr>")
         data_dict["PLATFORM"] = ('<abbr id ="" title="' + str(par.PLATFORM) + '">' + str(par.PLATFORM) + "</abbr>")
         data_dict["MNT_PLANT_ID"] = ('<abbr id ="" title="' + str(par.MNT_PLANT_ID) + '">' + str(par.MNT_PLANT_ID) + "</abbr>")
