@@ -4823,7 +4823,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID
 					
 				WHERE 
-					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND SAQSCO.INCLUDED != 'CHAMBER'
+					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND ISNULL (SAQSCO.INCLUDED,'') != 'CHAMBER'
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, 
 				TempTable=quote_item_line_temp, JoinString=join_string, PriceTemp=price_temp, WhereString=where_string )
@@ -4965,7 +4965,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 						) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID
 						
 					WHERE 
-						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND SAQSCO.INCLUDED = 'CHAMBER' AND SAQSCA.INCLUDED = 1
+						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND ISNULL (SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1
 					) IQ
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, 
 					TempTable=quote_item_line_temp, JoinString=join_string, PriceTemp=price_temp, WhereString= str(where_string) )
