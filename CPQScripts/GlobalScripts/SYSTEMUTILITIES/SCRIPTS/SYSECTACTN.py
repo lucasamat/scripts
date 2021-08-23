@@ -59,18 +59,19 @@ Trace.Write("prodName!!!!" + str(prodName))
 # create Profiles-Native tables-- 9517 End
 def nativeProfileUpdate(newdict):
 	#Trace.Write('154--newdict--'+str(newdict))
-	Login_Username = 'X0116955'
+	#Login_Username = 'X0116955'
 	#Login_Password = 'Joseph@2020'
-	Login_Password = 'Welcome@123'
-	Login_Domain = 'appliedmaterials_tst'
+	#Login_Password = 'Welcome@123'
+	#Login_Domain = 'appliedmaterials_tst'
 
 	URL = 'https://sandbox.webcomcpq.com'
-	'''LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
+	#LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
 	if LOGIN_CREDENTIALS is not None:
-		Login_Username = str(LOGIN_CREDENTIALS.Username)
-		Login_Password = str(LOGIN_CREDENTIALS.Password)
-		Login_Domain = str(LOGIN_CREDENTIALS.Domain)
-		URL = str(LOGIN_CREDENTIALS.URL)'''
+		Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
+		Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
+		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
+		URL = str(LOGIN_CREDENTIALS.URL)
 
 	sandboxBaseURL = URL
 	authenticationUrl = (
