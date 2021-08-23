@@ -93,7 +93,7 @@ try:
 					# Mail system				
 					Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';} </style></head><body id = 'bd'>"
 
-					Table_start = "<p>Hi Team,<br><br>Cost data has been received from SSCM for the below Quote ID and the CPQ price calculation has been initiated. Will let you know shortly about the pricing status.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Tools sent (CPQ-SSCM)</th><th id = 'grey'>Tools received (SSCM-CPQ)</th><th id = 'grey'>CPQ Price Recalculation Status</th></tr><tr><td >"+str(Qt_Id)+"</td><td>"+str(Emailinfo.SSCM)+"</td ><td>"+str(Emailinfo1.CPQ)+"</td><td>Initiated</td></tr>"
+					Table_start = "<p>Hi Team,<br><br>Cost data has been received from SSCM for the below Quote ID and the CPQ price calculation has been initiated. Will let you know shortly about the pricing status.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Tools sent (CPQ-SSCM)</th><th id = 'grey'>Tools received (SSCM-CPQ)</th><th id = 'grey'>Price Calculation Status</th></tr><tr><td >"+str(Qt_Id)+"</td><td>"+str(Emailinfo.SSCM)+"</td ><td>"+str(Emailinfo1.CPQ)+"</td><td>Initiated</td></tr>"
 
 					Table_info = ""
 					Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
@@ -478,7 +478,7 @@ try:
 					# Mail system				
 					Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';} </style></head><body id = 'bd'>"
 
-					Table_start = "<p>Hi Team,<br><br>Pricing has been completed in CPQ, for the equipment's in below Quote ID.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Tools sent (CPQ-SSCM)</th><th id = 'grey'>Tools received (SSCM-CPQ)</th><th id = 'grey'>CPQ Price Recalculation Status</th></tr><tr><td >"+str(Emailinfo.QUOTE_ID)+"</td><td>"+str(Emailinfo.SSCM)+"</td ><td>"+str(Emailinfo1.CPQ)+"</td><td>Completed</td></tr>"
+					Table_start = "<p>Hi Team,<br><br>Pricing has been completed in CPQ, for the equipment's in below Quote ID.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Tools sent (CPQ-SSCM)</th><th id = 'grey'>Tools received (SSCM-CPQ)</th><th id = 'grey'>Price Calculation Status</th></tr><tr><td >"+str(Emailinfo.QUOTE_ID)+"</td><td>"+str(Emailinfo.SSCM)+"</td ><td>"+str(Emailinfo1.CPQ)+"</td><td>Completed</td></tr>"
 
 					Table_info = ""
 					Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
