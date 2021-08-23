@@ -652,7 +652,7 @@ def costfabview(ACTION,CurrentRecordId):
 	return sec_str,table_id,date_field,dbl_clk_function
 
 def Comp_fabview(ACTION,CurrentRecordId):	
-	Trace.Write("@@@610")
+	Trace.Write("SERVICE FAB VALUE DRIVER LEVEL 2")
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
@@ -663,7 +663,7 @@ def Comp_fabview(ACTION,CurrentRecordId):
 				}
 	date_field = []
 	
-	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
+	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
