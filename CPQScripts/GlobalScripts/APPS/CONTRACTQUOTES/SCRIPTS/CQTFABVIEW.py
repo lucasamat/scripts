@@ -696,7 +696,7 @@ def Comp_fabview(ACTION,CurrentRecordId):
 			+ str(mastername)
 			+ "'"
 		)
-		selecter = Sql.GetList(
+		selecter = Sql.GetFirst(
 			"SELECT VALUEDRIVER_VALUEDESC,VALUEDRIVER_COEFFICIENT FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
 			+ str(Qt_rec_id)
 			+ "' AND VALUEDRIVER_ID = '"
@@ -709,9 +709,13 @@ def Comp_fabview(ACTION,CurrentRecordId):
 		userselecteddrive = []
 		
 		if selecter:
-			userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
-			userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-
+			# userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
+			# userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+			userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
+			if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
+				userselectedeffi ='0.0%'
+			else:
+				userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
 		
 		for qstns in GetDRIVNAME:
 			if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselecteddrive:
@@ -742,7 +746,8 @@ def Comp_fabview(ACTION,CurrentRecordId):
 			new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
 			if len(userselectedeffi) != 0:
 				coeffval = str(userselectedeffi).replace("['","").replace("']","")
-				new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+				#new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+				new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeffi
 			else:
 				new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
 			new_value_dict["VALUE DRIVER VALUE"] = sec_str1
