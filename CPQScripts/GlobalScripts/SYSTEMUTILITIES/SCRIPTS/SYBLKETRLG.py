@@ -821,7 +821,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			Sql.RunQuery(SAQSAE_insert)
 			#Trace.Write('SAQSAE_insert--'+str(SAQSAE_insert))
 
-			##update SAQSCE and SAQSAE table as quote type 'chmaber based'....
+			##A055S000P01-6826 --update SAQSCE and SAQSAE table as quote type 'chmaber based' starts....
 			ServiceId=Quote.GetGlobal("TreeParentLevel0")
 			ContractId = Quote.GetGlobal("contract_quote_record_id")
 			Trace.Write('cpqid---'+str(cpqid)+'--'+str(SELECTALL)+'---'+str(recordslist)+str(ServiceId))
@@ -841,7 +841,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						whereReq = " SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID IN {}".format(ContractId,ServiceId,recordslst)
 						result1 = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'ENT_ROLLDOWN', 'ent_params_list':whereReq})
 
-
+			##A055S000P01-6826 --update SAQSCE and SAQSAE table as quote type 'chmaber based' ends....
 
 		
 		
