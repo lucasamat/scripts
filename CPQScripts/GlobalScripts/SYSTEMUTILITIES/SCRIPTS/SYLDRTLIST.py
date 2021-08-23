@@ -3075,7 +3075,7 @@ class SYLDRTLIST:
                                             getindication = str(value1234)
                                             Trace.Write('getindication---'+str(getindication))
                                         elif str(value123) in billing_date_column:
-                                            Trace.Write('value123-----'+str(value123))
+                                            Trace.Write('value123---3078--'+str(value123).split("-")[0])
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                                             curr_symbol_obj = Sql.GetFirst(
                                                 "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
