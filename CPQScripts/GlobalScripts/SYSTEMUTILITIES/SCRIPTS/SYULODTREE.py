@@ -1710,6 +1710,15 @@ class TreeView:
 						else:		
 							#Trace.Write("CHKZ__J ")					                    
 							ordersByQuery = ""
+							Trace.Write("select distinct "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ "")
 							childQuery = Sql.GetList(
 								"select distinct "
 								+ str(NodeName)
