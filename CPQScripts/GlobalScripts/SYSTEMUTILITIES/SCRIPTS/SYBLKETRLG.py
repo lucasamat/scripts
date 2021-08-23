@@ -821,9 +821,28 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			Sql.RunQuery(SAQSAE_insert)
 			#Trace.Write('SAQSAE_insert--'+str(SAQSAE_insert))
 
-			##update SAQSCE and SAQSAE table as quote type 'chmaber based'
-			Trace.Write('cpqid---'+str(cpqid)+'--'+str(SELECTALL)+'---'+str(recordslist))
-			#result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
+			##update SAQSCE and SAQSAE table as quote type 'chmaber based'....
+			ServiceId=Quote.GetGlobal("TreeParentLevel0")
+			ContractId = Quote.GetGlobal("contract_quote_record_id")
+			Trace.Write('cpqid---'+str(cpqid)+'--'+str(SELECTALL)+'---'+str(recordslist)+str(ServiceId))
+			get_chamber_equp = Sql.GetList("SELECT EQUIPMENT_ID,INCLUDED FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist} AND INCLUDED= 'CHAMBER'".format(Quote = ContractId,ServiceId = ServiceId,recordslist = recordslist)  )
+			if get_chamber_equp:
+				recordslst = str(tuple([cham.EQUIPMENT_ID for cham in get_chamber_equp])).replace(",)",')')
+
+				if recordslst and 'Z0007' in ServiceId:
+					whereReq = " QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID IN {}".format(ContractId,ServiceId,recordslst)
+					add_where = " and INCLUDED = 'CHAMBER'"
+					AttributeID = 'AGS_QUO_QUO_TYP'
+					NewValue = 'Chamber based'
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(ServiceId)
+					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+					if result:
+						Trace.Write('rolldown-')
+						whereReq = " SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID IN {}".format(ContractId,ServiceId,recordslst)
+						result1 = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'ENT_ROLLDOWN', 'ent_params_list':whereReq})
+
+
+
 		
 		
 		if obj_name == 'SAQSTE':
