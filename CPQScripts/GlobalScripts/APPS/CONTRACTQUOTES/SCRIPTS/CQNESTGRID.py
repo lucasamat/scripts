@@ -722,6 +722,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         "SND_EQUIPMENT_ID",
         "EQUIPMENTCATEGORY_ID",
         "GREENBOOK",
+        "SNDFBL_ID",
         "EQUIPMENT_STATUS",
         "PLATFORM",
         "MNT_PLANT_ID",
