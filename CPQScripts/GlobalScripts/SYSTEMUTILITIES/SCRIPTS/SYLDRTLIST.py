@@ -3100,7 +3100,7 @@ class SYLDRTLIST:
                                             #     '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>'
                                             # )
                                             
-                                            Trace.Write('key_value--3075--'+str(key_value))
+                                            Trace.Write(str(value1234)+'---3103--key_value--3075--'+str(key_value))
                                             if getindication:
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
