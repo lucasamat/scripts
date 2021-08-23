@@ -4478,7 +4478,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 
 	def _insert_billing_matrix(self):
 		Trace.Write("Insert Billing Matrix--5449---")
-		Sql.RunQuery("""
+		'''Sql.RunQuery("""
 				INSERT SAQTBP (
 				QUOTE_BILLING_PLAN_RECORD_ID,
 				BILLING_END_DATE,
@@ -4512,6 +4512,45 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				JOIN (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)  ) as JQ ON
 									JQ.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND JQ.ENTITLEMENT_NAME IN ('AGS_BIL_BIL_TYP') 
 								AND JQ.ENTITLEMENT_DISPLAY_VALUE = 'Variable Billing'
+				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'
+				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')											
+		""".format(                        
+			QuoteRecordId= self.contract_quote_record_id,   
+			UserId=self.user_id,
+			UserName=self.user_name
+		))'''
+		Sql.RunQuery("""
+				INSERT SAQTBP (
+				QUOTE_BILLING_PLAN_RECORD_ID,
+				BILLING_END_DATE,
+				BILLING_INTERVAL,
+				BILLING_DAY,
+				BILLING_START_DATE,
+				QUOTE_ID,
+				QUOTE_NAME,
+				QUOTE_RECORD_ID,
+				CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED,
+				CpqTableEntryModifiedBy,
+				CpqTableEntryDateModified,
+				IS_CHANGED
+				) 
+				SELECT 
+				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_BILLING_PLAN_RECORD_ID,
+				SAQTMT.CONTRACT_VALID_TO as BILLING_END_DATE,
+				'MONTHLY' as BILLING_INTERVAL,
+				30 as BILLING_DAY,
+				SAQTMT.CONTRACT_VALID_FROM as BILLING_START_DATE,
+				SAQTMT.QUOTE_ID,
+				SAQTMT.QUOTE_NAME,
+				SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+				'{UserName}' AS CPQTABLEENTRYADDEDBY,
+				GETDATE() as CPQTABLEENTRYDATEADDED,
+				{UserId} as CpqTableEntryModifiedBy,
+				GETDATE() as CpqTableEntryDateModified,
+				1                                   
+				FROM SAQTMT (NOLOCK)
+				
 				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'
 				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')											
 		""".format(                        
