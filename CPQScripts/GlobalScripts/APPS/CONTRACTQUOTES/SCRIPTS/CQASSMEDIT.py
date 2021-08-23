@@ -411,11 +411,11 @@ elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list)
     ent_attr_id = ent_params_list[2]
     ent_newval = ent_params_list[3]
     ent_serviceid = ent_params_list[4]
-    ApiResponse = ApiResponseFactory.JsonResponse(EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid ))
+    ApiResponse = EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid )
 
 elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
     ent_where = ent_params_list[0]  
-    ApiResponse = ApiResponseFactory.JsonResponse(RollDown(ent_where ))
+    ApiResponse =RollDown(ent_where )
 
 
 
