@@ -3107,7 +3107,7 @@ class SYLDRTLIST:
                                             Trace.Write(str(getdate_indication)+'---3103--key_value--3075--'+str(type(getdate_indication)))
                                             
                                             if getdate_indication:
-                                                getdate_indication = datetime.strptime(str(getdate_indication), '%m-%d-%Y')
+                                                getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
                                                 Trace.Write(str(type(getdate_indication_billing))+'--getindication--'+str(type(getdate_indication)))
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
