@@ -3065,7 +3065,7 @@ class SYLDRTLIST:
                                         seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                         seg_pric["PRICE_FACTOR"] = PriceFactor
                                     else:
-                                        getindication = ''
+                                        getdate_indication = ''
                                         #Trace.Write(str(value1234)+'---3067---'+str(value123))
                                         if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                             
@@ -3074,8 +3074,8 @@ class SYLDRTLIST:
                                             )
                                         if str(value123) == "WARRANTY_END_DATE":
                                             #Trace.Write('getindication--3075---'+str(getindication))
-                                            getindication = str(value1234)
-                                            Trace.Write('getindication---'+str(getindication))
+                                            getdate_indication = str(value1234)
+                                            Trace.Write('getindication---'+str(getdate_indication))
                                         elif str(value123) in billing_date_column:
                                             #Trace.Write('value123---3078--'+str(value123).split("-")[0])
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
@@ -3102,11 +3102,11 @@ class SYLDRTLIST:
                                             #     '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>'
                                             # )
                                             
-                                            Trace.Write(str(value1234)+'---3103--key_value--3075--'+str(key_value))
+                                            Trace.Write(str(getdate_indication)+'---3103--key_value--3075--'+str(type(getdate_indication)))
                                             
-                                            if getindication:
-                                                getindication = datetime.datetime.strptime(getindication, '%m-%d-%Y').date()
-                                                Trace.Write(str(value1234)+'--getindication--'+str(getindication))
+                                            if getdate_indication:
+                                                getdate_indication = datetime.datetime.strptime(getdate_indication, '%m-%d-%Y').date()
+                                                Trace.Write(str(value1234)+'--getindication--'+str(getdate_indication))
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
                                                 )
