@@ -698,20 +698,21 @@ class TreeView:
 										)	
 									else:
 										Trace.Write('700')
-										ChildListData = self.getChildOne(
-											NodeType,
-											NodeName,
-											RecAttValue,
-											nodeId,
-											ParRecId,
-											DynamicQuery,
-											ObjectName,
-											RecId,
-											where_string,
-											PageRecId,
-											ObjectRecId,
-											ordersBy,
-										)									
+										if ACTION != 'ADD NEW':
+											ChildListData = self.getChildOne(
+												NodeType,
+												NodeName,
+												RecAttValue,
+												nodeId,
+												ParRecId,
+												DynamicQuery,
+												ObjectName,
+												RecId,
+												where_string,
+												PageRecId,
+												ObjectRecId,
+												ordersBy,
+											)									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
@@ -2125,20 +2126,21 @@ class TreeView:
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
 										Trace.Write('2121')
-										SubChildData = self.getChildOne(
-											SubNodeType,
-											SubNodeName,
-											RecAttValue,
-											nodeId,
-											SubParRecId,
-											SubChildDynamicQuery,
-											ObjectName,
-											ParRecId,
-											Subwhere_string,
-											PageRecId,
-											ObjectRecId,
-											ordersBy,
-										)
+										if ACTION != 'ADD NEW':
+											SubChildData = self.getChildOne(
+												SubNodeType,
+												SubNodeName,
+												RecAttValue,
+												nodeId,
+												SubParRecId,
+												SubChildDynamicQuery,
+												ObjectName,
+												ParRecId,
+												Subwhere_string,
+												PageRecId,
+												ObjectRecId,
+												ordersBy,
+											)
 									
 									if len(SubChildData) > 0:
 										NewList.append(SubChildData)
@@ -2363,20 +2365,21 @@ class TreeView:
 									)	
 								else:
 									Trace.Write('2358'+str(Product.GetGlobal('TreeName')))
-									SubChildData = self.getChildOne(
-										SubNodeType,
-										SubNodeName,
-										RecAttValue,
-										nodeId,
-										SubParRecId,
-										subDynamicQuery,
-										ObjectName,
-										RecId,
-										Subwhere_string,
-										PageRecId,
-										ObjectRecId,
-										ordersBy,
-									)
+									if ACTION != 'ADD NEW':
+										SubChildData = self.getChildOne(
+											SubNodeType,
+											SubNodeName,
+											RecAttValue,
+											nodeId,
+											SubParRecId,
+											subDynamicQuery,
+											ObjectName,
+											RecId,
+											Subwhere_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)
 							
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
@@ -2676,21 +2679,22 @@ class TreeView:
 											)											
 											Subwhere_string = str(where_string)
 											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)	
-											Trace.Write('2672')									                              
-											SubChildData = self.getChildOne(
-												SubNodeType,
-												SubNodeName,
-												RecAttValue,
-												nodeId,
-												SubParRecId,
-												subDynamicQuery,
-												ObjectName,
-												RecId,
-												Subwhere_string,
-												PageRecId,
-												ObjectRecId,
-												ordersBy,
-											)
+											Trace.Write('2672')			
+											if ACTION != 'ADD NEW':
+												SubChildData = self.getChildOne(
+													SubNodeType,
+													SubNodeName,
+													RecAttValue,
+													nodeId,
+													SubParRecId,
+													subDynamicQuery,
+													ObjectName,
+													RecId,
+													Subwhere_string,
+													PageRecId,
+													ObjectRecId,
+													ordersBy,
+												)
 										if len(SubChildData) > 0:
 											NewList.append(SubChildData)
 											list2 = []
