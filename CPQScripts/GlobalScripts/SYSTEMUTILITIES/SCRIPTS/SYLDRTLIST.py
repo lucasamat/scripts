@@ -2814,6 +2814,7 @@ class SYLDRTLIST:
                             
                     except:
                         pass
+                    getdate_indication = ''
                     for inm in ik:
                         a = str(inm).split(",")
                         value123 = a[0].replace("[", "").lstrip()
@@ -3065,7 +3066,7 @@ class SYLDRTLIST:
                                         seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
                                         seg_pric["PRICE_FACTOR"] = PriceFactor
                                     else:
-                                        getdate_indication = ''
+                                        
                                         #Trace.Write(str(value1234)+'---3067---'+str(value123))
                                         if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'SALES_PRICE'):
                                             
