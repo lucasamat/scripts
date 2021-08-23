@@ -64,7 +64,7 @@ def nativeProfileUpdate(newdict):
 	#Login_Password = 'Welcome@123'
 	#Login_Domain = 'appliedmaterials_tst'
 
-	URL = 'https://sandbox.webcomcpq.com'
+	#URL = 'https://sandbox.webcomcpq.com'
 	#LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
 	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
 	if LOGIN_CREDENTIALS is not None:
