@@ -1110,7 +1110,7 @@ def Offerequipfab(ACTION,CurrentRecordId):
 	date_field = []
 	
 	#GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -1137,11 +1137,11 @@ def Offerequipfab(ACTION,CurrentRecordId):
 		
 		
 		GetDRIVNAME = Sql.GetList(
-				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRBDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 				+ str(field_name)
 				+ "' AND VALUEDRIVER_RECORD_ID = '"
 				+ str(mastername)
-				+ "' AND BUSINESSUNIT_ID = '"
+				+ "' AND GREENBOOK = '"
 				+ str(TreeParam)
 				+ "'"
 			)
