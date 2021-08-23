@@ -2409,7 +2409,7 @@ def Related_Sub_Banner(
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts")
-                            if 'GENERATE LINE ITEMS' in btn:
+                            if 'UPDATE LINES' in btn:
                                 if quote_status.QUOTE_STATUS != 'APPROVED':
                                     sec_rel_sub_bnr += (btn)
                             
