@@ -2263,7 +2263,8 @@ def Related_Sub_Banner(
                         if str(TabName) == 'Quotes':
                             if quote_status.QUOTE_STATUS != 'APPROVED':
                                 sec_rel_sub_bnr += (str(add_button))
-                        else:                                        
+                        else:
+                            Trace.Write("add###---")                                        
                             sec_rel_sub_bnr += (str(add_button))
                     # else:
                     # 	Trace.Write("12345---- "+str(add_button))	
