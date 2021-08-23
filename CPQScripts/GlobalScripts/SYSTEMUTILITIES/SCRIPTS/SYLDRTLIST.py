@@ -3110,9 +3110,14 @@ class SYLDRTLIST:
                                             if getdate_indication:
                                                 Trace.Write(str(getdate_indication_billing)+'--getindication--'+str(getdate_indication))
                                                 Trace.Write(str(type(getdate_indication_billing))+'--getindication--'+str(type(getdate_indication)))
-                                                new_dict[value123] = (
-                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
-                                                )
+                                                if getdate_indication > getdate_indication_billing:
+                                                    new_dict[value123] = (
+                                                        '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                    )
+                                                else:
+                                                    new_dict[value123] = (
+                                                        '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                    )
                                             else:    
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
