@@ -9,7 +9,6 @@ import re
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
-import datetime
 from datetime import datetime
  
 from SYDATABASE import SQL
@@ -3079,7 +3078,7 @@ class SYLDRTLIST:
                                             Trace.Write('getindication---'+str(getdate_indication))
                                         elif str(value123) in billing_date_column:
                                             Trace.Write('---value123-3081--3078--'+str(value123))
-                                            getdate_indication_billing = datetime.datetime.strptime(str(value123), '%m-%d-%Y')
+                                            getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')
                                             Trace.Write('getdate_indication_billing--'+str(getdate_indication_billing))
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
                                             curr_symbol_obj = Sql.GetFirst(
@@ -3108,7 +3107,7 @@ class SYLDRTLIST:
                                             Trace.Write(str(getdate_indication)+'---3103--key_value--3075--'+str(type(getdate_indication)))
                                             
                                             if getdate_indication:
-                                                getdate_indication = datetime.datetime.strptime(str(getdate_indication), '%m/%d/%Y')
+                                                getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
                                                 Trace.Write(str(value1234)+'--getindication--'+str(getdate_indication))
                                                 new_dict[value123] = (
                                                     '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
