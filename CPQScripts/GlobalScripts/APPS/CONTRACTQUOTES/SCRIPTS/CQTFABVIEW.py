@@ -999,6 +999,7 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 	return sec_str,table_id,date_field,dbl_clk_function
 
 def Offergreenfab(ACTION,CurrentRecordId):	
+	Trace.Write("Servicefab green book level 3")
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
