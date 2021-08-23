@@ -870,11 +870,15 @@ class Entitlements:
 				GetRegion = Sql.GetFirst("SELECT SAQTSO.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.REGION,SAQTMT.GLOBAL_CURRENCY FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
 				Region = GetRegion.REGION
 				SalesOrg = GetRegion.SALESORG_ID
+				import datetime as dt
+				fmt = '%m/%d/%Y'
+				d1 = dt.datetime.strptime(str(GetRegion.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+				year = d1.strftime("%Y")
 				#getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
-				getCE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'CE1ST'".format(SalesOrg))
-				getSSE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'SSESTD'".format(SalesOrg))
-				getPSE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'PSSTD'".format(SalesOrg))
-				getTEST = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'TESTD'".format(SalesOrg))
+				getCE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'CE1ST' AND YEAR = '{}'".format(SalesOrg,year))
+				getSSE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'SSESTD' AND YEAR = '{}'".format(SalesOrg,year))
+				getPSE = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'PSSTD' AND YEAR = '{}'".format(SalesOrg,year))
+				getTEST = Sql.GetFirst("SELECT LABOR_RATE_GLCURR FROM PRLSOR WHERE SALESORG_ID = '{}' AND LABORACTIVITY_ID = 'TESTD' AND YEAR = '{}'".format(SalesOrg,year))
 				
 				curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
 				list1 = {}
