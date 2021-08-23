@@ -3078,7 +3078,7 @@ class SYLDRTLIST:
                                             getdate_indication = str(value1234)
                                             Trace.Write('getindication---'+str(getdate_indication))
                                         elif str(value123) in billing_date_column:
-                                            Trace.Write(str(type(value123))+'---value123-3081--3078--'+str(value123))
+                                            Trace.Write('---value123-3081--3078--'+str(value123))
                                             getdate_indication_billing = datetime.datetime.strptime(str(value123), '%m-%d-%Y')
                                             Trace.Write('getdate_indication_billing--'+str(getdate_indication_billing))
                                             contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
