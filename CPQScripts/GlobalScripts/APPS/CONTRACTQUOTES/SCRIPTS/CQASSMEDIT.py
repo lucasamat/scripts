@@ -390,7 +390,9 @@ except Exception,e:
     unselected_values =[]
 try:
     ent_params_list = Param.ent_params_list.split('||')
+    Trace.Write('ent_params_list-----'+str(ent_params_list))
 except:
+
     ent_params_list = []
 if ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
@@ -401,6 +403,7 @@ elif ACTION == 'EDIT_ASSEMBLY':
     ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
 
 elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
+    Trace.Write('inside update')
     ent_where = ent_params_list[0]
     ent_add_where = ent_params_list[1]
     ent_attr_id = ent_params_list[2]
