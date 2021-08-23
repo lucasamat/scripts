@@ -367,15 +367,17 @@ def RollDown(where_cond):
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+Trace.Write("check script called")
 try:
     ACTION = Param.ACTION
+    Trace.Write("check script called"+str(ACTION))
 except:
     ACTION = ""
 
 try:
     TABNAME = Param.TABNAME
 except:
-    ACTION = ""
+    TABNAME = ""
 
 try:
     selected_values= eval(Param.Values)
