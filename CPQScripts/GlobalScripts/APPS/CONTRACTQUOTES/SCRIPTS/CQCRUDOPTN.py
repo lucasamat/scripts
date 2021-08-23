@@ -326,7 +326,7 @@ class ContractQuoteCrudOpertion:
 						BillingDate=billing_date,
 						AmountColumn=amount_column,
 						DivideBy=divide_by))
-						))
+					
 		'''Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
 						LINE_ITEM_ID, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, 
