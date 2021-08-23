@@ -827,7 +827,9 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 		# Trace.Write("TABLE_NAME--" + str(TABLE_NAME))
 		# Trace.Write("Auto_col"+str(Auto_col))
 		if str(TABLE_NAME) == "cpq_permissions":
-			nativeProfileUpdate(str(dict(row)))
+			if Product.Attributes.GetByName('QSTN_SYSEFL_SY_00129').GetValue():
+				Trace.Write('cpq prpof===')
+				nativeProfileUpdate(str(dict(row)))
 		is_key_Flag = "FALSE"
 		is_required = "FALSE"
 		is_Past_Date = "FALSE"
