@@ -465,9 +465,13 @@ def servicefabview(ACTION,CurrentRecordId):
 		)
 		userselected = []
 		if selecter:
-			userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
-			userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-		
+			# userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter]
+			# userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
+			userselected.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+			if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
+				userselectedeffi ='0.0%'
+			else:
+				userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")		
 		for qstns in GetDRIVNAME:
 			if qstns.VALUEDRIVER_VALUE_DESCRIPTION in userselected:
 				VAR1 += (
@@ -496,7 +500,8 @@ def servicefabview(ACTION,CurrentRecordId):
 			new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
 			if len(userselectedeffi) != 0:
 				coeffval = str(userselectedeffi).replace("['","").replace("']","")
-				new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+				#new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+				new_value_dict["VALUE DRIVER COEFFICIENT"] = userselectedeffi
 			else:
 				new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
 			new_value_dict["VALUE DRIVER VALUE"] = sec_str1
