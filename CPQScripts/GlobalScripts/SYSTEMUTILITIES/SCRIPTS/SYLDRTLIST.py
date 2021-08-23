@@ -9,6 +9,7 @@ import re
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
+import datetime
 from datetime import datetime,timedelta , date
  
 from SYDATABASE import SQL
