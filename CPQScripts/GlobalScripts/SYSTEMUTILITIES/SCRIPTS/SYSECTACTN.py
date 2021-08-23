@@ -73,107 +73,107 @@ def nativeProfileUpdate(newdict):
 		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
 		URL = str(LOGIN_CREDENTIALS.URL)
 
-	sandboxBaseURL = URL
-	authenticationUrl = (
-		sandboxBaseURL
-		+ "/api/rd/v1/Core/Login?username="
-		+ Login_Username
-		+ "&password="
-		+ Login_Password
-		+ "&domain="
-		+ Login_Domain
-	)
-	Trace.Write('url check----authenticationUrl--'+str(authenticationUrl))
-	authRequest = WebRequest.Create(str(authenticationUrl))
-	authRequest.Method = "POST"
-	authRequest.CookieContainer = CookieContainer()
-	authRequest.ContentLength = 0
-	authResponse = authRequest.GetResponse()
-	cookies = authResponse.Cookies
-	authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
-	xcrf = str(authResponseData).replace('"', "")
-	Trace.Write("X-CSRF-Token : " + str(xcrf))
+		sandboxBaseURL = URL
+		authenticationUrl = (
+			sandboxBaseURL
+			+ "/api/rd/v1/Core/Login?username="
+			+ Login_Username
+			+ "&password="
+			+ Login_Password
+			+ "&domain="
+			+ Login_Domain
+		)
+		Trace.Write('url check----authenticationUrl--'+str(authenticationUrl))
+		authRequest = WebRequest.Create(str(authenticationUrl))
+		authRequest.Method = "POST"
+		authRequest.CookieContainer = CookieContainer()
+		authRequest.ContentLength = 0
+		authResponse = authRequest.GetResponse()
+		cookies = authResponse.Cookies
+		authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
+		xcrf = str(authResponseData).replace('"', "")
+		Trace.Write("X-CSRF-Token : " + str(xcrf))
 
-	# cookies
-	coookies = ""
-	if cookies is not None:
-		for cookie in cookies:
-			coookies = coookies + str(cookie) + ";"
-	#Trace.Write("COOKIES : " + coookies)
+		# cookies
+		coookies = ""
+		if cookies is not None:
+			for cookie in cookies:
+				coookies = coookies + str(cookie) + ";"
+		#Trace.Write("COOKIES : " + coookies)
 
-	data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
-	Trace.Write("53--data-----" + str(data))
-	# authentication api token creation start
-	authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
-	authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
-	authRequesttoken.Method = "POST"
-	webclienttoken = System.Net.WebClient()
-	webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-	webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-	webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-	webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
-	response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
-	Trace.Write(str(response))
-	accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
-	Trace.Write("ACCESS TOKEN : " + accessToken)
-    
-
-    # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
-    # Trace.Write('156-------------------------'+str(setPermissionURL))
-
-	prfname = profile_id_gen = prfid = ""
-	Trace.Write('64----nativeProfileSave-------'+str(newdict))
-	prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-	prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
-	prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
-	prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
-	profile_id_gen = prfid
-	permissionQuery = Sql.GetFirst(
-		"Select permission_id from cpq_permissions where permission_name ='" + str(prfname) + "'"
-	)
-
-
-
-	
-
-
-	# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
-	# Trace.Write('156-------------------------'+str(setPermissionURL))
-
-	datasave = """{
-		"Id":%s,
-		"Name": "%s",
-		"Description": "%s",
-		"SystemId": "%s",
-		"Condition": "%s",
-		"SelectedPermissions": {
-		"ManualPermissions": [],
-		"CompanyPermissions": [],
-		"MarketPermissions": [],
-		"MultiBrandingPermissions": [],
-		"UserTypePermissions": [],
-		"Users": [136]
-		}
+		data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
+		Trace.Write("53--data-----" + str(data))
+		# authentication api token creation start
+		authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+		authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
+		authRequesttoken.Method = "POST"
+		webclienttoken = System.Net.WebClient()
+		webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
+		webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
+		webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
+		response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
+		Trace.Write(str(response))
+		accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
+		Trace.Write("ACCESS TOKEN : " + accessToken)
 		
+
+		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
+		# Trace.Write('156-------------------------'+str(setPermissionURL))
+
+		prfname = profile_id_gen = prfid = ""
+		Trace.Write('64----nativeProfileSave-------'+str(newdict))
+		prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
+		prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+		prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
+		prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
+		profile_id_gen = prfid
+		permissionQuery = Sql.GetFirst(
+			"Select permission_id from cpq_permissions where permission_name ='" + str(prfname) + "'"
+		)
+
+
+
 		
-	}""" % (
-		prf_ID,
-		prfname,
-		prfdesc,
-		prfid,
-		prfdesc,
-	)
-	Trace.Write("188-------------datasave----" + str(datasave))
-	setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
-	Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
-	webclient = System.Net.WebClient()
-	webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-	webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-	webclient.Headers.Add("X-CSRF-Token", xcrf)
-	webclient.Headers.Add("Authorization", accessToken)
-	response = webclient.UploadString(str(setPermissionURL), datasave)
-	#Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
+
+
+		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
+		# Trace.Write('156-------------------------'+str(setPermissionURL))
+
+		datasave = """{
+			"Id":%s,
+			"Name": "%s",
+			"Description": "%s",
+			"SystemId": "%s",
+			"Condition": "%s",
+			"SelectedPermissions": {
+			"ManualPermissions": [],
+			"CompanyPermissions": [],
+			"MarketPermissions": [],
+			"MultiBrandingPermissions": [],
+			"UserTypePermissions": [],
+			"Users": [136]
+			}
+			
+			
+		}""" % (
+			prf_ID,
+			prfname,
+			prfdesc,
+			prfid,
+			prfdesc,
+		)
+		Trace.Write("188-------------datasave----" + str(datasave))
+		setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
+		Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
+		webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
+		webclient.Headers.Add("X-CSRF-Token", xcrf)
+		webclient.Headers.Add("Authorization", accessToken)
+		response = webclient.UploadString(str(setPermissionURL), datasave)
+		#Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
 	return "response"
 
 def sec_edit(SEC_REC_ID):
