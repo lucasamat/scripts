@@ -39,7 +39,7 @@ def Related_Sub_Banner(
     except:
         contract_quote_record_id = ''	
     
-    
+    Trace.Write('contract_quote_record_id==='+str(contract_quote_record_id))
     try:
         current_prod = Product.Name
         Trace.Write('current_prod==='+str(current_prod))
@@ -2410,6 +2410,7 @@ def Related_Sub_Banner(
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts")
                             if 'UPDATE LINES' in btn:
+
                                 if quote_status.QUOTE_STATUS != 'APPROVED':
                                     sec_rel_sub_bnr += (btn)
                             
