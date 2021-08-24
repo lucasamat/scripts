@@ -2421,9 +2421,10 @@ def POPUPLISTVALUEADDNEW(
 
 			for key, invs in enumerate(list(ordered_keys)):
 				Trace.Write('invs---2423---'+str(invs))
-				Trace.Write('qstring---2423---'+str(qstring))
+				
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
+				Trace.Write('qstring---2423---'+str(qstring))
 				if key == 0:
 					sec_str += (
 						'<th data-field="'
