@@ -4179,7 +4179,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
         )
     if Parent_assembly_id:
         Preventive_Maintainence_ID = Parent_assembly_id.PM_ID
-        if TopSuperParentParam == 'Comprehensive Services':
+        if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
             """child_obj_recid = Sql.GetList(
                 "select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,PART_DESCRIPTION,QUANTITY,TKM_FLAG from SAQSKP (NOLOCK) where PM_ID = '"
                 + str(recid)
