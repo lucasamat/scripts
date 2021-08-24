@@ -2420,7 +2420,8 @@ def POPUPLISTVALUEADDNEW(
 			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
 			for key, invs in enumerate(list(ordered_keys)):
-
+				Trace.Write('invs---2423---'+str(invs))
+				Trace.Write('qstring---2423---'+str(qstring))
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
 				if key == 0:
