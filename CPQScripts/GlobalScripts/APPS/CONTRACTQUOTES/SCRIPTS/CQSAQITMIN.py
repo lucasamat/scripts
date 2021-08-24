@@ -83,3 +83,6 @@ try:
 	Qt_rec_id = Param.QT_REC_ID
 except:
 	Qt_rec_id = ""
+
+ApiResponse = ApiResponseFactory.JsonResponse(Quoteiteminsert(Qt_rec_id))
+
