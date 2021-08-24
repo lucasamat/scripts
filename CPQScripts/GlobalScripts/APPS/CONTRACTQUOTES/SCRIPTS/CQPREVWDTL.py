@@ -417,78 +417,77 @@ def constructidlingattributes(Qt_rec_id, Quote, MODE):
 				data-target=".sec_'''+str(sect.RECORD_ID)+'''"  id="dyn1577"  data-toggle="collapse"  class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
 			<label data-bind="html: hint" class="onlytext"><div>'''+ str(edit_action) + str(sect.SECTION_NAME)+'''</div></label> </div>'''
 		)
-		sec_str += '</div>'
 		
 
 
-	# 	Oppp_SEFL = Sql.GetList(
-	# 		"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
-	# 	)
-	# 	for sefl in Oppp_SEFL:
-	# 		sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class=  "sec_' + str(sect.RECORD_ID) + ' collapse in "> '
-	# 		sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
-	# 		sec_str += (
-	# 			"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
-	# 			+ str(sefl.FIELD_LABEL)
-	# 			+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
-	# 			+ str(sefl.FIELD_LABEL)
-	# 			+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
-	# 		)
-	# 		sefl_api = sefl.API_FIELD_NAME
-	# 		if ACTION == "CONTRACT_ATTR": 
-	# 			col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
+		Oppp_SEFL = Sql.GetList(
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+		)
+		for sefl in Oppp_SEFL:
+			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class=  "sec_' + str(sect.RECORD_ID) + ' collapse in "> '
+			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+			sec_str += (
+				"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+				+ str(sefl.FIELD_LABEL)
+				+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+				+ str(sefl.FIELD_LABEL)
+				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+			)
+			sefl_api = sefl.API_FIELD_NAME
+			if ACTION == "CONTRACT_ATTR": 
+				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
-	# 		else:
-	# 			col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "'") 
-	# 		if col_name:				
-	# 			# else:
-	# 				# if sefl_api != "REGION":
-	# 			Trace.Write('At line 289-->'+str(sefl_api))
-	# 			sec_str += (
-	# 				"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
-	# 				+ str(eval("col_name." + str(sefl_api)))
-	# 				+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-	# 			)
-	# 				# else:
-	# 				#     sec_str += (
-	# 				#         "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-	# 				#     )
-	# 		else:
+			else:
+				col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "'") 
+			if col_name:				
+				# else:
+					# if sefl_api != "REGION":
+				Trace.Write('At line 289-->'+str(sefl_api))
+				sec_str += (
+					"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+					+ str(eval("col_name." + str(sefl_api)))
+					+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+				)
+					# else:
+					#     sec_str += (
+					#         "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					#     )
+			else:
 
-	# 			sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-	# 		sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
-	# 		##edit_lock_icon in quote based on permission starts
-	# 		edit_lock_icon = ''
-	# 		permission_chk_query = Sql.GetFirst("""SELECT DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' 
-	# 			Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE 
-	# 			FROM SYOBJD (NOLOCK)
-	# 			INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
-	# 			INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
-	# 			INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
-	# 			INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
-	# 			AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
-	# 			WHERE SYSEFL.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND SYSEFL.SECTION_RECORD_ID = '{2}'""".format(str(sefl.RECORD_ID), str(User.Id),str(sect.RECORD_ID)))
-	# 		if permission_chk_query:
-	# 			# if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.QUOTE_STATUS).upper() != "APPROVED":
-	# 			# 	edit_lock_icon = "fa fa-pencil"
-	# 			if str(permission_chk_query.PERMISSION) == "EDITABLE":
-	# 				edit_lock_icon = "fa fa-pencil"	
-	# 			else:
-	# 				edit_lock_icon = "fa fa-lock"  
-	# 		##edit_lock_icon in quote based on permission ends
-	# 		sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
-	# 		sec_str += "</div>"
+				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
+			##edit_lock_icon in quote based on permission starts
+			edit_lock_icon = ''
+			permission_chk_query = Sql.GetFirst("""SELECT DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' 
+				Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE 
+				FROM SYOBJD (NOLOCK)
+				INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
+				INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
+				INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
+				INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+				AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
+				WHERE SYSEFL.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND SYSEFL.SECTION_RECORD_ID = '{2}'""".format(str(sefl.RECORD_ID), str(User.Id),str(sect.RECORD_ID)))
+			if permission_chk_query:
+				# if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.QUOTE_STATUS).upper() != "APPROVED":
+				# 	edit_lock_icon = "fa fa-pencil"
+				if str(permission_chk_query.PERMISSION) == "EDITABLE":
+					edit_lock_icon = "fa fa-pencil"	
+				else:
+					edit_lock_icon = "fa fa-lock"  
+			##edit_lock_icon in quote based on permission ends
+			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
+			sec_str += "</div>"
 
-	# 		sec_str += "</div>"
-	# 	sec_str += "</div>"
+			sec_str += "</div>"
+		sec_str += "</div>"
 
 
 			
-	# sec_str += '<table class="wth100mrg8"><tbody>'
-	# #Trace.Write("111111" + str(Qt_rec_id))
+	sec_str += '<table class="wth100mrg8"><tbody>'
+	#Trace.Write("111111" + str(Qt_rec_id))
 
-	# sec_str += "</tbody></table></div>"
-	# sec_str += "</div>"
+	sec_str += "</tbody></table></div>"
+	sec_str += "</div>"
 	#Trace.Write(str(sec_str))
 	# if ACTION == "QUOTE_INFO" :
 	# 	quote_id = str(eval("col_name.QUOTE_ID"))
