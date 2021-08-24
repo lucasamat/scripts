@@ -3175,6 +3175,7 @@ def POPUPLISTVALUEADDNEW(
 				"GREENBOOK",
 				"PLATFORM",
 			]
+			Trace.Write('3178--------')
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
 				+ str(ObjectName)
