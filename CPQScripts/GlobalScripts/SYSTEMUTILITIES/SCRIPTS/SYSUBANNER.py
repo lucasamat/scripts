@@ -2446,7 +2446,7 @@ def Related_Sub_Banner(
         sec_rel_sub_bnr += (
                 '<button class="btnconfig cust_def_btn" data-target="" data-toggle="modal" id="activate_btn" onclick="addon_products()">ACTIVATE</button>'
                 )
-                                            
+                                       
     elif str(TabName) == "Approval Chain" and str(TreeParentParam) == "Approval Chain Steps":
         if str(ObjName) == "ACACST" and  subTabName == "Chain Step Conditions":
         
@@ -2489,6 +2489,7 @@ def Related_Sub_Banner(
             data-target="#preview_approval" onclick="reject_request()" data-toggle="modal" class="btnconfig SegmentRevBtn fltrt">REJECT
             </button> </div>"""                   
     else:		
+        
         if TabName == "Quote":            
             ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
             Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
@@ -2522,7 +2523,7 @@ def Related_Sub_Banner(
         if str(TreeParam) == "Quote Information" and TabName == "Quotes":
             Trace.Write("@@@2473")
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>') 
-        if  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quote":     
+        if  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes":     
             Trace.Write("2526line")
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )                                  
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
