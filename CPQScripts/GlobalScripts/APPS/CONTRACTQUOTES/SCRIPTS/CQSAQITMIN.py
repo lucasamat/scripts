@@ -1,7 +1,7 @@
 #========================================================================================================#================================
 #   __script_name : CQSAQITMIN.PY
-#   __script_description : 
-#   __primary_author__ : AYYAPPAN SUBRAMANIYAN
+#   __script_description : THIS SCRIPT USED TO IMPLEMENT QUOTE ITEM INSERT
+#   __primary_author__ : WASIM
 #   __create_date :24-08-2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
