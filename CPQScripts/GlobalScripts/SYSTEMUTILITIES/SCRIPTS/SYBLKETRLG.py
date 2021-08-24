@@ -535,7 +535,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
 				for item in Quote.MainItems:
 					if item.PartNumber == a.SERVICE_ID:
-						item.SALES_PRICE.Value = str(b.SUM_PRICE)
+						item.NET_PRICE.Value = str(b.SUM_PRICE)
 						item.YEAR_1.Value = str(b.YEAR1)
 						item.YEAR_2.Value = str(b.YEAR2)
 						item.YEAR_3.Value = str(b.YEAR3)

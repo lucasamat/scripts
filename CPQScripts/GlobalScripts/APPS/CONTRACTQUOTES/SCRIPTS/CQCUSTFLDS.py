@@ -59,7 +59,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 		if  service_id == item.PartNumber and item_number == lineitemid:
 			Trace.Write("service_id")
 			item.YEAR_OVER_YEAR.Value = yoy
-			item.SALES_PRICE.Value = saleprice
+			item.NET_PRICE.Value = saleprice
 			item.DISCOUNT.Value = discount
 			item.YEAR_1.Value = year1
 			item.YEAR_2.Value = year2
