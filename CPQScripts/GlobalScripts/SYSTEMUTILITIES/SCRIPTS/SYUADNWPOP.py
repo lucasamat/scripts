@@ -2346,7 +2346,6 @@ def POPUPLISTVALUEADDNEW(
 		# Offerings - End
 		##COVERED OBJECTS STARTS
 		elif str(ObjectName) == "SAQSCO" and str(CurrentTab) == "Quotes":
-			Trace.Write('2349----------'+str(ObjectName))
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
@@ -2420,11 +2419,9 @@ def POPUPLISTVALUEADDNEW(
 			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
 			for key, invs in enumerate(list(ordered_keys)):
-				Trace.Write('invs---2423---'+str(invs))
 				
 				invs = str(invs).strip()
 				qstring = Header_details.get(str(invs)) or ""
-				Trace.Write('qstring---2423---'+str(qstring))
 				if key == 0:
 					sec_str += (
 						'<th data-field="'
