@@ -4331,7 +4331,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
     )    
 
     ### editablity in Grid
+    Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
     if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
+        Trace.Write("inside---")
         cls = "eq(3)"
         dbl_clk_function = (
             'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
@@ -4380,6 +4382,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 
 
     else:
+        Trace.Write("else---")
         dbl_clk_function = (
         '$("'
         + str(table_ids)
