@@ -6269,9 +6269,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         "FABLOCATION_ID",
         "WARRANTY_START_DATE",
         "WARRANTY_END_DATE",
-        "WARRANTY_END_DATE_ALERT",
-        "CONTRACT_START_DATE",
-        "CONTRACT_END_DATE"
+        "WARRANTY_END_DATE_ALERT"
     ]      
     Objd_Obj = Sql.GetList(
         "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQSCO'"
