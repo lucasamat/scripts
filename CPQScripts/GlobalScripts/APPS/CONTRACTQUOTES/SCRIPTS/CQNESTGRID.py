@@ -4135,6 +4135,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
     can_edit1 = str(objs_obj1.CAN_EDIT)
     can_add1 = str(objs_obj1.CAN_ADD)
     can_delete1 = str(objs_obj1.CAN_DELETE)
+    ##replacing space with '_' in recid
+    if ' ' in recid:
+        recid = recid.replace(' ','_')
     table_id = "table_preventive_maintainence_child_"+str(recid) 
     table_header = (
         '<table id="'
