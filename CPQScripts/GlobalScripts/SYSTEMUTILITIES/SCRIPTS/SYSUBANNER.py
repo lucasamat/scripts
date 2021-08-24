@@ -2409,7 +2409,8 @@ def Related_Sub_Banner(
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                        if getsalesorg_ifo and getfab_info:
+                        get_service_ifo = Sql.GetFirst("SELECT SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                        if getsalesorg_ifo and getfab_info and get_service_ifo:
                             Trace.Write('salesorg--present---')
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts--2411--")
