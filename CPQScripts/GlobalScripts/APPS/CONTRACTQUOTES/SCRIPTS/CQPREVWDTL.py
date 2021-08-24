@@ -457,6 +457,7 @@ def constructidlingattributes(Qt_rec_id, Quote, MODE):
 				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
 			##edit_lock_icon in quote based on permission starts
+			edit_lock_icon = ''
 			permission_chk_query = Sql.GetFirst("""SELECT DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' 
 				Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE 
 				FROM SYOBJD (NOLOCK)
