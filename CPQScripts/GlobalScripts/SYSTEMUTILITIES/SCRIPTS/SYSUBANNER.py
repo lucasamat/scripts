@@ -2409,20 +2409,14 @@ def Related_Sub_Banner(
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                        get_service_ifo = Sql.GetList("SELECT SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-
+                        get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                        get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
                         if getsalesorg_ifo and getfab_info:
-                            for val in get_service_ifo:
-                                if val.SERVICE_ID:
-                                    getservice = val.SERVICE_ID
-                                    get_equip_details = Sql.GetFirst("SELECT EQUIPMENT_ID,SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),getservice))
-                                    if get_equip_details:
-                                        Trace.Write('GET-- equipment check---')
-                                        if getservice == get_equip_details.SERVICE_ID:
-                                            Trace.Write('iinside equipment check---')
-                                            getequipid = get_equip_details.EQUIPMENT_ID
-
                             Trace.Write('salesorg--present---')
+                            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
+                                Trace.Write('button process--')
+                            else:
+                                Trace.Write('No button--')
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts--2411--")
                             if 'UPDATE LINES' in btn:
