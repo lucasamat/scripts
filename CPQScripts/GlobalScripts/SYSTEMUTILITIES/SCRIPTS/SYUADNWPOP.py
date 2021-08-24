@@ -2346,6 +2346,7 @@ def POPUPLISTVALUEADDNEW(
 		# Offerings - End
 		##COVERED OBJECTS STARTS
 		elif str(ObjectName) == "SAQSCO" and str(CurrentTab) == "Quotes":
+			Trace.Write('2349----------'+str(ObjectName))
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
