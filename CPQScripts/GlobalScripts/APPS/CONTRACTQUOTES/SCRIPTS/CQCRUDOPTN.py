@@ -5203,7 +5203,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
 		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
-		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_extended_price) + " " + get_curr
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
 		Quote.Save()
 		#assigning value to quote summary ends
 		# Delete SAQICO temp table - Start
