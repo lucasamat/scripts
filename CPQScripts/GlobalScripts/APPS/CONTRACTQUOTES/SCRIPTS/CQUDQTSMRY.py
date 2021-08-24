@@ -63,7 +63,8 @@ class ContractQuoteSummaryUpdate:
                             NET_VALUE = IQ.NET_VALUE,
                             NET_PRICE = IQ.NET_PRICE,
                             YEAR_1 = IQ.YEAR_1,
-                            YEAR_2 = IQ.YEAR_2							
+                            YEAR_2 = IQ.YEAR_2,
+                            DISCOUNT = {Discount}							
                             FROM SAQITM (NOLOCK)
                             INNER JOIN (SELECT SAQITM.CpqTableEntryId,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
@@ -75,7 +76,8 @@ class ContractQuoteSummaryUpdate:
                                         WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' 
                                         GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
                             ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id))
+                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,
+                            Discount=self.discount))
     
     def _update_quote_summary(self):
         quote_currency = str(Quote.GetCustomField('Currency').Content)		
