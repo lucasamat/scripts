@@ -40,7 +40,7 @@ class ContractQuoteSummaryUpdate:
         decimal_discount = int(self.discount) / 100
         Sql.RunQuery("""UPDATE SAQICO SET 
                                         NET_PRICE = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {Discount}),
-                                        YEAR_1 = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {Discount})
+                                        YEAR_1 = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {Discount}),
                                         DISCOUNT = {Discount}
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
