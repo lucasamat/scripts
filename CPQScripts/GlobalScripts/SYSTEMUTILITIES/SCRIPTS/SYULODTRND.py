@@ -127,7 +127,7 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC"]:
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO"]:
 			canedit = "TRUE"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
