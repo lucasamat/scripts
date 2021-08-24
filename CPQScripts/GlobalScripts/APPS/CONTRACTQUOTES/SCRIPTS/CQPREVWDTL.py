@@ -193,7 +193,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 		primary_objname = "SAQTMT"
 
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
