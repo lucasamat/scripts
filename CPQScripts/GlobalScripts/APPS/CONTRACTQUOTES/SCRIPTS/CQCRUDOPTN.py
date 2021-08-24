@@ -5198,7 +5198,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
 		Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
 		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
-		Quote.GetCustomField('SALE_PRICE').Content =str(total_sales_price) + " " + get_curr
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
 		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
 		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
