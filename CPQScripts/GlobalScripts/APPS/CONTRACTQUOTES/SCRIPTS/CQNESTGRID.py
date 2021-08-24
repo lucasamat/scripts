@@ -4332,7 +4332,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 
     ### editablity in Grid
     Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
-    if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
+    if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
         Trace.Write("inside---")
         cls = "eq(3)"
         dbl_clk_function = (
