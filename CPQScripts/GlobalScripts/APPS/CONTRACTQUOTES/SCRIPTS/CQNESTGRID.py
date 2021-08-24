@@ -4167,7 +4167,8 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
         numberlist = [inn.API_NAME for inn in Objd_Obj if inn.FORMULA_DATA_TYPE == "NUMBER"]
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
-    if TopSuperParentParam == 'Comprehensive Services':
+    Parent_assembly_id = ""
+    if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
         Parent_assembly_id = Sql.GetFirst(
             "select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' AND ASSEMBLY_ID = '{AssemblyId}' AND EQUIPMENT_ID = '{EquipmentId}'".format(
                 ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
