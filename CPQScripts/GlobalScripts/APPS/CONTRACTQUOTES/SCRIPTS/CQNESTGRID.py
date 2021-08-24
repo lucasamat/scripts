@@ -6603,8 +6603,8 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
         data_dict["WARRANTY_START_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_START_DATE) + '">' + str(par.WARRANTY_START_DATE) + "</abbr>")
         data_dict["WARRANTY_END_DATE"] = ('<abbr id ="" title="' + str(par.WARRANTY_END_DATE) + '">' + str(par.WARRANTY_END_DATE) + "</abbr>") 
         data_dict["WARRANTY_END_DATE_ALERT"] = str(par.WARRANTY_END_DATE_ALERT) 
-        data_dict["CONTRACT_START_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_START_DATE) + '">' + str(par.CONTRACT_START_DATE) + "</abbr>")
-        data_dict["CONTRACT_END_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_END_DATE) + '">' + str(par.CONTRACT_END_DATE) + "</abbr>")
+        #data_dict["CONTRACT_START_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_START_DATE) + '">' + str(par.CONTRACT_START_DATE) + "</abbr>")
+        #data_dict["CONTRACT_END_DATE"] = ('<abbr id ="" title="' + str(par.CONTRACT_END_DATE) + '">' + str(par.CONTRACT_END_DATE) + "</abbr>")
         data_list.append(data_dict)
     Trace.Write('data_list--'+str(data_list))
     hyper_link = ["QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID"]
