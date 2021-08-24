@@ -2406,6 +2406,7 @@ def Related_Sub_Banner(
                         Trace.Write("btn---12"+str(btn))
                         # if "PRICE" in btn:
                         fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        Trace.Write('2409----'+str(TreeParam))
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
@@ -2415,6 +2416,7 @@ def Related_Sub_Banner(
                             Trace.Write('salesorg--present---')
                             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
                                 Trace.Write('button process--')
+                                #for item in Quote.MainItems:
                             else:
                                 Trace.Write('No button--')
                         if len(fts_scenario_check) == 2:
