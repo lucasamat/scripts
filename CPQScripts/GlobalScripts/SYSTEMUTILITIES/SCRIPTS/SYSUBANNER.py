@@ -2434,7 +2434,7 @@ def Related_Sub_Banner(
                 #         '<button id="REFRESH_MATRIX" onclick="refresh_billingmatrix(this)"  class="btnconfig">REFRESH</button>'
                 #     )  
 
-
+    Trace.Write("subtaname"+str(subTabName))
     if subTabName == 'Involved Parties' and TreeParam == "Quote Information":
         Trace.Write("Involved Parties button")
         sec_rel_sub_bnr += (add_button)
