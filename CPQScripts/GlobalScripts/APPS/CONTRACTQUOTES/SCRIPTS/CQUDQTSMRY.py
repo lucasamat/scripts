@@ -23,8 +23,8 @@ class ContractQuoteSummaryUpdate:
         for count in range(2, 6):
             Sql.RunQuery("""UPDATE SAQICO SET
                                             SAQICO.YEAR_{Year} = CASE  
-                                                WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) == 1 
-                                                    THEN ISNULL(SAQICO.YEAR_{PreviousYear}, 0) - (ISNULL(SAQICO.YEAR_{PreviousYear}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100                                                   
+                                                WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) = {Count} 
+                                                    THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100                                                   
                                                 ELSE 0
                                             END
                                         FROM SAQICO (NOLOCK) 
@@ -32,7 +32,7 @@ class ContractQuoteSummaryUpdate:
                                         WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
                                             QuoteRecordId=self.contract_quote_record_id,
                                             Year=count,
-                                            PreviousYear=count - 1 
+                                            Count=count - 1 
                                             )
                         )    
     
