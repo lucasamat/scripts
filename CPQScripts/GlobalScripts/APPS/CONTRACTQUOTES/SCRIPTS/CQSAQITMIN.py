@@ -1,0 +1,85 @@
+#========================================================================================================#================================
+#   __script_name : CQSAQITMIN.PY
+#   __script_description : 
+#   __primary_author__ : AYYAPPAN SUBRAMANIYAN
+#   __create_date :24-08-2021
+#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+# ==========================================================================================================================================
+
+import datetime
+import Webcom.Configurator.Scripting.Test.TestProduct
+import sys
+import re
+import System.Net
+import SYCNGEGUID as CPQID
+from SYDATABASE import SQL
+#from datetime import datetime
+#import time
+Sql = SQL()
+ScriptExecutor = ScriptExecutor
+
+def Quoteiteminsert(Qt_rec_id):
+    Trace.Write("Qt_rec_id"+str(Qt_rec_id))
+    get_curr = str(Quote.GetCustomField('Currency').Content)
+    #assigning value to quote summary starts
+    total_cost = 0.00
+    total_target_price = 0.00
+    total_ceiling_price = 0.00
+    total_sls_discount_price = 0.00
+    total_bd_margin = 0.00
+    total_bd_price = 0.00
+    total_sales_price = 0.00
+    total_yoy = 0.00
+    total_year_1 = 0.00
+    total_year_2 = 0.00
+    total_tax = 0.00
+    total_extended_price = 0.00
+    #getdecimalplacecurr =decimal_val = ''
+    items_data = {}
+    get_billing_matrix_year =[]
+    items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
+    if items_obj:
+        for item_obj in items_obj:
+            items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+    for item in Quote.MainItems:
+        item_number = int(item.RolledUpQuoteItem)
+        if item_number in items_data.keys():
+            if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
+                item_data = items_data.get(item_number)
+                item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
+                total_cost += float(item_data.get('TOTAL_COST'))
+                item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
+                total_target_price += item.TARGET_PRICE.Value
+                total_ceiling_price += item.CEILING_PRICE.Value
+                total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
+                total_bd_margin += item.BD_PRICE_MARGIN.Value
+                total_bd_price += item.BD_PRICE.Value
+                total_sales_price += item.SALES_PRICE.Value
+                item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
+                total_yoy += item.YEAR_OVER_YEAR.Value
+                item.YEAR_1.Value = item_data.get('YEAR_1')
+                total_year_1 += item.YEAR_1.Value
+                item.YEAR_2.Value = item_data.get('YEAR_2')
+                total_year_2 += item.YEAR_2.Value
+                total_tax += item.TAX.Value
+                item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
+                total_extended_price += item.EXTENDED_PRICE.Value	
+                item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
+    Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
+    Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
+    Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
+    Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
+    Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
+    Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
+    Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
+    Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
+    Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
+    Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+    Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
+    Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
+    Quote.Save()
+
+try: 
+	Qt_rec_id = Param.QT_REC_ID
+except:
+	Qt_rec_id = ""
