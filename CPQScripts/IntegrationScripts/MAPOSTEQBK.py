@@ -548,7 +548,7 @@ try:
 	result = ScriptExecutor.ExecuteGlobal("MAPOSTFLBK")	
 	Final_info = Parent_call
 	Final_info = Child_call
-	Result = Final_info
+	Result = Final_info +' and '+result
 	
 	
 except:
