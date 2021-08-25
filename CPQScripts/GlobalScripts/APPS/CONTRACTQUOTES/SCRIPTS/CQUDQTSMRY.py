@@ -57,6 +57,7 @@ class ContractQuoteSummaryUpdate:
                                         QuoteRecordId=self.contract_quote_record_id 
                                         )
                     )
+    
     def _quote_item_update(self):
         Sql.RunQuery("""UPDATE SAQITM
                             SET 
