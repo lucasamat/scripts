@@ -39,8 +39,8 @@ class ContractQuoteSummaryUpdate:
     def _quote_item_lines_update(self):
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_PRICE = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {DecimalDiscount}),
-                                        YEAR_1 = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {DecimalDiscount}),
+                                        NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
                                         DISCOUNT = {Discount}
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
