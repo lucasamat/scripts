@@ -7422,7 +7422,7 @@ class SYLDRTLIST:
                                 Qury_str = (
                                     "select DISTINCT top "
                                     + str(PerPage)
-                                    + " '"+ icon +"' AS PO_NOTES, QUOTE_ITEM_RECORD_ID, LINE_ITEM_ID, SERVICE_ID, SERVICE_DESCRIPTION, OBJECT_QUANTITY,QUANTITY, TOTAL_COST, SALES_DISCOUNT_PRICE,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX, EXTENDED_PRICE, TARGET_PRICE, CEILING_PRICE, BD_PRICE, BD_PRICE_MARGIN, DISCOUNT, SALES_PRICE, YEAR_OVER_YEAR, "+col_year+" "
+                                    + " '"+ icon +"' AS PO_NOTES, QUOTE_ITEM_RECORD_ID, LINE_ITEM_ID, SERVICE_ID, SERVICE_DESCRIPTION, OBJECT_QUANTITY,QUANTITY, TOTAL_COST, SALES_DISCOUNT_PRICE,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX, NET_VALUE, TARGET_PRICE, CEILING_PRICE, BD_PRICE, BD_PRICE_MARGIN, DISCOUNT, NET_PRICE, YEAR_OVER_YEAR, "+col_year+" "
                                     + ",CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
                                     + str(Wh_API_NAMEs)
                                     + ") AS ROW, * from "
@@ -7506,7 +7506,7 @@ class SYLDRTLIST:
                             Qury_str = (
                                 "select DISTINCT top "
                                 + str(PerPage)
-                                + " QUOTE_ITEM_RECORD_ID, LINE_ITEM_ID, SERVICE_ID, SERVICE_DESCRIPTION, ONSITE_PURCHASE_COMMIT, OBJECT_QUANTITY, TOTAL_COST, SALES_DISCOUNT_PRICE, TAX, EXTENDED_PRICE, QUANTITY, TARGET_PRICE, CEILING_PRICE, BD_PRICE, BD_PRICE_MARGIN, DISCOUNT, SALES_PRICE, YEAR_OVER_YEAR, "+col_year+", SRVTAXCLA_DESCRIPTION, TAX_PERCENTAGE, CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
+                                + " QUOTE_ITEM_RECORD_ID, LINE_ITEM_ID, SERVICE_ID, SERVICE_DESCRIPTION, ONSITE_PURCHASE_COMMIT, OBJECT_QUANTITY, TOTAL_COST, SALES_DISCOUNT_PRICE, TAX, NET_VALUE, QUANTITY, TARGET_PRICE, CEILING_PRICE, BD_PRICE, BD_PRICE_MARGIN, DISCOUNT, NET_PRICE, YEAR_OVER_YEAR, "+col_year+", SRVTAXCLA_DESCRIPTION, TAX_PERCENTAGE, CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "
                                 + str(Wh_API_NAMEs)
                                 + ") AS ROW, * from "
                                 + str(ObjectName)
