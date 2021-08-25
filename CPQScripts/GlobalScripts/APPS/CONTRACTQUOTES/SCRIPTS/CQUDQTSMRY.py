@@ -96,7 +96,7 @@ class ContractQuoteSummaryUpdate:
             if item_number in items_data.keys():
                 if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
                     item_data = items_data.get(item_number)
-                    item.TOTAL_COST.NET_PRICE = float(item_data.get('NET_PRICE'))
+                    item.NET_PRICE.Value = float(item_data.get('NET_PRICE'))
                     total_net_price += item.NET_PRICE.Value
                     item.NET_VALUE.Value = item_data.get('NET_VALUE')
                     total_net_value += item.NET_VALUE.Value	
@@ -118,7 +118,7 @@ class ContractQuoteSummaryUpdate:
             self._quote_item_lines_update()
             self._quote_item_update()
             self._update_quote_summary()
-            
+
 discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
 summary_obj.update_summary()
