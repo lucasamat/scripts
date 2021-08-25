@@ -524,7 +524,7 @@ try:
 							msg.Subject = "ON HOLD - COSTING- AMAT CPQ QA"
 							msg.IsBodyHtml = True
 							msg.Body = Error_Info
-
+							Log.Info("156156 UserEmail --->"+str(UserEmail))
 							# CC Emails	
 							if len(UserEmail) > 0:
 								for emalinfo in  UserEmail:
