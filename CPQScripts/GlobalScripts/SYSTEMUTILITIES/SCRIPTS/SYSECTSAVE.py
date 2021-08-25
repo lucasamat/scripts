@@ -11,7 +11,7 @@ import SYCNGEGUID as CPQID
 import System.Net
 #import PRIFLWTRGR
 from datetime import datetime,date
-import datetime
+#import datetime
 from SYDATABASE import SQL
 
 Sql = SQL()
