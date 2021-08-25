@@ -104,8 +104,7 @@ class ContractQuoteSummaryUpdate:
                     total_year_1 += item.YEAR_1.Value
                     item.YEAR_2.Value = item_data.get('YEAR_2')
                     total_year_2 += item.YEAR_2.Value        
-                    item.DISCOUNT.Value = str(self.discount)            
-        
+                    item.DISCOUNT.Value = str(self.discount)
         Quote.GetCustomField('DISCOUNT').Content = str(self.discount)
         Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
         Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
