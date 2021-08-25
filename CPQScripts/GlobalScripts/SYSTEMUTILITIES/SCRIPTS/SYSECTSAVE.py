@@ -565,12 +565,12 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								Trace.Write('WARRANTY_END_DATE--564-'+str(val.WARRANTY_END_DATE))
 								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 							else:
-								Trace.Write('WARRANTY_val---568--')
+								Trace.Write('WARRANTY_val---568--'+str(val.WARRANTY_END_DATE))
 								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 								Trace.Write('no end date--')
 							Sql.RunQuery(update_warranty_enddate_alert)
 						else:
-							Trace.Write('WARRANTY_val--600-')
+							Trace.Write('WARRANTY_val--600-'+str(val.WARRANTY_END_DATE))
 							update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 							Trace.Write('no end date--')
 							Sql.RunQuery(update_warranty_enddate_alert)
