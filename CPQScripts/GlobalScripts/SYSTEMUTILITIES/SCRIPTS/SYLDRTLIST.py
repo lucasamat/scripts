@@ -3076,8 +3076,9 @@ class SYLDRTLIST:
                                         if str(value123) == "WARRANTY_END_DATE":
                                             #Trace.Write('getindication--3075---'+str(getindication))
                                             getdate_indication = str(value1234)
-                                            getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
-                                            Trace.Write('getindication---'+str(getdate_indication))
+                                            if getdate_indication:
+                                                getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
+                                                Trace.Write('getindication---'+str(getdate_indication))
                                         elif str(value123) in billing_date_column:
                                             Trace.Write('---value123-3081--3078--'+str(value123))
                                             getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')
