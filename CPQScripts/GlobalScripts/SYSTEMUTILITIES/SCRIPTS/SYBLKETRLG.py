@@ -176,6 +176,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	Trace.Write("@175----canedit-------->"+str(canedit))
 	if objh_obj is not None and str(canedit).upper() == "TRUE":
 		obj_obj = str(objh_obj.OBJECT_NAME)
+		Trace.Write("object name--"+str(obj_obj))
 		
 		objd_obj = Sql.GetFirst(
 			"SELECT DATA_TYPE,PICKLIST_VALUES,API_NAME,FIELD_LABEL,PERMISSION,FORMULA_DATA_TYPE FROM  SYOBJD where OBJECT_NAME='"
@@ -274,7 +275,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 							edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
 							edt_str += '<input  id="MAFBLC|SAQSTE" class="popup fltlt"  type="image" onclick = "CommonTree_lookup_popup(this)" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif" id="' + str(api_name) + '" >'	
 						elif data_type.upper() == "NUMBER":
-							if TITLE != 'SALES_PRICE':
+							if TITLE not in ('SALES_PRICE','PM_FREQUENCY'):
 								Trace.Write("inside number")
 								edt_str += (
 									'<input class="form-control light_yellow wth_80"   id="'
@@ -329,13 +330,19 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					if TITLE != 'SALES_PRICE' and TITLE != 'DISCOUNT':
+					if TITLE not in ('SALES_PRICE','DISCOUNT','PM_FREQUENCY') :
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 					else:
-						k = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
-						Trace.Write("query---->"+str(k))
-						key = str(k.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
+						if obj_obj == 'SAQSAP':
+							k = Sql.GetFirst("SELECT QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID FROM SAQSAP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							Trace.Write("query---->"+str(k))
+							if k:
+								key = str(k.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
+						else:
+							k = Sql.GetFirst("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID FROM SAQICO WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
+							Trace.Write("query---->"+str(k))
+							key = str(k.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID)
 				if SELECTALL == "noselection":
 					edt_str = "NO"
 			else:
@@ -345,6 +352,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 			Trace.Write("EDITSTR"+str(edt_str))	
 	else:
 		edt_str = "NO"
+	Trace.Write('datalist--'+str(edt_str)+'--'+str(date_field)+'--'+str(key))
 	return edt_str, date_field,key
 
 
