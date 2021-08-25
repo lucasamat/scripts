@@ -548,6 +548,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 				# A055S000P01-3324 start 
 				if TableName == 'SAQTMT':
 					#A055S000P01-4393 start 
+                    WARRANTY_val =''
 					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id")))
 					get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'")
 					update_warranty_enddate_alert = ''
@@ -556,7 +557,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						if val.WARRANTY_START_DATE:
 							if val.WARRANTY_START_DATE >= getdate.CONTRACT_VALID_FROM:
 								if val.WARRANTY_END_DATE:
-									if val.WARRANTY_END_DATE >= getdate.CONTRACT_VALID_TO:
+                                    WARRANTY_val = datetime.strptime(str(val.WARRANTY_START_DATE), "%Y-%m-%d")
+                                    get_con_date = str(getdate.CONTRACT_VALID_FROM).split(" ")[0]
+                                    get_con_date = datetime.strptime(str(get_con_date), "%m/%d/%Y")
+									if WARRANTY_val >= get_con_date:
 										Trace.Write('QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID---'+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID))
 										update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 								else:
