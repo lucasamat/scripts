@@ -10,7 +10,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQID
 import System.Net
 #import PRIFLWTRGR
-from datetime import date
+from datetime import datetime,date
 import datetime
 from SYDATABASE import SQL
 
