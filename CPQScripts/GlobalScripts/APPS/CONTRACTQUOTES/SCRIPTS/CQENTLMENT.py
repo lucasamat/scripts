@@ -807,8 +807,8 @@ class Entitlements:
 									QuoteRecordId=self.ContractRecordId,
 									desc=GetMaterial.SAP_DESCRIPTION,
 									rec=GetMaterial.MATERIAL_RECORD_ID,
-									UserName=self.user_name,
-									UserId=self.user_id,
+									UserName=User.UserName,
+									UserId=User.Id,
 									
 								)
 								)
