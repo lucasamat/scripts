@@ -3928,7 +3928,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
         dbl_clk_function = ( 
             'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
             + str(table_ids)
-            + '").on("click-row.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+            + '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
             + str(cls)
             + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows);$("td").click(function(){var column = $(this).parent().children().index(this);});debugger;console.log("column",column) }); $("'
             + str(table_ids)
