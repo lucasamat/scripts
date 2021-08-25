@@ -3924,7 +3924,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
     Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
     if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
         Trace.Write("inside---")
-        cls = "eq(3)"
+        cls = "eq(2)"
         dbl_clk_function = (
             'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
             + str(table_ids)
@@ -3934,7 +3934,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             + str(table_ids)
             + '").on("check-all.bs.table", function (e) { var table = $("'
             + str(table_ids)
-            + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+            + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
             + str(table_ids)
             + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
             + str(table_ids)
@@ -3956,9 +3956,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             + str(cls)	
             + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:'	
             + str(cls)	
-            + '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'	
+            + '").text();console.log("reco_id1--",reco_id); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'	
             + str(table_id)	 
-            + '"); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "input#"+data3;localStorage.setItem("value_tag", inp); $("#SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63").find(inp).prop("disabled", false); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	RecId = "SYOBJR-00011";RecName = "";$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");$("#SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63").find(inp).addClass("light_yellow");} document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
+            + '");console.log("reco_id1--",reco_id); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "input#"+data3;localStorage.setItem("value_tag", inp); $("#SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63").find(inp).prop("disabled", false); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	RecId = "SYOBJR-00011";RecName = "";$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");$("#SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63").find(inp).addClass("light_yellow");} document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
             + str(table_ids)	
             + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"	
             + str(table_id)	

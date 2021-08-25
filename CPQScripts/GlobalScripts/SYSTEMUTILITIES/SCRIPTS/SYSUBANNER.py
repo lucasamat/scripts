@@ -1187,9 +1187,7 @@ def Related_Sub_Banner(
                         # FifthValue = "ALL" 			
                 if str(ObjName) == 'SAQSFB':
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
-                        if TreeSuperParentParam == 'Add-On Products':
-                            getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeSuperParentParam, Quote.GetGlobal("contract_quote_record_id")))
-                            TreeSuperParentParam = getmainservice.SERVICE_ID
+                        
                         get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
                         ThirdLable = "Product Offering Description"
                         ThirdValue = get_val.SERVICE_DESCRIPTION
@@ -1198,6 +1196,10 @@ def Related_Sub_Banner(
                         FifthLable = " Fab Location ID"
                         FifthValue = TreeParam
                     else:
+                        Trace.Write("@1199--------------")
+                        if TreeSuperParentParam == 'Add-On Products':
+                            getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeSuperParentParam, Quote.GetGlobal("contract_quote_record_id")))
+                            TreeParentParam = getmainservice.SERVICE_ID
                         get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
                         ThirdLable = "Product Offering Description"
                         ThirdValue = get_val.SERVICE_DESCRIPTION
