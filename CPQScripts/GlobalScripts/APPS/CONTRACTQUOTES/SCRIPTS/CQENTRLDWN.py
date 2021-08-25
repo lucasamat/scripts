@@ -796,7 +796,7 @@ try:
 					#Log.Info("UpdateEntitlement---"+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))	
 					Sql.RunQuery(UpdateEntitlement)
 			else: 				
-				if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
+				if 'Z0007' in get_serviceid and objectName == 'SAQSCE': 
 					where_condition = SAQITMWhere.replace('A.','')
 					#fab_val = where_cond.split('AND ')
 					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
