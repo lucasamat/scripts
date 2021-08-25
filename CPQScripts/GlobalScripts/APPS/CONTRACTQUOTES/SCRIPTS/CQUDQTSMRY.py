@@ -109,7 +109,7 @@ class ContractQuoteSummaryUpdate:
                     item.DISCOUNT.Value = str(self.discount)
         ##Added the percentage symbol for discount custom field...
         Percentage = '%'
-        Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ "" + Percentage
+        Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
         #discount_value = Quote.GetCustomField('DISCOUNT').Content
         #Trace.Write("discount"+str(discount_value))
         Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
