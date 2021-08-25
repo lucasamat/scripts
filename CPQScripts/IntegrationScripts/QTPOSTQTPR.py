@@ -534,7 +534,7 @@ try:
 							# Send the message
 							mailClient.Send(msg)
 
-					#result = ScriptExecutor.ExecuteGlobal("",{"QT_REC_ID":})	
+					result = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":"Qt_Id"})	
 					# Billing matrix async call
 					LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 
