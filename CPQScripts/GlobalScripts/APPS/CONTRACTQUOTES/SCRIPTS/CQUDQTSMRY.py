@@ -45,7 +45,7 @@ class ContractQuoteSummaryUpdate:
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id, 
-                                        Discount=decimal_discount if decimal_discount > 0 else 1)
+                                        Discount=int(decimal_discount))
                     )
         # Update Year2 to Year5 - Start
         self._update_year()
