@@ -508,7 +508,7 @@ try:
 							mailClient.Credentials = mailCred
 
 							UserEmail = []
-							if str(Gbk.DISTRIBUTION_EMAIL) > 0:
+							if len(Gbk.DISTRIBUTION_EMAIL) > 0:
 								UserEmail = str(Gbk.DISTRIBUTION_EMAIL).split(';')
 							
 
