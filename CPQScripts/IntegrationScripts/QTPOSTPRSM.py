@@ -197,8 +197,8 @@ try:
 		copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
 		msg.Bcc.Add(copyEmail1) 
 
-		#copyEmail2 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
-		#msg.Bcc.Add(copyEmail2)
+		copyEmail2 = MailAddress("arivazhagan.natarajan@bostonharborconsulting.com")
+		msg.Bcc.Add(copyEmail2)
 
 		copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
 		msg.Bcc.Add(copyEmail3) 
