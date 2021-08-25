@@ -117,6 +117,7 @@ class ContractQuoteSummaryUpdate:
         if self.contract_quote_record_id:
             self._quote_item_lines_update()
             self._quote_item_update()
+            self._update_quote_summary()
 discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
 summary_obj.update_summary()
