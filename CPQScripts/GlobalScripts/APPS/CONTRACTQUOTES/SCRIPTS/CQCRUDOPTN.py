@@ -4385,7 +4385,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		billing_plan_obj = Sql.GetFirst("SELECT * FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
-			if billing_plan_obj.IS_CHANGED or self.trigger_from == 'IntegrationScript':				
+			if billing_plan_obj or self.trigger_from == 'IntegrationScript':				
 				contract_start_date = billing_plan_obj.BILLING_START_DATE
 				contract_end_date = billing_plan_obj.BILLING_END_DATE				
 				start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
