@@ -705,12 +705,121 @@ class Entitlements:
 							GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 							
 							Sql.RunQuery("INSERT INTO SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_ID,ADNPRD_DESCRIPTION,ADNPRD_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID) SELECT CONVERT(VARCHAR(4000),NEWID()),'Z0046','{description}','{recordid}',SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID FROM SAQTSV (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID WHERE SAQTSV.SERVICE_ID = 'Z0091' AND SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{quote}'".format(description=GetMaterial.SAP_DESCRIPTION,recordid=GetMaterial.MATERIAL_RECORD_ID,quote=self.ContractRecordId))
+
+							Sql.RunQuery(
+							"""
+							INSERT SAQSCO (
+								QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+								EQUIPMENT_ID,
+								EQUIPMENT_RECORD_ID,
+								EQUIPMENT_DESCRIPTION,                            
+								SNDFBL_ID,
+								SNDFBL_NAME,
+								SNDFBL_RECORD_ID,
+								WAFER_SIZE,
+								BUSINESSUNIT_ID,
+								SALESORG_ID,
+								SALESORG_NAME,
+								SALESORG_RECORD_ID,
+								SERIAL_NO,
+								QUOTE_RECORD_ID,
+								QUOTE_ID,
+								QUOTE_NAME,
+								RELOCATION_EQUIPMENT_TYPE,
+								SERVICE_ID,
+								SERVICE_TYPE,
+								SERVICE_DESCRIPTION,
+								SERVICE_RECORD_ID,
+								EQUIPMENT_STATUS,
+								EQUIPMENTCATEGORY_ID,
+								EQUIPMENTCATEGORY_DESCRIPTION,
+								EQUIPMENTCATEGORY_RECORD_ID,
+								PLATFORM,
+								GREENBOOK,
+								GREENBOOK_RECORD_ID,
+								MNT_PLANT_RECORD_ID,
+								MNT_PLANT_NAME,
+								MNT_PLANT_ID,
+								WARRANTY_START_DATE,
+								WARRANTY_END_DATE,
+								CUSTOMER_TOOL_ID,
+								PAR_SERVICE_DESCRIPTION,
+								PAR_SERVICE_ID,
+								PAR_SERVICE_RECORD_ID,
+								TECHNOLOGY,
+								CPQTABLEENTRYADDEDBY,
+								CPQTABLEENTRYDATEADDED,
+								CpqTableEntryModifiedBy,
+								CpqTableEntryDateModified,
+								FABLOCATION_ID,
+								FABLOCATION_NAME,
+								FABLOCATION_RECORD_ID							
+								) SELECT
+									CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+									EQUIPMENT_ID,
+									EQUIPMENT_RECORD_ID,
+									EQUIPMENT_DESCRIPTION,                                
+									SAQSCO.FABLOCATION_ID,
+									SAQSCO.FABLOCATION_NAME,
+									SAQSCO.FABLOCATION_RECORD_ID,
+									SAQSCO.WAFER_SIZE,
+									'',
+									SAQSCO.SALESORG_ID,
+									SAQSCO.SALESORG_NAME,
+									SAQSCO.SALESORG_RECORD_ID,
+									SERIAL_NUMBER,
+									SAQSCO.QUOTE_RECORD_ID,
+									SAQSCO.QUOTE_ID,
+									SAQSCO.QUOTE_NAME,
+									'' AS RELOCATION_EQUIPMENT_TYPE,
+									'{TreeParam}' as SERVICE_ID,
+									'{TreeParentParam}' as SERVICE_TYPE,
+									'{desc}',
+									'{rec}',
+									SAQSCO.EQUIPMENT_STATUS,
+									SAQSCO.EQUIPMENTCATEGORY_ID,
+									SAQSCO.EQUIPMENTCATEGORY_DESCRIPTION,
+									SAQSCO.EQUIPMENTCATEGORY_RECORD_ID,
+									SAQSCO.PLATFORM,
+									SAQSCO.GREENBOOK,
+									SAQSCO.GREENBOOK_RECORD_ID,
+									SAQSCO.MNT_PLANT_RECORD_ID,
+									SAQSCO.MNT_PLANT_NAME,
+									SAQSCO.MNT_PLANT_ID,
+									SAQSCO.WARRANTY_START_DATE,
+									SAQSCO.WARRANTY_END_DATE,
+									SAQSCO.CUSTOMER_TOOL_ID,
+									'',
+									'',
+									'',
+									SAQSCO.TECHNOLOGY
+									'{UserName}' AS CPQTABLEENTRYADDEDBY,
+									GETDATE() as CPQTABLEENTRYDATEADDED,
+									{UserId} as CpqTableEntryModifiedBy,
+									GETDATE() as CpqTableEntryDateModified
+									FROM SAQSCO (NOLOCK)
+									WHERE 
+									QUOTE_RECORD_ID = '{QuoteRecordId}' 
+															
+								""".format(
+									TreeParam='Z0046',
+									TreeParentParam='',
+									QuoteRecordId=self.contract_quote_record_id,
+									desc=GetMaterial.SAP_DESCRIPTION,
+									rec=GetMaterial.MATERIAL_RECORD_ID,
+									UserName=self.user_name,
+									UserId=self.user_id,
+									
+								)
+								)
 					
 					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No" and self.treeparam == 'Z0091':
 						
 						Trace.Write("NO to Bonus & Penalty Tied to KPI")
 
-						Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))				
+						Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))	
+						Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId))
+
 					totalpriceent = ""					
 					decimal_place ="2"
 					my_format = "{:." + str(decimal_place) + "f}"
