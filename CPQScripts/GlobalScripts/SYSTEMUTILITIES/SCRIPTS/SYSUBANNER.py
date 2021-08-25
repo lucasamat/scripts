@@ -1337,6 +1337,16 @@ def Related_Sub_Banner(
                 elif str(ObjName) == 'ACAPTF' and str(TreeParentParam) == 'Approval Chain Steps':					
                     PrimaryLable = ListKey[0]
                     PrimaryValue = PrimaryValue
+                elif str(ObjName) == "SAQSGB" and TreeSuperParentParam == "Add-On Products":
+                    getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeSuperParentParam, Quote.GetGlobal("contract_quote_record_id")))
+                    TreeSuperParentParam = getmainservice.SERVICE_ID
+                    get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+                    ThirdLable = "Product Offering Description"
+                    ThirdValue = get_val.SERVICE_DESCRIPTION
+                    FourthLable = "Product Offering Type"
+                    FourthValue = TreeSuperParentParam 
+                    FifthLable = " Fab Location ID"
+                    FifthValue = "All"
                 # SecondLable = "Approvers"
                 # SecondValue = "All"
                 # elif TopSuperParentParam == "Quote Items" and ObjName == "SAQICO" and CurrentRecordId == 'SAQICOJ':
