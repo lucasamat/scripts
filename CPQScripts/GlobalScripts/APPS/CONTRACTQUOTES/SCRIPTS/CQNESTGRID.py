@@ -13613,7 +13613,7 @@ elif ACTION == "CHILDLOAD":
                 PerPage = Param.PerPage
                 PageInform = Param.PageInform
             except:
-                ATTR_NAME = ATTRIBUTE_NAME
+                ATTR_NAME = ATTRIBUTE_NAME 
         else:
             ATTR_NAME = ATTRIBUTE_NAME
         ApiResponse = ApiResponseFactory.JsonResponse(WithBundleParentTable(ATTR_NAME, PerPage, PageInform, A_Keys, A_Values))    
