@@ -5184,7 +5184,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
 					total_bd_margin += item.BD_PRICE_MARGIN.Value
 					total_bd_price += item.BD_PRICE.Value
-					total_sales_price += item.SALES_PRICE.Value
+					total_sales_price += item.NET_PRICE.Value
 					item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
 					total_yoy += item.YEAR_OVER_YEAR.Value
 					item.YEAR_1.Value = item_data.get('YEAR_1')
