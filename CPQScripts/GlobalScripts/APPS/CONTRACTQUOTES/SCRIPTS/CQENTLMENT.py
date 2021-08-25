@@ -804,7 +804,7 @@ class Entitlements:
 								""".format(
 									TreeParam='Z0046',
 									TreeParentParam='',
-									QuoteRecordId=self.contract_quote_record_id,
+									QuoteRecordId=self.ContractRecordId,
 									desc=GetMaterial.SAP_DESCRIPTION,
 									rec=GetMaterial.MATERIAL_RECORD_ID,
 									UserName=self.user_name,
