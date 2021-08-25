@@ -2422,6 +2422,7 @@ def Related_Sub_Banner(
                                 if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
                                     get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
                                     if get_quote_details:
+                                        get_quote = Quote.GetGlobal("contract_quote_record_id")
                                         Trace.Write('button process--')
                                         GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
                                         get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
