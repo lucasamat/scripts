@@ -400,7 +400,7 @@ try:
 
 	Resp_msg["Response"] = Lst_resp
 
-	ApiResponse = ApiResponseFactory.JsonResponse(Resp_msg)
+	Result = Resp_msg
 
 	
 except:
@@ -411,4 +411,5 @@ except:
 	
 	Log.Info("MAPOSTFLBK ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("MAPOSTFLBK ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	error_info = {"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}
+	Result  = str(error_info)

@@ -12,6 +12,7 @@ cpqentry_id = ''
 
 try :
 	While_flag = 1
+	Trigger_flag = 0
 	while While_flag == 1:
 		Jsonquery = SqlHelper.GetList("SELECT  replace(integration_payload,'\\\\','\\') as INTEGRATION_PAYLOAD,CpqTableEntryId from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = 'INSTALLED BASE' AND ISNULL(STATUS,'')='' ")
 		if len(Jsonquery) > 0:
@@ -30,12 +31,12 @@ try :
 
 					rebuilt_data = rebuilt_data["CPQ_Columns"]
 					Table_Names = rebuilt_data.keys()
-					Check_flag = 0
+					
 					format_error = []
 					
 					for tn in Table_Names:
 						if tn in rebuilt_data:
-							Check_flag = 1
+							Trigger_flag  = 1
 							
 							MAEQUP_tableInfoData = SqlHelper.GetTable("MAEQUP_INBOUND")
 							MAFBLC_tableInfoData = SqlHelper.GetTable("MAFBLC_INBOUND")
@@ -91,13 +92,14 @@ try :
 					primaryItems = SqlHelper.GetFirst(  ""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''PROCESSED'' from SYINPL  (NOLOCK) WHERE CpqTableEntryId  = ''"+str(json_data.CpqTableEntryId)+ "'' AND ISNULL(STATUS ,'''')= '''' ' "    )
 					if len(format_error) > 0:
 						ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(format_error)}]})
-					else:
-						if Check_flag == 1:                 
-							ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data has been successfully stored in the staging table in CPQ."}]})
+
 		
 		else:
 			While_flag = 0
-			
+	
+	if Trigger_flag == 1:
+		resp = ScriptExecutor.ExecuteGlobal("MAPOSTEQBK")              
+		ApiResponse = ApiResponseFactory.JsonResponse(resp)		
 except:
 	Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")			
 	primaryItems = SqlHelper.GetFirst(  ""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''ERROR'' from SYINPL  (NOLOCK) WHERE CpqTableEntryId  = ''"+str(cpqentry_id)+ "'' AND ISNULL(STATUS ,'''')= '''' ' "    )
