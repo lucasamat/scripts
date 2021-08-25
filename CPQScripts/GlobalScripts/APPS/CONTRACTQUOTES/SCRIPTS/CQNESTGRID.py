@@ -3865,7 +3865,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             qstring = invs.replace("_", " ")
         if checkbox_list is not None and invs in checkbox_list:
             table_header += (
-                '<th  data-field="'
+                '<th  id="'
+                + str(invs)
+                + '"  data-field="'
                 + str(invs)
                 + '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
                 + str(qstring)
@@ -3875,7 +3877,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             )
         elif hyper_link is not None and invs in hyper_link:            
             table_header += (
-                '<th data-field="'
+                '<th  id="'
+                + str(invs)
+                + '"  data-field="'
                 + str(invs)
                 + '" data-filter-control="input" data-formatter="EquipHyperLinkTreeLink" data-sortable="true"><abbr title="'
                 + str(qstring)
@@ -3885,7 +3889,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             )
         else:
             table_header += (
-                '<th  data-field="'
+                '<th  id="'
+                + str(invs)
+                + '"  data-field="'
                 + str(invs)
                 + '" data-filter-control="input" data-sortable="true"><abbr title="'
                 + str(qstring)
@@ -3946,7 +3952,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             + str(table_ids)	
             + '\ th.bs-checkbox div.th-inner").before(""); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id="";reco_id=$element.closest("tr").find("td:'	
             + str(cls)	
-            + '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("reco_id1--",reco_id); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+' "+inp).closest("tr").find("td:nth-child(7)").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");$("'+str(table_ids)+' " +inp).closest("tr").find("td:nth-child(7)").addClass("light_yellow");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");} document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
+            + '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("reco_id1--",reco_id);edit_index = $("'+str(table_ids)+' #"+value).index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+' "+inp).closest("tr").find("td:nth-child("+edit_index+")").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");}$("'+str(table_ids)+' " +inp).closest("tr").find("td:nth-child("+edit_index+")").addClass("light_yellow"); document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
             + str(table_ids)	
             + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"	
             + str(table_id)	
