@@ -560,7 +560,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							get_con_date = datetime.strptime(str(get_con_date), "%m/%d/%Y")
 							Trace.Write('get_con_date---562--'+str(get_con_date))
 							Trace.Write('WARRANTY_val---562--'+str(WARRANTY_val))
-							if WARRANTY_val >= get_con_date:
+							if WARRANTY_val > get_con_date:
 								Trace.Write('get_con_date--564---'+str(get_con_date))
 								Trace.Write('WARRANTY_END_DATE--564-'+str(val.WARRANTY_END_DATE))
 								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
