@@ -558,9 +558,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								if val.WARRANTY_END_DATE:
 									if val.WARRANTY_END_DATE >= getdate.CONTRACT_VALID_TO:
 										Trace.Write('QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID---'+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID))
-										update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+										update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'"
 								else:
-									update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+									update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'"
 									Trace.Write('no end date--')
 								Sql.RunQuery(update_warranty_enddate_alert)
 					#A055S000P01-4393 end
