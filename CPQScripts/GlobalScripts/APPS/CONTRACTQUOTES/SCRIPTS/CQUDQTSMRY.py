@@ -24,7 +24,7 @@ class ContractQuoteSummaryUpdate:
             Sql.RunQuery("""UPDATE SAQICO SET
                                             SAQICO.YEAR_{Year} = CASE  
                                                 WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) = {Count} 
-                                                    THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100                                                   
+                                                    THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
                                                 ELSE 0
                                             END
                                         FROM SAQICO (NOLOCK) 
@@ -39,13 +39,14 @@ class ContractQuoteSummaryUpdate:
     def _quote_item_lines_update(self):
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_PRICE = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {Discount}),
-                                        YEAR_1 = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {Discount}),
+                                        NET_PRICE = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1 = ISNULL(NET_PRICE,0) - (ISNULL(NET_PRICE,0) * {DecimalDiscount}),
                                         DISCOUNT = {Discount}
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id, 
-                                        Discount=decimal_discount if decimal_discount > 0 else 1)
+                                        DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
+                                        Discount=self.Discount)
                     )
         # Update Year2 to Year5 - Start
         self._update_year()
