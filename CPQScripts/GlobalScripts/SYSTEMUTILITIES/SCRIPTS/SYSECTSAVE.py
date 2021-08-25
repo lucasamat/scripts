@@ -547,7 +547,21 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
                     Sql.RunQuery(send_n_receive_acunt)
                 # A055S000P01-3324 start 
                 if TableName == 'SAQTMT':
-                    
+                    getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id")))
+                    get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'")
+			        update_warranty_enddate_alert = ''
+                    for val in get_warrent_dates:
+                        
+                        if val.WARRANTY_START_DATE:
+                            if val.WARRANTY_START_DATE >= getdate.CONTRACT_VALID_FROM:
+                                if val.WARRANTY_END_DATE:
+                                    if val.WARRANTY_END_DATE >= getdate.CONTRACT_VALID_TO:
+                                        Trace.Write('QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID---'+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID))
+                                        update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+                                else:
+                                    update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'"
+                                    Trace.Write('no end date--')
+                                Sql.RunQuery(update_warranty_enddate_alert)
                     getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id")))
                     if getdate:
                         billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'))
