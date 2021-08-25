@@ -3925,19 +3925,19 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
     if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
         Trace.Write("inside---") 
         cls = "eq(2)"
-        dbl_clk_function = ( 
-            'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
-            + str(table_ids)
-            + '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
-            + str(cls)
-            + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
-            + str(table_ids)
-            + '").on("check-all.bs.table", function (e) { var table = $("'
-            + str(table_ids)
-            + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });console.log("checked000092==")  '
-        ) 
+        # dbl_clk_function = ( 
+        #     'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+        #     + str(table_ids)
+        #     + '").on("dbl-click-cell.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+        #     + str(cls)
+        #     + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+        #     + str(table_ids)
+        #     + '").on("check-all.bs.table", function (e) { var table = $("'
+        #     + str(table_ids)
+        #     + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
+        # ) 
         #buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
-        dbl_clk_function += (	 
+        dbl_clk_function = (	 
             '$("'	
             + str(table_ids)	
             + '").on("dbl-click-cell.bs.table", onClickCell); $("'	
@@ -3946,9 +3946,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             + str(table_ids)	
             + '\ th.bs-checkbox div.th-inner").before(""); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'	
             + str(cls)	
-            + '").text());console.log("checked000093==")  data1 = $element.closest("tr").find("td:'	
+            + '").text());  data1 = $element.closest("tr").find("td:'	
             + str(cls)	
-            + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco);debugger;reco_id = reco_id; }else{console.log("checked000094==")reco_id=$element.closest("tr").find("td:'	
+            + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco);debugger;reco_id = reco_id; }else{reco_id=$element.closest("tr").find("td:'	
             + str(cls)	
             + '").text();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("reco_id1--",reco_id); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+' "+inp).closest("tr").find("td:nth-child(7)").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");$("'+str(table_ids)+' " +inp).closest("tr").find("td:nth-child(7)").addClass("light_yellow");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");} document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
             + str(table_ids)	
