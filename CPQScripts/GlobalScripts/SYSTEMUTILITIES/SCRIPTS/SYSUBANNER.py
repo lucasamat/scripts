@@ -2428,12 +2428,12 @@ def Related_Sub_Banner(
                                         get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
                                         get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
 
-                                        if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
+                                        if GetPRVLDR == get_SAQVDV == get_SAQFDV:
                                             get_quote = Quote.GetGlobal("contract_quote_record_id")
                                             getPRGBVD = SqlHelper.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
                                             get_SAQFGV = SqlHelper.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
                                             get_SAQEDV = SqlHelper.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                            if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID == get_SAQEDV.VALUEDRIVER_ID:
+                                            if getPRGBVD == get_SAQFGV == get_SAQEDVD:
                                                 Trace.Write('button found')
                                             else:
                                                 Trace.Write('No button-2423-')
