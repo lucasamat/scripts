@@ -2090,7 +2090,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(TreeParentParam)
 					+ "'"
 				)
-				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,CpqTableEntryId FROM SAQSCV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID = '"+ str(TreeSuperParentParam)+ "' AND GREENBOOK = '"+ str(TreeParam)+ "' AND FABLOCATION_ID = '"+ str(TreeParentParam)+ "' AND EQUIPMENT_ID = '"+str(GETDRISVD.EQUIPMENT_ID)+"'")
+				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,CpqTableEntryId FROM SAQSCV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID = '"+ str(TreeSuperParentParam)+ "' AND GREENBOOK = '"+ str(TreeParam)+ "' AND FABLOCATION_ID = '"+ str(TreeParentParam)+ "' AND EQUIPMENT_ID = '"+str(GETSEVC.EQUIPMENT_ID)+"'")
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQSCV")
 				if QTQSDVUPD:
