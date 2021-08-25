@@ -4396,7 +4396,7 @@ class SYLDRTLIST:
         Action_permission = {}
         Wh_API_NAME = ""
         Wh_OBJECT_NAME = ""
-        Query_Obj = start  = end = ""
+        Query_Obj =  ""
         billing_date_column = ''
         if obj_obj is not None:
             Columns = obj_obj.COLUMNS
