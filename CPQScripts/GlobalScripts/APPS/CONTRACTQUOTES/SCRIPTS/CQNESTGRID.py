@@ -3881,7 +3881,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
                 + str(qstring)
                 + '">'
                 + str(qstring)
-                + "</abbr></th>"
+                + "</abbr></th>" 
             )
         else:
             table_header += (
