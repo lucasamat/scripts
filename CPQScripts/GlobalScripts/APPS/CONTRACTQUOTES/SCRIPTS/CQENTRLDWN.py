@@ -832,7 +832,7 @@ try:
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 						
-						#Log.Info('updateentXML--fab2-'+str(updateentXML))
+						Log.Info('updateentXML--fab2-'+str(updateentXML))
 					
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 									
@@ -983,7 +983,7 @@ try:
 				
 
 		elif obj == 'SAQSGE' and GetXMLsecField:
-			if objectName == 'SAQSCE' and GetXMLsecField and ('Z0007','Z0016') not in get_serviceid:
+			if objectName == 'SAQSCE' and GetXMLsecField and 'Z0007' not in get_serviceid and 'Z0016' not in get_serviceid:
 				where_condition = SAQITMWhere.replace('A.','')
 				fab_val = where_cond.split('AND ')
 				where_condition += ' AND {} AND {} '.format( fab_val[len(fab_val)-1], fab_val[len(fab_val)-2]  )
