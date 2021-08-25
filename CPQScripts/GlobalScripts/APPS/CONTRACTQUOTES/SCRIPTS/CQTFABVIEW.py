@@ -2059,7 +2059,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
 				Sql.Upsert(tableInfo)
-				#Trace.Write("COVVD ADDED" + str(tablerow))
+				Trace.Write("COVVD ADDED" + str(tablerow))
 			GETVALSDV = Sql.GetFirst(
 				"SELECT * from PRSDVL where VALUEDRIVER_ID ='"
 				+ str(getdescription)
@@ -2142,7 +2142,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"ADDUSR_RECORD_ID": userId,
 					}
 				)
-				#Trace.Write(str(tablerow))
+				Trace.Write(str(tablerow))
 				tableInfos.AddRow(tablerow)
 				Sql.Upsert(tableInfos)
 		# COEFFICIENTS SUM at Level 3
