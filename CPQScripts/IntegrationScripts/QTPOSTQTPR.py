@@ -1,10 +1,3 @@
-# =========================================================================================================================================
-#   __script_name : QTPOSTQTPR.PY
-#   __script_description : THIS SCRIPT IS USED TO INSERT PRICING DATA IN SAQICO_INBOUND FROM SYINPL
-#   __primary_author__ : SURESH MUNIYANDI, BAJI
-#   __create_date : 2020-11-16
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
-# ==========================================================================================================================================
 import sys
 import datetime
 import clr
@@ -64,7 +57,7 @@ try:
 				Table_Names = rebuilt_data.keys()
 				Check_flag = 0
 				Qt_Id = ''
-
+				Saqico_Flag = 0
 				
 				for tn in Table_Names:
 					if tn in rebuilt_data:	
@@ -80,8 +73,11 @@ try:
 								
 								Qt_Id = str(record_dict['QUOTE_ID'])
 								Check_flag = 1
+								Saqicoquery = SqlHelper.GetFirst("select count(*) as cnt from SAQICO(Nolock) where QUOTE_ID = '"+str(Qt_Id)+"' ")
+								if Saqicoquery.cnt >0:
+									Saqico_Flag = 1
 								
-				if Check_flag == 1:  
+				if Check_flag == 1 and Saqico_Flag == 1:  
 
 					Emailinfo = SqlHelper.GetFirst("SELECT QUOTE_ID,SSCM,0 as REMANING,QUOTE_RECORD_ID FROM (SELECT SAQICO.QUOTE_ID,COUNT(DISTINCT SAQICO.EQUIPMENT_ID) AS SSCM,SAQICO.QUOTE_RECORD_ID  FROM SAQICO (NOLOCK) WHERE SAQICO.QUOTE_ID = '"+str(Qt_Id)+"' AND ISNULL(PRICING_STATUS,'')<> '' group by SAQICO.Quote_ID,SAQICO.QUOTE_RECORD_ID )SUB_SAQICO ")  
 					
@@ -479,7 +475,7 @@ try:
 					for Gbk in Greenbkquery:
 
 
-						Grnbkdataquery=SqlHelper.GetList("SELECT SAQICO.GREENBOOK,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.EQUIPMENT_ID,SAQICO.ASSEMBLY_ID,SAQICA.COST_MODULE_AVAILABLE,SAQICO.COST_MODULE_STATUS FROM SAQICO (NOLOCK) JOIN SAQICA (NOLOCK) ON SAQICO.QUOTE_ID = SAQICA.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICA.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SAQICA.EQUIPMENT_ID WHERE SAQICO.PRICING_STATUS='ON HOLD - COSTING' AND SAQICO.GREENBOOK= '"+str(Gbk.GREENBOOK)+"' AND SAQICO.QUOTE_ID = '"+str(Qt_Id)+"' ")
+						Grnbkdataquery=SqlHelper.GetList("SELECT SAQICO.GREENBOOK,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.EQUIPMENT_ID,SAQICA.ASSEMBLY_ID,SAQICA.COST_MODULE_AVAILABLE,SAQICA.COST_MODULE_STATUS FROM SAQICO (NOLOCK) JOIN SAQICA (NOLOCK) ON SAQICO.QUOTE_ID = SAQICA.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICA.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SAQICA.EQUIPMENT_ID WHERE SAQICO.PRICING_STATUS='ON HOLD - COSTING' AND SAQICO.GREENBOOK= '"+str(Gbk.GREENBOOK)+"' AND SAQICO.QUOTE_ID = '"+str(Qt_Id)+"' ")
 
 						tbl_info = ''
 						for gbkinfo in Grnbkdataquery:
@@ -587,7 +583,54 @@ try:
 							Async = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 					else: 
 						ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data Successfully Uploaded"}]})
-				
+				else:
+					if Saqico_Flag == 0:
+						Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #bd{color : 'black';} </style></head><body id = 'bd'>"
+
+						Table_start = "<p>Hi Team,<br><br>SSCM Pricing script having follwing SAQICO data error for following Quote Id ---  "+str(Qt_Id)+".<br><br></p><br>"
+						
+						Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
+						Table_info = ""     
+
+						Error_Info = Header + Table_start + Table_info + Table_End
+
+						LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
+
+						# Create new SmtpClient object
+						mailClient = SmtpClient()
+
+						# Set the host and port (eg. smtp.gmail.com)
+						mailClient.Host = "smtp.gmail.com"
+						mailClient.Port = 587
+						mailClient.EnableSsl = "true"
+
+						# Setup NetworkCredential
+						mailCred = NetworkCredential()
+						mailCred.UserName = str(LOGIN_CRE.Username)
+						mailCred.Password = str(LOGIN_CRE.Password)
+						mailClient.Credentials = mailCred
+
+						# Create two mail adresses, one for send from and the another for recipient
+						toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+						fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+
+						# Create new MailMessage object
+						msg = MailMessage(fromEmail, toEmail)
+
+						# Set message subject and body
+						msg.Subject = "SSCM to CPQ - Pricing SAQICO Error Notification"
+						msg.IsBodyHtml = True
+						msg.Body = Error_Info
+
+						# CC Emails 	
+						copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail4)
+						
+						copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail5)
+
+						# Send the message
+						mailClient.Send(msg)
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Session is running.Status is Inprogress"}]})
 		
@@ -636,6 +679,10 @@ except:
 	# CC Emails 	
 	copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 	msg.CC.Add(copyEmail4)
+
+	copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+	msg.CC.Add(copyEmail5)
+
 	
 	# Send the message
 	mailClient.Send(msg) 
