@@ -672,6 +672,12 @@ class Entitlements:
 										if attribute["author"] in ("Default","System"):
 											Trace.Write('524---658---'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
+									for attribute in prdvalue["values"]:									
+										attributevalues[str(prdvalue["id"])] = attribute["value"]
+										Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
+										if attribute["author"] in ("Default","System"):
+											#Trace.Write('524------'+str(prdvalue["id"]))
+											attributedefaultvalue.append(prdvalue["id"])
 			
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
@@ -954,7 +960,7 @@ class Entitlements:
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					Trace.Write("attributedefaultvalue----846---"+str(attributedefaultvalue))
+					Trace.Write("attributevalues----846---"+str(attributevalues))
 					Trace.Write('key---958---'+str(key))
 					if attributevalues.get(key) is None:
 						ent_disp_val = ''
