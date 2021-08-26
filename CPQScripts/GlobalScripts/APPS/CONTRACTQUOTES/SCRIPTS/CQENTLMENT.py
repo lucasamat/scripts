@@ -611,7 +611,7 @@ class Entitlements:
 						## replace fn &apos; added for A055S000P01-3158
 						Trace.Write("attrValue---612---"+str(attrValue))
 						Trace.Write("attrLabel---612---"+str(attrLabel))
-						Trace.Write("attrSysId---612---"+str(attrSysId))
+						Trace.Write(+str(attrLabel)+"----attrSysId---612---"+str(attrSysId)+'----'+str(attrValue))
 						if GetDefault:
 							pricemethodupdate = GetDefault.PRICE_METHOD
 						try:
