@@ -1086,7 +1086,8 @@ class SyncQuoteAndCustomTables:
                             service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
                             #Log.Info("SERVICE IDS-------->"+str(service_ids))
                         if payload_json.get('SAQFEQ'):
-                            for equipment_json_data in payload_json.get('SAQFEQ'):                        
+                            for equipment_json_data in payload_json.get('SAQFEQ'):       
+                                Log.Info(str(payload_json.get('SAQFEQ'))+" ======== equipment_json_data-------->"+str(equipment_json_data))                 
                                 if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
                                     equipment_data[equipment_json_data.get('FAB_LOCATION_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
                                 else:
