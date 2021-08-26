@@ -416,6 +416,7 @@ class Entitlements:
 		attributeReadonlylst = []
 		attributeEditonlylst = []
 		attributevalues = {}
+		attributevalues_textbox = []
 		attributedefaultvalue = []
 		dropdownallowlist_selected = []
 		where = pricemethodupdate = ""
@@ -538,6 +539,7 @@ class Entitlements:
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
+									attributevalues_textbox.append(str(prdvalue["id"])+'_'+str(attribute["value"])	)
 									Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 									if attribute["author"] in ("Default","System"):
 										#Trace.Write('524------'+str(prdvalue["id"]))
@@ -1474,7 +1476,7 @@ class Entitlements:
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
 		Trace.Write('attributeReadonlylst---'+str(attributeReadonlylst))
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
