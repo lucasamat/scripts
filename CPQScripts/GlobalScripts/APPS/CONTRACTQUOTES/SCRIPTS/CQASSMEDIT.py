@@ -81,7 +81,7 @@ def UpdateAssemblyLevel(Values):
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
-                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue)
+               update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
@@ -135,6 +135,7 @@ def ChildEntRequest(tableName,where,serviceId):
     response = Request_access_token()
     webclient = System.Net.WebClient()		
     Trace.Write(response["access_token"])
+    Trace.Write(serviceId)
     Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
     gettodaydate = datetime.now().strftime("%Y-%m-%d")
