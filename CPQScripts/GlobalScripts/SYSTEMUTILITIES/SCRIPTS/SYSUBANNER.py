@@ -1156,8 +1156,8 @@ def Related_Sub_Banner(
                         #else:
                             #get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                     Trace.Write("Fab_NODE_J")
-                    PrimaryLable = "Product Offering ID"
-                    PrimaryValue = str(TreeSuperParentParam)
+                    #PrimaryLable = "Product Offering ID"
+                    #PrimaryValue = str(TreeSuperParentParam)
                         #SecondLable = "Fab Location ID"
                         #SecondValue = str(TreeParentParam)
                         # ThirdLable = ""
