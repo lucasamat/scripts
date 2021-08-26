@@ -687,6 +687,7 @@ try:
 							get_cod = list(set(getcode))
 							get_value = str(get_val).replace("'", '"')
 							get_code = str(get_cod).replace("'", '"')
+
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -698,7 +699,7 @@ try:
 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 						
 						
 						cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr,value.IS_DEFAULT)
@@ -727,7 +728,7 @@ try:
 							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 						#Log.Info("get_calc_factor---"+str(get_calc_factor))
 
-						
+					get_code = value.ENTITLEMENT_VALUE_CODE
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -739,7 +740,7 @@ try:
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
 					
 			#Log.Info('updateentXML--ser-'+str(updateentXML))
 			where_condition = SAQITMWhere.replace('A.','')
@@ -778,6 +779,7 @@ try:
 								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 							
 							#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
+						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -789,7 +791,7 @@ try:
 								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
 					#Log.Info('updateentXML--fab1-'+str(updateentXML))
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 					
@@ -819,6 +821,7 @@ try:
 								if GetXMLfab:
 									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 								#Log.Info("get_calc_factor---"+str(get_calc_factor))
+							get_code = value.ENTITLEMENT_VALUE_CODE
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -830,7 +833,7 @@ try:
 								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 						
 						Log.Info('updateentXML--fab2-'+str(updateentXML))
 					
@@ -918,7 +921,7 @@ try:
 								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 
 							# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
 							# cpsmatc_incr = cpsmatchID
@@ -960,7 +963,7 @@ try:
 										get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 									Log.Info('get_value--fab-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
 						
-						
+						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -972,7 +975,7 @@ try:
 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 					
 					#Log.Info('updateentXML--fab2-'+str(updateentXML))
 				
@@ -1015,7 +1018,7 @@ try:
 								else:
 									get_calc_factor = get_value = GetXMLfab.ENTITLEMENT_DISPLAY_VALUE
 								#Log.Info('get_value--grn-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'---'+str(get_value_diff)+'---'+str(GetXMLfab.ENTITLEMENT_DISPLAY_VALUE))
-
+					get_code = value.ENTITLEMENT_VALUE_CODE
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1027,7 +1030,7 @@ try:
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 				Log.Info('updateentXML--grn1-'+str(updateentXML))
 				
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
@@ -1057,6 +1060,7 @@ try:
 							if GetXMLfab:
 								get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 							#Log.Info("get_calc_factor---"+str(get_calc_factor))
+						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1068,7 +1072,7 @@ try:
 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 					
 					#Log.Info('updateentXML--fab2-'+str(updateentXML))
 				
@@ -1154,7 +1158,7 @@ try:
 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE)
 
 						# cpsmatchID = ChildEntRequest(value.ENTITLEMENT_NAME,get_code,value.ENTITLEMENT_TYPE,get_value,newConfigurationid,cpsmatc_incr)
 						# cpsmatc_incr = cpsmatchID
@@ -1191,6 +1195,7 @@ try:
 									get_price_impact = 0.00
 								get_calc_factor = get_value = round(get_val,2)
 								#Log.Info('get_value--1-'+str(value.ENTITLEMENT_NAME)+'---'+str(get_value)+'--'+str(grnbk.cnt))
+						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1202,7 +1207,7 @@ try:
 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
 					
 					Log.Info('updateentXML--grn2-'+str(updateentXML))
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
@@ -1239,6 +1244,7 @@ try:
 						else:
 							get_price_impact = 0.00
 						get_calc_factor = get_value = round(get_val,2)
+				get_value = value.ENTITLEMENT_VALUE_CODE
 				updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -1250,7 +1256,7 @@ try:
 					<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 					<PRICE_METHOD>{pm}</PRICE_METHOD>
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in get_code and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code,ent_disp_val = get_value.replace("'","''") if  "'" in get_value else get_value,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 			Log.Info('updateentXML--equp-'+str(updateentXML))
 			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 			Log.Info("UpdateEntitlement_tst---"+" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition))
