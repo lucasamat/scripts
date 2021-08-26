@@ -967,15 +967,15 @@ class Entitlements:
 					Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
 					Trace.Write('key---958---'+str(key))
 					ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
-					if str((val).split("||")[2]) == 'FreeInputNoMatching':
+					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
 
-						if attributevalues.get(key) is None:
-							ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
-						else:
-							ent_disp_val = attributevalues.get(key)
+					# 	if attributevalues.get(key) is None:
+					# 		ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+					# 	else:
+					# 		ent_disp_val = attributevalues.get(key)
 
-							Trace.Write('attr_value--962---11'+str(ent_disp_val))
-					Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+					# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
+					# Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
