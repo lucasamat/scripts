@@ -538,6 +538,7 @@ class Entitlements:
 										#dropdownallow[prdvalue["id"]] = dropdownallowlist
 								for attribute in prdvalue["values"]:									
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
+									Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 									if attribute["author"] in ("Default","System"):
 										Trace.Write('524------'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
