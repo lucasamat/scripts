@@ -82,6 +82,12 @@ def UpdateAssemblyLevel(Values):
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
                 update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue)
+                if update_flag:
+                    ##Assembly level roll down
+                    userId = User.Id
+                    datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
+                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
+                    RollDown(where_cond)
         ##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
         else:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
