@@ -1186,7 +1186,7 @@ def Related_Sub_Banner(
                         # FifthLable = "Equipment"
                         # FifthValue = "ALL" 			
                 if str(ObjName) == 'SAQSFB':
-                    if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
+                    if (TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment") and TreeSuperParentParam != 'Add-On Products':
                         
                         get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
                         ThirdLable = "Product Offering Description"
@@ -1196,16 +1196,16 @@ def Related_Sub_Banner(
                         FifthLable = " Fab Location ID"
                         FifthValue = TreeParam
                     else:
-                        if TreeSuperParentParam == 'Add-On Products':
-                            getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeParentParam, Quote.GetGlobal("contract_quote_record_id")))
-                            TreeParentParam = getmainservice.SERVICE_ID
-                        get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
-                        ThirdLable = "Product Offering Description"
-                        ThirdValue = get_val.SERVICE_DESCRIPTION
-                        FourthLable = "Product Offering Type"
-                        FourthValue = TreeSuperParentParam 
-                        FifthLable = " Fab Location ID"
-                        FifthValue = TreeParam	
+                        if TreeSuperParentParam != 'Add-On Products':
+                            Trace.Write("1199---------")
+
+                            get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
+                            PrimaryLable = "Product Offering ID"
+                            PrimaryValue = getmainservice.SERVICE_ID
+                            SecondLable = "Product Offering Type"
+                            SecondValue = TreeSuperParentParam
+                            ThirdLable = " Fab Location ID"
+                            ThirdLable = TreeParam	
                 if (str(ObjName) == 'SAQSCO' and str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES"):
                     Trace.Write("check")
                     get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
@@ -1337,16 +1337,6 @@ def Related_Sub_Banner(
                 elif str(ObjName) == 'ACAPTF' and str(TreeParentParam) == 'Approval Chain Steps':					
                     PrimaryLable = ListKey[0]
                     PrimaryValue = PrimaryValue
-                elif str(ObjName) == "SAQSGB" and TreeSuperParentParam == "Add-On Products":
-                    getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeSuperParentParam, Quote.GetGlobal("contract_quote_record_id")))
-                    TreeSuperParentParam = getmainservice.SERVICE_ID
-                    get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
-                    ThirdLable = "Product Offering Description"
-                    ThirdValue = get_val.SERVICE_DESCRIPTION
-                    FourthLable = "Product Offering Type"
-                    FourthValue = TreeSuperParentParam 
-                    FifthLable = " Fab Location ID"
-                    FifthValue = "All"
                 # SecondLable = "Approvers"
                 # SecondValue = "All"
                 # elif TopSuperParentParam == "Quote Items" and ObjName == "SAQICO" and CurrentRecordId == 'SAQICOJ':
@@ -1579,8 +1569,12 @@ def Related_Sub_Banner(
         #     SixthValue = ""
     #elif str(TreeParentParam) == "Complementary Products" or str(TreeParentParam) == "Comprehensive Services":
         #Trace.Write('-----------'+str(TreeParentParam)+str(TreeParam))
-    elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":		
-        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+    elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":	
+        try:
+            getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+            desc = getService.SERVICE_DESCRIPTION
+        except:
+            desc = ""
         if (subTabName == "Equipment Details" or subTabName == "Equipment Assemblies" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers"):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
@@ -1594,11 +1588,11 @@ def Related_Sub_Banner(
             FifthValue = str(EquipmentId)
             SixthLable = "Serial Number"
             SixthValue = str(SerialNumber)
-        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details"):			
+        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details"):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
-            SecondValue = getService.SERVICE_DESCRIPTION
+            SecondValue = desc
             ThirdLable = "Fab Location ID"
             ThirdValue = str(TreeParentParam)
             FourthLable = "Greenbook"
