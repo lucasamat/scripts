@@ -3929,7 +3929,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
     ### editablity in Grid 
     Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
     if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
-        Trace.Write("inside---") 
+        Trace.Write("inside---")  
         cls = "eq(2)"
         # dbl_clk_function = ( 
         #     'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
