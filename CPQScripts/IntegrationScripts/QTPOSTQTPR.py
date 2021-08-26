@@ -481,15 +481,15 @@ try:
 					for Gbk in Greenbkquery:
 
 
-						Grnbkdataquery=SqlHelper.GetList("SELECT SAQICO.GREENBOOK,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.EQUIPMENT_ID,SAQICA.ASSEMBLY_ID,SAQICA.COST_MODULE_AVAILABLE,SAQICA.COST_MODULE_STATUS FROM SAQICO (NOLOCK) JOIN SAQICA (NOLOCK) ON SAQICO.QUOTE_ID = SAQICA.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICA.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SAQICA.EQUIPMENT_ID WHERE SAQICO.PRICING_STATUS='ON HOLD - COSTING' AND SAQICO.GREENBOOK= '"+str(Gbk.GREENBOOK)+"' AND SAQICO.QUOTE_ID = '"+str(Qt_Id)+"' ")
+						Grnbkdataquery=SqlHelper.GetList("SELECT SAQICO.GREENBOOK,SAQICO.QUOTE_ID,SAQICO.SERVICE_ID,SAQICO.EQUIPMENT_ID,SAQICA.ASSEMBLY_ID,SAQICA.COST_MODULE_AVAILABLE,SAQICA.COST_MODULE_STATUS FROM SAQICO (NOLOCK) JOIN SAQICA (NOLOCK) ON SAQICO.QUOTE_ID = SAQICA.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICA.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SAQICA.EQUIPMENT_ID WHERE SAQICO.PRICING_STATUS='ON HOLD - COSTING' AND SAQICO.GREENBOOK= '"+str(Gbk.GREENBOOK)+"' AND SAQICO.QUOTE_ID = '"+str(Qt_Id)+"' AND  SAQICA.COST_MODULE_AVAILABLE= 'UNAVAILABLE' ")
 
 						tbl_info = ''
 						for gbkinfo in Grnbkdataquery:
-							tbl_info = tbl_info+"<tr><td >"+str(gbkinfo.QUOTE_ID)+"</td><td>"+str(gbkinfo.GREENBOOK)+"</td ><td>"+str(gbkinfo.SERVICE_ID)+"</td><td>"+str(gbkinfo.EQUIPMENT_ID)+"</td><td>"+str(gbkinfo.ASSEMBLY_ID)+"</td><td>"+str(gbkinfo.COST_MODULE_AVAILABLE)+"</td><td>"+str(gbkinfo.COST_MODULE_STATUS)+"</td></tr>"
+							tbl_info = tbl_info+"<tr><td>"+str(gbkinfo.GREENBOOK)+"</td ><td>"+str(gbkinfo.SERVICE_ID)+"</td><td>"+str(gbkinfo.EQUIPMENT_ID)+"</td><td>"+str(gbkinfo.ASSEMBLY_ID)+"</td><td>"+str(gbkinfo.COST_MODULE_AVAILABLE)+"</td><td>"+str(gbkinfo.COST_MODULE_STATUS)+"</td></tr>"
 						if len(tbl_info) > 0:
 							Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';} </style></head><body id = 'bd'>"
 
-							Table_start = "<p>Hi Team,<br><br>ON HOLD - COSTING error mail has been completed in CPQ, for the below Quote ID.</p><table class='table table-bordered'><tr><th id = 'grey'>Quote ID</th><th id = 'grey'>Green Book</th><th id = 'grey'>Service ID</th><th id = 'grey'>Equipment ID</th><th id = 'grey'>Assembly ID</th><th id = 'grey'>Cost Module Available</th><th id = 'grey'>Cost Module Status</th></tr>"+str(tbl_info)
+							Table_start = "<p>Hi Team,<br><br>This Quote "+str(Qt_Id)+"  is placed on ON HOLD COSTING status for the below cost information pending from SSCM system.</p><table class='table table-bordered'><tr><th id = 'grey'>Green Book</th><th id = 'grey'>Service ID</th><th id = 'grey'>Equipment ID</th><th id = 'grey'>Assembly ID</th><th id = 'grey'>Cost Module Available</th><th id = 'grey'>Cost Module Status</th></tr>"+str(tbl_info)
 
 							Table_info = ""
 							Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
@@ -700,6 +700,8 @@ except:
 	copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
 	msg.CC.Add(copyEmail5)
 
+	copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+	msg.CC.Add(copyEmail6)
 	
 	# Send the message
 	mailClient.Send(msg) 
