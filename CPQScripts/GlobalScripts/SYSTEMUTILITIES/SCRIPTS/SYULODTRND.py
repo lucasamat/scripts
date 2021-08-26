@@ -3468,10 +3468,10 @@ def EntitlementTreeViewHTMLDetail(
 								#Trace.Write("dtype----"+str(val.ENTITLEMENT_TYPE)+str(attrSysId))
 								if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
-									Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
+									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
-								Trace.Write("@3323-----"+str(sec_str_imt))
+									Trace.Write("@3323-----"+str(attrSysId))
 								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
 								#new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
@@ -3483,7 +3483,7 @@ def EntitlementTreeViewHTMLDetail(
 							if attrSysId not in attributesdisallowedlst and attrSysId:
 								attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
-							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
