@@ -240,13 +240,7 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName != 'SAQTBP':
 		sec_str += ' <div class="col-md-12"   id="alert_msg" style="display: none;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  </label></div></div></div>'
 
-	if str(ObjectName) == "SAQTMT" and SubtabName == "Idling Attributes":
-		Trace.Write('ele---3')
-		editclick = "IdleAttredit(this)"
-		cancelclick = "QuoteinformationCancel()"
-		saveclick = "QuoteinformationSave()"	
-
-	elif str(ObjectName) == "SAQTMT" or  str(ObjectName) == "ACAPCH":
+	if str(ObjectName) == "SAQTMT" or  str(ObjectName) == "ACAPCH":
 		editclick = "QuoteinformationEDIT(this)"
 		cancelclick = "QuoteinformationCancel()"
 		saveclick = "QuoteinformationSave()"
