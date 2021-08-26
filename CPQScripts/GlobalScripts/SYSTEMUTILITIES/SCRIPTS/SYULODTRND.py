@@ -3506,7 +3506,8 @@ def EntitlementTreeViewHTMLDetail(
 									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
 									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
 									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
-								VAR1 = sec_str1 = selected_option = ""
+								VAR1 = sec_str1 =  ""
+								selected_option = "Select"
 								if STDVALUES:
 									if attributevalues.get(attrSysId) is not None:
 										select_option = 'selected'
@@ -3532,15 +3533,15 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 												+ "</option>"
 											)
-											sec_str1 += (
-												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-												+ str(attrSysId)
-												+ '" type="text"  data-content ="'
-												+ str(attrSysId)
-												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
-												+ str(VAR1)
-												+ "</select>"
-											)
+											# sec_str1 += (
+											# 	'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+											# 	+ str(attrSysId)
+											# 	+ '" type="text"  data-content ="'
+											# 	+ str(attrSysId)
+											# 	+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+											# 	+ str(VAR1)
+											# 	+ "</select>"
+											# )
 										except:
 											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
 											VAR1 += (
@@ -3549,13 +3550,13 @@ def EntitlementTreeViewHTMLDetail(
 												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
 											)
 											
-											sec_str1 += (
-												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-												+ str(attrSysId)
-												+ '" type="text"  data-content ="'
-												+ str(attrSysId)
-												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
-											)
+										sec_str1 += (
+											'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+										)
 
 								
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
