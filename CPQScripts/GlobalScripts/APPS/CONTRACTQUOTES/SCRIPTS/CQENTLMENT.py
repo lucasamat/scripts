@@ -1736,10 +1736,10 @@ class Entitlements:
 			Log.Info("Newdict----748--> "+str(Newdict))
 			AttributeList = ','.join(map(int, Newdict))
 		Log.Info("Attr List-> "+str(AttributeList))
-		try:
-			Getprevdict = eval(Param.getprevdict)
-		except:
-			Getprevdict = {}
+		# try:
+		# 	Getprevdict = eval(Param.getprevdict)
+		# except:
+		# 	Getprevdict = {}
 		###tool relocation receiving entitilement starts
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Products' or self.treetopsuperparentparam == 'Complementary Products' or self.treesupertopparentparam == 'Complementary Products' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
@@ -1800,11 +1800,11 @@ class Entitlements:
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId, serviceId)
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			Trace.Write("where---"+str(where))
-			Trace.Write("Getprevdict---"+str(Getprevdict))
+			#Trace.Write("Getprevdict---"+str(Getprevdict))
 			Trace.Write("tableName---"+str(tableName))
-			Getprevdict = str(Getprevdict).replace("&","&#38;")
+			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			try:			
-				CQENTIFLOW.iflow_entitlement(tableName,where,Getprevdict)
+				CQENTIFLOW.iflow_entitlement(tableName,where)
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
