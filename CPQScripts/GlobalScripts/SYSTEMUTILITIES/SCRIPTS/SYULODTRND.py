@@ -3176,6 +3176,7 @@ def EntitlementTreeViewHTMLDetail(
 										VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 										for value in STDVALUES:
 											if value.SYSTEM_ID in dropdowndisallowlist:
+												Trace.Write('3179-----'+str(value.SYSTEM_ID))
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
