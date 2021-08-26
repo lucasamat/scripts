@@ -707,6 +707,7 @@ try:
 						
 
 			else:
+				Log.Info('service level-----'+str(get_serviceid))
 				updateentXML = ""
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
@@ -755,7 +756,7 @@ try:
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			if objectName == 'SAQTSE' and GetXMLsecField:
-				#Log.Info('fab_dict----'+str(grnbk_dict))
+				Log.Info('fab if level-----'+str(get_serviceid))
 				get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
 				#updateentXML = ""
 				for fab in get_value_query:
@@ -1172,6 +1173,7 @@ try:
 			
 
 			else:
+				Log.Info('grn else level-----'+str(get_serviceid))
 				#Log.Info('grnbk_dict----'+str(grnbk_dict))
 				#where_condition = where_cond 
 				get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
@@ -1215,6 +1217,7 @@ try:
 					Sql.RunQuery(UpdateEntitlement)
 
 		elif obj == 'SAQSCE' and GetXMLsecField:
+			Log.Info('equp level-----'+str(get_serviceid))
 			# if objectName == 'SAQSGE':
 			# 	get_fab_query = Sql.GetList("select FABLOCATION_ID,count(*) as cnt from SAQSGB  {} group by FABLOCATION_ID".format(where_cond))
 			# 	for fab in get_fab_query:
