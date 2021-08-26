@@ -485,11 +485,11 @@ try:
 
 						tbl_info = ''
 						for gbkinfo in Grnbkdataquery:
-							tbl_info = tbl_info+"<tr><td>"+str(gbkinfo.GREENBOOK)+"</td ><td>"+str(gbkinfo.SERVICE_ID)+"</td><td>"+str(gbkinfo.EQUIPMENT_ID)+"</td><td>"+str(gbkinfo.ASSEMBLY_ID)+"</td><td>"+str(gbkinfo.COST_MODULE_AVAILABLE)+"</td><td>"+str(gbkinfo.COST_MODULE_STATUS)+"</td></tr>"
+							tbl_info = tbl_info+"<tr><td>"+str(gbkinfo.SERVICE_ID)+"</td><td>"+str(gbkinfo.GREENBOOK)+"</td ><td>"+str(gbkinfo.EQUIPMENT_ID)+"</td><td>"+str(gbkinfo.ASSEMBLY_ID)+"</td><td>"+str(gbkinfo.COST_MODULE_AVAILABLE)+"</td><td>"+str(gbkinfo.COST_MODULE_STATUS)+"</td></tr>"
 						if len(tbl_info) > 0:
 							Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';} </style></head><body id = 'bd'>"
 
-							Table_start = "<p>Hi Team,<br><br>This Quote "+str(Qt_Id)+"  is placed on ON HOLD COSTING status for the below cost information pending from SSCM system.</p><table class='table table-bordered'><tr><th id = 'grey'>Green Book</th><th id = 'grey'>Service ID</th><th id = 'grey'>Equipment ID</th><th id = 'grey'>Assembly ID</th><th id = 'grey'>Cost Module Available</th><th id = 'grey'>Cost Module Status</th></tr>"+str(tbl_info)
+							Table_start = "<p>Hi Team,<br><br>This Quote "+str(Qt_Id)+"  is placed on ON HOLD COSTING status for the below cost information pending from SSCM system.</p><table class='table table-bordered'><tr><th id = 'grey'>Service ID</th><th id = 'grey'>Green Book</th><th id = 'grey'>Equipment ID</th><th id = 'grey'>Assembly ID</th><th id = 'grey'>Cost Module Available</th><th id = 'grey'>Cost Module Status</th></tr>"+str(tbl_info)
 
 							Table_info = ""
 							Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
@@ -522,6 +522,14 @@ try:
 							
 							fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")	
 
+							# Create new MailMessage object
+							msg = MailMessage(fromEmail, toEmail)							
+
+							# Set message subject and body
+							msg.Subject = "ON HOLD - COSTING- AMAT CPQ QA"
+							msg.IsBodyHtml = True
+							msg.Body = Error_Info
+
 							#Comon CC mails
 							copyEmail = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail)					
@@ -529,20 +537,11 @@ try:
 							copyEmail1 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail1)
 
-
-							# Create new MailMessage object
-							msg = MailMessage(fromEmail, toEmail)
-
-							# Set message subject and body
-							msg.Subject = "ON HOLD - COSTING- AMAT CPQ QA"
-							msg.IsBodyHtml = True
-							msg.Body = Error_Info
-							Log.Info("156156 UserEmail --->"+str(UserEmail))
-							# CC Emails	
+							# Bcc Emails	
 							if len(UserEmail) > 0:
 								for emalinfo in  UserEmail:
 								    copyEmail = MailAddress(emalinfo)
-								    msg.CC.Add(copyEmail)
+								    msg.Bcc.Add(copyEmail)
 
 							# Send the message
 							mailClient.Send(msg)
