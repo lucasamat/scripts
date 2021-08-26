@@ -611,7 +611,7 @@ class Entitlements:
 						GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 						## replace fn &apos; added for A055S000P01-3158
 						Trace.Write("attrValue---612---"+str(attrValue))
-						Trace.Write("attrLabel---612---"+str(attrLabel))
+						Trace.Write("DType---612---"+str(DType))
 						Trace.Write(str(attrLabel)+"----attrSysId---612---"+str(attrSysId)+'----'+str(attrValue))
 						if GetDefault:
 							pricemethodupdate = GetDefault.PRICE_METHOD
@@ -628,8 +628,13 @@ class Entitlements:
 							Trace.Write('except'+str(e))
 							ent_disp_val = 	attrValue
 							ent_val_code = attrValue
-						
-						
+						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(attr_value)+'--631---'+str(attrLabel))
+						if attributevalues.get(attrSysId) is None:
+							attr_value = ''
+						else:
+							attr_value = attributevalues.get(attrSysId)
+							Trace.Write('attr_value--636------11'+str(attr_value))
+						Trace.Write('attr_value'+str(attr_value)+'-637--'+str(attrSysId))
 
 						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
