@@ -1550,7 +1550,7 @@ def CommonTreeViewHTMLDetail(
 						)
 
 				elif data_type == "PICKLIST" and MODE == "EDIT":					
-					if str(ObjectName) == 'ACACSA':						
+					if str(ObjectName) == 'ACACSA' or (str(ObjectName)== "SAQTMT" and SubtabName == "Idling Attributes"):						
 						sec_str += "<td>"
 						sec_str += (
 							'<select id="'
