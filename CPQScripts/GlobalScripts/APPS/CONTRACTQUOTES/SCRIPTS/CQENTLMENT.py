@@ -1105,7 +1105,7 @@ class Entitlements:
 									get_curr = curr
 									Trace.Write("ENTCOST4 = "+str(get_cost_impact))
 							except:
-								pass
+								get_curr =''
 							
 							updatexml  = """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
