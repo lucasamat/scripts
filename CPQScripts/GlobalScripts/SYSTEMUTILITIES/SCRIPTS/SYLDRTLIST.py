@@ -4421,12 +4421,15 @@ class SYLDRTLIST:
                 if SubTab:
                     end = int(SubTab.split(' ')[-1]) * 12
                     start = end - 12 + 1
-                    
+                else:
+                    end =""
+                    start =""
                 item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
                                                         GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
                                                             contract_quote_record_id, start, end))
+                
                 if item_billing_plans_obj:
                     billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
                     billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])                    
