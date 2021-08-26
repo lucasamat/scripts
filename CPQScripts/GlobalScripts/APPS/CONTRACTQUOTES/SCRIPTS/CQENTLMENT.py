@@ -540,7 +540,7 @@ class Entitlements:
 									attributevalues[str(prdvalue["id"])] = attribute["value"]
 									Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 									if attribute["author"] in ("Default","System"):
-										Trace.Write('524------'+str(prdvalue["id"]))
+										#Trace.Write('524------'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
 								
 									# if prdvalue["id"] in characteristics_attr_values:
@@ -651,7 +651,7 @@ class Entitlements:
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
 
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
-						Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
+						#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
 							
 			#Sql.RunQuery(UpdateEntitlement)	
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -967,7 +967,7 @@ class Entitlements:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = str((val).split("||")[0]).replace("'","&apos;"),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
-					#Trace.Write("updateentXML---"+str(updateentXML))
+					Trace.Write("updateentXML-970------"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
