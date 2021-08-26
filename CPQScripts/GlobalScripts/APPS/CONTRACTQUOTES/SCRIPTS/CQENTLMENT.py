@@ -609,6 +609,9 @@ class Entitlements:
 						attrValueSysId = attributevalues.get(attrSysId)	
 						GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 						## replace fn &apos; added for A055S000P01-3158
+						Trace.Write("attrValue---612---"+str(attrValue))
+						Trace.Write("attrLabel---612---"+str(attrLabel))
+						Trace.Write("attrSysId---612---"+str(attrSysId))
 						if GetDefault:
 							pricemethodupdate = GetDefault.PRICE_METHOD
 						try:
