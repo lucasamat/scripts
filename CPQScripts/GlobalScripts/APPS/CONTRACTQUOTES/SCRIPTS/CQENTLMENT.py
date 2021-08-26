@@ -955,10 +955,11 @@ class Entitlements:
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
 					Trace.Write("attributedefaultvalue----846---"+str(attributedefaultvalue))
-					if attributevalues.get(attrSysId) is None:
+					Trace.Write('key---958---'+str(key))
+					if attributevalues.get(key) is None:
 						ent_disp_val = ''
 					else:
-						ent_disp_val = attributevalues.get(attrSysId)
+						ent_disp_val = attributevalues.get(key)
 						Trace.Write('attr_value--962---11'+str(ent_disp_val))
 					Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(attrSysId))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
