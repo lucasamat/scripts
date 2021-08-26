@@ -7584,6 +7584,7 @@ class SYLDRTLIST:
                     Trace.Write("7105")
                     Trace.Write("select_obj_str+++BILLING"+str(select_obj_str))    
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]")
+                    select_obj_str = re.sub(',BILLING_AMOUNT,[^>]*?QUOTE_RECORD_ID',',BILLING_AMOUNT,QUOTE_RECORD_ID',select_obj_str)  
                     Qury_str = (
                         "select top "
                         + str(PerPage)
