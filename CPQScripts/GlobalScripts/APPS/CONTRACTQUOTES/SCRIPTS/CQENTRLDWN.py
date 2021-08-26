@@ -386,10 +386,10 @@ def update_entitlement_price_impact(where_condition=None):
 	return True
 
 def sendEmail(level):
-	#Log.Info('284-----entitlement email started-----')
+	Log.Info('284-----entitlement email started-----')
 	getQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quote))
 	getEmail = Sql.GetFirst("SELECT email from users where id={}".format(userid))
-	#Log.Info("SELECT email from users where id='{}'".format(userid))
+	Log.Info("SELECT email from users where id='{}'".format(userid))
 	userEmail = ""
 	userEmail = str(getEmail.email)
 	Header = "<!DOCTYPE html><html><head><style>h4{font-weight:normal; font-family:sans-serif;} table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black';}</style> </head> <body><h4>Hi, <br> <br>The Entitlement settings have been applied to the equipment in the following quote:</br></h4>"
