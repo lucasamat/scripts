@@ -3533,7 +3533,16 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 												+ "</option>"
 											)
-											sec_str1 += (
+									
+										except:
+											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
+											VAR1 += (
+												'<option '
+												+ str(disallow_style)
+												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
+											)
+									try:
+										sec_str1 += (
 												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
 												+ str(attrSysId)
 												+ '" type="text"  data-content ="'
@@ -3542,21 +3551,14 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(VAR1)
 												+ "</select>"
 											)
-										except:
-											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
-											VAR1 += (
-												'<option '
-												+ str(disallow_style)
-												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
-											)
-											
-											sec_str1 += (
-												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-												+ str(attrSysId)
-												+ '" type="text"  data-content ="'
-												+ str(attrSysId)
-												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
-											)
+									except:		
+										sec_str1 += (
+											'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+										)
 
 								
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
