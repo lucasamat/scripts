@@ -1196,7 +1196,8 @@ def Related_Sub_Banner(
                         FifthLable = " Fab Location ID"
                         FifthValue = TreeParam
                     else:
-                    	if TreeSuperParentParam == 'Add-On Products':
+                    	getmainservice=""
+                        if TreeSuperParentParam == 'Add-On Products':
                             getmainservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQSAO WHERE ADNPRD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(TreeParentParam, Quote.GetGlobal("contract_quote_record_id")))
                             TreeParentParam = getmainservice.SERVICE_ID
                         get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
