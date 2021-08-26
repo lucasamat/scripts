@@ -1244,7 +1244,7 @@ try:
 						else:
 							get_price_impact = 0.00
 						get_calc_factor = get_value = round(get_val,2)
-				get_value = value.ENTITLEMENT_VALUE_CODE
+				get_code = value.ENTITLEMENT_VALUE_CODE
 				updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
