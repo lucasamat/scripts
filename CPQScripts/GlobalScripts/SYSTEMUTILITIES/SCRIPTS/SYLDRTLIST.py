@@ -7582,7 +7582,7 @@ class SYLDRTLIST:
                 
                 if str(Qury_str) == "" and str(QuryCount_str) == "": 
                     Trace.Write("7105")
-                        
+                    Trace.Write("select_obj_str+++BILLING"+str(select_obj_str))    
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]")
                     Qury_str = (
                         "select top "
