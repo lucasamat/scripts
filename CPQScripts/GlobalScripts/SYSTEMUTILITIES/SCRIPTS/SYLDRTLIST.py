@@ -4418,12 +4418,11 @@ class SYLDRTLIST:
                 contract_quote_record_id = ''    
             
             if Wh_OBJECT_NAME == 'SAQIBP':
+                Trace.Write('SubTab--ww11--'+str(SubTab))
                 if SubTab:
+                    Trace.Write('SubTab--ww--'+str(SubTab))
                     end = int(SubTab.split(' ')[-1]) * 12
                     start = end - 12 + 1
-                else:
-                    end =""
-                    start =""
                 item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
