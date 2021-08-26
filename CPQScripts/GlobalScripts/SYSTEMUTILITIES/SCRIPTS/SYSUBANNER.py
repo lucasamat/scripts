@@ -1149,20 +1149,19 @@ def Related_Sub_Banner(
                         # FifthValue = "ALL" 
                 if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
                     Trace.Write("Fab2333")
-                    Trace.Write("REQ - FAB")
-                    #if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
-                        #if TreeParam == "Receiving Equipment":			
-                            #get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
-                        #else:
-                            #get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
-                    Trace.Write("Fab_NODE_J")
-                    #PrimaryLable = "Product Offering ID"
-                    #PrimaryValue = str(TreeSuperParentParam)
-                        #SecondLable = "Fab Location ID"
-                        #SecondValue = str(TreeParentParam)
+                    if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
+                        if TreeParam == "Receiving Equipment":			
+                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
+                        else:
+                            get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+                        Trace.Write("Fab_NODE_J")
+                        PrimaryLable = "Product Offering ID"
+                        PrimaryValue = str(TreeSuperParentParam)
+                        SecondLable = "Fab Location ID"
+                        SecondValue = str(TreeParentParam)
                         # ThirdLable = ""
                         # ThirdValue = ""
-                    if subTabName == "Equipment Fab Value Drivers":
+                    elif subTabName == "Equipment Fab Value Drivers":
                         get_val = Sql.GetFirst(" select FABLOCATION_ID,FABLOCATION_NAME,EQUIPMENT_ID,SERIAL_NUMBER from SAQFEQ where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                         PrimaryLable = "Fab Location ID "
                         PrimaryValue = get_val.FABLOCATION_ID
@@ -2417,7 +2416,7 @@ def Related_Sub_Banner(
                         fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
                         Trace.Write('2409----'+str(TreeParam))
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
-                        #A055S000P01-7512 Start Enable/Disable the “PRICE” button in Quote items based on Required fields validation
+                        #A055S000P01-7512 Start Enable/Disable the â€œPRICEâ€ button in Quote items based on Required fields validation
                         if str(TreeParam) == "Quote Items":
                             getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                             getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
@@ -2449,7 +2448,7 @@ def Related_Sub_Banner(
                                         Trace.Write('No button-2423-')
                                 else:
                                     Trace.Write('No button--')
-                        #A055S000P01-7512 end Enable/Disable the “PRICE” button in Quote items based on Required fields validation
+                        #A055S000P01-7512 end Enable/Disable the â€œPRICEâ€ button in Quote items based on Required fields validation
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts--2411--")
                             if 'UPDATE LINES' in btn:
