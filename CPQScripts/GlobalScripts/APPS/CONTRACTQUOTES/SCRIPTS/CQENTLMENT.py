@@ -973,7 +973,6 @@ class Entitlements:
 							ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
 						else:
 							ent_disp_val = attributevalues.get(key)
-							if ent_disp_val:
 
 							Trace.Write('attr_value--962---11'+str(ent_disp_val))
 					Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
