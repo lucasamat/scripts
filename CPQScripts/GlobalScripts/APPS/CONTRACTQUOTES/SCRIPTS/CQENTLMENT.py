@@ -628,13 +628,13 @@ class Entitlements:
 							Trace.Write('except'+str(e))
 							ent_disp_val = 	attrValue
 							ent_val_code = attrValue
-						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(attr_value)+'--631---'+str(attrLabel))
+						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(ent_disp_val)+'--631---'+str(attrLabel))
 						if attributevalues.get(attrSysId) is None:
-							attr_value = ''
+							ent_disp_val = ''
 						else:
-							attr_value = attributevalues.get(attrSysId)
-							Trace.Write('attr_value--636------11'+str(attr_value))
-						Trace.Write('attr_value'+str(attr_value)+'-637--'+str(attrSysId))
+							ent_disp_val = attributevalues.get(attrSysId)
+							Trace.Write('attr_value--636------11'+str(ent_disp_val))
+						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(attrSysId))
 
 						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
