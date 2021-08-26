@@ -192,7 +192,7 @@ def Related_Sub_Banner(
         Trace.Write("Multi buttons--> "+str(multi_buttons))
             
             # Getting Dynamic buttons for secondary banner -  Ends
-    
+    getmainservice =""
     if TreeParam == "Quote Information" or TreeParam == "Quote Preview":		
         if ObjName == 'SAQTIP' and subTabName == 'Detail':
             ObjName = "SAQTIP"
