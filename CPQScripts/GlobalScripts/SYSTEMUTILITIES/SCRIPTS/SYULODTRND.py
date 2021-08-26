@@ -3106,7 +3106,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						attribute_Name_list.append(attrSysId)
 						DType = attribute['attribute_dtype']
-						Trace.Write("attrValue_else_j "+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+						Trace.Write("attrValue_else_j --3109---"+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
 							if attrSysId in attributedefaultvalue:
 								add_style = "display:none;color:#1B78D2"
@@ -3142,14 +3142,14 @@ def EntitlementTreeViewHTMLDetail(
 							for val in GetXMLsecField:
 								userselectedvalue.append(val.ENTITLEMENT_DESCRIPTION)
 								#getnameentallowed.append(val.ENTITLEMENT_NAME)
-								Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
+								#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 								# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 								#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 								#Trace.Write("dtype-----before if"+str(DType))
 								
 								if DType == "Drop Down" :
 									
-									
+									Trace.Write('3152------'+str(val.ENTITLEMENT_NAME))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3226,7 +3226,7 @@ def EntitlementTreeViewHTMLDetail(
 										#Trace.Write("curr = "+str(curr))
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-											Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
+											#Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
@@ -3482,13 +3482,13 @@ def EntitlementTreeViewHTMLDetail(
 							if attrSysId not in attributesdisallowedlst and attrSysId:
 								attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
-							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
 							# 	add_style = ""
 							if DType == "Drop Down":
-								#Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+								Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3559,7 +3559,7 @@ def EntitlementTreeViewHTMLDetail(
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 								#sec_str += "</select></td>"
 						
-							if DType == "Check Box":
+							elif DType == "Check Box":
 								#Trace.Write('attrSysId--2324---'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
