@@ -2304,23 +2304,23 @@ def Related_Sub_Banner(
                 if getsaletypeloc:
                     # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
                     Trace.Write("multi_buttons"+str(len(multi_buttons)))
-                    if len(multi_buttons) > 0:						
-                        if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED" and getsaletypeloc.SALE_TYPE != "TOOL RELOCATION":
+                    # if len(multi_buttons) > 0:						
+                        # if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED" and getsaletypeloc.SALE_TYPE != "TOOL RELOCATION":
                             # Appending Price button in Quote Items Node
-                            Trace.Write("inside---> quote item"+str(multi_buttons))
-                            for btn in multi_buttons:
-                                if "PRICE" in btn:
-                                    sec_rel_sub_bnr += (btn)
+                            # Trace.Write("inside---> quote item"+str(multi_buttons))
+                            # for btn in multi_buttons:
+                            #     if "PRICE" in btn:
+                            #         sec_rel_sub_bnr += (btn)
                             # Appending Price button in Quote Items Node
 
-                            sec_rel_sub_bnr += (
-                                '<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
-                            )    
-                        if TreeParam == "Quote Items":
-                            # Appending REFRESH button in Quote Items Node
-                            for btn in multi_buttons:
-                                if "REFRESH" in btn:
-                                    sec_rel_sub_bnr += (btn)
+                        #     sec_rel_sub_bnr += (
+                        #         '<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
+                        #     )    
+                        # if TreeParam == "Quote Items":
+                        #     # Appending REFRESH button in Quote Items Node
+                        #     for btn in multi_buttons:
+                        #         if "REFRESH" in btn:
+                        #             sec_rel_sub_bnr += (btn)
                         # Appending REFRESH button in Quote Items Node
 
                         # sec_rel_sub_bnr += (
