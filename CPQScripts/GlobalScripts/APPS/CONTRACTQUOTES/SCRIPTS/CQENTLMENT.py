@@ -960,7 +960,7 @@ class Entitlements:
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					Trace.Write("attributevalues----846---"+str(attributevalues))
+					Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
 					Trace.Write('key---958---'+str(key))
 					if attributevalues.get(key) is None:
 						ent_disp_val = ''
