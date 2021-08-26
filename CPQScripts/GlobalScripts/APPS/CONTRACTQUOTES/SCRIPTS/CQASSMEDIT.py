@@ -81,7 +81,7 @@ def UpdateAssemblyLevel(Values):
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
-               update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
+                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
