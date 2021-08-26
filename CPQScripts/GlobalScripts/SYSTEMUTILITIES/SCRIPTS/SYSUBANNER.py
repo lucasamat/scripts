@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO LOAD THE SUB BANNER FOR THE RELATED LISTS BASED ON HIERARCHY.
 #   __primary_author__ : JOE EBENEZER
 #   __create_date : 28/08/2020
-#   BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
@@ -2304,23 +2304,23 @@ def Related_Sub_Banner(
                 if getsaletypeloc:
                     # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
                     Trace.Write("multi_buttons"+str(len(multi_buttons)))
-                    # if len(multi_buttons) > 0:						
-                        # if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED" and getsaletypeloc.SALE_TYPE != "TOOL RELOCATION":
+                    if len(multi_buttons) > 0:						
+                        if TreeParam == "Quote Items" and getsaletypeloc.QUOTE_TYPE =="ZTBC - TOOL BASED" and getsaletypeloc.SALE_TYPE != "TOOL RELOCATION":
                             # Appending Price button in Quote Items Node
-                            # Trace.Write("inside---> quote item"+str(multi_buttons))
-                            # for btn in multi_buttons:
-                            #     if "PRICE" in btn:
-                            #         sec_rel_sub_bnr += (btn)
+                            Trace.Write("inside---> quote item"+str(multi_buttons))
+                            for btn in multi_buttons:
+                                if "PRICE" in btn:
+                                    sec_rel_sub_bnr += (btn)
                             # Appending Price button in Quote Items Node
 
-                        #     sec_rel_sub_bnr += (
-                        #         '<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
-                        #     )    
-                        # if TreeParam == "Quote Items":
-                        #     # Appending REFRESH button in Quote Items Node
-                        #     for btn in multi_buttons:
-                        #         if "REFRESH" in btn:
-                        #             sec_rel_sub_bnr += (btn)
+                            sec_rel_sub_bnr += (
+                                '<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
+                            )    
+                        if TreeParam == "Quote Items":
+                            # Appending REFRESH button in Quote Items Node
+                            for btn in multi_buttons:
+                                if "REFRESH" in btn:
+                                    sec_rel_sub_bnr += (btn)
                         # Appending REFRESH button in Quote Items Node
 
                         # sec_rel_sub_bnr += (
@@ -2416,7 +2416,7 @@ def Related_Sub_Banner(
                         fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
                         Trace.Write('2409----'+str(TreeParam))
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
-                        #A055S000P01-7512 Start Enable/Disable the â€œPRICEâ€ button in Quote items based on Required fields validation
+                        #A055S000P01-7512 Start Enable/Disable the PRICE button in Quote items based on Required fields validation
                         if str(TreeParam) == "Quote Items":
                             getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
                             getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
@@ -2448,7 +2448,7 @@ def Related_Sub_Banner(
                                         Trace.Write('No button-2423-')
                                 else:
                                     Trace.Write('No button--')
-                        #A055S000P01-7512 end Enable/Disable the â€œPRICEâ€ button in Quote items based on Required fields validation
+                        #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts--2411--")
                             if 'UPDATE LINES' in btn:
