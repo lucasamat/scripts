@@ -3468,7 +3468,7 @@ def EntitlementTreeViewHTMLDetail(
 								#Trace.Write("dtype----"+str(val.ENTITLEMENT_TYPE)+str(attrSysId))
 								if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
-									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
+									Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
 								Trace.Write("@3323-----"+str(sec_str_imt))
@@ -3507,7 +3507,7 @@ def EntitlementTreeViewHTMLDetail(
 									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
 									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 								VAR1 = sec_str1 =  ""
-								selected_option = "Select"
+								selected_option = " "
 								if STDVALUES:
 									if attributevalues.get(attrSysId) is not None:
 										select_option = 'selected'
@@ -3533,15 +3533,15 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 												+ "</option>"
 											)
-											# sec_str1 += (
-											# 	'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-											# 	+ str(attrSysId)
-											# 	+ '" type="text"  data-content ="'
-											# 	+ str(attrSysId)
-											# 	+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
-											# 	+ str(VAR1)
-											# 	+ "</select>"
-											# )
+											sec_str1 += (
+												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+												+ str(VAR1)
+												+ "</select>"
+											)
 										except:
 											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
 											VAR1 += (
@@ -3550,13 +3550,13 @@ def EntitlementTreeViewHTMLDetail(
 												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
 											)
 											
-										sec_str1 += (
-											'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-											+ str(attrSysId)
-											+ '" type="text"  data-content ="'
-											+ str(attrSysId)
-											+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
-										)
+											sec_str1 += (
+												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+											)
 
 								
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
@@ -3620,6 +3620,7 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
 							if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+								Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
 							#new_value_dicta["FACTOR CURRENCY"] = ""
