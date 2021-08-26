@@ -1088,7 +1088,7 @@ class Entitlements:
 								Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 							elif 'AGS_RFM_INS_T1' in get_name and 'Included' in get_value:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
-								Trace.Write("list2="+str(list2))
+								#Trace.Write("list2="+str(list2))
 								get_cost_impact = "{0:.2f}".format(float(list2[eq]))
 								get_curr = curr
 								Trace.Write("ENTCOST2 = "+str(float(list2[e.EQUIPMENT_ID])))
@@ -1102,7 +1102,7 @@ class Entitlements:
 								#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
 								get_cost_impact = "{0:.2f}".format(float(list4[eq]))
 								get_curr = curr
-								Trace.Write("ENTCOST4 = "+str(get_cost_impact))
+								#Trace.Write("ENTCOST4 = "+str(get_cost_impact))
 							
 							updatexml  = """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
