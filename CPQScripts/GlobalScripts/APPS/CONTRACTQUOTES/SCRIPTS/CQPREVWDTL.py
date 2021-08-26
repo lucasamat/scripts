@@ -382,7 +382,7 @@ def constructidlingattributes(Qt_rec_id, Quote, MODE):
 	add_style = ""
 	API_NAME_LIST = []
 	PModel = "disabled"
-	editclick = "IdleAttredit(this)"
+	editclick = "QuoteinformationEDIT(this)"
 	edit_action = ""
 	#sec_rec_id = "B0B5E48B-DC63-4B1A-95AC-695973D3AA06"
 	if ACTION == "CONTRACT_ATTR":
