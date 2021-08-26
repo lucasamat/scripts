@@ -647,6 +647,9 @@ try:
 
 						# Send the message
 						mailClient.Send(msg)
+					if Check_flag == 1:
+						#Status Empty in SYINPL
+						StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET STATUS = '''' FROM SYINPL (NOLOCK) A WHERE SESSION_ID=''"+str(SYINPL_SESSION.A)+"''   AND  STATUS = ''INPROGRESS'' '")
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Session is running.Status is Inprogress"}]})
 		
