@@ -3524,6 +3524,7 @@ def EntitlementTreeViewHTMLDetail(
 										if str(selected_option)=='selected':
 											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 										try:
+											Trace.Write('attrSysId-try---3491-'+str(attrSysId))
 											VAR1 += (
 												'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
@@ -3541,7 +3542,7 @@ def EntitlementTreeViewHTMLDetail(
 												+ "</select>"
 											)
 										except:
-											
+											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
 											VAR1 += (
 												'<option '
 												+ str(disallow_style)
