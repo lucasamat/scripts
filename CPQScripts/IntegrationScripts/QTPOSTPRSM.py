@@ -207,7 +207,10 @@ try:
 		msg.Bcc.Add(copyEmail5)
 		
 		copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail6)
+		msg.Bcc.Add(copyEmail6) 
+
+		copyEmail7 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+		msg.Bcc.Add(copyEmail7)
 
 		# Send the message
 		mailClient.Send(msg)		

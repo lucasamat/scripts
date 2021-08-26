@@ -147,6 +147,9 @@ try:
 					copyEmail7 = MailAddress("arivazhagan.natarajan@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail7)
 
+					copyEmail8 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail8)
+
 					# Send the message
 					mailClient.Send(msg)
 
@@ -466,6 +469,9 @@ try:
 					copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail6)
 
+					copyEmail8 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail8)
+
 					# Send the message
 					mailClient.Send(msg)
 
@@ -514,7 +520,15 @@ try:
 							# Create two mail adresses, one for send from and the another for recipient
 							toEmail = MailAddress("baji.baba@bostonharborconsulting.com")
 							
-							fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+							fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")	
+
+							#Comon CC mails
+							copyEmail = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail)					
+
+							copyEmail1 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail1)
+
 
 							# Create new MailMessage object
 							msg = MailMessage(fromEmail, toEmail)
@@ -627,7 +641,10 @@ try:
 						msg.CC.Add(copyEmail4)
 						
 						copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
-						msg.CC.Add(copyEmail5)
+						msg.CC.Add(copyEmail5) 
+
+						copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail6) 
 
 						# Send the message
 						mailClient.Send(msg)
