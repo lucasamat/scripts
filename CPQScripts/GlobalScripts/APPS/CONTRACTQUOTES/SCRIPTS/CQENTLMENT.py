@@ -676,6 +676,7 @@ class Entitlements:
 											attributedefaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'_'+str(attribute["value"]))
 										Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
