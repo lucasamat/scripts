@@ -962,11 +962,14 @@ class Entitlements:
 					is_default = ''
 					Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
 					Trace.Write('key---958---'+str(key))
-					if attributevalues.get(key) is None:
-						ent_disp_val = ''
-					else:
-						ent_disp_val = attributevalues.get(key)
-						Trace.Write('attr_value--962---11'+str(ent_disp_val))
+					ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+					if str((val).split("||")[2]) == 'FreeInputNoMatching':
+
+						if attributevalues.get(key) is None:
+							ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+						else:
+							ent_disp_val = attributevalues.get(key)
+							Trace.Write('attr_value--962---11'+str(ent_disp_val))
 					Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
@@ -979,7 +982,7 @@ class Entitlements:
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = str((val).split("||")[0]).replace("'","&apos;"),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
 					Trace.Write("updateentXML-970------"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
 				###to update match id at all level while saving starts
