@@ -308,6 +308,9 @@ def CommonTreeViewHTMLDetail(
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 	# elif (ObjectName == "CTCSCO"):
 	# 	QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+	elif (ObjectName == "SAQTMT") and SubtabName == "Idling Attributes":
+		Trace.Write('elee====2')
+		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.SECTION_DESC != '' AND SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 	else:
 		Trace.Write('eleee===1')		
 		"""QStr1 = (
