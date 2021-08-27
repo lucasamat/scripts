@@ -3284,7 +3284,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								
 							)
 							)
-				Quote.SetGlobal("KPI","NO")
+				#Quote.SetGlobal("KPI","NO")
 
 
 			#4393 start
