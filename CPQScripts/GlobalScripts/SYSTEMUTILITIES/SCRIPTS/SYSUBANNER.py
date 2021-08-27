@@ -1188,7 +1188,7 @@ def Related_Sub_Banner(
 						# FifthValue = "ALL" 			
 				if str(ObjName) == 'SAQSFB':
 					if (TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment") and TreeSuperParentParam != 'Add-On Products':
-						
+						Trace.Write("ObjectName:{}".format(str(ObjName)))
 						get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
 						Trace.Write("Line no:1194")
 						ThirdLable = "Product Offering Description"
