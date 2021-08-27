@@ -847,7 +847,7 @@ class Entitlements:
 								where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
 							elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
 								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
-							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {where}".format(self.ContractRecordId,where))
+							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {}".format(self.ContractRecordId,where))
 
 					totalpriceent = ""					
 					decimal_place ="2"
