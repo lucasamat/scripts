@@ -3177,6 +3177,114 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 						)
 			)
+			if Quote.GetGlobal("KPI") == "YES" and self.tree_param == "Z0091":
+				self._process_query(
+				"""
+					INSERT SAQSCO (
+						QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+						EQUIPMENT_ID,
+						EQUIPMENT_RECORD_ID,
+						EQUIPMENT_DESCRIPTION,
+						FABLOCATION_ID,
+						FABLOCATION_NAME,
+						FABLOCATION_RECORD_ID,
+						WAFER_SIZE,
+						BUSINESSUNIT_ID,
+						SALESORG_ID,
+						SALESORG_NAME,
+						SALESORG_RECORD_ID,
+						SERIAL_NO,
+						QUOTE_RECORD_ID,
+						QUOTE_ID,
+						QUOTE_NAME,
+						RELOCATION_EQUIPMENT_TYPE,
+						SERVICE_ID,
+						SERVICE_TYPE,
+						SERVICE_DESCRIPTION,
+						SERVICE_RECORD_ID,
+						EQUIPMENT_STATUS,
+						EQUIPMENTCATEGORY_ID,
+						EQUIPMENTCATEGORY_DESCRIPTION,
+						EQUIPMENTCATEGORY_RECORD_ID,
+						PLATFORM,
+						GREENBOOK,
+						GREENBOOK_RECORD_ID,
+						MNT_PLANT_RECORD_ID,
+						MNT_PLANT_NAME,
+						MNT_PLANT_ID,
+						WARRANTY_START_DATE,
+						WARRANTY_END_DATE,
+						CUSTOMER_TOOL_ID,
+						PAR_SERVICE_DESCRIPTION,
+						PAR_SERVICE_ID,
+						PAR_SERVICE_RECORD_ID,
+						TECHNOLOGY,
+						CPQTABLEENTRYADDEDBY,
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified
+						) SELECT
+							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+								EQUIPMENT_ID,
+								EQUIPMENT_RECORD_ID,
+								EQUIPMENT_DESCRIPTION,                                
+								FABLOCATION_ID,
+								FABLOCATION_NAME,
+								FABLOCATION_RECORD_ID,
+								WAFER_SIZE,
+								BUSINESSUNIT_ID,
+								SALESORG_ID,
+								SALESORG_NAME,
+								SALESORG_RECORD_ID,
+								SERIAL_NO,
+								QUOTE_RECORD_ID,
+								QUOTE_ID,
+								QUOTE_NAME,
+								RELOCATION_EQUIPMENT_TYPE,
+								'{TreeParam}',
+								'{TreeParentParam}',
+								'{desc}',
+								'{rec}',
+								EQUIPMENT_STATUS,
+								EQUIPMENTCATEGORY_ID,
+								EQUIPMENTCATEGORY_DESCRIPTION,
+								EQUIPMENTCATEGORY_RECORD_ID,
+								PLATFORM,
+								GREENBOOK,
+								GREENBOOK_RECORD_ID,
+								MNT_PLANT_RECORD_ID,
+								MNT_PLANT_NAME,
+								MNT_PLANT_ID,
+								WARRANTY_START_DATE,
+								WARRANTY_END_DATE,
+								CUSTOMER_TOOL_ID,
+								PAR_SERVICE_DESCRIPTION,
+								PAR_SERVICE_ID,
+								PAR_SERVICE_RECORD_ID,
+								TECHNOLOGY,
+								'{UserName}',
+								GETDATE(),
+								{UserId},
+								GETDATE()
+								FROM SAQSCO (NOLOCK) JOIN SYSPBT (NOLOCK) ON
+								SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND
+								SYSPBT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
+								WHERE 
+								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'
+														
+							""".format(
+								TreeParam="Z0046",
+								TreeParentParam="Add-On Products",
+								QuoteRecordId=self.contract_quote_record_id,
+								desc="COMP SA VARIABLE",
+								rec="CA6BB39A-947F-401B-830B-9D8B8942303D",
+								UserName=self.user_name,
+								UserId=self.user_id
+								
+								
+							)
+							)
+
 			#4393 start
 			getdate = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 			get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
