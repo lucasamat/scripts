@@ -836,6 +836,7 @@ class SyncQuoteAndCustomTables:
                                 }
 
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
+                    # A055S000P01-6618 - Starts
                     if custom_fields_detail.get("PrimaryContactName"):
                         primary_contact_update = {
                             "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -851,6 +852,7 @@ class SyncQuoteAndCustomTables:
                             "PHONE": ""
                         }
                         quote_involved_party_table_info.AddRow(primary_contact_update)
+                    # A055S000P01-6618 - Ends
                     if self.quote.BillToCustomer:
                         bill_to_customer = self.quote.BillToCustomer
                         billtocustomer_quote_data = {
