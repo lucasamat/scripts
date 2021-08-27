@@ -55,7 +55,7 @@ def Related_Sub_Banner(
 	else:
 		CurrentRecordId = str(CurrentRecordId)"""    
 	user_id = User.Id
-	
+	buttonvisibility = ''
 	LOGIN_CREDENTIALS = Sql.GetFirst("SELECT top 1 Domain FROM SYCONF (nolock) order by CpqTableEntryId")
 	if LOGIN_CREDENTIALS is not None:
 		Login_Domain = str(LOGIN_CREDENTIALS.Domain)
@@ -2468,13 +2468,13 @@ def Related_Sub_Banner(
 							Trace.Write("hide PRICING for fts")
 							if quote_status.QUOTE_STATUS != 'APPROVED':
 								Trace.Write(str(buttonvisibility)+'---2469--btn----'+str(btn))
-								if buttonvisibility == "Hide_button" and 'UPDATE PRICING' in btn:
-									Trace.Write('---2469--btn----'+str(btn))
-									btn += '<button id="CALCULATE_QItems"  style = "display:none;" onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
-									sec_rel_sub_bnr += (btn)
-								else:
+								# if buttonvisibility == "Hide_button" and 'UPDATE PRICING' in btn:
+								# 	Trace.Write('---2469--btn----'+str(btn))
+								# 	btn += '<button id="CALCULATE_QItems"  style = "display:none;" onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
+								# 	sec_rel_sub_bnr += (btn)
+								# else:
 									#btn = '<button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
-									sec_rel_sub_bnr += (btn)
+								sec_rel_sub_bnr += (btn)
 					# Appending Price button in Quote Items Node
 
 					# sec_rel_sub_bnr += (
