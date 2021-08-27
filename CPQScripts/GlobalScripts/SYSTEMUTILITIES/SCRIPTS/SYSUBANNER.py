@@ -1173,7 +1173,25 @@ def Related_Sub_Banner(
                         FourthValue = get_val.EQUIPMENT_ID
                         FifthLable = "Serial Number"
                         FifthValue = get_val.SERIAL_NUMBER 
-                        
+                    elif subTabName == "Equipment":
+                        try:
+                            getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+                            desc = getService.SERVICE_DESCRIPTION
+                        except:
+                            desc = ""
+                        Trace.Write("Line No:1182")
+                        PrimaryLable = "Product Offering ID"
+                        PrimaryValue = str(TreeSuperParentParam)
+                        SecondLable = "Product Offering Description"
+                        SecondValue = getService.SERVICE_DESCRIPTION
+                        ThirdLable = "Product Offering Type"
+                        ThirdValue = str(TreeTopSuperParentParam)
+                        FourthLable = "Fab Location ID"
+                        FourthValue = str(TreeParam)
+                        FifthLable = "Greenbooks"
+                        FifthValue = "All"
+                        SixthLable = "Equipment"
+                        SixthValue = "All" 
                     else:
                         Trace.Write("Lineno:1179")
                         PrimaryLable = "Product Offering ID"
