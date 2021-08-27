@@ -803,175 +803,175 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		#     Trace.Write('error---'+str(e))
 			
 
-		# try:
-		# 	get_service_id = Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID LIKE '%Z0016%' ")
-		# 	if get_service_id:
-		# 		for service in get_service_id:
-		# 			if TableName == 'SAQTMT' and 'CONTRACT_VALID_TO' in RECORD.keys() and 'CONTRACT_VALID_FROM' in RECORD.keys() and section_text == " EDITQUOTE TIMELINE INFORMATION" :
-		# 				Trace.Write('CONTRACT_VALID_TO -- inside')
-		# 				try:
+		try:
+			get_service_id = Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID LIKE '%Z0016%' ")
+			if get_service_id:
+				for service in get_service_id:
+					if TableName == 'SAQTMT' and 'CONTRACT_VALID_TO' in RECORD.keys() and 'CONTRACT_VALID_FROM' in RECORD.keys() and section_text == " EDITQUOTE TIMELINE INFORMATION" :
+						Trace.Write('CONTRACT_VALID_TO -- inside')
+						try:
 							
-		# 					get_value = Sql.GetFirst("Select * from SAQTMT (nolock) where MASTER_TABLE_QUOTE_RECORD_ID ='"+str(quote_record_id)+"'")
-		# 					Trace.Write('get_value.CONTRACT_VALID_TO--'+str(get_value.CONTRACT_VALID_TO))
-		# 					QuoteEndDate = datetime.datetime(get_value.CONTRACT_VALID_TO)
-		# 					QuoteStartDate = datetime.datetime(get_value.CONTRACT_VALID_FROM)
-		# 					contract_days = (QuoteEndDate - QuoteStartDate).days
-		# 					Trace.Write('contract_days-----'+str(contract_days))
-		# 					ent_disp_val = 	str(contract_days)
-		# 				except:
-		# 					Trace.Write('except--1---')
-		# 					ent_disp_val = ""
-		# 				get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID = '{}' ".format(service.SERVICE_ID))
-		# 				cpsmatchID = get_config_ids.CPS_MATCH_ID
-		# 				cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
-		# 				if int(ent_disp_val) > 364:
+							get_value = Sql.GetFirst("Select * from SAQTMT (nolock) where MASTER_TABLE_QUOTE_RECORD_ID ='"+str(quote_record_id)+"'")
+							Trace.Write('get_value.CONTRACT_VALID_TO--'+str(get_value.CONTRACT_VALID_TO))
+							QuoteEndDate = datetime.datetime(get_value.CONTRACT_VALID_TO)
+							QuoteStartDate = datetime.datetime(get_value.CONTRACT_VALID_FROM)
+							contract_days = (QuoteEndDate - QuoteStartDate).days
+							Trace.Write('contract_days-----'+str(contract_days))
+							ent_disp_val = 	str(contract_days)
+						except:
+							Trace.Write('except--1---')
+							ent_disp_val = ""
+						get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID = '{}' ".format(service.SERVICE_ID))
+						cpsmatchID = get_config_ids.CPS_MATCH_ID
+						cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
+						if int(ent_disp_val) > 364:
 									
-		# 					Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
-		# 					webclient = System.Net.WebClient()
-		# 					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		# 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-		# 					response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-		# 					response = eval(response)
-		# 					webclient = System.Net.WebClient()		
-		# 					#Log.Info("---requestdata--252--")
-		# 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
-		# 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-		# 					#webclient.Headers.Add("If-Match", "111")
+							Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
+							webclient = System.Net.WebClient()
+							webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+							response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
+							response = eval(response)
+							webclient = System.Net.WebClient()		
+							#Log.Info("---requestdata--252--")
+							Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
+							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+							#webclient.Headers.Add("If-Match", "111")
 
-		# 					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
+							webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 									
-		# 					AttributeID = 'AGS_CON_DAY'
-		# 					NewValue = ent_disp_val
-		# 					#Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
-		# 					whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = '{}'".format(service.SERVICE_ID)
-		# 					#Trace.Write('whereReq---'+str(whereReq))
-		# 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-		# 					#Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
-		# 					response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-		# 					#requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
+							AttributeID = 'AGS_CON_DAY'
+							NewValue = ent_disp_val
+							#Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
+							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = '{}'".format(service.SERVICE_ID)
+							#Trace.Write('whereReq---'+str(whereReq))
+							requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+							#Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
+							response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+							#requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
 
-		# 					#Log.Info(str(Request_URL)+"---requestdata--166---" + str(response2))
+							#Log.Info(str(Request_URL)+"---requestdata--166---" + str(response2))
 
 
-		# 					#Log.Info("patch response1---170---" + str(response2))
-		# 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-		# 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-		# 					#Log.Info("requestdata---180--265----" + str(requestdata))
-		# 					response2 = webclient.DownloadString(Request_URL)
-		# 					Trace.Write('response2--182----267-----'+str(response2))
-		# 					response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-		# 					Fullresponse= eval(response2)
-		# 					attributesdisallowedlst=[]
-		# 					attributeReadonlylst=[]
-		# 					attributesallowedlst=[]
-		# 					attributedefaultvalue = []
-		# 					multi_value = ""
-		# 					#overallattributeslist =[]
-		# 					attributevalues={}
-		# 					for rootattribute, rootvalue in Fullresponse.items():
-		# 						if rootattribute=="rootItem":
-		# 							for Productattribute, Productvalue in rootvalue.items():
-		# 								if Productattribute=="characteristics":
-		# 									for prdvalue in Productvalue:
-		# 										multi_value = ""
-		# 										#overallattributeslist.append(prdvalue['id'])
-		# 										if prdvalue['visible'] =='false':
-		# 											attributesdisallowedlst.append(prdvalue['id'])
-		# 										else:
-		# 											#Trace.Write(prdvalue['id']+" set here")
-		# 											attributesallowedlst.append(prdvalue['id'])
-		# 										if prdvalue['readOnly'] =='true':
-		# 											attributeReadonlylst.append(prdvalue['id'])
-		# 										#for attribute in prdvalue['values']:
-		# 										# attributevalues[str(prdvalue['id'])]=attribute['value']
-		# 										# for attribute in prdvalue['values']:
-		# 										if len(prdvalue["values"]) == 1:
-		# 											#Trace.Write('ifffff'+str(prdvalue["id"]))
-		# 											attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
-		# 										elif len(prdvalue["values"]) > 1:
-		# 											#Trace.Write('else if'+str(prdvalue["id"]))
-		# 											for attribute in prdvalue["values"]:
-		# 												#Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
-		# 												value_list = [attribute["value"] for attribute in prdvalue["values"]]
-		# 												if attribute["author"] in ("Default","System"):
-		# 													#Trace.Write('524------'+str(prdvalue["id"]))
-		# 													attributedefaultvalue.append(prdvalue["id"])
-		# 												#value_list = str(value_list)
-		# 											attributevalues[str(prdvalue["id"])] = value_list
-		# 										# else:
-		# 										#     Trace.Write('else'+str(prdvalue["id"]))
+							#Log.Info("patch response1---170---" + str(response2))
+							Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
+							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+							#Log.Info("requestdata---180--265----" + str(requestdata))
+							response2 = webclient.DownloadString(Request_URL)
+							Trace.Write('response2--182----267-----'+str(response2))
+							response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
+							Fullresponse= eval(response2)
+							attributesdisallowedlst=[]
+							attributeReadonlylst=[]
+							attributesallowedlst=[]
+							attributedefaultvalue = []
+							multi_value = ""
+							#overallattributeslist =[]
+							attributevalues={}
+							for rootattribute, rootvalue in Fullresponse.items():
+								if rootattribute=="rootItem":
+									for Productattribute, Productvalue in rootvalue.items():
+										if Productattribute=="characteristics":
+											for prdvalue in Productvalue:
+												multi_value = ""
+												#overallattributeslist.append(prdvalue['id'])
+												if prdvalue['visible'] =='false':
+													attributesdisallowedlst.append(prdvalue['id'])
+												else:
+													#Trace.Write(prdvalue['id']+" set here")
+													attributesallowedlst.append(prdvalue['id'])
+												if prdvalue['readOnly'] =='true':
+													attributeReadonlylst.append(prdvalue['id'])
+												#for attribute in prdvalue['values']:
+												# attributevalues[str(prdvalue['id'])]=attribute['value']
+												# for attribute in prdvalue['values']:
+												if len(prdvalue["values"]) == 1:
+													#Trace.Write('ifffff'+str(prdvalue["id"]))
+													attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
+												elif len(prdvalue["values"]) > 1:
+													#Trace.Write('else if'+str(prdvalue["id"]))
+													for attribute in prdvalue["values"]:
+														#Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
+														value_list = [attribute["value"] for attribute in prdvalue["values"]]
+														if attribute["author"] in ("Default","System"):
+															#Trace.Write('524------'+str(prdvalue["id"]))
+															attributedefaultvalue.append(prdvalue["id"])
+														#value_list = str(value_list)
+													attributevalues[str(prdvalue["id"])] = value_list
+												# else:
+												#     Trace.Write('else'+str(prdvalue["id"]))
 
 							
-		# 					attributesallowedlst = list(set(attributesallowedlst))
-		# 					#overallattributeslist = list(set(overallattributeslist))
-		# 					HasDefaultvalue=False
-		# 					Trace.Write('response2--182----315---'+str(attributesallowedlst))
-		# 					Trace.Write('attributevalues--182----315---'+str(attributevalues))
-		# 					ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-		# 					if ProductVersionObj is not None:
-		# 						#tbrow={}
-		# 						insertservice = ""
-		# 						tblist = []
-		# 						#Log.Info('response2--182----321-')
-		# 						for attrs in attributesallowedlst:
-		# 							Trace.Write('value code---'+str(attrs))
-		# 							#tbrow1 = {}
-		# 							if attrs in attributevalues:
-		# 								HasDefaultvalue=True
-		# 								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
-		# 								ent_disp_val = attributevalues[attrs]
-		# 								ent_val_code = attributevalues[attrs]
-		# 							else:
-		# 								HasDefaultvalue=False
-		# 								ent_disp_val = ""
-		# 								ent_val_code = ""
-		# 								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
-		# 							ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
+							attributesallowedlst = list(set(attributesallowedlst))
+							#overallattributeslist = list(set(overallattributeslist))
+							HasDefaultvalue=False
+							Trace.Write('response2--182----315---'+str(attributesallowedlst))
+							Trace.Write('attributevalues--182----315---'+str(attributevalues))
+							ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
+							if ProductVersionObj is not None:
+								#tbrow={}
+								insertservice = ""
+								tblist = []
+								#Log.Info('response2--182----321-')
+								for attrs in attributesallowedlst:
+									Trace.Write('value code---'+str(attrs))
+									#tbrow1 = {}
+									if attrs in attributevalues:
+										HasDefaultvalue=True
+										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
+										ent_disp_val = attributevalues[attrs]
+										ent_val_code = attributevalues[attrs]
+									else:
+										HasDefaultvalue=False
+										ent_disp_val = ""
+										ent_val_code = ""
+										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
+									ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
 									
-		# 							PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+									PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
 									
-		# 							if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
-		# 								get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-		# 								ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-		# 							elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-		# 								Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
-		# 								if type(eval(str(ent_val_code))) is list:
-		# 									ent_val = str(tuple(ent_val_code)).replace(',)',')')
-		# 									get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
-		# 									ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val ]
-		# 									ent_disp_val = str(ent_disp_val).replace("'", '"')
-		# 									ent_val_code = str(ent_val_code).replace("'", '"')
-		# 								else:
-		# 									get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-		# 									ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
-		# 									ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
+									if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
+										get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+										ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+									elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
+										Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
+										if type(eval(str(ent_val_code))) is list:
+											ent_val = str(tuple(ent_val_code)).replace(',)',')')
+											get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
+											ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val ]
+											ent_disp_val = str(ent_disp_val).replace("'", '"')
+											ent_val_code = str(ent_val_code).replace("'", '"')
+										else:
+											get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+											ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
+											ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 
 									
-		# 							DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
-		# 							#Log.Info('response2--182----342-')
-		# 							#Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
-		# 							insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-		# 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-		# 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-		# 							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-		# 							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-		# 							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-		# 							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-		# 							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-		# 							<IS_DEFAULT>{is_default}</IS_DEFAULT>
-		# 							<PRICE_METHOD>{pm}</PRICE_METHOD>
-		# 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-		# 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '', is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-		# 							cpsmatc_incr = int(cpsmatchID) + 10
-		# 							Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
-		# 						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
-		# 						Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
-		# 						Sql.RunQuery(Updatecps)
+									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
+									#Log.Info('response2--182----342-')
+									#Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
+									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+									<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+									<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+									<IS_DEFAULT>{is_default}</IS_DEFAULT>
+									<PRICE_METHOD>{pm}</PRICE_METHOD>
+									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '', is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+									cpsmatc_incr = int(cpsmatchID) + 10
+									Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
+								Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
+								Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
+								Sql.RunQuery(Updatecps)
 								
 
-		# except Exception,e:
-		# 	Trace.Write("except---"+str(e))
-		# 	pass
+		except Exception,e:
+			Trace.Write("except---"+str(e))
+			pass
 
 
 
