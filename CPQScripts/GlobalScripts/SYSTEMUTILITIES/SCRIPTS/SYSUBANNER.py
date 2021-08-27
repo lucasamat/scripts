@@ -1956,20 +1956,20 @@ def Related_Sub_Banner(
 		FifthValue = ''
 		SixthLable = ''
 		SixthValue = ''
-	elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
-		getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
-		PrimaryLable = "Product Offering ID"
-		PrimaryValue = str(TreeSuperParentParam)
-		SecondLable = "Product Offering Description"
-		SecondValue = getService.SERVICE_DESCRIPTION
-		ThirdLable = "Product Offering Type"
-		ThirdValue = str(TreeTopSuperParentParam)
-		FourthLable = "Fab Location ID"
-		FourthValue = str(TreeParam)
-		FifthLable = ""
-		FifthValue = ""
-		SixthLable = ""
-		SixthValue = ""
+	#elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
+	#	getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	#	PrimaryLable = "Product Offering ID"
+	#	PrimaryValue = str(TreeSuperParentParam)
+	#	SecondLable = "Product Offering Description"
+	#	SecondValue = getService.SERVICE_DESCRIPTION
+	#	ThirdLable = "Product Offering Type"
+	#	ThirdValue = str(TreeTopSuperParentParam)
+	#	FourthLable = "Fab Location ID"
+	#	FourthValue = str(TreeParam)
+	#	FifthLable = ""
+	#	FifthValue = ""
+	#	SixthLable = ""
+	#	SixthValue = ""
 				
 
 	if str(Image) != "":
