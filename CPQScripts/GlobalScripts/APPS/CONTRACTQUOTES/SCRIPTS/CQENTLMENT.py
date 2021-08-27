@@ -715,7 +715,7 @@ class Entitlements:
 					if key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "Yes":
 						
 						Trace.Write("YES to Bonus & Penalty Tied to KPI")
-						
+						Quote.SetGlobal("KPI","YES")
 						getAddOn = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO WHERE ADNPRD_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}'".format(self.ContractRecordId))
 						GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 						if getAddOn is None:
@@ -840,7 +840,7 @@ class Entitlements:
 							)
 				
 					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No":
-						
+						Quote.SetGlobal("KPI","NO")
 						Trace.Write("NO to Bonus & Penalty Tied to KPI")
 						if self.treeparam == 'Z0091':
 							Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))
