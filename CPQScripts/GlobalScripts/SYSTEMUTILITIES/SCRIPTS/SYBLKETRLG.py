@@ -919,7 +919,7 @@ try:
 except:
 	SELECTALL = None
 
-# Trace.Write("VALUE--------------------------->" + str(VALUE))
+Trace.Write("VALUE--------------------------->" + str(VALUE))
 
 # Trace.Write("selectPN--------------------------->" + str(selectPN))
 # Trace.Write("TITLE-----------xxx---- " + str(TITLE))
