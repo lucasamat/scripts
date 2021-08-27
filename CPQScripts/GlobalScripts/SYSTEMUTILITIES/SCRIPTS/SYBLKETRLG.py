@@ -537,8 +537,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				get_curr = str(Quote.GetCustomField('Currency').Content)
 
-				Quote.GetCustomField('EXTENDED_PRICE').Content =str(getServiceSum.NET_VALUE) + " " + get_curr
-				Quote.GetCustomField('SALE_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
+				Quote.GetCustomField('TOTAL_NET_VALUE').Content =str(getServiceSum.NET_VALUE) + " " + get_curr
+				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
 				for item in Quote.MainItems:
@@ -549,7 +549,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						item.YEAR_3.Value = str(b.YEAR3)
 						item.YEAR_4.Value = str(b.YEAR4)
 						item.YEAR_5.Value = str(b.YEAR5)
-						item.EXTENDED_PRICE.Value = str(b.NET_VALUE)
+						item.NET_VALUE.Value = str(b.NET_VALUE)
 				Quote.Save()
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 				try:
