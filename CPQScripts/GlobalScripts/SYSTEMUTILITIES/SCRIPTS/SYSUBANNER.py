@@ -1635,8 +1635,8 @@ def Related_Sub_Banner(
 		Trace.Write("1359===========")
 		PrimaryLable = "Product Offering ID"
 		PrimaryValue = str(TreeSuperParentParam)
-		SecondLable = "Fab Location ID"
-		SecondValue = str(TreeParentParam)
+		#SecondLable = "Fab Location ID"
+		#SecondValue = str(TreeParentParam)
 		#ThirdLable = ""
 		#ThirdValue = ""	
 
