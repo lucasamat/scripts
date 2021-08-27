@@ -2450,32 +2450,38 @@ def Related_Sub_Banner(
                                         get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
                                         get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
 
-                                        if GetPRVLDR and get_SAQVDV and get_SAQFDV:
-                                            if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
-                                                get_quote = Quote.GetGlobal("contract_quote_record_id")
-                                                getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
-                                                get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                                get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                                if getPRGBVD and get_SAQFGV and get_SAQEDV:
-                                                    #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
-                                                    Trace.Write('button found')
-                                                    buttonvisibility = "Show_button"
-                                            else:
-                                                Trace.Write('No button-2448-')
-                                                buttonvisibility = "Hide_button"
-                                        else:
-                                            Trace.Write('No button-2451')
-                                            buttonvisibility = "Hide_button"
-                                    else:
-                                        Trace.Write('No button-2454-')
-                                        buttonvisibility = "Hide_button"
-                                else:
-                                    Trace.Write('No button--')
-                                    buttonvisibility = "Hide_button"
-                        #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
-                        if len(fts_scenario_check) == 2:
-                            Trace.Write("hide PRICING for fts--2411--")
-                            if 'UPDATE LINES' in btn:
+										if GetPRVLDR and get_SAQVDV and get_SAQFDV:
+											if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
+												get_quote = Quote.GetGlobal("contract_quote_record_id")
+												getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
+												get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
+												get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
+												if getPRGBVD and get_SAQFGV and get_SAQEDV:
+													#if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
+													Trace.Write('button found')
+													buttonvisibility = "Show_button"
+											else:
+												Trace.Write('No button-2448-')
+												buttonvisibility = "Hide_button"
+										else:
+											Trace.Write('No button-2451')
+											buttonvisibility = "Hide_button"
+									else:
+										Trace.Write('No button-2454-')
+										buttonvisibility = "Hide_button"
+								else:
+									Trace.Write('No button--')
+									buttonvisibility = "Hide_button"
+                            else:
+                                Trace.Write('No button--')
+                                buttonvisibility = "Hide_button"
+                        else:
+                            Trace.Write('No button--')
+                            buttonvisibility = "Hide_button"
+						#A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
+						if len(fts_scenario_check) == 2:
+							Trace.Write("hide PRICING for fts--2411--")
+							if 'UPDATE LINES' in btn:
 
                                 if quote_status.QUOTE_STATUS != 'APPROVED':
                                     sec_rel_sub_bnr += (btn)
