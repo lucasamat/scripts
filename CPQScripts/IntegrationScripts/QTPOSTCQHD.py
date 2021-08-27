@@ -24,7 +24,7 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 
 Jsonquery = SqlHelper.GetFirst("select getdate() as date,DATEADD(HOUR,-2,getdate()) as filter  ")
 
-Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE convert(varchar,CPQTABLEENTRYDATEADDED) >'"+str(Jsonquery.filter)+"' union select  quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False'")
+Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' union select  quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False'")
 
 Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
