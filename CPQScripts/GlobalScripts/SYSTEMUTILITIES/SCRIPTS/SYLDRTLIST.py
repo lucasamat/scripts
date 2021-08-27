@@ -7584,7 +7584,7 @@ class SYLDRTLIST:
                     Trace.Write("7105")
                     Trace.Write("select_obj_str+++BILLING"+str(select_obj_str))    
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]") 
-                    if str(RECORD_ID) == "SYOBJR-00007":
+                    if str(RECORD_ID) == "SYOBJR-00007":#billing matrix pagination
                        Trace.Write("Pagination ifffff")
                        pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
                        if Qustr:
