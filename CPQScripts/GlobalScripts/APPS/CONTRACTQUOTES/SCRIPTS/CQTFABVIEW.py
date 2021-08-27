@@ -1255,7 +1255,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				#Trace.Write("aaaaaaaaaaa" + str(tablerow))
 
 			Getchildtable2 = Sql.GetFirst(
-				"SELECT * FROM PRVDVL (NOLOCK) WHERE VALUEDRIVER_VALUE_DESCRIPTION ='" + str(getvaluedriv) + "' AND VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "'")			
+				"SELECT * FROM PRVDVL (NOLOCK) WHERE VALUEDRIVER_VALUE_DESCRIPTION ='" + str(getvaluedriv) + "' AND VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "'")			
 			if Getchildtable2:
 				tablerow2 = {}
 				tableInfo2 = SqlHelper.GetTable("SAQVDV")
