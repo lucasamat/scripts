@@ -1644,6 +1644,7 @@ def Related_Sub_Banner(
 		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
 		if str(subTabName) != "Equipment":
 			Trace.Write("1358")
+            Trace.Write(subTabName)
 			PrimaryLable = "Product Offering ID"
 			PrimaryValue = str(TreeTopSuperParentParam)
 			SecondLable = "Fab Location ID"
