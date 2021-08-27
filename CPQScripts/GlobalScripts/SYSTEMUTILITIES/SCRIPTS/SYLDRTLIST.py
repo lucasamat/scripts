@@ -4118,7 +4118,7 @@ class SYLDRTLIST:
         )
                         
         if ObjectName == 'SAQICO':
-            cls = "eq(2)"
+            cls = "eq(3)"
             SAQICO_dbl_clk_function += (
                 'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
                 + str(table_ids)
