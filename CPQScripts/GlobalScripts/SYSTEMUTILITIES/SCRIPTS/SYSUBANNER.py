@@ -2445,13 +2445,13 @@ def Related_Sub_Banner(
 														Trace.Write('button found')
 														buttonvisibility = "Show_button"
 											else:
-												Trace.Write('No button-2423-')
+												Trace.Write('No button-2448-')
 												buttonvisibility = "Hide_button"
 										else:
-											Trace.Write('No button-2423-')
+											Trace.Write('No button-2451')
 											buttonvisibility = "Hide_button"
 									else:
-										Trace.Write('No button-2423-')
+										Trace.Write('No button-2454-')
 										buttonvisibility = "Hide_button"
 								else:
 									Trace.Write('No button--')
@@ -2469,6 +2469,10 @@ def Related_Sub_Banner(
 							Trace.Write('2469--sec_rel_sub_bnr---'=str(sec_rel_sub_bnr))
 							if quote_status.QUOTE_STATUS != 'APPROVED':
 								#Trace.Write('2469--btn----'+str(btn))
+                                if buttonvisibility == "Hide_button" and 'UPDATE PRICING' in btn:
+                                    btn = '<button id="CALCULATE_QItems"  style = "display:none;" onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
+                                else:
+                                    btn = '<button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
 								sec_rel_sub_bnr += (btn)
 					# Appending Price button in Quote Items Node
 
