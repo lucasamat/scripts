@@ -1288,6 +1288,7 @@ try:
 			{}
 			FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
 			ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
+			Log.Info('else--'+str(update_query))
 			Sql.RunQuery(update_query)
 			
 
