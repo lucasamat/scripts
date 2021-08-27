@@ -971,6 +971,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 
 		except Exception,e:
 			Trace.Write("except---"+str(e))
+			pass
 
 
 
