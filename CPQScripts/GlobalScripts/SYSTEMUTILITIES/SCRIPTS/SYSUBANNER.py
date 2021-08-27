@@ -1179,10 +1179,10 @@ def Related_Sub_Banner(
                         Trace.Write("Lineno:1179")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
-                        SecondLable = "Fab Location ID"
-                        SecondValue = str(TreeParentParam)
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
+                        #SecondLable = "Fab Location ID"
+                        #SecondValue = str(TreeParentParam)
+                        #ThirdLable = "Greenbook"
+                        #ThirdValue = str(TreeParam)
                         # FourthLable = "Fab Location ID"
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
