@@ -966,7 +966,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 									JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
 									JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
 									JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-									WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND ISNULL(MAMTRL.PRODUCT_TYPE,'') = '' AND ISNULL(MAMTRL.IS_SPARE_PART,0) = 0) IQ
+									WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND (MAMTRL.IS_SPARE_PART = 0 or MAMTRL.IS_SPARE_PART IS NULL)) IQ
 									""".format(
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
@@ -974,11 +974,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						UserId=self.user_id
 					)
 				)
-				self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id
-					)
-				)
+				# self._process_query(
+				# 	"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+				# 		BatchGroupRecordId=batch_group_record_id
+				# 	)
+				# )
 		return True
 
 	def _update(self):
