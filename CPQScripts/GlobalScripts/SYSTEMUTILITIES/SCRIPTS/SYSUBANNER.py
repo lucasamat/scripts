@@ -2441,7 +2441,7 @@ def Related_Sub_Banner(
 												get_SAQFGV = SqlHelper.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
 												get_SAQEDV = SqlHelper.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
 												if getPRGBVD and get_SAQFGV and get_SAQEDV:
-													if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID == get_SAQEDV.VALUEDRIVER_ID:
+													if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
 														Trace.Write('button found')
 														buttonvisibility = "Show_button"
 											else:
