@@ -29,7 +29,7 @@ Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) W
 Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
 
-Quoteinfoquery = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE  SAQTMT SET HADOOP_FLAG = ''FALSE'' WHERE convert(varchar,CPQTABLEENTRYDATEADDED) >''"+str(Jsonquery.date)+"'' '")
+Quoteinfoquery = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE  SAQTMT SET HADOOP_FLAG = ''FALSE'' WHERE CPQTABLEENTRYDATEADDED >''"+str(Jsonquery.filter)+"'' '")
 
 for data in Quoteinfoquery:
 	
