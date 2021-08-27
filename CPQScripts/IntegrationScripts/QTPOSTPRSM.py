@@ -134,92 +134,151 @@ try:
 		crm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(table.RESULT))	
 		Log.Info("789 crm_response --->"+str(crm_response))
 
-		StatusUpdate = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE SAQICO SET PRICING_STATUS=''ACQUIRING'' FROM SAQICO (NOLOCK) JOIN "+str(SAQSCA)+"  SAQSCA(NOLOCK) ON SAQSCA.QUOTE_ID = SAQICO.QUOTE_ID AND SAQSCA.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQSCA.SERVICE_ID = SAQICO.SERVICE_ID WHERE SAQSCA.QUOTE_ID = ''"+str(Qt_id[0])+"''  '")
+		if "Status: 200" in crm_response:
 
-		Emailinfo = SqlHelper.GetFirst("SELECT QUOTE_ID,CPQ,SSCM,CPQ-SSCM AS REMANING FROM (SELECT SAQICO.QUOTE_ID,COUNT(DISTINCT SAQICO.EQUIPMENT_ID) AS CPQ,COUNT(DISTINCT SAQSCA.EQUIPMENT_ID) AS SSCM  FROM SAQICO (NOLOCK) LEFT JOIN "+str(SAQSCA)+" SAQSCA(NOLOCK) ON SAQSCA.QUOTE_ID = SAQICO.QUOTE_ID AND SAQSCA.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQSCA.SERVICE_ID = SAQICO.SERVICE_ID WHERE SAQICO.QUOTE_ID = '"+str(Qt_id[0])+"' group by SAQICO.Quote_ID )SUB_SAQICO ")
+			StatusUpdate = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE SAQICO SET PRICING_STATUS=''ACQUIRING'' FROM SAQICO (NOLOCK) JOIN "+str(SAQSCA)+"  SAQSCA(NOLOCK) ON SAQSCA.QUOTE_ID = SAQICO.QUOTE_ID AND SAQSCA.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQSCA.SERVICE_ID = SAQICO.SERVICE_ID WHERE SAQSCA.QUOTE_ID = ''"+str(Qt_id[0])+"''  '")
+
+			Emailinfo = SqlHelper.GetFirst("SELECT QUOTE_ID,CPQ,SSCM,CPQ-SSCM AS REMANING FROM (SELECT SAQICO.QUOTE_ID,COUNT(DISTINCT SAQICO.EQUIPMENT_ID) AS CPQ,COUNT(DISTINCT SAQSCA.EQUIPMENT_ID) AS SSCM  FROM SAQICO (NOLOCK) LEFT JOIN "+str(SAQSCA)+" SAQSCA(NOLOCK) ON SAQSCA.QUOTE_ID = SAQICO.QUOTE_ID AND SAQSCA.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQSCA.SERVICE_ID = SAQICO.SERVICE_ID WHERE SAQICO.QUOTE_ID = '"+str(Qt_id[0])+"' group by SAQICO.Quote_ID )SUB_SAQICO ")
+			
+			SAQSCO_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCO)+"'' ) BEGIN DROP TABLE "+str(SAQSCO)+" END  ' ")
+			
+			SAQIEN_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQIEN)+"'' ) BEGIN DROP TABLE "+str(SAQIEN)+" END  ' ")
+			
+			SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
+
+			SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
+			
+			SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
+			
+			ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116959') AS OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_id[0])+"'  ") 
+
+			Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black'} </style></head><body id = 'bd'>"
+
+
+			Table_start = "<p>Hi Team,<br><br>The Tools and Assembly information has been successfully sent to retrieve the cost information from SSCM for the below Quote</p><table class='table table-bordered'><tr><th id ='grey'>QUOTE ID</th><th id = 'grey'>TOTAL TOOLS (CPQ)</th><th id = 'grey'>TOOLS SENT (SSCM)</th><th id = 'grey'>TOOLS NOT SENT TO SSCM (NO ASSEMBLY MAPPED)</th><th id = 'grey'>PRICING STATUS</th></tr><tr><td >"+str(Qt_id[0])+"</td><td >"+str(Emailinfo.CPQ)+"</td ><td >"+str(Emailinfo.SSCM)+"</td><td >"+str(Emailinfo.REMANING)+"</td><td>Acquiring</td></tr>"
+
+			Table_info = ""
+			Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
+
+			Error_Info = Header + Table_start + Table_info + Table_End
+
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
+
+			# Create new SmtpClient object
+			mailClient = SmtpClient()
+
+			# Set the host and port (eg. smtp.gmail.com)
+			mailClient.Host = "smtp.gmail.com"
+			mailClient.Port = 587
+			mailClient.EnableSsl = "true"
+
+			# Setup NetworkCredential
+			mailCred = NetworkCredential()
+			mailCred.UserName = str(LOGIN_CRE.Username)
+			mailCred.Password = str(LOGIN_CRE.Password)
+			mailClient.Credentials = mailCred
+
+			#Current user email(ToEmail)
+			#UserId = User.Id
+			#Log.Info("123 UserId.UserId --->"+str(UserId))
+			UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
+			#Log.Info("123 UserEmail.email --->"+str(UserEmail.email))
+
+			# Create two mail adresses, one for send from and the another for recipient
+			if UserEmail is None:
+				toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
+			else:
+				toEmail = MailAddress(UserEmail.email)
+			fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+
+			# Create new MailMessage object
+			msg = MailMessage(fromEmail, toEmail)
+
+			# Set message subject and body
+			msg.Subject = "Quote Successfully Sent to SSCM"
+			msg.IsBodyHtml = True
+			msg.Body = Error_Info
+
+			# Bcc Emails			
+
+			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail1) 
+
+			copyEmail2 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail2)
+
+			copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail3) 
+
+			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail4)
+
+			copyEmail5 = MailAddress("ashish.gandotra@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail5)
+			
+			copyEmail6 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail6)
+
+			# Send the message
+			mailClient.Send(msg)		
 		
-		SAQSCO_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCO)+"'' ) BEGIN DROP TABLE "+str(SAQSCO)+" END  ' ")
-		
-		SAQIEN_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQIEN)+"'' ) BEGIN DROP TABLE "+str(SAQIEN)+" END  ' ")
-		
-		SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
+		if "Status: 400" in  crm_response:
+			Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #bd{color : 'black';} </style></head><body id = 'bd'>"
 
-		SAQSAP_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAP)+"'' ) BEGIN DROP TABLE "+str(SAQSAP)+" END  ' ")
-		
-		SAQSAE_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSAE)+"'' ) BEGIN DROP TABLE "+str(SAQSAE)+" END  ' ")
-		
-		ToEml = SqlHelper.GetFirst("SELECT ISNULL(OWNER_ID,'X0116959') AS OWNER_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.QUOTE_ID = '"+str(Qt_id[0])+"'  ") 
+			Table_start = "<p>Hi Team,<br><br>The Quote Id "+Qt_id[0]+" is not triggered for SSCM Pricing for below error.<br><br>"+str(crm_response)+"</p><br>"
+			
+			Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
+			Table_info = ""     
 
-		Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;} #grey{background: rgb(245,245,245);} #bd{color : 'black'} </style></head><body id = 'bd'>"
+			Error_Info = Header + Table_start + Table_info + Table_End
 
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
 
-		Table_start = "<p>Hi Team,<br><br>The Tools and Assembly information has been successfully sent to retrieve the cost information from SSCM for the below Quote</p><table class='table table-bordered'><tr><th id ='grey'>QUOTE ID</th><th id = 'grey'>TOTAL TOOLS (CPQ)</th><th id = 'grey'>TOOLS SENT (SSCM)</th><th id = 'grey'>TOOLS NOT SENT TO SSCM (NO ASSEMBLY MAPPED)</th><th id = 'grey'>PRICING STATUS</th></tr><tr><td >"+str(Qt_id[0])+"</td><td >"+str(Emailinfo.CPQ)+"</td ><td >"+str(Emailinfo.SSCM)+"</td><td >"+str(Emailinfo.REMANING)+"</td><td>Acquiring</td></tr>"
+			# Create new SmtpClient object
+			mailClient = SmtpClient()
 
-		Table_info = ""
-		Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
+			# Set the host and port (eg. smtp.gmail.com)
+			mailClient.Host = "smtp.gmail.com"
+			mailClient.Port = 587
+			mailClient.EnableSsl = "true"
 
-		Error_Info = Header + Table_start + Table_info + Table_End
+			# Setup NetworkCredential
+			mailCred = NetworkCredential()
+			mailCred.UserName = str(LOGIN_CRE.Username)
+			mailCred.Password = str(LOGIN_CRE.Password)
+			mailClient.Credentials = mailCred
 
-		LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
-
-		# Create new SmtpClient object
-		mailClient = SmtpClient()
-
-		# Set the host and port (eg. smtp.gmail.com)
-		mailClient.Host = "smtp.gmail.com"
-		mailClient.Port = 587
-		mailClient.EnableSsl = "true"
-
-		# Setup NetworkCredential
-		mailCred = NetworkCredential()
-		mailCred.UserName = str(LOGIN_CRE.Username)
-		mailCred.Password = str(LOGIN_CRE.Password)
-		mailClient.Credentials = mailCred
-
-		#Current user email(ToEmail)
-		#UserId = User.Id
-		#Log.Info("123 UserId.UserId --->"+str(UserId))
-		UserEmail = SqlHelper.GetFirst("SELECT isnull(email,'INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM') as email FROM saempl (nolock) where employee_id  = '"+str(ToEml.OWNER_ID)+"'")
-		#Log.Info("123 UserEmail.email --->"+str(UserEmail.email))
-
-		# Create two mail adresses, one for send from and the another for recipient
-		if UserEmail is None:
+			# Create two mail adresses, one for send from and the another for recipient
 			toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-		else:
-			toEmail = MailAddress(UserEmail.email)
-		fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
+			fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
 
-		# Create new MailMessage object
-		msg = MailMessage(fromEmail, toEmail)
+			# Create new MailMessage object
+			msg = MailMessage(fromEmail, toEmail)
 
-		# Set message subject and body
-		msg.Subject = "Quote Successfully Sent to SSCM"
-		msg.IsBodyHtml = True
-		msg.Body = Error_Info
+			# Set message subject and body
+			msg.Subject = "CPQ to SSCM - Triggering Error Notification"
+			msg.IsBodyHtml = True
+			msg.Body = Error_Info
 
-		# Bcc Emails	
-		copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail4)
+			# CC Emails 	
 
-		copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail1) 
+			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail1) 		
 
-		#copyEmail2 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
-		#msg.Bcc.Add(copyEmail2)
+			copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			msg.Bcc.Add(copyEmail3)	
 
-		copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail3) 
+			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail4)
 
-		copyEmail5 = MailAddress("ashish.gandotra@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail5)
-		
-		copyEmail6 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-		msg.Bcc.Add(copyEmail6)
+			copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail5)
 
-		# Send the message
-		mailClient.Send(msg)		
-		
-
+			copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail6)
+			
+			# Send the message
+			mailClient.Send(msg)
 	if Flag == "True":
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": str(crm_response)}]})
 	else:

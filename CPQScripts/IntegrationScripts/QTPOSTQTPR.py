@@ -533,7 +533,7 @@ try:
 							
 
 							# Create two mail adresses, one for send from and the another for recipient
-							toEmail = MailAddress("baji.baba@bostonharborconsulting.com")
+							toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 							
 							fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")	
 
@@ -541,7 +541,7 @@ try:
 							msg = MailMessage(fromEmail, toEmail)							
 
 							# Set message subject and body
-							msg.Subject = "ON HOLD - COSTING- AMAT CPQ QA"
+							msg.Subject = "ON HOLD - COSTING- AMAT CPQ DEV"
 							msg.IsBodyHtml = True
 							msg.Body = Error_Info
 
@@ -549,8 +549,17 @@ try:
 							copyEmail = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail)					
 
-							copyEmail1 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
-							msg.CC.Add(copyEmail1)
+							copyEmail2 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail2)
+
+							copyEmail3 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail3) 						
+
+							copyEmail4 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail4) 
+
+							copyEmail5 = MailAddress("baji.baba@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail5) 
 
 							# Bcc Emails	
 							if len(UserEmail) > 0:
@@ -646,7 +655,7 @@ try:
 						msg = MailMessage(fromEmail, toEmail)
 
 						# Set message subject and body
-						msg.Subject = "SSCM to CPQ - Pricing SAQICO Error Notification"
+						msg.Subject = "SSCM to CPQ - SAQICO Error Notification"
 						msg.IsBodyHtml = True
 						msg.Body = Error_Info
 
@@ -660,11 +669,21 @@ try:
 						copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
 						msg.CC.Add(copyEmail6) 
 
+						copyEmail7 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail7) 
+
+						copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail1) 						
+
+						copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail3) 
+
+
 						# Send the message
 						mailClient.Send(msg)
 					if Check_flag == 1:
 						#Status Empty in SYINPL
-						StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET STATUS = '''' FROM SYINPL (NOLOCK) A WHERE SESSION_ID=''"+str(SYINPL_SESSION.A)+"''   AND  STATUS = ''INPROGRESS'' '")
+						StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET STATUS = ''Hold'' FROM SYINPL (NOLOCK) A WHERE SESSION_ID=''"+str(SYINPL_SESSION.A)+"''   AND  STATUS = ''INPROGRESS'' '")
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Session is running.Status is Inprogress"}]})
 		
