@@ -47,6 +47,7 @@ class SyncQuoteAndCustomTables:
             'SalesUnit':self.quote.GetCustomField('SalesUnit').Content,
             'DistributionChannel':self.quote.GetCustomField('DistributionChannel').Content,
             'Division':self.quote.GetCustomField('Division').Content,
+            'PrimaryContactName' : self.quote.GetCustomField('PrimaryContactName').Content,
             'SalesOfficeID':self.quote.GetCustomField('SalesOfficeID').Content,            
             'SalesPerson':self.quote.GetCustomField('SalesPerson').Content,
             'PaymentTerms':self.quote.GetCustomField('PaymentTerms').Content,
@@ -835,7 +836,21 @@ class SyncQuoteAndCustomTables:
                                 }
 
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
-
+                    if custom_fields_detail.get("PrimaryContactName"):
+                        primary_contact_update = {
+                            "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+                            "ADDRESS": "",
+                            "EMAIL": "",
+                            "IS_MAIN": "",
+                            "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+                            "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+                            "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                            "PARTY_ID": "",
+                            "PARTY_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+                            "PARTY_ROLE": "PRIMARY CONTACT",
+                            "PHONE": ""
+                        }
+                        quote_involved_party_table_info.AddRow(primary_contact_update)
                     if self.quote.BillToCustomer:
                         bill_to_customer = self.quote.BillToCustomer
                         billtocustomer_quote_data = {
