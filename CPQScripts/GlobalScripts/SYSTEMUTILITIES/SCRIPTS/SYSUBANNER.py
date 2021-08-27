@@ -2609,7 +2609,7 @@ def Related_Sub_Banner(
 			sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
 		elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
 			sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  ) 
-
+        Trace.Write('sec_rel_sub_bnr----'+str(sec_rel_sub_bnr))
 	return sec_rel_sub_bnr,recall_edit,buttonvisibility
 try:
 	CurrentRecordId = Param.CurrentRecordId
