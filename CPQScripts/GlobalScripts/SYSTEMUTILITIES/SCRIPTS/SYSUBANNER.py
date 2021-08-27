@@ -2466,9 +2466,9 @@ def Related_Sub_Banner(
 							
 						else:
 							Trace.Write("hide PRICING for fts")
-							Trace.Write('2469---')
+							Trace.Write('2469--sec_rel_sub_bnr---'=str(sec_rel_sub_bnr))
 							if quote_status.QUOTE_STATUS != 'APPROVED':
-								Trace.Write('2469--btn----'+str(btn))
+								#Trace.Write('2469--btn----'+str(btn))
 								sec_rel_sub_bnr += (btn)
 					# Appending Price button in Quote Items Node
 
