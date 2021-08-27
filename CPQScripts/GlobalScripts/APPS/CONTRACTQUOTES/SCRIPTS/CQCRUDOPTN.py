@@ -3270,7 +3270,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND
 								SYSPBT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 								WHERE 
-								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'
+								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = 'Z0091')
 														
 							""".format(
 								TreeParam="Z0046",
@@ -3284,6 +3284,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								
 							)
 							)
+				Quote.SetGlobal("KPI","NO")
+
 
 			#4393 start
 			getdate = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
