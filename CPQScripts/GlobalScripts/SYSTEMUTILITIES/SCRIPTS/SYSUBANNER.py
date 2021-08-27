@@ -2406,6 +2406,7 @@ def Related_Sub_Banner(
         if getsaletypeloc:
             # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
             Trace.Write("multi_buttons"+str(len(multi_buttons)))
+            buttonvisibility = ''
             if len(multi_buttons) > 0:						
                 if TreeParam == "Quote Items":
                     # Appending Price button in Quote Items Node
@@ -2442,14 +2443,19 @@ def Related_Sub_Banner(
                                                 if getPRGBVD and get_SAQFGV and get_SAQEDVD:
                                                     if getPRGBVD.VALUEDRIVER_ID and get_SAQFGV.VALUEDRIVER_ID and get_SAQEDVD.VALUEDRIVER_ID:
                                                         Trace.Write('button found')
+                                                        buttonvisibility = "Show_button"
                                             else:
                                                 Trace.Write('No button-2423-')
+                                                buttonvisibility = "Hide_button"
                                         else:
                                             Trace.Write('No button-2423-')
+                                            buttonvisibility = "Hide_button"
                                     else:
                                         Trace.Write('No button-2423-')
+                                        buttonvisibility = "Hide_button"
                                 else:
                                     Trace.Write('No button--')
+                                    buttonvisibility = "Hide_button"
                         #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
                         if len(fts_scenario_check) == 2:
                             Trace.Write("hide PRICING for fts--2411--")
@@ -2460,7 +2466,9 @@ def Related_Sub_Banner(
                             
                         else:
                             Trace.Write("hide PRICING for fts")
+                            Trace.Write('2469---')
                             if quote_status.QUOTE_STATUS != 'APPROVED':
+                                Trace.Write('2469--btn----'+str(btn))
                                 sec_rel_sub_bnr += (btn)
                     # Appending Price button in Quote Items Node
 
