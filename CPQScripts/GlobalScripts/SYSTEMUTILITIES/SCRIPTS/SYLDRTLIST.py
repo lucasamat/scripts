@@ -7584,24 +7584,50 @@ class SYLDRTLIST:
                     Trace.Write("7105")
                     Trace.Write("select_obj_str+++BILLING"+str(select_obj_str))    
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]") 
-                    Qury_str = (
-                        "select top "
-                        + str(PerPage)
-                        + " "
-                        + str(select_obj_str)
-                        + ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by "
-                        + str(Wh_API_NAMEs)
-                        + ") AS ROW, * from "
-                        + str(ObjectName)
-                        + " (nolock) "
-                        + str(Qustr)
-                        + " ) m where m.ROW BETWEEN "
-                        + str(Page_start)
-                        + " and "
-                        + str(Page_End)
-                        + " "
-                    )
-                    QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+                    if str(RECORD_ID) == "SYOBJR-00007":
+                       Trace.Write("Pagination ifffff")
+                       pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
+                        if Qustr:
+                            Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+                        pivot_query_str = """
+                                    SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
+                                    AS ROW, *
+                                        FROM (
+                                            SELECT 
+                                                {Columns}                                           
+                                            FROM {ObjectName}
+                                            {WhereString}
+                                        ) AS IQ
+                                        PIVOT
+                                        (
+                                            SUM(BILLING_AMOUNT)
+                                            FOR BILLING_DATE IN ({PivotColumns})
+                                        )AS PVT
+                                    """.format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+                                                WhereString=Qustr, PivotColumns=pivot_columns)                        
+                        Qury_str = """
+                                    SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
+                                    """.format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
+                        QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str) 
+                    else:
+                        Qury_str = (
+                            "select top "
+                            + str(PerPage)
+                            + " "
+                            + str(select_obj_str)
+                            + ",CpqTableEntryId from ( select ROW_NUMBER() OVER(order by "
+                            + str(Wh_API_NAMEs)
+                            + ") AS ROW, * from "
+                            + str(ObjectName)
+                            + " (nolock) "
+                            + str(Qustr)
+                            + " ) m where m.ROW BETWEEN "
+                            + str(Page_start)
+                            + " and "
+                            + str(Page_End)
+                            + " "
+                        )
+                        QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     
                 try:
                     Query_Obj = Sql.GetList(Qury_str)
