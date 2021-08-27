@@ -723,7 +723,13 @@ class Entitlements:
 							GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 							
 							Sql.RunQuery("INSERT INTO SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_ID,ADNPRD_DESCRIPTION,ADNPRD_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID) SELECT CONVERT(VARCHAR(4000),NEWID()),'Z0046','{description}','{recordid}',SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID FROM SAQTSV (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID WHERE SAQTSV.SERVICE_ID = 'Z0091' AND SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{quote}'".format(description=GetMaterial.SAP_DESCRIPTION,recordid=GetMaterial.MATERIAL_RECORD_ID,quote=self.ContractRecordId))
-
+							if self.treeparam == "Z0091":
+								where = ""
+							elif self.treeparentparam == "Z0091":
+								where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
+							elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
+								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
+							
 							Sql.RunQuery(
 							"""
 							INSERT SAQSCO (
@@ -815,7 +821,7 @@ class Entitlements:
 									GETDATE()
 									FROM SAQSCO (NOLOCK)
 									WHERE 
-									QUOTE_RECORD_ID = '{QuoteRecordId}' 
+									QUOTE_RECORD_ID = '{QuoteRecordId}' {where}
 															
 								""".format(
 									TreeParam="Z0046",
@@ -825,16 +831,23 @@ class Entitlements:
 									rec=GetMaterial.MATERIAL_RECORD_ID,
 									UserName=User.UserName,
 									UserId=User.Id,
+									where=where
 									
 								)
 								)
 					
-					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No" and self.treeparam == 'Z0091':
+					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No":
 						
 						Trace.Write("NO to Bonus & Penalty Tied to KPI")
-
-						Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))	
-						Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId))
+						if self.treeparam == 'Z0091':
+							Sql.RunQuery("DELETE FROM SAQSAO WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = 'Z0046'".format(self.ContractRecordId))
+							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId))
+						else:
+							if self.treeparentparam == "Z0091":
+								where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
+							elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
+								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
+							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {where}".format(self.ContractRecordId,where))
 
 					totalpriceent = ""					
 					decimal_place ="2"
