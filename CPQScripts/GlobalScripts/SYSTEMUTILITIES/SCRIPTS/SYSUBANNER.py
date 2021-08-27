@@ -39,7 +39,7 @@ def Related_Sub_Banner(
     except:
         contract_quote_record_id = ''	
     
-    Trace.Write('contract_quote_record_id==='+str(Quote.GetGlobal("contract_quote_record_id")))
+    # Trace.Write('contract_quote_record_id==='+str(Quote.GetGlobal("contract_quote_record_id")))
     try:
         current_prod = Product.Name
         #Trace.Write('current_prod==GLOBAL---='+str(Quote.GetGlobal("contract_quote_record_id")))
