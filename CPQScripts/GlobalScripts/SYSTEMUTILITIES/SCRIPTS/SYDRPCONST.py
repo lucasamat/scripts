@@ -249,7 +249,9 @@ class DropConstraint:
                             if UqforeignKey == 0:
                                 delete_query_string = """DELETE FROM SYOBJC WHERE OBJECT_APINAME = '{objectname}' AND CONSTRAINT_TYPE LIKE '%NOT%' and OBJECTFIELD_APINAME = '{apiname_column}'""".format(objectname=str(self.ObjectName),apiname_column = str(objectApiName))
                                 Sql.RunQuery(delete_query_string)
-                            ErrorMsg=''
+                                ErrorMsg=''
+                            else:
+                                ErrorMsg='ErrorMsg'
                             Trace.Write('209--215-----ErrorMsg--------'+str(ErrorMsg))
                             UQ_CONSTRAINT = Sql.GetFirst(
                                 "SELECT result=COUNT(1) FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE FK WHERE FK.CONSTRAINT_NAME LIKE '%UQ%' AND COLUMN_NAME = '"
