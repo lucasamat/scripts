@@ -1561,7 +1561,7 @@ def CommonTreeViewHTMLDetail(
 							+ current_obj_value
 							+ '" type="text" title="'
 							+ str(current_obj_value)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "myFunction(this)" '
+							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '
 							+ disable
 							+ " ><option value='Select'>..Select</option>"
 						)
