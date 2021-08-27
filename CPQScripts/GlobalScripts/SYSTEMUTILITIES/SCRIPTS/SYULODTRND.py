@@ -1133,7 +1133,7 @@ def CommonTreeViewHTMLDetail(
 					+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i>'
 				)			
 				Trace.Write("CHKZ_MODE_J "+str(MODE))
-				if (str(val.REQUIRED).upper() == "TRUE" or val.REQUIRED == "1") and (MODE == "VIEW" or MODE == "EDIT") :
+				if (str(val.REQUIRED).upper() == "TRUE" or val.REQUIRED == "1") and (MODE == "VIEW" or MODE == "EDIT" or MODE == "CANCEL") :
 					sec_str += ""
 					sec_str += '<span class="req-field">*</span>'
 				sec_str += "</a></td>"
