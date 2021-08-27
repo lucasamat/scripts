@@ -1179,10 +1179,10 @@ def Related_Sub_Banner(
                         Trace.Write("Lineno:1179")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
-                        #SecondLable = "Fab Location ID"
-                        #SecondValue = str(TreeParentParam)
-                        #ThirdLable = "Greenbook"
-                        #ThirdValue = str(TreeParam)
+                        SecondLable = "Fab Location ID"
+                        SecondValue = str(TreeParentParam)
+                        ThirdLable = "Greenbook"
+                        ThirdValue = str(TreeParam)
                         # FourthLable = "Fab Location ID"
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
@@ -1636,10 +1636,10 @@ def Related_Sub_Banner(
         Trace.Write("1359===========")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = ""
-        ThirdValue = ""	
+        #SecondLable = "Fab Location ID"
+        #SecondValue = str(TreeParentParam)
+        #ThirdLable = ""
+        #ThirdValue = ""	
 
     elif (TreeSuperParentParam == "Sending Equipment" or TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" )):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
