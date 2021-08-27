@@ -1149,16 +1149,16 @@ def Related_Sub_Banner(
                         # FifthValue = "ALL" 
                 if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
                     Trace.Write("Fab2333")
-                    #if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
-                    #	if TreeParam == "Receiving Equipment":			
-                    #		get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
-                    #	else:
-                    #		get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
-                    #	Trace.Write("Fab_NODE_J")
-                    #	PrimaryLable = "Product Offering ID"
-                    #	PrimaryValue = str(TreeSuperParentParam)
-                    #	SecondLable = "Fab Location ID"
-                    #	SecondValue = str(TreeParentParam)
+                    if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
+                    	if TreeParam == "Receiving Equipment":			
+                    		get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'")
+                    	else:
+                    		get_val = Sql.GetFirst("select FABLOCATION_ID from SAQSGB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"' and FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+                    	Trace.Write("Fab_NODE_J")
+                    	PrimaryLable = "Product Offering ID"
+                    	PrimaryValue = str(TreeSuperParentParam)
+                    	SecondLable = "Fab Location ID"
+                    	SecondValue = str(TreeParentParam)
                         # ThirdLable = ""
                         # ThirdValue = ""
                     if subTabName == "Equipment Fab Value Drivers":
@@ -1178,10 +1178,10 @@ def Related_Sub_Banner(
                         Trace.Write("Lineno:1179")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
-                        #SecondLable = "Fab Location ID"
-                        #SecondValue = str(TreeParentParam)
-                        #ThirdLable = "Greenbook"
-                        #ThirdValue = str(TreeParam)
+                        SecondLable = "Fab Location ID"
+                        SecondValue = str(TreeParentParam)
+                        ThirdLable = "Greenbook"
+                        ThirdValue = str(TreeParam)
                         # FourthLable = "Fab Location ID"
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
@@ -1635,8 +1635,8 @@ def Related_Sub_Banner(
         Trace.Write("1359===========")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
-        #SecondLable = "Fab Location ID"
-        #SecondValue = str(TreeParentParam)
+        SecondLable = "Fab Location ID"
+        SecondValue = str(TreeParentParam)
         #ThirdLable = ""
         #ThirdValue = ""	
 
@@ -1956,6 +1956,20 @@ def Related_Sub_Banner(
         FifthValue = ''
         SixthLable = ''
         SixthValue = ''
+    elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeSuperParentParam)
+        SecondLable = "Product Offering Description"
+        SecondValue = getService.SERVICE_DESCRIPTION
+        ThirdLable = "Product Offering Type"
+        ThirdValue = str(TreeTopSuperParentParam)
+        FourthLable = "Fab Location ID"
+        FourthValue = str(TreeParam)
+        FifthLable = ""
+        FifthValue = ""
+        SixthLable = ""
+        SixthValue = ""
                 
 
     if str(Image) != "":
