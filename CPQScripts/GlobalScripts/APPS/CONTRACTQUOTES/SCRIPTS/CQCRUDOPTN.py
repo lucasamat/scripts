@@ -3183,9 +3183,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			update_warranty_enddate_alert = ''
 			for val in get_warrent_dates:
 				if val.WARRANTY_END_DATE:
-					WARRANTY_val = datetime.strptime(str(val.WARRANTY_END_DATE), "%Y-%m-%d")
+					WARRANTY_val = datetime..datetime.strptime(str(val.WARRANTY_END_DATE), "%Y-%m-%d")
 					get_con_date = str(getdate.CONTRACT_VALID_FROM).split(" ")[0]
-					get_con_date = datetime.strptime(str(get_con_date), "%m/%d/%Y")
+					get_con_date = datetime..datetime.strptime(str(get_con_date), "%m/%d/%Y")
 					Trace.Write('get_con_date---562--'+str(type(get_con_date)))
 					Trace.Write('WARRANTY_val---562--'+str(type(WARRANTY_val)))
 					if WARRANTY_val > get_con_date:
