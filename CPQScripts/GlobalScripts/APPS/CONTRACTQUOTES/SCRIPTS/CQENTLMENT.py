@@ -847,11 +847,11 @@ class Entitlements:
 							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId))
 						else:
 							if self.treeparentparam == "Z0091":
-								where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
+								where = " AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam)
 							elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
-								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
+								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam)
 							elif tableName == 'SAQSCE':
-								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'".format(self.treeparam,self.treeparentparam,EquipmentId)
+								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam,EquipmentId)
 							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {}".format(self.ContractRecordId,where))
 							
 
