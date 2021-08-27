@@ -16,7 +16,7 @@ import CQPARTIFLW
 import CQVLDRIFLW
 import CQTVLDRIFW
 from SYDATABASE import SQL
-from datetime import datetime,date
+#from datetime import datetime
 #from datetime import datetime
 #import time
 Sql = SQL()
