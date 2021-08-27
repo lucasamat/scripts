@@ -271,7 +271,7 @@ try:
 			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail4)
 
-			copyEmail5 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
+			copyEmail5 = MailAddress("arivazhagan.natarajan@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail5)
 
 			copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
