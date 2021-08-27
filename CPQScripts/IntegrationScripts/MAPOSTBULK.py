@@ -183,13 +183,13 @@ try:
 				+ "'   AND SAP_PART_NUMBER = '''' '"
 			)
 
-	primaryQueryItems = SqlHelper.GetFirst(
+	"""primaryQueryItems = SqlHelper.GetFirst(
 		""
 		+ str(Parameter1.QUERY_CRITERIA_1)
 		+ "  MAMSOP_INBOUND SET MAMSOP_INBOUND.ERROR = MAMSOP_INBOUND.ERROR + ''||''+convert(nvarchar,SYMSGS.MESSAGE_CODE),MAMSOP_INBOUND.PROCESS_STATUS=''ERROR'' FROM MAMSOP_INBOUND(NOLOCK)  LEFT JOIN SYMSGS(NOLOCK) ON SYMSGS.MESSAGE_CODE = ''200012'' WHERE MAMSOP_INBOUND.PROCESS_STATUS IN (''Inprogress'',''ERROR'') AND SYMSGS.OBJECT_APINAME = ''MAMSOP'' AND MAMSOP_INBOUND.TIMESTAMP='"
 		+ str(timestamp_sessionid)
 		+ "'  AND PLANT_ID = '''''"
-	)
+	)"""
 
 	primaryQueryItems = SqlHelper.GetFirst(
 		""
@@ -527,7 +527,7 @@ try:
 		
 		else:
 			Error_check = 0
-	Log.Info("456789 ---->"+str(Error_list))		
+	#Log.Info("456789 ---->"+str(Error_list))		
 	if len(Error_list) > 0:
 	
 		Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;}</style></head><body>"
@@ -592,12 +592,16 @@ try:
 		
 		# Send the message
 		mailClient.Send(msg)
+		Result = '{"Response": [{"Status": "400", "Message": "Error mail sended"}]}'
+
+	else:
+		Result = '{"Response": [{"Status": "200", "Message": "Data successfully uploaded"}]}'
+
 
 	#Deleting dynamically created table(ERROR_LOG
-	#TempTable = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(Temp_Table_Name)+"'' ) BEGIN DROP TABLE "+str(Temp_Table_Name)+" END'")
+	TempTable = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(Temp_Table_Name)+"'' ) BEGIN DROP TABLE "+str(Temp_Table_Name)+" END'")
 	ERRLOG_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''TEMP_PROCESS'' ) BEGIN DROP TABLE TEMP_PROCESS END ' ")
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": "Data successfully uploaded"}]})
-		
+	
 except:
 
 	#Deleting dynamically created table(ERROR_LOG)
@@ -606,4 +610,5 @@ except:
 
 	Log.Info("BULK MATMAS ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("BULK MATMAS ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
+	error_info = {"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}
+	Result  = str(error_info)
