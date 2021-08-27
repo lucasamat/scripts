@@ -339,9 +339,9 @@ def EntitlementUpdate(whereReq=None,add_where=None,AttributeID=None,NewValue=Non
                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                    
                     <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
                     <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
                     <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
