@@ -182,13 +182,13 @@ for data in Quoteinfoquery:
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
 
-		Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
-		Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
+		#Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
+		#Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
 		
-		if "True" in Hadoop_response: 
-			StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
+		#if "True" in Hadoop_response: 
+			#StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
 		
 
-		ApiResponse = ApiResponseFactory.JsonResponse(Hadoop_response)
+		ApiResponse = ApiResponseFactory.JsonResponse(Final_json)
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data not available"}]})
