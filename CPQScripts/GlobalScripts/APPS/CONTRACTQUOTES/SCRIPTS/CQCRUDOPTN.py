@@ -1118,6 +1118,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["SALESORG_ID"]=OfferingRow_detail.get("SALESORG_ID")
 			tbrow["SALESORG_NAME"]=OfferingRow_detail.get("SALESORG_NAME")
 			tbrow["CPS_MATCH_ID"] = 11
+			tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
+			tbrow["CPQTABLEENTRYDATEADDED"] = self.datetime_value
 			#tbrow["IS_DEFAULT"] = '1'
 
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
