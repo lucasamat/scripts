@@ -3781,7 +3781,7 @@ def EntitlementTreeViewHTMLDetail(
 							+ " disabled></td>"
 						)
 						sec_str_boot +=(
-							'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a onclick="" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td>
+							'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a onclick="" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td>'
 						)
 
 					sec_str_boot +=	('</tr>')
