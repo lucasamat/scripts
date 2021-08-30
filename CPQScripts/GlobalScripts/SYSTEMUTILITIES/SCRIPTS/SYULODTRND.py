@@ -3740,15 +3740,13 @@ def EntitlementTreeViewHTMLDetail(
 				Section_id = get_sec.RECORD_ID
 				Section_desc = get_sec.SECTION_NAME
 				
-				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <tbody>')
+				sec_str_boot += ('<div id="sc_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <tbody>')
 				GetSEFL = Sql.GetList(
 					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(Section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
 				for sefl in GetSEFL:
 					sec_str_boot += (
-							'<tr class="iconhvr brdbt" style="'
-							+ str(add_style)
-							+ ' "><td class="wth350"><abbr title="'
+							'<tr class="iconhvr brdbt" style=" "><td class="wth350"><abbr title="'
 							+ str(sefl.FIELD_LABEL)
 							+ '" ><label class="pad5mrgbt0">'
 							+ str(sefl.FIELD_LABEL)
