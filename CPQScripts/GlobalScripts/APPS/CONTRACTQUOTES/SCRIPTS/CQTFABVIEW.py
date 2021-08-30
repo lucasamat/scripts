@@ -19,6 +19,7 @@ try:
 except:
 	CurrentTabName = "Quotes"
 Qt_rec_id = Quote.GetGlobal("contract_quote_record_id")
+Revision = Quote.GetGlobal("quote_revision_record_id")
 userId = str(User.Id)
 userName = str(User.UserName)
 TreeParam = Product.GetGlobal("TreeParam")
@@ -90,6 +91,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(Qt_rec_id)
 					+ "' AND VALUEDRIVER_ID = '"
 					+ str(field_name)
+					+ "' AND QTEREV_RECORD_ID = '"
+					+ str(Revision)
 					+ "'"
 				)
 				userselected = []
@@ -145,6 +148,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(field_name)
 					+ "' AND FABLOCATION_ID = '"
 					+ str(TreeParam)
+					+ "' AND QTEREV_RECORD_ID = '"
+					+ str(Revision)
 					+ "'"
 				)
 				
@@ -199,7 +204,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(TreeParam)
 					+ "'"
 				)
-				selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+				selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(Revision) + "'")
 				userselected = []
 				userselectedeff =[]
 				if selecter:
@@ -331,10 +336,10 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "'"
 		)
-		Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ(NOLOCK) WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
+		Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ(NOLOCK) WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'"+ "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
 		if TreeTopSuperParentParam == 'Quote Items':
-			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND EQUIPMENT_ID = '"+str(Get_EQUIP.EQUIPMENT_ID)+"'")
+			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND EQUIPMENT_ID = '"+str(Get_EQUIP.EQUIPMENT_ID)+ "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
 		userselected = []
 		userselectedeff =[]
 		if selecter:
@@ -461,6 +466,8 @@ def servicefabview(ACTION,CurrentRecordId):
 			+ str(Qt_rec_id)
 			+ "' AND VALUEDRIVER_ID = '"
 			+ str(field_name)
+			+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
 			+ "'"
 		)
 		userselected = []
@@ -577,7 +584,9 @@ def costfabview(ACTION,CurrentRecordId):
 				+ str(field_name)
 				+ "' AND QTESRV_RECORD_ID = '"
 				+ str(CurrentRecordId)
-				+ "' "
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(Revision)
+				+ "'"
 			)
 		else:
 			selecter = Sql.GetList(
@@ -587,7 +596,9 @@ def costfabview(ACTION,CurrentRecordId):
 				+ str(field_name)
 				+ "' AND SERVICE_ID = '"
 				+ str(TreeParam)
-				+ "' "
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(Revision)
+				+ "'"
 			)
 		userselected = userselectedeff =  []
 		if selecter:
@@ -703,6 +714,8 @@ def Comp_fabview(ACTION,CurrentRecordId):
 			+ str(field_name)
 			+ "' AND FABLOCATION_ID = '"
 			+ str(TreeParam)
+			+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
 			+ "'"
 		)
 		
@@ -811,7 +824,7 @@ def item_gb_fabview(ACTION,CurrentRecordId):
 					+ str(TreeParam)
 					+ "'"
 				)
-				selecter = Sql.GetList("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+				selecter = Sql.GetList("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
 				userselected = []
 				if selecter:
 					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter if Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION]
@@ -934,6 +947,8 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "' AND SERVICE_ID = '"
 			+ str(TreeParentParam)
+			+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
 			+ "'"
 		)
 		
@@ -1046,7 +1061,9 @@ def Offergreenfab(ACTION,CurrentRecordId):
 				+ str(TreeParam)
 				+ "'"
 			)
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
+			+ "'")
 		userselecteddrive = []
 		
 		if selecter:
@@ -1145,7 +1162,9 @@ def Offerequipfab(ACTION,CurrentRecordId):
 				+ str(TreeParam)
 				+ "'"
 			)
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(CurrentRecordId)+"' ")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(CurrentRecordId)+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
+			+ "'")
 		userselecteddrive = []
 		
 		if selecter:
@@ -1205,9 +1224,11 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	userId = str(User.Id)
 	userName = str(User.UserName)
-	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "'")
-	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTSO(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "'")
-	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "'")
+	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
+	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTSO(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(Revision)+ "'")
+	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"
+			+ str(Revision)
+			+ "'")
 	for val in FabLocateDT:
 		getval = str(val).replace("('","").replace("',)","")
 		getdescription =getval.split('-')[0]		
@@ -1225,8 +1246,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			
 			tablerow = {}
 			SAQTVDENTRY = Sql.GetFirst(
-				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' ".format(
-					str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}".format(
+					str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),Revision
 				)
 			)
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1260,13 +1281,13 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				tablerow2 = {}
 				tableInfo2 = SqlHelper.GetTable("SAQVDV")
 				Q = Sql.GetFirst(
-					"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'".format(
-						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+					"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'".format(
+						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),Revision
 					)
 				)
 				SAQVDVENTRY = Sql.GetFirst(
-					"Select QUOTE_VALUE_DRIVER_VALUE_RECORD_ID,CpqTableEntryId,QTEVDR_RECORD_ID FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'".format(
-						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+					"Select QUOTE_VALUE_DRIVER_VALUE_RECORD_ID,CpqTableEntryId,QTEVDR_RECORD_ID FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{} '".format(
+						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),Revision
 					)
 				)
 				if SAQVDVENTRY:
@@ -1320,8 +1341,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			)
 			
 			SAQFVDENTRY = Sql.GetFirst(
-				"Select QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEFBL_RECORD_ID ='{}' ".format(
-					str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUE_DRIVER_RECORD_ID),str(GETFABLOC.QUOTE_FABLOCATION_RECORD_ID)
+				"Select QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEFBL_RECORD_ID ='{}'  AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUE_DRIVER_RECORD_ID),str(GETFABLOC.QUOTE_FABLOCATION_RECORD_ID),Revision
 				)
 			)
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1361,14 +1382,18 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					+ str(getdescription)
 					+ "' and QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' and FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "'"
+					+ "'  AND QTEREV_RECORD_ID = '"
+					+ str(Revision)
+					+"'"
 				)
 				GETFABDRIVERS = Sql.GetFirst(
 					"SELECT * FROM SAQFVD WHERE VALUEDRIVER_ID = '"
 					+ str(getdescription)
 					+ "' and QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' and FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "' "
+					+ "'  AND QTEREV_RECORD_ID = '"
+					+ str(Revision)
+					+"'"
 				)
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQFDV")
@@ -1422,21 +1447,21 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			
-			QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND GREENBOOK ='"+str(TreeParam)+"'"
+			QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND GREENBOOK ='"+str(TreeParam)+"' AND QTEREV_RECORD_ID = '" +str(Revision) + "'"
 			Sql.RunQuery(QueryStatement)
 			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			primaryQueryItems = SqlHelper.GetFirst(
 			""
 			+ str(Parameter.QUERY_CRITERIA_1)
-			+ " SAQFGB (FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTEFBL_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_FAB_LOC_GB_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.QTEFBL_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQFEQ A left join SAQFGB b on a.QUOTE_RECORD_ID = ''"+str(Qt_rec_id)+"'' and a.QUOTE_ID =b.QUOTE_ID and a.FABLOCATION_RECORD_ID =b.FABLOCATION_RECORD_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.FABLOCATION_ID = ''"+str(TreeParentParam)+"'' AND a.GREENBOOK = ''"+str(TreeParam)+"'')A ' " )
+			+ " SAQFGB (FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTEFBL_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_FAB_LOC_GB_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.QTEFBL_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQFEQ A left join SAQFGB b on a.QUOTE_RECORD_ID = ''"+str(Qt_rec_id)+"'' and a.QTEREV_RECORD_ID = ''"+str(Revision)+"'' and a.QUOTE_ID =b.QUOTE_ID and a.FABLOCATION_RECORD_ID =b.FABLOCATION_RECORD_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.FABLOCATION_ID = ''"+str(TreeParentParam)+"'' AND a.GREENBOOK = ''"+str(TreeParam)+"'')A ' " )
 			
-			GETFABLOC = Sql.GetFirst("SELECT  * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParentParam)+ "'")
+			GETFABLOC = Sql.GetFirst("SELECT  * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParentParam)+"' AND QTEREV_RECORD_ID = '" +str(Revision) + "'")
 			QTFAB = GETFABLOC.FABLOCATION_RECORD_ID
 			
 			GETFBVD = Sql.GetFirst("SELECT * FROM PRGBVD (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND GREENBOOK ='"+str(TreeParam)+"' ")
-			SAQFVDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_GB_VAL_DRIVER_RECORD_ID FROM SAQFGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'AND FABLOCATION_ID ='{}' AND GREENBOOK ='{}'".format(str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUEDRIVER_RECORD_ID),str(GETFABLOC.FABLOCATION_ID),str(TreeParam)))
-			QTGB = Sql.GetFirst("SELECT * FROM SAQFGB(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_RECORD_ID ='"+str(QTFAB)+"' ")
-			GETVDVD = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID ='"+str(TreeParentParam)+"' AND FABLOCATION_RECORD_ID='"+str(QTFAB)+"'")
+			SAQFVDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_GB_VAL_DRIVER_RECORD_ID FROM SAQFGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'AND FABLOCATION_ID ='{}' AND GREENBOOK ='{}' AND QTEREV_RECORD_ID = '{}'".format(str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUEDRIVER_RECORD_ID),str(GETFABLOC.FABLOCATION_ID),str(TreeParam),Revision))
+			QTGB = Sql.GetFirst("SELECT * FROM SAQFGB(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_RECORD_ID ='"+str(QTFAB)+"' AND QTEREV_RECORD_ID = '" +str(Revision) + "'")
+			GETVDVD = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID ='"+str(TreeParentParam)+"' AND FABLOCATION_RECORD_ID='"+str(QTFAB)+"' AND QTEREV_RECORD_ID = '" +str(Revision) + "'")
 			if SAQFVDENTRY is None:
 				tableInfo = SqlHelper.GetTable("SAQFGD")
 				tablerow = {
