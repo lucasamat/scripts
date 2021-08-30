@@ -193,7 +193,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 		primary_objname = "SAQTMT"
 
 	Oppp_SECT = Sql.GetList(
-		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
@@ -286,7 +286,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						)  
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
-				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO"):
+				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO","QUOTE_EXPIRE_DATE","QUOTE_CREATED_DATE"):
 					try:
 						datetime_value = datetime.strptime(str(eval("col_name." + str(sefl_api))), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y')
 					except:
@@ -295,7 +295,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' title = '"+ str(datetime_value)+"' value = '"
 						+ str(datetime_value)
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='"+ str(sefl_api)+"' title='' tabindex='' disabled=''> </div>"
 					)
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO ends
 				elif sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
@@ -373,6 +373,157 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 		valid_to = ""	
 
 	return sec_str,quote_id,accunt_id,accunt_name,quote_type,sale_type,valid_from,valid_to
+
+def constructidlingattributes(Qt_rec_id, Quote, MODE):    
+	anchor_tag_id_value = ""
+	VAR1 = ""
+	sec_str = ""
+	quote_id=""
+	add_style = ""
+	API_NAME_LIST = []
+	PModel = "disabled"
+	editclick = "QuoteinformationEDIT(this)"
+	edit_action = ""
+	#sec_rec_id = "B0B5E48B-DC63-4B1A-95AC-695973D3AA06"
+	if ACTION == "CONTRACT_ATTR":
+		primary_objname = "CTCNRT"
+	else:
+		primary_objname = "SAQTMT"
+
+	Oppp_SECT = Sql.GetList(
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC != '' AND PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
+	)
+	for sect in Oppp_SECT:
+		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
+		# if (str(sect.SECTION_NAME) == "CONTRACT BOOKING INFORMATION" or str(sect.SECTION_NAME) == "AUDIT INFORMATION" ):
+		#     sec_str += (
+		#         '<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down mt-10px" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'
+		#         + str(sect.RECORD_ID)
+		#         + '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
+		#         + str(sect.SECTION_NAME)
+		#         + "</div></label></div>"
+		#     )
+		
+		# else:
+		sec_html_btn = Sql.GetFirst("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE ACTION_NAME = 'EDIT' AND SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'")
+		if sec_html_btn is not None:
+			edit_action = str(sec_html_btn.HTML_CONTENT).format(rec_id = str(sect.RECORD_ID), edit_click = str(editclick))
+		else:
+			edit_action = ''
+		sec_str += (
+			'''<div onclick="dyn_main_sec_collapse_arrow(this)" 
+			data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
+			'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" 
+				data-target=".sec_'''+str(sect.RECORD_ID)+'''"  id="dyn1577"  data-toggle="collapse"  class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
+			<label data-bind="html: hint" class="onlytext"><div>'''+ str(edit_action) + str(sect.SECTION_NAME)+'''</div></label> </div>'''
+		)
+		
+
+
+		Oppp_SEFL = Sql.GetList(
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+		)
+		for sefl in Oppp_SEFL:
+			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class=  "sec_' + str(sect.RECORD_ID) + ' collapse in "> '
+			if (sefl.FIELD_LABEL) == "Key":
+				sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc; display:none' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+				sec_str += (
+					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+					+ str(sefl.FIELD_LABEL)
+					+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+					+ str(sefl.FIELD_LABEL)
+					+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+				)
+			else:	
+				sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+				sec_str += (
+					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+					+ str(sefl.FIELD_LABEL)
+					+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+					+ str(sefl.FIELD_LABEL)
+					+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+				)
+			sefl_api = sefl.API_FIELD_NAME
+			if ACTION == "CONTRACT_ATTR": 
+				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
+				
+			else:
+				col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "'") 
+			if col_name:
+				if sefl_api == "MASTER_TABLE_QUOTE_RECORD_ID":
+					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTMT", str(eval("col_name." + str(sefl_api))))
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
+						+ str(cpq_key_id)
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)				
+				else:
+					# if sefl_api != "REGION":
+					Trace.Write('At line 289-->'+str(sefl_api))
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)
+					# else:
+					#     sec_str += (
+					#         "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					#     )
+			else:
+
+				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
+			##edit_lock_icon in quote based on permission starts
+			edit_lock_icon = ''
+			permission_chk_query = Sql.GetFirst("""SELECT DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' 
+				Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE 
+				FROM SYOBJD (NOLOCK)
+				INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
+				INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
+				INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
+				INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+				AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
+				WHERE SYSEFL.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND SYSEFL.SECTION_RECORD_ID = '{2}'""".format(str(sefl.RECORD_ID), str(User.Id),str(sect.RECORD_ID)))
+			if permission_chk_query:
+				# if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.QUOTE_STATUS).upper() != "APPROVED":
+				# 	edit_lock_icon = "fa fa-pencil"
+				if str(permission_chk_query.PERMISSION) == "EDITABLE":
+					edit_lock_icon = "fa fa-pencil"	
+				else:
+					edit_lock_icon = "fa fa-lock"  
+			##edit_lock_icon in quote based on permission ends
+			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
+			sec_str += "</div>"
+
+			sec_str += "</div>"
+		sec_str += "</div>"
+
+
+			
+	sec_str += '<table class="wth100mrg8"><tbody>'
+	#Trace.Write("111111" + str(Qt_rec_id))
+
+	sec_str += "</tbody></table></div>"
+	sec_str += "</div>"
+	#Trace.Write(str(sec_str))
+	# if ACTION == "QUOTE_INFO" :
+	# 	quote_id = str(eval("col_name.QUOTE_ID"))
+	# 	accunt_id = str(eval("col_name.ACCOUNT_ID"))
+	# 	accunt_name = str(eval("col_name.ACCOUNT_NAME"))
+	# 	quote_type = str(eval("col_name.QUOTE_TYPE"))
+	# 	sale_type = str(eval("col_name.SALE_TYPE"))
+	# 	valid_from=str(eval("col_name.CONTRACT_VALID_FROM")).split(" ")[0]
+	# 	valid_to = str(eval("col_name.CONTRACT_VALID_TO")).split(" ")[0]
+	# else:
+	# 	quote_id = ""
+	# 	accunt_id = ""
+	# 	accunt_name = ""
+	# 	quote_type = ""
+	# 	sale_type = ""
+	# 	valid_from= ""
+	# 	valid_to = ""	
+
+	return sec_str
 
 def constructapprovalchaininformation(MODE,record_id):    
 	#anchor_tag_id_value = ""
@@ -634,6 +785,15 @@ elif ACTION in ("QUOTE_INFO","CONTRACT_INFO"):
 		Trace.Write("contract_record_id---->" + str(contract_record_id))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructquoteinformation(Qt_rec_id, Quote, MODE))
+elif ACTION in ("QUOTE_ATTR","CONTRACT_ATTR"):
+	if ACTION == "QUOTE_ATTR" :
+		Quote = Quote.GetGlobal("contract_quote_record_id")	
+	## Contract 1st node 
+	elif ACTION == "CONTRACT_ATTR" :
+		contract_record_id =  Quote.GetGlobal("contract_record_id")
+		Trace.Write("contract_record_id---->" + str(contract_record_id))
+	MODE = "VIEW"
+	ApiResponse = ApiResponseFactory.JsonResponse(constructidlingattributes(Qt_rec_id, Quote, MODE))	
 elif ACTION == "Approval_Chain_INFO":
 	record_id = Param.RECORD_ID
 	record_id = record_id[:36]

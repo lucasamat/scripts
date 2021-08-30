@@ -103,8 +103,8 @@ class ContractQuoteC4CSync:
                     )
                 )
                 if SalesOrg_obj:
-                    salesorg_data.update({"SORG_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
-                                        "SORGCURRENCY_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})				                        
+                    salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
+                                        "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})				                        
             if quote_data.get('Division'):
                 division_obj = Sql.GetFirst(
                     "SELECT DIVISION_RECORD_ID, DIVISION_ID FROM SADIVN (NOLOCK) WHERE DIVISION_ID = '{}'".format(
@@ -410,10 +410,10 @@ class ContractQuoteC4CSync:
 
                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-                    <ENTITLEMENT_VALUE_CODE>{}</ENTITLEMENT_VALUE_CODE>
-                    <ENTITLEMENT_TYPE>{}</ENTITLEMENT_TYPE>
-                    <ENTITLEMENT_DESCRIPTION>{}</ENTITLEMENT_DESCRIPTION>
-                    <ENTITLEMENT_DISPLAY_VALUE>{}</ENTITLEMENT_DISPLAY_VALUE>
+                    <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                   
+                    <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
                     </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] ,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC],ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL )
                     Log.Info('insertservice----'+str(insertservice))
                     tbrow.append(insertservice)

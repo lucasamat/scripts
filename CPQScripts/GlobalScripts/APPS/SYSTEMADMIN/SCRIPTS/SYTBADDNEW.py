@@ -31,10 +31,10 @@ try:
     )
 
     ## approval chain alert banner starts
-    if (str(CurrentTabName) == 'Approval Chains' and str(Product.Name) == 'APPROVAL CENTER') :
-                #Trace.Write("sql_obj.PRIMARY_OBJECT_NAME"+ str(sql_obj.PRIMARY_OBJECT_NAME))
-                Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ''
-                Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
+    if (str(CurrentTabName) == 'Approval Chains' and str(Product.Name) == 'APPROVAL CENTER') or str(Product.Name) == 'SYSTEM ADMIN' :
+        #Trace.Write("sql_obj.PRIMARY_OBJECT_NAME"+ str(sql_obj.PRIMARY_OBJECT_NAME))
+        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ''
+        Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
     ## approval chain alert banner ends
 
     Product.Attributes.GetByName("MA_MTR_TAB_ACTION").AssignValue(Action)
@@ -82,7 +82,8 @@ try:
 
                 
         for Question_Permission in Question_Permission_Query:
-            #Trace.Write("EDITABLE_ONINSERT-->" + str(Question_Permission.EDITABLE_ONINSERT))
+            Trace.Write("SECTION_NAME-->" + str(Question_Permission.SECTION_NAME))
+            Trace.Write("FIELD_LABEL-->" + str(Question_Permission.FIELD_LABEL))
             if (
                 str(Question_Permission.data_type) == "LONG TEXT AREA"
                 or str(Question_Permission.data_type) == "RICH TEXT AREA"
@@ -110,6 +111,7 @@ try:
                 "Last Modified By",
                 "Last Modified Date",
             ]:
+                Trace.Write("Audit Information")
                 if Product.Attributes.GetByName(str(AttrName)) is not None:
                     Product.Attributes.GetByName(str(AttrName)).Allowed = False
             elif (

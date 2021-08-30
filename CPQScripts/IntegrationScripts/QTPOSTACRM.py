@@ -12,6 +12,7 @@ from System import Convert
 import sys
 
 #result=ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':'MAQ000001-RW000-06012020','Fun_type':'cpq_to_crm'})
+
 try:	
 
 	def cpq_to_crm(Qt_id):
@@ -53,7 +54,9 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
-			result = '{\"CPQ_Columns\":\r\n{\r\n\"QUOTE_ID\" : \"'+str(Qt_id)+'\"\r\n}\r\n}\r\n'
+			#result = '{\"CPQ_Columns\":\r\n{\r\n\"QUOTE_ID\" : \"'+str(Qt_id)+'\"\r\n}\r\n}\r\n'
+			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id)
 			
 			Log.Info("28-10-2020 result ---->"+str(result))	
 

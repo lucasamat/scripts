@@ -242,6 +242,7 @@ class ButtonAction:
                                                     #Product.Attributes.GetByName(str("QSTN_SYSEFL_SE_03346")).Access = AttributeAccess.ReadOnly"""
 
                                                 recIdAttributes.Allowed = True
+                                                Trace.Write("Audit information")
                                                 if attributeIdAttributes is not None and TABLE_NAME != "PRLPBS":
                                                     attributeIdAttributes.Access = AttributeAccess.ReadOnly
                                                 if str(QUE_OBJ.FIELD_LABEL) in [
@@ -475,15 +476,17 @@ btnactn = ButtonAction()
 # BY DEFAULT NOTIFICATION BANNER SETS TO FALSE
 myAttribute = productAttributesGetByName("SEC_N_TAB_PAGE_ALERT")
 if myAttribute  and myAttribute.HintFormula == "TAB PAGE ALERT":
-    myAttribute.HintFormula, myAttribute.Allowed = "", False
+    #myAttribute.HintFormula, myAttribute.Allowed = "", False
+    myAttribute.Allowed = True     
 # DECLARE LOCAL VARIABLES
 QuestionRecId, val, TabName, TABLE_RECORDID = "", "Tab list", "", ""
 # GET CURRENT ACTION
 value = productAttributesGetByName("MA_MTR_TAB_ACTION").GetValue()
+Trace.Write('')
 
 if myAttribute is not None:
-    #Trace.Write("check inside else")
-    if (str(TestProduct.CurrentTab) == 'Approval Chain' and str(TestProduct.Name) == 'APPROVAL CENTER'):
+    Trace.Write("check inside else")
+    if (str(TestProduct.CurrentTab) == 'Approval Chain' and str(TestProduct.Name) == 'APPROVAL CENTER') or str(TestProduct.Name) == 'SYSTEM ADMIN':
         #Trace.Write("check allowed view"+ str(myAttribute.Allowed)+str(myAttribute.HintFormula)+str(value))
         if value == "VIEW":
             myAttribute.Allowed = False
@@ -498,11 +501,15 @@ if myAttribute is not None:
                 myAttribute.Allowed = False
                 myAttribute.HintFormula = ""
  
-    else:
+    else:                     
+               
         if value == "ADDNEW" or value == "VIEW":
+            #Trace.Write('val00==='+str(value))
+            # if myAttribute.HintFormula == "TAB PAGE ALERT":
             myAttribute.Allowed = False
             myAttribute.HintFormula = ""
             #Trace.Write("check allowed else"+ str(myAttribute.Allowed))
+         
         elif value == "EDIT":
             if (
                 len(str(myAttribute.HintFormula)) == "0"

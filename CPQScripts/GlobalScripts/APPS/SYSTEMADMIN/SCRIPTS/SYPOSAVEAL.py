@@ -9,128 +9,13 @@
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
+import datetime
 from SYDATABASE import SQL
 
 Sql = SQL()
-#import PRCTPRFPBE
-
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-#import PRIFLWTRGR
-#import PRGRPRBKEN
 
-#from PAUPDDRYFG import DirtyFlag
-import datetime
-
-
-
-
-def Calcfctrs(TreeParam, Treeparent, TreesuperParent, TopParentparam, query_result, old_query_result, TABLE_ID):
-    Flag = 1
-    final_levels = ""
-
-    Pricing_levels = {
-        "Price Classes": "PRICE MODEL CLASS|MODCLS_RECORD_ID|FACTOR_VAROBJREC_RECORD_ID",
-        "Price Model Classes": "PRICE MODEL CLASS|MODCLS_RECORD_ID|FACTOR_VAROBJREC_RECORD_ID",
-        "Pricebooks": "PRICEBOOK|LIST_PRICEBOOK_RECORD_ID|FACTOR_VAROBJREC_RECORD_ID",
-        "Price Methods": "PRICEBOOK MATERIAL|PRICEBOOK_MATERIAL_RECORD_ID|FACTOR_VAROBJREC_RECORD_ID",
-        "Pricebook Entry Information": "PRICEBOOK ENTRY|LIST_PRICEBOOK_ENTRY_RECORD_ID|FACTOR_VAROBJREC_RECORD_ID",
-        "Price Class Information": "PRICE CLASS|PRICECLASS_ID|FACTOR_VAROBJREC_ID",
-    }
-
-    Ideal_rolldown = [
-        "CALCULATION FACTOR",
-        "PRICE CLASS",
-        "PRICE MODEL CLASS",
-        "PRICEBOOK MATERIAL",
-        "SALES ORG PRICE CLASS",
-        "PRICEBOOK",
-        "PRICEBOOK ENTRY",
-        "SEGMENT_REVISION_PRODUCT",
-    ]
-
-    
-
-
-    TreesuperParent = "Price Model Classes" if TreesuperParent == "Price Classes" else TreesuperParent
-    Treeparent = "Price Methods" if Treeparent == "Materials In Pricing Procedure" else Treeparent
-
-
-    value = (
-        str(query_result.get("FACTOR_NUMVAR"))
-        if str(query_result.get("FACTOR_DATATYPE")) == "NUMBER"
-        else (
-            str(query_result.get("FACTOR_PCTVAR"))
-            if str(query_result.get("FACTOR_DATATYPE")) == "PERCENT"
-            else str(query_result.get("FACTOR_CURVAR"))
-        )
-    )
-    
-    valueget = value
-    old_value = (
-        str(old_query_result.get("FACTOR_NUMVAR"))
-        if str(old_query_result.get("FACTOR_DATATYPE")) == "NUMBER"
-        else (
-            str(old_query_result.get("FACTOR_PCTVAR"))
-            if str(old_query_result.get("FACTOR_DATATYPE")) == "PERCENT"
-            else str(old_query_result.get("FACTOR_CURVAR"))
-        )
-    )
-
-
-    if float(value) != float(old_value):
-        Flag = 0
-        query_result.update({"FACTOR_STATUS": "TRUE"})
-        table_PRCFVA = SqlHelper.GetTable("PRCFVA")
-        table_PRCFVA.AddRow(query_result)
-        SqlHelper.Upsert(table_PRCFVA)
-
-    if Flag == 0:
-        if TopParentparam in Pricing_levels.keys():
-            level = str(Pricing_levels.get(TopParentparam)).split("|")[0]
-            apiname = str(Pricing_levels.get(TopParentparam)).split("|")[1]
-            value = str(query_result.get(str(Pricing_levels.get(TopParentparam)).split("|")[2]))
-
-        elif TreesuperParent in Pricing_levels.keys():
-            level = str(Pricing_levels.get(TreesuperParent)).split("|")[0]
-            apiname = str(Pricing_levels.get(TreesuperParent)).split("|")[1]
-            value = str(query_result.get(str(Pricing_levels.get(TreesuperParent)).split("|")[2]))
-
-        elif Treeparent in Pricing_levels.keys():
-            level = str(Pricing_levels.get(Treeparent)).split("|")[0]
-            apiname = str(Pricing_levels.get(Treeparent)).split("|")[1]
-            value = str(query_result.get(str(Pricing_levels.get(Treeparent)).split("|")[2]))
-
-        elif TreeParam in Pricing_levels.keys():
-            level = str(Pricing_levels.get(TreeParam)).split("|")[0]
-            apiname = str(Pricing_levels.get(TreeParam)).split("|")[1]
-            value = str(query_result.get(str(Pricing_levels.get(TreeParam)).split("|")[2]))
-
-        else:
-            level = ""
-            apiname = ""
-            value = ""
-
-        if level in Levels:
-            del Ideal_rolldown[: int(Ideal_rolldown.index(level)) + 1]
-
-        final_levels = ",".join([lvl for lvl in Ideal_rolldown if lvl in Levels])
-        
-
-
-    return ""
-
-
-'''@DirtyFlag(
-    access_from="ADD_PLANT",
-    revision_id=Product.GetGlobal("segmentRevisionId"),
-    segment_record_id=Product.GetGlobal("segment_rec_id"),
-)'''
-def do_process(TABLEID, LABLE, VALUE):
-    
-    Trace.Write("VALUE------------" + str(VALUE))
-    Trace.Write("TABLEID------------" + str(TABLEID))
-    Trace.Write("LABLE------------" + str(LABLE))
-
+def do_process(TABLEID, LABLE, VALUE):    
     if len(VALUE) > 0:
         if VALUE[0] != "":
             OBJNAME = VALUE[0].split("-")
@@ -159,36 +44,10 @@ def do_process(TABLEID, LABLE, VALUE):
         RECORDFEILD = Param.RECORDFEILD
     except:
         Trace.Write("err")
-    try:
-        COUNTRIES = list(Param.Countries)
-    except:
-        Trace.Write("errorr")
-    try:
-        Treeparam = Param.TreeParam
-        Treeparentparam = Param.TreeParentParam
-        Treesuperparentparam = Param.TreeSuperParentParam
-        treetopparentparam = Param.TopSuperParentParam
-    except:
-        Treeparam = ""
-        Treeparentparam = ""
-        Treesuperparentparam = ""
-        treetopparentparam = ""
-
-
-    FIXED_FACTOR_ISCHNAGED = 0
-    MARKUP_FACTOR_ISCHNAGED = 0
-    LOWPRCADJ_FACTOR_ISCHNAGED = 0
-    LIST_PRICE_ISCHNAGED = 0
-    GPA_FACTOR_ISCHNAGED = 0
-    SPA_FACTOR_ISCHNAGED = 0
+   
     err_msg = ""
     err_display=""
     Flag_unique = "True"
-
-    Recodrid = ""
-    if len(VALUE) > 0:
-        Recodrid = VALUE[0]
-    val_code = ""
 
     if len(VALUE) > 0:
         oper = VALUE[0]
@@ -196,7 +55,6 @@ def do_process(TABLEID, LABLE, VALUE):
     result = ""
     next_id = ""
     flag = 0
-    validation = ""
     Req_Flag = 0
     
     req_obj = Sql.GetList(
@@ -218,51 +76,36 @@ def do_process(TABLEID, LABLE, VALUE):
             err_msg = '<div class="col-md-12" id="PageAlert" ><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alert_notifcatio6" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alert_notifcatio6" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"  ><label ><img src="/mt/OCTANNER_DEV/Additionalfiles/stopicon1.svg" alt="Error"> ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>'
         else:
             err_msg = ""
-    Chkctry = ""
-    for tab in Product.Tabs:
-        if tab.Name == "Country" and Product.Tabs.GetByName(tab.Name).IsSelected:
-            Chkctry = "true"
-    if flag == 0 and len(VALUE) >= 0:
-        
-        if VALUE[0] is None or VALUE[0] == "":
-            
+    
+    if flag == 0 and len(VALUE) >= 0:        
+        if VALUE[0] is None or VALUE[0] == "":            
             CONT_LABLE = []
             CONT_VALUE = []
             next_id = Sql.GetFirst("SELECT CONVERT(VARCHAR(4000),NEWID()) AS REC_ID")
             new_val = str(next_id.REC_ID)
             Lable_obj = Sql.GetFirst("SELECT FIELD_LABEL FROM  SYOBJD(NOLOCK) WHERE API_NAME='" + str(LABLE[0]) + "'")
-            Trace.Write("SELECT FIELD_LABEL FROM  SYOBJD(NOLOCK) WHERE API_NAME='" + str(LABLE[0]) + "'")
+            
             if Lable_obj is not None:
                 lable = eval(str("Lable_obj.FIELD_LABEL"))
                 VALUE[0] = new_val
-                CONT_TABLEID = CONT_TABLEID.split("__")
-                
+                CONT_TABLEID = CONT_TABLEID.split("__")                
                 CONT_TABLEID = CONT_TABLEID[1]
                 CONT_VALUE.insert(1, new_val)
                 CONT_VALUE.insert(2, new_val)
                 CONT_LABLE.insert(1, lable)
                 CONT_LABLE.insert(2, lable)
-
-
-
-            
-            row = dict(zip(LABLE, VALUE))
-            Trace.Write("Line no:250")
-            Trace.Write(row)
+            row = dict(zip(LABLE, VALUE))            
             ##auto populate SAPCPQ_ATTRIBUTE_NAME starts
             
-            if str(TABLEID) == "SYSECT":
-                
+            if str(TABLEID) == "SYSECT":                
                 primary_obj_rec=Sql.GetFirst("SELECT RECORD_ID from SYOBJH where OBJECT_NAME = '"+str(row["PRIMARY_OBJECT_NAME"])+"'")
                 row["PRIMARY_OBJECT_RECORD_ID"]=str(primary_obj_rec.RECORD_ID)
                 page_rec_id=Sql.GetFirst("SELECT RECORD_ID from SYPAGE where PAGE_NAME = '"+str(row["PAGE_NAME"])+"'")
-                row["PAGE_RECORD_ID"]=str(page_rec_id.RECORD_ID)
-            #Trace.Write("------1904----" + str(TABLEID)+str(row))
+                row["PAGE_RECORD_ID"]=str(page_rec_id.RECORD_ID)            
             elif str(TABLEID) == "SYTRND":
                 get_tree_rec_id=Sql.GetFirst("SELECT TREE_RECORD_ID from SYTREE where TREE_NAME = '"+str(row["TREE_NAME"])+"'")
                 row["TREE_RECORD_ID"]=str(get_tree_rec_id.TREE_RECORD_ID)
-            try:
-                
+            try:                
                 if ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPSAC":
                     if str(row.get("TAB_RECORD_ID")) != "":
                         sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPSAC (NOLOCK) WHERE TAB_RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
@@ -288,13 +131,13 @@ def do_process(TABLEID, LABLE, VALUE):
                 
                 elif ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLEID) == "SYSECT":
                     if str(row.get("PAGE_RECORD_ID")) != "":
-                        sypage_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYTABS.RECORD_ID = SYPAGE.TAB_RECORD_ID WHERE SYPAGE.RECORD_ID = '{}'".format(str(row.get("PAGE_RECORD_ID"))))
-                        APP_ID = "SYSECT-{}-".format(sypage_app_id.APP_ID)
-                        cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYSECT (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
-                        if sypage_app_id is not None and cpq_attr_name is not None:
-                            x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
-                            length = len(x[len(x)-1])
-                            row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
+                        # sypage_app_id = Sql.GetFirst("SELECT APP_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYTABS.RECORD_ID = SYPAGE.TAB_RECORD_ID WHERE SYPAGE.RECORD_ID = '{}'".format(str(row.get("PAGE_RECORD_ID"))))
+                        APP_ID = "SYSECT-SY-"
+                        cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYSECT (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like 'SY%'")
+                        # if sypage_app_id is not None and cpq_attr_name is not None:
+                        x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
+                        length = len(x[len(x)-1])
+                        row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
                 elif ("SAPCPQ_ATTRIBUTE_NAME") in row and str(TABLEID) == "SYPGAC":
                     if str(row.get("TAB_RECORD_ID")) != "":
                         sytabs_app_id = Sql.GetFirst("SELECT APP_ID FROM SYTABS (NOLOCK) WHERE RECORD_ID = '{}'".format(str(row.get("TAB_RECORD_ID"))))
@@ -307,17 +150,15 @@ def do_process(TABLEID, LABLE, VALUE):
                 elif ("SAPCPQ_ATTRIBUTE_NAME" in row) and str(TABLEID) == "SYSEFL":
                     sysefl_app_id = Product.Attributes.GetByName('QSTN_SYSEFL_SY_00153').GetValue()   
                     if sysefl_app_id != "":
-                        APP_ID = "SYSEFL-{}-".format(sysefl_app_id)
-                        
+                        APP_ID = "SYSEFL-{}-".format(sysefl_app_id)                        
                         cpq_attr_name = Sql.GetFirst("SELECT max(SAPCPQ_ATTRIBUTE_NAME) AS SAPCPQ_ATTRIBUTE_NAME FROM SYSEFL (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME like '{}%'".format(str(APP_ID)))
                         
                         if sysefl_app_id is not None and cpq_attr_name is not None:
                             x = cpq_attr_name.SAPCPQ_ATTRIBUTE_NAME.split("-")
                             length = len(x[len(x)-1])
                             row["SAPCPQ_ATTRIBUTE_NAME"] = str(APP_ID)+ str(int(x[len(x)-1])+1).zfill(length)
-                            Trace.Write("APP_ID---->" + str(row["SAPCPQ_ATTRIBUTE_NAME"]))
-            except:
-                Trace.Write("Table--"+str(TABLEID))
+                            
+            except:                
                 Trace.Write("exept cpq")
             
             ##auto populate SAPCPQ_ATTRIBUTE_NAME ends
@@ -327,15 +168,8 @@ def do_process(TABLEID, LABLE, VALUE):
             elif str(TABLEID) == "SYPGAC":
                 if ("ACTION_NAME" in row):
                     row["ACTION_NAME"] = row["ACTION_NAME"].title()
-                    Trace.Write('@@@@@@@@@'+str(row["ACTION_NAME"]))
-
-                 
-
-
-        Trace.Write("row-=======> " + str(row))
         
         if oper is None or oper == "" and Req_Flag == 0:
-
             if str(TABLEID).strip() == "SYROUS":
                 userid = ""
                 ROLE_ID = row["ROLE_ID"]
@@ -343,19 +177,14 @@ def do_process(TABLEID, LABLE, VALUE):
                 userid_obj = Sql.GetFirst("SELECT ID FROM USERS WHERE NAME = '{}'".format(row["USER_NAME"]))
                 if userid_obj:
                     userid = userid_obj.ID
-                else:
-                    userid = ""
+                
                 row["ROLE_USER_RECORD_ID"] = str(Guid.NewGuid()).upper()
                 row["USER_RECORD_ID"] = userid
                 if role_rec_val:
                     row["ROLE_RECORD_ID"] = role_rec_val.ROLE_RECORD_ID
-                Trace.Write("Row-SYROUS----->" + str(row))
-
             if str(TABLEID).strip() == "SYOBJC":
-                row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()
-                
+                row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()                
             if Flag_unique == "True":
-
                 if "CpqTableEntryModifiedBy" in row.keys() and "CpqTableEntryDateModified" in row.keys():
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
@@ -421,8 +250,7 @@ def do_process(TABLEID, LABLE, VALUE):
                                 "STATE_RECORD_ID": ""
                             }
                             Table.TableActions.Create("SAQSRA", receiving_account_row)
-                    else:    
-                        
+                    else:                       
                         if TABLEID == "SYTREE":
                             newTableInfo = SqlHelper.GetTable('SYTREE')
                             #Trace.Write("TRACE_TESTZ--inside sytree--save---" + str(row))
@@ -431,15 +259,8 @@ def do_process(TABLEID, LABLE, VALUE):
                             #Trace.Write("TRACE_TESTZ--inside sytree--save-311-----" + str(row))
                             newTableInfo.AddRow(row)
                             sqlInfo = SqlHelper.Upsert(newTableInfo)
-                        else:
-                            
+                        else:                            
                             Table.TableActions.Create(TABLEID, row)
-
-                else:
-                    Trace.Write("row lastttttt-=======> " + str(row))
-
-        
-
 
     if str(new_val) is not None and str(new_val) != "":
         new_val = row.get(str(LABLE[0]))
@@ -448,10 +269,8 @@ def do_process(TABLEID, LABLE, VALUE):
         )
         new_value_dict = {API_Names["API_NAME"]: API_Names["FORMULA_RESULT"] for API_Names in result}
         
-        if new_value_dict is not None:
-            
-            if row.get("FACTOR_PCTVAR"):
-                
+        if new_value_dict is not None:            
+            if row.get("FACTOR_PCTVAR"):                
                 row["FACTOR_PCTVAR"] = row.get("FACTOR_PCTVAR").strip("%")
             elif row.get("FACTOR_DATATYPE") == "PERCENT":
                 row["FACTOR_TXTVAR"] = row.get("FACTOR_PCTVAR")
@@ -459,17 +278,12 @@ def do_process(TABLEID, LABLE, VALUE):
                 if row.get("APPROVER_SELECTION_METHOD") == "INDIVIDUAL USERS":                    
                     row["APRCHNSTP_APPROVER_ID"] = "USR-"+str(row.get("USERNAME"))                    
                 elif row.get("APPROVER_SELECTION_METHOD").strip() == "GROUP OF USERS" and row.get("PROFILE_ID"):           
-                    row["APRCHNSTP_APPROVER_ID"] = "PRO-"+str(row.get("PROFILE_ID"))
-                                        
+                    row["APRCHNSTP_APPROVER_ID"] = "PRO-"+str(row.get("PROFILE_ID"))                                        
                 elif row.get("APPROVER_SELECTION_METHOD").strip() == "GROUP OF USERS" and row.get("ROLE_ID"):               
                     row["APRCHNSTP_APPROVER_ID"] = "ROL-"+str(row.get("ROLE_ID"))
-                                       
-
             elif row.get("APRCHNSTP_NAME"):
                 row["APRCHNSTP_NAME"] = row.get("APRCHNSTP_NAME").upper()
             if str(Req_Flag) == "0" and Flag_unique == "True":
-            
-                
                 sql_sgs = Sql.GetFirst(
                     "SELECT API_NAME FROM  SYOBJD(NOLOCK) WHERE DATA_TYPE='AUTO NUMBER' AND OBJECT_NAME = '"
                     + str(TABLEID)
@@ -490,12 +304,9 @@ def do_process(TABLEID, LABLE, VALUE):
         #for single record index save
         # check indexname exist Start
         if str(TABLEID).strip() == "SYOBJX":
-            getindexobj = row.get("OBJECT_APINAME")
-            
+            getindexobj = row.get("OBJECT_APINAME")            
             # check index query start
-            getobjectrec = ""
             try:
-                
                 DROP_INDEX = Sql.GetList(
                     "SELECT C.NAME AS INDEX_N  FROM sys.index_columns A JOIN SYS.COLUMNS B ON A.COLUMN_ID = B.COLUMN_ID AND A.OBJECT_ID = B.OBJECT_ID JOIN SYS.INDEXES C ON A.INDEX_ID = C.INDEX_ID AND A.OBJECT_ID = C.OBJECT_ID WHERE OBJECT_NAME(A.OBJECT_ID)='"
                     + getindexobj
@@ -507,7 +318,7 @@ def do_process(TABLEID, LABLE, VALUE):
                             QueryStatement = "DROP INDEX {Index_Name} on {Obj_Name}".format(
                                 Index_Name=inse.INDEX_N, Obj_Name=getindexobj
                             )
-                            a = Sql.RunQuery(QueryStatement)
+                            Sql.RunQuery(QueryStatement)
             except:
                 Trace.Write("DELETE EXISTING INDEX IN EXCEPT")
             # check indexname exist End
@@ -521,9 +332,8 @@ def do_process(TABLEID, LABLE, VALUE):
                         QueryStatement = "CREATE INDEX {Index_Name} on {Obj_Name}({Col_Name})".format(
                             Index_Name=INDEX_NAME, Obj_Name=val.OBJECT_APINAME, Col_Name=INDEX_EXPRESSION
                         )
-                        try:
-                            
-                            a = Sql.RunQuery(QueryStatement)
+                        try:                            
+                            Sql.RunQuery(QueryStatement)
                         except:
                             Trace.Write("Already index Created")
             # create index query end
@@ -534,7 +344,6 @@ def do_process(TABLEID, LABLE, VALUE):
             getrec_id = row.get("OBJECT_CONSTRAINT_RECORD_ID")
             getconst_type = Sql.GetFirst("select CONSTRAINT_TYPE from SYOBJC where OBJECT_CONSTRAINT_RECORD_ID = '"+str(getrec_id)+"'")
             try:
-                
                 # CREATE NOT NULL Constraint
                 if getconst_type == "NOT NULL":
                     try:
@@ -552,19 +361,14 @@ def do_process(TABLEID, LABLE, VALUE):
                         )
                     except:
                         Trace.Write('not null throwing error')
-
-                
-
                 # CREATE UNIQUE Constraint
-                elif getconst_type == "UNIQUE":
-                    
+                elif getconst_type == "UNIQUE":                    
                     try:
                         query_result = Sql.GetFirst(
                             "SELECT OBJECT_APINAME, OBJECTFIELD_APINAME FROM SYOBJC(NOLOCK) WHERE CONSTRAINT_TYPE='UNIQUE' AND OBJECT_APINAME='"
                             + str(getobjectname)
                             + "' and OBJECT_CONSTRAINT_RECORD_ID = '"+str(getrec_id)+"'"
-                        )
-                        
+                        )                        
                         result = Sql.GetFirst(
                             "sp_executesql @T=N'ALTER TABLE "
                             + query_result.OBJECT_APINAME
@@ -602,14 +406,12 @@ def do_process(TABLEID, LABLE, VALUE):
                     + query_result.REFERENCECOLUMN
                     + ")' "
                 )
-
                 # CREATE FOREIGN KEY Reference
                 query_result = Sql.GetFirst(
                     "SELECT TABLE_NAME=OBJECT_APINAME,COLUMN_NAME=OBJECTFIELD_APINAME,REFERENCETABLE=REFOBJECT_APINAME,REFERENCECOLUMN=REFOBJECTFIELD_APINAME FROM SYOBJC WHERE CONSTRAINT_TYPE='FOREIGN KEY' AND REFOBJECT_APINAME='"
                     + str(getobjectname)
                     + "' and OBJECT_CONSTRAINT_RECORD_ID = '"+str(getrec_id)+"'"
                 )
-
                 #for loop in query_result:
                 result = Sql.GetFirst(
                     "sp_executesql @T=N'ALTER TABLE "
@@ -626,10 +428,9 @@ def do_process(TABLEID, LABLE, VALUE):
                     + query_result.REFERENCECOLUMN
                     + ")' "
                 )
-
                 result_update = "UPDATE SYOBJH SET HAS_CONSTRAINTS = 1 WHERE OBJECT_NAME='" + str(getobjectname) + "'"
                 query_result = Sql.RunQuery(str(result_update))
-            except Exception, e:
+            except Exception as e:
                 exceptMessage = "SYDRPCONST : recreateConstraint : EXCEPTION : UNABLE TO CREATE CONSTRAINTS: " + str(e)
                 Trace.Write(exceptMessage)
         
@@ -662,11 +463,7 @@ def do_process(TABLEID, LABLE, VALUE):
     val.insert(10,err_display)
     return val
 
-
 LABLE = list(Param.LABLE)
-Trace.Write("LABLE-------->" + str(LABLE))
 VALUE = list(Param.VALUE)
-Trace.Write("Value-------->" + str(VALUE))
 TABLEID = (Param.TABLEID).strip()
-Trace.Write("table_idididid------>" + str(TABLEID))
 ApiResponse = ApiResponseFactory.JsonResponse(do_process(TABLEID, LABLE, VALUE))

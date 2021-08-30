@@ -61,8 +61,10 @@ class ParseFormula:
                     if DATA_TYPE == "FORMULA" and API_Name in str(TABLE_OBJ.FORMULA_LOGIC):
                         #Trace.Write(str(API_Value)+"Parse Formula---FORMULA_LOGIC---" + str(TABLE_OBJ.FORMULA_LOGIC))
                         FORMULA = str(TABLE_OBJ.FORMULA_LOGIC)
+                        Trace.Write("FORMULA_result1"+str(FORMULA))
                         #Trace.Write(str(API_Name)+str(API_Value)+"--------API_Name----------Parse Formula---FORMULA_LOGIC2-------60---" + str(FORMULA))
                         FORMULA = FORMULA.replace("{" + API_Name + "}", API_Value)
+                        Trace.Write("FORMULA_result2"+str(FORMULA))
                         if str(Object) == 'SAQTIP':
                             Trace.Write("API_Name--" + str(API_Name))
                             FORMULA = FORMULA.replace("{"+"objname}", "SAACNT")

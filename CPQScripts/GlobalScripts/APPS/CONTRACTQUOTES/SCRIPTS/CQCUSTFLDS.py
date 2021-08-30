@@ -59,7 +59,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 		if  service_id == item.PartNumber and item_number == lineitemid:
 			Trace.Write("service_id")
 			item.YEAR_OVER_YEAR.Value = yoy
-			item.SALES_PRICE.Value = saleprice
+			item.NET_PRICE.Value = saleprice
 			item.DISCOUNT.Value = discount
 			item.YEAR_1.Value = year1
 			item.YEAR_2.Value = year2
@@ -135,7 +135,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	FROM SAQITM (NOLOCK)
 	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")))
 	if total_item_obj is not None:
-		Quote.GetCustomField('SALE_PRICE').Content = str(total_item_obj.SALES_PRICE)
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content = str(total_item_obj.SALES_PRICE)
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
 		Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
 		Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)

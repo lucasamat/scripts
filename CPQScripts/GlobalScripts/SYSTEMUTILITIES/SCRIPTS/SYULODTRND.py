@@ -113,8 +113,8 @@ def CommonTreeViewHTMLDetail(
 	if ObjectName == 'SYPAGE' and CurrentTab == 'Tab':
 		#GetRec = Sql.GetFirst("SELECT SYPAGE.RECORD_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYPAGE.TAB_NAME = SYTABS.TAB_LABEL WHERE SYTABS.RECORD_ID = '{}' AND SYPAGE.PAGE_NAME = '{}'".format(Product.GetGlobal("TabId"),TreeParam))
 		GetRec = Sql.GetFirst("SELECT SYPAGE.RECORD_ID FROM SYPAGE (NOLOCK) INNER JOIN SYTABS (NOLOCK) ON SYPAGE.TAB_NAME = SYTABS.TAB_LABEL WHERE SYTABS.RECORD_ID = '{}'".format(str(Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()) ))
-  		RECORD_ID = str(GetRec.RECORD_ID)
- 	if TableId is not None and  (ObjectName is None or str(ObjectName.isdigit()) == 'True'):	
+		RECORD_ID = str(GetRec.RECORD_ID)
+	if TableId is not None and  (ObjectName is None or str(ObjectName.isdigit()) == 'True'):	
 
 		objr_obj = Sql.GetFirst("select * FROM SYOBJR WITH (NOLOCK) where SAPCPQ_ATTRIBUTE_NAME = '" + str(TableId) + "' ")		
 		if objr_obj is not None:
@@ -127,8 +127,8 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC"]:
-    		canedit = "TRUE"
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO"]:
+			canedit = "TRUE"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
 		if str(CurrentTab == "Object"):
@@ -177,7 +177,7 @@ def CommonTreeViewHTMLDetail(
 	else:
 		MODE = "VIEW"
 
-     
+	
 	
 	Sqq_obj = Sql.GetList(
 		"SELECT top 1000 API_NAME, DATA_TYPE, LOOKUP_OBJECT, PERMISSION, REQUIRED, LOOKUP_API_NAME, FIELD_LABEL,SOURCE_DATA FROM  SYOBJD WITH (NOLOCK) WHERE OBJECT_NAME='"
@@ -308,7 +308,11 @@ def CommonTreeViewHTMLDetail(
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 	# elif (ObjectName == "CTCSCO"):
 	# 	QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
-	else:		
+	elif (ObjectName == "SAQTMT") and SubtabName == "Idling Attributes":
+		Trace.Write('elee====2')
+		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.SECTION_DESC != '' AND SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+	else:
+		Trace.Write('eleee===1')		
 		"""QStr1 = (
 			"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 			+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
@@ -1024,7 +1028,7 @@ def CommonTreeViewHTMLDetail(
 					]
 					if current_obj_api_name in noninlist:						
 						add_style = "display: none;"	
-				if ObjectName == "SAQTBP" and TreeParam == "Billing Matrix":
+				if ObjectName == "SAQTBP" and TreeParam == "Billing":
 					noninlist = [						
 						"SALESORG_ID",
 						"SALESORG_NAME"					
@@ -1128,8 +1132,8 @@ def CommonTreeViewHTMLDetail(
 					+ str(hint_text_Copy)
 					+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i>'
 				)			
-				
-				if (str(val.REQUIRED).upper() == "TRUE" or val.REQUIRED == "1") and (MODE == "VIEW" or MODE == "EDIT") :
+				Trace.Write("CHKZ_MODE_J "+str(MODE))
+				if (str(val.REQUIRED).upper() == "TRUE" or val.REQUIRED == "1") and (MODE == "VIEW" or MODE == "EDIT" or MODE == "CANCEL") :
 					sec_str += ""
 					sec_str += '<span class="req-field">*</span>'
 				sec_str += "</a></td>"
@@ -1149,7 +1153,7 @@ def CommonTreeViewHTMLDetail(
 							Trace.Write('check error')
 					if current_obj_api_name == "approve_condition_id" and ObjectName == "approve_condition":
 						current_obj_value = current_obj_value
-					elif ObjectName == 'SAQTBP' and TreeParam == "Billing Matrix":		# Billing Matrix Details Load - Start				
+					elif ObjectName == 'SAQTBP' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
 						billing_plan_obj = Sql.GetFirst(
 									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(
 										ObjectName=ObjectName, QuoteRecordId=quote_record_id)
@@ -1546,7 +1550,7 @@ def CommonTreeViewHTMLDetail(
 						)
 
 				elif data_type == "PICKLIST" and MODE == "EDIT":					
-					if str(ObjectName) == 'ACACSA':						
+					if str(ObjectName) == 'ACACSA' or (str(ObjectName)== "SAQTMT" and SubtabName == "Idling Attributes"):						
 						sec_str += "<td>"
 						sec_str += (
 							'<select id="'
@@ -1557,7 +1561,7 @@ def CommonTreeViewHTMLDetail(
 							+ current_obj_value
 							+ '" type="text" title="'
 							+ str(current_obj_value)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onFieldChanges(this)" '
+							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '
 							+ disable
 							+ " ><option value='Select'>..Select</option>"
 						)
@@ -1614,9 +1618,7 @@ def CommonTreeViewHTMLDetail(
 						+ current_obj_value
 						+ '" type="text"  onclick="'
 						+ str(datepicker)
-						+ '" onchange="'
-						+ str(datepicker_onchange)
-						+ '" class="form-control datePickerField wth157fltltbrdbt"   '
+						+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
 						+ disable
 						+ " ></td>"
 					)
@@ -1985,7 +1987,6 @@ def CommonTreeViewHTMLDetail(
 						+ '" > <i class="glyphicon glyphicon-triangle-bottom"></i> </button> </div></div></div></td>'
 					)
 				elif str(current_obj_api_name) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
-    					Trace.Write('Date format check')
 					try:
 						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
 					except:
@@ -2041,7 +2042,8 @@ def CommonTreeViewHTMLDetail(
 				if RECORD_ID.startswith(ObjectName):					
 					if str(ObjectName) != "USERS" and str(ObjectName) != "SYSEFL":
 						RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
-
+		Trace.Write('Return list-->'+str(returnList))
+		Trace.Write('RECORD_ID--->'+str(RECORD_ID))
 		recur_func(returnList, RECORD_ID)
 	except:
 		Trace.Write("errrorr")
@@ -2074,11 +2076,11 @@ def CommonTreeViewHTMLDetail(
 		#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 		Trace.Write('receiving---1993-------')
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID= 'Z0016_AG'")
+		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID like '%Z0016%'")
 		if SAQTSVObj:
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
-		else:
-			sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
+		#else:
+			#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 	if RECORD_ID and ObjectName == 'SAQTBP':
 		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
 						FROM SAQTBP (NOLOCK) 
@@ -2103,7 +2105,7 @@ def CommonTreeViewHTMLDetail(
 			Ad_on_prd = "False"
 	else:
 		Ad_on_prd = ""
-	if	TreeParentParam == "Other Products" and TreeSuperParentParam == "Product Offerings":
+	if	TreeParentParam == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id))
 		if entitlement_obj:
 			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
@@ -2199,7 +2201,7 @@ def UpdateBreadcrumb(REC_ID):
 		qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_SALESORG_RECORD_ID ='{recid}'".format(recid=RECORD_ID))
 		# ObjectName = "SAQTSO"
 		#RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(REC_ID))
-		# qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO WHERE SALESORG_ID = '{}' AND SORG_CURRENCY = '{}'".format(str(QRE.SALESORG_ID), str(QRE.SORG_CURRENCY)))
+		# qry = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSO WHERE SALESORG_ID = '{}' AND DOC_CURRENCY = '{}'".format(str(QRE.SALESORG_ID), str(QRE.SORG_CURRENCY)))
 		if qry:
 				bc_id = str(qry.QUOTE_ID)
 	elif TreeParam == "Exchange Rates":
@@ -2264,7 +2266,7 @@ def EntitlementTreeViewHTMLDetail(
 		else:	
 			ProductPartnumber = TreeParentParam
 			###receiving equp entitilement starts
-			if TreeSuperParentParam == 'Other Products' and TreeParam == 'Receiving Equipment':
+			if TreeSuperParentParam == 'Complementary Products' and TreeParam == 'Receiving Equipment':
 				objname_ent = 'SAQSCO'
 			###receiving equp entitilement ends
 	elif TreeSuperTopParentParam == "Product Offerings":
@@ -2275,7 +2277,7 @@ def EntitlementTreeViewHTMLDetail(
 			### add on product entitilement starts
 		else:	
 			ProductPartnumber = TreeSuperParentParam
-			if (TreeParentParam == 'Receiving Equipment' and TreeTopSuperParentParam == 'Other Products'):
+			if (TreeParentParam == 'Receiving Equipment' and TreeTopSuperParentParam == 'Complementary Products'):
 				TreeParentParam = ProductPartnumber
 
 	elif TreeParentParam == "Quote Items":
@@ -2310,7 +2312,7 @@ def EntitlementTreeViewHTMLDetail(
 	elif str(TreeTopSuperTopParentParam).upper() == "COMPREHENSIVE SERVICES" and str(TreeTopSuperParentParam).upper() == "ADD-ON PRODUCTS":		
 		ProductPartnumber = TreeSuperParentParam		
 	##addon product fab and greenbook level 
-	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Other Products'):
+	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Complementary Products'):
 		TreeSuperParentParam = ProductPartnumber = TreeTopSuperParentParam
 		Trace.Write('comes1'+str(ProductPartnumber))
 	#GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
@@ -2446,7 +2448,7 @@ def EntitlementTreeViewHTMLDetail(
 									# 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
 							for attribute in prdvalue["values"]:
 								attributevalues[str(prdvalue["id"])] = attribute["value"]
-								if attribute["author"] in ('User','Default'):
+								if attribute["author"] in ('Default','System'):
 									attributedefaultvalue.append(prdvalue["id"])
 		#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 		Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
@@ -2602,6 +2604,8 @@ def EntitlementTreeViewHTMLDetail(
 						STDVALUES =  Sql.GetFirst("SELECT * FROM STANDARD_ATTRIBUTE_VALUES WHERE SYSTEM_ID like '%{sys_id}%' ".format(sys_id = attrSysId)  )
 						if STDVALUES:
 							attrValue = STDVALUES.STANDARD_ATTRIBUTE_VALUE
+							if attrValue == "DefaultValue":
+								attrValue = ''
 						else:
 							attrValue = ''
 						
@@ -2650,9 +2654,9 @@ def EntitlementTreeViewHTMLDetail(
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
 							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 							<IS_DEFAULT>{is_default}</IS_DEFAULT>
@@ -2763,16 +2767,31 @@ def EntitlementTreeViewHTMLDetail(
 								#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 							#sec_str += "</select></td>"
 						elif DType == "Free Input, no Matching":
-							STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
-							sec_str1 = ""
-							sec_str1 += (
-								'<input class="form-control '+str(disable_edit)+'" id = "'
-								+ str(attrSysId)
-								+ '" type="text"  data-content ="'
-								+ str(attrSysId)
-								+ '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
-								+ "</input>"
-							)
+							if str(attrSysId) == "AGS_REL_STDATE":
+								datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
+								datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
+
+								sec_str1 += (
+									'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+									+ str(attr_value)
+									+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
+									+ "</input> "
+								)
+							else:
+								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+								sec_str1 = ""
+								if attr_value == "DefaultValue":
+									attr_value = ''
+								sec_str1 += (
+									'<input class="form-control '+str(disable_edit)+'" id = "'
+									+ str(attrSysId)
+									+ '" type="text"  data-content ="'
+									+ str(attrSysId)
+									+ '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
+									+ "</input>"
+								)
 						else:
 							getinval = ''
 							Trace.Write('attrSysId--input-----'+str(attrSysId))
@@ -2889,20 +2908,22 @@ def EntitlementTreeViewHTMLDetail(
 		Trace.Write("@@2437")
 		getnameentallowed = []
 		multi_select_attr_list = {}
-		Trace.Write('after inserting in table')
+		attributedefaultvalue = []
+		Trace.Write('after inserting in table--attributedefaultvalue---'+str(attributedefaultvalue))
 		getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
 		GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 		inserted_value_list = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
 		for val in GetXMLsecField:
+			#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
 			if val.IS_DEFAULT == '1':
-
-				attributedefaultvalue = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
-		Trace.Write('attributedefaultvalue--'+str(attributedefaultvalue))
+				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
+				attributedefaultvalue.append(val.ENTITLEMENT_NAME)
+		#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
 		previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
-		Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
+		#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
 		Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
 		## set entitlement_xml for cancel fn A055S000P01-3157 ends
 		list_of_tabs = []
@@ -3085,7 +3106,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						attribute_Name_list.append(attrSysId)
 						DType = attribute['attribute_dtype']
-						Trace.Write("attrValue_else_j "+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+						#Trace.Write("attrValue_else_j --3109---"+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
 							if attrSysId in attributedefaultvalue:
 								add_style = "display:none;color:#1B78D2"
@@ -3121,14 +3142,14 @@ def EntitlementTreeViewHTMLDetail(
 							for val in GetXMLsecField:
 								userselectedvalue.append(val.ENTITLEMENT_DESCRIPTION)
 								#getnameentallowed.append(val.ENTITLEMENT_NAME)
-								Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
+								#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 								# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 								#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 								#Trace.Write("dtype-----before if"+str(DType))
 								
 								if DType == "Drop Down" :
 									
-									
+									Trace.Write('3152------'+str(val.ENTITLEMENT_NAME))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3155,6 +3176,7 @@ def EntitlementTreeViewHTMLDetail(
 										VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 										for value in STDVALUES:
 											if value.SYSTEM_ID in dropdowndisallowlist:
+												Trace.Write('3179-----'+str(value.SYSTEM_ID))
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
@@ -3205,7 +3227,7 @@ def EntitlementTreeViewHTMLDetail(
 										#Trace.Write("curr = "+str(curr))
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-											Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
+											#Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
@@ -3244,14 +3266,14 @@ def EntitlementTreeViewHTMLDetail(
 									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
 										try:
 											display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
-										except Exception, e:
+										except Exception as e:
 											Trace.Write('except'+str(e))
 											try:
 												display_value_code = str(tuple(eval(val.ENTITLEMENT_VALUE_CODE))).replace(',)',')')
 												Trace.Write('display_value_code'+str(display_value_code))
 												display_value_query = Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' and STANDARD_ATTRIBUTE_VALUE in {code} ".format(attr_code = attribute_code,code = display_value_code )  )
 												display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in display_value_query]
-											except Exception, e:
+											except Exception as e:
 												Trace.Write('except1'+str(e))
 												display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
 										
@@ -3342,7 +3364,7 @@ def EntitlementTreeViewHTMLDetail(
 										attr_value = val.ENTITLEMENT_DISPLAY_VALUE
 										Trace.Write("DType free1---"+str(attr_value)+str(attrSysId)+str(add_style))
 										if str(attrSysId) == "AGS_REL_STDATE":
-											datepicker = "onclick_datepicker('" + attrSysId + "')"
+											datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 											datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
 											sec_str1 += (
@@ -3350,7 +3372,7 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(attrSysId)
 												+ '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
 												+ str(attr_value)
-												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="'+str(datepicker_onchange)+'" disabled>'									
+												+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'									
 												+ "</input> "
 											)
 											# sec_str1 += (
@@ -3362,6 +3384,8 @@ def EntitlementTreeViewHTMLDetail(
 											# 	+ "</input> "
 											# )
 										else:
+											if attr_value == "DefaultValue":
+												attr_value = ''
 											sec_str1 += (
 												'<input class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 												+ str(attrSysId)
@@ -3383,7 +3407,7 @@ def EntitlementTreeViewHTMLDetail(
 											# 	#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
 											# 	sec_str_imt += 
 												
-										except Exception, e:
+										except Exception as e:
 											Trace.Write(str(e)+'error1111'+str(attrSysId))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
 										#price_impact = val.ENTITLEMENT_PRICE_IMPACT
@@ -3395,7 +3419,7 @@ def EntitlementTreeViewHTMLDetail(
 											# 	Trace.Write("else price")
 											# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 											# 	sec_str_primp += ""
-										except Exception, e:
+										except Exception as e:
 											sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 											Trace.Write(str(e)+'error2222')
 											
@@ -3415,7 +3439,7 @@ def EntitlementTreeViewHTMLDetail(
 									# 		+ str(attr_value)
 									# 		+ '" value = "'+str(attr_value)+'" onclick="editent_bt(this)" disabled>'									
 									# 		+ "</input> "
-							 		# 	)
+									# 	)
 									
 									# Trace.Write("DType free3----"+str(attr_value)+str(attrSysId))
 									# STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
@@ -3447,7 +3471,7 @@ def EntitlementTreeViewHTMLDetail(
 									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
-								Trace.Write("@3323-----"+str(sec_str_imt))
+									Trace.Write("@3323-----"+str(attrSysId))
 								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
 								#new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
@@ -3456,15 +3480,16 @@ def EntitlementTreeViewHTMLDetail(
 						
 						
 						else:
-							attributesdisallowedlst.append(attrSysId)
+							if attrSysId not in attributesdisallowedlst and attrSysId:
+								attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
-							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
 							# 	add_style = ""
 							if DType == "Drop Down":
-								#Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+								Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3481,7 +3506,8 @@ def EntitlementTreeViewHTMLDetail(
 									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
 									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
 									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
-								VAR1 = sec_str1 = selected_option = ""
+								VAR1 = sec_str1 =  ""
+								selected_option = " "
 								if STDVALUES:
 									if attributevalues.get(attrSysId) is not None:
 										select_option = 'selected'
@@ -3498,26 +3524,47 @@ def EntitlementTreeViewHTMLDetail(
 											disallow_style = ""
 										if str(selected_option)=='selected':
 											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
-										VAR1 += (
-											'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
-											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
-											+ '"'+str(select_option)+'>'
-											+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-											+ "</option>"
+										try:
+											Trace.Write('attrSysId-try---3491-'+str(attrSysId))
+											VAR1 += (
+												'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
+												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
+												+ '"'+str(select_option)+'>'
+												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+												+ "</option>"
+											)
+									
+										except:
+											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
+											VAR1 += (
+												'<option '
+												+ str(disallow_style)
+												+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}" {select}>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL,select = select_option)
+											)
+									try:
+										sec_str1 += (
+												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+												+ str(VAR1)
+												+ "</select>"
+											)
+									except:		
+										sec_str1 += (
+											'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
 										)
-								sec_str1 += (
-									'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-									+ str(attrSysId)
-									+ '" type="text"  data-content ="'
-									+ str(attrSysId)
-									+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
-									+ str(VAR1)
-									+ "</select>"
-								)
+
+								
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 								#sec_str += "</select></td>"
 						
-							if DType == "Check Box":
+							elif DType == "Check Box":
 								#Trace.Write('attrSysId--2324---'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
@@ -3559,6 +3606,9 @@ def EntitlementTreeViewHTMLDetail(
 							elif DType == "Free Input, no Matching":
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
+								Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
+								if attrValue == "DefaultValue":
+									attrValue = ''
 								sec_str1 += (
 									'<input class="form-control '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
@@ -3572,6 +3622,7 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
 							if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+								Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
 							#new_value_dicta["FACTOR CURRENCY"] = ""
@@ -3760,13 +3811,13 @@ def ContractEntitlementTreeViewHTMLDetail(
 	elif TreeTopSuperParentParam == "Product Offerings":		
 		# requestdata= '{"productKey":"'+TreeParentParam+'","date":"2020-09-01","context":[{"name":"VBAP-MATNR","value":"'+TreeParentParam+'"}]}'		
 		ProductPartnumber = TreeParentParam
-	elif TreeParentParam == "Contract Items":
+	elif TreeParentParam == "Cart Items":
 		GetItem = Sql.GetFirst("select * from CTCICO (NOLOCK) where CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID = '" + str(RECORD_ID) + "'")
 		if GetItem is not None:
 			ProductPartnumber = GetItem.SERVICE_ID
 		if "-" in TreeParam:
 			TreeParam = TreeParam.split("-")[1].strip()
-	elif TreeSuperParentParam == "Contract Items":
+	elif TreeSuperParentParam == "Cart Items":
 		TreeParentParam = TreeParentParam.split("-")[1].strip()
 		ProductPartnumber = TreeParentParam
 
@@ -3823,7 +3874,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 											LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
 											LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
 											LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
-											 
+											
 											WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId}
 											ORDER BY TAB_PRODUCTS.RANK""".format(ProductId = product_obj.PRD_ID))
 	tabwise_product_attributes = {}	
@@ -4009,7 +4060,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 		WHEN MATCHED
 		THEN UPDATE SET SRC.ENTITLEMENT_DISPLAY_VALUE = TGT.ENTITLEMENT_DISPLAY_VALUE
 		WHEN NOT MATCHED BY TARGET
-		THEN INSERT(CONTRACT_ITEM_COV_OBJ_ENTITLEMENT_RECORD_ID,ENTITLEMENT_NAME,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,CONTRACT_ID,CNTITMCOB_RECORD_ID,CNTITM_RECORD_ID,CONTRACT_RECORD_ID,CTESRVCOE_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_DISPLAY_VALUE,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+		THEN INSERT(CONTRACT_ITEM_COV_OBJ_ENTITLEMENT_RECORD_ID,ENTITLEMENT_NAME,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,CONTRACT_ID,CNTITMCOB_RECORD_ID,CNTITM_RECORD_ID,CONTRACT_RECORD_ID,CTESRVCOE_RECORD_ID,SERIAL_NUMBER,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_DISPLAY_VALUE,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
 				CpqTableEntryDateModified)
 		VALUES (NEWID(),ENTITLEMENT_NAME,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,CONTRACT_ID,CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID,CNTITM_RECORD_ID,CONTRACT_RECORD_ID,CONTRACT_SERVICE_ENTITLEMENTS_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_DISPLAY_VALUE,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName)
 		Sql.RunQuery(QueryStatement)
@@ -4587,6 +4638,7 @@ except:
 	SectionList = ""
 try:
 	SubtabName = Param.SubtabName
+	Trace.Write("SubtabName==="+str(SubtabName))
 except:
 	SubtabName = ""
 try:

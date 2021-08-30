@@ -562,7 +562,7 @@ class TreeView:
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
 						# Billing Matrix Dynamic Tabs - Start
-						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing Matrix':
+						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing':
 							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id")))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
@@ -644,7 +644,7 @@ class TreeView:
 							where_string = " 1=1 "                  
 							
 
-							if parobj == "True" and ACTION != 'ADD NEW':
+							if parobj == "True" and ACTION != 'ADDNEW':
 								ChildListData = self.getChildFromParentObj(
 									NodeText,
 									NodeType,
@@ -662,7 +662,7 @@ class TreeView:
 									ordersBy,
 								)
 							else:
-								if ACTION != 'ADD NEW':
+								if ACTION != 'ADDNEW':
 									NodeName = str(findChildOne.NODE_DISPLAY_NAME)
 									ParRecId = str(findChildOne.TREE_NODE_RECORD_ID)
 									DynamicQuery = str(findChildOne.DYNAMIC_NODEDATA_QUERY)
@@ -698,20 +698,21 @@ class TreeView:
 										)	
 									else:
 										Trace.Write('700')
-										ChildListData = self.getChildOne(
-											NodeType,
-											NodeName,
-											RecAttValue,
-											nodeId,
-											ParRecId,
-											DynamicQuery,
-											ObjectName,
-											RecId,
-											where_string,
-											PageRecId,
-											ObjectRecId,
-											ordersBy,
-										)									
+										if ACTION != 'ADDNEW':
+											ChildListData = self.getChildOne(
+												NodeType,
+												NodeName,
+												RecAttValue,
+												nodeId,
+												ParRecId,
+												DynamicQuery,
+												ObjectName,
+												RecId,
+												where_string,
+												PageRecId,
+												ObjectRecId,
+												ordersBy,
+											)									
 							if len(ChildListData) > 0:
 								NewList.append(ChildListData)
 								list2 = []
@@ -1413,7 +1414,7 @@ class TreeView:
 				elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
 					ObjectName = 'SAQTMT'
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
-			   	elif str(ObjName).strip() == "SYPSAC" and CurrentTabName == 'App':
+				elif str(ObjName).strip() == "SYPSAC" and CurrentTabName == 'App':
 					getsectrec = Product.GetGlobal("NodeRecIdS")
 					where_string += " AND SECTION_RECORD_ID = '"+str(getsectrec)+"'"
 				elif str(ObjName).strip() == 'SYPSAC':
@@ -1710,6 +1711,15 @@ class TreeView:
 						else:		
 							#Trace.Write("CHKZ__J ")					                    
 							ordersByQuery = ""
+							Trace.Write("select distinct "
+								+ str(NodeName)
+								+ " from "
+								+ str(ObjName)
+								+ " (nolock) where "
+								+ str(where_string)
+								+ " "
+								+ str(ordersByQuery)
+								+ "")
 							childQuery = Sql.GetList(
 								"select distinct "
 								+ str(NodeName)
@@ -1925,7 +1935,7 @@ class TreeView:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME
-									#Trace.Write("SUBTAB_NAME_J "+str(subTabName))		
+									Trace.Write("SUBTAB_NAMEsss"+str(subTabName))		
 									if subTabName:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
@@ -2116,20 +2126,21 @@ class TreeView:
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
 										Trace.Write('2121')
-										SubChildData = self.getChildOne(
-											SubNodeType,
-											SubNodeName,
-											RecAttValue,
-											nodeId,
-											SubParRecId,
-											SubChildDynamicQuery,
-											ObjectName,
-											ParRecId,
-											Subwhere_string,
-											PageRecId,
-											ObjectRecId,
-											ordersBy,
-										)
+										if ACTION != 'ADDNEW':
+											SubChildData = self.getChildOne(
+												SubNodeType,
+												SubNodeName,
+												RecAttValue,
+												nodeId,
+												SubParRecId,
+												SubChildDynamicQuery,
+												ObjectName,
+												ParRecId,
+												Subwhere_string,
+												PageRecId,
+												ObjectRecId,
+												ordersBy,
+											)
 									
 									if len(SubChildData) > 0:
 										NewList.append(SubChildData)
@@ -2301,7 +2312,7 @@ class TreeView:
 									CurrentTabName = TestProduct.CurrentTab 
 								except:
 									CurrentTabName = "Quotes"                          
-								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Other Products'):									
+								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Complementary Products','Other Products'):									
 									if Currenttab == "Contracts":
 										Subwhere_string += " AND PRODUCT_TYPE = '{}'".format(NodeText)
 									elif NodeText == "Add-On Products":
@@ -2354,20 +2365,21 @@ class TreeView:
 									)	
 								else:
 									Trace.Write('2358'+str(Product.GetGlobal('TreeName')))
-									SubChildData = self.getChildOne(
-										SubNodeType,
-										SubNodeName,
-										RecAttValue,
-										nodeId,
-										SubParRecId,
-										subDynamicQuery,
-										ObjectName,
-										RecId,
-										Subwhere_string,
-										PageRecId,
-										ObjectRecId,
-										ordersBy,
-									)
+									if ACTION != 'ADDNEW':
+										SubChildData = self.getChildOne(
+											SubNodeType,
+											SubNodeName,
+											RecAttValue,
+											nodeId,
+											SubParRecId,
+											subDynamicQuery,
+											ObjectName,
+											RecId,
+											Subwhere_string,
+											PageRecId,
+											ObjectRecId,
+											ordersBy,
+										)
 							
 							# Trace.Write("SubChildData---1940"+str(SubChildData))
 							# Trace.Write("NewList---1940"+str(NewList))
@@ -2667,21 +2679,22 @@ class TreeView:
 											)											
 											Subwhere_string = str(where_string)
 											PageRecId = str(findSubChildOne.NODE_PAGE_RECORD_ID)	
-											Trace.Write('2672')									                              
-											SubChildData = self.getChildOne(
-												SubNodeType,
-												SubNodeName,
-												RecAttValue,
-												nodeId,
-												SubParRecId,
-												subDynamicQuery,
-												ObjectName,
-												RecId,
-												Subwhere_string,
-												PageRecId,
-												ObjectRecId,
-												ordersBy,
-											)
+											Trace.Write('2672')			
+											if ACTION != 'ADDNEW':
+												SubChildData = self.getChildOne(
+													SubNodeType,
+													SubNodeName,
+													RecAttValue,
+													nodeId,
+													SubParRecId,
+													subDynamicQuery,
+													ObjectName,
+													RecId,
+													Subwhere_string,
+													PageRecId,
+													ObjectRecId,
+													ordersBy,
+												)
 										if len(SubChildData) > 0:
 											NewList.append(SubChildData)
 											list2 = []

@@ -14,7 +14,6 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
 from SYDATABASE import SQL
 
-
 class TableAction:
 
     """Model to handle Audit Information Columns in Custom Tables"""
@@ -41,8 +40,7 @@ class TableAction:
         row["CPQTABLEENTRYADDEDBY"] = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
         row["CPQTABLEENTRYDATEADDED"] = datetime_value
         row["CpqTableEntryModifiedBy"] = str(Get_UserID)
-        row["CpqTableEntryDateModified"] = datetime_value"""
-        #Trace.Write("TRACE_TESTZ----45---" + str(row))
+        row["CpqTableEntryDateModified"] = datetime_value"""        
         tableInfo.AddRow(row)
         self.sql.Upsert(tableInfo)
 
@@ -70,13 +68,11 @@ class TableAction:
         Param : row : row : Row to be Updated
         """
         tableInfo = self.sql.GetTable(table_name)
-        primary_val = row.get(primary)
-        #Trace.Write('93----table_name------'+str(table_name))
+        primary_val = row.get(primary)        
         if str(table_name) != "cpq_permissions":
             primaryQueryItems = self.sql.GetFirst(
                 "SELECT * FROM " + str(table_name) + " WHERE " + primary + " = '" + str(primary_val) + "'"
-            )
-            
+            )            
             if primaryQueryItems is not None:
                 try:
                     row.pop("CPQTABLEENTRYADDEDBY")
@@ -90,7 +86,5 @@ class TableAction:
                 row["CpqTableEntryId"] = primaryQueryItems.CpqTableEntryId                
                 tableInfo.AddRow(row)
                 self.sql.Upsert(tableInfo)
-        else:
-            Trace.Write('93------')
-
+        
 TableActions = TableAction()

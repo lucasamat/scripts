@@ -59,120 +59,121 @@ Trace.Write("prodName!!!!" + str(prodName))
 # create Profiles-Native tables-- 9517 End
 def nativeProfileUpdate(newdict):
 	#Trace.Write('154--newdict--'+str(newdict))
-	Login_Username = 'X0116955'
+	#Login_Username = 'X0116955'
 	#Login_Password = 'Joseph@2020'
-	Login_Password = 'Welcome@123'
-	Login_Domain = 'appliedmaterials_tst'
+	#Login_Password = 'Welcome@123'
+	#Login_Domain = 'appliedmaterials_tst'
 
-	URL = 'https://sandbox.webcomcpq.com'
-	'''LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
+	#URL = 'https://sandbox.webcomcpq.com'
+	#LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT Username,Password,Domain,URL FROM SYCONF (nolock)")
+	LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME, PASSWORD, DOMAIN, URL FROM SYCONF (nolock) WHERE USER_NAME = 'X0117669'")
 	if LOGIN_CREDENTIALS is not None:
-		Login_Username = str(LOGIN_CREDENTIALS.Username)
-		Login_Password = str(LOGIN_CREDENTIALS.Password)
-		Login_Domain = str(LOGIN_CREDENTIALS.Domain)
-		URL = str(LOGIN_CREDENTIALS.URL)'''
+		Login_Username = str(LOGIN_CREDENTIALS.USER_NAME)
+		Login_Password = str(LOGIN_CREDENTIALS.PASSWORD)
+		Login_Domain = str(LOGIN_CREDENTIALS.DOMAIN)
+		URL = str(LOGIN_CREDENTIALS.URL)
 
-	sandboxBaseURL = URL
-	authenticationUrl = (
-		sandboxBaseURL
-		+ "/api/rd/v1/Core/Login?username="
-		+ Login_Username
-		+ "&password="
-		+ Login_Password
-		+ "&domain="
-		+ Login_Domain
-	)
-	Trace.Write('url check----authenticationUrl--'+str(authenticationUrl))
-	authRequest = WebRequest.Create(str(authenticationUrl))
-	authRequest.Method = "POST"
-	authRequest.CookieContainer = CookieContainer()
-	authRequest.ContentLength = 0
-	authResponse = authRequest.GetResponse()
-	cookies = authResponse.Cookies
-	authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
-	xcrf = str(authResponseData).replace('"', "")
-	Trace.Write("X-CSRF-Token : " + str(xcrf))
+		sandboxBaseURL = URL
+		authenticationUrl = (
+			sandboxBaseURL
+			+ "/api/rd/v1/Core/Login?username="
+			+ Login_Username
+			+ "&password="
+			+ Login_Password
+			+ "&domain="
+			+ Login_Domain
+		)
+		Trace.Write('url check----authenticationUrl--'+str(authenticationUrl))
+		authRequest = WebRequest.Create(str(authenticationUrl))
+		authRequest.Method = "POST"
+		authRequest.CookieContainer = CookieContainer()
+		authRequest.ContentLength = 0
+		authResponse = authRequest.GetResponse()
+		cookies = authResponse.Cookies
+		authResponseData = StreamReader(authResponse.GetResponseStream()).ReadToEnd()
+		xcrf = str(authResponseData).replace('"', "")
+		Trace.Write("X-CSRF-Token : " + str(xcrf))
 
-	# cookies
-	coookies = ""
-	if cookies is not None:
-		for cookie in cookies:
-			coookies = coookies + str(cookie) + ";"
-	#Trace.Write("COOKIES : " + coookies)
+		# cookies
+		coookies = ""
+		if cookies is not None:
+			for cookie in cookies:
+				coookies = coookies + str(cookie) + ";"
+		#Trace.Write("COOKIES : " + coookies)
 
-	data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
-	Trace.Write("53--data-----" + str(data))
-	# authentication api token creation start
-	authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
-	authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
-	authRequesttoken.Method = "POST"
-	webclienttoken = System.Net.WebClient()
-	webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-	webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-	webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-	webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
-	response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
-	Trace.Write(str(response))
-	accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
-	Trace.Write("ACCESS TOKEN : " + accessToken)
-    
-
-    # setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
-    # Trace.Write('156-------------------------'+str(setPermissionURL))
-
-	prfname = profile_id_gen = prfid = ""
-	Trace.Write('64----nativeProfileSave-------'+str(newdict))
-	prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
-	prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
-	prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
-	prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
-	profile_id_gen = prfid
-	permissionQuery = Sql.GetFirst(
-		"Select permission_id from cpq_permissions where permission_name ='" + str(prfname) + "'"
-	)
-
-
-
-	
-
-
-	# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
-	# Trace.Write('156-------------------------'+str(setPermissionURL))
-
-	datasave = """{
-		"Id":%s,
-		"Name": "%s",
-		"Description": "%s",
-		"SystemId": "%s",
-		"Condition": "%s",
-		"SelectedPermissions": {
-		"ManualPermissions": [],
-		"CompanyPermissions": [],
-		"MarketPermissions": [],
-		"MultiBrandingPermissions": [],
-		"UserTypePermissions": [],
-		"Users": [136]
-		}
+		data = "grant_type=password&username=" + Login_Username + "&password=" + Login_Password + "&domain=" + Login_Domain + ""
+		Trace.Write("53--data-----" + str(data))
+		# authentication api token creation start
+		authenticationapitokenUrl = "https://sandbox.webcomcpq.com/basic/api/token"
+		authRequesttoken = WebRequest.Create(str(authenticationapitokenUrl))
+		authRequesttoken.Method = "POST"
+		webclienttoken = System.Net.WebClient()
+		webclienttoken.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclienttoken.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
+		webclienttoken.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
+		webclienttoken.Headers.Add("X-CSRF-Token", xcrf)
+		response = webclienttoken.UploadString(str(authenticationapitokenUrl), data)
+		Trace.Write(str(response))
+		accessToken = "Bearer " + str(response).split(":")[1].split(",")[0].replace('"', "")
+		Trace.Write("ACCESS TOKEN : " + accessToken)
 		
+
+		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups'
+		# Trace.Write('156-------------------------'+str(setPermissionURL))
+
+		prfname = profile_id_gen = prfid = ""
+		Trace.Write('64----nativeProfileSave-------'+str(newdict))
+		prfid = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
+		prf_ID = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
+		prfname = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00129").GetValue()
+		prfdesc = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00130_LONG").GetValue()
+		profile_id_gen = prfid
+		permissionQuery = Sql.GetFirst(
+			"Select permission_id from cpq_permissions where permission_name ='" + str(prfname) + "'"
+		)
+
+
+
 		
-	}""" % (
-		prf_ID,
-		prfname,
-		prfdesc,
-		prfid,
-		prfdesc,
-	)
-	Trace.Write("188-------------datasave----" + str(datasave))
-	setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
-	Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
-	webclient = System.Net.WebClient()
-	webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
-	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
-	webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
-	webclient.Headers.Add("X-CSRF-Token", xcrf)
-	webclient.Headers.Add("Authorization", accessToken)
-	response = webclient.UploadString(str(setPermissionURL), datasave)
-	#Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
+
+
+		# setPermissionURL = sandboxBaseURL + '/setup/api/v1/admin/permissionGroups/'+ str(int(prf_ID))
+		# Trace.Write('156-------------------------'+str(setPermissionURL))
+
+		datasave = """{
+			"Id":%s,
+			"Name": "%s",
+			"Description": "%s",
+			"SystemId": "%s",
+			"Condition": "%s",
+			"SelectedPermissions": {
+			"ManualPermissions": [],
+			"CompanyPermissions": [],
+			"MarketPermissions": [],
+			"MultiBrandingPermissions": [],
+			"UserTypePermissions": [],
+			"Users": [136]
+			}
+			
+			
+		}""" % (
+			prf_ID,
+			prfname,
+			prfdesc,
+			prfid,
+			prfdesc,
+		)
+		Trace.Write("188-------------datasave----" + str(datasave))
+		setPermissionURL = sandboxBaseURL + "/setup/api/v1/admin/permissionGroups"
+		Trace.Write("261----setPermissionURL----" + str(setPermissionURL))
+		webclient = System.Net.WebClient()
+		webclient.Headers[System.Net.HttpRequestHeader.Host] = "sandbox.webcomcpq.com"
+		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json; charset=utf-8"
+		webclient.Headers[System.Net.HttpRequestHeader.Cookie] = coookies
+		webclient.Headers.Add("X-CSRF-Token", xcrf)
+		webclient.Headers.Add("Authorization", accessToken)
+		response = webclient.UploadString(str(setPermissionURL), datasave)
+		#Trace.Write("PERMISSIONS : " + str(response.encode("ascii", "ignore")))
 	return "response"
 
 def sec_edit(SEC_REC_ID):
@@ -826,7 +827,9 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 		# Trace.Write("TABLE_NAME--" + str(TABLE_NAME))
 		# Trace.Write("Auto_col"+str(Auto_col))
 		if str(TABLE_NAME) == "cpq_permissions":
-			nativeProfileUpdate(str(dict(row)))
+			if Product.Attributes.GetByName('QSTN_SYSEFL_SY_00129').GetValue():
+				Trace.Write('cpq prpof===')
+				nativeProfileUpdate(str(dict(row)))
 		is_key_Flag = "FALSE"
 		is_required = "FALSE"
 		is_Past_Date = "FALSE"
@@ -876,7 +879,7 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 			+ "'and REQUIRED='TRUE' "
 		)
 		# Ramesh A043S001P01-6083 END 05-12-11-2019  ADD SEGMENT REQUIRED FIELDS
-
+		Field_Labels = []
 		if Required_obj:			
 			for x in Required_obj:
 				api_name = str(x.API_NAME)
@@ -886,25 +889,34 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 				if api_name in row and str(api_name) != "":
 					API_NAME_val = row[x.API_NAME]					
 					if API_NAME_val == "":
+						Field_Labels.append(x.FIELD_LABEL)
 						is_required = "TRUE"
-						break
+						# break
 					else:
 						is_required = "FALSE"
 
 		requiredDict = GetErrorMsg.GetQuestionlevelMessage(TABLE_NAME, row, SEC_REC_ID)
-		#Trace.Write("requiredDict" + str(requiredDict))		
-		#Trace.Write(str(is_key_Flag) + "�aaaaaaaaa" + str(is_required))
+		Trace.Write("Field_Labels" + str(Field_Labels))	
+		Trace.Write("requiredDict" + str(requiredDict))		
+		Trace.Write(str(is_key_Flag) + "aaaaaaaaa" + str(is_required))
 		if is_key_Flag == "TRUE" or is_required == "TRUE" or is_Past_Date == "TRUE":			
 			if Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None:
 				Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = False
 				# Ramesh A043S001P01-6083 START 05-12-11-2019  ADD SEGMENT REQUIRED FIELDS
-				Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
-				Product.Attributes.GetByName(
-					"SEC_N_TAB_PAGE_ALERT"
-				).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>'{}' is a required field</label></div></div></div>".format(
-					str(SEC_TAB_PAGE_ALERT)
-				)
-				flag = "FALSE"
+				if len(Field_Labels) == 1:
+					Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
+					Product.Attributes.GetByName(
+						"SEC_N_TAB_PAGE_ALERT"
+					).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>'{}' is a required field</label></div></div></div>".format(
+						str(SEC_TAB_PAGE_ALERT)
+					)
+					flag = "FALSE"
+				elif len(Field_Labels) >1:
+					Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
+					Product.Attributes.GetByName(
+						"SEC_N_TAB_PAGE_ALERT"
+					).HintFormula = "<div class='col-md-12' id='PageAlert' ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert_notifcatio2' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert_notifcatio2' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'  ><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>ERROR : You will not be able to save your data until all required fields are populated </label></div></div></div>"
+					flag = "FALSE"
 		elif is_required == "FALSE" and TABLE_NAME == "SYROMA":
 			Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").HintFormula = ""
 			tableInfo = Sql.GetTable(TABLE_NAME)

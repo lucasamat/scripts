@@ -47,6 +47,7 @@ class SyncQuoteAndCustomTables:
             'SalesUnit':self.quote.GetCustomField('SalesUnit').Content,
             'DistributionChannel':self.quote.GetCustomField('DistributionChannel').Content,
             'Division':self.quote.GetCustomField('Division').Content,
+            'PrimaryContactName' : self.quote.GetCustomField('PrimaryContactName').Content,
             'SalesOfficeID':self.quote.GetCustomField('SalesOfficeID').Content,            
             'SalesPerson':self.quote.GetCustomField('SalesPerson').Content,
             'PaymentTerms':self.quote.GetCustomField('PaymentTerms').Content,
@@ -150,6 +151,7 @@ class SyncQuoteAndCustomTables:
             attributesdisallowedlst=[]
             attributeReadonlylst=[]
             attributesallowedlst=[]
+            attributedefaultvalue = []
             #overallattributeslist =[]
             attributevalues={}
             for rootattribute, rootvalue in Fullresponse.items():
@@ -167,6 +169,9 @@ class SyncQuoteAndCustomTables:
                                     attributeReadonlylst.append(prdvalue['id'])
                                 for attribute in prdvalue['values']:
                                     attributevalues[str(prdvalue['id'])]=attribute['value']
+                                    if attribute["author"] in ("Default","System"):
+                                        Trace.Write('524------'+str(prdvalue["id"]))
+                                        attributedefaultvalue.append(prdvalue["id"])
             
             attributesallowedlst = list(set(attributesallowedlst))
             #overallattributeslist = list(set(overallattributeslist))
@@ -204,7 +209,7 @@ class SyncQuoteAndCustomTables:
                                 #Trace.Write('except-try----date-------')
                                 HasDefaultvalue = True
                                 QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-                                ent_disp_val = 	str(QuoteStartDate)
+                                ent_disp_val = 	str(QuoteStartDate.strftime("%m/%d/%Y"))
                                 ent_val_code = ''
                                 #Trace.Write(str(HasDefaultvalue)+'-date--ent_disp_val---inside try--'+str(ent_disp_val))
                             except:
@@ -228,25 +233,35 @@ class SyncQuoteAndCustomTables:
                             except:
                                 #Log.Info('except-----')
                                 ent_disp_val = ent_disp_val 
+                           
                                     
                         else:
                             ent_disp_val = ent_disp_val
-                        
+                        #A055S000P01-7401 START
+                        if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
+                            #Log.Info("ENTERED POA----------->")
+                            val = ""
+                            if str(ent_disp_val) == 'Comprehensive':
+                                val = "COMPREHENSIVE SERVICES"
+                            elif str(ent_disp_val) == 'Complementary':
+                                val = "COMPLEMENTARY PRODUCTS"
+                            Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID))
+                        #A055S000P01-7401 END                    
                         DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
                         #Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
                         #Trace.Write("ent_name--"+str(attrs))
                         insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                         <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                         <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-                        <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-                        <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+                        <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                        
                         <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+                        <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
                         <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
                         <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
                         <IS_DEFAULT>{is_default}</IS_DEFAULT>
                         <PRICE_METHOD>{pm}</PRICE_METHOD>
                         <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                        </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                        </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
                 Trace.Write('238--insertservice----'+str(insertservice))   
                 tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
                 tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
@@ -325,6 +340,7 @@ class SyncQuoteAndCustomTables:
                             attributesdisallowedlst=[]
                             attributeReadonlylst=[]
                             attributesallowedlst=[]
+                            attributedefaultvalue = []
                             #overallattributeslist =[]
                             attributevalues={}
                             for rootattribute, rootvalue in Fullresponse.items():
@@ -342,6 +358,9 @@ class SyncQuoteAndCustomTables:
                                                     attributeReadonlylst.append(prdvalue['id'])
                                                 for attribute in prdvalue['values']:
                                                     attributevalues[str(prdvalue['id'])]=attribute['value']
+                                                    if attribute["author"] in ("Default","System"):
+										                Trace.Write('524------'+str(prdvalue["id"]))
+										                attributedefaultvalue.append(prdvalue["id"])
                             
                             attributesallowedlst = list(set(attributesallowedlst))
                             #overallattributeslist = list(set(overallattributeslist))
@@ -379,15 +398,15 @@ class SyncQuoteAndCustomTables:
                                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                     <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                                     <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-                                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-                                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+                                    <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                                    
                                     <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+                                    <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
                                     <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
                                     <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
                                     <IS_DEFAULT>{is_default}</IS_DEFAULT>
                                     <PRICE_METHOD>{pm}</PRICE_METHOD>
                                     <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR> 
-                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
+                                    </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
                                     cpsmatc_incr = int(cpsmatchID) + 10
                                     Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                                     Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, whereReq)
@@ -497,9 +516,10 @@ class SyncQuoteAndCustomTables:
                         paydesc = ""
                         payrec = ""
                     # self.quote.OrderStatus.Name
-                    Log.Info("expired"+str(start_date))
-                    edat = date.today()+ timedelta(days=90)
-                    Log.Info("expired2"+str(edat))
+                    #Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
+                    created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+                    expired_date = date.today()+ timedelta(days=365)
+                    #A055S000P01-7866
                     document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
                     quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
                     opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
@@ -520,7 +540,8 @@ class SyncQuoteAndCustomTables:
                             else "SALES ORG LEVEL",
                             "CONTRACT_VALID_FROM": start_date,
                             "CONTRACT_VALID_TO": end_date,
-                            "QUOTE_EXPIRE_DATE":str(edat),
+                            "QUOTE_CREATED_DATE": str(created_date),                            
+                            "QUOTE_EXPIRE_DATE":str(expired_date),
                             #"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
                             "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
                             #"EMPLOYEE_ID": custom_fields_detail.get("SalesPerson"),
@@ -607,11 +628,15 @@ class SyncQuoteAndCustomTables:
                             )
                             
                             
-                            
-                            if SalesOrg_obj:
+                            salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+                            if salesorg_currency:
+                                salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+                                                    "DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+                                                    })
+                            # if SalesOrg_obj:
                                 
-                                salesorg_data.update({"SORG_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
-                                                    "SORGCURRENCY_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
+                            #     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
+                            #                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
                                 exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 ".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY))
                                 
                                 if exchange_obj:
@@ -661,10 +686,15 @@ class SyncQuoteAndCustomTables:
                                     custom_fields_detail.get('SalesOrgID')
                                 )
                             )
-                            if salesorg_obj:
-                                salesorg_data.update({"SORG_CURRENCY":salesorg_obj.DEF_CURRENCY , 
-                                                    "SORGCURRENCY_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
+                            salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+                            if salesorg_currency:
+                                salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+                                                    "DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
                                                     })
+                            # if salesorg_obj:
+                                # salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
+                                #                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
+                                #                     })
                         if str(salesorg_data.get('SALESORG_ID')):
                             #Log.Info("TAX_DETAILS")
                             tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
@@ -673,6 +703,7 @@ class SyncQuoteAndCustomTables:
                                 salesorg_data.update({"CUSTAXCAT_ID": tax_details.TAXCATEGORY_ID,"CUSTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "CUSTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "CUSTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
                         quote_salesorg_table_info.AddRow(salesorg_data)
                         Log.Info('salesorg_data---443--'+str(salesorg_data))
+                        Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
                         Sql.Upsert(quote_salesorg_table_info)
                         ##Commented the condition to update the pricing procedure for both spare and tool based quote
                         #if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
@@ -805,7 +836,23 @@ class SyncQuoteAndCustomTables:
                                 }
 
                                 quote_opportunity_table_info.AddRow(opportunity_quote_data)
-
+                    # A055S000P01-6618 - Starts
+                    if custom_fields_detail.get("PrimaryContactName"):
+                        primary_contact_update = {
+                            "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+                            "ADDRESS": "",
+                            "EMAIL": "",
+                            "IS_MAIN": "",
+                            "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+                            "QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+                            "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                            "PARTY_ID": "",
+                            "PARTY_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+                            "PARTY_ROLE": "PRIMARY CONTACT",
+                            "PHONE": ""
+                        }
+                        quote_involved_party_table_info.AddRow(primary_contact_update)
+                    # A055S000P01-6618 - Ends
                     if self.quote.BillToCustomer:
                         bill_to_customer = self.quote.BillToCustomer
                         billtocustomer_quote_data = {
@@ -1034,9 +1081,10 @@ class SyncQuoteAndCustomTables:
                         Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
                         
                         requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n}'
+                        Trace.Write("REQUEST DATA----> "+str(requestdata))
                         
                         response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
-
+                        
                     payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
                     if payload_json_obj:
                         contract_quote_obj = None
@@ -1053,8 +1101,10 @@ class SyncQuoteAndCustomTables:
                             fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
                         if payload_json.get('SERVICE_IDS'):	
                             service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
+                            #Log.Info("SERVICE IDS-------->"+str(service_ids))
                         if payload_json.get('SAQFEQ'):
-                            for equipment_json_data in payload_json.get('SAQFEQ'):                        
+                            for equipment_json_data in payload_json.get('SAQFEQ'):       
+                                Log.Info(str(payload_json.get('SAQFEQ'))+" ======== equipment_json_data-------->"+str(equipment_json_data))                 
                                 if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
                                     equipment_data[equipment_json_data.get('FAB_LOCATION_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
                                 else:
@@ -1073,7 +1123,7 @@ class SyncQuoteAndCustomTables:
                                 Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("SalesType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
                                 Sql.RunQuery(Opportunity_obj)
                         Log.Info("fab_location_ids ===> "+str(fab_location_ids))
-                        Log.Info("service_ids ===> "+str(service_ids))	
+                        Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
                         Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
 
                         if  str(payload_json.get('SalesType')) == 'Z19':

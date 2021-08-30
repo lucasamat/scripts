@@ -450,7 +450,7 @@ def GSCONTLOOKUPPOPUP(
                 #     VAL_Str = "SELECT top 10 * " + " FROM " + str(TABLEID)
                 #     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))
                 elif str(TABLEID) == "SYOBJR":
-                    VAL_Str = "SELECT " + str(API_NAME_str) + " FROM " + str(TABLEID)
+                    VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
                     count_query = SqlHelper.GetList("SELECT COUNT(*) as cnt FROM " + str(TABLEID))    
                 else:
                     VAL_Str = "SELECT top 10 " + str(API_NAME_str) + " FROM " + str(TABLEID)
@@ -652,6 +652,7 @@ def GSCONTLOOKUPPOPUP(
 def GSCONTLOOKUPPOPUPFILTER(
     TABLEID, OPER, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, TABLENAME, KEYDATA, ARRAYVAL, PRICEMODEL_ID, LOOKUP_ID,TESTEDOBJECT,TRACKEDTESTEDOBJECT,MAPPINGSAPPROVALOBJECT,OFFSET_SKIP_COUNT,FETCH_COUNT
 ):
+    Trace.Write('65----')
     tab_Name = ""
     VAL_Obj = ""
     VAL_Str = ""
