@@ -164,7 +164,8 @@ for data in Quoteinfoquery:
 			final_json = final_json+str(SAQIEN_QUERY.RESULT)+','
 		
 	Final_json = '{"CPQ_Columns": {'+str(final_json)[:-1]+'}}'
-	#Trace.Write("456 ------>"+str(Final_json))
+	Log.Info("456 Qt_ID------>"+str(Qt_ID))
+	Final_json = Final_json.repalce("'",'&&&&')
 	if len(Final_json)>0:
 		LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_HADOOP'")
 		Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
@@ -180,7 +181,10 @@ for data in Quoteinfoquery:
 		authorization = "Bearer " + access_token
 		webclient = System.Net.WebClient()
 		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
+		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
+
+
+		primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME,CPQTABLEENTRYDATEADDED,CPQTABLEENTRYADDEDBY)  select ''"+str(Final_json)+ "'',''Hadoop_test'',Getdate(),''"+str(addby)+ "'' ' ")	
 
 		#Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
 		#Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
@@ -189,6 +193,6 @@ for data in Quoteinfoquery:
 			#StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
 		
 
-		ApiResponse = ApiResponseFactory.JsonResponse(Final_json)
+		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data available in SYINPL" }]})
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data not available"}]})
