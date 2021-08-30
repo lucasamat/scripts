@@ -15,9 +15,9 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
-def Quoteiteminsert(Qt_id):
-    QuoteNumber = Qt_id[2:12]
-    Quoteopen = QuoteHelper.Edit(QuoteNumber)
+def quoteiteminsert(Qt_id):
+    quote_number = Qt_id[2:12]
+    quote_Edit = QuoteHelper.Edit(quote_number)
     get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
     total_target_price = 0.00
@@ -80,5 +80,5 @@ try:
 except:
     Qt_id = ""
 
-Calling_function = Quoteiteminsert(Qt_id)
+calling_function = quoteiteminsert(Qt_id)
 
