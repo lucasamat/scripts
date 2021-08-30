@@ -3758,7 +3758,7 @@ def EntitlementTreeViewHTMLDetail(
 							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
 						)
 					sefl_api = sefl.API_FIELD_NAME
-					col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+")
+					col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
 					if col_name:
 						current_obj_value = str(eval("col_name." + str(sefl_api))
 						Trace.Write('current_obj_value---'+str(current_obj_value))
