@@ -3774,10 +3774,7 @@ def EntitlementTreeViewHTMLDetail(
 							+ current_obj_value
 							+ '" title="'
 							+ current_obj_value
-							+ '" class="form-control related_popup_css" style="'
-							+ str(left_float)
-							+ ' " '
-							+ 
+							+ '" class="form-control related_popup_css" '
 							+ " disabled></td>"
 						)
 						sec_str_boot +=(
