@@ -567,10 +567,10 @@ try:
 								    copyEmail = MailAddress(emalinfo)
 								    msg.Bcc.Add(copyEmail)
 
-							# Send the message
+							# Send the message QT_REC_ID
 							mailClient.Send(msg)
 
-					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":"Qt_Id"})	
+					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":Qt_Id})	
 					# Billing matrix async call
 					LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 
