@@ -24,7 +24,7 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 
 Jsonquery = SqlHelper.GetFirst("select getdate() as date,DATEADD(HOUR,-2,getdate()) as filter  ")
 
-Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' union select  quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False'")
+Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' union select top 1 quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False'")
 
 Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
@@ -164,7 +164,7 @@ for data in Quoteinfoquery:
 			final_json = final_json+str(SAQIEN_QUERY.RESULT)+','
 		
 	Final_json = '{"CPQ_Columns": {'+str(final_json)[:-1]+'}}'
-	Log.Info("4567 Qt_ID------>"+str(Qt_ID))
+	Log.Info("45678 Qt_ID------>"+str(Qt_ID))
 	Final_json = Final_json.replace("'",'&&&&')
 	if len(Final_json)>0:
 		LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_HADOOP'")
