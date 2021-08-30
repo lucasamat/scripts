@@ -1173,7 +1173,7 @@ def Related_Sub_Banner(
                         FourthValue = get_val.EQUIPMENT_ID
                         FifthLable = "Serial Number"
                         FifthValue = get_val.SERIAL_NUMBER 
-                    elif subTabName == "Equipment":
+                    elif (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers"):
                         try:
                             getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
                             desc = getService.SERVICE_DESCRIPTION
