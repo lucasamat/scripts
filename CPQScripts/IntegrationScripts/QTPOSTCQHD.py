@@ -164,7 +164,7 @@ for data in Quoteinfoquery:
 			final_json = final_json+str(SAQIEN_QUERY.RESULT)+','
 		
 	Final_json = '{"CPQ_Columns": {'+str(final_json)[:-1]+'}}'
-	Log.Info("456 Qt_ID------>"+str(Qt_ID))
+	Log.Info("4567 Qt_ID------>"+str(Qt_ID))
 	Final_json = Final_json.replace("'",'&&&&')
 	if len(Final_json)>0:
 		LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_HADOOP'")
