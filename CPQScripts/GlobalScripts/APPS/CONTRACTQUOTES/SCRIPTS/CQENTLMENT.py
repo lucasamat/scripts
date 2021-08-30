@@ -656,7 +656,7 @@ class Entitlements:
 						#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
 							
 			#Sql.RunQuery(UpdateEntitlement)	
-			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',{} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, userId, whereReq)
 			Sql.RunQuery(Updatecps)
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
