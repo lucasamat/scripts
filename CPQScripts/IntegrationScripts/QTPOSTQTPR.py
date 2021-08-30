@@ -124,7 +124,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Pricing Initiated - AMAT CPQ QA"
+					msg.Subject = "Pricing Initiated - AMAT CPQ DEV"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 
@@ -461,7 +461,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Pricing Completed - AMAT CPQ QA"
+					msg.Subject = "Pricing Completed - AMAT CPQ DEV"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 
