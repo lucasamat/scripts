@@ -24,7 +24,7 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 
 Jsonquery = SqlHelper.GetFirst("select getdate() as date,DATEADD(HOUR,-2,getdate()) as filter  ")
 
-Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' union select top 1 quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False'")
+Quoteinfoquery = SqlHelper.GetList("SELECT Top 1  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' ")
 
 Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
@@ -191,8 +191,10 @@ for data in Quoteinfoquery:
 		
 		if "True" in Hadoop_response: 
 			StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
-		
 
-		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data available in SYINPL" }]})
+			ApiResponse = ApiResponseFactory.JsonResponse(Hadoop_response)
+		
+		else:
+			ApiResponse = ApiResponseFactory.JsonResponse(Hadoop_response)
 	else:
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data not available"}]})
