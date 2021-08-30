@@ -23,8 +23,9 @@ ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----')
 def CreateNewRevision(Opertion):
 	if Quote is not None:
-		QInfo= Quote.CreateNewRevision(True)
+		
 		NRev = QuoteHelper.Edit(Quote.CompositeNumber)
+		QInfo= Quote.CreateNewRevision(True)
 		compositeNUmber = Quote.CompositeNumber
 		currentrevison = Quote.RevisionNumber
 
