@@ -3735,7 +3735,7 @@ def EntitlementTreeViewHTMLDetail(
 				)'''
 			
 			##Adding Audit information section in Entitlement starts...
-			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ProductPartnumber))
+			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
 				Section_id = get_sec.RECORD_ID
 				Section_desc = get_sec.SECTION_NAME
