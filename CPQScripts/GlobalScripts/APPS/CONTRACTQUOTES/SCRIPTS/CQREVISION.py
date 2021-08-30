@@ -35,7 +35,9 @@ def create_new_revision(Opertion):
 		quote_revision_table_info = Sql.GetTable("SAQTRV")
 		quote_revision_id = str(Guid.NewGuid()).upper()
 		#Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
-		quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": composite_number,"QUOTE_NAME": '',"QUOTE_RECORD_ID": quote_contract_recordId,"ACTIVE":0,"REV_CREATE_DATE":'',"REV_EXPIRE_DATE":'',"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":current_revison,"REV_APPROVE_DATE":''}
+		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
+		newrev_inc = get_current_rev.rev_id+1
+		quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": composite_number,"QUOTE_NAME": '',"QUOTE_RECORD_ID": quote_contract_recordId,"ACTIVE":0,"REV_CREATE_DATE":'',"REV_EXPIRE_DATE":'',"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":newrev_inc,"REV_APPROVE_DATE":''}
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
