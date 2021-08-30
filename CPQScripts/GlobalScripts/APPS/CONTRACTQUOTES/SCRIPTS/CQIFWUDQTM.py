@@ -16,6 +16,8 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 def Quoteiteminsert(Qt_id):
+    QuoteNumber = Qt_id[2:12]
+    Quoteopen = QuoteHelper.Edit(QuoteNumber)
     get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
     total_target_price = 0.00
