@@ -558,8 +558,10 @@ class SyncQuoteAndCustomTables:
                     )
                     #insert in revision table while creating quote start
                     quote_revision_table_info = Sql.GetTable("SAQTRV")
+                    quote_revision_id = str(Guid.NewGuid()).upper()
+                    Quote.SetGlobal("contract_quote_record_id",str(quote_revision_id))
                     quote_rev_data = {
-                        "QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
+                        "QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
                         "QUOTE_ID": quote_id,
                         "QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
                         "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
@@ -570,6 +572,7 @@ class SyncQuoteAndCustomTables:
                         "QTEREV_ID":0
                         "REV_APPROVE_DATE":''}
                     quote_salesorg_table_info.AddRow(salesorg_data)
+                    Quote.GetCustomField('QuoteStartDate').Content = 
                     Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
                     Sql.Upsert(quote_rev_data)
                     Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
