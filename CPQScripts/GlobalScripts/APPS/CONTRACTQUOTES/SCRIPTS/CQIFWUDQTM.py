@@ -15,7 +15,7 @@ import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
-
+Log.Info("CQIFWUDQTM++++START")
 def Quoteiteminsert(Qt_id):
     get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
@@ -73,7 +73,8 @@ def Quoteiteminsert(Qt_id):
     Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
     Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
     Quote.Save()
-
+    Log.Info("CQIFWUDQTM++++END")
+    return "True"
 try: 
 	Qt_id = Param.QT_REC_ID
 except:
