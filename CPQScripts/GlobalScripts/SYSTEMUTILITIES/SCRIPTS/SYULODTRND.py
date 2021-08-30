@@ -3737,14 +3737,15 @@ def EntitlementTreeViewHTMLDetail(
 			##Adding Audit information section in Entitlement starts...
 			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
-				Section_id = get_sec.RECORD_ID
-				Section_desc = get_sec.SECTION_NAME
+				section_id = get_sec.RECORD_ID
+				section_desc = get_sec.SECTION_NAME
 				
-				sec_str_boot += ('<div id="sc_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <tbody>')
-				GetSEFL = Sql.GetList(
-					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(Section_id) + "' ORDER BY DISPLAY_ORDER"
+				sec_str_boot += ('<div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
+				get_sefl = Sql.GetList(
+					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
-				for sefl in GetSEFL:
+
+				for sefl in get_sefl:
 					sec_str_boot += (
 							'<tr class="iconhvr brdbt" style=" "><td class="wth350"><abbr title="'
 							+ str(sefl.FIELD_LABEL)
@@ -3754,8 +3755,33 @@ def EntitlementTreeViewHTMLDetail(
 							+ str(sefl.FIELD_LABEL)
 							+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
 							+ str(sefl.FIELD_LABEL)
-							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td></tr>'
+							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
 						)
+					sefl_api = sefl.API_FIELD_NAME
+					col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+")
+					if col_name:
+						current_obj_value = str(eval("col_name." + str(sefl_api))
+						Trace.Write('current_obj_value---'+str(current_obj_value))
+						if str(sefl.FIELD_LABEL) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
+							try:
+								current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
+							except:
+								pass
+						sec_str_boot +=(
+							'<td><input id="'
+							+ str(sefl_api)
+							+ '" type="text" value="'
+							+ current_obj_value
+							+ '" title="'
+							+ current_obj_value
+							+ '" class="form-control related_popup_css" style="'
+							+ str(left_float)
+							+ ' " '
+							+ 
+							+ " disabled></td>"
+						)
+
+					sec_str_boot +=	('</tr>')
 					
 				sec_str_boot += '</tbody></table>'
 				#sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
