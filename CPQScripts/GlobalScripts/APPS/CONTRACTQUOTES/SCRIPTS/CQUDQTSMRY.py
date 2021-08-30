@@ -29,8 +29,9 @@ class ContractQuoteSummaryUpdate:
                                             END
                                         FROM SAQICO (NOLOCK) 
                                         JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
-                                        WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
+                                        WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                             QuoteRecordId=self.contract_quote_record_id,
+                                            RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                                             Year=count,
                                             Count=count - 1 
                                             )
@@ -43,8 +44,9 @@ class ContractQuoteSummaryUpdate:
                                         YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
                                         DISCOUNT = {Discount}
                                     FROM SAQICO (NOLOCK)                                     
-                                    WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
-                                        QuoteRecordId=self.contract_quote_record_id, 
+                                    WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+                                        QuoteRecordId=self.contract_quote_record_id,
+                                        RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                                         DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
                                         Discount=self.discount)
                     )
@@ -54,8 +56,9 @@ class ContractQuoteSummaryUpdate:
         Sql.RunQuery("""UPDATE SAQICO SET 
                                         NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0)
                                     FROM SAQICO (NOLOCK)                                     
-                                    WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(
-                                        QuoteRecordId=self.contract_quote_record_id 
+                                    WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+                                        QuoteRecordId=self.contract_quote_record_id,
+                                        RevisionRecordId = Quote.GetGlobal("quote_revision_record_id") 
                                         )
                     )
     
@@ -75,10 +78,10 @@ class ContractQuoteSummaryUpdate:
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2
                                         FROM SAQITM (NOLOCK) 
                                         JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
-                                        WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' 
+                                        WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
                                         GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
                             ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,
+                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                             Discount=self.discount))
     
     def _update_quote_summary(self):
