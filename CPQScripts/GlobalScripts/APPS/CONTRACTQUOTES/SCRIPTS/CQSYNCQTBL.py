@@ -1220,14 +1220,7 @@ class SyncQuoteAndCustomTables:
                             
 
                             if service_ids:			
-                                Log.Info("""
-                                            INSERT
-                                            SAQTSV (QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-                                            SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-                                                SELECT DISTINCT '{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
-                                                WHERE SAP_PART_NUMBER IN ('{ServiceIds}')
-                                                ) A
-                                            """.format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids))
+                                
                                 SAQTSV_start = time.time()
                                 service_insert = Sql.RunQuery("""
                                                                 INSERT
@@ -1245,7 +1238,6 @@ class SyncQuoteAndCustomTables:
                                 self.CreateEntitlements(quote_record_id)
                                 entitle_end_time = time.time()
                                 #Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
-                            Trace.Write("EQUIPMENT DATA------->>"+str(equipment_data))
                             if equipment_data:
                                 #Log.Info(""""EQUIPMENTS INSERT""")
                                 count = 0
