@@ -1711,6 +1711,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					tbrow["PAR_SERVICE_DESCRIPTION"]=OfferingRow_detail.SERVICE_DESCRIPTION
 					#tbrow["IS_DEFAULT"] = '1'
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
+					tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
+					tbrow["CPQTABLEENTRYDATEADDED"] = self.datetime_value
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 					values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
