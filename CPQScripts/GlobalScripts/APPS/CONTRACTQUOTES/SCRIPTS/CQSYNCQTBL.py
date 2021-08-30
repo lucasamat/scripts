@@ -559,7 +559,7 @@ class SyncQuoteAndCustomTables:
                     #insert in revision table while creating quote start
                     quote_revision_table_info = Sql.GetTable("SAQTRV")
                     quote_revision_id = str(Guid.NewGuid()).upper()
-                    Quote.SetGlobal("contract_quote_record_id",str(quote_revision_id))
+                    Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
                     quote_rev_data = {
                         "QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
                         "QUOTE_ID": quote_id,
