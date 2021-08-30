@@ -3117,12 +3117,12 @@ def EntitlementTreeViewHTMLDetail(
 								add_style = ""
 							attributes_disallowed_list.append(attrSysId)
 						else:
-							Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
+							#Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 							add_style = ""
 						if attrSysId in attributedefaultvalue:
-							Trace.Write("add_style----3077----- "+str(attrSysId))
+							#Trace.Write("add_style----3077----- "+str(attrSysId))
 							add_style = "color:#1B78D2"
-						Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
+						#Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
 							disable_edit = 'disable_edit'
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -3152,7 +3152,7 @@ def EntitlementTreeViewHTMLDetail(
 								
 								if DType == "Drop Down" :
 									
-									Trace.Write('3152------'+str(val.ENTITLEMENT_NAME))
+									#Trace.Write('3152------'+str(val.ENTITLEMENT_NAME))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3179,7 +3179,7 @@ def EntitlementTreeViewHTMLDetail(
 										VAR1 += '<option value="select" ' +str(default)+'>Select </option>'
 										for value in STDVALUES:
 											if value.SYSTEM_ID in dropdowndisallowlist:
-												Trace.Write('3179-----'+str(value.SYSTEM_ID))
+												#Trace.Write('3179-----'+str(value.SYSTEM_ID))
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
@@ -3273,7 +3273,7 @@ def EntitlementTreeViewHTMLDetail(
 											Trace.Write('except'+str(e))
 											try:
 												display_value_code = str(tuple(eval(val.ENTITLEMENT_VALUE_CODE))).replace(',)',')')
-												Trace.Write('display_value_code'+str(display_value_code))
+												#Trace.Write('display_value_code'+str(display_value_code))
 												display_value_query = Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' and STANDARD_ATTRIBUTE_VALUE in {code} ".format(attr_code = attribute_code,code = display_value_code )  )
 												display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in display_value_query]
 											except Exception as e:
@@ -3288,7 +3288,7 @@ def EntitlementTreeViewHTMLDetail(
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
-											Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
+											#Trace.Write("checkkkkkk---"+str(val.ENTITLEMENT_VALUE_CODE)+"----"+str(value.STANDARD_ATTRIBUTE_VALUE)+str(attrSysId))
 											try:
 												if not (type(val.ENTITLEMENT_VALUE_CODE) is 'int' or type(val.ENTITLEMENT_VALUE_CODE) is 'float'):
 													value_code = eval(val.ENTITLEMENT_VALUE_CODE)
@@ -3296,10 +3296,10 @@ def EntitlementTreeViewHTMLDetail(
 													value_code = val.ENTITLEMENT_VALUE_CODE	
 											except:
 												value_code = val.ENTITLEMENT_VALUE_CODE
-											Trace.Write('value_code'+str(value_code))
+											#Trace.Write('value_code'+str(value_code))
 											try:
 												if value_code and str(value.STANDARD_ATTRIBUTE_VALUE).strip() in value_code:
-													Trace.Write('2620-----ch---'+str(value.STANDARD_ATTRIBUTE_VALUE))
+													#Trace.Write('2620-----ch---'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													# getnameentallowed.append(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													# Trace.Write("getnameentallowed"+str(getnameentallowed))
 													selected_option = str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3311,7 +3311,7 @@ def EntitlementTreeViewHTMLDetail(
 															+ "</option>"
 													)
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() not in value_code :
-													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
+													#Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
 														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3321,7 +3321,7 @@ def EntitlementTreeViewHTMLDetail(
 													)
 											except:
 												if value_code and str(value.STANDARD_ATTRIBUTE_VALUE).strip() == value_code:
-													Trace.Write('2620-----ch---'+str(value.STANDARD_ATTRIBUTE_VALUE))
+													#Trace.Write('2620-----ch---'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													# getnameentallowed.append(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													# Trace.Write("getnameentallowed"+str(getnameentallowed))
 													selected_option = str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3333,7 +3333,7 @@ def EntitlementTreeViewHTMLDetail(
 															+ "</option>"
 													)
 												elif str(value.STANDARD_ATTRIBUTE_VALUE).strip() != value_code :
-													Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
+													#Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE)+'26211111-----'+str(value.STANDARD_ATTRIBUTE_VALUE))
 													VAR1 += (
 														'<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
 														+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
@@ -3343,7 +3343,7 @@ def EntitlementTreeViewHTMLDetail(
 													)	
 											#Trace.Write('VAR1'+str(attrSysId)+str(value.STANDARD_ATTRIBUTE_VALUE))
 										#Trace.Write("CHKNG_STYLE_J "+str(add_style)+" attrSysId "+str(attrSysId))
-										Trace.Write("CHKNG_STYLE_J "+str(VAR1)+" attrSysId "+str(attrSysId))
+										#Trace.Write("CHKNG_STYLE_J "+str(VAR1)+" attrSysId "+str(attrSysId))
 										sec_str1 += (
 											'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+'" id = "'
 											+ str(attrSysId)
@@ -3353,7 +3353,7 @@ def EntitlementTreeViewHTMLDetail(
 											+ str(VAR1)
 											+ "</select>"
 										)
-									Trace.Write('sec_str1'+str(sec_str1))
+									#Trace.Write('sec_str1'+str(sec_str1))
 								
 								
 								elif DType == "Free Input, no Matching" :
@@ -3486,13 +3486,13 @@ def EntitlementTreeViewHTMLDetail(
 							if attrSysId not in attributesdisallowedlst and attrSysId:
 								attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"
-							Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
+							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
 							# if attrSysId in attributesdisallowedlst:						
 							# 	add_style = "display:none"
 							# else:
 							# 	add_style = ""
 							if DType == "Drop Down":
-								Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
+								#Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3528,7 +3528,7 @@ def EntitlementTreeViewHTMLDetail(
 										if str(selected_option)=='selected':
 											selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 										try:
-											Trace.Write('attrSysId-try---3491-'+str(attrSysId))
+											#Trace.Write('attrSysId-try---3491-'+str(attrSysId))
 											VAR1 += (
 												'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 												+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
@@ -3538,7 +3538,7 @@ def EntitlementTreeViewHTMLDetail(
 											)
 									
 										except:
-											Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
+											#Trace.Write('attrSysId-try-catch--3491-'+str(attrSysId))
 											VAR1 += (
 												'<option '
 												+ str(disallow_style)
@@ -3609,7 +3609,7 @@ def EntitlementTreeViewHTMLDetail(
 							elif DType == "Free Input, no Matching":
 								STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 								sec_str1 = ""
-								Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
+								#Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
 								if attrValue == "DefaultValue":
 									attrValue = ''
 								sec_str1 += (
@@ -3625,7 +3625,7 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
 							if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
 								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
-								Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
+								#Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
 							else:
 								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
 							#new_value_dicta["FACTOR CURRENCY"] = ""
