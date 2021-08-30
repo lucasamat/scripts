@@ -260,7 +260,7 @@ try:
 			msg.IsBodyHtml = True
 			msg.Body = Error_Info
 
-			# CC Emails 	
+			## CC Emails 	
 
 			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail1) 		
