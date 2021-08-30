@@ -424,7 +424,7 @@ class SyncQuoteAndCustomTables:
     def create_custom_table_record(self):
         contract_quote_data = {}
         sync_start_time = time.time()
-        Log.Info("Sync start ==> "+str(sync_start_time))
+        #Log.Info("Sync start ==> "+str(sync_start_time))
         
         try:
             if self.quote:
@@ -473,7 +473,7 @@ class SyncQuoteAndCustomTables:
                     )
                 )
                 if not quote_obj:
-                    Log.Info("Quote Id ==> " + str(self.quote.CompositeNumber))
+                    #Log.Info("Quote Id ==> " + str(self.quote.CompositeNumber))
                     if custom_fields_detail.get("SalesOrgID"):
                         salesorg_obj = Sql.GetFirst(
                             "SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
@@ -719,8 +719,8 @@ class SyncQuoteAndCustomTables:
                             if tax_details:
                                 salesorg_data.update({"CUSTAXCAT_ID": tax_details.TAXCATEGORY_ID,"CUSTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "CUSTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "CUSTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
                         quote_salesorg_table_info.AddRow(salesorg_data)
-                        Log.Info('salesorg_data---443--'+str(salesorg_data))
-                        Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
+                        #Log.Info('salesorg_data---443--'+str(salesorg_data))
+                        #Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
                         Sql.Upsert(quote_salesorg_table_info)
                         ##Commented the condition to update the pricing procedure for both spare and tool based quote
                         #if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
@@ -837,7 +837,7 @@ class SyncQuoteAndCustomTables:
                                             master_opportunity_data.get("OPPORTUNITY_RECORD_ID")
                                         )
                                     )
-                                Log.Info("opportunity_obj ===>" + str(opportunity_obj))
+                                #Log.Info("opportunity_obj ===>" + str(opportunity_obj))
                                 opportunity_quote_data = {
                                     "OPPORTUNITY_QUOTE_RECORD_ID": str(Guid.NewGuid()).upper(),
                                     "OPPORTUNITY_ID": opportunity_obj.OPPORTUNITY_ID,
