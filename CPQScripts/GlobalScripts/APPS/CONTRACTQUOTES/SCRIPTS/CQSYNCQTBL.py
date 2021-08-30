@@ -661,10 +661,10 @@ class SyncQuoteAndCustomTables:
 									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
 								TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
 								if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
-                                    try:
-									    QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-                                    except:
-                                        QuoteStartDate =''
+									try:
+										QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+									except:
+										QuoteStartDate =''
 									Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
 									salesorg_data.update({'EXCHANGE_RATE':'1'})
 									salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
