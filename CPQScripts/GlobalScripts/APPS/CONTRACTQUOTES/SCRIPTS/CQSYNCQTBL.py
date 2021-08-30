@@ -122,7 +122,7 @@ class SyncQuoteAndCustomTables:
 		date_str = date_format.format(Date=strday, Month=strmonth, Year=stryear, Separator=separator)
 		return date_str
 	def CreateEntitlements(self,quote_record_id):
-		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=quote_record_id))
+		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
 		#Log.Info("quote_record_id---123------"+str(quote_record_id))
 		tableInfo = SqlHelper.GetTable("SAQTSE")
 		x = datetime.datetime.today()
@@ -245,7 +245,7 @@ class SyncQuoteAndCustomTables:
 								val = "COMPREHENSIVE SERVICES"
 							elif str(ent_disp_val) == 'Complementary':
 								val = "COMPLEMENTARY PRODUCTS"
-							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID))
+							Sql.RunQuery("UPDATE SAQTSV SET SERVICE_TYPE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(val),quote_record_id,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id")))
 						#A055S000P01-7401 END                    
 						DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
@@ -318,8 +318,9 @@ class SyncQuoteAndCustomTables:
 									
 							AttributeID = 'AGS_CON_DAY'
 							NewValue = ent_disp_val
+							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							#Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
-							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"
+							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"+ " AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 							#Trace.Write('whereReq---'+str(whereReq))
 							requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
 							#Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
@@ -722,19 +723,19 @@ class SyncQuoteAndCustomTables:
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
-						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTSO (NOLOCK) ON SAQTSO.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTSO.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTSO.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTSO.QUOTE_ID = '{}'".format(quote_id))
+						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTSO (NOLOCK) ON SAQTSO.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTSO.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTSO.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTSO.QUOTE_ID = '{}' AND SAQTSO.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
 						if GetPricingProcedure:
 							CustPricing = GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE
 						else:
 							CustPricing = ""
 						#Log.Info(GetPricingProcedure)
 						if GetPricingProcedure is not None:
-							UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
 							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
 							customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,
 							docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
-							quote_id=quote_id)
+							quote_id=quote_id,quote_revision_id=quote_revision_id)
 							#Log.Info(UpdateSAQTSO)
 							Sql.RunQuery(UpdateSAQTSO)
 					
