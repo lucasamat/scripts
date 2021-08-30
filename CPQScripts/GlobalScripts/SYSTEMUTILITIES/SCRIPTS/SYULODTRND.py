@@ -3737,69 +3737,66 @@ def EntitlementTreeViewHTMLDetail(
 					"try {var getentedict = [];$('"+str(table_ids)+"').on('click-row.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#AGS_CON_DAY').prop('disabled', true);$('select').on('focus', function () { var previousval = this.value;console.log('previous1---',previousval);localStorage.setItem('previousval', previousval);}).change(function() {var entchanged = this.value;console.log('previous--previous-----',entchanged);var getatbleid =  $(this).closest('table').attr('id');localStorage.setItem('getatbleid', getatbleid);console.log('getatbleid----',getatbleid);var getseltabledesc = this.id;console.log('getseltableid---',getseltabledesc);var previousval = localStorage.getItem('previousval');var concate_data = getatbleid +'='+previousval+'='+getseltabledesc+'='+entchanged;if(!getentedict.includes(concate_data)){getentedict.push(concate_data)};console.log('getentedict---',getentedict);getentedict = JSON.stringify(getentedict);localStorage.setItem('getentedict', getentedict);localStorage.setItem('previousval', '');});});}catch {console.log('error---')}"
 				)'''
 			
-			##Adding Audit information section in Entitlement starts...
-			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
-			if get_sec :
-				section_id = get_sec.RECORD_ID
-				section_desc = get_sec.SECTION_NAME
-				
-				sec_str_boot += ('<div id="container" class="wdth100 margtop10"><div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
-				get_sefl = Sql.GetList(
-					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
+	##Adding Audit information section in Entitlement starts...
+	get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
+	if get_sec :
+		section_id = get_sec.RECORD_ID
+		section_desc = get_sec.SECTION_NAME
+		
+		sec_str_boot += ('<div id="container" class="wdth100 margtop10"><div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
+		get_sefl = Sql.GetList(
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
+		)
+		col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
+		for sefl in get_sefl:
+			sec_str_boot += (
+					'<tr class="iconhvr brdbt" style=" "><td class="wth350"><abbr title="'
+					+ str(sefl.FIELD_LABEL)
+					+ '" ><label class="pad5mrgbt0">'
+					+ str(sefl.FIELD_LABEL)
+					+ '</label></abbr></td><td width40><a  title="'
+					+ str(sefl.FIELD_LABEL)
+					+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
+					+ str(sefl.FIELD_LABEL)
+					+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
 				)
-				col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
-				for sefl in get_sefl:
-					sec_str_boot += (
-							'<tr class="iconhvr brdbt" style=" "><td class="wth350"><abbr title="'
-							+ str(sefl.FIELD_LABEL)
-							+ '" ><label class="pad5mrgbt0">'
-							+ str(sefl.FIELD_LABEL)
-							+ '</label></abbr></td><td width40><a  title="'
-							+ str(sefl.FIELD_LABEL)
-							+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
-							+ str(sefl.FIELD_LABEL)
-							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
-						)
-					sefl_api = sefl.API_FIELD_NAME
-					
-					if col_name:
-						current_obj_value = str(eval("col_name." + str(sefl_api)))
-						Trace.Write('current_obj_value---'+str(current_obj_value))
-						if str(sefl.FIELD_LABEL) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
-							try:
-								current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
-							except:
-								pass
-						elif str(sefl.FIELD_LABEL) in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
-							current_user = Sql.GetFirst(
-								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
-							current_obj_value = current_user.USERNAME
-
-						sec_str_boot +=(
-							'<td><input id="'
-							+ str(sefl_api)
-							+ '" type="text" value="'
-							+ current_obj_value
-							+ '" title="'
-							+ current_obj_value
-							+ '" class="form-control related_popup_css" '
-							+ " disabled></td>"
-						)
-						sec_str_boot +=(
-							'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a onclick="" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td>'
-						)
-
-					sec_str_boot +=	('</tr>')
-					
-				sec_str_boot += '</tbody></table>'
+			sefl_api = sefl.API_FIELD_NAME
 			
-				sec_str_boot += ('</div></div>')
-				
-				
-				
+			if col_name:
+				current_obj_value = str(eval("col_name." + str(sefl_api)))
+				Trace.Write('current_obj_value---'+str(current_obj_value))
+				if str(sefl.FIELD_LABEL) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
+					try:
+						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
+					except:
+						pass
+				elif str(sefl.FIELD_LABEL) in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
+					current_user = Sql.GetFirst(
+						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
+					current_obj_value = current_user.USERNAME
 
-				
-			##Adding Audit information section in Entitlement ends...
+				sec_str_boot +=(
+					'<td><input id="'
+					+ str(sefl_api)
+					+ '" type="text" value="'
+					+ current_obj_value
+					+ '" title="'
+					+ current_obj_value
+					+ '" class="form-control related_popup_css" '
+					+ " disabled></td>"
+				)
+				sec_str_boot +=(
+					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a onclick="" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td>'
+				)
+
+			sec_str_boot +=	('</tr>')
+			
+		sec_str_boot += '</tbody></table>'
+	
+		sec_str_boot += ('</div></div>')
+		
+	
+	##Adding Audit information section in Entitlement ends...
 
 	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 	if quote_status.QUOTE_STATUS == "APPROVED":
