@@ -77,6 +77,7 @@ def Quoteiteminsert(Qt_id):
     return "True"
 try: 
 	Qt_id = Param.QT_REC_ID
+    Log.Info("CQIFWUDQTM++++END"+str(Qt_id))
 except:
 	Qt_id = ""
 
