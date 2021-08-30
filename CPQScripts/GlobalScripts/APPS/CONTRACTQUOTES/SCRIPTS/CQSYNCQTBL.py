@@ -1139,9 +1139,9 @@ class SyncQuoteAndCustomTables:
                             if custom_fields_detail.get("OpportunityId"):
                                 Opportunity_obj = "UPDATE SAOPPR SET SALE_TYPE = '{SalesType}',OPPORTUNITY_TYPE = '{OpportunityType}' where OPPORTUNITY_ID = '{OpportunityId}'".format(SalesType = SalesType.get(payload_json.get("SalesType")), OpportunityType = OpportunityType.get(payload_json.get("OpportunityType")),OpportunityId = custom_fields_detail.get("OpportunityId"))
                                 Sql.RunQuery(Opportunity_obj)
-                        Log.Info("fab_location_ids ===> "+str(fab_location_ids))
-                        Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
-                        Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
+                        #Log.Info("fab_location_ids ===> "+str(fab_location_ids))
+                        #Log.Info("service_ids ===> "+str(service_ids)+"QUOTE ID----->"+str(contract_quote_data.get("QUOTE_ID")))	
+                        #Log.Info("CHECKING_TOOL_CONDTN_J "+str(contract_quote_obj)+" | "+str(payload_json.get('SalesType'))+" | "+str(payload_json.get('OpportunityType')))
 
                         if  str(payload_json.get('SalesType')) == 'Z19':
                             # Log.Info("CHKNG_J "+str(billtocustomer_quote_data))
@@ -1191,7 +1191,7 @@ class SyncQuoteAndCustomTables:
                             }
                             quote_sending_account_details.AddRow(sending_account_detail_data)
                             Sql.Upsert(quote_sending_account_details)
-                            Log.Info("SENDING_ACCOUNT_Detail ADDED")
+                            #Log.Info("SENDING_ACCOUNT_Detail ADDED")
                         if contract_quote_obj:
                             quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                             quote_id = contract_quote_obj.QUOTE_ID
@@ -1241,13 +1241,13 @@ class SyncQuoteAndCustomTables:
                                 #Log.Info("SAQTSV time-----"+str(SAQTSV_end-SAQTSV_start))
                                 #service_ADDon = Sql.RunQuery(""" INSERT SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_DESCRIPTION,ADNPRD_ID,ADNPRDOFR_RECORD_ID,ADNPRD_RECORD_ID,ADN_TYPE,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SALESORG_ID,SALESORG_NAME,ACTIVE,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADNPRDOFR_NAME,MAADPR.ADNPRDOFR_ID,MAADPR.ADNPRDOFR_RECORD_ID,MAADPR.ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADN_TYPE,SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.QUOTE_SERVICE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,'FALSE' as ACTIVE,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM MAADPR (NOLOCK) INNER JOIN  SAQTSV ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID ='{ServiceIds}' """.format(UserId=User.Id,UserName=User.UserName,QuoteRecordId=quote_record_id,ServiceIds=service_ids))
                                 entitle_start_time = time.time()
-                                Log.Info("CreateEntitlements start ==> "+str(entitle_start_time))
+                                #Log.Info("CreateEntitlements start ==> "+str(entitle_start_time))
                                 self.CreateEntitlements(quote_record_id)
                                 entitle_end_time = time.time()
-                                Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
+                                #Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
                             Trace.Write("EQUIPMENT DATA------->>"+str(equipment_data))
                             if equipment_data:
-                                Log.Info(""""EQUIPMENTS INSERT""")
+                                #Log.Info(""""EQUIPMENTS INSERT""")
                                 count = 0
                                 for fab_location_id, value in equipment_data.items():
                                     if count == 0:
@@ -1264,7 +1264,7 @@ class SyncQuoteAndCustomTables:
                                                                     ) A
                                                                 """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value)))
                                     SAQFEQ_end = time.time()
-                                    Log.Info("SAQFEQ----"+str(SAQFEQ_end-SAQFEQ_start))
+                                    #Log.Info("SAQFEQ----"+str(SAQFEQ_end-SAQFEQ_start))
 
                                     
                                     
@@ -1298,7 +1298,7 @@ class SyncQuoteAndCustomTables:
                                 select FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
                                 A """.format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id))
                                 SAQFGB_end = time.time()
-                                Log.Info("SAQFGB-------"+str(SAQFGB_start-SAQFGB_end))
+                                #Log.Info("SAQFGB-------"+str(SAQFGB_start-SAQFGB_end))
 
                                 SAQFEA_start = time.time()
                                 Sql.RunQuery("""
@@ -1310,11 +1310,11 @@ class SyncQuoteAndCustomTables:
                                                 ) A
                                             """.format(UserId=User.Id,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME, QuoteRecordId=quote_record_id, AccountRecordId=contract_quote_obj.ACCOUNT_RECORD_ID))
                                 SAQFEA_end = time.time()
-                                Log.Info("SAQFEA-------"+str(SAQFEA_end-SAQFEA_start))
+                                #Log.Info("SAQFEA-------"+str(SAQFEA_end-SAQFEA_start))
                                 fab_equip_assem_end_time = time.time()
-                                Log.Info("fab_equip_assem_start_time end==> "+str(fab_equip_assem_end_time - fab_equip_assem_start_time))
+                                #Log.Info("fab_equip_assem_start_time end==> "+str(fab_equip_assem_end_time - fab_equip_assem_start_time))
                                 if  payload_json.get('SalesType') == 'Z15':
-                                    Log.Info("covered_object_data ===> "+str(covered_object_data))
+                                    #Log.Info("covered_object_data ===> "+str(covered_object_data))
                                     for service_id, equipment_values in covered_object_data.items():
                                         equipment_ids = ','.join(list(set(','.join(equipment_values).split(','))))
                                         '''Log.Info("===>>>>>>>> "+str("""SELECT STUFF((SELECT ', ' + SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID 
@@ -1331,13 +1331,13 @@ class SyncQuoteAndCustomTables:
                                             if fab_equipments_obj.RECORD_IDS:
                                                 fab_equipment_record_ids = fab_equipments_obj.RECORD_IDS.split(',')
                                                 quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV (NOLOCK) where SERVICE_ID = '{Service_Id}' and QUOTE_RECORD_ID = '{QuoteRecordId}'".format(Service_Id = equipment_json_data.get('SERVICE_OFFERING_ID'),QuoteRecordId=quote_record_id))
-                                                Log.Info("fab_equipment_record_ids ===> "+str(fab_equipment_record_ids))							
+                                                #Log.Info("fab_equipment_record_ids ===> "+str(fab_equipment_record_ids))							
                                                 service_type = quote_service_obj.SERVICE_TYPE	
                                                 tree_parent_level_1 = ''										
                                                 Quote.SetGlobal("contract_quote_record_id",str(quote_record_id))
                                                 #Log.Info("service_id------->"+str(service_id))
                                                 start_time = time.time()
-                                                Log.Info("CQCRUDOPTN start ==> "+str(start_time))
+                                                #Log.Info("CQCRUDOPTN start ==> "+str(start_time))
                                                 ScriptExecutor.ExecuteGlobal(
                                                                         "CQCRUDOPTN",
                                                                     {
@@ -1353,7 +1353,7 @@ class SyncQuoteAndCustomTables:
                                                                     },
                                                                 )
                                                 end_time = time.time()
-                                                Log.Info("CQCRUDOPTN end==> "+str(end_time - start_time))
+                                                #Log.Info("CQCRUDOPTN end==> "+str(end_time - start_time))
                                     """ for equipment_json_data in payload_json.get('SAQFEQ'):
                                         quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND FABLOCATION_ID = '{fablocation_id}' AND QUOTE_ID = '{quote_id}'".format(equipment_ids = equipment_json_data.get('EQUIPMENT_IDS'),fablocation_id = equipment_json_data.get('FAB_LOCATION_ID'),quote_id = contract_quote_data.get("QUOTE_ID")))
                                         quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' and QUOTE_ID = '{Quote_Id}'".format(Service_Id = equipment_json_data.get('SERVICE_OFFERING_ID'),Quote_Id = contract_quote_data.get("QUOTE_ID")))
