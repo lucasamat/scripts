@@ -3734,6 +3734,21 @@ def EntitlementTreeViewHTMLDetail(
 					"try {var getentedict = [];$('"+str(table_ids)+"').on('click-row.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#AGS_CON_DAY').prop('disabled', true);$('select').on('focus', function () { var previousval = this.value;console.log('previous1---',previousval);localStorage.setItem('previousval', previousval);}).change(function() {var entchanged = this.value;console.log('previous--previous-----',entchanged);var getatbleid =  $(this).closest('table').attr('id');localStorage.setItem('getatbleid', getatbleid);console.log('getatbleid----',getatbleid);var getseltabledesc = this.id;console.log('getseltableid---',getseltabledesc);var previousval = localStorage.getItem('previousval');var concate_data = getatbleid +'='+previousval+'='+getseltabledesc+'='+entchanged;if(!getentedict.includes(concate_data)){getentedict.push(concate_data)};console.log('getentedict---',getentedict);getentedict = JSON.stringify(getentedict);localStorage.setItem('getentedict', getentedict);localStorage.setItem('previousval', '');});});}catch {console.log('error---')}"
 				)'''
 			
+			##Adding Audit information section in Entitlement starts...
+			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ProductPartnumber))
+			if get_sec :
+				Section_id = get_sec.RECORD_ID
+				Section_desc = get_sec.SECTION_NAME
+				sec_bnr += (
+					'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
+					+ str(Section_id)
+					+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
+					+ str(Section_desc)
+					+ "</div></label></div>"
+				)
+
+			##Adding Audit information section in Entitlement ends...
+
 	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 	if quote_status.QUOTE_STATUS == "APPROVED":
 		Trace.Write('dbl_click123====')
@@ -3744,7 +3759,7 @@ def EntitlementTreeViewHTMLDetail(
 	new_value_dict = ""
 	api_name = ""
 	ret_value = ""
-	Trace.Write('multi_select_attr_list'+str(multi_select_attr_list))
+	#Trace.Write('multi_select_attr_list'+str(multi_select_attr_list))
 	return sec_str, date_field, new_value_dict, api_name, ret_value, ObjectName, sec_bnr,sec_str_boot,tablistnew,dbl_clk_function,getprevdicts,totaldisallowlist,msg_txt,ChangedList,getnameentallowed,getvaludipto,getvaludipt1,getvaludipt2,getvaludipt2lt,getvaludipt2lab,getvaludipto_q ,getvaludipt2_q,getvaludipt2lt_q ,getvaludipt2lab_q ,getvaludipt2lab,getvaludipt3lab ,getvaludipt3lab_q , getvaludipt3labt ,getvaludipt3labt_q,getvaludipt1_q,getlabortype_calc,gett1labor_calc,gett1labortype_calc,gett2labo_calc,gett2labotype_calc,gett3lab_calc,gett3labtype_calc,getTlab,section_not_list,multi_select_attr_list
 
 def ContractEntitlementTreeViewHTMLDetail(
