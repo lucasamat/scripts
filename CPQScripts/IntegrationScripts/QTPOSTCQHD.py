@@ -186,11 +186,11 @@ for data in Quoteinfoquery:
 
 		primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME )  select ''"+str(Final_json)+ "'',''Hadoop_test'' ' ")	
 
-		#Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
+		Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
 		#Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
 		
-		#if "True" in Hadoop_response: 
-			#StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
+		if "True" in Hadoop_response: 
+			StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A SET HADOOP_FLAG = ''True'' FROM SAQTMT(NOLOCK) A WHERE QUOTE_ID=''"+str(data.Quote_id)+"''  '")
 		
 
 		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data available in SYINPL" }]})
