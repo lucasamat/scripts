@@ -2500,18 +2500,18 @@ def EntitlementTreeViewHTMLDetail(
 					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
 		Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 	
-	#Trace.Write('overall_attribute_list'+str(overall_attribute_list))
+		#Trace.Write('overall_attribute_list'+str(overall_attribute_list))
 
 
 
-	# ATTRvalue = Sql.GetList("SELECT Top 100000 ATDF.STANDARD_ATTRIBUTE_NAME,ATDF.SYSTEM_ID,ATDD.ATT_DISPLAY_DESC,PRDAT.LABEL,PRDAT.LINEITEM,PRDAT.STANDARD_ATTRIBUTE_CODE from ATTRIBUTE_DEFN ATDF INNER JOIN PRODUCT_ATTRIBUTES PRDAT ON ATDF.STANDARD_ATTRIBUTE_CODE = PRDAT.STANDARD_ATTRIBUTE_CODE INNER JOIN ATT_DISPLAY_DEFN ATDD on    PRDAT.ATT_DISPLAY = ATDD.ATT_DISPLAY where PRDAT.PRODUCT_ID = '{product_id}'".format(sap_part_no = str(ATTPRD.SYSTEM_ID),product_id = str(ATTPRD.PRD_ID)) )
-	
-	# for attr in ATTRvalue:
-	# 	STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE ='{attr_code}' and SYSTEM_ID like '%{sys_id}%' ".format(attr_code = str(attr.STANDARD_ATTRIBUTE_CODE),sys_id = str(attr.SYSTEM_ID) )  )
+		# ATTRvalue = Sql.GetList("SELECT Top 100000 ATDF.STANDARD_ATTRIBUTE_NAME,ATDF.SYSTEM_ID,ATDD.ATT_DISPLAY_DESC,PRDAT.LABEL,PRDAT.LINEITEM,PRDAT.STANDARD_ATTRIBUTE_CODE from ATTRIBUTE_DEFN ATDF INNER JOIN PRODUCT_ATTRIBUTES PRDAT ON ATDF.STANDARD_ATTRIBUTE_CODE = PRDAT.STANDARD_ATTRIBUTE_CODE INNER JOIN ATT_DISPLAY_DEFN ATDD on    PRDAT.ATT_DISPLAY = ATDD.ATT_DISPLAY where PRDAT.PRODUCT_ID = '{product_id}'".format(sap_part_no = str(ATTPRD.SYSTEM_ID),product_id = str(ATTPRD.PRD_ID)) )
+		
+		# for attr in ATTRvalue:
+		# 	STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE ='{attr_code}' and SYSTEM_ID like '%{sys_id}%' ".format(attr_code = str(attr.STANDARD_ATTRIBUTE_CODE),sys_id = str(attr.SYSTEM_ID) )  )
 
 
-	# attr_dict = {}
-	# ServiceContainer = Product.GetContainerByName("Services")
+		# attr_dict = {}
+		# ServiceContainer = Product.GetContainerByName("Services")
 		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 		multi_select_attr_list = {}
 		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
