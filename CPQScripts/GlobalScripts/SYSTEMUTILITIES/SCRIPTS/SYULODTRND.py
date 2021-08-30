@@ -3769,10 +3769,9 @@ def EntitlementTreeViewHTMLDetail(
 								pass
 						elif str(sefl.FIELD_LABEL) in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY"):
 							current_user = Sql.GetFirst(
-								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
 							current_obj_value = current_user.USERNAME
 
-					)
 						sec_str_boot +=(
 							'<td><input id="'
 							+ str(sefl_api)
