@@ -3747,7 +3747,7 @@ def EntitlementTreeViewHTMLDetail(
 				get_sefl = Sql.GetList(
 					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
-
+				col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
 				for sefl in get_sefl:
 					sec_str_boot += (
 							'<tr class="iconhvr brdbt" style=" "><td class="wth350"><abbr title="'
@@ -3761,7 +3761,7 @@ def EntitlementTreeViewHTMLDetail(
 							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
 						)
 					sefl_api = sefl.API_FIELD_NAME
-					col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
+					
 					if col_name:
 						current_obj_value = str(eval("col_name." + str(sefl_api)))
 						Trace.Write('current_obj_value---'+str(current_obj_value))
@@ -3792,32 +3792,13 @@ def EntitlementTreeViewHTMLDetail(
 					sec_str_boot +=	('</tr>')
 					
 				sec_str_boot += '</tbody></table>'
-				#sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
+			
 				sec_str_boot += ('</div></div>')
 				
 				
 				
 
-				# GetSEFL = Sql.GetList(
-				# 	"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(Section_id) + "' ORDER BY DISPLAY_ORDER"
-				# )
-				# for sefl in GetSEFL:
-				# 	sec_str_boot += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
-				# 	sec_str_boot += (
-				# 		"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
-				# 		+ str(sefl.FIELD_LABEL)
-				# 		+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
-				# 		+ str(sefl.FIELD_LABEL)
-				# 		+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
-				# 	)
-				# 	sefl_api = sefl.API_FIELD_NAME
-				# 	col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
-				# 	if col_name:
-
-				# 	sec_str_boot = sefl.API_FIELD_NAME
-				# sec_str_boot += ('</div>')
-					
-				# tablistdict[Section_id] = date_boot_field
+				
 			##Adding Audit information section in Entitlement ends...
 
 	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
