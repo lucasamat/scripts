@@ -556,6 +556,23 @@ class SyncQuoteAndCustomTables:
                             
                         }
                     )
+                    #insert in revision table while creating quote start
+                    quote_revision_table_info = Sql.GetTable("SAQTRV")
+                    quote_rev_data = {
+                        "QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
+                        "QUOTE_ID": quote_id,
+                        "QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
+                        "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                        "ACTIVE":1,
+                        "REV_CREATE_DATE":str(created_date),
+                        "REV_EXPIRE_DATE":str(expired_date),
+                        "REVISION_STATUS":"IN-PROGRESS",
+                        "QTEREV_ID":0
+                        "REV_APPROVE_DATE":''}
+                    quote_salesorg_table_info.AddRow(salesorg_data)
+                    Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
+                    Sql.Upsert(quote_rev_data)
+                    #insert in revision table while creating quote end
                     if custom_fields_detail.get('Currency'):
                             Currency_obj = Sql.GetFirst(
                                 "SELECT CURRENCY,CURRENCY_NAME, CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '{}'".format(
