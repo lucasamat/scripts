@@ -2859,6 +2859,9 @@ def EntitlementTreeViewHTMLDetail(
 				tbrow["CPS_MATCH_ID"] = 11
 				
 				tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
+				tbrow["CPQTABLEENTRYADDEDBY"] = userId
+				tbrow["CPQTABLEENTRYDATEADDED"] = gettodaydate
+
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
