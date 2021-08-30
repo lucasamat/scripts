@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO CREATE QUOTE JSON FOR HADOOP
 #   __primary_author__ : SURESH MUNIYANDI, Baji
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import clr
@@ -26,7 +26,7 @@ SAQIEN_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM
 
 Jsonquery = SqlHelper.GetFirst("select getdate() as date,DATEADD(HOUR,-2,getdate()) as filter  ")
 
-Quoteinfoquery = SqlHelper.GetList("SELECT Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' ")
+Quoteinfoquery = SqlHelper.GetList("SELECT  Quote_id FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' union select  quote_id from SAQTMT where isnull(hadoop_flag,'False') = 'False' UNION SELECT  Quote_id FROM SAQTSO(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQTIP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQTBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQDOC(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQITM(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQICO(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQICA(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQIFP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQIBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQSCV(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id FROM SAQIEN(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"'")
 
 Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
