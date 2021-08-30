@@ -1493,6 +1493,20 @@ def Related_Sub_Banner(
         SecondLable = "Account Name"
         SecondValue = "ALL"	
 # SHP Contract Document Ends
+    elif ObjName == "SAQSCA" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
+        Trace.Write(1497)		
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeTopSuperParentParam)
+        SecondLable = "Fab Location ID"
+        SecondValue = str(TreeParentParam)
+        ThirdLable = "Greenbook"
+        ThirdValue = str(TreeParam)
+        FourthLable = "Equipment ID"
+        FourthValue = str(EquipmentId)
+        FifthLable = "Serial Number"
+        FifthValue = str(SerialNumber)
+        SixthLable = "Assembly ID"
+        SixthValue = str(AssemblyId)     
     elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
         PrimaryLable = "Greenbook"
         PrimaryValue = str(TreeParam)
@@ -1507,22 +1521,6 @@ def Related_Sub_Banner(
             FifthLable = "PM Events"
             FifthValue = "All"
         PMEvents = "False"
-    elif ObjName == "SAQSCA" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
-        #A055S000P01-3208 start
-        Trace.Write(1244)		
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        #A055S000P01-3208 end
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        SixthLable = "Assembly ID"
-        SixthValue = str(AssemblyId)     
     elif ObjName == "SAQSCA":
         #A055S000P01-3208 start
         Trace.Write(1244)		
