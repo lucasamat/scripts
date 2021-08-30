@@ -1935,7 +1935,7 @@ class TreeView:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME
-									#Trace.Write("SUBTAB_NAME_J "+str(subTabName))		
+									Trace.Write("SUBTAB_NAMEsss"+str(subTabName))		
 									if subTabName:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
