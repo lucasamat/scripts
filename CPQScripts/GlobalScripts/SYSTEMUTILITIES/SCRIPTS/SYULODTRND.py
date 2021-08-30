@@ -3764,13 +3764,13 @@ def EntitlementTreeViewHTMLDetail(
 			
 			if col_name:
 				current_obj_value = str(eval("col_name." + str(sefl_api)))
-				Trace.Write('current_obj_value---'+str(current_obj_value))
-				if str(sefl.API_FIELD_NAME) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
+				Trace.Write('current_obj_value---'+str(current_obj_value)+'--'+str(sefl_api))
+				if sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
 					try:
 						current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
 					except:
 						pass
-				elif str(sefl.API_FIELD_NAME) in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
+				elif sefl_api in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
 					current_user = Sql.GetFirst(
 						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
 					current_obj_value = current_user.USERNAME
