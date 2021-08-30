@@ -81,5 +81,5 @@ try:
 except:
 	Qt_id = ""
 
-ApiResponse = ApiResponseFactory.JsonResponse(Quoteiteminsert(Qt_id))
+Calling_function = Quoteiteminsert(Qt_id)
 
