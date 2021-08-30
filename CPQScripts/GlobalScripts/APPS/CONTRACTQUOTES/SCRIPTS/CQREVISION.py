@@ -20,7 +20,7 @@ from datetime import timedelta , date
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-
+Trace.Write('23----')
 def CreateNewRevision():
     if Quote is not None:
         QInfo= Quote.CreateNewRevision(True)
