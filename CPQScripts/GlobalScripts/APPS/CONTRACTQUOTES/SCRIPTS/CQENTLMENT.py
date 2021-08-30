@@ -656,7 +656,7 @@ class Entitlements:
 						#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
 							
 			#Sql.RunQuery(UpdateEntitlement)	
-			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',{} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, userId, whereReq)
+			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 			Sql.RunQuery(Updatecps)
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
@@ -1009,7 +1009,7 @@ class Entitlements:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
 					Trace.Write("updateentXML-970------"+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;','''') WHERE  {} ".format(tableName, updateentXML,whereReq)
+				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),{} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified WHERE  {} ".format(tableName, updateentXML,userId,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
 				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
