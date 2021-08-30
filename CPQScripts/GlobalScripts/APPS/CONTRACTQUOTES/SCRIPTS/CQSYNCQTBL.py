@@ -572,6 +572,7 @@ class SyncQuoteAndCustomTables:
                     quote_salesorg_table_info.AddRow(salesorg_data)
                     Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
                     Sql.Upsert(quote_rev_data)
+                    Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
                     #insert in revision table while creating quote end
                     if custom_fields_detail.get('Currency'):
                             Currency_obj = Sql.GetFirst(
