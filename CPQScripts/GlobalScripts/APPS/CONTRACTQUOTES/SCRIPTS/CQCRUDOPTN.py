@@ -1222,7 +1222,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
 							cpsmatc_incr = int(cpsmatchID) + 10
-							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID, whereReq)
+							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',{} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID, User.Id, whereReq)
 							Sql.RunQuery(Updatecps)
 
 			except:
