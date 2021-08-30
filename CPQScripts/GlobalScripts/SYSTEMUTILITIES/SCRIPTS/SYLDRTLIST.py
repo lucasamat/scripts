@@ -7996,7 +7996,51 @@ class SYLDRTLIST:
                                         new_dict[value123] = (
                                             '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" disabled>' + value1234 + "</input>"
                                         )
-                                    
+                                    if str(value123) == "WARRANTY_END_DATE":
+                                        #Trace.Write('getindication--3075---'+str(getindication))
+                                        getdate_indication = str(value1234)
+                                        if getdate_indication:
+                                            getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')
+                                            Trace.Write('getindication---'+str(getdate_indication))
+                                    elif str(value123) in billing_date_column:
+                                        Trace.Write('---value123-3081--3078--'+str(value123))
+                                        getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')
+                                        Trace.Write('getdate_indication_billing--'+str(getdate_indication_billing))
+                                        contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
+                                        curr_symbol_obj = Sql.GetFirst(
+                                            "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
+                                            + " from SAQTMT"
+                                            + " where MASTER_TABLE_QUOTE_RECORD_ID  "
+                                            + " = '"
+                                            + str(contract_quote_record_id)
+                                            + "' ) "
+                                        )
+                                        concatedata = ""
+                                        if curr_symbol_obj:
+                                            curr_symbol = curr_symbol_obj.CURRENCY
+                                            
+                                            try:
+                                                decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+                                                Trace.Write('curr_symbol--2289--'+str(curr_symbol))
+                                                my_format = "{:,." + str(decimal_place) + "f}"
+                                                value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+                                            except:
+                                                value1234
+                                        if getdate_indication:
+                                            Trace.Write(str(getdate_indication_billing)+'--getindication--'+str(getdate_indication))
+                                            Trace.Write(str(type(getdate_indication_billing))+'--getindication--'+str(type(getdate_indication)))
+                                            if getdate_indication > getdate_indication_billing:
+                                                new_dict[value123] = (
+                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                )
+                                            else:
+                                                new_dict[value123] = (
+                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                                )
+                                        else:    
+                                            new_dict[value123] = (
+                                                '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                            )
                                     else:
                                         
                                         #valueGUID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(value1234))
