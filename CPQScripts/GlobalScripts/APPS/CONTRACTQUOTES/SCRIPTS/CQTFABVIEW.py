@@ -2231,7 +2231,7 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 			+str(TreeParam)
 			+"' AND FABLOCATION_ID ='"
 			+ str(TreeParentParam)
-			+ "'"
+			+ "' AND QTEREV_RECORD_ID = '" +str(Revision) + "'"
 		)
 		
 		userselecteddrive = []
@@ -2366,7 +2366,7 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "' AND EQUIPMENT_ID = '"
 			+ str(CurrentRecordId)
-			+ "'"
+			+ "' AND QTEREV_RECORD_ID = '" +str(Revision) + "'"
 		)
 		
 		userselecteddrive = []
