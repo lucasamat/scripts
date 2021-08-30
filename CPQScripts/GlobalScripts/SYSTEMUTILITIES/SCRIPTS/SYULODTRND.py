@@ -3739,13 +3739,9 @@ def EntitlementTreeViewHTMLDetail(
 			if get_sec :
 				Section_id = get_sec.RECORD_ID
 				Section_desc = get_sec.SECTION_NAME
-				sec_bnr += (
-					'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
-					+ str(Section_id)
-					+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
-					+ str(Section_desc)
-					+ "</div></label></div>"
-				)
+				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "></div>')
+
+				sec_str_boot += ('</div>')
 
 			##Adding Audit information section in Entitlement ends...
 
