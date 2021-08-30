@@ -5522,7 +5522,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		##Deleteing the tables before insert the data ends..
 		##Delete the native product before adding the product starts..
 		for item in Quote.MainItems:
-				item.Delete()
+			item.Delete()
 		##Delete the native product before adding the product ends..
 		##quote item insert starts..
 		self._process_query("""
