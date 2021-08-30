@@ -3740,7 +3740,7 @@ def EntitlementTreeViewHTMLDetail(
 				section_id = get_sec.RECORD_ID
 				section_desc = get_sec.SECTION_NAME
 				
-				sec_str_boot += ('<div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
+				sec_str_boot += ('<div id="container" class="wdth100 margtop10"><div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
 				get_sefl = Sql.GetList(
 					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
@@ -3767,6 +3767,12 @@ def EntitlementTreeViewHTMLDetail(
 								current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
 							except:
 								pass
+						elif str(sefl.FIELD_LABEL) in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY"):
+							current_user = Sql.GetFirst(
+								"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+							current_obj_value = current_user.USERNAME
+
+					).USERNAME
 						sec_str_boot +=(
 							'<td><input id="'
 							+ str(sefl_api)
@@ -3785,7 +3791,7 @@ def EntitlementTreeViewHTMLDetail(
 					
 				sec_str_boot += '</tbody></table>'
 				#sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
-				sec_str_boot += ('</div>')
+				sec_str_boot += ('</div></div>')
 				
 				
 				
