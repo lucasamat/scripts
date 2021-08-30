@@ -1217,15 +1217,16 @@ def Related_Sub_Banner(
                         FifthValue = TreeParam
                     else:
                         if TreeSuperParentParam != 'Add-On Products':
-                            Trace.Write("1199---------")
-
+                            Trace.Write("Line No:1220")
                             get_val = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
                             PrimaryLable = "Product Offering ID"
-                            PrimaryValue = getmainservice.SERVICE_ID
-                            SecondLable = "Product Offering Type"
-                            SecondValue = TreeSuperParentParam
-                            ThirdLable = " Fab Location ID"
-                            ThirdLable = TreeParam	
+                            PrimaryValue = str(TreeParentParam)
+                            SecondLable = "Product Offering Description"
+                            SecondValue = get_val.SERVICE_DESCRIPTION
+                            ThirdLable = "Product Offering Type"
+                            ThirdValue = str(TreeSuperParentParam)
+                            FourthLable = " Fab Location ID"
+                            FourthValue = TreeParam	
                 if (str(ObjName) == 'SAQSCO' and str(TreeTopSuperParentParam) == "COMPREHENSIVE SERVICES"):
                     Trace.Write("check")
                     get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
