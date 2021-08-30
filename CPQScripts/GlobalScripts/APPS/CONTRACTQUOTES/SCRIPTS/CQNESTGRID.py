@@ -9170,23 +9170,23 @@ def GetCommonParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform):
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                             
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
@@ -9503,23 +9503,23 @@ def WithBundleParentTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,Pa
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                         
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES 
@@ -9734,13 +9734,13 @@ def CommonChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.QUOTE_CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.QUOTE_CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                       
 
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
@@ -9749,14 +9749,14 @@ def CommonChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
         Trace.Write("empty search")
         if TreeParam == "Quote Items":
             parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  * from SAQICO (NOLOCK) where  SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ORDER BY {ord_by} ".format(
+                "select top "+str(PerPage)+"  * from SAQICO (NOLOCK) where  SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ORDER BY {ord_by} ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),ord_by = orderby
                 )
             )
             
             QueryCountObj = Sql.GetFirst(
-                    "select count(*) as cnt from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ".format(
+                    "select count(*) as cnt from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")))
             if QueryCountObj is not None:
@@ -9769,14 +9769,14 @@ def CommonChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
         if TreeParam == "Quote Items":  
                 
             parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ORDER BY {ord_by} ".format(
+                "select top "+str(PerPage)+"  * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ORDER BY {ord_by} ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),ord_by = orderby
                 )
             )
             
             QueryCountObj = Sql.GetFirst(
-                    "select count(*) as cnt from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ".format(
+                    "select count(*) as cnt from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")))
             if QueryCountObj is not None:
@@ -9921,7 +9921,7 @@ def SparesChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
         "select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
     )
     
-    Parent_Equipmentid = Sql.GetFirst("select SERVICE_ID from SAQITM (NOLOCK) where QUOTE_ITEM_RECORD_ID = '{Quote_Record_id}' ".format(
+    Parent_Equipmentid = Sql.GetFirst("select SERVICE_ID from SAQITM (NOLOCK) where QUOTE_ITEM_RECORD_ID = '{Quote_Record_id}'  ".format(
             Quote_Record_id=CPQID.KeyCPQId.GetKEYId('SAQITM', str(recid)),
             ))
     EquipmentID = ''
@@ -9956,7 +9956,7 @@ def SparesChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQIFP (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQIFP.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQIFP (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQIFP.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
@@ -9965,14 +9965,14 @@ def SparesChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
         Trace.Write("empty search")
         if TreeParam == "Quote Items":
             parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  * from SAQIFP (NOLOCK) where  SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ORDER BY {ord_by} ".format(
+                "select top "+str(PerPage)+"  * from SAQIFP (NOLOCK) where  SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ORDER BY {ord_by} ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),ord_by = orderby
                 )
             )
             
             QueryCountObj = Sql.GetFirst(
-                    "select count(*) as cnt from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+                    "select count(*) as cnt from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")))
             if QueryCountObj is not None:
                 QueryCount = QueryCountObj.cnt
@@ -9983,14 +9983,14 @@ def SparesChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,recid,PerPage,PageInf
         if TreeParam == "Quote Items":                  
             
             parent_obj = Sql.GetList(
-                "select top "+str(PerPage)+"  * from SAQIFP (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ORDER BY {ord_by} ".format(
+                "select top "+str(PerPage)+"  * from SAQIFP (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ORDER BY {ord_by} ".format(
                     EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),ord_by = orderby
                 )
             )
             
             QueryCountObj = Sql.GetFirst(
-                    "select count(*) as cnt from SAQIFP (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+                    "select count(*) as cnt from SAQIFP (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")))
             if QueryCountObj is not None:
                 QueryCount = QueryCountObj.cnt
@@ -10143,7 +10143,7 @@ def GetCommonParent(PerPage, PageInform, A_Keys, A_Values):
         "EXTENDED_PRICE"
     ]
     ##Hide the year column based on the contract valid from and valid to code starts..
-    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}'".format(Quote_Record_id = Quote_Record_id))
+    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(Quote_Record_id = Quote_Record_id))
     if Getyear:
         start_date = datetime(Getyear.CONTRACT_VALID_FROM)
         end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -10194,23 +10194,23 @@ def GetCommonParent(PerPage, PageInform, A_Keys, A_Values):
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                         
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES               
@@ -10869,23 +10869,23 @@ def GetCommonParentContract(PerPage, PageInform, A_Keys, A_Values):
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.CONTRACT_CURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.CONTRACT_CURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj.CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                         
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.CONTRACT_CURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.CONTRACT_CURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj.CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.SORGCURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.SORGCURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj.CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.SORGCURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM CTCITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = CTCITM.SORGCURRENCY_RECORD_ID WHERE CONTRACT_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES               
@@ -11520,7 +11520,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
     ]
 
     ##Hide the year column based on the contract valid from and valid to code starts..
-    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}'".format(Quote_Record_id = Quote_Record_id))
+    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(Quote_Record_id = Quote_Record_id))
     if Getyear:
         start_date = datetime(Getyear.CONTRACT_VALID_FROM)
         end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -11571,13 +11571,13 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.QUOTE_CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.QUOTE_CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                       
                 
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQICO (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQICO.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
@@ -11599,7 +11599,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
     if Parent_Equipmentid:
         EquipmentID = Parent_Equipmentid.SERVICE_ID
         child_obj_recid = Sql.GetList(
-            "select top "+str(PerPage)+" CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,DISCOUNT,YEAR_OVER_YEAR,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from (select ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, PRICING_STATUS,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,DISCOUNT,YEAR_OVER_YEAR,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}') m where m.ROW BETWEEN ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+            "select top "+str(PerPage)+" CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,DISCOUNT,YEAR_OVER_YEAR,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from (select ROW_NUMBER() OVER( ORDER BY LINE) AS ROW, PRICING_STATUS,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,LINE,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,DISCOUNT,YEAR_OVER_YEAR,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}') m where m.ROW BETWEEN ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")
                 )
             + str(Page_start)
@@ -11607,7 +11607,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
             + str(Page_End)
         )
         QueryCountObj = Sql.GetFirst(
-            "select count(CpqTableEntryId) as cnt from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}'".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+            "select count(CpqTableEntryId) as cnt from SAQICO (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")
                 )
         )
@@ -12073,7 +12073,7 @@ def SparesChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
                         symb = curr_symbol_obj.CURRENCY 
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQIFP (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQIFP.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQIFP (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQIFP.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' """.format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
@@ -12094,7 +12094,7 @@ def SparesChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
     if Parent_Equipmentid:
         EquipmentID = Parent_Equipmentid.SERVICE_ID
         child_obj_recid = Sql.GetList(
-            "select top "+str(PerPage)+" CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,QUOTE_ITEM_FORECAST_PART_RECORD_ID,LINE,SERVICE_ID,SERVICE_DESCRIPTION,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,UNIT_PRICE,ANNUAL_QUANTITY,PRICINGPROCEDURE_ID,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from (select ROW_NUMBER() OVER( ORDER BY LINE_ITEM_ID) AS ROW, PRICING_STATUS,QUOTE_ITEM_FORECAST_PART_RECORD_ID,LINE,SERVICE_ID,SERVICE_DESCRIPTION,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,UNIT_PRICE,ANNUAL_QUANTITY,PRICINGPROCEDURE_ID,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}') m where m.ROW BETWEEN ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+            "select top "+str(PerPage)+" CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,QUOTE_ITEM_FORECAST_PART_RECORD_ID,LINE,SERVICE_ID,SERVICE_DESCRIPTION,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,UNIT_PRICE,ANNUAL_QUANTITY,PRICINGPROCEDURE_ID,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from (select ROW_NUMBER() OVER( ORDER BY LINE_ITEM_ID) AS ROW, PRICING_STATUS,QUOTE_ITEM_FORECAST_PART_RECORD_ID,LINE,SERVICE_ID,SERVICE_DESCRIPTION,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,UNIT_PRICE,ANNUAL_QUANTITY,PRICINGPROCEDURE_ID,TAX_PERCENTAGE,TAX,EXTENDED_PRICE from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}') m where m.ROW BETWEEN ".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")
                 )
             + str(Page_start)
@@ -12102,7 +12102,7 @@ def SparesChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
             + str(Page_End)
         )
         QueryCountObj = Sql.GetFirst(
-            "select count(CpqTableEntryId) as cnt from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}'".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
+            "select count(CpqTableEntryId) as cnt from SAQIFP (NOLOCK) where SERVICE_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(EquipmentID = str(EquipmentID).split('-')[1].strip() if 'ADDON' in EquipmentID else str(EquipmentID).split('-')[0].strip(),
                     Quote_Record_id=Quote.GetGlobal("contract_quote_record_id")
                 )
         )
@@ -12483,7 +12483,7 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
 
 
     ##Hide the year column based on the contract valid from and valid to code starts..
-    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}'".format(Quote_Record_id = Quote_Record_id))
+    Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(Quote_Record_id = Quote_Record_id))
     if Getyear:
         start_date = datetime(Getyear.CONTRACT_VALID_FROM)
         end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -12531,22 +12531,22 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
                         symb = curr_symbol_obj.CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES 
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.CURRENCY_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BASE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
                 elif str(cur_api_name_obj.CURRENCY_INDEX) !="":                    
-                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id")))
+                    curr_symbol_obj = SqlHelper.GetFirst("""SELECT PRCURR.SYMBOL,PRCURR.CURRENCY,PRCURR.DISPLAY_DECIMAL_PLACES FROM SAQITM (NOLOCK) JOIN PRCURR (NOLOCK) ON PRCURR.CURRENCY_RECORD_ID = SAQITM.DOCCURR_RECORD_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND SERVICE_ID LIKE '%BUNDLE%'""".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
                     if curr_symbol_obj is not None:
                         cursymbl = curr_symbol_obj. CURRENCY
                         decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                
@@ -12556,7 +12556,7 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
     Parent_Equipmentid = Sql.GetFirst(
-        "select LINE_ITEM_ID,SERVICE_ID from SAQITM (NOLOCK) where QUOTE_RECORD_ID = '{Quote_Record_id}' AND QUOTE_ITEM_RECORD_ID = '{Service_id}' ".format(
+        "select LINE_ITEM_ID,SERVICE_ID from SAQITM (NOLOCK) where QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND QUOTE_ITEM_RECORD_ID = '{Service_id}' ".format(
             Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),
             Service_id=CPQID.KeyCPQId.GetKEYId('SAQITM', str(recid)))
     )
@@ -12570,7 +12570,7 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
         EquipmentID = Parent_Equipmentid.LINE_ITEM_ID
         child_obj_recid = Sql.GetList(
             "select top "+str(PerPage)+" CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,OBJECT_QUANTITY,TOTAL_COST,DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,EXTENDED_PRICE,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5 from (select ROW_NUMBER() OVER( ORDER BY LINE_ITEM_ID) AS ROW, PRICING_STATUS,QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,OBJECT_QUANTITY,TOTAL_COST,DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,EXTENDED_PRICE,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5 from SAQITM (NOLOCK) where "
-            + " QUOTE_RECORD_ID = '{Quote_Record_id}' AND (PARQTEITM_LINE = '{parentline}' OR PARQTEITM_LINE = '{floatline}') AND SERVICE_ID LIKE '%{ServiceId}%') m where m.ROW BETWEEN ".format(Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),parentline=EquipmentID,floatline=float(EquipmentID),ServiceId=str(Parent_Equipmentid.SERVICE_ID).split(" - ")[0])
+            + " QUOTE_RECORD_ID = '{Quote_Record_id}' AND QTEREV_RECORD_ID = '{Revision_Record_Id}' AND (PARQTEITM_LINE = '{parentline}' OR PARQTEITM_LINE = '{floatline}') AND SERVICE_ID LIKE '%{ServiceId}%') m where m.ROW BETWEEN ".format(Quote_Record_id=Quote.GetGlobal("contract_quote_record_id"),parentline=EquipmentID,floatline=float(EquipmentID),ServiceId=str(Parent_Equipmentid.SERVICE_ID).split(" - ")[0])
             + str(Page_start)
             + " and "
             + str(Page_End)
