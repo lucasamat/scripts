@@ -1119,7 +1119,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["SALESORG_NAME"]=OfferingRow_detail.get("SALESORG_NAME")
 			tbrow["CPS_MATCH_ID"] = 11
 			tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
-			tbrow["CPQTABLEENTRYDATEADDED"] = self.datetime_value
+			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 			#tbrow["IS_DEFAULT"] = '1'
 
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
@@ -1712,7 +1712,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					#tbrow["IS_DEFAULT"] = '1'
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 					tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
-					tbrow["CPQTABLEENTRYDATEADDED"] = self.datetime_value
+					tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 					columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 					values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 					insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)

@@ -2860,7 +2860,7 @@ def EntitlementTreeViewHTMLDetail(
 				
 				tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 				tbrow["CPQTABLEENTRYADDEDBY"] = userId
-				tbrow["CPQTABLEENTRYDATEADDED"] = gettodaydate
+				tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
