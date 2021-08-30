@@ -1179,7 +1179,7 @@ def Related_Sub_Banner(
                             desc = getService.SERVICE_DESCRIPTION
                         except:
                             desc = ""
-                        Trace.Write("Line No:1182")
+                        Trace.Write("Line No:1182 - Testing")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
                         SecondLable = "Product Offering Description"
