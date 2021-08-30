@@ -782,7 +782,7 @@ class SyncQuoteAndCustomTables:
                                 NewSalesAreaAccountRecordId = str(Guid.NewGuid()).upper()
                                 insert = Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE,INCOTERM_ID,INCOTERM_DESCRIPTION,INCOTERM_RECORD_ID,PAYMENTTERM_ID,PAYMENTTERM_DESCRIPTION,PAYMENTTERM_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}','{incid}','{incdesc}','{increc}','{payid}','{paydesc}','{payrec}')
                                 """.format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing,incid=incid,incdesc=incdesc,increc=increc,payid=payid,paydesc=paydesc,payrec=payrec))
-                                Log.Info("@@@728------>"+str(insert))
+                                #Log.Info("@@@728------>"+str(insert))
                                 getCtry = Sql.GetFirst("SELECT COUNTRY_RECORD_ID FROM SACTRY WHERE COUNTRY = '{}'".format(custom_fields_detail.get("PayerCountry")))
                                 NewRecordId = str(Guid.NewGuid()).upper()
                                 Sql.RunQuery("""INSERT INTO SAASCT (ACCOUNT_SALES_AREA_COUNTRY_TAX_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,COUNTRY,COUNTRY_NAME,COUNTRY_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Country}','{CountryName}','{CountryRecordId}')
@@ -828,7 +828,7 @@ class SyncQuoteAndCustomTables:
                                         "ACCOUNT_TYPE": "Sold to Party",
                                         "OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
                                     }
-                                    Log.Info("master_opportunity_data ===>" + str(master_opportunity_data))
+                                    #Log.Info("master_opportunity_data ===>" + str(master_opportunity_data))
                                     master_opportunity_table_info.AddRow(master_opportunity_data)
                                     Sql.Upsert(master_opportunity_table_info)
                                     opportunity_obj = Sql.GetFirst(
@@ -886,8 +886,8 @@ class SyncQuoteAndCustomTables:
                             "PHONE": bill_to_customer.BusinessPhone,
                         }
                         quote_involved_party_table_info.AddRow(billtocustomer_quote_data)
-                    Log.Info("QUOTE_ID_CHECK_J "+str(contract_quote_data.get("QUOTE_ID")))
-                    Log.Info("SALE_TYPE_CHECK_J "+str(contract_quote_data.get("SALE_TYPE")))
+                    #Log.Info("QUOTE_ID_CHECK_J "+str(contract_quote_data.get("QUOTE_ID")))
+                    #Log.Info("SALE_TYPE_CHECK_J "+str(contract_quote_data.get("SALE_TYPE")))
                     # if contract_quote_data.get("SALE_TYPE") == "TOOL RELOCATION":
                     #     sending_account_quote_data = {
                     #         "QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
