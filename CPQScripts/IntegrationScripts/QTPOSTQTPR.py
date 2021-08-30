@@ -541,7 +541,8 @@ try:
 							msg = MailMessage(fromEmail, toEmail)							
 
 							# Set message subject and body
-							msg.Subject = "ON HOLD - COSTING- AMAT CPQ DEV"
+							sub = "On Hold - Costing Quote("+str(Gbk.GREENBOOK)+")- AMAT CPQ DEV"
+							msg.Subject = sub
 							msg.IsBodyHtml = True
 							msg.Body = Error_Info
 
