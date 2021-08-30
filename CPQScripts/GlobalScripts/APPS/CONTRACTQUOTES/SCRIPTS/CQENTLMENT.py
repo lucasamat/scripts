@@ -274,11 +274,11 @@ class Entitlements:
 		variant_condition = ', '.join(['{"factor":'+str(attr_code.get('factor'))+',"key":"'+attr_code.get('key')+'"}' for attr_code in characteristics_attr_values])
 		QuoteItemList = Quote.QuoteTables["SAQICD"]
 		CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
-		account_obj = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}'".format(QuoteRecordId=self.ContractRecordId))
+		account_obj = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 		stp_account_id = ""
 		if account_obj:
 			stp_account_id = str(account_obj.ACCOUNT_ID)
-		salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}'".format(QuoteRecordId=self.ContractRecordId))
+		salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 		if salesorg_obj:
 			Trace.Write("serviceId--22--"+str(serviceId))			
 			
@@ -824,12 +824,13 @@ class Entitlements:
 								GETDATE()
 								FROM SAQSCO (NOLOCK)
 								WHERE 
-								QUOTE_RECORD_ID = '{QuoteRecordId}' {where}
+								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where}
 														
 							""".format(
 								TreeParam="Z0046",
 								TreeParentParam="Add-On Products",
 								QuoteRecordId=self.ContractRecordId,
+								RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 								desc=GetMaterial.SAP_DESCRIPTION,
 								rec=GetMaterial.MATERIAL_RECORD_ID,
 								UserName=User.UserName,
@@ -1160,29 +1161,29 @@ class Entitlements:
 													ELSE {priceimp}
 													END,
 										ENTITLEMENT_COST_IMPACT = '{costimp}' where {WhereCondition}""".format(costimp=totalcostent,priceimp=totalpriceimpact,WhereCondition=whereReq))
-						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.ENTITLEMENT_COST_IMPACT,a.TARGET_PRICE = b.ENTITLEMENT_PRICE_IMPACT,a.YEAR_1 = b.ENTITLEMENT_PRICE_IMPACT FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.ENTITLEMENT_COST_IMPACT,a.TARGET_PRICE = b.ENTITLEMENT_PRICE_IMPACT,a.YEAR_1 = b.ENTITLEMENT_PRICE_IMPACT FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (a.TARGET_PRICE) * (a.TAX_PERCENTAGE/100) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (a.TARGET_PRICE) * (a.TAX_PERCENTAGE/100) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE A SET A.EXTENDED_PRICE = B.TARGET_PRICE + B.TAX FROM SAQICO A INNER JOIN SAQICO B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_ID = B.QUOTE_ID where A.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE A SET A.EXTENDED_PRICE = B.TARGET_PRICE + B.TAX FROM SAQICO A INNER JOIN SAQICO B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_ID = B.QUOTE_ID where A.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.TOTAL_COST = B.TOTAL_COST FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TOTAL_COST) AS TOTAL_COST,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement = """UPDATE A  SET A.TOTAL_COST = B.TOTAL_COST FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TOTAL_COST) AS TOTAL_COST,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.TARGET_PRICE = B.TARGET_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement = """UPDATE A  SET A.TARGET_PRICE = B.TARGET_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.YEAR_1 = B.YEAR_1 FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(YEAR_1) AS YEAR_1,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement = """UPDATE A  SET A.YEAR_1 = B.YEAR_1 FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(YEAR_1) AS YEAR_1,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement) 
-						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= self.ContractRecordId)
+						QueryStatement ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
 						Sql.RunQuery(QueryStatement)
 					else:						
 						updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
