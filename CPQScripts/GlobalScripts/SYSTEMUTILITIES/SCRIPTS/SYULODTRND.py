@@ -3739,10 +3739,53 @@ def EntitlementTreeViewHTMLDetail(
 			if get_sec :
 				Section_id = get_sec.RECORD_ID
 				Section_desc = get_sec.SECTION_NAME
-				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "></div>')
-
+				
+				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <tbody>')
+				GetSEFL = Sql.GetList(
+					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(Section_id) + "' ORDER BY DISPLAY_ORDER"
+				)
+				for sefl in GetSEFL:
+					sec_str_boot += (
+							'<tr class="iconhvr brdbt" style="'
+							+ str(add_style)
+							+ ' "><td class="wth350"><abbr title="'
+							+ str(sefl.FIELD_LABEL)
+							+ '" ><label class="pad5mrgbt0">'
+							+ str(sefl.FIELD_LABEL)
+							+ '</label></abbr></td><td width40><a  title="'
+							+ str(sefl.FIELD_LABEL)
+							+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
+							+ str(sefl.FIELD_LABEL)
+							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td></tr>'
+						)
+					
+				sec_str_boot += '</tbody></table>'
+				#sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
 				sec_str_boot += ('</div>')
+				
+				
+				
 
+				# GetSEFL = Sql.GetList(
+				# 	"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(Section_id) + "' ORDER BY DISPLAY_ORDER"
+				# )
+				# for sefl in GetSEFL:
+				# 	sec_str_boot += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+				# 	sec_str_boot += (
+				# 		"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+				# 		+ str(sefl.FIELD_LABEL)
+				# 		+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+				# 		+ str(sefl.FIELD_LABEL)
+				# 		+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+				# 	)
+				# 	sefl_api = sefl.API_FIELD_NAME
+				# 	col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+				# 	if col_name:
+
+				# 	sec_str_boot = sefl.API_FIELD_NAME
+				# sec_str_boot += ('</div>')
+					
+				# tablistdict[Section_id] = date_boot_field
 			##Adding Audit information section in Entitlement ends...
 
 	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
