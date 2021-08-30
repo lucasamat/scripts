@@ -3760,7 +3760,7 @@ def EntitlementTreeViewHTMLDetail(
 					sefl_api = sefl.API_FIELD_NAME
 					col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
 					if col_name:
-						current_obj_value = str(eval("col_name." + str(sefl_api))
+						current_obj_value = str(eval("col_name." + str(sefl_api)))
 						Trace.Write('current_obj_value---'+str(current_obj_value))
 						if str(sefl.FIELD_LABEL) in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified"):
 							try:
@@ -3779,6 +3779,9 @@ def EntitlementTreeViewHTMLDetail(
 							+ ' " '
 							+ 
 							+ " disabled></td>"
+						)
+						sec_str_boot +=(
+							'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a onclick="" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td>
 						)
 
 					sec_str_boot +=	('</tr>')
