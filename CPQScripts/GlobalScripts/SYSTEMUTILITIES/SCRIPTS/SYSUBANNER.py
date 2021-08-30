@@ -1507,6 +1507,20 @@ def Related_Sub_Banner(
         FifthValue = str(SerialNumber)
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
+    elif ObjName == "SAQSGB" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment") and subTabName == "Assembly Entitlements":
+        Trace.Write(1497)		
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeTopSuperParentParam)
+        SecondLable = "Fab Location ID"
+        SecondValue = str(TreeParentParam)
+        ThirdLable = "Greenbook"
+        ThirdValue = str(TreeParam)
+        FourthLable = "Equipment ID"
+        FourthValue = str(EquipmentId)
+        FifthLable = "Serial Number"
+        FifthValue = str(SerialNumber)
+        SixthLable = "Assembly ID"
+        SixthValue = str(AssemblyId)     
     elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
         PrimaryLable = "Greenbook"
         PrimaryValue = str(TreeParam)
