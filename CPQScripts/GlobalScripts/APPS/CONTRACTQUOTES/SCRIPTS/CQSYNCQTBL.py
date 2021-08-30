@@ -1214,7 +1214,7 @@ class SyncQuoteAndCustomTables:
                                                                     ) A
                                                                 """.format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids))
                                 SAQFBL_end = time.time()
-                                Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
+                                #Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
                                
                             
