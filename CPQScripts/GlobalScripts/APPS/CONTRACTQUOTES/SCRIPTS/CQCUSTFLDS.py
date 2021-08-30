@@ -10,7 +10,7 @@ Sql = SQL()
 def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	saleprice = float(saleprice)
 	lineitemid = float(lineitemid)
-	a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR  FROM SAQITM (NOLOCK) WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),lineitemid = lineitemid,Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
+	a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR  FROM SAQITM (NOLOCK) WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
 		discount =((float(a.SALES_DISCOUNT_PRICE)-float(saleprice))/a.SALES_DISCOUNT_PRICE)*100.00
 		Trace.Write("discount"+str(discount))
@@ -51,7 +51,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 
 	ext_price = year1 + year2 + year3 + year4 + year5
 
-	Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{saleprice}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext} WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{Revision_Record_Id}'".format(saleprice=saleprice,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price,lineitemid = lineitemid,Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
+	Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{saleprice}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext} WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(saleprice=saleprice,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price,lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	for item in Quote.MainItems:
 		Trace.Write("Quote Quote Quote")
 		item_number = int(item.RolledUpQuoteItem)
@@ -81,8 +81,8 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	sales_discount_price = float(a.SALES_DISCOUNT_PRICE)/count
 	extended_price = ext_price/count
 	Trace.Write("covered_obj_sale_price "+str(covered_obj_sale_price))
-	update_sales_price = "UPDATE SAQICO SET SALES_PRICE = {covered_obj_sale_price},DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext},SALES_DISCOUNT_PRICE = {sales_discount_price},YEAR_OVER_YEAR = {yearoveryear}  WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{Revision_Record_Id}' ".format(
-	covered_obj_sale_price=covered_obj_sale_price,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=yr1,y2=yr2,y3=yr3,y4=yr4,y5=yr5,ext=extended_price,sales_discount_price = sales_discount_price,lineitemid =lineitemid,yearoveryear= yearoveryear,Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")
+	update_sales_price = "UPDATE SAQICO SET SALES_PRICE = {covered_obj_sale_price},DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext},SALES_DISCOUNT_PRICE = {sales_discount_price},YEAR_OVER_YEAR = {yearoveryear}  WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
+	covered_obj_sale_price=covered_obj_sale_price,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=yr1,y2=yr2,y3=yr3,y4=yr4,y5=yr5,ext=extended_price,sales_discount_price = sales_discount_price,lineitemid =lineitemid,yearoveryear= yearoveryear,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	)
 	Sql.RunQuery(update_sales_price)
 	Sql.RunQuery("""UPDATE SAQIGB
@@ -107,10 +107,10 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	SUM(ISNULL(SAQICO.YEAR_4, 0)) as YEAR_4,
 	SUM(ISNULL(SAQICO.YEAR_5, 0)) as YEAR_5
 	FROM SAQICO (NOLOCK)
-	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' and and QTEREV_RECORD_ID = '{Revision_Record_Id}'
+	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' and and QTEREV_RECORD_ID = '{RevisionRecordId}'
 	GROUP BY SAQICO.LINE_ITEM_ID, SAQICO.QUOTE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQICO.DISCOUNT)IQ
 	ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
-	WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{Revision_Record_Id}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
+	WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	##Updating custom fields...
 	total_item_obj = SqlHelper.GetFirst("""SELECT 
 	SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
@@ -122,7 +122,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	SUM(ISNULL(YEAR_4, 0)) as YEAR_4,
 	SUM(ISNULL(YEAR_5, 0)) as YEAR_5
 	FROM SAQITM (NOLOCK)
-	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{Revision_Record_Id}' """.format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),Revision_Record_Id = Quote.GetGlobal("quote_revision_record_id")))
+	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	if total_item_obj is not None:
 		Quote.GetCustomField('TOTAL_NET_PRICE').Content = str(total_item_obj.SALES_PRICE)
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
