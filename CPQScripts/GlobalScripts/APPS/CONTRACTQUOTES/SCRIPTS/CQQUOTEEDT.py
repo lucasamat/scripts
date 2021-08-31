@@ -44,11 +44,13 @@ def bannerdetails(Quoteid,active_tab_name):
 			Trace.Write('34--qid---'+str(qid))			
 			Quote = QuoteHelper.Edit(str(qid))				
 			Quote.RefreshActions()
+			#A055S000P01-8729 start
 			if active_tab_name == "Quotes":
 				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
 				if get_rev_info:
 					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
-					Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))		
+					Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+			#A055S000P01-8729 end	
 			##getting contarct rec id as global
 			if contract_record_id:
 				Quote.SetGlobal("contract_record_id",contract_record_id)
