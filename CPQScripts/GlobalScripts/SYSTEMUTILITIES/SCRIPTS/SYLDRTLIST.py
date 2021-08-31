@@ -1193,7 +1193,7 @@ class SYLDRTLIST:
 							"Select RECORD_ID,ACTION_NAME from SYPSAC where SECTION_NAME = '" + str(TreeParentParam) + "'"
 						)
 					elif RECORD_ID == "SYOBJR-98869":
-						Trace.Write('1196----------')
+						Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
 						RecAttValue = Quote.GetGlobal("contract_record_id")
 						Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
 						Qustr =  " where QUOTE_RECORD_ID = '" + str(RecAttValue) + "'"                  
