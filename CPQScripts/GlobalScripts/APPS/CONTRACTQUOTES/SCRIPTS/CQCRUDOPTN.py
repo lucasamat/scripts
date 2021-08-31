@@ -322,7 +322,7 @@ class ContractQuoteCrudOpertion:
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM SAQICO (NOLOCK) 
-					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}'""".format(
+					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						BillingDate=billing_date,
 						AmountColumn=amount_column,
@@ -380,7 +380,7 @@ class ContractQuoteCrudOpertion:
 											JQ.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND JQ.ENTITLEMENT_NAME IN ('AGS_BIL_BIL_TYP') 
 								AND JQ.ENTITLEMENT_DISPLAY_VALUE = 'Variable Billing'
 											AND JQ.SERVICE_ID = SAQICO.SERVICE_ID                
-					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}'""".format(
+					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						Months=total_months,
 						BillingDate=billing_date,
@@ -391,8 +391,8 @@ class ContractQuoteCrudOpertion:
 	
 	def insert_quote_billing_plan(self,cart_id,cart_user_id):
 		Trace.Write('insert data in insert_quote_billing_plan--start')
-		Sql.RunQuery("""DELETE FROM QT__Billing_Matrix_Header WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id))
-		Sql.RunQuery("""DELETE FROM QT__BM_YEAR_1 WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id))
+		Sql.RunQuery("""DELETE FROM QT__Billing_Matrix_Header WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id))
+		Sql.RunQuery("""DELETE FROM QT__BM_YEAR_1 WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id))
 		services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(self.contract_quote_record_id))
 		if item_billing_plan_obj is not None and services_obj:
@@ -433,7 +433,7 @@ class ContractQuoteCrudOpertion:
 										{UserId} as ownerId,
 										{CartId} as cartId
 									FROM SAQIBP (NOLOCK)
-									WHERE QUOTE_RECORD_ID='{QuoteRecordId}'""".format(
+									WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
 										QuoteRecordId=self.contract_quote_record_id,DateColumn=date_columns,Year=no_of_year,SelectDateColoumn=header_select_date_columns,CartId=cart_id, UserId=cart_user_id
 										))
 						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
@@ -578,7 +578,7 @@ class ContractQuoteCrudOpertion:
 			)
 			Sql.RunQuery(update_tax_quote_ico)
 			if quote_type == 'tool':
-				update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(
+				update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
 				TaxPercentage=tax_percentage,			
 				ServiceId=self.tree_param,
 				QuoteRecordId=self.contract_quote_record_id
@@ -689,7 +689,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						{CartId} as cartId
 					FROM SAQITM (NOLOCK) 
 					JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID                
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.SERVICE_ID = '{ServiceId}' """.format(
+					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID = '{ServiceId}' """.format(
 						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
 						ServiceId=bundleser,bundledescription = bundledes,))
 			Sql.RunQuery("""INSERT QT__SAQITM (
@@ -715,7 +715,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						{UserId} as ownerId,
 						{CartId} as cartId
 					FROM SAQITM (NOLOCK)                 
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.SERVICE_ID LIKE '%ADDON%' """.format(
+					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}'  AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID LIKE '%ADDON%' """.format(
 						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
 						ServiceId=bundleser,bundledescription = bundledes))			
 		else:
@@ -743,11 +743,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						{CartId} as cartId
 					FROM SAQITM (NOLOCK) 
 					JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID                
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' """.format(
+					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' """.format(
 						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
 						ServiceId=self.tree_param,))
 		if self.tree_param == 'Z0068' and self.tree_parent_level_0 == 'Add-On Products':
-			self._process_query("""UPDATE A SET A.TARGET_PRICE = B.TARGET_PRICE,A.SALES_PRICE = B.SALES_PRICE,A.CEILING_PRICE = B.CEILING_PRICE,A.TOTAL_COST = B.TOTAL_COST,A.EXTENDED_PRICE = B.EXTENDED_PRICE,A.TAX = B.TAX,A.PRICING_STATUS = 'ACQUIRED' FROM QT__SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(SALES_PRICE) AS SALES_PRICE,SUM(CEILING_PRICE) AS CEILING_PRICE,SUM(TOTAL_COST) AS TOTAL_COST,SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_RECORD_ID from QT__SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID='{Service_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
+			self._process_query("""UPDATE A SET A.TARGET_PRICE = B.TARGET_PRICE,A.SALES_PRICE = B.SALES_PRICE,A.CEILING_PRICE = B.CEILING_PRICE,A.TOTAL_COST = B.TOTAL_COST,A.EXTENDED_PRICE = B.EXTENDED_PRICE,A.TAX = B.TAX,A.PRICING_STATUS = 'ACQUIRED' FROM QT__SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(SALES_PRICE) AS SALES_PRICE,SUM(CEILING_PRICE) AS CEILING_PRICE,SUM(TOTAL_COST) AS TOTAL_COST,SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_RECORD_ID from QT__SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID='{Service_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
 			QuoteRecordId=self.contract_quote_record_id,
 			Service_id =self.tree_param))				
 		""" if Quote is not None:
@@ -807,7 +807,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					{CartId} as cartId
 				FROM SAQIFP (NOLOCK) 
 				JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQIFP.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID                
-				WHERE SAQIFP.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'""".format(
+				WHERE SAQIFP.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQIFP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'""".format(
 					CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
 					ServiceId=self.tree_param))
 		if Quote is not None:
@@ -1613,7 +1613,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			QuoteStartDate = self.contract_end_date
 			Sql.RunQuery(""" INSERT SAQTSV(QUOTE_SERVICE_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,SERVICE_TYPE,UOM_ID,UOM_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID,QTEPARSRV_RECORD_ID,CONTRACT_START_DATE,CONTRACT_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID,SAQSAO.QUOTE_ID,SAQSAO.QUOTE_NAME,SAQSAO.QUOTE_RECORD_ID,SAQSAO.ADNPRD_ID,SAQSAO.ADNPRD_DESCRIPTION,SAQSAO.ADNPRDOFR_RECORD_ID,MAMTRL.PRODUCT_TYPE,MAMTRL.UNIT_OF_MEASURE,MAMTRL.UOM_RECORD_ID,SAQSAO.SALESORG_ID,SAQSAO.SALESORG_NAME,SAQSAO.SALESORG_RECORD_ID,SAQSAO.SERVICE_DESCRIPTION,SAQSAO.SERVICE_ID,SAQSAO.SERVICE_RECORD_ID,SAQSAO.QTESRV_RECORD_ID,'{startdate}' as CONTRACT_START_DATE,'{enddate}' as CONTRACT_END_DATE,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM SAQSAO INNER JOIN MAMTRL ON SAQSAO.ADNPRD_ID = MAMTRL.SAP_PART_NUMBER Where QUOTE_RECORD_ID ='{quote_record_id}' and SERVICE_ID = '{treeparam}' AND ACTIVE ='TRUE'AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{quote_record_id}'AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID) """.format(quote_record_id=self.contract_quote_record_id,treeparam = self.tree_parent_level_0,UserId=self.user_id,UserName=self.user_name,startdate = self.contract_start_date,enddate = self.contract_end_date ))
 			#insert in entitlement table based on add on products
-			SAQTSVObj=Sql.GetList("Select SAQSAO.*,SAQTSV.QUOTE_SERVICE_RECORD_ID from SAQSAO (nolock) inner join SAQTSV on SAQTSV.QUOTE_RECORD_ID=SAQSAO.QUOTE_RECORD_ID and SAQTSV.SERVICE_ID = SAQSAO.SERVICE_ID where SAQSAO.QUOTE_RECORD_ID= '{QuoteRecordId}'  AND SAQSAO.ACTIVE ='TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{QuoteRecordId}'AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID)".format(QuoteRecordId=self.contract_quote_record_id))
+			SAQTSVObj=Sql.GetList("Select SAQSAO.*,SAQTSV.QUOTE_SERVICE_RECORD_ID from SAQSAO (nolock) inner join SAQTSV on SAQTSV.QUOTE_RECORD_ID=SAQSAO.QUOTE_RECORD_ID and SAQTSV.SERVICE_ID = SAQSAO.SERVICE_ID where SAQSAO.QUOTE_RECORD_ID= '{QuoteRecordId}' AND SAQASO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSAO.ACTIVE ='TRUE' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID=SAQSAO.ADNPRD_ID)".format(QuoteRecordId=self.contract_quote_record_id))
 			#tableInfo = SqlHelper.GetTable("SAQTSE")
 			x = datetime.datetime.today()
 			x= str(x)
@@ -1728,7 +1728,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						FROM
 						SAQTSE (NOLOCK)
 						JOIN SAQSFB ON SAQSFB.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFB.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
-						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQTSE.SERVICE_ID ='{ParServiceId}') IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=OfferingRow_detail.ADNPRD_ID,ParServiceId = OfferingRow_detail.SERVICE_ID)
+						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQTSE.SERVICE_ID ='{ParServiceId}') IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=OfferingRow_detail.ADNPRD_ID,ParServiceId = OfferingRow_detail.SERVICE_ID)
 					Sql.RunQuery(SAQSFE_query)
 					#ENTITLEMENT SV TO GB
 	
@@ -1742,7 +1742,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						FROM
 						SAQTSE (NOLOCK)
 						JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=OfferingRow_detail.ADNPRD_ID)
+						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=OfferingRow_detail.ADNPRD_ID)
 					Sql.RunQuery(qtqsge_query)
 		elif self.action_type == "ADD_SOURCE_FAB":			
 			master_object_name = "MAFBLC"
@@ -2051,7 +2051,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							FROM SAQFEQ (NOLOCK)
 							JOIN MAEQUP (NOLOCK) ON MAEQUP.SALESORG_ID = SAQFEQ.SALESORG_ID AND MAEQUP.EQUIPMENT_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID
 							
-							WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND MAEQUP.CpqTableEntryId = '{cpq_entry}' AND SAQFEQ.GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND FABLOCATION_ID ='UNMAPPED')
+							WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAEQUP.CpqTableEntryId = '{cpq_entry}' AND SAQFEQ.GREENBOOK NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID ='UNMAPPED')
 							) FB""".format(
 											treeparam=self.tree_param,
 											QuoteRecordId=self.contract_quote_record_id,
@@ -2173,7 +2173,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			record_ids = []
 			if self.all_values and auto_equp_insert is None: 
 				Trace.Write('ifff--')		      
-				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
+				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
 							acc=self.account_record_id,
 							fab=self.tree_param,
 							salesorgrecid=self.salesorg_record_id,
@@ -2199,7 +2199,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					get_fab = str(tuple([fab['FABLOCATION_ID'] for fab in fab_list])).replace(",)",')')
 				else:
 					get_fab = ""
-				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID = '{acc}' AND FABLOCATION_ID in {fab} AND  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND NOT EXISTS (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND FABLOCATION_ID in {fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' )".format(
+				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID = '{acc}' AND FABLOCATION_ID in {fab} AND  ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND NOT EXISTS (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID in {fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' )".format(
 							acc=account_id,
 							fab=get_fab,
 							QuoteRecordId=self.contract_quote_record_id,
@@ -2364,8 +2364,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						FROM SAQFEQ (NOLOCK)
 						JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID
 						JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID
-						WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND GREENBOOK
-						NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND FABLOCATION_ID IN {fab})
+						WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND GREENBOOK
+						NOT IN (SELECT GREENBOOK FROM SAQFGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID IN {fab})
 						) FB""".format(
 										treeparam=self.tree_param,
 										QuoteRecordId=self.contract_quote_record_id,
@@ -2637,7 +2637,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID
 								JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND {RelocationEqType} SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID
 								WHERE 
-								SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' 
+								SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 								AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
 						""".format(
 								TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
@@ -2729,7 +2729,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID
 								JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID
 								WHERE 
-								SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
+								SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 								AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'   AND SAQFEQ.RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT'                      
 						""".format(
 								TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
@@ -3169,7 +3169,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQFEQ.EQUIPMENT_RECORD_ID
 							WHERE 
-							SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
+							SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{RevisionRecordId}'
 							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'                        
 					""".format(
 							TreeParam=self.tree_param,
@@ -3274,7 +3274,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND
 								SYSPBT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 								WHERE 
-								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = 'Z0046')
+								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0046')
 														
 							""".format(
 								TreeParam="Z0046",
@@ -3419,7 +3419,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					SAQTSV.PAR_SERVICE_RECORD_ID,
 					{included} as INCLUDED 
 					FROM SYSPBT (NOLOCK)
-					JOIN (select SAQFEA.* from SAQFEA(nolock) join SYSPBT (nolock) on SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID and SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID where  SAQFEA.QUOTE_RECORD_ID = '{QuoteRecordId}' ) SAQFEA ON SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID
+					JOIN (select SAQFEA.* from SAQFEA(nolock) join SYSPBT (nolock) on SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID and SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID where  SAQFEA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEA.QTEREV_RECORD_ID = '{RevisionRecordId}' ) SAQFEA ON SAQFEA.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_RECORD_ID = SYSPBT.BATCH_RECORD_ID
 					JOIN SAQSCO (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID
 					JOIN SAQTSV (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID 
 					WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SAQTSV.SERVICE_ID = '{TreeParam}' AND SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
@@ -3519,7 +3519,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						1
 						FROM SAQFEA (NOLOCK)
 						JOIN SAQSSE (NOLOCK) ON SAQFEA.QUOTE_RECORD_ID = SAQSSE.QUOTE_RECORD_ID AND SAQFEA.EQUIPMENT_ID = SAQSSE.SND_EQUIPMENT_ID
-						WHERE  SAQSSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQSSE.SERVICE_ID = '{TreeParentParam}'
+						WHERE  SAQSSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSSE.SERVICE_ID = '{TreeParentParam}'
 					""".format(
 					UserId=self.user_id,
 					UserName=self.user_name,
@@ -3854,8 +3854,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						JOIN MAFBLC (NOLOCK) ON SAQSSE.SNDFBL_ID = MAFBLC.FAB_LOCATION_ID 
 						JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSSE.QUOTE_RECORD_ID
 						JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQSSE.SND_EQUIPMENT_RECORD_ID
-						WHERE SAQSSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
-						SAQSSE.SERVICE_ID = '{TreeParentParam}' AND SAQSSE.SNDFBL_ID NOT IN(SELECT SNDFBL_ID FROM SAQSSF (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = '{TreeParentParam}')
+						WHERE SAQSSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
+						SAQSSE.SERVICE_ID = '{TreeParentParam}' AND SAQSSE.SNDFBL_ID NOT IN(SELECT SNDFBL_ID FROM SAQSSF (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{TreeParentParam}')
 						) FB""".format(
 										TreeParam=self.tree_param if (self.tree_parent_level_1 == 'Complementary Products') and self.sale_type == 'TOOL RELOCATION' else self.tree_parent_level_1,
 										TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_1 == 'Complementary Products') and self.sale_type == 'TOOL RELOCATION' else self.tree_parent_level_1,
@@ -3934,7 +3934,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					JOIN MAFBLC (NOLOCK) ON SAQSCO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID 
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 					JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID
-					WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
+					WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
 					SAQSCO.SERVICE_ID = '{TreeParam}' AND SAQSCO.SERVICE_TYPE = '{TreeParentParam}' AND FABLOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQSFB WHERE SERVICE_ID = '{TreeParam}' AND QUOTE_RECORD_ID = '{QuoteRecordId}')
 					) FB""".format(
 									TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
@@ -4006,7 +4006,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 							WHERE 
-							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'
+							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
 					""".format(
 							TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type == 'TOOL RELOCATION' else self.tree_parent_level_0,
@@ -4074,7 +4074,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 							WHERE 
-							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'
+							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
 					""".format(
 							TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
@@ -4257,10 +4257,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		#SAQSCA_DRP = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(SAQSCA)+"'' ) BEGIN DROP TABLE "+str(SAQSCA)+" END  ' ")
 		##UPDATING THE TKM COLUMN VALUE STARTS..
 		Sql.RunQuery("""UPDATE SAQSAP SET TKM_FLAG = 1 from SAQSAP join (Select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) as cnt,EQUIPMENT_ID,ASSEMBLY_ID,PM_ID,QUOTE_RECORD_ID
-			from SAQSKP(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' group by EQUIPMENT_ID,ASSEMBLY_ID,PM_ID,QUOTE_RECORD_ID) as parts on 
-			SAQSAP.EQUIPMENT_ID = parts.EQUIPMENT_ID  AND parts.ASSEMBLY_ID = SAQSAP.ASSEMBLY_ID AND parts.PM_ID = SAQSAP.PM_ID AND parts.QUOTE_RECORD_ID = SAQSAP.QUOTE_RECORD_ID WHERE SAQSAP.QUOTE_RECORD_ID = '{QuoteRecordId}' and parts.cnt > 0""".format(QuoteRecordId = self.contract_quote_record_id ))
-		##UPDATING THE TKM COLUMN VALUE ENDS.
-		return True
+			from SAQSKP(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' group by EQUIPMENT_ID,ASSEMBLY_ID,PM_ID,QUOTE_RECORD_ID) as parts on 
+			SAQSAP.EQUIPMENT_ID = parts.EQUIPMENT_ID  AND parts.ASSEMBLY_ID = SAQSAP.ASSEMBLY_ID AND parts.PM_ID = SAQSAP.PM_ID AND parts.QUOTE_RECORD_ID = SAQSAP.QUOTE_RECORD_ID WHERE SAQSAP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSAP.QTEREV_RECORD_ID = '{RevisionRecordId}' and parts.cnt > 0""".format(QuoteRecordId = self.contract_quote_record_id ))
+		##UPDATING THE TKM COLUMN VALU ENDS.
+		return TrueE
 
 	def _insert_quote_item_fab_location(self, **kwargs):
 		self._process_query(
@@ -4305,7 +4305,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				JOIN MAFBLC (NOLOCK) ON SAQICO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID 
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
 				JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQICO.EQUIPMENT_RECORD_ID
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
 				SAQICO.SERVICE_ID = '{TreeParam}'
 				) FB""".format(
 								TreeParam=self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,
@@ -4376,8 +4376,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				FROM SAQICO (NOLOCK)
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
 				JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.BATCH_RECORD_ID = SAQICO.EQUIPMENT_RECORD_ID
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
-				SAQICO.SERVICE_ID = '{TreeParam}' AND NOT EXISTS (SELECT GREENBOOK FROM SAQIGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID = '{TreeParam}')
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
+				SAQICO.SERVICE_ID = '{TreeParam}' AND NOT EXISTS (SELECT GREENBOOK FROM SAQIGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}')
 				) FB""".format(
 								TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
 								QuoteRecordId=self.contract_quote_record_id,
@@ -4395,7 +4395,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SELECT COUNT(SAQICO.EQUIPMENT_ID) as QTY,SAQIGB.CpqTableEntryId,SAQICO.FABLOCATION_RECORD_ID, SAQICO.SERVICE_RECORD_ID, SAQICO.GREENBOOK_RECORD_ID
 				FROM SAQICO (NOLOCK) 
 				JOIN SAQIGB (NOLOCK) ON SAQIGB.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID and SAQIGB.GREENBOOK_RECORD_ID = SAQICO.GREENBOOK_RECORD_ID and SAQIGB.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID and SAQIGB.FABLOCATION_RECORD_ID = SAQICO.FABLOCATION_RECORD_ID 
-				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY SAQICO.FABLOCATION_RECORD_ID,SAQICO.SERVICE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQIGB.CpqTableEntryId
+				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY SAQICO.FABLOCATION_RECORD_ID,SAQICO.SERVICE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQIGB.CpqTableEntryId
 			)AS IQ
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))
 	def _create(self):
@@ -4417,10 +4417,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						query_string ="select SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQFEQ.EQUIPMENT_ID, SAQFEQ.SERIAL_NUMBER, SAQFEQ.PBG, SAQFEQ.PLATFORM, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME from  SAQFEQ(NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_ID = SAQFEQ.QUOTE_ID  AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID  WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND {Qury_Str} NOT EXISTS(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID ='{TreeParam}' ) ".format(quo_rec_id=self.contract_quote_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
 					else:
 						if self.tree_param == "Sending Equipment" or self.tree_param == "Receiving Equipment":
-							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID ='{TreeParam}'  AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}')".format(QuoteRecordId=self.contract_quote_record_id,TreeParam = self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,Qury_Str=qury_str,tree_param=str(self.tree_param).upper())
+							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}'  AND RELOCATION_EQUIPMENT_TYPE = '{tree_param}')".format(QuoteRecordId=self.contract_quote_record_id,TreeParam = self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,Qury_Str=qury_str,tree_param=str(self.tree_param).upper())
 						else:
 
-							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND SERVICE_ID ='{TreeParam}')".format(QuoteRecordId=self.contract_quote_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
+							query_string = "SELECT QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND {Qury_Str} EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{TreeParam}')".format(QuoteRecordId=self.contract_quote_record_id,TreeParam = self.tree_param,Qury_Str=qury_str)
 					query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 						Query_String=query_string
 					)
@@ -4546,9 +4546,9 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				years, months = int(years), int(remainder // avgmonth)            
 				
 				total_months = years * 12 + months
-				Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
+				Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 				#Sql.RunQuery("""DELETE FROM QT__QTQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
-				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id))
+				entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id))
 				for index in range(0, total_months+1):
 					self.insert_items_billing_plan(total_months=total_months, 
 											billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
@@ -4580,7 +4580,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 					Sql.RunQuery("""UPDATE SAQTBP
 										SET 
 										IS_CHANGED = 0                                
-										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 										""".format(						
 							QuoteRecordId=self.contract_quote_record_id
 						))
@@ -4606,7 +4606,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 
 		Sql.RunQuery("""UPDATE SAQIBP
 					SET BILLING_DATE = '{NewBillingDate}'                    
-					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND BILLING_DATE = '{OldBillingDate}'""".format(
+					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND BILLING_DATE = '{OldBillingDate}'""".format(
 					NewBillingDate=result.get('modified_date'), QuoteRecordId=self.contract_quote_record_id, 
 					OldBillingDate=result.get('billing_date')
 		))
@@ -4688,8 +4688,8 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				1                                   
 				FROM SAQTMT (NOLOCK)
 				
-				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'
-				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')											
+				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')											
 		""".format(                        
 			QuoteRecordId= self.contract_quote_record_id,   
 			UserId=self.user_id,
@@ -4808,7 +4808,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					FROM SAQSCE (NOLOCK)    
 					JOIN (
 						SELECT SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSCE.ENTITLEMENT_GROUP_ID) + {ExistingCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSCE (NOLOCK) 
-						WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}
+						WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString}
 						GROUP BY SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID
 					) AS IQ ON IQ.CpqTableEntryId = SAQSCE.CpqTableEntryId
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID              
@@ -4817,7 +4817,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					LEFT JOIN MAMSCT (NOLOCK) ON SAQTSO.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTSO.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTSO.DIVISION_ID = MAMSCT.DIVISION_ID  
 					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
 					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
-					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}
+					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}
 			""".format(						
 				Currency=self.contract_currency,
 				CurrencyRecordId=self.contract_currency_record_id,
@@ -4963,7 +4963,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID
 					
 				WHERE 
-					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'
+					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, 
 				TempTable=quote_item_line_temp, JoinString=join_string, PriceTemp=price_temp, WhereString=where_string )
@@ -5106,7 +5106,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 						) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID
 						
 					WHERE 
-						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' {WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1
+						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1
 					) IQ
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, 
 					TempTable=quote_item_line_temp, JoinString=join_string, PriceTemp=price_temp, WhereString= str(where_string) )
@@ -5142,7 +5142,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			item.Delete()
 		## Delete SAQICO, SAQITM  and native quote items - End
 		# Non tool base quote item insert
-		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
 		if services_obj:
 			item_where_string = "AND SAQSCE.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
 			# Insert SAQITM - Start
@@ -5159,9 +5159,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			# Insert Quote Items Covered Object - End
 		
 		# Tool base quote item insert
-		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
 		if services_obj:
-			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id))
+			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id))
 			item_where_string = "AND SAQSCE.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
 			# Insert SAQITM - Start
 			self._quote_item_insert_process(where_string=item_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
@@ -5176,7 +5176,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			# Insert Quote Items Covered Object - End
 
 		# Native Cart Items Insert - Start
-		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
 		for quote_item_obj in quote_items_obj:			
 			#product_native_obj = ProductHelper.CreateProduct(str(grouped_item_obj.SERVICE_ID))
 			#product_native_obj.AddToQuote()
@@ -5199,7 +5199,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		self._process_query("""UPDATE SAQICO SET PRICING_STATUS = CASE  
 						WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
 						ELSE 'ERROR'
-					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
+					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 		self._process_query("""UPDATE SAQICO
 			SET
 			SAQICO.ANNUAL_BENCHMARK_BOOKING_PRICE = PRPRBM.ANNUAL_BOOKING_PRICE,
@@ -5216,7 +5216,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID					
 				JOIN PRPRBM (NOLOCK) ON PRPRBM.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND PRPRBM.EQUIPMENT_RECORD_ID = SAQICO.EQUIPMENT_RECORD_ID
 										AND PRPRBM.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID				
-				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}'
+				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 				GROUP BY PRPRBM.ACCOUNT_RECORD_ID, PRPRBM.EQUIPMENT_RECORD_ID, PRPRBM.SERVICE_RECORD_ID, SAQICO.CpqTableEntryId
 			)AS IQ ON SAQICO.CpqTableEntryId = IQ.CpqTableEntryId
 			JOIN PRPRBM (NOLOCK) ON PRPRBM.ACCOUNT_RECORD_ID = IQ.ACCOUNT_RECORD_ID 
@@ -5241,7 +5241,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID					
 				JOIN PRPRBM (NOLOCK) ON PRPRBM.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID AND PRPRBM.TOOL_CONFIGURATION = SAQICO.TOOL_CONFIGURATION
 										AND PRPRBM.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID				
-				WHERE ISNULL(SAQICO.ANNUAL_BENCHMARK_BOOKING_PRICE,0) = 0 AND SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}'
+				WHERE ISNULL(SAQICO.ANNUAL_BENCHMARK_BOOKING_PRICE,0) = 0 AND SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 				GROUP BY PRPRBM.ACCOUNT_RECORD_ID, PRPRBM.TOOL_CONFIGURATION, PRPRBM.SERVICE_RECORD_ID, SAQICO.CpqTableEntryId
 			)AS IQ ON SAQICO.CpqTableEntryId = IQ.CpqTableEntryId
 			JOIN PRPRBM (NOLOCK) ON PRPRBM.ACCOUNT_RECORD_ID = IQ.ACCOUNT_RECORD_ID 
@@ -5267,10 +5267,10 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 										ISNULL(COUNT(SAQICO.EQUIPMENT_ID),0) as EQUIPMENT_ID_COUNT
 										FROM SAQITM (NOLOCK) 
 										JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
-										WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' 
+										WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'
 										GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
 							ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id))
+							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 		SAQICA_ent_renewal = """INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM
 
 		(SELECT IQ.* FROM ( SELECT DISTINCT 
@@ -5374,14 +5374,14 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				get_billing_matrix_year = ["YEAR_5"]
 		Trace.Write('get_billing_matrix_year------'+str(get_billing_matrix_year))
 		# Is Changed Information Notification - Start
-		self._process_query("""UPDATE SAQSCE SET IS_CHANGED = 0 FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
+		self._process_query("""UPDATE SAQSCE SET IS_CHANGED = 0 FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 		# Is Changed Information Notification - End
 		return get_billing_matrix_year
 
 
 	def _insert_quote_item_fab_location(self, **kwargs):
 		Trace.Write('fab insert query---')
-		SAQIEN_query = """INSERT SAQIEN (QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERIAL_NO,ENTITLEMENT_XML,CPS_CONFIGURATION_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,EQUIPMENT_LINE_ID,LINE_ITEM_ID,CPS_MATCH_ID,QTEITMCOB_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QTEITM_RECORD_ID) (select DISTINCT CONVERT(VARCHAR(4000), NEWID()) AS  QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, SAQSCE.QUOTE_ID,SAQSCE.QUOTE_RECORD_ID,SAQSCE.QTESRVENT_RECORD_ID,SAQSCE.SERVICE_RECORD_ID,SAQSCE.SERVICE_ID,SAQSCE.SERVICE_DESCRIPTION,SAQICO.SERIAL_NO,SAQSCE.ENTITLEMENT_XML,SAQSCE.CPS_CONFIGURATION_ID,SAQSCE.FABLOCATION_ID,SAQSCE.FABLOCATION_NAME,SAQSCE.FABLOCATION_RECORD_ID,SAQICO.EQUIPMENT_LINE_ID,SAQICO.LINE_ITEM_ID,SAQSCE.CPS_MATCH_ID,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,SAQICO.EQUIPMENT_ID,SAQICO.EQUIPMENT_RECORD_ID,SAQSCE.SALESORG_ID,SAQSCE.SALESORG_NAME,SAQSCE.SALESORG_RECORD_ID,SAQITM.QUOTE_ITEM_RECORD_ID FROM SAQSCE (NOLOCK) JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQICO.FABLOCATION_ID = SAQSCE.FABLOCATION_ID AND SAQICO.GREENBOOK = SAQSCE.GREENBOOK AND SAQICO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID JOIN SAQITM on SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID  where SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' )""".format(
+		SAQIEN_query = """INSERT SAQIEN (QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERIAL_NO,ENTITLEMENT_XML,CPS_CONFIGURATION_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,EQUIPMENT_LINE_ID,LINE_ITEM_ID,CPS_MATCH_ID,QTEITMCOB_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QTEITM_RECORD_ID) (select DISTINCT CONVERT(VARCHAR(4000), NEWID()) AS  QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, SAQSCE.QUOTE_ID,SAQSCE.QUOTE_RECORD_ID,SAQSCE.QTESRVENT_RECORD_ID,SAQSCE.SERVICE_RECORD_ID,SAQSCE.SERVICE_ID,SAQSCE.SERVICE_DESCRIPTION,SAQICO.SERIAL_NO,SAQSCE.ENTITLEMENT_XML,SAQSCE.CPS_CONFIGURATION_ID,SAQSCE.FABLOCATION_ID,SAQSCE.FABLOCATION_NAME,SAQSCE.FABLOCATION_RECORD_ID,SAQICO.EQUIPMENT_LINE_ID,SAQICO.LINE_ITEM_ID,SAQSCE.CPS_MATCH_ID,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,SAQICO.EQUIPMENT_ID,SAQICO.EQUIPMENT_RECORD_ID,SAQSCE.SALESORG_ID,SAQSCE.SALESORG_NAME,SAQSCE.SALESORG_RECORD_ID,SAQITM.QUOTE_ITEM_RECORD_ID FROM SAQSCE (NOLOCK) JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQICO.FABLOCATION_ID = SAQSCE.FABLOCATION_ID AND SAQICO.GREENBOOK = SAQSCE.GREENBOOK AND SAQICO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID JOIN SAQITM on SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID  where SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' )""".format(
 		QuoteRecordId=self.contract_quote_record_id)
 		Sql.RunQuery(SAQIEN_query)
 		self._process_query(
@@ -5426,7 +5426,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				JOIN MAFBLC (NOLOCK) ON SAQICO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID 
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
 				
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}'
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 				) FB""".format(
 								QuoteRecordId=self.contract_quote_record_id,
 								UserId=self.user_id,
@@ -5496,7 +5496,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				FROM SAQICO (NOLOCK)
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
 				
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND NOT EXISTS (SELECT GREENBOOK FROM SAQIGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}')
+				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND NOT EXISTS (SELECT GREENBOOK FROM SAQIGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
 				) FB""".format(
 								QuoteRecordId=self.contract_quote_record_id,
 								UserId=self.user_id,
@@ -5512,7 +5512,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				SELECT COUNT(SAQICO.EQUIPMENT_ID) as QTY,SAQIGB.CpqTableEntryId,SAQICO.FABLOCATION_RECORD_ID, SAQICO.SERVICE_RECORD_ID, SAQICO.GREENBOOK_RECORD_ID
 				FROM SAQICO (NOLOCK) 
 				JOIN SAQIGB (NOLOCK) ON SAQIGB.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID and SAQIGB.GREENBOOK_RECORD_ID = SAQICO.GREENBOOK_RECORD_ID and SAQIGB.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID and SAQIGB.FABLOCATION_RECORD_ID = SAQICO.FABLOCATION_RECORD_ID 
-				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' GROUP BY SAQICO.FABLOCATION_RECORD_ID,SAQICO.SERVICE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQIGB.CpqTableEntryId
+				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY SAQICO.FABLOCATION_RECORD_ID,SAQICO.SERVICE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQIGB.CpqTableEntryId
 			)AS IQ
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))	
 	
@@ -5621,7 +5621,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					FROM SAQSPT (NOLOCK)    
 					JOIN (
 						SELECT SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSPT.SERVICE_RECORD_ID) + {ExistingCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSPT (NOLOCK) 
-						WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}'
+						WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{RevisionRecordId}'
 						GROUP BY SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID
 					) AS IQ ON IQ.CpqTableEntryId = SAQSPT.CpqTableEntryId
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID              
@@ -5630,7 +5630,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					LEFT JOIN MAMSCT (NOLOCK) ON SAQTSO.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTSO.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTSO.DIVISION_ID = MAMSCT.DIVISION_ID  
 					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSPT.SALESORG_ID					
 					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSPT.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
-					WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}'
+					WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{RevisionRecordId}'
 			""".format(						
 				Currency=self.contract_currency,
 				CurrencyRecordId=self.contract_currency_record_id,
@@ -5714,7 +5714,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 						{UserId} AS CpqTableEntryModifiedBy,
 						GETDATE() as CpqTableEntryDateModified
 						FROM SAQSPT (NOLOCK)
-						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')A
+						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')A
 					""".format(
 						currency=self.contract_currency, 
 						currency_rec_id=self.contract_currency_record_id, 
@@ -5726,7 +5726,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				)
 		##quote item spart parts insert ends..
 		# Native Cart Items Insert for spare quotes- Start
-		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id))
 		for quote_item_obj in quote_items_obj:
 			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
 			if product_obj:
@@ -6075,7 +6075,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					) """
 		Trace.Write('ent_msg_gen_txt--'+str(ent_msg_gen_txt))
 		# Is Changed Information Notification - Start
-		equip_level_entitlement_obj = Sql.GetFirst("SELECT QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID FROM SAQSCE (NOLOCK) WHERE IS_CHANGED = 1 AND QUOTE_RECORD_ID= '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
+		equip_level_entitlement_obj = Sql.GetFirst("SELECT QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID FROM SAQSCE (NOLOCK) WHERE IS_CHANGED = 1 AND QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
 		if equip_level_entitlement_obj:
 			log_message_obj = Sql.GetFirst(
 					"SELECT TOP 1000 SYMSGS.MESSAGE_TEXT, SYMSGS.MESSAGE_TYPE, SYMSGS.MESSAGE_CODE, SYMSGS.MESSAGE_LEVEL FROM SYMSGS (nolock) INNER JOIN SYELOG (NOLOCK) ON SYELOG.ERRORMESSAGE_RECORD_ID = SYMSGS.RECORD_ID WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE = '{QuoteId}' AND SYELOG.OBJECT_VALUE_REC_ID = '{QuoteRecordId}' ORDER BY abs(SYMSGS.MESSAGE_CODE)".format(
