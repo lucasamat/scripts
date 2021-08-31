@@ -1449,7 +1449,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 
@@ -1549,7 +1550,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----FAB GREENBOOK VALUE DRIVER LEVEL IFLOW")
 
@@ -1778,8 +1780,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----SERVICE COST AND VALUE DRIVER LEVEL IFLOW")
 
@@ -1932,8 +1934,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----FAB COST AND VALUE DRIVER LEVEL IFLOW")
 				
@@ -2051,8 +2053,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----GREENBOOK COST AND VALUE DRIVER LEVEL IFLOW")
 	elif str(TreeTopSuperParentParam) == 'Comprehensive Services' and subtab == 'Equipment Cost and Value Drivers':
@@ -2468,6 +2470,7 @@ TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 TreeSuperTopParentParam = Product.GetGlobal("TreeParentLevel3")
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 userId = str(User.Id)
 userName = str(User.UserName)
 if hasattr(Param, "CurrentRecordId"):
