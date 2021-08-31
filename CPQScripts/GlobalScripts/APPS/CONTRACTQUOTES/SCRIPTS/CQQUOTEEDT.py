@@ -33,7 +33,10 @@ def bannerdetails(Quoteid,active_tab_name):
 	if active_tab_name == "Quotes":
 		Trace.Write('34-----'+str(Quoteid))
 		#reObj = re.match( r'.*>\s*(\d+)*?<', Quoteid)
-		#SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
+		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
+		if get_rev_info:
+			Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
+			Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
 			qid=str(matchObj.group(1))
