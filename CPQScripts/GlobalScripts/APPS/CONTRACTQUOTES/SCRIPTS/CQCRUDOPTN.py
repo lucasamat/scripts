@@ -4484,7 +4484,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					#ENTITLEMENT SV TO CE AND GB
 					try:
 						if self.tree_param != 'Receiving Equipment':
-							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)
+							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)
 							CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level)						
 					except:
 						Trace.Write("EXCEPT----COV OBJ ENTITLEMENT IFLOW")
