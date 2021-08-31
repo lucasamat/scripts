@@ -465,6 +465,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				if obj_name == "SAQTRV":
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 					Trace.Write("contract_quote_record_id---463----"+str(contract_quote_record_id))
+					update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id,active_rev = 0))
+					Table.TableActions.Update(obj_name, objh_head, row)
+				else:
+					Table.TableActions.Update(obj_name, objh_head, row)
 				#A055S000P01-8729 end
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
