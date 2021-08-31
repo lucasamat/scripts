@@ -198,7 +198,7 @@ class ConfigUpdateScript:
 			else:
 				key_column = columns[0]"""
 			key_column = columns[0]
-			if table_name == 'CTCNRT' and self.product_name != "SYSTEM ADMIN":
+			if table_name == 'CTCNRT' and (self.product_name != "SYSTEM ADMIN" and self.product_name != "APPROVAL CENTER"):
 				record_id = Quote.GetGlobal("contract_record_id")
 			if table_name == 'SAQTMT':
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
