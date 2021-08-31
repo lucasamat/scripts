@@ -448,7 +448,7 @@ class TreeView:
 		quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
 			#Trace.Write("SET GLOBAL----")
-			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,quote_revision_record_id))
 			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 		returnList = []
 		nodeId = 0
