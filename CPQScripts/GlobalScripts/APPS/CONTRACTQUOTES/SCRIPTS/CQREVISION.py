@@ -56,6 +56,72 @@ def create_new_revision(Opertion):
 
 			
 			#INSERT salesorg start
+			salorgquery = Sql.RunQuery("""SELECT 					
+					CONVERT(VARCHAR(4000),NEWID()) AS QUOTE_SALESORG_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_NAME,
+					QUOTE_RECORD_ID,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					ADDUSR_RECORD_ID,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED,
+					DISTRIBUTIONCHANNEL_ID,
+					DISTRIBUTIONCHANNEL_RECORD_ID,
+					DIVISION_ID,
+					DIVISION_RECORD_ID,
+					SALESOFFICE_ID,
+					SALESOFFICE_NAME,
+					SALESOFFICE_RECORD_ID,
+					DOC_CURRENCY,
+					DOCCURR_RECORD_ID,
+					ACCOUNT_ID,
+					GLOBAL_CURRENCY_RECORD_ID,
+					ACCOUNT_NAME,
+					GLOBAL_CURRENCY,
+					ACCOUNT_RECORD_ID,
+					EXCHANGE_RATE,
+					EXCHANGE_RATE_DATE,
+					EXCHANGERATE_RECORD_ID,
+					EXCHANGE_RATE_TYPE,
+					QUOTE_CURRENCY,
+					QUOTE_CURRENCY_RECORD_ID,
+					SARACC_RECORD_ID,
+					CUSTOMER_PRICING_PROCEDURE,
+					DOCUMENT_PRICING_PROCEDURE,
+					PRICINGPROCEDURE_ID,
+					PRICINGPROCEDURE_NAME,
+					PRICINGPROCEDURE_RECORD_ID,
+					SALPRIPRO_RECORD_ID,
+					CUSTAXCAT_DESCRIPTION,
+					CUSTAXCAT_ID,
+					CUSTAXCAT_RECORD_ID,
+					CUSTAXCLA_DESCRIPTION,
+					CUSTAXCLA_ID,
+					CUSTAXCLA_RECORD_ID,
+					COUNTRY,
+					COUNTRY_NAME,
+					COUNTRY_RECORD_ID,
+					REGION,
+					REGION_RECORD_ID,
+					CpqTableEntryModifiedBy,
+					CpqTableEntryDateModified,
+					CpqTableEntryId,
+					ACCTAXCLA_RECORD_ID,
+					ACCTAXCLA_ID,
+					ACCTAXCLA_DESCRIPTION,
+					ACCTAXCAT_RECORD_ID,
+					ACCTAXCAT_ID,
+					Quote.GetGlobal("quote_revision_id") AS QTEREV_ID,
+					Quote.GetGlobal("quote_revision_record_id") AS QTEREV_RECORD_ID,
+					ACCOUNT_PRICING_PROCEDURE,
+					ACCTAXCAT_DESCRIPTION
+				FROM 
+					SAQTSO
+				WHERE
+					QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id") """)
+			Trace.Write(salorgquery)
 			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
