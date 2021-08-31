@@ -2779,7 +2779,10 @@ class TreeView:
 
 
 tree = TreeView()
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = ""
 LOAD = Param.LOAD
 Trace.Write(str(LOAD))
 try:
