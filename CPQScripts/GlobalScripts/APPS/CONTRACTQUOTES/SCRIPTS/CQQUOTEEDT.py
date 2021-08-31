@@ -31,6 +31,8 @@ def bannerdetails(Quoteid,active_tab_name):
 		Quoteid = SQLObj.QUOTE_ID
 		matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
 	if active_tab_name == "Quotes":
+		Trace.Write('matchObj--'+str(matchObj))
+		Trace.Write('Quoteid--'+str(Quoteid))
 		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
 		if get_rev_info:
 			Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
