@@ -1191,7 +1191,9 @@ class SYLDRTLIST:
 					elif RECORD_ID == "SYOBJR-98784" and TreeParam =="Section Actions":
 						gettabval= Sql.GetFirst(
 							"Select RECORD_ID,ACTION_NAME from SYPSAC where SECTION_NAME = '" + str(TreeParentParam) + "'"
-						)                        
+						)
+					elif RECORD_ID == "SYOBJR-98869":
+						Trace.write('1196----------')                     
 					elif RECORD_ID == "SYOBJR-93130":
 						CommonTreeSuperParentParam = Product.GetGlobal("CommonTreeSuperParentParam")
 						CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
