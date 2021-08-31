@@ -383,7 +383,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 	if objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
-		Trace.Write("selected_rows"+str(selected_rows))
+		Trace.Write("selected_rows--386---"+str(selected_rows))
 		item_lines_record_ids = []
 		for rec in selected_rows:
 			row = {}
@@ -460,7 +460,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					Sql.RunQuery(sqlforupdate)
 
 			else:
-				Trace.Write("selected_rows"+str(row))
+				Trace.Write("selected_rows---463----"+str(row))
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
