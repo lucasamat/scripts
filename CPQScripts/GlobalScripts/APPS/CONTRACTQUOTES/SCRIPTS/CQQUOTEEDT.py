@@ -30,7 +30,9 @@ def bannerdetails(Quoteid,active_tab_name):
 		###ends
 		Quoteid = SQLObj.QUOTE_ID
 		matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
-		
+	if active_tab_name == "Quotes":
+		Trace.Write('34-----')
+		SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
 			qid=str(matchObj.group(1))			
