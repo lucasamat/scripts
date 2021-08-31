@@ -762,7 +762,10 @@ def do_process(record_id, tab_name, action, product_name):
 
 
 record_id = str(Param.Primary_Data).strip()
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+    quote_revision_record_id = ""
 Trace.Write("record_name-------------" + str(record_id))
 tab_name = str(Param.TabNAME).strip()
 Trace.Write("tab_name-------------" + str(tab_name))
