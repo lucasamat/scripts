@@ -83,7 +83,7 @@ def Related_Sub_Banner(
     Trace.Write("curr_tab@@"+str(CurrentTabName))
     # Getting Dynamic buttons for secondary banner - Starts
     try:
-        quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+        quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
     except:
         quote_status = ''    
     #if quote_status:
@@ -503,7 +503,7 @@ def Related_Sub_Banner(
                 PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
                 SecondLable = "Source Account Name"
                 SecondValue = str(Product.GetGlobal("stp_account_name"))
-                ip_equipment = Sql.GetFirst("SELECT QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID,SRCFBL_NAME,SRCFBL_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                ip_equipment = Sql.GetFirst("SELECT QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID,SRCFBL_NAME,SRCFBL_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                 ThirdLable = "Source Fab Location ID"
                 ThirdValue = "All"
                 FourthLable = "Equipment ID"
@@ -514,7 +514,7 @@ def Related_Sub_Banner(
                 PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
                 SecondLable = "Source Account Name"
                 SecondValue = str(Product.GetGlobal("stp_account_name"))
-                ip_equipment = Sql.GetFirst("SELECT QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID,SRCFBL_NAME,SRCFBL_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                ip_equipment = Sql.GetFirst("SELECT QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID,SRCFBL_NAME,SRCFBL_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                 ThirdLable = "Source Fab Location ID"
                 ThirdValue = "All" 
                 FourthLable = "Equipment ID"
@@ -588,7 +588,7 @@ def Related_Sub_Banner(
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
-                sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                 if sale_type == 'TOOL RELOCATION' or TreeParam.startswith('Z0007'):
                     sec_rel_sub_bnr += ''
                 
@@ -750,7 +750,7 @@ def Related_Sub_Banner(
                 
                 contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                 getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
-                getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' ")
+                getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                 # acaptx_dat = Sql.GetFirst("SELECT * FROM ACAPCH (NOLOCK) WHERE APRCHN_ID = '{Subtab}'".format(Subtab=subTabName))
                 PrimaryLable = "Approval Chain ID"
                 if getval:
@@ -770,27 +770,27 @@ def Related_Sub_Banner(
             elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
                 
                 if subTabName == "Details" and TreeParam.startswith('Sending'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Sending Account ID"
                     PrimaryValue = str(TreeParam).split("-")[1].strip()
                     SecondLable = "Sending Account Name"
                     SecondValue = account_name.PARTY_NAME
                 elif subTabName == "Details" and TreeParam.startswith('Receiving'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'")
+                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Receiving Account ID"
                     PrimaryValue = str(TreeParam).split("-")[1].strip()
                     SecondLable = "Receiving Account Name"
                     SecondValue = account_name.PARTY_NAME
                 elif (subTabName == "Sending Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Sending Equipment"):
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%'".format(contract_quote_record_id))
+                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
                     PrimaryLable = "Sending Account ID"
                     PrimaryValue = str(account_id.ACCOUNT_ID)
                     SecondLable = str(subTabName)
                     SecondValue = "ALL"
                 elif (subTabName == "Receiving Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Receiving Equipment"):
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'".format(contract_quote_record_id))
+                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'  AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
                     PrimaryLable = "Receiving Account ID"
                     PrimaryValue = str(account_id.ACCOUNT_ID)
                     SecondLable = str(subTabName)
@@ -839,7 +839,7 @@ def Related_Sub_Banner(
                 
                 if str(ObjName) == "SAQTBP":
                     contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-                    getbillid = Sql.GetFirst("select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP(nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                    getbillid = Sql.GetFirst("select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP(nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if getbillid:
                         CurrentRecordId = getbillid.QUOTE_BILLING_PLAN_RECORD_ID
                 
@@ -873,12 +873,12 @@ def Related_Sub_Banner(
                 # 		CurrentRecordId = fab_gb_node.QUOTE_FAB_LOC_GB_RECORD_ID
                 if ObjName == "SAQIGB":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    itm_gb_node = Sql.GetFirst("SELECT QUOTE_ITEM_GREENBOOK_RECORD_ID FROM SAQIGB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'")
+                    itm_gb_node = Sql.GetFirst("SELECT QUOTE_ITEM_GREENBOOK_RECORD_ID FROM SAQIGB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if itm_gb_node:
                         CurrentRecordId = itm_gb_node.QUOTE_ITEM_GREENBOOK_RECORD_ID
                 elif ObjName == "SAQTMT":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    itm_gb_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                    itm_gb_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if itm_gb_node:
                         CurrentRecordId = itm_gb_node.MASTER_TABLE_QUOTE_RECORD_ID
                 # elif ObjName == "SAQSTE":
@@ -928,7 +928,7 @@ def Related_Sub_Banner(
                     #SecondValue = str(TreeParam)
                 elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Line Item Details":
                     Trace.Write("663")
-                    getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"'")
+                    getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     TreeParam = TreeParam.split('-')
                     PrimaryLable = "Line"
                     PrimaryValue = TreeParam[0].strip()
@@ -936,12 +936,12 @@ def Related_Sub_Banner(
                     SecondValue = TreeParam[1].strip()
                 elif ObjName == "SAQIFL" and TreeSuperParentParam == "Quote Items" and subTabName == "Details":
                     Trace.Write("Quote Items")
-                    get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"'")
+                    get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Fab Location ID"
                     PrimaryValue = TreeParam
                 elif ObjName == "SAQICO":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    qte_fab_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                    qte_fab_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if qte_fab_node:
                         CurrentRecordId = qte_fab_node.MASTER_TABLE_QUOTE_RECORD_ID
                 elif ObjName == "SAQSGB" and TreeSuperParentParam == "Receiving Equipment" and subTabName == "Equipment Details":
@@ -955,7 +955,7 @@ def Related_Sub_Banner(
                     ThirdValue = "ALL"			
                 elif ObjName == "SAQSFB":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    qte_fab_node = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                    qte_fab_node = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if qte_fab_node:
                         CurrentRecordId = qte_fab_node.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID		
                 if str(ObjName) != "SYPROH":
@@ -1253,7 +1253,7 @@ def Related_Sub_Banner(
                     if 'SPARE' in getQuotetype:
                         FourthLable = ""
                         FourthValue = ""
-                    covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+                    covered_obj = Sql.GetFirst("select EQUIPMENT_ID from SAQSCO(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id))
                     if covered_obj is not None and (subTabName == "Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers'):
                         FourthLable = "Greenbooks"
                         FourthValue = "All"
@@ -1531,7 +1531,7 @@ def Related_Sub_Banner(
         ThirdValue = str(SerialNumber)
         FourthLable = "Assembly ID"
         FourthValue = str(AssemblyId)
-        PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId ))
+        PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId,quote_revision_record_id=quote_revision_record_id ))
         if PreventiveMaintainenceobj is not None:
             FifthLable = "PM Events"
             FifthValue = "All"
@@ -2164,7 +2164,7 @@ def Related_Sub_Banner(
             + "' "
         )		
         if CurrentRecordId == "SYOBJR-98799":
-            get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+            get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
             if str(get_quote_status.QUOTE_STATUS).upper() in  ["APPROVED","BOOKING SUBMITTED"]:			
                 sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn" id="Generate_Documents" onclick="btn_banner_content(this)" style="display: block;">GENERATE DOCUMENTS</button>'
@@ -2202,8 +2202,8 @@ def Related_Sub_Banner(
                     Trace.Write("Comming Inside fab condition_J")
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     FabList = Sql.GetList(
-                        "SELECT FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )".format(
-                            contract_quote_record_id,contract_quote_record_id
+                        "SELECT FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+                            contract_quote_record_id,contract_quote_record_id,quote_revision_record_id
                         )
                     )
                     if TreeParam == "Fab Locations" and subTabName == "Equipment":
@@ -2214,8 +2214,8 @@ def Related_Sub_Banner(
                         Trace.Write("CHK_1")
                         #Product.Attributes.GetByName("BTN_SYACTI_QT_00011_ADDFAB").Allowed = True
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(str(ContractRecordId)))
-                        sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
+                        sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
                             # if sale_type.SALE_TYPE == "NEW":
                             for btn in multi_buttons:
@@ -2276,7 +2276,7 @@ def Related_Sub_Banner(
 
                 elif CurrentRecordId == "SYOBJR-98800" and TreeParam != "Fab Locations":
                     Trace.Write('98800=====')
-                    sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                    sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                     if sale_type == 'TOOL RELOCATION':
                         sec_rel_sub_bnr += ''
                     else:
@@ -2298,7 +2298,7 @@ def Related_Sub_Banner(
 
                     
                     if TreeParam == "Fab Locations":
-                        GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+                        GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if len(GetToolReloc) == 0:
                             for btn in multi_buttons:
                                 if "ADD FAB" in str(btn):
@@ -2365,7 +2365,7 @@ def Related_Sub_Banner(
                     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                 except:
                     ContractRecordId = ''		
-                getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))				
+                getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))				
                 if getsaletypeloc:
                     # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
                     Trace.Write("multi_buttons"+str(len(multi_buttons)))
@@ -2467,7 +2467,7 @@ def Related_Sub_Banner(
         getQuotetype = ""
         #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-        getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))				
+        getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))				
         if getsaletypeloc:
             # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
             Trace.Write("multi_buttons"+str(len(multi_buttons)))
@@ -2484,27 +2484,27 @@ def Related_Sub_Banner(
                         Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
                         #A055S000P01-7512 Start Enable/Disable the PRICE button in Quote items based on Required fields validation
                         if str(TreeParam) == "Quote Items":
-                            getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                            getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                            get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                            get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
+                            getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                             if getsalesorg_ifo and getfab_info:
                                 Trace.Write('salesorg--present---')
                                 if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
-                                    get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
+                                    get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                                     if get_quote_details:
                                         get_quote = Quote.GetGlobal("contract_quote_record_id")
                                         Trace.Write('button process--')
                                         GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
-                                        get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                        get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
+                                        get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+                                        get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 
                                         if GetPRVLDR and get_SAQVDV and get_SAQFDV:
                                             if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
                                                 get_quote = Quote.GetGlobal("contract_quote_record_id")
                                                 getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
-                                                get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                                get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
+                                                get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
+                                                get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
                                                 if getPRGBVD and get_SAQFGV and get_SAQEDV:
                                                     #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
                                                     Trace.Write('button found')
@@ -2621,7 +2621,7 @@ def Related_Sub_Banner(
         
         if TabName == "Quote":            
             ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-            Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+            Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+ str(quote_revision_record_id) + "'")
             User_Name = User.UserName 
             
             recall_edit = ''
@@ -2796,7 +2796,7 @@ if CurrentTab == 'Quotes':
     # 	if str(ObjName) != "SAQTBP":
     # 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
 
-
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 ApiResponse = ApiResponseFactory.JsonResponse(
     Related_Sub_Banner(
         subTabName,
