@@ -474,7 +474,7 @@ class SyncQuoteAndCustomTables:
 					)
 				)
 				if not quote_obj:
-					#Log.Info("Quote Id ==> " + str(self.quote.CompositeNumber))
+					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
 					if custom_fields_detail.get("SalesOrgID"):
 						salesorg_obj = Sql.GetFirst(
 							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
