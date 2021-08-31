@@ -240,7 +240,6 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
 			else:
-				col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "'") 
 				col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
