@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO GET SSCM DATA FROM THE QTQCAS TABLE AND RETURN IN JSON FORMAT RESULT
 #   __primary_author__ : SURESH MUNIYANDI, Baji
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import clr
