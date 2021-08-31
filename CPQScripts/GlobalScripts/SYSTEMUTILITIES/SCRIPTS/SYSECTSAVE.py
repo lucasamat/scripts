@@ -27,7 +27,7 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 	Sql.RunQuery("""INSERT SAQIBP (
 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
 					LINE_ITEM_ID, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, 
-					QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,
+					QUOTE_RECORD_ID,QTEREV_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,
 					BILLING_AMOUNT, BILLING_DATE, BILLING_INTERVAL, BILLING_YEAR,
 					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_LINE_ID, EQUIPMENT_RECORD_ID, PO_ITEM, PO_NUMBER, QTEITMCOB_RECORD_ID, 
 					SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_BILLING_AMOUNT, GREENBOOK, GREENBOOK_RECORD_ID,
@@ -44,6 +44,7 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 					SAQICO.QTEITM_RECORD_ID,
 					SAQICO.QUOTE_NAME,
 					SAQICO.QUOTE_RECORD_ID,
+					SAQICO.QTEREV_RECORD_ID,
 					SAQICO.SALESORG_ID,
 					SAQICO.SALESORG_NAME,
 					SAQICO.SALESORG_RECORD_ID,
@@ -70,11 +71,12 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 					{UserId} as CPQTABLEENTRYADDEDBY, 
 					GETDATE() as CPQTABLEENTRYDATEADDED
 				FROM SAQICO (NOLOCK)     
-				JOIN SAQTSE (NOLOCK) ON SAQTSE.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND QTQTSE.ENTITLEMENT_NAME = 'FIXED_PRICE_PER_RESOU_EVENT_91'                    
-				WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}'""".format(
+				JOIN SAQTSE (NOLOCK) ON SAQTSE.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND  SAQTSE.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND QTQTSE.ENTITLEMENT_NAME = 'FIXED_PRICE_PER_RESOU_EVENT_91'                    
+				WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID='{revision_rec_id}'""".format(
 					UserId=User.Id, QuoteRecordId=contract_quote_record_id,
 					Months=total_months,
-					BillingDate=billing_date
+					BillingDate=billing_date,
+					revision_rec_id = quote_revision_record_id
 					))
 	return True
 
@@ -112,7 +114,7 @@ def generate_year_based_billing_matrix(billing_plan_data=None):
 				Sql.Upsert(tableInfo) """
 		contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 		total_months = years * 12 + months
-		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id))
+		Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(QuoteRecordId=contract_quote_record_id,revision_rec_id = quote_revision_record_id))
 		for index in range(0, total_months+1):
 			insert_items_billing_plan(contract_quote_record_id=contract_quote_record_id, total_months=total_months, 
 									billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
@@ -424,7 +426,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 					old_billing_matrix_obj = Sql.GetFirst("""SELECT BILLING_START_DATE, 
 									BILLING_END_DATE, QUOTE_BILLING_PLAN_RECORD_ID, BILLING_DAY
 									FROM SAQTBP (NOLOCK) 
-									WHERE QUOTE_RECORD_ID = '{}'""".format(Product.GetGlobal("contract_quote_record_id")))
+									WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 				if billstart >= constartdt and billstart < conenddt :
 					if billend > billstart:
 						if str(billingdateinterval) <= "31":
@@ -448,16 +450,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							tablerow = newdict
 							tableInfo.AddRow(tablerow)
 							Sql.Upsert(tableInfo)
-							item_obj = Sql.GetFirst("select SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID from SAQITM where SERVICE_ID = '{Service_id}' and QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(Service_id = '-'.join(TreeParam.split('-')[1:]).strip(),contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
-							quote_item_covered_obj = """UPDATE SAQICO SET SRVTAXCAT_ID = '{}',SRVTAXCAT_DESCRIPTION = '{}',SRVTAXCAT_RECORD_ID = '{}',SRVTAXCLA_ID = '{}',SRVTAXCLA_DESCRIPTION = '{}',SRVTAXCLA_RECORD_ID = '{}' where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}' """.format(item_obj.SRVTAXCAT_ID,item_obj.SRVTAXCAT_DESCRIPTION,item_obj.SRVTAXCAT_RECORD_ID,item_obj.SRVTAXCLA_ID,item_obj.SRVTAXCLA_DESCRIPTION,item_obj.SRVTAXCLA_RECORD_ID,'-'.join(TreeParam.split('-')[1:]).strip(),Quote.GetGlobal("contract_quote_record_id"))
+							item_obj = Sql.GetFirst("select SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID from SAQITM where SERVICE_ID = '{Service_id}' and QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}'".format(Service_id = '-'.join(TreeParam.split('-')[1:]).strip(),contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = quote_revision_record_id))
+							quote_item_covered_obj = """UPDATE SAQICO SET SRVTAXCAT_ID = '{}',SRVTAXCAT_DESCRIPTION = '{}',SRVTAXCAT_RECORD_ID = '{}',SRVTAXCLA_ID = '{}',SRVTAXCLA_DESCRIPTION = '{}',SRVTAXCLA_RECORD_ID = '{}' where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(item_obj.SRVTAXCAT_ID,item_obj.SRVTAXCAT_DESCRIPTION,item_obj.SRVTAXCAT_RECORD_ID,item_obj.SRVTAXCLA_ID,item_obj.SRVTAXCLA_DESCRIPTION,item_obj.SRVTAXCLA_RECORD_ID,'-'.join(TreeParam.split('-')[1:]).strip(),Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id )
 							Sql.RunQuery(quote_item_covered_obj)
 							check_itm_obj = Sql.GetFirst("""SELECT
 													QUOTE_ITEM_RECORD_ID,
 													CONVERT(int, OBJECT_QUANTITY) as OBJECT_QUANTITY,
 													ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID
-													FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QUOTE_RECORD_ID}' AND SERVICE_ID LIKE '%{SERVICE_ID}%'
+													FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QUOTE_RECORD_ID}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID LIKE '%{SERVICE_ID}%'
 													""".format(
-							QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id"), SERVICE_ID=TreeParam.split('-')[1].strip() +" - "+TreeParam.split('-')[2].strip()
+							QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id"), SERVICE_ID=TreeParam.split('-')[1].strip() +" - "+TreeParam.split('-')[2].strip(), revision_rec_id = quote_revision_record_id
 							))
 							getting_cps_tax(check_itm_obj,'tool')
 
@@ -534,7 +536,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 					billing_matrix_obj = Sql.GetFirst("""SELECT BILLING_START_DATE, 
 									BILLING_END_DATE, QUOTE_BILLING_PLAN_RECORD_ID, BILLING_DAY
 									FROM SAQTBP (NOLOCK)
-									WHERE QUOTE_RECORD_ID = '{}'""".format(Product.GetGlobal("contract_quote_record_id")))
+									WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id ))
 					if billing_matrix_obj:
 						if billing_matrix_obj.BILLING_START_DATE != old_billing_matrix_obj.BILLING_START_DATE or billing_matrix_obj.BILLING_END_DATE != old_billing_matrix_obj.BILLING_END_DATE or billing_matrix_obj.BILLING_DAY != old_billing_matrix_obj.BILLING_DAY:                        						
 							billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1 WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(billing_matrix_obj.QUOTE_BILLING_PLAN_RECORD_ID)
@@ -543,14 +545,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 				if TableName == 'SAQTIP':
 					Trace.Write('SAQTIP_CHK_J '+str(RECORD['PARTY_ROLE']))
 					account_details = Sql.GetFirst("SELECT * FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(RECORD['PARTY_ID'])+"'")
-					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), str(RECORD['PARTY_ROLE']))
+					send_n_receive_acunt = "UPDATE SAQSRA SET ACCOUNT_ID = '{}', ACCOUNT_NAME = '{}', ACCOUNT_RECORD_ID = '{}', ADDRESS_1 = '{}', CITY = '{}', COUNTRY = '{}', COUNTRY_RECORD_ID = '{}', PHONE = '{}', STATE = '{}', STATE_RECORD_ID = '{}', POSTAL_CODE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE = '{}'".format(str(account_details.ACCOUNT_ID), str(account_details.ACCOUNT_NAME), str(account_details.ACCOUNT_RECORD_ID), str(account_details.ADDRESS_1), str(account_details.CITY), str(account_details.COUNTRY), str(account_details.COUNTRY_RECORD_ID), str(account_details.PHONE), str(account_details.STATE), str(account_details.STATE_RECORD_ID), str(account_details.POSTAL_CODE), Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id, str(RECORD['PARTY_ROLE']))
 					Sql.RunQuery(send_n_receive_acunt)
 				# A055S000P01-3324 start 
 				if TableName == 'SAQTMT':
 					#A055S000P01-4393 start 
 					WARRANTY_val =''
-					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id")))
-					get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'")
+					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+					get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 					update_warranty_enddate_alert = ''
 					for val in get_warrent_dates:
 						
@@ -563,21 +565,21 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							if WARRANTY_val > get_con_date:
 								Trace.Write('get_con_date--564---'+str(get_con_date))
 								Trace.Write('WARRANTY_END_DATE--564-'+str(val.WARRANTY_END_DATE))
-								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 							else:
 								Trace.Write('WARRANTY_val---568--'+str(val.WARRANTY_END_DATE))
-								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 								Trace.Write('no end date--')
 							Sql.RunQuery(update_warranty_enddate_alert)
 						else:
 							Trace.Write('WARRANTY_val--600-'+str(val.WARRANTY_END_DATE))
-							update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+							update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 							Trace.Write('no end date--')
 							Sql.RunQuery(update_warranty_enddate_alert)
 					#A055S000P01-4393 end
-					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id")))
+					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"), quote_revision_record_id))
 					if getdate:
-						billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'))
+						billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(billing_query)
 					import ACVIORULES
 					violationruleInsert = ACVIORULES.ViolationConditions()
@@ -628,8 +630,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 				Trace.Write('QUOTE_STATUS -- inside')
 				if RECORD.get("QUOTE_STATUS") ==  'APPROVED':
 					quote_id = Sql.GetFirst(
-						"""SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(
-						QuoteRecordId= Quote.GetGlobal("contract_quote_record_id")
+						"""SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' """.format(
+						QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"),
+						revision_rec_id = quote_revision_record_id
 						)
 					)
 					
@@ -804,14 +807,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 			
 
 		try:
-			get_service_id = Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID LIKE '%Z0016%' ")
+			get_service_id = Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID LIKE '%Z0016%' ")
 			if get_service_id:
 				for service in get_service_id:
 					if TableName == 'SAQTMT' and 'CONTRACT_VALID_TO' in RECORD.keys() and 'CONTRACT_VALID_FROM' in RECORD.keys() and section_text == " EDITQUOTE TIMELINE INFORMATION" :
 						Trace.Write('CONTRACT_VALID_TO -- inside')
 						try:
 							
-							get_value = Sql.GetFirst("Select * from SAQTMT (nolock) where MASTER_TABLE_QUOTE_RECORD_ID ='"+str(quote_record_id)+"'")
+							get_value = Sql.GetFirst("Select * from SAQTMT (nolock) where MASTER_TABLE_QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 							Trace.Write('get_value.CONTRACT_VALID_TO--'+str(get_value.CONTRACT_VALID_TO))
 							QuoteEndDate = datetime.datetime(get_value.CONTRACT_VALID_TO)
 							QuoteStartDate = datetime.datetime(get_value.CONTRACT_VALID_FROM)
@@ -821,7 +824,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						except:
 							Trace.Write('except--1---')
 							ent_disp_val = ""
-						get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND SERVICE_ID = '{}' ".format(service.SERVICE_ID))
+						get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '{}' ".format(service.SERVICE_ID))
 						cpsmatchID = get_config_ids.CPS_MATCH_ID
 						cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
 						if int(ent_disp_val) > 364:
@@ -843,7 +846,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							AttributeID = 'AGS_CON_DAY'
 							NewValue = ent_disp_val
 							#Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
-							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID = '{}'".format(service.SERVICE_ID)
+							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '{}'".format(service.SERVICE_ID)
 							#Trace.Write('whereReq---'+str(whereReq))
 							requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
 							#Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
@@ -1134,32 +1137,37 @@ def getting_cps_tax(item_obj,quote_type):
 		)
 		Sql.RunQuery(update_tax)
 		if quote_type == 'tool':
-			update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' ".format(
+			update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' ".format(
 			TaxPercentage=tax_percentage,			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(update_tax_item_covered_obj)
 			#update TAX column  and Extended price for each SAQICO records
-			QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' """.format(			
+			QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}'""".format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(QueryStatement)
-			QueryStatement ="""UPDATE a SET a.EXTENDED_PRICE = CASE WHEN a.TAX > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) + (a.TAX) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' """.format(			
+			QueryStatement ="""UPDATE a SET a.EXTENDED_PRICE = CASE WHEN a.TAX > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) + (a.TAX) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}' """.format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(QueryStatement)
 			#update SAQITM role up 
-			QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
+			QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID='{revision_rec_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(QueryStatement)
-			QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
+			QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,QTEREV_RECORD_ID, SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID='{revision_rec_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID  AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(QueryStatement)
 
@@ -1178,6 +1186,8 @@ TreeParentParam = Param.TreeParentParam
 TreeSuperParentParam = Param.TreeSuperParentParam
 
 TopSuperParentParam = Param.TopSuperParentParam
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+
 TableId = Param.TableId
 Trace.Write(RECORD)
 ObjectName = ""
