@@ -2839,8 +2839,10 @@ if CurrentTab == 'Quotes':
     # if crnt_Qry is not None:
     # 	if str(ObjName) != "SAQTBP":
     # 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
-
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+    quote_revision_record_id = ""
 ApiResponse = ApiResponseFactory.JsonResponse(
     Related_Sub_Banner(
         subTabName,
