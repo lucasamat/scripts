@@ -7572,6 +7572,11 @@ class SYLDRTLIST:
 							Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"   
 						elif str(RECORD_ID) == "SYOBJR-95985":
 							Qustr += " WHERE TREE_NAME = '"+str(TreeParentParam)+"'"
+						elif str(RECORD_ID) == "SYOBJR-98869":
+							Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
+							RecAttValue = contract_quote_record_id
+							#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
+							Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'" 
 						elif str(RECORD_ID) == "SYOBJR-95981" or str(RECORD_ID)=="SYOBJR-98459":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue()
 							Qustr +=" where "+str(Wh_API_NAME) + " = '"+str(RecAttValue)+"'"
