@@ -28,6 +28,7 @@ def create_new_revision(Opertion):
 		#create new revision start
 		#edit_new_rev_quote = QuoteHelper.Edit(Quote.CompositeNumber)
 		create_new_rev = Quote.CreateNewRevision(True)
+		Quote.SetGlobal("contract_quote_record_id",quote_contract_recordId)
 		#composite_number = Quote.CompositeNumber
 		#current_revison = Quote.RevisionNumber
 		#craete new revision ends
