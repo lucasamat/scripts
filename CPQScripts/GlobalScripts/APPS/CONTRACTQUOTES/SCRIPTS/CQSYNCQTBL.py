@@ -122,7 +122,7 @@ class SyncQuoteAndCustomTables:
 		date_str = date_format.format(Date=strday, Month=strmonth, Year=stryear, Separator=separator)
 		return date_str
 	def CreateEntitlements(self,quote_record_id):
-		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
+		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' ".format(QuoteRecordId=quote_record_id))
 		#Log.Info("quote_record_id---123------"+str(quote_record_id))
 		tableInfo = SqlHelper.GetTable("SAQTSE")
 		x = datetime.datetime.today()
