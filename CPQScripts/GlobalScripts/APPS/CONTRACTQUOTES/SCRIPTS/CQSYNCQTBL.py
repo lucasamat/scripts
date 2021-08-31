@@ -617,6 +617,8 @@ class SyncQuoteAndCustomTables:
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
 							"QUOTE_CURRENCY_RECORD_ID":contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
 							"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						account_obj = Sql.GetFirst(
 							"SELECT REGION FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
@@ -867,7 +869,9 @@ class SyncQuoteAndCustomTables:
 							"PARTY_ID": "",
 							"PARTY_NAME": str(custom_fields_detail.get("PrimaryContactName")),
 							"PARTY_ROLE": "PRIMARY CONTACT",
-							"PHONE": ""
+							"PHONE": "",
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
 					# A055S000P01-6618 - Ends
@@ -885,6 +889,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": bill_to_customer.FirstName,
 							"PARTY_ROLE": "BILL TO",
 							"PHONE": bill_to_customer.BusinessPhone,
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(billtocustomer_quote_data)
 					#Log.Info("QUOTE_ID_CHECK_J "+str(contract_quote_data.get("QUOTE_ID")))
@@ -918,6 +924,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": ship_to_customer.FirstName,
 							"PARTY_ROLE": "SHIP TO",
 							"PHONE": ship_to_customer.BusinessPhone,
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(shiptocustomer_quote_data)
 					if custom_fields_detail.get("PayerID"):
@@ -933,6 +941,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("PayerName"),
 							"PARTY_ROLE": "PAYER",
 							"PHONE": custom_fields_detail.get("PayerPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(PayerDetails)
 					if custom_fields_detail.get("SellerID"):
@@ -948,6 +958,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("SellerName"),
 							"PARTY_ROLE": "SELLER",
 							"PHONE": custom_fields_detail.get("SellerPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SellerDetails)
 					if custom_fields_detail.get("SalesUnitID"):
@@ -963,6 +975,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("SalesUnitName"),
 							"PARTY_ROLE": "SALES UNIT",
 							"PHONE": custom_fields_detail.get("SalesUnitPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SalesUnitDetails)
 					if custom_fields_detail.get("SalesEmployeeID"):
@@ -978,6 +992,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
 							"PARTY_ROLE": "SALES EMPLOYEE",
 							"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SalesEmployeeDetails)
 					if custom_fields_detail.get("EmployeeResponsibleID"):
@@ -993,6 +1009,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
 							"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
 							"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails)
 					if custom_fields_detail.get("SourceAccountID"):
@@ -1008,6 +1026,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("SourceAccountName"),
 							"PARTY_ROLE": "SOURCE ACCOUNT",
 							"PHONE": custom_fields_detail.get("SourceAccountPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SourceAccountDetails)		
 					if custom_fields_detail.get("ContractManagerName"):
@@ -1023,6 +1043,8 @@ class SyncQuoteAndCustomTables:
 							"PARTY_NAME": custom_fields_detail.get("ContractManagerName"),
 							"PARTY_ROLE": "CONTRACT MANAGER",
 							"PHONE": custom_fields_detail.get("ContractManagerPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails) 
 					#Log.Info("FAB =====>>>>>> " + str(custom_fields_detail.get("FabLocationID")))                      
@@ -1188,6 +1210,8 @@ class SyncQuoteAndCustomTables:
 								"POSTAL_CODE": custom_fields_detail.get("PayerPostalCode"),
 								"STATE": custom_fields_detail.get("PayerState"),
 								"STATE_RECORD_ID": getState.STATE_RECORD_ID,
+								"QTEREV_RECORD_ID":quote_revision_id,
+								"QTEREV_ID":quote_rev_id
 
 							}
 							quote_sending_account_details.AddRow(sending_account_detail_data)
@@ -1199,21 +1223,22 @@ class SyncQuoteAndCustomTables:
 							if fab_location_ids:
 								Log.Info("""
 																INSERT
-																SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID, QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID FROM MAFBLC (NOLOCK)
+																	SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,
+																	'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID FROM MAFBLC (NOLOCK)
 																	WHERE FAB_LOCATION_ID IN ('{FabLocationIds}')
 																	) A
-																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids)) 
+																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id)) 
 								SAQFBL_start = time.time()
 								fab_insert = Sql.RunQuery("""
 																INSERT
-																SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID, QUOTE_FABLOCATION_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID FROM MAFBLC (NOLOCK)
+																	SELECT DISTINCT FAB_LOCATION_ID, FAB_LOCATION_NAME, FAB_LOCATION_RECORD_ID,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID, '{QuoteId}' as QUOTE_ID, '{QuoteRecordId}' as QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID FROM MAFBLC (NOLOCK)
 																	WHERE FAB_LOCATION_ID IN ('{FabLocationIds}')
 																	) A
-																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids))
+																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFBL_end = time.time()
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
@@ -1225,12 +1250,12 @@ class SyncQuoteAndCustomTables:
 								SAQTSV_start = time.time()
 								service_insert = Sql.RunQuery("""
 																INSERT
-																SAQTSV (QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT '{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
+																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
 																	WHERE SAP_PART_NUMBER IN ('{ServiceIds}')
 																	) A
-																""".format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids))
+																""".format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								#SAQTSV_end = time.time()
 								#Log.Info("SAQTSV time-----"+str(SAQTSV_end-SAQTSV_start))
 								#service_ADDon = Sql.RunQuery(""" INSERT SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_DESCRIPTION,ADNPRD_ID,ADNPRDOFR_RECORD_ID,ADNPRD_RECORD_ID,ADN_TYPE,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SALESORG_ID,SALESORG_NAME,ACTIVE,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADNPRDOFR_NAME,MAADPR.ADNPRDOFR_ID,MAADPR.ADNPRDOFR_RECORD_ID,MAADPR.ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADN_TYPE,SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.QUOTE_SERVICE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,'FALSE' as ACTIVE,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM MAADPR (NOLOCK) INNER JOIN  SAQTSV ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID ='{ServiceIds}' """.format(UserId=User.Id,UserName=User.UserName,QuoteRecordId=quote_record_id,ServiceIds=service_ids))
@@ -1250,12 +1275,12 @@ class SyncQuoteAndCustomTables:
 									SAQFEQ_start = time.time()
 									equipment_insert = Sql.RunQuery("""
 																	INSERT SAQFEQ
-																	(EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,SNDACC_ID,SNDACC_NAME,SNDACC_RECORD_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,  WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																	(QTEREV_RECORD_ID,QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,SNDACC_ID,SNDACC_NAME,SNDACC_RECORD_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WAFER_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG,  WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK)
+																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PLATFORM, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NO, SUBSTRATE_SIZE, TECHNOLOGY, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, PBG, WARRANTY_END_DATE, WARRANTY_START_DATE, CUSTOMER_TOOL_ID,  GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK)
 																	JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME WHERE ISNULL(SERIAL_NO, '') <> '' AND FABLOCATION_ID = '{FabLocationId}'
 																	) A
-																""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value)))
+																""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, EquipmentIds=",".join(value),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 									SAQFEQ_end = time.time()
 									#Log.Info("SAQFEQ----"+str(SAQFEQ_end-SAQFEQ_start))
 
@@ -1277,31 +1302,31 @@ class SyncQuoteAndCustomTables:
 
 								# for fab_location_id in equipment_data.items():
 								Log.Info("""INSERT SAQFGB ( 
-								FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy
+								QTEREV_RECORD_ID,QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy
 								) 
 								SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOC_GB_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy FROM ( 
-								select FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
-								A """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id))
+								select '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
+								A """.format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 
 								SAQFGB_start = time.time()
 								greenbook_detail_insert = Sql.RunQuery(""" INSERT SAQFGB ( 
-								FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified
+								QTEREV_RECORD_ID,QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_FAB_LOC_GB_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified
 								) 
 								SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOC_GB_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM ( 
-								select FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
-								A """.format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id))
+								select '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID from SAQFEQ where QUOTE_RECORD_ID = '{QuoteRecordId}' group by FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEFBL_RECORD_ID,QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID) 
+								A """.format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFGB_end = time.time()
 								#Log.Info("SAQFGB-------"+str(SAQFGB_start-SAQFGB_end))
 
 								SAQFEA_start = time.time()
 								Sql.RunQuery("""
 												INSERT SAQFEA
-												(ASSEMBLY_DESCRIPTION, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GOT_CODE, MNT_PLANT_ID, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WARRANTY_END_DATE, WARRANTY_START_DATE, SUBSTRATE_SIZE, ASSEMBLY_STATUS, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+												(QTEREV_RECORD_ID,QTEREV_ID,ASSEMBLY_DESCRIPTION, ASSEMBLY_ID, ASSEMBLY_RECORD_ID, EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GOT_CODE, MNT_PLANT_ID, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, SERIAL_NUMBER, WARRANTY_END_DATE, WARRANTY_START_DATE, SUBSTRATE_SIZE, ASSEMBLY_STATUS, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 											SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
-												SELECT DISTINCT MAEQUP.EQUIPMENT_DESCRIPTION as ASSEMBLY_DESCRIPTION, MAEQUP.EQUIPMENT_ID as ASSEMBLY_ID, MAEQUP.EQUIPMENT_RECORD_ID as ASSEMBLY_RECORD_ID, MAEQUP.EQUIPMENTCATEGORY_ID, MAEQUP.EQUIPMENTTYPE_ID, MAEQUP.EQUIPMENTCATEGORY_RECORD_ID, SAQFEQ.EQUIPMENT_DESCRIPTION, SAQFEQ.EQUIPMENT_ID, SAQFEQ.EQUIPMENT_RECORD_ID, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME, SAQFEQ.FABLOCATION_RECORD_ID, MAEQUP.GOT_CODE, MAEQUP.MNT_PLANT_ID, MAEQUP.MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAQFEQ.SALESORG_ID, SAQFEQ.SALESORG_NAME, SAQFEQ.SALESORG_RECORD_ID, MAEQUP.SERIAL_NO as SERIAL_NUMBER, MAEQUP.WARRANTY_END_DATE, MAEQUP.WARRANTY_START_DATE, MAEQUP.SUBSTRATE_SIZE, MAEQUP.EQUIPMENT_STATUS as ASSEMBLY_STATUS FROM SAQFEQ (NOLOCK) JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID AND MAEQUP.SALESORG_RECORD_ID = SAQFEQ.SALESORG_RECORD_ID
+												SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,MAEQUP.EQUIPMENT_DESCRIPTION as ASSEMBLY_DESCRIPTION, MAEQUP.EQUIPMENT_ID as ASSEMBLY_ID, MAEQUP.EQUIPMENT_RECORD_ID as ASSEMBLY_RECORD_ID, MAEQUP.EQUIPMENTCATEGORY_ID, MAEQUP.EQUIPMENTTYPE_ID, MAEQUP.EQUIPMENTCATEGORY_RECORD_ID, SAQFEQ.EQUIPMENT_DESCRIPTION, SAQFEQ.EQUIPMENT_ID, SAQFEQ.EQUIPMENT_RECORD_ID, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME, SAQFEQ.FABLOCATION_RECORD_ID, MAEQUP.GOT_CODE, MAEQUP.MNT_PLANT_ID, MAEQUP.MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAQFEQ.SALESORG_ID, SAQFEQ.SALESORG_NAME, SAQFEQ.SALESORG_RECORD_ID, MAEQUP.SERIAL_NO as SERIAL_NUMBER, MAEQUP.WARRANTY_END_DATE, MAEQUP.WARRANTY_START_DATE, MAEQUP.SUBSTRATE_SIZE, MAEQUP.EQUIPMENT_STATUS as ASSEMBLY_STATUS FROM SAQFEQ (NOLOCK) JOIN MAEQUP (NOLOCK) ON MAEQUP.PAR_EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID AND MAEQUP.FABLOCATION_ID = SAQFEQ.FABLOCATION_ID AND MAEQUP.SALESORG_RECORD_ID = SAQFEQ.SALESORG_RECORD_ID
 												WHERE MAEQUP.ACCOUNT_RECORD_ID = '{AccountRecordId}' AND ISNULL(MAEQUP.SERIAL_NO, '') = '' AND SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
 												) A
-											""".format(UserId=User.Id,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME, QuoteRecordId=quote_record_id, AccountRecordId=contract_quote_obj.ACCOUNT_RECORD_ID))
+											""".format(UserId=User.Id,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME, QuoteRecordId=quote_record_id, AccountRecordId=contract_quote_obj.ACCOUNT_RECORD_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFEA_end = time.time()
 								#Log.Info("SAQFEA-------"+str(SAQFEA_end-SAQFEA_start))
 								fab_equip_assem_end_time = time.time()
@@ -1318,8 +1343,8 @@ class SyncQuoteAndCustomTables:
 										fab_equipments_obj = Sql.GetFirst("""SELECT STUFF((SELECT ', ' + SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID 
 																	FROM SAQFEQ
 																	JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON SAQFEQ.EQUIPMENT_ID = NAME
-																	WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}'
-																	FOR XML PATH('')), 1, 1, '') as RECORD_IDS """.format(QuoteRecordId=quote_record_id,EquipmentIds=equipment_ids))
+																	WHERE SAQFEQ.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQFEQ.QTEREV_RECORD_ID = '{quote_revision_id}'
+																	FOR XML PATH('')), 1, 1, '') as RECORD_IDS """.format(QuoteRecordId=quote_record_id,EquipmentIds=equipment_ids,quote_revision_id=quote_revision_id))
 										if fab_equipments_obj:
 											if fab_equipments_obj.RECORD_IDS:
 												fab_equipment_record_ids = fab_equipments_obj.RECORD_IDS.split(',')
@@ -1411,17 +1436,19 @@ class SyncQuoteAndCustomTables:
 										"PARTY_NAME": account_obj.ACCOUNT_NAME,
 										"PARTY_ROLE": "SOURCE ACCOUNT",
 										"PHONE": account_obj.PHONE,
+										"QTEREV_RECORD_ID":quote_revision_id,
+										"QTEREV_ID":quote_rev_id
 									}
 									quote_involved_party_table_info.AddRow(SourceAccountDetails)
 
 									Sql.RunQuery(""" INSERT SAQSCF (QUOTE_SOURCE_FAB_LOCATION_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SRCACC_ID,SRCACC_NAME,SRCACC_RECORD_ID,SRCFBL_ID,SRCFBL_NAME,SRCFBL_RECORD_ID) SELECT  CONVERT(VARCHAR(4000),NEWID()) AS QUOTE_SOURCE_FAB_LOCATION_RECORD_ID, '{QuoteId}', '{QuoteName}','{QuoteRecordId}',MAFBLC.ACCOUNT_ID, MAFBLC.ACCOUNT_NAME,MAFBLC.ACCOUNT_RECORD_ID,MAFBLC.FAB_LOCATION_ID,MAFBLC.FAB_LOCATION_NAME,MAFBLC.	
-										FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_ID = '{AccountId}' """.format(QuoteId=quote_id,QuoteName=custom_fields_detail.get("STPAccountName"),QuoteRecordId=quote_record_id,AccountId=GetAccount.ACCOUNT_ID))
+										FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_ID = '{AccountId}' """.format(QuoteId=quote_id,QuoteName=custom_fields_detail.get("STPAccountName"),QuoteRecordId=quote_record_id,AccountId=GetAccount.ACCOUNT_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 
 									Sql.RunQuery(""" INSERT SAQSTE
-																(SRCACC_ID,SRCACC_NAME,SRCACC_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, SRCFBL_ID, SRCFBL_NAME, SRCFBL_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																(QTEREV_RECORD_ID,QTEREV_ID,SRCACC_ID,SRCACC_NAME,SRCACC_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, SRCFBL_ID, SRCFBL_NAME, SRCFBL_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 															SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																SELECT DISTINCT ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID= '{AccountId}'
-																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=GetAccount.ACCOUNT_ID))
+																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID= '{AccountId}'
+																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=GetAccount.ACCOUNT_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
