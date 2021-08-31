@@ -28,8 +28,8 @@ def create_new_revision(Opertion):
 		#create new revision start
 		#edit_new_rev_quote = QuoteHelper.Edit(Quote.CompositeNumber)
 		create_new_rev = Quote.CreateNewRevision(True)
-		composite_number = Quote.CompositeNumber
-		current_revison = Quote.RevisionNumber
+		#composite_number = Quote.CompositeNumber
+		#current_revison = Quote.RevisionNumber
 		#craete new revision ends
 
 		#create new revision -SAQTRV - update-start
