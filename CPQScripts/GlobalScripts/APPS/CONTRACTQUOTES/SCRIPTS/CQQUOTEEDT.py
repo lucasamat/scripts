@@ -35,7 +35,8 @@ def bannerdetails(Quoteid,active_tab_name):
 		SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
-			qid=str(matchObj.group(1))			
+			qid=str(matchObj.group(1))
+			Trace.Write('34--qid---'+str(qid))			
 			Quote = QuoteHelper.Edit(str(qid))				
 			Quote.RefreshActions()			
 			##getting contarct rec id as global
