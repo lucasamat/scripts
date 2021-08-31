@@ -461,6 +461,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 			else:
 				Trace.Write("selected_rows---463----"+str(row))
+				if obj_name == "SAQTRV":
+					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+					Trace.Write("contract_quote_record_id---463----"+str(contract_quote_record_id))
 				Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
