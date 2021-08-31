@@ -490,6 +490,7 @@ try:
     TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
     userId = Param.CPQ_Columns['Userid']
     userName = Param.CPQ_Columns['Username']
+    quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
 except: 
     TreeParam = ""
     TreeParentParam = ""
@@ -497,6 +498,7 @@ except:
     TreeTopSuperParentParam = ""
     userId = ""
     userName = ""
+    quote_revision_record_id = ""
 if 'SERVICE COST AND VALUE DRIVER' in LEVEL:
     ApiResponse = ApiResponseFactory.JsonResponse(ServiceCostAndValueDrivers())
 elif 'FAB COST AND VALUE DRIVER' in LEVEL:

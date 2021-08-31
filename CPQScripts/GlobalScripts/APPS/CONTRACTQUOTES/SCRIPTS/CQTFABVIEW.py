@@ -1333,7 +1333,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":

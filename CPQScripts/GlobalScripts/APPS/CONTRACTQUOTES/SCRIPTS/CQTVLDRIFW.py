@@ -19,7 +19,7 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,Userid, Username):
+def iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,Userid,Username,quote_revision_record_id):
     #Trace.Write("1111111111111111     " + str(username))
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><Quote>'
@@ -38,7 +38,9 @@ def iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuper
         +str(Userid)
         +"</Userid><Username>"
         +str(Username)
-        +"</Username></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+        +"</Username><quote_revision_record_id>"
+        +str(quote_revision_record_id)
+        +"</quote_revision_record_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
     Log.Info("2222222222222222      " + str(requestdata))
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='VALUEDRIVER'")
