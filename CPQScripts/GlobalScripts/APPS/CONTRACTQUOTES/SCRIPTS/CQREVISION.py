@@ -21,7 +21,7 @@ Sql = SQL()
 ScriptExecutor = ScriptExecutor
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----')
-
+#A055S000P01-8729 start
 def create_new_revision(Opertion):
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
