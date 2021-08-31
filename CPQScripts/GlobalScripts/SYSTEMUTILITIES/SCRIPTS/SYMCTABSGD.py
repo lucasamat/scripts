@@ -495,7 +495,7 @@ class CONTAINER:
                                         Trace.Write("Set Global not defined based on Product object")
                             if str(PRIMARY_OBJECT_NAMes) == "ACAPMA" or str(PRIMARY_OBJECT_NAMes) == 'ACAPTX':
                                 Role_list = []
-                                if tab_name != "My Approval Queue" and tab_name != "Team Approval Queue":
+                                if tab_name != "My Approvals Queue" and tab_name != "Team Approvals Queue":
                                     GettingRoleId = SqlHelper.GetList(
                                         "SELECT SYROMA.* FROM SYROUS INNER JOIN SYROMA ON SYROMA.ROLE_RECORD_ID = SYROUS.ROLE_RECORD_ID WHERE USER_RECORD_ID = '"
                                         + str(User.Id)
@@ -534,12 +534,12 @@ class CONTAINER:
                                     Approvalcond = str(GetApprovalList).replace("[", "").replace("]", "")
                                     if conditionList != '' and Approvalcond !='': """
                                     if flag == 0  or flag == 1 or flag == 2:
-                                        if x_tabs != 'Team Approval Queue':
+                                        if x_tabs != 'Team Approvals Queue':
                                             where += (
                                                 " AND APPROVAL_RECIPIENT = '" + str(User.Name) + "' "
                                             )
                                         else:
-                                            if str(x_tabs) == 'Team Approval Queue':
+                                            if str(x_tabs) == 'Team Approvals Queue':
                                                 #Added try, except because of data not loading error A055S000P01-3527 - start
                                                 try:                                              
                                                     GetRole = Sql.GetFirst("SELECT ROLE_RECORD_ID FROM SYROUS (NOLOCK) WHERE USER_NAME = '{}' AND ROLE_NAME != 'AUDITING ROLE' AND ROLE_NAME != 'add new role'".format(User.Name))
@@ -785,7 +785,7 @@ class CONTAINER:
                             if OrderBy_obj is not None and SortColumn == "" and SortColumnOrder == "":
                                 if str(OrderBy_obj.ORDERS_BY) != "":
                                     objh_column = "ORDER BY " + str(OrderBy_obj.ORDERS_BY)
-                                elif x_tabs == 'Team Approval Queue' and flag in (0,1):
+                                elif x_tabs == 'Team Approvals Queue' and flag in (0,1):
                                     objh_column = " ORDER BY APRTRXOBJ_ID DESC "
                                 elif SortColumn == "" and SortColumnOrder == "":
                                     objh_column = "ORDER BY " + objh_obj.RECORD_NAME + " ASC"
@@ -825,12 +825,12 @@ class CONTAINER:
                                         elif flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'): 
                                             where += "AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0"  
                                             tot_names +=  ',APPROVAL_TRANSACTION_RECORD_ID'
-                                        elif flag == 0 and (str(x_tabs) == 'My Approval Queue'):
+                                        elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                             where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                             
-                                        elif flag == 2 and (str(x_tabs) == 'My Approval Queue'):
+                                        elif flag == 2 and (str(x_tabs) == 'My Approvals Queue'):
                                             where += " AND APPROVALSTATUS NOT IN  ('REQUESTED') "
-                                        elif flag == 1 and (str(x_tabs) == 'My Approval Queue'):
+                                        elif flag == 1 and (str(x_tabs) == 'My Approvals Queue'):
                                             where += " AND APPROVALSTATUS IN ('APPROVED','REJECTED')"
                                             
                                         #elif flag == 0 and (str(x_tabs) == 'Team Approval Queue'):
@@ -966,7 +966,7 @@ class CONTAINER:
                                                 + str(Page_End)
                                                 + " "
                                             )
-                                            elif flag == 0 and (str(x_tabs) == 'My Approval Queue'):
+                                            elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                                 QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER("
@@ -983,7 +983,7 @@ class CONTAINER:
                                                 + str(Page_End)
                                                 + " "
                                             )
-                                            elif flag == 2 and (str(x_tabs) == 'My Approval Queue'):
+                                            elif flag == 2 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS NOT IN ('REQUESTED') "
                                                 QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER("
@@ -1000,7 +1000,7 @@ class CONTAINER:
                                                 + str(Page_End)
                                                 + " "
                                             )
-                                            elif flag == 1 and (str(x_tabs) == 'My Approval Queue'):
+                                            elif flag == 1 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS IN ('APPROVED','REJECTED') "
                                                 QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER("
@@ -1275,7 +1275,7 @@ class CONTAINER:
                                 + "\").bootstrapTable(\"load\", datas1 ); eval(datas5);  } if (document.getElementById('totalItemCount')) { document.getElementById('totalItemCount').innerHTML = datas6; } if (document.getElementById('NumberofItem')) { document.getElementById('NumberofItem').innerHTML = dataset[11]; } if(document.getElementById('page_count')) { document.getElementById('page_count').innerHTML = '1'; }    $(\"#PageCountValue\").val(dataset[12]);norcordsget();filter_search_click();}); fullTableListGridWidth(); });"
                             )
 
-                            if str(tab_name) not in ("Roles","My Approval Queue","Quotes","Team Approval Queue","Contracts"):
+                            if str(tab_name) not in ("Roles","My Approvals Queue","Quotes","Team Approvals Queue","Contracts"):
                                 
                                 a_txt = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="view_list"><a class="dropdown-item" href="#" onclick="Material_view_obj(this)">VIEW</a></li>'
 
