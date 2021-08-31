@@ -470,6 +470,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					active_rev = row.get("ACTIVE")
 					Table.TableActions.Update(obj_name, objh_head, row)
 					get_rev_detail = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID ='"+str(quote_revision_id)+"'")
+					if active_rev = True:
+						active_rev = 1
+					else:
+						active_rev = 0
 					Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= get_rev_detail.QTEREV_ID,QuoteRecordId=contract_quote_record_id,active_rev = active_rev))
 				else:
 					Table.TableActions.Update(obj_name, objh_head, row)
