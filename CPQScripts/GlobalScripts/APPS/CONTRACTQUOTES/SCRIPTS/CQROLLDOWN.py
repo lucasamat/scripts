@@ -1330,6 +1330,10 @@ elif 'COV OBJ ENTITLEMENT' in LEVEL:
 	a = LEVEL.split(",")
 	TreeParam = a[1]
 	TreeParentParam = a[2]
+	try:
+		userId = a[3]
+	except:
+		pass
 	Log.Info("tree----"+str(TreeParam))
 	ApiResponse = ApiResponseFactory.JsonResponse(CoveredObjEntitlement())
 elif 'COV OBJ ITEM' in LEVEL:
