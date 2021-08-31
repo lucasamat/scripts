@@ -97,7 +97,7 @@ def CommonTreeViewHTMLDetail(
 		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 	except:
 		pass #to handle error while we are in system admin
-	Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+	Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 	if Getyear:
 		start_date = datetime(Getyear.CONTRACT_VALID_FROM)
 		end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -633,7 +633,8 @@ def CommonTreeViewHTMLDetail(
 		# Billing Matrix Details Load - Start
 		if ObjectName == 'SAQTBP':
 			billing_plan_obj = SqlHelper.GetFirst(
-					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}'".format(quote_record_id)
+					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id),
+					quote_revision_record_id
 				)
 			if billing_plan_obj:
 				RECORD_ID = billing_plan_obj.QUOTE_BILLING_PLAN_RECORD_ID
@@ -653,7 +654,7 @@ def CommonTreeViewHTMLDetail(
 				Trace.Write("except")
 				service_id = TreeSuperParentParam.split('-')[1].strip()
 			quote_item_gb = Sql.GetFirst(
-				"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,TreeParam,TreeParentParam,service_id)
+				"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
 			)
 			if quote_item_gb:
 				RECORD_ID = quote_item_gb.QUOTE_ITEM_GREENBOOK_RECORD_ID				
@@ -663,7 +664,7 @@ def CommonTreeViewHTMLDetail(
 		if ObjectName == 'SAQFGB':			
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			fab_location_gb = Sql.GetFirst(
-				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"'"
+				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"'"
 			)
 			if fab_location_gb:
 				RECORD_ID = fab_location_gb.QUOTE_FAB_LOC_GB_RECORD_ID
@@ -674,7 +675,8 @@ def CommonTreeViewHTMLDetail(
 			Trace.Write('ObjectName---')		
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			prd_location_gb = Sql.GetFirst(
-				"select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(quote_record_id,TreeParam,TreeParentParam)
+				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
+ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
 			)
 			if prd_location_gb:
 				RECORD_ID = prd_location_gb.QUOTE_SERVICE_GREENBOOK_RECORD_ID
@@ -683,11 +685,11 @@ def CommonTreeViewHTMLDetail(
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			if TreeParentParam == 'Sending Equipment' or TreeParentParam == 'Receiving Equipment':
 				prd_location_fb = Sql.GetFirst(
-					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,TreeSuperParentParam)
+					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeSuperParentParam)
 				)				
 			else:
 				prd_location_fb = Sql.GetFirst(
-					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,TreeParentParam)
+					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParentParam)
 				)
 			if prd_location_fb:
 				RECORD_ID = prd_location_fb.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID		
@@ -711,11 +713,11 @@ def CommonTreeViewHTMLDetail(
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			if TreeParam.startswith("Sending"):
 				send_receive_data = Sql.GetFirst(
-					"select QUOTE_SENDING_RECEIVING_ACCOUNT from SAQSRA (NOLOCK) where QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%'".format(quote_record_id)
+					"select QUOTE_SENDING_RECEIVING_ACCOUNT from SAQSRA (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%'".format(quote_record_id,quote_revision_record_id)
 				)
 			if TreeParam.startswith("Receiving"):
 				send_receive_data = Sql.GetFirst(
-					"select QUOTE_SENDING_RECEIVING_ACCOUNT from SAQSRA (NOLOCK) where QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'".format(quote_record_id)
+					"select QUOTE_SENDING_RECEIVING_ACCOUNT from SAQSRA (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'".format(quote_record_id,quote_revision_record_id)
 				)
 			if send_receive_data:
 				RECORD_ID = send_receive_data.QUOTE_SENDING_RECEIVING_ACCOUNT
@@ -822,6 +824,7 @@ def CommonTreeViewHTMLDetail(
 					+ " = '"
 					+ str(RECORD_ID) 
 					+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
+					+ "' AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 				)
 			elif ObjectName == "SAQICO":
 				RECORD_ID = primary_value
@@ -1095,7 +1098,7 @@ def CommonTreeViewHTMLDetail(
 					notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
 					if current_obj_api_name in notinlist:
 						add_style = "display: none;"
-				Quote_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+				Quote_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				if Quote_Type is not None:
 					if Quote_Type.QUOTE_TYPE == "ZWK1 - SPARES":
 						if ObjectName == "SAQTSO":
@@ -1155,8 +1158,8 @@ def CommonTreeViewHTMLDetail(
 						current_obj_value = current_obj_value
 					elif ObjectName == 'SAQTBP' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
 						billing_plan_obj = Sql.GetFirst(
-									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(
-										ObjectName=ObjectName, QuoteRecordId=quote_record_id)
+									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(
+										ObjectName=ObjectName, QuoteRecordId=quote_record_id,revision_rec_id = quote_revision_record_id)
 								)
 						if billing_plan_obj:
 							billing_cpq_table_entry_id = billing_plan_obj.CpqTableEntryId
@@ -2076,7 +2079,7 @@ def CommonTreeViewHTMLDetail(
 		#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 		Trace.Write('receiving---1993-------')
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' and SERVICE_ID like '%Z0016%'")
+		SAQTSVObj=Sql.GetFirst("Select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID= '"+str(quoteid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and SERVICE_ID like '%Z0016%'")
 		if SAQTSVObj:
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		#else:
@@ -2098,7 +2101,7 @@ def CommonTreeViewHTMLDetail(
 	if TreeParentParam == "Comprehensive Services" and TreeSuperParentParam == "Product Offerings":		
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
 		addon_details = Sql.GetList("SELECT SERVICE_ID FROM SAQSAO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"'")
-		equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"'")
+		equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 		if addon_details and equipment_details:
 			Ad_on_prd = "True"
 		else:
@@ -2106,7 +2109,7 @@ def CommonTreeViewHTMLDetail(
 	else:
 		Ad_on_prd = ""
 	if	TreeParentParam == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
-		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id))
+		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id,quote_revision_record_id))
 		if entitlement_obj:
 			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
 				spare_parts_visibility = "True"
@@ -2179,8 +2182,7 @@ def UpdateBreadcrumb(REC_ID):
 		ObjectName = REC_ID.split('-')[0]		
 		RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(REC_ID))
 		qry = Sql.GetFirst(
-			"SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{recid}'".format(recid=RECORD_ID)
-		)
+			"""SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID='{revision_rec_id}' """.format(recid=RECORD_ID,revision_rec_id = quote_revision_record_id)	)
 		if qry:
 			bc_id = str(qry.QUOTE_ID)
 		else:
@@ -2332,14 +2334,16 @@ def EntitlementTreeViewHTMLDetail(
 				SALESORG_RECORD_ID = ParentObj.SALESORG_RECORD_ID
 				SALESORG_ID = ParentObj.SALESORG_ID
 				SALESORG_NAME = ParentObj.SALESORG_NAME
-			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
+				QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
+
+			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
 			join = ''
 			##add on product entitilement ends
 		###receiving equp entitilement starts
 		elif str(TreeParam).upper() == "RECEIVING EQUIPMENT" and objname_ent == 'SAQSCO':
 			Trace.Write('receiving----'+str(quoteid)+'---'+str(ProductPartnumber))
-			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,ProductPartnumber))
-			ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,ProductPartnumber))
+			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,quote_revision_record_id,ProductPartnumber))
+			ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,quote_revision_record_id,ProductPartnumber))
 			if ParentObj:
 				QUOTE_ID = ParentObj.QUOTE_ID
 				QUOTE_NAME = ParentObj.QUOTE_NAME
@@ -2351,7 +2355,9 @@ def EntitlementTreeViewHTMLDetail(
 				SALESORG_RECORD_ID = ParentObj.SALESORG_RECORD_ID
 				SALESORG_ID = ParentObj.SALESORG_ID
 				SALESORG_NAME = ParentObj.SALESORG_NAME
-			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
+				QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
+
+			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
 			join = ''	
 		###receiving equp entitilement ends
 		else:
@@ -2368,45 +2374,47 @@ def EntitlementTreeViewHTMLDetail(
 				SALESORG_RECORD_ID = ParentObj.SALESORG_RECORD_ID
 				SALESORG_ID = ParentObj.SALESORG_ID
 				SALESORG_NAME = ParentObj.SALESORG_NAME
-			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
+				QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
+
+			where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
 			join = ''		
 	elif EntitlementType == "TOOLS":
 		TableObj = Sql.GetFirst("select * from SAQSCE (NOLOCK) where QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 		ObjectName = "SAQSCE"
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QTESRVCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		join = ''		
 
 	elif EntitlementType == "ITEMGREENBOOK":
 		ObjectName = "SAQSGE"
 		service = TreeSuperParentParam
-		TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(TreeParam) + "' AND FABLOCATION_ID = '"+ str(TreeParentParam) + "'")		
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(TreeParam) + "' AND FABLOCATION_ID = '"+ str(TreeParentParam) + "'"
+		TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(TreeParam) + "' AND FABLOCATION_ID = '"+ str(TreeParentParam) + "'")		
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '"+str(service)+"' AND GREENBOOK = '" + str(TreeParam) + "' AND FABLOCATION_ID = '"+ str(TreeParentParam) + "'"
 		join = ''		
 	elif EntitlementType == "ITEMSPARE":
 		#TableObj = Sql.GetFirst("select SAQIEN.* from SAQIEN (NOLOCK) JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIEN.QUOTE_RECORD_ID where QTQITM.QUOTE_ITEM_RECORD_ID = '" + str(RECORD_ID) + "'")
 		#TableObj = Sql.GetFirst("select SAQIPE.* from SAQIPE (NOLOCK) JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND QTQITM.SERVICE_ID =SAQIPE.SERVICE_ID where SAQIPE.QUOTE_RECORD_ID = '" + str(quoteid) + "'")	
-		TableObj = Sql.GetFirst("select SAQIPE.* from SAQIPE (NOLOCK) JOIN SAQIFP ON SAQIFP.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID where SAQIFP.QUOTE_ITEM_FORECAST_PART_RECORD_ID  = '" + str(RECORD_ID) + "'")		
+		TableObj = Sql.GetFirst("select SAQIPE.* from SAQIPE (NOLOCK) JOIN SAQIFP ON SAQIFP.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQIFP.QTEREV_RECORD_ID  = SAQIPE.QTEREV_RECORD_ID  where SAQIFP.QUOTE_ITEM_FORECAST_PART_RECORD_ID  = '" + str(RECORD_ID) + "'")		
 		#where = "QTQITM.QUOTE_ITEM_RECORD_ID = '" + str(RECORD_ID) + "'"
 		#join = 'JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIEN.QUOTE_RECORD_ID'
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeParam) + "'"
-		join = 'JOIN SAQIFP ON SAQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQIFP.SERVICE_ID =SAQIPE.SERVICE_ID'
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeParam) + "'"
+		join = 'JOIN SAQIFP ON SAQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID  = SAQIPE.QTEREV_RECORD_ID  AND SAQIFP.SERVICE_ID =SAQIPE.SERVICE_ID'
 	elif EntitlementType == "ITEMS":	
 		TableObj = Sql.GetFirst("select * from SAQIEN (NOLOCK) where QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 		where = "QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 		join = ''
 	elif EntitlementType == "FABLOCATION":			
-		TableObj = Sql.GetFirst("select * from SAQSFE (NOLOCK) where  QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParam) + "'")
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID ='"+str(TreeParam)+"'"
+		TableObj = Sql.GetFirst("select * from SAQSFE (NOLOCK) where  QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParam) + "'")
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID ='"+str(TreeParam)+"'"
 		join = ''		
 	elif EntitlementType == "BUSINESSUNIT":
-		TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"'")
+		TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"'")
 		if TableObj is not None:
 			RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"'"
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"'"
 		join = ''
 	elif EntitlementType == "ASSEMBLY":
-		TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
-		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
+		TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
+		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 		join = ''		
 	OBJDObjd = Sql.GetList("select * from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "'")
 	if EntitlementType != "SENDING_LEVEL":
@@ -2514,11 +2522,11 @@ def EntitlementTreeViewHTMLDetail(
 		# ServiceContainer = Product.GetContainerByName("Services")
 		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 		multi_select_attr_list = {}
-		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}'".format(quoteid))
+		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quoteid,quote_revision_record_id))
 		if getregion:
 			getregionval = getregion.REGION
 			
-		GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid))
+		GetCPSVersion = Sql.GetFirst("SELECT KB_VERSION FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND KB_VERSION IS NOT NULL AND KB_VERSION != ''".format(quoteid,quote_revision_record_id))
 
 		if GetCPSVersion :
 			if GetCPSVersion.KB_VERSION is not None and GetCPSVersion.KB_VERSION != Fullresponse["kbKey"]["version"]:
@@ -2847,6 +2855,7 @@ def EntitlementTreeViewHTMLDetail(
 				tbrow["QUOTE_ID"] = QUOTE_ID
 				tbrow["QUOTE_NAME"] = QUOTE_NAME
 				tbrow["QUOTE_RECORD_ID"] = QUOTE_RECORD_ID
+				tbrow["QTEREV_RECORD_ID"] = QTEREV_RECORD_ID
 				tbrow["QTESRV_RECORD_ID"] = QUOTE_SERVICE_RECORD_ID
 				tbrow["SERVICE_RECORD_ID"] = SERVICE_RECORD_ID
 				tbrow["SERVICE_ID"] = SERVICE_ID
@@ -2868,32 +2877,32 @@ def EntitlementTreeViewHTMLDetail(
 			Sql.RunQuery(insert_qtqtse_query)
 			if objname_ent == "SAQSAO":
 				QueryStatement ="""
-				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' )
-				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
+				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
 				WHEN MATCHED
 				THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
 				WHEN NOT MATCHED BY TARGET
-				THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+				THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified)
-				VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName)
+				VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = quote_revision_record_id )
 			
 			else:
 				QueryStatement ="""
-				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' )
-				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
+				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
 				WHEN MATCHED
 				THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
 				WHEN NOT MATCHED BY TARGET
-				THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+				THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified)
-				VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName)
+				VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = quote_revision_record_id)
 				
 				Sql.RunQuery(QueryStatement)
 				QueryStatement ="""
-				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' )
-				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
+				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
 				WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-				WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName)
+				WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = quote_revision_record_id)
 				Sql.RunQuery(QueryStatement)
 			Trace.Write("getnameentallowed"+str(getnameentallowed))
 			getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
@@ -2913,8 +2922,8 @@ def EntitlementTreeViewHTMLDetail(
 		multi_select_attr_list = {}
 		attributedefaultvalue = []
 		Trace.Write('after inserting in table--attributedefaultvalue---'+str(attributedefaultvalue))
-		getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
-		GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
+		getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
+		GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 		inserted_value_list = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
 		for val in GetXMLsecField:
 			#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
@@ -3799,7 +3808,7 @@ def EntitlementTreeViewHTMLDetail(
 		
 	##Adding Audit information section in Entitlement ends...
 
-	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id ))
 	if quote_status.QUOTE_STATUS == "APPROVED":
 		Trace.Write('dbl_click123====')
 		dbl_clk_function = ""
@@ -4660,6 +4669,7 @@ LOOKUPOBJ = Param.LOOKUPOBJ
 LOOKUPAPI = Param.LOOKUPAPI
 MODE = Param.MODE
 
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 if hasattr(Param, "TableId"):
 	TableId = Param.TableId
