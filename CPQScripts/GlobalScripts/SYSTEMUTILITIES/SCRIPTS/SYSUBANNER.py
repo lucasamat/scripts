@@ -2462,6 +2462,7 @@ def Related_Sub_Banner(
     Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
 # Added to update configure status in work flow status bar - start
     if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
+        Trace.Write('sales11=======')
         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -2485,7 +2486,7 @@ def Related_Sub_Banner(
                             get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
                             if getPRGBVD and get_SAQFGV and get_SAQEDV:
                                 #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
-                                Trace.Write('button found')
+                                Trace.Write('button found1')
                                 buttonvisibility = "Show_button"
                         else:
                             Trace.Write('No button-2448-')
@@ -2497,10 +2498,10 @@ def Related_Sub_Banner(
                     Trace.Write('No button-2454-')
                     buttonvisibility = "Hide_button"
             else:
-                Trace.Write('No button--')
+                Trace.Write('No button--1')
                 buttonvisibility = "Hide_button"
         else:
-            Trace.Write('No button--')
+            Trace.Write('No button--2')
             buttonvisibility = "Hide_button"
 # Added to update configure status in work flow status bar - end        
     
