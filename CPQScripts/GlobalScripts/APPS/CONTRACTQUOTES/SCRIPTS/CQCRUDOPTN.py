@@ -200,7 +200,7 @@ class ContractQuoteCrudOpertion:
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTSO WHERE QUOTE_RECORD_ID = '{}'
-				AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id))
+				AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 				sales_org=""
 				if get_sales_org :
 					sales_org=get_sales_org.SALESORG_ID
