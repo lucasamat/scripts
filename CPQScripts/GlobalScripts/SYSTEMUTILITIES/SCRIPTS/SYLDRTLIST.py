@@ -1194,7 +1194,7 @@ class SYLDRTLIST:
 						)
 					elif RECORD_ID == "SYOBJR-98869":
 						Trace.Write('1196----------')
-						RecAttValue = Quote.GetGlobal("contract_quote_record_id")
+						RecAttValue = Quote.GetGlobal("contract_record_id")
 						Trace.Write('1196---RecAttValue-------'+str(RecAttValue))
 						Qustr =  " where QUOTE_RECORD_ID = '" + str(RecAttValue) + "'"                  
 					elif RECORD_ID == "SYOBJR-93130":
