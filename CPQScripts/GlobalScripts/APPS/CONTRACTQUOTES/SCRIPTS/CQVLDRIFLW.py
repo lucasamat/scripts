@@ -19,14 +19,12 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def iflow_valuedriver_rolldown(quote,level,revision):
+def iflow_valuedriver_rolldown(quote,level):
     #Trace.Write("1111111111111111     " + str(username))
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><Quote>'
         + str(quote)
-        + "</Quote><Revision>"
-        +  str(revision)
-        +"</Revision><Level>"
+        + "</Quote><Level>"
         +str(level)
         +"</Level></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
