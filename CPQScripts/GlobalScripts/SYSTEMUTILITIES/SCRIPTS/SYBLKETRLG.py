@@ -464,17 +464,18 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				#A055S000P01-8729 start
 				if obj_name == "SAQTRV":
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-					Trace.Write("contract_quote_record_id---463----"+str(contract_quote_record_id))
 					update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id,active_rev = 0))
 					quote_revision_id = row.get("QUOTE_REVISION_RECORD_ID")
 					active_rev = row.get("ACTIVE")
 					Table.TableActions.Update(obj_name, objh_head, row)
 					get_rev_detail = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID ='"+str(quote_revision_id)+"'")
-					if active_rev = True:
+					if active_rev == 'True':
 						active_rev = 1
 					else:
 						active_rev = 0
-					Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= get_rev_detail.QTEREV_ID,QuoteRecordId=contract_quote_record_id,active_rev = active_rev))
+					Trace.Write("cactive_rev----"+str(active_rev))
+
+					Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= get_rev_detail.QTEREV_ID,QuoteRecordId=contract_quote_record_id,active_rev = get_rev_detail.ACTIVE))
 				else:
 					Table.TableActions.Update(obj_name, objh_head, row)
 				#A055S000P01-8729 end
