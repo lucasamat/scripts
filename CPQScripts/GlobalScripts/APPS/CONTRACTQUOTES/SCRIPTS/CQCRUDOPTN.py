@@ -68,7 +68,7 @@ class ContractQuoteCrudOpertion:
 			except:
 				self.quote_revision_record_id = ''
 			#Trace.Write("quote---"+str(self.contract_quote_record_id))
-		GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+		GetToolReloc = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id))
 		#Trace.Write("count--"+str(list(GetToolReloc)))
 		GetToolReloc = list(GetToolReloc)
 		if len(GetToolReloc) == 2:
@@ -200,7 +200,7 @@ class ContractQuoteCrudOpertion:
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
 				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTSO WHERE QUOTE_RECORD_ID = '{}'
-				AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")) )
+				AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId = self.quote_revision_record_id))
 				sales_org=""
 				if get_sales_org :
 					sales_org=get_sales_org.SALESORG_ID
