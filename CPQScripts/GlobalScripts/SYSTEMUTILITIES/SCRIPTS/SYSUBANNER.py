@@ -2462,61 +2462,64 @@ def Related_Sub_Banner(
     Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
     
 
-    #if subTabName == 'Subtotal by Offerings' and TreeParam == "Quote Items" and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
-    Trace.Write("Subtotal by Offering"+str(TabName))
-    getQuotetype = ""
-    #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
-    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-    getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))				
-    if getsaletypeloc:
-        # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
-        Trace.Write("multi_buttons"+str(len(multi_buttons)))
-        buttonvisibility = ''
-        if len(multi_buttons) > 0:						
-            if TreeParam == "Quote Items":
-                # Appending Price button in Quote Items Node
-                Trace.Write("inside---> quote item")
-                for btn in multi_buttons:
-                    Trace.Write("btn---12"+str(btn))
-                    # if "PRICE" in btn:
-                    fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
-                    Trace.Write('2409----'+str(TreeParam))
-                    Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
-                    #A055S000P01-7512 Start Enable/Disable the PRICE button in Quote items based on Required fields validation
-                    if str(TreeParam) == "Quote Items":
-                        getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                        getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                        get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
-                        get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
-                        if getsalesorg_ifo and getfab_info:
-                            Trace.Write('salesorg--present---')
-                            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
-                                get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id")))
-                                if get_quote_details:
-                                    get_quote = Quote.GetGlobal("contract_quote_record_id")
-                                    Trace.Write('button process--')
-                                    GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
-                                    get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                    get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
+    if subTabName == 'Subtotal by Offerings' and TreeParam == "Quote Items" and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
+        Trace.Write("Subtotal by Offering"+str(TabName))
+        getQuotetype = ""
+        #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
+        ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+        getsaletypeloc = Sql.GetFirst("select SALE_TYPE,QUOTE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))				
+        if getsaletypeloc:
+            # dynamic_Button = Sql.GetList("SELECT HTML_CONTENT FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '{}'".format(page_details.RECORD_ID))
+            Trace.Write("multi_buttons"+str(len(multi_buttons)))
+            buttonvisibility = ''
+            if len(multi_buttons) > 0:						
+                if TreeParam == "Quote Items":
+                    # Appending Price button in Quote Items Node
+                    Trace.Write("inside---> quote item")
+                    for btn in multi_buttons:
+                        Trace.Write("btn---12"+str(btn))
+                        # if "PRICE" in btn:
+                        fts_scenario_check = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        Trace.Write('2409----'+str(TreeParam))
+                        Trace.Write("len_CHK_J "+str(len(fts_scenario_check)))
+                        #A055S000P01-7512 Start Enable/Disable the PRICE button in Quote items based on Required fields validation
+                        if str(TreeParam) == "Quote Items":
+                            getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTSO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                            if getsalesorg_ifo and getfab_info:
+                                Trace.Write('salesorg--present---')
+                                if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
+                                    get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                                    if get_quote_details:
+                                        get_quote = Quote.GetGlobal("contract_quote_record_id")
+                                        Trace.Write('button process--')
+                                        GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
+                                        get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+                                        get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 
-                                    if GetPRVLDR and get_SAQVDV and get_SAQFDV:
-                                        if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
-                                            get_quote = Quote.GetGlobal("contract_quote_record_id")
-                                            getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
-                                            get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                            get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"'")
-                                            if getPRGBVD and get_SAQFGV and get_SAQEDV:
-                                                #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
-                                                Trace.Write('button found')
-                                                buttonvisibility = "Show_button"
+                                        if GetPRVLDR and get_SAQVDV and get_SAQFDV:
+                                            if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
+                                                get_quote = Quote.GetGlobal("contract_quote_record_id")
+                                                getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
+                                                get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
+                                                get_SAQEDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
+                                                if getPRGBVD and get_SAQFGV and get_SAQEDV:
+                                                    #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
+                                                    Trace.Write('button found')
+                                                    buttonvisibility = "Show_button"
+                                            else:
+                                                Trace.Write('No button-2448-')
+                                                buttonvisibility = "Hide_button"
                                         else:
-                                            Trace.Write('No button-2448-')
+                                            Trace.Write('No button-2451')
                                             buttonvisibility = "Hide_button"
                                     else:
-                                        Trace.Write('No button-2451')
+                                        Trace.Write('No button-2454-')
                                         buttonvisibility = "Hide_button"
                                 else:
-                                    Trace.Write('No button-2454-')
+                                    Trace.Write('No button--')
                                     buttonvisibility = "Hide_button"
                             else:
                                 Trace.Write('No button--')
@@ -2524,39 +2527,36 @@ def Related_Sub_Banner(
                         else:
                             Trace.Write('No button--')
                             buttonvisibility = "Hide_button"
-                    else:
-                        Trace.Write('No button--')
-                        buttonvisibility = "Hide_button"
-                    #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
-                    if len(fts_scenario_check) == 2:
-                        Trace.Write("hide PRICING for fts--2411--")
-                        if 'UPDATE LINES' in btn:
+                        #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
+                        if len(fts_scenario_check) == 2:
+                            Trace.Write("hide PRICING for fts--2411--")
+                            if 'UPDATE LINES' in btn:
 
+                                if quote_status.QUOTE_STATUS != 'APPROVED':
+                                    sec_rel_sub_bnr += (btn)
+                            
+                        else:
+                            Trace.Write("hide PRICING for fts")
+                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                                Trace.Write(str(buttonvisibility)+'---2469--btn----'+str(btn))
+                                # if buttonvisibility == "Hide_button" and 'UPDATE PRICING' in btn:
+                                # 	Trace.Write('---2469--btn----'+str(btn))
+                                # 	btn += '<button id="CALCULATE_QItems"  style = "display:none;" onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
+                                # 	sec_rel_sub_bnr += (btn)
+                                # else:
+                                    #btn = '<button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
+                                sec_rel_sub_bnr += (btn)
+                    # Appending Price button in Quote Items Node
+
+                    # sec_rel_sub_bnr += (
+                    # 	'<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
+                    # )    
+                if TreeParam == "Quote Items":
+                    # Appending REFRESH button in Quote Items Node
+                    for btn in multi_buttons:
+                        if "REFRESH" in btn:
                             if quote_status.QUOTE_STATUS != 'APPROVED':
                                 sec_rel_sub_bnr += (btn)
-                        
-                    else:
-                        Trace.Write("hide PRICING for fts")
-                        if quote_status.QUOTE_STATUS != 'APPROVED':
-                            Trace.Write(str(buttonvisibility)+'---2469--btn----'+str(btn))
-                            # if buttonvisibility == "Hide_button" and 'UPDATE PRICING' in btn:
-                            # 	Trace.Write('---2469--btn----'+str(btn))
-                            # 	btn += '<button id="CALCULATE_QItems"  style = "display:none;" onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
-                            # 	sec_rel_sub_bnr += (btn)
-                            # else:
-                                #btn = '<button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>'
-                            sec_rel_sub_bnr += (btn)
-                # Appending Price button in Quote Items Node
-
-                # sec_rel_sub_bnr += (
-                # 	'<button id="CALCULATE_QItems" onclick="calculate_QItems(this)" class="btnconfig">PRICE</button>'
-                # )    
-            if TreeParam == "Quote Items":
-                # Appending REFRESH button in Quote Items Node
-                for btn in multi_buttons:
-                    if "REFRESH" in btn:
-                        if quote_status.QUOTE_STATUS != 'APPROVED':
-                            sec_rel_sub_bnr += (btn)
                 # Appending REFRESH button in Quote Items Node
 
                 # sec_rel_sub_bnr += (
