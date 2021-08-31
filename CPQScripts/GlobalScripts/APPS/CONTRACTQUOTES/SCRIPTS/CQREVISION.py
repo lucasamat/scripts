@@ -56,7 +56,7 @@ def create_new_revision(Opertion):
 
 			
 			#INSERT salesorg start
-			salorgquery = Sql.RunQuery("""INSERT INTO SAQTSO
+			salesorg_insertquery = Sql.RunQuery("""INSERT INTO SAQTSO
 				(	QUOTE_SALESORG_RECORD_ID,
 					QUOTE_ID,
 					QUOTE_NAME,
@@ -187,7 +187,86 @@ def create_new_revision(Opertion):
 			#INSERT salesorg end
 
 			#Insert fabs start
-			#Sql.RunQuery("""UPDATE SAQFBL SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			fabinsertquery = Sql.RunQuery("""INSERT INTO SAQFBL
+			(
+				QUOTE_FABLOCATION_RECORD_ID,
+				FABLOCATION_ID,
+				FABLOCATION_NAME,
+				FABLOCATION_RECORD_ID,
+				QUOTE_ID,
+				QUOTE_NAME,
+				QUOTE_RECORD_ID,
+				CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED,
+				ADDUSR_RECORD_ID,
+				COUNTRY,
+				COUNTRY_RECORD_ID,
+				MNT_PLANT_ID,
+				MNT_PLANT_NAME,
+				MNT_PLANT_RECORD_ID,
+				SALESORG_ID,
+				SALESORG_NAME,
+				SALESORG_RECORD_ID,
+				FABLOCATION_STATUS,
+				ADDRESS_1,
+				ADDRESS_2,
+				CITY,
+				STATE,
+				STATE_RECORD_ID,
+				CpqTableEntryModifiedBy,
+				CpqTableEntryDateModified,
+				MODUSR_RECORD_ID,
+				QTESNRACC_RECORD_ID,
+				RELOCATION_FAB_TYPE,
+				ACCOUNT_ID,
+				ACCOUNT_NAME,
+				ACCOUNT_RECORD_ID,
+				QTEREV_ID,
+				QTEREV_RECORD_ID
+			)
+			SELECT 
+				CONVERT(VARCHAR(4000),NEWID()) AS QUOTE_FABLOCATION_RECORD_ID,
+				FABLOCATION_ID,
+				FABLOCATION_NAME,
+				FABLOCATION_RECORD_ID,
+				QUOTE_ID,
+				QUOTE_NAME,
+				QUOTE_RECORD_ID,
+				CPQTABLEENTRYADDEDBY,
+				CPQTABLEENTRYDATEADDED,
+				ADDUSR_RECORD_ID,
+				COUNTRY,
+				COUNTRY_RECORD_ID,
+				MNT_PLANT_ID,
+				MNT_PLANT_NAME,
+				MNT_PLANT_RECORD_ID,
+				SALESORG_ID,
+				SALESORG_NAME,
+				SALESORG_RECORD_ID,
+				FABLOCATION_STATUS,
+				ADDRESS_1,
+				ADDRESS_2,
+				CITY,
+				STATE,
+				STATE_RECORD_ID,
+				CpqTableEntryModifiedBy,
+				CpqTableEntryDateModified,
+				MODUSR_RECORD_ID,
+				QTESNRACC_RECORD_ID,
+				RELOCATION_FAB_TYPE,
+				ACCOUNT_ID,
+				ACCOUNT_NAME,
+				ACCOUNT_RECORD_ID,
+				{newrev_inc} AS QTEREV_ID,
+				'{quote_revision_id}' AS QTEREV_RECORD_ID
+			FROM
+				SAQFBL
+			WHERE
+				QUOTE_RECORD_ID='{QuoteRecordId}'
+			AND 
+				QTEREV_ID='{oldrev_id}' """.format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,oldrev_id=newrev_inc-1) )
+			
+   			#Sql.RunQuery("""UPDATE SAQFBL SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#Insert fabs end
 
 
