@@ -46,7 +46,7 @@ def create_new_revision(Opertion):
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		quote_table_info = Sql.GetTable("SAQTMT")
 		if get_quote_info_details:
-            quote_detials = ''
+			quote_detials = ''
 			#update SAQTMT start
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 0))
 			#update SAQTMT end
