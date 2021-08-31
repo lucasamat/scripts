@@ -2856,6 +2856,7 @@ def EntitlementTreeViewHTMLDetail(
 				tbrow["QUOTE_NAME"] = QUOTE_NAME
 				tbrow["QUOTE_RECORD_ID"] = QUOTE_RECORD_ID
 				tbrow["QTEREV_RECORD_ID"] = QTEREV_RECORD_ID
+				tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
 				tbrow["QTESRV_RECORD_ID"] = QUOTE_SERVICE_RECORD_ID
 				tbrow["SERVICE_RECORD_ID"] = SERVICE_RECORD_ID
 				tbrow["SERVICE_ID"] = SERVICE_ID
