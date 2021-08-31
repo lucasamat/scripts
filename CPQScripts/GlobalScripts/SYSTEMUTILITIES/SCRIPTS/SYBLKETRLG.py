@@ -475,11 +475,11 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						active_rev = 0
 					Trace.Write("cactive_rev----"+str(active_rev))
 
-					Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= get_rev_detail.QTEREV_ID,QuoteRecordId=contract_quote_record_id,active_rev = get_rev_detail.ACTIVE))
+					Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= get_rev_detail.QTEREV_ID,QuoteRecordId=contract_quote_record_id,active_rev = int(active_rev)))
 				else:
 					Table.TableActions.Update(obj_name, objh_head, row)
 				#A055S000P01-8729 end
-				Table.TableActions.Update(obj_name, objh_head, row)
+				#Table.TableActions.Update(obj_name, objh_head, row)
 				##Updating the fabname and fablocation id in bulk edit scenario starts....
 		if obj_name == 'SAQICO':
 			if TITLE != 'NET_PRICE' and TITLE != 'DISCOUNT':
