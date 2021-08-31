@@ -1451,9 +1451,9 @@ class TreeView:
 						Wh_API_NAME = ""
 						where_string = where_string
 					elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
-						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
+						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID':
-						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != ''".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
+						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != '' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
 						where_string = where_string                        
 					elif str(ObjName).strip() == 'SAQIFL' and str(NodeName).strip() == 'FABLOCATION_ID':
@@ -1475,7 +1475,7 @@ class TreeView:
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
-						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"))
+						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == "SYPRTB":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
 						where_string = '1=1 AND'
@@ -1547,19 +1547,19 @@ class TreeView:
 					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
 					 		 
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
-						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%') ".format(Quote.GetGlobal("contract_quote_record_id"))
+						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					# elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 					# 	where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
 					elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 						send_receive_node_text = Product.GetGlobal("setnodetextname")
 						if send_receive_node_text.startswith("Sending"):
 							#Trace.Write('SENDING ACCOUNT========')
-							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'SENDING FAB'".format(Quote.GetGlobal("contract_quote_record_id"))
+							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'SENDING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 						elif send_receive_node_text.startswith("Receiving"):
 							#Trace.Write('RECEIVING ACCOUNT========')
-							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'".format(Quote.GetGlobal("contract_quote_record_id"))							 
+							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)							 
 						else:
-							where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
+							where_string = " QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 
 					else:
 						Wh_API_NAME = objd_where_obj.API_NAME
@@ -2098,7 +2098,7 @@ class TreeView:
 										#Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
 										addon_obj = None
 										if NodeText.startswith('Z'):
-											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText))
+											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
 										
 										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
 											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
@@ -2115,9 +2115,9 @@ class TreeView:
 											if "-" in  NodeText:
 												temp_node = NodeText.split("-")
 												if str(len(temp_node)) == "4":
-													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(temp_node[-2].strip())
+													Subwhere_string += " AND QUOTE_RECORD_ID = ' AND QTEREV_RECORD_ID = '{}'"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[-2].strip())
 												else:
-													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
+													Subwhere_string += " AND QUOTE_RECORD_ID = ' AND QTEREV_RECORD_ID = '{}'"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
 										if parObjName == "ACACST" and str(ProductName).upper() == "APPROVAL CENTER":
 											Chain_step = Sql.GetFirst("SELECT APRCHNSTP_NUMBER FROM ACACST (NOLOCK) WHERE APRCHNSTP_NAME = '"+str(NodeText)+"' AND APRCHN_RECORD_ID = '"+Product.Attributes.GetByName('QSTN_SYSEFL_AC_00001').GetValue()+"'")
 											Subwhere_string += " AND APRCHNSTP = '"+str(Chain_step.APRCHNSTP_NUMBER)+"'"
