@@ -113,14 +113,14 @@ def create_new_revision(Opertion):
 					ACCTAXCLA_DESCRIPTION,
 					ACCTAXCAT_RECORD_ID,
 					ACCTAXCAT_ID,
-					Quote.GetGlobal("quote_revision_id") AS QTEREV_ID,
-					Quote.GetGlobal("quote_revision_record_id") AS QTEREV_RECORD_ID,
+					{newrev_inc} AS QTEREV_ID,
+					{quote_revision_id} AS QTEREV_RECORD_ID,
 					ACCOUNT_PRICING_PROCEDURE,
 					ACCTAXCAT_DESCRIPTION
 				FROM 
 					SAQTSO
 				WHERE
-					QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id") """)
+					QUOTE_RECORD_ID={QuoteRecordId} """.format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId) )
 			Trace.Write(salorgquery)
 			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
