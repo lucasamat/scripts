@@ -52,32 +52,32 @@ def UpdateAssemblyLevel(Values):
         get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
         get_assembly = str(tuple(get_assembly)).replace(',)',')')
         if equipment_id:
-            Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,TreeParentParam,equipment_id))
+            Sql.RunQuery("update SAQSCA set INCLUDED = 1 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId, revision_record_id,TreeParentParam,equipment_id))
     ##update for un selected assembly
     if un_selected_record_ids != '()':
         #update SAQSSA
-        Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(un_selected_record_ids,ContractRecordId,TreeParentParam))
+        Sql.RunQuery("update SAQSSA set INCLUDED = 0 where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {} ".format(un_selected_record_ids))
         
         #update SAQSCA
         get_assembly_query = Sql.GetList("SELECT SND_ASSEMBLY_ID FROM SAQSSA where QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID in {}".format(un_selected_record_ids))
         get_assembly = [val.SND_ASSEMBLY_ID for val in get_assembly_query]
         get_assembly = str(tuple(get_assembly)).replace(',)',')')
         if equipment_id:
-            Sql.RunQuery("update SAQSCA set INCLUDED = 0 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,TreeParentParam,equipment_id))
+            Sql.RunQuery("update SAQSCA set INCLUDED = 0 where ASSEMBLY_ID in {} and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' and EQUIPMENT_ID = '{}'".format(get_assembly,ContractRecordId,revision_record_id,TreeParentParam,equipment_id))
         
     if equipment_id:
-        get_total_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        get_total_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
         
-        included_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,TreeParentParam))
+        included_count = Sql.GetFirst("""select count(*) as cnt from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and INCLUDED = 1 and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'""".format(equipment_id,ContractRecordId,revision_record_id,TreeParentParam))
         
         ###updating equipment level tables
         if get_total_count.cnt == included_count.cnt:
             #update SAQSSE
-            Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSSE set INCLUDED = 'TOOL' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
             #update SAQSCO
-            Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSCO set INCLUDED = 'TOOL' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
             if 'Z0007' in TreeParentParam:
-                whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
+                whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
@@ -86,14 +86,14 @@ def UpdateAssemblyLevel(Values):
                     ##Assembly level roll down
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
-                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
+                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
                     RollDown(where_cond)
         ##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
         else:
-            Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
-            Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId,TreeParentParam))
+            Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
+            Sql.RunQuery("update SAQSCO set INCLUDED = 'CHAMBER' where EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
             if 'Z0007' in TreeParentParam:
-                whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
+                whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
                 add_where = "and INCLUDED = 'CHAMBER'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Chamber based'
@@ -102,7 +102,7 @@ def UpdateAssemblyLevel(Values):
                     ##Assembly level roll down
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
-                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId,TreeParentParam,equipment_id)
+                    where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
                     RollDown(where_cond)
                     
 
@@ -114,7 +114,7 @@ def EditAssemblyLevel(Values):
     # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     #ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
     #Trace.Write('Values----'+str(Values))
-    get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId,TreeParentParam))
+    get_rec = Sql.GetList("select SND_ASSEMBLY_ID from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '{}' and EQUIPMENTTYPE_ID = 'CHAMBER' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Values,ContractRecordId, revision_record_id,TreeParentParam))
     chamber_res_list = [i.SND_ASSEMBLY_ID for i in get_rec]
     #Trace.Write('bb--'+str(chamber_res_list))
     return chamber_res_list
@@ -150,11 +150,11 @@ def ChildEntRequest(tableName,where,serviceId):
         newConfigurationid = Fullresponse["id"]
         Trace.Write("newConfigurationid.."+str(newConfigurationid))
         if tableName!="":
-            get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
+            get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId, revision_record_id))
             ent_temp = "ENT_ASSEM_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
             ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
             where_cond = where.replace("'","''")
-            Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+            Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
 
             Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
             Trace.Write("where------ "+str(where))
@@ -368,12 +368,13 @@ def RollDown(where_cond):
         TGT.CpqTableEntryModifiedBy = {},
         TGT.CpqTableEntryDateModified = '{}'
         FROM SAQSCE (NOLOCK) SRC JOIN SAQSAE (NOLOCK) TGT 
-        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
+        ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID WHERE {} """.format(userId,datetimenow,where_cond)
     Sql.RunQuery(update_query)
 
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 Trace.Write("check script called")
 try:
     ACTION = Param.ACTION
