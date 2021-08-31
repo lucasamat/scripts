@@ -20,6 +20,7 @@ except:
 	CurrentTabName = "Quotes"
 Qt_rec_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+quote_revision_id = Quote.GetGlobal("quote_revision_id")
 userId = str(User.Id)
 userName = str(User.UserName)
 TreeParam = Product.GetGlobal("TreeParam")
@@ -1269,6 +1270,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1314,6 +1317,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow2))
@@ -1364,6 +1369,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write('169----'+str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1424,6 +1431,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write('225------------------'+str(tablerow))
@@ -1482,6 +1491,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1518,7 +1529,9 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"VALUEDRIVER_VALUE_RECORD_ID": str(GETVALMAS.VALUEDRIVER_VALUE_RECORD_ID),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
-						"ADDUSR_RECORD_ID": userId
+						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1571,7 +1584,9 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"GREENBOOK_RECORD_ID": str(GETEQP.GREENBOOK_RECORD_ID),
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
-					"ADDUSR_RECORD_ID": userId
+					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1613,6 +1628,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1671,6 +1688,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				
 				#Trace.Write(str(tablerow))
@@ -1741,6 +1760,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1813,6 +1834,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				
 				#Trace.Write(str(tablerow))
@@ -1890,6 +1913,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1958,7 +1983,9 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"QTESRVGBK_RECORD_ID":str(GETSEVC.QUOTE_SERVICE_GREENBOOK_RECORD_ID),
 					"FABLOCATION_RECORD_ID":str(GETSEVC.FABLOCATION_RECORD_ID),
 					"FABLOCATION_ID":str(GETSEVC.FABLOCATION_ID),
-					"FABLOCATION_NAME":str(GETSEVC.FABLOCATION_NAME)
+					"FABLOCATION_NAME":str(GETSEVC.FABLOCATION_NAME),
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 					#"QUOTE_SERVICE_GREENBOOK_RECORD_ID":str(GETSEVC.QTESRVGBK_RECORD_ID)
 				}
 				
@@ -2005,7 +2032,9 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						#"QUOTE_SERVICE_GREENBOOK_RECORD_ID":str(GETDRISVD.QTESRVGBK_RECORD_ID),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
-						"ADDUSR_RECORD_ID": userId
+						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -2079,6 +2108,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -2154,6 +2185,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				Trace.Write(str(tablerow))
