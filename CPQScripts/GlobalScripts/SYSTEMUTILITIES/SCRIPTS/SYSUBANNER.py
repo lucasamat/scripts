@@ -2502,7 +2502,7 @@ def Related_Sub_Banner(
                 buttonvisibility = "Hide_button"
         else:
             Trace.Write('No button--2')
-            buttonvisibility = "Hide_button"
+            buttonvisibility = "Show_button"
 # Added to update configure status in work flow status bar - end        
     
 
