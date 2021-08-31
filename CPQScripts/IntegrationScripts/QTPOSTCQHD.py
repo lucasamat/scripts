@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO CREATE QUOTE JSON FOR HADOOP
 #   __primary_author__ : SURESH MUNIYANDI, Baji
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import clr
