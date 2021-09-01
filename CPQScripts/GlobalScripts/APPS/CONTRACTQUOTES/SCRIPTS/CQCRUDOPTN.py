@@ -4616,7 +4616,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						product_list = [(contract_obj.SERVICE_ID).strip() for contract_obj in contracts_obj]
 						product_list=','.join(map(str, product_list))					
 					try:
-						level = "COV OBJ RENEWAL ONE="+product_list+"="+self.contract_quote_record_id					
+						level = "COV OBJ RENEWAL ONE="+product_list+"="+self.contract_quote_record_id+"="+str(self.quote_revision_record_id)			
 						CQVLDRIFLW.iflow_valuedriver_rolldown(self.source_contract_id,level)
 					except:						
 						Log.Info("except renewal one SAQSCE")
@@ -4624,7 +4624,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					#ENTITLEMENT SV TO CE AND GB
 					try:
 						if self.tree_param != 'Receiving Equipment':
-							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)
+							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)+","+str(self.quote_revision_record_id)
 							CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level)						
 					except:
 						Trace.Write("EXCEPT----COV OBJ ENTITLEMENT IFLOW")
