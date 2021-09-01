@@ -448,14 +448,16 @@ class TreeView:
 		quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
 			#Trace.Write("SET GLOBAL----")
+			GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+			if GetActiveRevision:
+				Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+				Quote.SetGlobal("quote_rev_id",GetActiveRevision.QTEREV_ID)
 			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,quote_revision_record_id))
 			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 			#GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID LIKE '%{}%' AND ACTIVE = 1".format(Quote.CompositeNumber))
 			#quote_revision_record_id = Quote.GetCustomField('QUOTE_REVISION_ID').Content
 			#Trace.Write("@454---------->"+str(quote_revision_record_id))
-			if getQuote:
-				Quote.SetGlobal("quote_revision_record_id",getQuote.QTEREV_RECORD_ID)
-				Quote.SetGlobal("quote_rev_id",getQuote.QTEREV_ID)
+			
 		returnList = []
 		nodeId = 0
 		objrList = []

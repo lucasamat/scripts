@@ -518,7 +518,7 @@ if hasattr(Param, "keyData_val"):
 	# Changes for sales app primary banner load - start
 	if not keyData_val:
 		try:
-			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 			if quote_obj:
 				keyData_val = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 		except Exception:
