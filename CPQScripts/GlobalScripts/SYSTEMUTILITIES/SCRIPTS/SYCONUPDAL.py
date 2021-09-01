@@ -54,6 +54,8 @@ class ConfigUpdateScript:
 			self.current_tab_name = "Variable"	
 		elif Param.CurrentTab == "My Approval Queue":
 			self.current_tab_name = "My Approval Queue"
+		elif Param.CurrentTab == "Team Approval Queue":
+			self.current_tab_name = "Team Approval Queue"
 		else:
 			self.current_tab_name = "Contract"
 		Trace.Write("Current_Tab_CHK_J "+str(Param.CurrentTab))
