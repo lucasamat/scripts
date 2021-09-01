@@ -1282,7 +1282,7 @@ class CONTAINER:
                             elif str(tab_name) == "Roles" and str(current_prod) == "SYSTEM ADMIN":
                                 a_txt = '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="view_list"><a class="dropdown-item" href="#" onclick="Roles_View(this)">VIEW</a></li>'
                             ## Showing approve/reject in list grid
-                            elif (str(tab_name).upper() in ("MY APPROVAL QUEUE","QUOTES","TEAM APPROVAL QUEUE")):
+                            elif (str(tab_name).upper() in ("MY APPROVAL QUEUE","QUOTES","TEAM APPROVAL QUEUE","TEAM APPROVALS QUEUE")):
                                 
                                 if (str(tab_name).upper() in ("MY APPROVAL QUEUE","TEAM APPROVAL QUEUE") and flag == 0) or (str(tab_name).upper() == "QUOTES" and flag == 3):
                                     
