@@ -56,6 +56,7 @@ class ConfigUpdateScript:
 			self.current_tab_name = "My Approval Queue"
 		else:
 			self.current_tab_name = "Contract"
+		Trace.Write("Current_Tab_CHK_J "+str(Param.CurrentTab))
 	def get_obj_name(self):
 		"""TO DO."""
 		CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
