@@ -4441,9 +4441,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND
 				SAQICO.SERVICE_ID = '{TreeParam}'
 				) FB""".format(
-								TreeParam=self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,RevisionRecordId
+								TreeParam=self.tree_param if self.tree_parent_level_0 == 'Comprehensive Services' else self.tree_parent_level_0,
 								QuoteRecordId=self.contract_quote_record_id,
-								=self.quote_revision_record_id,
+								RevisionRecordId =self.quote_revision_record_id,
 								BatchGroupRecordId=kwargs.get('batch_group_record_id'),
 								UserId=self.user_id,
 								UserName=self.user_name,
@@ -5356,7 +5356,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		self._process_query("""UPDATE SAQICO SET PRICING_STATUS = CASE  
 						WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
 						ELSE 'ERROR'RevisionRecordId
-					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,=self.quote_revision_record_id))
+					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		self._process_query("""UPDATE SAQICO
 			SET
 			SAQICO.ANNUAL_BENCHMARK_BOOKING_PRICE = PRPRBM.ANNUAL_BOOKING_PRICE,
