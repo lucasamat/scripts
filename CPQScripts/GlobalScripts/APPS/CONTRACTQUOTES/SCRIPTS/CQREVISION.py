@@ -23,15 +23,15 @@ quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----')
 #A055S000P01-8729 start
 def create_new_revision(Opertion):
+	CloneObject={"SAQTSO":"QUOTE_SALESORG_RECORD_ID"}
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
-
 		#Get Old Revision ID - Start
 		get_old_revision_id = Sql.GetFirst("SELECT QTEREV_ID FROM SAQTRV WHERE ACTIVE='True' AND QUOTE_RECORD_ID= '"+str(quote_contract_recordId)+"'")
 		Trace.Write(get_old_revision_id.QTEREV_ID)
 		old_revision_no=get_old_revision_id.QTEREV_ID
 		#Get Old Revision ID - END
-  
+
 		#create new revision start
 		#edit_new_rev_quote = QuoteHelper.Edit(Quote.CompositeNumber)
 		create_new_rev = Quote.CreateNewRevision(True)
@@ -60,8 +60,29 @@ def create_new_revision(Opertion):
 			#update SAQTMT start
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 0))
 			#update SAQTMT end
-
-			
+			for cloneobjectname in CloneObject.keys():
+				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
+				insertcols = '""" INSERT INTO '+ str(cloneobjectname) +'( '
+				selectcols = "SELECT "
+				for col in sqlobj:
+					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
+						insertcols = insertcols + str(col.COLUMN_NAME)
+						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "QTEREV_ID":
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + " {NewRevisionNo} AS " + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + " '{QuoteRevisionRecordId}' AS " + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "CpqTableEntryId":
+						continue
+					else:
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + str(col.COLUMN_NAME)
+				insertcols += " )"
+				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_ID='{OldRevisionNo}'"+' """.format(QuoteRevisionRecordId=quote_revision_id,NewRevisionNo= newrev_inc,QuoteRecordId=quote_contract_recordId,OldRevisionNo=old_revision_no)'
+				finalquery=insertcols+' '+selectcols
+				Trace.Write(finalquery)
 			#INSERT salesorg start
 			salesorg_insertquery = Sql.RunQuery("""INSERT INTO SAQTSO
 				(	QUOTE_SALESORG_RECORD_ID,
@@ -124,7 +145,7 @@ def create_new_revision(Opertion):
 					ACCOUNT_PRICING_PROCEDURE,
 					ACCTAXCAT_DESCRIPTION
 				)
-    			SELECT 					
+				SELECT 					
 					CONVERT(VARCHAR(4000),NEWID()) AS QUOTE_SALESORG_RECORD_ID,
 					QUOTE_ID,
 					QUOTE_NAME,
@@ -188,8 +209,8 @@ def create_new_revision(Opertion):
 					SAQTSO
 				WHERE
 					QUOTE_RECORD_ID='{QuoteRecordId}'
-     			AND 
-        			QTEREV_ID='{oldrev_id}' """.format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,oldrev_id=newrev_inc-1) )
+				AND 
+					QTEREV_ID='{oldrev_id}' """.format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,oldrev_id=newrev_inc-1) )
 			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
@@ -273,7 +294,7 @@ def create_new_revision(Opertion):
 			AND 
 				QTEREV_ID='{oldrev_id}' """.format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,oldrev_id=newrev_inc-1) )
 			
-   			#Sql.RunQuery("""UPDATE SAQFBL SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			#Sql.RunQuery("""UPDATE SAQFBL SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#Insert fabs end
 
 
