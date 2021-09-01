@@ -29,6 +29,7 @@ import datetime
 
 Sql = SQL()
 QUOTE = Param.CPQ_Columns['Entries']
+revision = Param.CPQ_Columns['Revision']
 script_start_time = time.time()
 Log.Info("QUOTE ID---> "+str(QUOTE)+"CPS Price Script Started")
 Log.Info("------->CPI Hitting  2021")
@@ -51,7 +52,7 @@ all_count = 0
 loop_count = 0
 #GET PRICING PROCEDURE
 contract_quote_record_id = None
-GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID,ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID, QUOTE_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(QUOTE))
+GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID,ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID, QUOTE_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
     #PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
     PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -72,7 +73,7 @@ div = '98' """
 #UPDATE PRICING PROCEDURE TO SAQITM
 
 
-update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
+update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 Sql.RunQuery(update_SAQITM)
 """ update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
 Sql.RunQuery(update_SAQIFP) """
@@ -80,7 +81,7 @@ Sql.RunQuery(update_SAQIFP) """
     Trace.Write("EXCEPT ERROR FOR PRC PROCEDURE UPDATE") """
 
 
-STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
+STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
 #SAQTSOObj=SqlHelper.GetFirst("SELECT SALESORG_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,DOC_CURRENCY FROM SAQTSO (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
 stp_account_id = ""
 if STPObj:
@@ -95,14 +96,14 @@ start = 1
 end = 1000
 L = 1
 
-Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
-part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+Taxm1Qurey=Sql.GetFirst("SELECT ISNULL(SRVTAXCLA_ID,1) as SRVTAXCLA_ID FROM SAQITM (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision)))
+part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
 if part_query:
 
     while L == 1:
         #Log.Info("Looping Count ==> "+str(n))
         itemid = ''
-        part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
+        part_query = SqlHelper.GetList("SELECT PART_NUMBER, ANNUAL_QUANTITY FROM (SELECT PART_NUMBER, ANNUAL_QUANTITY,ROW_NUMBER() OVER(ORDER BY PART_NUMBER) AS SNO FROM SAQIFP (NOLOCK) WHERE QUOTE_ID = '"+str(QUOTE)+"' AND QTEREV_RECORD_ID = '"+str(revision)+"' AND PRICING_STATUS = 'ACQUIRING...' )A WHERE SNO>="+str(start)+" AND SNO<="+str(end)+"  ")
         partids = quantity = li = []
         s = ""
         if part_query:      
@@ -150,15 +151,15 @@ else:
     Log.Info('150----to call pricing here---quote table insert----')
     price = []
     #QUOTE = ''
-    account_obj = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}'".format(QuoteRecordId=QUOTE))
+    account_obj = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(QuoteRecordId=QUOTE,revision_rec_id = revision))
     stp_account_id = ""
-    service_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSE (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}'".format(QuoteRecordId=QUOTE))
+    service_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSE (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(QuoteRecordId=QUOTE,revision_rec_id = revision))
     serviceId = ""
     if account_obj:
         stp_account_id = str(account_obj.ACCOUNT_ID)
     if service_obj:
         serviceId = str(service_obj.SERVICE_ID)
-    salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}'".format(QuoteRecordId=QUOTE))
+    salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(QuoteRecordId=QUOTE,revision_rec_id = revision))
     item_string = ''
     if salesorg_obj:
         Trace.Write("serviceId--22--"+str(serviceId))			
@@ -189,7 +190,7 @@ else:
         #QUOTE = str(Itemidinfo[1])	
     contract_quote_record_id = None		
     getuomrec_val = ''
-    getservicerecord = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}'".format(QUOTE))
+    getservicerecord = Sql.GetFirst("select QUOTE_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,	SERVICE_RECORD_ID from SAQTSE (NOLOCK) where QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(QUOTE,revision))
     #QuoteItemList = Quote.QuoteTables["SAQICD"]
     for cond_info in price[0]['conditions']:
         #Log.Info("333 cond_info['conditionType'] --->"+str(cond_info['conditionType']))

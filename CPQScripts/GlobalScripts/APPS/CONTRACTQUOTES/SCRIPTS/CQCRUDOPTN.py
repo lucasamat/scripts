@@ -5350,6 +5350,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		
 		Sql.RunQuery("DELETE   FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")		
 		entries = str(self.contract_quote_id)
+		revision = str(self.quote_revision_record_id)
 		user = self.user_name		
 		CQPARTIFLW.iflow_pricing_call(user,entries)
 		
