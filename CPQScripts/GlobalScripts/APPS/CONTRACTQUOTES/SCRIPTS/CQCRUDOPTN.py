@@ -6249,7 +6249,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 						+ str(info_message_obj.MESSAGE_TEXT)
 						+ "</label></div></div>"
 					) """
-		Trace.Write('ent_msg_gen_txt--'+str(ent_msg_gen_txt)+'--msg_app_txt--'+str(msg_app_txt)+'--gettransactionmessage--'+str(gettransactionmessage)+'--ent_msg_txt---'+str(ent_msg_txt))
+		Trace.Write('ent_msg_gen_txt-----'+str(ent_msg_gen_txt)+'--msg_app_txt--'+str(msg_app_txt)+'--gettransactionmessage--'+str(gettransactionmessage)+'--ent_msg_txt---'+str(ent_msg_txt))
 		# Is Changed Information Notification - Start
 		equip_level_entitlement_obj = Sql.GetFirst("SELECT QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID FROM SAQSCE (NOLOCK) WHERE IS_CHANGED = 1 AND QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		if equip_level_entitlement_obj:
