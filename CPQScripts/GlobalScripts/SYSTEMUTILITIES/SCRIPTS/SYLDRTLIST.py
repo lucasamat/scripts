@@ -308,7 +308,7 @@ class SYLDRTLIST:
 				quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 				Trace.Write('306-------')           
 				if  quote_rec_id:                
-					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"'")
+					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 					getQuotetype = getQuote.QUOTE_TYPE
 					Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
@@ -417,7 +417,7 @@ class SYLDRTLIST:
 				Wh_OBJECT_NAME = objd_where_obj.OBJECT_NAME
 			#Contract valid start date & End date Calculation--START
 			
-			Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+			Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 			if Getyear:
 				start_date = datetime(Getyear.CONTRACT_VALID_FROM)
 				end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -453,9 +453,9 @@ class SYLDRTLIST:
 					
 				item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
+														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id, start, end))
+															contract_quote_record_id, quote_revision_record_id, start, end))
 				if item_billing_plans_obj:
 					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]
 					billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])
@@ -1196,7 +1196,7 @@ class SYLDRTLIST:
 						Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
 						RecAttValue = contract_quote_record_id
 						#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
-						Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'"                  
+						Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "                  
 					elif RECORD_ID == "SYOBJR-93130":
 						CommonTreeSuperParentParam = Product.GetGlobal("CommonTreeSuperParentParam")
 						CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
@@ -1318,9 +1318,9 @@ class SYLDRTLIST:
 						CurrentTabName = "Quotes"
 					if str(RECORD_ID) == "SYOBJR-98795":                                           
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")    
 						LineAndEquipIDList = TreeParam.split(' - ')
 						
 						if getyears == 1:
@@ -1381,7 +1381,7 @@ class SYLDRTLIST:
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
 									+ " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,MODEL_PRICE,TARGET_PRICE_MARGIN,TARGET_PRICE,CEILING_PRICE,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,BASE_PRICE,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALE_DISCOUNT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
-									+"' and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
+									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
 									+ str(Page_End)
@@ -1390,7 +1390,9 @@ class SYLDRTLIST:
 							QuryCount_str = (
 								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
 									+ str(RecAttValue)
-									+ "'and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"'"
+									+ "' AND QTEREV_RECORD_ID = '"
+									+ str(quote_revision_record_id)
+									+ "' and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"'"
 							)                                
 						else:    
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -1400,7 +1402,7 @@ class SYLDRTLIST:
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
 							qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 							if TreeParentParam == "Quote Items": 
 								try:
 									if str(TreeParam.split("-")[3]):
@@ -1460,8 +1462,8 @@ class SYLDRTLIST:
 								Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID, TOTAL_COST,MODEL_PRICE,TARGET_PRICE_MARGIN,TARGET_PRICE,CEILING_PRICE,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,BASE_PRICE,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALE_DISCOUNT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
-									+"' and FABLOCATION_ID = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"') m where m.ROW BETWEEN "
+									+ " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,EQUIPMENT_ID,SERVICE_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID, TOTAL_COST,MODEL_PRICE,TARGET_PRICE_MARGIN,TARGET_PRICE,CEILING_PRICE,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,BASE_PRICE,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALE_DISCOUNT_RECORD_ID,SALES_DISCOUNT_PRICE,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and FABLOCATION_ID = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
 									+ str(Page_End)
@@ -1470,7 +1472,7 @@ class SYLDRTLIST:
 								QuryCount_str = (
 									"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
 										+ str(RecAttValue)
-										+ "'and FABLOCATION_ID = '"+str(TreeParam)+"'and SERVICE_ID = '"+str(ServiceId)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"'"
+										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and FABLOCATION_ID = '"+str(TreeParam)+"'and SERVICE_ID = '"+str(ServiceId)+"' and LINE_ITEM_ID = '"+str(TreeParentParam.split(' -')[0])+"'"
 								)          
 							else:
 								Qury_str = (
@@ -1571,7 +1573,7 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == 'SYOBJR-98799':
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-						contract_quote_record_id) + "'")
+						contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						try:
 							quote_id = qt_rec_id.QUOTE_ID
 						except:
@@ -1581,9 +1583,11 @@ class SYLDRTLIST:
 						Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,QTEREV_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where QUOTE_ID = '"
 										+ str(quote_id)
-										+ "') m where m.ROW BETWEEN "
+										+ "' AND QTEREV_RECORD_ID = '"
+										+ str(quote_revision_record_id)
+										+ "' ) m where m.ROW BETWEEN "
 										+ str(Page_start)
 										+ " and "
 										+ str(Page_End)
@@ -1709,7 +1713,7 @@ class SYLDRTLIST:
 						#contract_quote_record_id = Quote.CompositeNumber
 						Trace.Write("contract_quote_record_id1234"+str(contract_quote_record_id))
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
-						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'")
+						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						if qt_rec_id is not None:
 							if TreeParentParam:
 								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' and SERVICE_TYPE = '{}'".format(TreeParam)
@@ -1860,12 +1864,11 @@ class SYLDRTLIST:
 					elif (str(RECORD_ID) == "SYOBJR-98858" or str(RECORD_ID) == "SYOBJR-00028") and str(TreeParam) == "Quote Information":
 						account_id = Product.GetGlobal("stp_account_id")
 						
-						Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.FABLOCATION_ID DESC) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,
-						contract_quote_record_id = str(RecAttValue))+ str(Page_start) + " and " + str(Page_End))
+						Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.FABLOCATION_ID DESC) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.QTEREV_RECORD_ID = '{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,revision_rec_id = quote_revision_record_id,	contract_quote_record_id = str(RecAttValue))+ str(Page_start) + " and " + str(Page_End))
 						
 						
 						
-						QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,contract_quote_record_id=str(RecAttValue))
+						QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.QTEREV_RECORD_ID = '{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,revision_rec_id = quote_revision_record_id,contract_quote_record_id=str(RecAttValue))
 					##involved parties equipmemt ends
 					
 					##involved parties source fab starts
@@ -2181,7 +2184,9 @@ class SYLDRTLIST:
 					Qury_str = (
 					"SELECT DISTINCT TOP "
 					+ str(PerPage)
-					+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+					+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+					+"' AND QTEREV_RECORD_ID = '"
+					+str(quote_revision_record_id)
 					+"') m where m.ROW BETWEEN "
 					+ str(Page_start)
 					+ " AND "
@@ -2190,7 +2195,8 @@ class SYLDRTLIST:
 					QuryCount_str = (
 						"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
 						+ str(RecAttValue)
-						+ "'"
+						+ "' AND QTEREV_RECORD_ID = '"
+						+ str(quote_revision_record_id)+"' "
 					)
 				elif RECORD_ID == 'SYOBJR-00010':
 					imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -2198,7 +2204,9 @@ class SYLDRTLIST:
 					Qury_str = (
 						"SELECT DISTINCT TOP "
 						+ str(PerPage)
-						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+						+"' AND QTEREV_RECORD_ID = '"
+						+str(quote_revision_record_id)
 						+"') m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " AND "
@@ -2207,7 +2215,9 @@ class SYLDRTLIST:
 					QuryCount_str = (
 						"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
 						+ str(RecAttValue)
-						+ "'"
+						+ "' AND QTEREV_RECORD_ID = '"
+						+ str(quote_revision_record_id)
+						+"'"
 					)
 
 				elif RECORD_ID == 'SYOBJR-00008':
@@ -2294,7 +2304,7 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					
 				elif RECORD_ID == 'SYOBJR-00024':                    
-					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"), revision_rec_id = quote_revision_record_id))
 					quote_id = quote_obj.QUOTE_ID
 					TreeParam = Product.GetGlobal("TreeParam")
 					TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -2869,7 +2879,7 @@ class SYLDRTLIST:
 											+ " where MASTER_TABLE_QUOTE_RECORD_ID  "
 											+ " = '"
 											+ str(contract_quote_record_id)
-											+ "' ) "
+											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
 										)
 									else:
 										if str(cur_api_name_obj.CURRENCY_INDEX) =="GLOBAL_CURRENCY":
@@ -3031,7 +3041,7 @@ class SYLDRTLIST:
 						## addon product hyperlink starts
 						if str(RECORD_ID) == "SYOBJR-98859" and value123 == 'ADNPRD_ID':
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' and ADNPRD_ID = '{}' and SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,str(value1234),str(TreeParentParam)))
+							get_key_value = Sql.GetFirst("SELECT {} AS VAL from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}' and ADNPRD_ID = '{}' and SERVICE_ID = '{}'".format(str(objRecName),str(ObjectName),contract_quote_record_id,quote_revision_record_id,str(value1234),str(TreeParentParam)))
 							key_value = get_key_value.VAL
 						## addon product hyperlink ends
 						if value123 in edit_field:
@@ -3099,7 +3109,7 @@ class SYLDRTLIST:
 												+ " where MASTER_TABLE_QUOTE_RECORD_ID  "
 												+ " = '"
 												+ str(contract_quote_record_id)
-												+ "' ) "
+												+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) "
 											)
 											concatedata = ""
 											if curr_symbol_obj:
@@ -3811,7 +3821,7 @@ class SYLDRTLIST:
 		gettotalamt = getgrandtotalamt = ""
 		if ObjectName == "SAQIBP":
 			ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-			gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' group by BILLING_DATE ".format(cq=str(ContractRecordId),billing_date_column=str(tuple(billing_date_column))))
+			gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column))))
 			if gettotaldateamt:
 				my_format = "{:,." + str(decimal_place) + "f}"
 				for val in gettotaldateamt: 
@@ -4434,9 +4444,9 @@ class SYLDRTLIST:
 					start = end - 12 + 1
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' 
+														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id, start, end))
+															contract_quote_record_id, quote_revision_record_id, start, end))
 				
 				if item_billing_plans_obj:
 					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
@@ -4920,7 +4930,7 @@ class SYLDRTLIST:
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				except:
 					contract_quote_record_id = ''    
-				Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+				Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				
 				if Getyear:
 					start_date = datetime(Getyear.CONTRACT_VALID_FROM)
@@ -5463,9 +5473,9 @@ class SYLDRTLIST:
 						TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")    
 						LineAndEquipIDList = TreeParam.split(' - ')                        
 						if getyears == 1:
 							col_year =  'YEAR_1'
@@ -5524,8 +5534,8 @@ class SYLDRTLIST:
 							Qury_str = (
 									"SELECT DISTINCT TOP "
 									+ str(PerPage)
-									+ " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,TARGET_PRICE_MARGIN,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,MODEL_PRICE,TARGET_PRICE,CEILING_PRICE,SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",BASE_PRICE,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALE_DISCOUNT_RECORD_ID,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
-									+"' and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
+									+ " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,TARGET_PRICE_MARGIN,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,GREENBOOK,FABLOCATION_ID,TOTAL_COST,MODEL_PRICE,TARGET_PRICE,CEILING_PRICE,SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",BASE_PRICE,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALES_DISCOUNT_PRICE,SALE_DISCOUNT_RECORD_ID,SALESORG_RECORD_ID,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQICO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+									+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"') m where m.ROW BETWEEN "
 									+ str(Page_start)
 									+ " AND "
 									+ str(Page_End)
@@ -5534,7 +5544,7 @@ class SYLDRTLIST:
 							QuryCount_str = (
 								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE " + str(ATTRIBUTE_VALUE_STR) +" QUOTE_RECORD_ID = '"
 									+ str(RecAttValue)
-									+ "'and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"'"
+									+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and FABLOCATION_ID = '"+str(fab_location_id)+"' and SERVICE_ID = '"+str(ServiceId)+"'"
 							)    
 						else:
 							if getyears == 1:
@@ -5554,7 +5564,7 @@ class SYLDRTLIST:
 							partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 							assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
 							qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")                            
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")                            
 							
 
 							if TreeParam == "Quote Items":
@@ -5626,7 +5636,7 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == 'SYOBJR-98799':     
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")                
 						qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-						contract_quote_record_id) + "'")
+						contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						try:
 							quote_id = qt_rec_id.QUOTE_ID
 						except:
@@ -5636,9 +5646,9 @@ class SYLDRTLIST:
 						Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where " + str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,QTEREV_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where " + str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
-										+ "') m where m.ROW BETWEEN "
+										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 										+ str(Page_start)
 										+ " and "
 										+ str(Page_End)
@@ -5799,7 +5809,7 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == "SYOBJR-98788":   
 						Trace.Write("test2")       
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'")
+						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						
 						if TreeParentParam:
 							Qustr = "where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' and SERVICE_TYPE = '{}'".format(TreeParam)
@@ -5894,7 +5904,7 @@ class SYLDRTLIST:
 						"SELECT DISTINCT TOP "
 						+ str(PerPage)
 						+ " QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
-						+"') m where m.ROW BETWEEN "
+						+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 						+ str(Page_start)
 						+ " AND "
 						+ str(Page_End)+" "
@@ -5902,7 +5912,7 @@ class SYLDRTLIST:
 						QuryCount_str = (
 							"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
 							+ str(RecAttValue)
-							+ "'"
+							+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 						)
 					elif RECORD_ID == 'SYOBJR-00010':
 						imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -5910,8 +5920,8 @@ class SYLDRTLIST:
 						Qury_str = (
 							"SELECT DISTINCT TOP "
 							+ str(PerPage)
-							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
-							+"') m where m.ROW BETWEEN "
+							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+							+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " AND "
 							+ str(Page_End)+" ORDER BY PRICING_STATUS ASC"
@@ -5919,7 +5929,7 @@ class SYLDRTLIST:
 						QuryCount_str = (
 							"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID = '"
 							+ str(RecAttValue)
-							+ "'"
+							+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 						)
 					elif RECORD_ID == 'SYOBJR-00008':
 						imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -5977,7 +5987,7 @@ class SYLDRTLIST:
 
 
 						if TreeParam == "Quote Items":                            
-							Qustr = "where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
+							Qustr = "where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 							Qury_str = (
 								"select DISTINCT top "
 								+ str(PerPage)
@@ -5997,7 +6007,7 @@ class SYLDRTLIST:
 							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					elif RECORD_ID == 'SYOBJR-00024':
 						
-						quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+						quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"), revision_rec_id = quote_revision_record_id))
 						quote_id = quote_obj.QUOTE_ID
 						TreeParam = Product.GetGlobal("TreeParam")
 						if TreeSuperParentParam == 'Approvals':
@@ -6016,17 +6026,17 @@ class SYLDRTLIST:
 					elif (str(RECORD_ID) == "SYOBJR-98858" or str(RECORD_ID) == "SYOBJR-00028") and str(TreeParam) == "Quote Information":
 						account_id = Product.GetGlobal("stp_account_id")
 						
-						Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.FABLOCATION_ID DESC) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.{ATTRIBUTE_VALUE_STR} SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,
+						Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.FABLOCATION_ID DESC) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}' and SAQSTE.{ATTRIBUTE_VALUE_STR} SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,revision_rec_id = quote_revision_record_id,
 						contract_quote_record_id = str(RecAttValue),ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR)+ str(Page_start) + " and " + str(Page_End))
 						
 						
 						
-						QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.{ATTRIBUTE_VALUE_STR} SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,contract_quote_record_id=str(RecAttValue),ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR)
+						QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID  and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}' and SAQSTE.{ATTRIBUTE_VALUE_STR} SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,contract_quote_record_id=str(RecAttValue),ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,revision_rec_id = quote_revision_record_id)
 					##involved parties equipmemt ends
 					elif str(RECORD_ID) == "SYOBJR-98859":
 						Trace.Write("5512")
 						#"where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
-						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND  SERVICE_ID = '"+str(TreeParentParam)+"' "
+						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND  SERVICE_ID = '"+str(TreeParentParam)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -6206,7 +6216,7 @@ class SYLDRTLIST:
 					elif (str(RECORD_ID) == "SYOBJR-98857") and str(TreeParam) == "Quote Information":
 						account_id = Product.GetGlobal("stp_account_id")
 						quote_rec_id = Product.GetGlobal("contract_quote_record_id")
-						Qustr = " WHERE QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' and "+str(ATTRIBUTE_VALUE_STR) +" SRCACC_ID = '{}'".format(account_id)
+						Qustr = " WHERE QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and  "+str(ATTRIBUTE_VALUE_STR) +" SRCACC_ID = '{}'".format(account_id)
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -6254,7 +6264,7 @@ class SYLDRTLIST:
 					elif RECORD_ID == 'SYOBJR-98792' and str(TreeParam) == "Quote Preview":                        
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
-						contract_quote_record_id) + "'")
+						contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 						if getyears == 1:
 							col_year =  'YEAR_1'
 						elif getyears == 2:
@@ -6873,9 +6883,9 @@ class SYLDRTLIST:
 							TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-								contract_quote_record_id) + "'")
+								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 							Serv_id = SqlHelper.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")    
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")    
 							LineAndEquipIDList = TreeParam.split(' - ')
 							
 							if getyears == 1:
@@ -6996,12 +7006,12 @@ class SYLDRTLIST:
 										ServiceId = TreeParentParam.split("-")[-2].strip()
 								except:
 									ServiceId = TreeParentParam.split("-")[1].strip()                            
-								Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,TARGET_PRICE_MARGIN,GREENBOOK,FABLOCATION_ID,TOTAL_COST,MODEL_PRICE,TARGET_PRICE,CEILING_PRICE,SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,BASE_PRICE,FABLOCATION_RECORD_ID,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,YEAR_1,YEAR_2,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,MNT_PLANT_RECORD_ID,SALE_DISCOUNT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
+								Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN PRICING_STATUS = 'ERROR' THEN '"+ error +"' WHEN PRICING_STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN PRICING_STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,TARGET_PRICE_MARGIN,GREENBOOK,FABLOCATION_ID,TOTAL_COST,MODEL_PRICE,TARGET_PRICE,CEILING_PRICE,SALES_DISCOUNT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,TAX,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,BASE_PRICE,FABLOCATION_RECORD_ID,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,YEAR_1,YEAR_2,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALE_DISCOUNT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,QUOTE_CURRENCY_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
 								
 								QuryCount_str = (
 									"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQICO (nolock) WHERE QUOTE_RECORD_ID = '"
 										+ str(RecAttValue)
-										+ "'and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"' "
+										+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"' "
 								)    
 							else:
 								imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -7011,7 +7021,7 @@ class SYLDRTLIST:
 								partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
 								assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
 								qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-								contract_quote_record_id) + "'")
+								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 								if TreeParam == "Quote Items":
 									
 									Qury_str = (
@@ -7080,28 +7090,28 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == 'SYOBJR-98799':
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							qt_rec_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 							try:
 								quote_id = qt_rec_id.QUOTE_ID
 							except:
 								quote_id = ""
 							Trace.Write("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
 							Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where QUOTE_ID = '"
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_DOCUMENT_RECORD_ID, DOCUMENT_ID,DOCUMENT_NAME,LANGUAGE_ID,LANGUAGE_NAME,CPQTABLEENTRYDATEADDED,QUOTE_RECORD_ID,QTEREV_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY STATUS) AS ROW, * from SAQDOC (NOLOCK) where QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
-											+ "') m where m.ROW BETWEEN "
+											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
 											+ str(Page_start)
 											+ " and "
 											+ str(Page_End)
 									)
 							QuryCount_str = (
-									"select count(*) as cnt FROM SAQDOC where QUOTE_ID = '{}'".format(
-										str(qt_rec_id.QUOTE_ID))
+									"select count(*) as cnt FROM SAQDOC where QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(
+										str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 							)
 						
 						elif str(RECORD_ID) == "SYOBJR-00015" and str(TreeParentParam) == "Approval Chain Steps":
@@ -7219,10 +7229,10 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-98788":
 							Trace.Write("Test1")
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"'")
+							qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 							
 							if TreeParentParam:
-								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' and SERVICE_TYPE = '{}'".format(TreeParam)
+								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_TYPE = '{}'".format(TreeParam)
 							else:
 								Trace.Write("Next")
 								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"'"
@@ -7312,8 +7322,8 @@ class SYLDRTLIST:
 							Qury_str = (
 							"SELECT DISTINCT TOP "
 							+ str(PerPage)
-							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,MATPRIGRP_ID,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
-							+"') m where m.ROW BETWEEN "
+							+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,MATPRIGRP_ID,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,PRICING_STATUS,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,TAX_PERCENTAGE,SERVICE_ID,SRVTAXCLA_DESCRIPTION from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+							+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " AND "
 							+ str(Page_End)+" "
@@ -7321,7 +7331,7 @@ class SYLDRTLIST:
 							QuryCount_str = (
 								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
 								+ str(RecAttValue)
-								+ "'"
+								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 							)
 						elif RECORD_ID == 'SYOBJR-00010':    
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
@@ -7329,8 +7339,8 @@ class SYLDRTLIST:
 							Qury_str = (
 								"SELECT DISTINCT TOP "
 								+ str(PerPage)
-								+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
-								+"') m where m.ROW BETWEEN "
+								+ "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+								+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
 								+ str(Page_start)
 								+ " AND "
 								+ str(Page_End)+" ORDER BY PRICING_STATUS ASC"
@@ -7338,7 +7348,7 @@ class SYLDRTLIST:
 							QuryCount_str = (
 								"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQIFP (nolock) WHERE QUOTE_RECORD_ID = '"
 								+ str(RecAttValue)
-								+ "'"
+								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 							)
 
 
@@ -7430,7 +7440,7 @@ class SYLDRTLIST:
 
 
 							if TreeParam == "Quote Items":                                
-								Qustr = "where QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
+								Qustr = "where QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 								Qury_str = (
 									"select DISTINCT top "
 									+ str(PerPage)
@@ -7450,7 +7460,7 @@ class SYLDRTLIST:
 								QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 						elif RECORD_ID == 'SYOBJR-00024':
 							
-							quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+							quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"), revision_rec_id = quote_revision_record_id))
 							quote_id = quote_obj.QUOTE_ID
 							TreeParam = Product.GetGlobal("TreeParam")
 							
@@ -7491,18 +7501,18 @@ class SYLDRTLIST:
 						elif (str(RECORD_ID) == "SYOBJR-98858" or str(RECORD_ID) == "SYOBJR-00028") and str(TreeParam) == "Quote Information":
 							account_id = Product.GetGlobal("stp_account_id")
 							
-							Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.{Wh_API_NAMEs}) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,
+							Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.{Wh_API_NAMEs}) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' AND SAQSTE.QTEREV_RECORD_ID='{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,revision_rec_id = quote_revision_record_id,
 							contract_quote_record_id = str(RecAttValue), Wh_API_NAMEs= str(Wh_API_NAMEs))+ str(Page_start) + " and " + str(Page_End))
 							
 							
 							
-							QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,contract_quote_record_id=str(RecAttValue))
+							QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and  SAQSTE.QTEREV_RECORD_ID = '{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,revision_rec_id = quote_revision_record_id,contract_quote_record_id=str(RecAttValue))
 						##involved parties equipmemt ends
 						elif RECORD_ID == 'SYOBJR-98792' and str(TreeParam) == "Quote Preview":
 							
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "'")
+							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 							if getyears == 1:
 								col_year =  'YEAR_1'
 							elif getyears == 2:
@@ -7580,7 +7590,7 @@ class SYLDRTLIST:
 							Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
 							RecAttValue = contract_quote_record_id
 							#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
-							Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'" 
+							Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'" 
 						elif str(RECORD_ID) == "SYOBJR-95981" or str(RECORD_ID)=="SYOBJR-98459":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue()
 							Qustr +=" where "+str(Wh_API_NAME) + " = '"+str(RecAttValue)+"'"
@@ -7798,7 +7808,7 @@ class SYLDRTLIST:
 								+ " where MASTER_TABLE_QUOTE_RECORD_ID  "
 								+ " = '"
 								+ str(contract_quote_record_id)
-								+ "' ) "
+								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
 							)
 						else:
 							curr_symbol_obj = Sql.GetFirst(
@@ -8027,7 +8037,7 @@ class SYLDRTLIST:
 											+ " where MASTER_TABLE_QUOTE_RECORD_ID  "
 											+ " = '"
 											+ str(contract_quote_record_id)
-											+ "' ) "
+											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
 										)
 										concatedata = ""
 										if curr_symbol_obj:
@@ -8106,7 +8116,7 @@ class SYLDRTLIST:
 				
 				if ObjectName == "SAQIBP":
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' group by BILLING_DATE ".format(cq=str(ContractRecordId),billing_date_column=str(tuple(billing_date_column))))
+					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column))))
 					if gettotaldateamt:
 						my_format = "{:,." + str(decimal_place) + "f}"
 						for val in gettotaldateamt: 
@@ -8206,7 +8216,10 @@ try:
 except:
 	Currenttab = ""
 		
-
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = None
 
 
 if ACTION == "PRODUCT_ONLOAD": 
