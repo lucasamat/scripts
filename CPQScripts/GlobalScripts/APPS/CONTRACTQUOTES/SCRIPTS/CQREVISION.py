@@ -43,7 +43,7 @@ def create_new_revision(Opertion):
 		#create new revision -SAQTRV - update-start
 		quote_revision_table_info = Sql.GetTable("SAQTRV")
 		quote_revision_id = str(Guid.NewGuid()).upper()
-		#Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
+		Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
