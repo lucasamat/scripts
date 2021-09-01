@@ -1273,11 +1273,14 @@ class SYLDRTLIST:
 								if Currenttab == "Contracts":
 									RecAttValue = Quote.GetGlobal("contract_record_id")		
 								else:
-									try:
+									if current_prod.upper() == "SALES":
 										RecAttValue = Quote.GetGlobal("contract_quote_record_id")
-									except:
-										Trace.Write("RecAttValue EXCEPT !!!")
-										RecAttValue = ""
+									elif current_prod.upper() == "APPROVAL CENTER":
+										if str(current_tab).upper() == "APPROVAL CHAIN":
+											RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
+										else:
+											Trace.Write("RecAttValue EXCEPT !!!")
+											RecAttValue = ""
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales":                                
 								Qustr = " where QUOTE_CURRENCY = '"+str(PR_CURR)+"'"
