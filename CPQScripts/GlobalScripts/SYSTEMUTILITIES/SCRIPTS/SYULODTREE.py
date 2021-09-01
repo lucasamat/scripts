@@ -2444,7 +2444,7 @@ class TreeView:
 						Trace.Write("@2444---") 
 						childQuery = Sql.GetList("select * from " + str(ObjName) + " (nolock) where " + str(where_string) + "")
 					if (str(ObjName).strip() != 'CTCSGB' and str(NodeApiName) != 'FABLOCATION_ID'):
-    					Trace.Write("@2447---") 	
+						Trace.Write("@2447")
 						childQuery = Sql.GetList("select * from " + str(ObjName) + " (nolock) where " + str(where_string) + "")
 					else:
 						Trace.Write("@2450---")  					
