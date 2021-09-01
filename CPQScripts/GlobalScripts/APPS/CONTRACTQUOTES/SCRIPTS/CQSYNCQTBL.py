@@ -461,15 +461,16 @@ class SyncQuoteAndCustomTables:
 						"/",
 					)
 						
-				quote_id = "SQ{}RV00-RW00AM00-{}".format(
-					self.quote.CompositeNumber,
-					self.get_formatted_date(
-						custom_fields_detail.get("QuoteExpirationDate").year,
-						custom_fields_detail.get("QuoteExpirationDate").month,
-						custom_fields_detail.get("QuoteExpirationDate").day,
-						"{Year}{Separator}{Month}{Separator}{Date}",
-					),
-				)
+				# quote_id = "SQ{}RV00-RW00AM00-{}".format(
+				# 	self.quote.CompositeNumber,
+				# 	self.get_formatted_date(
+				# 		custom_fields_detail.get("QuoteExpirationDate").year,
+				# 		custom_fields_detail.get("QuoteExpirationDate").month,
+				# 		custom_fields_detail.get("QuoteExpirationDate").day,
+				# 		"{Year}{Separator}{Month}{Separator}{Date}",
+				# 	),
+				# )
+				quote_id = self.quote.CompositeNumber
 				quote_obj = Sql.GetFirst(
 					"SELECT * FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}' AND C4C_QUOTE_ID = '{}'".format(
 						quote_id, self.quote.CompositeNumber
