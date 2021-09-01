@@ -642,8 +642,8 @@ class ContractQuoteCrudOpertion:
 					ON SAQICO.CpqTableEntryId = IQ.CpqTableEntryId""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 
 			self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					)
 				)
 
@@ -999,8 +999,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					)
 				)
 				self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					)
 				)
 		return True
@@ -1388,8 +1388,8 @@ class ToolRelocationModel(ContractQuoteCrudOpertion):
 						)	
 
 		self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					)
 				)
 
@@ -2532,8 +2532,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					)
 				)
 			self._process_query(
-								"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-									BatchGroupRecordId=batch_group_record_id
+								"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+									BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 								)
 							)
 
@@ -4632,8 +4632,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				Log.Info("Entitlement end==> "+str(Entitlement_end_time - Entitlement_start_time))
 
 				self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id
+					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					))
 				covered_end_time = time.time()
 				Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
