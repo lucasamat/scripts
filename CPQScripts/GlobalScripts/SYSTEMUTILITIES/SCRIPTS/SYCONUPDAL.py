@@ -57,7 +57,7 @@ class ConfigUpdateScript:
 		elif Param.CurrentTab == "Team Approval Queue":
 			self.current_tab_name = "Team Approval Queue"
 		else:
-			self.current_tab_name = "Contract"
+			self.current_tab_name = Param.CurrentTab
 		Trace.Write("Current_Tab_CHK_J "+str(Param.CurrentTab))
 	def get_obj_name(self):
 		"""TO DO."""
