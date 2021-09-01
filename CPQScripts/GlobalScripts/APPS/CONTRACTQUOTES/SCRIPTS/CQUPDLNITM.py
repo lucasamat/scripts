@@ -17,12 +17,13 @@ def getData():
     section_row1 = {}
     CrtId = TagParserProduct.ParseString("<*CTX( Quote.CartId )*>")
     Ownrid = TagParserProduct.ParseString("<*CTX( Quote.OwnerId )*>")
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
     QuoteNumber=Quote.GetGlobal("contract_quote_record_id")
-    getquoteid = SqlHelper.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"'")
+    getquoteid = SqlHelper.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' ")
     for item in Quote.Items :
         rolled_up_id = factor_id =rate = con_type = con_uom = con_rec = ""
         section_row1[str("dyn_" + str(item.Rank))] = ""
-        Queryload = SqlHelper.GetList("select ownerId,cartId,CONDITION_COUNTER,CONDITION_CURRENCY,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_BASE from QT__SAQICD where QUOTE_ID = '"+str(getquoteid.QUOTE_ID)+"'  and SERVICE_ID= '"+str(item.PartNumber)+"' ")
+        Queryload = SqlHelper.GetList("select ownerId,cartId,CONDITION_COUNTER,CONDITION_CURRENCY,CONDITION_DATA_TYPE,CONDITION_RATE,CONDITION_TYPE,CONDITIONTYPE_NAME,CONDITIONTYPE_RECORD_ID,UOM,CONDITION_VALUE,UOM_RECORD_ID,LINE,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_NAME,SERVICE_DESCRIPTION,SERVICE_ID,STEP_NUMBER,SERVICE_RECORD_ID,QUOTE_RECORD_ID,CONDITION_BASE from QT__SAQICD where QUOTE_ID = '"+str(getquoteid.QUOTE_ID)+"'  and SERVICE_ID= '"+str(item.PartNumber)+"' and QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' ")
         if Queryload and counter == 0:
             for row in Queryload:
                 rolled_up_id ="dyn_" + "1"
