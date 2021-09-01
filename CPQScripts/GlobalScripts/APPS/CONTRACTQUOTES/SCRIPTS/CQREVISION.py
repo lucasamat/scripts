@@ -23,7 +23,11 @@ quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----')
 #A055S000P01-8729 start
 def create_new_revision(Opertion):
-	CloneObject={"SAQTSO":"QUOTE_SALESORG_RECORD_ID","SAQFBL":"QUOTE_FABLOCATION_RECORD_ID"}
+	CloneObject={
+     	"SAQTSO":"QUOTE_SALESORG_RECORD_ID",
+      	"SAQFBL":"QUOTE_FABLOCATION_RECORD_ID",
+        "SAQFEQ":"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID" 
+        }
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		#Get Old Revision ID - Start
