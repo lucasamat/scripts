@@ -474,6 +474,11 @@ def do_process(TABLEID, LABLE, VALUE):
 LABLE = list(Param.LABLE)
 VALUE = list(Param.VALUE)
 TABLEID = (Param.TABLEID).strip()
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-quote_revision_id = Quote.GetGlobal("quote_revision_id")
+try:
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    quote_revision_id = Quote.GetGlobal("quote_revision_id")
+except:
+    Trace.Write("EXCEPT: quote_revision_record_id and quote_revision_id")
+    quote_revision_record_id= ""
+    quote_revision_id= ""
 ApiResponse = ApiResponseFactory.JsonResponse(do_process(TABLEID, LABLE, VALUE))
