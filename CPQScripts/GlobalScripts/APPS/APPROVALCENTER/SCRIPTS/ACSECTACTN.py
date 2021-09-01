@@ -1482,7 +1482,11 @@ class approvalCenter:
             hour_glass = self.ImagePath + "hour_glass.svg"
             unanimous_consent = self.ImagePath + "unanimous_consent.svg"
             GroupUserIcon = self.ImagePath + "group_user_icon.svg"
-            contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+            try:
+                contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+            except:
+                Trace.Write("contract_quote_record_id !!!")
+                contract_quote_record_id = ""
             steps_status = []
             headIcon_status = []
             get_chain_max_rounds = []
