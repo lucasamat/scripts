@@ -447,11 +447,11 @@ def chinesedoc():
 	#Log.Info(qtqdoc)
 	Sql.RunQuery(qtqdoc)
 	
-	SUM_YEAR1 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '1' AND BILLING_INTERVAL IS NULL")
-	SUM_YEAR2 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '2' AND BILLING_INTERVAL IS NULL")
-	SUM_YEAR3 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '3' AND BILLING_INTERVAL IS NULL")
-	SUM_YEAR4 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '4' AND BILLING_INTERVAL IS NULL")
-	SUM_YEAR5 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '5' AND BILLING_INTERVAL IS NULL")
+	SUM_YEAR1 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '1' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR2 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '2' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR3 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '3' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR4 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '4' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+	SUM_YEAR5 = SqlHelper.GetFirst("SELECT convert(varchar,FORMAT(cast(SUM(MONTH_1) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_1, convert(varchar,FORMAT(cast(SUM(MONTH_2) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_2, convert(varchar,FORMAT(cast(SUM(MONTH_3) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_3, convert(varchar,FORMAT(cast(SUM(MONTH_4) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_4, convert(varchar,FORMAT(cast(SUM(MONTH_5) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_5, convert(varchar,FORMAT(cast(SUM(MONTH_6) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_6, convert(varchar,FORMAT(cast(SUM(MONTH_7) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_7, convert(varchar,FORMAT(cast(SUM(MONTH_8) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_8, convert(varchar,FORMAT(cast(SUM(MONTH_9) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_9, convert(varchar,FORMAT(cast(SUM(MONTH_10) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_10, convert(varchar,FORMAT(cast(SUM(MONTH_11) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_11, convert(varchar,FORMAT(cast(SUM(MONTH_12) as numeric(10,2)),'###,###,##0.00','en-US'))  AS MONTH_12 FROM QT__BM_YEAR_1(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND YEAR = '5' AND BILLING_INTERVAL IS NULL"+" AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 
 
 	M1_Y1 = SUM_YEAR1.MONTH_1
@@ -585,7 +585,7 @@ def chinesedoc():
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
-	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '1'""")
+	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '1' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 
 	#DATES_YEAR_1 = SqlHelper.GetFirst("SELECT MONTH_1, MONTH_1, MONTH_2, MONTH_3, MONTH_4, MONTH_5, MONTH_6, MONTH_7, MONTH_8, MONTH_9, MONTH_10, MONTH_10, MONTH_11, MONTH_12 FROM #QT__Billing_Matrix_Header(NOLOCK) WHERE QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '4'")
 
@@ -595,28 +595,28 @@ def chinesedoc():
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
-	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '2'""")
+	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '2'AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 	GetYear3EndDate = SqlHelper.GetFirst("""SELECT
 	ID,
 	(SELECT MAX(convert(date, LastUpdateDate))
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
-	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '3'""")
+	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '3'AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 	GetYear4EndDate = SqlHelper.GetFirst("""SELECT
 	ID,
 	(SELECT MAX(convert(date, LastUpdateDate))
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
-	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '4'""")
+	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '4' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 	GetYear5EndDate = SqlHelper.GetFirst("""SELECT
 	ID,
 	(SELECT MAX(convert(date, LastUpdateDate))
 		FROM (VALUES (MONTH_1),(MONTH_2),(MONTH_3),(MONTH_4),(MONTH_5),(MONTH_6),(MONTH_7),(MONTH_8),(MONTH_9),(MONTH_10),(MONTH_11),(MONTH_12)) AS UpdateDate(LastUpdateDate))
 	AS LastUpdateDate
 	FROM QT__Billing_Matrix_Header
-	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '5'""")
+	where QUOTE_RECORD_ID = '"""+str(recid)+"""' AND YEAR = '5' AND QTEREV_RECORD_ID = '"""+str(quote_revision_record_id)+"""'""")
 
 
 
@@ -657,7 +657,7 @@ def chinesedoc():
 		pass
 	
 	try:
-		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' ")
+		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"'AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass
@@ -734,7 +734,7 @@ def chinesedoc():
 			row['CpqTableEntryDateModified'] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 			tableInfo.AddRow(row)
 			SqlHelper.Upsert(tableInfo) """
-			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'ZH' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}'""".format(recid=recid,docid=doc_id,docname=doc_name)
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'ZH' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=recid,docid=doc_id,docname=doc_name)
 			Sql.RunQuery(update_query)
 			''' qtqdoc="""INSERT SAQDOC (
 						QUOTE_DOCUMENT_RECORD_ID,
@@ -772,7 +772,7 @@ def chinesedoc():
 
 
 def fpmdoc():
-	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"'")
+	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	Log.Info("FPM QUOTE"+str(recid))
 	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
 	Log.Info("FPM QUOTE---775---"+str(recid))
@@ -811,7 +811,7 @@ def fpmdoc():
 	Sql.RunQuery(qtqdoc)
 	
 	try:
-		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' ")
+		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass	
@@ -869,7 +869,7 @@ def fpmdoc():
 			row['CpqTableEntryDateModified'] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 			tableInfo.AddRow(row)
 			SqlHelper.Upsert(tableInfo) """
-			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}'""".format(recid=recid,docid=doc_id,docname=doc_name)
+			update_query = """UPDATE SAQDOC SET DOCUMENT_ID = '{docid}', DOCUMENT_NAME = '{docname}', STATUS = 'ACQUIRED' WHERE SAQDOC.DOCUMENT_ID = 'Pending' AND SAQDOC.LANGUAGE_ID = 'EN' AND SAQDOC.STATUS = 'PENDING' AND SAQDOC.QUOTE_RECORD_ID = '{recid}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(recid=recid,docid=doc_id,docname=doc_name,quote_revision_record_id=quote_revision_record_id)
 			Sql.RunQuery(update_query)
 			''' qtqdoc="""INSERT SAQDOC (
 						QUOTE_DOCUMENT_RECORD_ID,
