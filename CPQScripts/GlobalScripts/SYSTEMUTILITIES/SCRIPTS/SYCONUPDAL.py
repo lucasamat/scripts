@@ -206,7 +206,7 @@ class ConfigUpdateScript:
 			if table_name == 'CTCNRT' and (self.product_name != "SYSTEM ADMIN" and self.product_name != "APPROVAL CENTER"):
 				record_id = Quote.GetGlobal("contract_record_id")
 			if table_name == 'SAQTMT':
-				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
 			if key_column and record_id:
 				query_string = self.build_query(
@@ -399,7 +399,7 @@ class ConfigUpdateScript:
 						key_value = ""
 						cpq_record_id = ""
 				elif self.current_tab_name == 'Quote' or self.current_tab_name == 'Contract':
-					getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+					getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID = '{}'".format(Quote.CompositeNumber))
 
 					key_value = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
 					#cpq_record_id = str(key_value)
