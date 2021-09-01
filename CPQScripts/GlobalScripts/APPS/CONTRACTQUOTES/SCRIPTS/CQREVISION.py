@@ -62,6 +62,30 @@ def create_new_revision(Opertion):
 			#update SAQTMT end
 			
    			#INSERT salesorg start
+			for cloneobjectname in CloneObject.keys():
+				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
+				insertcols = '""" INSERT INTO '+ str(cloneobjectname) +'( '
+				selectcols = "SELECT "
+				for col in sqlobj:
+					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
+						insertcols = insertcols + str(col.COLUMN_NAME)
+						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "QTEREV_ID":
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == "CpqTableEntryId":
+						continue
+					else:
+						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + str(col.COLUMN_NAME)
+				insertcols += " )"
+				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))+' """'
+				finalquery=insertcols+' '+selectcols
+				Trace.Write(finalquery)
+				ExecObjQuery = Sql.RunQuery(finalquery)
 			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
