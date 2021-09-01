@@ -1273,7 +1273,11 @@ class SYLDRTLIST:
 								if Currenttab == "Contracts":
 									RecAttValue = Quote.GetGlobal("contract_record_id")		
 								else:
-									RecAttValue = Quote.GetGlobal("contract_quote_record_id")
+									try:
+										RecAttValue = Quote.GetGlobal("contract_quote_record_id")
+									except:
+										Trace.Write("RecAttValue EXCEPT !!!")
+										RecAttValue = ""
 								Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 							elif current_prod.upper() == "PRICE MODELS" and TP == "Sales":                                
 								Qustr = " where QUOTE_CURRENCY = '"+str(PR_CURR)+"'"
