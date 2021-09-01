@@ -16,10 +16,10 @@ def Quote_Preview(quote_id,quote_type):
     Today = datetime.datetime.now().strftime("%m/%d/%Y")
     date_after_month = datetime.datetime.now()+ timedelta(days=90)
     datefor = date_after_month.strftime("%m/%d/%Y")
-    quote_rec_id = Product.GetGlobal("contract_quote_record_id")
-    recid = quote_rec_id
+    QuoteRecordId = Product.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     # recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
-    quoteid = Sql.GetFirst("SELECT QUOTE_ID, C4C_QUOTE_ID, PAYMENTTERM_NAME, CONVERT(varchar,CONTRACT_VALID_FROM,101) as CONTRACT_VALID_FROM,CONVERT(varchar,CONTRACT_VALID_TO,101) as CONTRACT_VALID_TO, CUSTOMER_NOTES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"'")    
+    quoteid = Sql.GetFirst("SELECT QUOTE_ID, C4C_QUOTE_ID, PAYMENTTERM_NAME, CONVERT(varchar,CONTRACT_VALID_FROM,101) as CONTRACT_VALID_FROM,CONVERT(varchar,CONTRACT_VALID_TO,101) as CONTRACT_VALID_TO, CUSTOMER_NOTES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = QuoteRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))    
     
     PO_n = Sql.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_ID = '"+str(quote_id)+"' ")
     if PO_n is not None:
