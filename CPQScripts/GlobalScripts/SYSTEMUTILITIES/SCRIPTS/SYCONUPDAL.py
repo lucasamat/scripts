@@ -52,7 +52,7 @@ class ConfigUpdateScript:
 			self.current_tab_name = "Error Log"	
 		elif Param.CurrentTab == "Variable":
 			self.current_tab_name = "Variable"	
-		elif Param.current_tab_name == "My Approval Queue":
+		elif Param.CurrentTab == "My Approval Queue":
 			self.current_tab_name = "My Approval Queue"
 		else:
 			self.current_tab_name = "Contract"
