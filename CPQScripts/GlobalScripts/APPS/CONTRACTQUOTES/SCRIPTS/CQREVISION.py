@@ -60,30 +60,6 @@ def create_new_revision(Opertion):
 			#update SAQTMT start
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 0))
 			#update SAQTMT end
-			for cloneobjectname in CloneObject.keys():
-				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
-				insertcols = '""" INSERT INTO '+ str(cloneobjectname) +'( '
-				selectcols = "SELECT "
-				for col in sqlobj:
-					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
-						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
-					elif col.COLUMN_NAME == "QTEREV_ID":
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + int(newrev_inc) +" AS " + str(col.COLUMN_NAME)
-					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + "'"+ str(quote_revision_id) +"' AS " + str(col.COLUMN_NAME)
-					elif col.COLUMN_NAME == "CpqTableEntryId":
-						continue
-					else:
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + str(col.COLUMN_NAME)
-				insertcols += " )"
-				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='"+str(quote_contract_recordId)+"' AND QTEREV_ID="+int(old_revision_no)+'""")'
-				finalquery=insertcols+' '+selectcols
-				Trace.Write(finalquery)
-				ExecQueryObj = Sql.RunQuery(finalquery)
 			
    			#INSERT salesorg start
 			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
