@@ -18,7 +18,7 @@ UserName = str(User.UserName)
 
 def englishdoc():
 	Log.Info("enlgish doc RECID------")
-	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"'")
+	quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
 	qtqdoc="""INSERT SAQDOC (
 						QUOTE_DOCUMENT_RECORD_ID,
@@ -936,6 +936,10 @@ try:
 except:
 	recid = ""
 	language = ""
+try:
+	quote_revision_record_id = Param.CPQ_Columns['QuoteRevision']
+except:
+	quote_revision_record_id = ""
 try: 
 	ACTION = Param.ACTION
 except:
