@@ -308,7 +308,7 @@ class SYLDRTLIST:
 				quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 				Trace.Write('306-------')           
 				if  quote_rec_id:                
-					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"'")
+					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 					getQuotetype = getQuote.QUOTE_TYPE
 					Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
