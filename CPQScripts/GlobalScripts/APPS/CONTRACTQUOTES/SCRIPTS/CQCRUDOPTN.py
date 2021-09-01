@@ -1466,7 +1466,9 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				"RELOCATION_FAB_TYPE" : "SENDING FAB" if "Sending Account -" in self.tree_param else "RECEIVING FAB" if "Receiving Account -" in self.tree_param else "",
 				"ACCOUNT_ID" : account_id,
 				"ACCOUNT_NAME" : account_name,
-				"ACCOUNT_RECORD_ID" : account_rec_id
+				"ACCOUNT_RECORD_ID" : account_rec_id,
+				"QTEREV_RECORD_ID":self.quote_revision_record_id,
+				"QTEREV_ID" : self.quote_revision_id,
 			}
 
 			fab_table_info = Sql.GetTable(table_name)
@@ -1514,7 +1516,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				QTRECID = str(dictvalue["QUOTE_ID"])
 				FABRECID = str(dictvalue["QUOTE_FABLOCATION_RECORD_ID"])
 				GETSAQFBLD = Sql.GetList(
-					"SELECT A.FABLOCATION_ID,B.VALUEDRIVER_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_TYPE,A.QUOTE_FABLOCATION_RECORD_ID FROM SAQFBL(NOLOCK) A JOIN SAQTVD (NOLOCK) B ON A.QUOTE_ID  = '"
+					"SELECT A.FABLOCATION_ID,B.VALUEDRIVER_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QTEREV_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_TYPE,A.QUOTE_FABLOCATION_RECORD_ID FROM SAQFBL(NOLOCK) A JOIN SAQTVD (NOLOCK) B ON A.QUOTE_ID  = '"
 					+ str(QTRECID)
 					+ "' AND B.QUOTE_ID  = '"
 					+ str(QTRECID)
@@ -1541,12 +1543,14 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": self.user_name,
 						"ADDUSR_RECORD_ID": self.user_id,
+						"QTEREV_RECORD_ID": str(data1.QTEREV_RECORD_ID),
+						"QTEREV_ID": str(data1.QTEREV_ID),
 					}					
 					tableInfo.AddRow(tableSAQFVD)
 					# upsertResult = SqlHelper.Upsert(tableInfo)
 				Sql.Upsert(tableInfo)
 				GETSAQFBLDV = Sql.GetList(
-					"SELECT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_ID,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_VALUE_DESCRIPTION,B.VALUEDRIVER_VALUE_RECORD_ID FROM SAQFBL(NOLOCK) A JOIN SAQVDV (NOLOCK) B ON A.QUOTE_ID  = '"
+					"SELECT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QTEREV_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_ID,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_VALUE_DESCRIPTION,B.VALUEDRIVER_VALUE_RECORD_ID FROM SAQFBL(NOLOCK) A JOIN SAQVDV (NOLOCK) B ON A.QUOTE_ID  = '"
 					+ str(QTRECID)
 					+ "' AND B.QUOTE_ID  = '"
 					+ str(QTRECID)
@@ -1573,6 +1577,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": self.user_name,
 						"ADDUSR_RECORD_ID": self.user_id,
+						"QTEREV_RECORD_ID": str(data1.QTEREV_RECORD_ID),
+						"QTEREV_ID": str(data1.QTEREV_ID),
 					}
 					tableInfo2.AddRow(tableSAQFDV)
 					# upsertResult = SqlHelper.Upsert(tableInfo2)
@@ -2214,7 +2220,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		if self.values:
 			record_ids = []
 			if self.all_values and auto_equp_insert is None: 
-				Trace.Write('ifff--')		      
+				Trace.Write('ifff--'+str(fab_list))		      
 				query_string = "SELECT EQUIPMENT_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{acc}' AND FABLOCATION_ID = '{fab}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND  EQUIPMENT_RECORD_ID NOT IN  (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{fab}' )".format(
 							acc=self.account_record_id,
 							fab=self.tree_param,
