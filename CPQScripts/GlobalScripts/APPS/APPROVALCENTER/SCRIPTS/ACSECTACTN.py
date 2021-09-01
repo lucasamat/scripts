@@ -1501,11 +1501,11 @@ class approvalCenter:
             if str(FromSeg) == "True":
                 ApiName = "APRTRXOBJ_RECORD_ID"
             else:
-                if CurrentTabName == 'My Approvals Queue':
+                if CurrentTabName == 'My Approval Queue':
                     ApiName = "APPROVAL_RECORD_ID"
                     getrecid = Sql.GetFirst("SELECT APPROVAL_RECORD_ID FROM ACAPTX WHERE APPROVAL_TRANSACTION_RECORD_ID = '{}'".format(self.QuoteNumber))
                     recid = str(getrecid.APPROVAL_RECORD_ID)
-                elif CurrentTabName == 'Team Approvals Queue':
+                elif CurrentTabName == 'Team Approval Queue':
                     ApiName = "APPROVAL_RECORD_ID"
                     getrecid = Sql.GetFirst("SELECT APPROVAL_RECORD_ID FROM ACAPTX WHERE APPROVAL_TRANSACTION_RECORD_ID = '{}'".format(self.QuoteNumber))
                     recid = str(getrecid.APPROVAL_RECORD_ID)
