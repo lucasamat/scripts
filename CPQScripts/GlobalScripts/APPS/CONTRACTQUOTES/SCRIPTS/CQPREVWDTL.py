@@ -536,7 +536,7 @@ def sales_org_info(Qt_rec_id, Quote, MODE):
 	editclick = "QuoteinformationEDIT(this)"
 	edit_action = ""
 	#sec_rec_id = "B0B5E48B-DC63-4B1A-95AC-695973D3AA06"
-	if ACTION == "CONTRACT_ATTR":
+	if ACTION == "CONTRACT_SALES_INFO":
 		primary_objname = "CTCTSO"
 	else:
 		primary_objname = "SAQTSO"
@@ -595,7 +595,7 @@ def sales_org_info(Qt_rec_id, Quote, MODE):
 				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
-			if ACTION == "CONTRACT_ATTR": 
+			if ACTION == "CONTRACT_SALES_INFO": 
 				col_name = Sql.GetFirst("SELECT * from CTCTSO (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
 			else:
@@ -617,7 +617,14 @@ def sales_org_info(Qt_rec_id, Quote, MODE):
 						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
 						+ str(cpq_key_id)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-					)				
+					)
+				elif sefl_api == "CONTRACT_SALES_ORG_RECORD_ID":
+					cpq_key_id = CPQID.KeyCPQId.GetCPQId("CTCTSO", str(eval("col_name." + str(sefl_api))))
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
+						+ str(cpq_key_id)
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)					
 				else:
 					# if sefl_api != "REGION":
 					Trace.Write('At line 289-->'+str(sefl_api))
@@ -666,23 +673,7 @@ def sales_org_info(Qt_rec_id, Quote, MODE):
 
 	sec_str += "</tbody></table></div>"
 	sec_str += "</div>"
-	#Trace.Write(str(sec_str))
-	# if ACTION == "QUOTE_INFO" :
-	# 	quote_id = str(eval("col_name.QUOTE_ID"))
-	# 	accunt_id = str(eval("col_name.ACCOUNT_ID"))
-	# 	accunt_name = str(eval("col_name.ACCOUNT_NAME"))
-	# 	quote_type = str(eval("col_name.QUOTE_TYPE"))
-	# 	sale_type = str(eval("col_name.SALE_TYPE"))
-	# 	valid_from=str(eval("col_name.CONTRACT_VALID_FROM")).split(" ")[0]
-	# 	valid_to = str(eval("col_name.CONTRACT_VALID_TO")).split(" ")[0]
-	# else:
-	# 	quote_id = ""
-	# 	accunt_id = ""
-	# 	accunt_name = ""
-	# 	quote_type = ""
-	# 	sale_type = ""
-	# 	valid_from= ""
-	# 	valid_to = ""	
+		
 
 	return sec_str	
 
@@ -954,7 +945,8 @@ elif ACTION in ("QUOTE_ATTR","CONTRACT_ATTR"):
 		Quote = Quote.GetGlobal("contract_quote_record_id")	
 	## Contract 1st node 
 	elif ACTION == "CONTRACT_ATTR" :
-		contract_record_id =  Quote.GetGlobal("contract_record_id")
+		
+		
 		Trace.Write("contract_record_id---->" + str(contract_record_id))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructidlingattributes(Qt_rec_id, Quote, MODE))	
@@ -965,7 +957,10 @@ elif ACTION == "Approval_Chain_INFO":
 	Trace.Write("record_idrecord_id"+str(record_id))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructapprovalchaininformation(MODE,record_id))
-elif ACTION == "SALES_INFO":
-	Quote = Quote.GetGlobal("contract_quote_record_id")
+elif ACTION in ("SALES_INFO","CONTRACT_SALES_INFO"):
+	if ACTION == "SALES_INFO":
+		Quote = Quote.GetGlobal("contract_quote_record_id")
+	elif ACTION == "CONTRACT_SALES_INFO":
+		contract_record_id =  Quote.GetGlobal("contract_record_id")		
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(sales_org_info(Qt_rec_id, Quote, MODE))
