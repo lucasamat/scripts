@@ -25,6 +25,13 @@ Trace.Write('23----')
 def create_new_revision(Opertion):
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
+
+		#Get Old Revision ID - Start
+		get_old_revision_id = Sql.GetFirst("SELECT QTEREV_ID FROM SAQTRV WHERE ACTIVE='True' AND QUOTE_RECORD_ID= '"+str(quote_contract_recordId)+"'")
+		Trace.Write(get_old_revision_id.QTEREV_ID)
+		old_revision_no=get_old_revision_id.QTEREV_ID
+		#Get Old Revision ID - END
+  
 		#create new revision start
 		#edit_new_rev_quote = QuoteHelper.Edit(Quote.CompositeNumber)
 		create_new_rev = Quote.CreateNewRevision(True)
