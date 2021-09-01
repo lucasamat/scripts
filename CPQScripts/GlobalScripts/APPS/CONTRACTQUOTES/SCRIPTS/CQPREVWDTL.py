@@ -601,7 +601,17 @@ def sales_org_info(Qt_rec_id, Quote, MODE):
 			else:
 				col_name = Sql.GetFirst("SELECT * FROM SAQTSO WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'") 
 			if col_name:
-				if sefl_api == "QUOTE_SALESORG_RECORD_ID":
+				if sefl_api == "CpqTableEntryModifiedBy":
+					current_obj_value = col_name.CpqTableEntryModifiedBy	
+					current_user = Sql.GetFirst(
+						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+					).USERNAME
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input type='text' title = '"+ str(current_user)+"' value = '"
+						+ str(current_user)
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)
+				elif sefl_api == "QUOTE_SALESORG_RECORD_ID":
 					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTSO", str(eval("col_name." + str(sefl_api))))
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
