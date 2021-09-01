@@ -540,22 +540,22 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
 
-				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
+				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 				(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
 				
 				TotalDiscount = ((float(b.TARGET_PRICE)-float(b.SUM_PRICE))/float(b.TARGET_PRICE)) * 100.00
 				Trace.Write("Total Discount = "+str(TotalDiscount))
 
-				c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK))
+				c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK,quote_revision_record_id))
 				
 				saqitm_extprice = b.YEAR1 + b.YEAR2 + b.YEAR3 + b.YEAR4 + b.YEAR5
 
-				Sql.RunQuery("UPDATE SAQITM SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}, NET_VALUE = {ext}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,y1=b.YEAR1,y2=b.YEAR2,y3=b.YEAR3,y4=b.YEAR4,y5=b.YEAR5,ext=saqitm_extprice))
+				Sql.RunQuery("UPDATE SAQITM SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}, NET_VALUE = {ext}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,y1=b.YEAR1,y2=b.YEAR2,y3=b.YEAR3,y4=b.YEAR4,y5=b.YEAR5,ext=saqitm_extprice,quote_revision_record_id=quote_revision_record_id))
 
 				
-				Sql.RunQuery("UPDATE SAQIGB SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.GREENBOOK,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5))
+				Sql.RunQuery("UPDATE SAQIGB SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.GREENBOOK,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
 
-				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
+				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
 				
 				TotalServiceDiscount = ((float(getServiceSum.TARGET_PRICE)-float(getServiceSum.SUM_PRICE))/float(getServiceSum.TARGET_PRICE)) *100.00
 				Trace.Write("Total Service Discount = "+str(TotalServiceDiscount))
@@ -581,7 +581,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				try:
 					if float(getPRCFVA.FACTOR_PCTVAR) < discount:
 						Sql.RunQuery("UPDATE SAQICO SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
-						Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+						Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,quote_revision_record_id))
 				except:
 					Trace.Write("NO STATUS UPDATE")
 			elif TITLE == 'DISCOUNT':
@@ -596,10 +596,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(a.SALES_DISCOUNT_PRICE)-amt,cpqid=cpqid,discount=float(VALUE)))
 
-				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID))
+				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 
 				#Sql.RunQuery("UPDATE SAQITM SET NET_PRICE = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
-				getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
+				getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
 				
 				
 				import datetime as dt
@@ -642,25 +642,25 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				#if float(getPRCFVA.FACTOR_PCTVAR) < discount:
 				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
 		if obj_name == "SAQSCO":
-			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE))
+			getfab = Sql.GetFirst("SELECT FABLOCATION_NAME, FABLOCATION_RECORD_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),VALUE,quote_revision_record_id))
 			fabname = getfab.FABLOCATION_NAME
 			fabrec = getfab.FABLOCATION_RECORD_ID		
 			if 	SELECTALL != "no":
-				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}'".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
+				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,quote_revision_record_id=quote_revision_record_id))
 
-				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist} AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist,quote_revision_record_id=quote_revision_record_id))
 				if geteqp:
 					recordslist = str(tuple([fab.EQUIPMENT_ID for fab in geteqp])).replace(",)",')')
 
-					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist} AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist,quote_revision_record_id=quote_revision_record_id))
 			else:
-				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+				Sql.RunQuery("UPDATE SAQSCO SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist} AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist,quote_revision_record_id=quote_revision_record_id))
 
-				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+				geteqp = Sql.GetList("SELECT * FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND SERVICE_ID= '{ServiceId}' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID IN {recordslist}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist,quote_revision_record_id=quote_revision_record_id))
 				if geteqp:
 					recordslist = str(tuple([fab.EQUIPMENT_ID for fab in geteqp])).replace(",)",')')
 
-					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist))
+					Sql.RunQuery("UPDATE SAQSCA SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec,recordslist=recordslist,quote_revision_record_id=quote_revision_record_id))
 					
 			'''Sql.RunQuery("UPDATE SAQSFE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
 			Sql.RunQuery("UPDATE SAQSGE SET FABLOCATION_ID = '{VALUE}',FABLOCATION_NAME = '{name}',FABLOCATION_RECORD_ID = '{rec}' WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' {SingleRow}".format(VALUE=VALUE,Quote=Quote.GetGlobal("contract_quote_record_id"),SingleRow=" AND CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",ServiceId=Quote.GetGlobal("TreeParentLevel0"),name=fabname,rec=fabrec))
@@ -735,13 +735,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					SAQSCO.PAR_SERVICE_RECORD_ID
 					FROM SAQSCO (NOLOCK)
 					JOIN MAFBLC (NOLOCK) ON SAQSCO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID
-					WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND FABLOCATION_ID NOT IN(SELECT FABLOCATION_ID FROM SAQSFB WHERE SERVICE_ID = '{TreeParam}' AND QUOTE_RECORD_ID = '{QuoteRecordId}') {SingleRow}
+					WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQSCO.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT' AND FABLOCATION_ID NOT IN(SELECT FABLOCATION_ID FROM SAQSFB WHERE SERVICE_ID = '{TreeParam}' AND QUOTE_RECORD_ID = '{QuoteRecordId}') {SingleRow}
 					) FB""".format(
 									TreeParam=Quote.GetGlobal("TreeParentLevel0"),
 									QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 									UserId=User.Id,
 									UserName=User.UserName,
-									SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""
+									SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",
+									quote_revision_record_id=quote_revision_record_id
 								))
 			Sql.RunQuery("""
 						INSERT SAQSFE (ENTITLEMENT_XML,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,	
@@ -753,7 +754,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						FROM
 						SAQTSE (NOLOCK)
 						JOIN SAQSFB ON SAQSFB.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFB.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
-						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSFB.FABLOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQSFE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}')) IQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0")))
+						WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}'   AND SAQTSE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSFB.FABLOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQSFE WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}')) IQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0"),quote_revision_record_id=quote_revision_record_id))
 			
 			Sql.RunQuery(""" INSERT SAQSGE (KB_VERSION,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,	
 			CPS_CONFIGURATION_ID, CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTESRVENT_RECORD_ID,QTSFBLENT_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ENTITLEMENT_XML, QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY)
@@ -764,7 +765,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			FROM
 			SAQTSE (NOLOCK)
 			JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-			WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' ) IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0")))
+			WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' ) IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0"),quote_revision_record_id=quote_revision_record_id))
 
 			
 			Sql.RunQuery(
@@ -822,13 +823,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 							SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
 							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID
 							WHERE 
-							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' {SingleRow})A""".format(
+							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' {SingleRow})A""".format(
 							TreeParam=Quote.GetGlobal("TreeParentLevel0"),
 							TreeParentParam=Quote.GetGlobal("TreeParentLevel1"),
 							QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 							UserName=User.UserName,
 							UserId=User.Id,
-							SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else ""
+							SingleRow=" AND SAQSCO.CpqTableEntryId = '"+str(cpqid) + "'" if SELECTALL == "no" else "",
+							quote_revision_record_id=quote_revision_record_id
 						)
 			)
 			# ###SAQSCE and SAQSAE insert for assembly and entitlement 
@@ -842,16 +844,18 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				FROM	
 			 	SAQTSE (NOLOCK)
 				JOIN SAQSCO (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID 
-				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCE WHERE QUOTE_RECORD_ID  = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}')) IQ""".format(
+				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCE WHERE QUOTE_RECORD_ID  = '{QuoteRecordId}' AND SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}')) IQ""".format(
 			 	UserId=User.Id, 
 				QuoteRecordId=Qt_rec_id, 
-			 	ServiceId=Quote.GetGlobal("TreeParentLevel0") )
+			 	ServiceId=Quote.GetGlobal("TreeParentLevel0"),
+				quote_revision_record_id=quote_revision_record_id )
 			 	#Trace.Write('qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
 			Sql.RunQuery(qtqsce_query)
-			SAQSAE_insert = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.SERVICE_ID = '{serviceId}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(
+			SAQSAE_insert = """INSERT SAQSAE (KB_VERSION,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,QTESRVCOA_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,QTESRVCOE_RECORD_ID,QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM(SELECT IQ.*,M.ENTITLEMENT_XML,M.QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID as QTESRVCOE_RECORD_ID FROM ( SELECT DISTINCT SAQTSE.KB_VERSION,SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQSCA.QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID as QTESRVCOA_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID FROM SAQTSE (NOLOCK) JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{ContractId}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{ContractId}' AND SAQTSE.SERVICE_ID = '{serviceId}' AND SAQTSE.QTEREV_RECORD_ID = '{quote_revision_record_id}') IQ JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(
 				UserId=User.Id, 
 				ContractId=Qt_rec_id, 
-				serviceId=Quote.GetGlobal("TreeParentLevel0") )
+				serviceId=Quote.GetGlobal("TreeParentLevel0"),
+				quote_revision_record_id=quote_revision_record_id )
 			Sql.RunQuery(SAQSAE_insert)
 			#Trace.Write('SAQSAE_insert--'+str(SAQSAE_insert))
 
@@ -859,12 +863,12 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			ServiceId=Quote.GetGlobal("TreeParentLevel0")
 			ContractId = Quote.GetGlobal("contract_quote_record_id")
 			Trace.Write('cpqid---'+str(cpqid)+'--'+str(SELECTALL)+'---'+str(recordslist)+str(ServiceId))
-			get_chamber_equp = Sql.GetList("SELECT EQUIPMENT_ID,INCLUDED FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist} AND INCLUDED= 'CHAMBER'".format(Quote = ContractId,ServiceId = ServiceId,recordslist = recordslist)  )
+			get_chamber_equp = Sql.GetList("SELECT EQUIPMENT_ID,INCLUDED FROM SAQSCO WHERE QUOTE_RECORD_ID = '{Quote}' AND SERVICE_ID= '{ServiceId}' AND EQUIPMENT_ID IN {recordslist} AND INCLUDED= 'CHAMBER' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Quote = ContractId,ServiceId = ServiceId,recordslist = recordslist,quote_revision_record_id=quote_revision_record_id)  )
 			if get_chamber_equp:
 				recordslst = str(tuple([cham.EQUIPMENT_ID for cham in get_chamber_equp])).replace(",)",')')
 
 				if recordslst and 'Z0007' in ServiceId:
-					whereReq = " QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID IN {}".format(ContractId,ServiceId,recordslst)
+					whereReq = " QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID IN {} AND QTEREV_RECORD_ID = '{}'".format(ContractId,ServiceId,recordslst,quote_revision_record_id)
 					add_where = " and INCLUDED = 'CHAMBER'"
 					AttributeID = 'AGS_QUO_QUO_TYP'
 					NewValue = 'Chamber based'
@@ -872,7 +876,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					if result:
 						Trace.Write('rolldown-'+str(result))
-						whereReq = " SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID IN {}".format(ContractId,ServiceId,recordslst)
+						whereReq = " SRC.QUOTE_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID IN {}  AND SRC.QTEREV_RECORD_ID = '{}'".format(ContractId,ServiceId,recordslst,quote_revision_record_id)
 						result1 = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'ENT_ROLLDOWN', 'ent_params_list':whereReq})
 
 			##A055S000P01-6826 --update SAQSCE and SAQSAE table as quote type 'chmaber based' ends....
@@ -883,13 +887,13 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			master_fab_object = Sql.GetFirst("Select FAB_LOCATION_NAME,FAB_LOCATION_RECORD_ID from MAFBLC where FAB_LOCATION_ID = '{fab_id}'".format(fab_id = str(VALUE)))
 			fab_name = master_fab_object.FAB_LOCATION_NAME
 			fab_location_record_id = master_fab_object.FAB_LOCATION_RECORD_ID
-			Tool_relocation_object = """UPDATE SAQSTE SET FABLOCATION_NAME = '{fab_name}', FABLOCATION_RECORD_ID = '{fab_location_record_id}' WHERE FABLOCATION_ID = '{fab_id}' and QUOTE_RECORD_ID = '{quote_record_id}' """.format(fab_name = fab_name,fab_location_record_id = fab_location_record_id,fab_id = str(VALUE),quote_record_id = str(ContractRecordId))
+			Tool_relocation_object = """UPDATE SAQSTE SET FABLOCATION_NAME = '{fab_name}', FABLOCATION_RECORD_ID = '{fab_location_record_id}' WHERE FABLOCATION_ID = '{fab_id}' and QUOTE_RECORD_ID = '{quote_record_id}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(fab_name = fab_name,fab_location_record_id = fab_location_record_id,fab_id = str(VALUE),quote_record_id = str(ContractRecordId,quote_revision_record_id=quote_revision_record_id))
 			Sql.RunQuery(Tool_relocation_object)
 			##Updating the fabname and fablocation id in bulk edit scenario ends.... 
 			
-			GETSAQFBL = Sql.GetFirst("SELECT QUOTE_FABLOCATION_RECORD_ID FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'and FABLOCATION_ID ='"+str(VALUE)+"' ")
+			GETSAQFBL = Sql.GetFirst("SELECT QUOTE_FABLOCATION_RECORD_ID FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'and FABLOCATION_ID ='"+str(VALUE)+"'  AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 			if GETSAQFBL is None:
-				Sql.RunQuery(""" INSERT SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,QUOTE_FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT A.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (SELECT DISTINCT MAFBLC.FAB_LOCATION_ID,MAFBLC.FAB_LOCATION_NAME,MAFBLC.FAB_LOCATION_RECORD_ID,SAQSTE.QUOTE_ID,SAQSTE.QUOTE_RECORD_ID,MAFBLC.COUNTRY,MAFBLC.COUNTRY_RECORD_ID,MAFBLC.MNT_PLANT_ID,MAFBLC.MNT_PLANT_NAME,MAFBLC.MNT_PLANT_RECORD_ID,MAFBLC.SALESORG_ID,MAFBLC.SALESORG_NAME,MAFBLC.SALESORG_RECORD_ID,MAFBLC.STATUS AS FABLOCATION_STATUS,MAFBLC.ADDRESS_1,MAFBLC.ADDRESS_2,MAFBLC.CITY,MAFBLC.STATE,MAFBLC.STATE_RECORD_ID FROM MAFBLC INNER JOIN  SAQSTE on MAFBLC.FAB_LOCATION_ID = SAQSTE.FABLOCATION_ID WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND SAQSTE.FABLOCATION_ID ='{fabid}')A WHERE A.FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{QuoteRecId}') """.format(UserName=User.UserName,UserId=User.Id,QuoteRecId=ContractRecordId,fabid=VALUE))
+				Sql.RunQuery(""" INSERT SAQFBL (FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, COUNTRY, COUNTRY_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, FABLOCATION_STATUS, ADDRESS_1, ADDRESS_2, CITY, STATE, STATE_RECORD_ID,QUOTE_FABLOCATION_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT A.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FABLOCATION_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (SELECT DISTINCT MAFBLC.FAB_LOCATION_ID,MAFBLC.FAB_LOCATION_NAME,MAFBLC.FAB_LOCATION_RECORD_ID,SAQSTE.QUOTE_ID,SAQSTE.QUOTE_RECORD_ID,MAFBLC.COUNTRY,MAFBLC.COUNTRY_RECORD_ID,MAFBLC.MNT_PLANT_ID,MAFBLC.MNT_PLANT_NAME,MAFBLC.MNT_PLANT_RECORD_ID,MAFBLC.SALESORG_ID,MAFBLC.SALESORG_NAME,MAFBLC.SALESORG_RECORD_ID,MAFBLC.STATUS AS FABLOCATION_STATUS,MAFBLC.ADDRESS_1,MAFBLC.ADDRESS_2,MAFBLC.CITY,MAFBLC.STATE,MAFBLC.STATE_RECORD_ID FROM MAFBLC INNER JOIN  SAQSTE on MAFBLC.FAB_LOCATION_ID = SAQSTE.FABLOCATION_ID WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSTE.FABLOCATION_ID ='{fabid}')A WHERE A.FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{QuoteRecId}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}') """.format(UserName=User.UserName,UserId=User.Id,QuoteRecId=ContractRecordId,fabid=VALUE,quote_revision_record_id=quote_revision_record_id))
 			
 
 			###update SAQFEQ starts
