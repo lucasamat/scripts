@@ -277,6 +277,8 @@ class SyncQuoteAndCustomTables:
 				tbrow["SALESORG_ID"]=OfferingRow_detail.SALESORG_ID
 				tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
 				tbrow["CPS_MATCH_ID"] = 11
+				tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+				tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 				tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
 				tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
 				#tbrow["IS_DEFAULT"] = '1'
