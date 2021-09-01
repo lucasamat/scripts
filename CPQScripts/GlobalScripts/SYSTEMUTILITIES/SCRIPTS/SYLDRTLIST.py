@@ -3178,9 +3178,10 @@ class SYLDRTLIST:
 													if value123 in img_list:
 														
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
-													elif value123 == "REV_EXPIRE_DATE":
-														Trace.Write('3182----'+str(value1234).upper().split(" ")[1].strip())
-														new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+													elif value123 in ["REV_EXPIRE_DATE","REV_CREATE_DATE"]:
+														Trace.Write('3182----'+str(value1234).upper().split(" ")[0].strip())
+														value1234 = str(value1234).upper().split(" ")[0].strip()
+														value1234 = new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													# for redirecting the left tree node while viewing record from listgrid - start    
 													elif ObjectName in value1234: 
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
