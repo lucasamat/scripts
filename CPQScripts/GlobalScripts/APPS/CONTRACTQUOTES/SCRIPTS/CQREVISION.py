@@ -69,7 +69,7 @@ def create_new_revision(Opertion):
 				for col in sqlobj:
 					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + " '{}' AS ".format(str(CONVERT(VARCHAR(4000),NEWID()))) + str(col.COLUMN_NAME)
+						selectcols = selectcols + " '{}' AS ".format(str(Guid.NewGuid()).upper()) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
