@@ -650,7 +650,7 @@ class ContractQuoteCrudOpertion:
 
 class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -1255,7 +1255,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -1406,7 +1406,7 @@ class ToolRelocationModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -2578,7 +2578,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'),tree_parent_level_1=kwargs.get('tree_parent_level_1'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -4649,7 +4649,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -4850,7 +4850,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'),tree_parent_level_1=kwargs.get('tree_parent_level_1'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -6007,7 +6007,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -6038,7 +6038,7 @@ class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 
 class ContractQuotesCommonModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -6053,7 +6053,7 @@ class ContractQuotesCommonModel(ContractQuoteCrudOpertion):
 class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
@@ -6073,7 +6073,7 @@ class ContractQuoteNoficationApprovalModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'),tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 				
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
@@ -6275,7 +6275,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 
 class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'), 
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		#self.opertion = kwargs.get('opertion')
 		#self.action_type = kwargs.get('action_type')
