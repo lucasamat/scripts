@@ -70,17 +70,17 @@ def create_new_revision(Opertion):
 						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + newrev_inc +" AS " + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + int(newrev_inc) +" AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + "'"+ quote_revision_id +"' AS " + str(col.COLUMN_NAME)
+						selectcols = selectcols + "," + "'"+ str(quote_revision_id) +"' AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "CpqTableEntryId":
 						continue
 					else:
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
-				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='"+quote_contract_recordId+"' AND QTEREV_ID='"+old_revision_no+'""")'
+				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='"+str(quote_contract_recordId)+"' AND QTEREV_ID="+int(old_revision_no)+'""")'
 				finalquery=insertcols+' '+selectcols
 				Trace.Write(finalquery)
 				ExecQueryObj = Sql.RunQuery(finalquery)
