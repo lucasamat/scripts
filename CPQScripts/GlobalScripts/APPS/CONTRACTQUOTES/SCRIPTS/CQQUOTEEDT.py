@@ -20,7 +20,8 @@ def bannerdetails(Quoteid,active_tab_name):
 	contract_record_id = ""
 	get_contract_rec_id = ""
 	Trace.Write('Quoteid--'+str(Quoteid))
-	matchObj = re.match( r'.*>\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)	
+	#matchObj = re.match( r'.*>\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
+	matchObj = re.search(r'\d+', Quoteid).group()
 	if active_tab_name == "Contracts":
 		reObj = re.match( r'.*>\s*(\d+)*?<', Quoteid)		
 		SQLObj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID='" + str(reObj.group(1)) + "'")
@@ -30,7 +31,8 @@ def bannerdetails(Quoteid,active_tab_name):
 			contract_record_id = str(get_contract_rec_id.CONTRACT_RECORD_ID)			
 		###ends
 		Quoteid = SQLObj.QUOTE_ID
-		matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
+		#matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
+		matchObj = re.search(r'\d+', Quoteid).group()
 	# if active_tab_name == "Quotes":
 	# 	Trace.Write('matchObj--'+str(matchObj))
 	# 	Trace.Write('Quoteid--'+str(Quoteid))
@@ -41,7 +43,8 @@ def bannerdetails(Quoteid,active_tab_name):
 	# 		Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
-			qid=str(matchObj.group(1))
+			#qid=str(matchObj.group(1))
+			qid=str(matchObj)
 			Trace.Write('34--qid---'+str(qid))			
 			Quote = QuoteHelper.Edit(str(qid))				
 			Quote.RefreshActions()
