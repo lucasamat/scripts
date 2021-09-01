@@ -51,7 +51,9 @@ class ConfigUpdateScript:
 		elif Param.CurrentTab == "Error Log":
 			self.current_tab_name = "Error Log"	
 		elif Param.CurrentTab == "Variable":
-			self.current_tab_name = "Variable"		
+			self.current_tab_name = "Variable"	
+		elif Param.current_tab_name = "My Approval Queue":
+			self.current_tab_name = "My Approval Queue"
 		else:
 			self.current_tab_name = "Contract"
 	def get_obj_name(self):
