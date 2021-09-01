@@ -18,6 +18,10 @@ class ContractQuoteSummaryUpdate:
             self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         except Exception:
             self.contract_quote_record_id = ''
+        try:
+            self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+        except:
+            self.quote_revision_record_id = ''
     
     def _update_year(self):
         for count in range(2, 6):
@@ -31,7 +35,7 @@ class ContractQuoteSummaryUpdate:
                                         JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
                                         WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                             QuoteRecordId=self.contract_quote_record_id,
-                                            RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+                                            RevisionRecordId=self.quote_revision_record_id,
                                             Year=count,
                                             Count=count - 1 
                                             )
@@ -46,7 +50,7 @@ class ContractQuoteSummaryUpdate:
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id,
-                                        RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+                                        RevisionRecordId=self.quote_revision_record_id,
                                         DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
                                         Discount=self.discount)
                     )
@@ -58,7 +62,7 @@ class ContractQuoteSummaryUpdate:
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id,
-                                        RevisionRecordId = Quote.GetGlobal("quote_revision_record_id") 
+                                        RevisionRecordId=self.quote_revision_record_id 
                                         )
                     )
     
@@ -81,7 +85,7 @@ class ContractQuoteSummaryUpdate:
                                         WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
                                         GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
                             ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
+                            WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
                             Discount=self.discount))
     
     def _update_quote_summary(self):

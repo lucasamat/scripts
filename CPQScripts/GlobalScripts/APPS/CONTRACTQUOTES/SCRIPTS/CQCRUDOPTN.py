@@ -64,7 +64,7 @@ class ContractQuoteCrudOpertion:
 			except:
 				self.contract_quote_record_id = ''	
 			try:
-				self.quote_revision_record_id = Quote.GetGlobal('quote_revision_record_id')
+				self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			except:
 				self.quote_revision_record_id = ''
 			#Trace.Write("quote---"+str(self.contract_quote_record_id))
