@@ -453,7 +453,9 @@ class TreeView:
 			#GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID LIKE '%{}%' AND ACTIVE = 1".format(Quote.CompositeNumber))
 			#quote_revision_record_id = Quote.GetCustomField('QUOTE_REVISION_ID').Content
 			#Trace.Write("@454---------->"+str(quote_revision_record_id))
-			Quote.SetGlobal("quote_revision_record_id",getQuote.QTEREV_RECORD_ID)
+			if getQuote:
+				Quote.SetGlobal("quote_revision_record_id",getQuote.QTEREV_RECORD_ID)
+				Quote.SetGlobal("quote_rev_id",getQuote.QTEREV_ID)
 		returnList = []
 		nodeId = 0
 		objrList = []
