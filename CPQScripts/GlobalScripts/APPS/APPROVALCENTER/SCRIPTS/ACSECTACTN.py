@@ -54,7 +54,7 @@ class approvalCenter:
         
         Product.SetGlobal("ApprovalMasterRecId", str(self.QuoteNumber))
         if CurrentTabName == 'Quote':
-            quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+            quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
             quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
             if quote_obj is not None:
                 approval_queue_obj = Sql.GetFirst("SELECT ACAPMA.APPROVAL_RECORD_ID FROM ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APRSTAMAP_APPROVALSTATUS <> 'RECALLED' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{CurrentTransId}'".format(quote_record_id = quote_record_id,CurrentTransId = str(CurrentTransId)))
@@ -261,7 +261,7 @@ class approvalCenter:
                         getQuote = Sql.GetFirst(
                             "SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
                             + str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-                            + "' "
+                            + "' AND QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
                         )
                         if getQuote.QUOTE_STATUS == "APPROVED":
                             
@@ -433,7 +433,7 @@ class approvalCenter:
                             getQuote = Sql.GetFirst(
                                 "SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
                                 + str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-                                + "' "
+                                + "' AND QTEREV_RECORD_ID = '{}'".format(self.quote_revision_record_id)
                             )
                             if getQuote.QUOTE_STATUS == "APPROVED":
                                 
@@ -1114,7 +1114,7 @@ class approvalCenter:
                             WHERE ACAPTX.ARCHIVED = 0 AND ACAPTX.APPROVALSTATUS = 'REQUESTED' AND ACAPTX.APPROVAL_ID LIKE '%{ApprovalId}%'""".format(
                                 ApprovalId=approval_id_without_auto_inc
                             ))
-            quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+            quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
             getMethod = Sql.GetList("SELECT DISTINCT ACAPTX.APPROVAL_RECORD_ID, ACAPCH.APPROVAL_METHOD FROM ACAPCH (NOLOCK) INNER JOIN ACAPTX ON ACAPCH.APRCHN_ID = ACAPTX.APRCHN_ID WHERE ACAPTX.APPROVAL_ID LIKE '%{quote}%' AND ACAPTX.ARCHIVED = 0 AND ACAPTX.APRCHN_RECORD_ID = '{chain_id}'".format(quote=quote_obj.QUOTE_ID,chain_id = str(GetCurStatus.APRCHN_RECORD_ID)))
             for ele in getMethod:
                 #a = Sql.GetFirst("SELECT APPROVAL_RECORD_ID FROM ACAPTX WHERE CpqTableEntryId = '{}'".format(ele.CpqTableEntryId))
@@ -1221,7 +1221,7 @@ class approvalCenter:
                 parallel = "True"
                 if CurrentTabName == 'Quote':
                     
-                    quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+                    quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
                     quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                     if quote_obj is not None:
                         approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_record_id = quote_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
@@ -1246,7 +1246,7 @@ class approvalCenter:
                 parallel = "False"
                 if CurrentTabName == 'Quote':
                     
-                    quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+                    quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
                     quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                     
                     if quote_obj is not None:
@@ -1311,7 +1311,9 @@ class approvalCenter:
                 getQuote = Sql.GetFirst(
                     "SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
                     + str(GetCurStatus.APRTRXOBJ_RECORD_ID)
-                    + "' "
+                    + "' AND QTEREV_RECORD_ID = '"
+                    +str(self.quote_revision_record_id)
+                    +"'"
                 )
                 if getQuote.QUOTE_STATUS == "APPROVED":
                     
@@ -1328,7 +1330,7 @@ class approvalCenter:
             parallel = ""
             if CurrentTabName == 'Quote':
                 
-                quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+                quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
                 quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                 if quote_obj is not None:
                     ##query is to get max distinct round APPROVAL_RECORD_ID 
@@ -1374,7 +1376,7 @@ class approvalCenter:
             #recallresponse = self.sendmailNotification("Recall")
             #try:
             if CurrentTabName == 'Quote':
-                quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
+                quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
                 quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
                 if quote_obj is not None:
                     approval_queues_obj = Sql.GetList("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APRSTAMAP_APPROVALSTATUS = 'REJECTED'".format(quote_record_id = quote_record_id))
