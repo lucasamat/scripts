@@ -19,6 +19,7 @@ Sql = SQL()
 def bannerdetails(Quoteid,active_tab_name):	
 	contract_record_id = ""
 	get_contract_rec_id = ""
+	Trace.Write('Quoteid--'+str(Quoteid))
 	matchObj = re.match( r'.*>\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)	
 	if active_tab_name == "Contracts":
 		reObj = re.match( r'.*>\s*(\d+)*?<', Quoteid)		
