@@ -64,7 +64,7 @@ def create_new_revision(Opertion):
    			#INSERT salesorg start
 			for cloneobjectname in CloneObject.keys():
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
-				insertcols = '""" INSERT INTO '+ str(cloneobjectname) +'( '
+				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
 				selectcols = "SELECT "
 				for col in sqlobj:
 					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
@@ -82,7 +82,7 @@ def create_new_revision(Opertion):
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
-				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))+' """'
+				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
 				finalquery=insertcols+' '+selectcols
 				Trace.Write(finalquery)
 				ExecObjQuery = Sql.RunQuery(finalquery)
