@@ -1507,7 +1507,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			Sql.Upsert(fab_table_info)
 			if ("Sending Account -" in self.tree_param or "Receiving Account -" in self.tree_param) and self.tree_parent_level_0 == 'Fab Locations':
 				auto_equp_insert = "true"
-				Trace.Write("auto equp add"+str(self.tree_parent_level_0))
+				Trace.Write("auto equp add"+str(self.tree_parent_level_0)+'--'+str(mylist))
 				self._add_equipment(auto_equp_insert,mylist)
 			# ADD QUOTA VD AND VDV FOR THE FAB LOCATION
 			for dictvalue in mylist:				
