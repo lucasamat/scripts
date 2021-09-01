@@ -1034,7 +1034,10 @@ TreeParentParam = Param.TreeParentParam
 TreeSuperParentParam = Param.TreeSuperParentParam
 
 TopSuperParentParam = Param.TopSuperParentParam
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = ""
 
 TableId = Param.TableId
 Trace.Write(RECORD)
