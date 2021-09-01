@@ -4670,7 +4670,11 @@ LOOKUPOBJ = Param.LOOKUPOBJ
 LOOKUPAPI = Param.LOOKUPAPI
 MODE = Param.MODE
 
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	Trace.Write("EXCEPT: quote_revision_record_id ")
+	quote_revision_record_id = ""
 
 if hasattr(Param, "TableId"):
 	TableId = Param.TableId
