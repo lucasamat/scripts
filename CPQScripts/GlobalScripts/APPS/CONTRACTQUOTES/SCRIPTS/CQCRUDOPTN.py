@@ -202,7 +202,7 @@ class ContractQuoteCrudOpertion:
 						if key=="MATERIAL_RECORD_ID":
 							key="CpqTableEntryId"
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
-						qury_str+=" "+key+" LIKE '%"+val+"%' AND "
+						qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
 				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 				sales_org=""
 				if get_sales_org :
