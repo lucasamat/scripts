@@ -4605,6 +4605,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
 				#SAQSGB_end_time = time.time()				
 				self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
+				#COVERED OBJ PRE DEFINED LOGIC
+				try:						
+					CQTVLDRIFW.iflow_valuedriver_rolldown(self.contract_quote_record_id,"PREDEFINED WAFER DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
+				except:
+					Trace.Write("EXCEPT----PREDEFINED WAFER DRIVER IFLOW")
 				#COVERED OBJ DRIVER ROLL DOWN
 				try:						
 					CQTVLDRIFW.iflow_valuedriver_rolldown(self.contract_quote_record_id,"SERVICE COST AND VALUE DRIVERS",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
