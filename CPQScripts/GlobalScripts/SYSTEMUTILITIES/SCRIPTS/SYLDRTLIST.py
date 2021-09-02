@@ -2723,7 +2723,7 @@ class SYLDRTLIST:
 						elif str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
 							Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
 						elif ObjectName == "SAQTRV":
-								Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
+								Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
 					else:                        
 						if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
@@ -2734,7 +2734,7 @@ class SYLDRTLIST:
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)"  >VIEW<a><li>'
 							)
 						elif ObjectName == "SAQTRV":
-							Action_str += '<li><a id = "" class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'     
+							Action_str += '<li><a id = "" class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'     
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -7762,11 +7762,11 @@ class SYLDRTLIST:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
 					elif ObjectName == "SAQTRV" :
-						Action_str += '<li><a class="dropdown-item" href="#" onclick="edit_desc(this)">EDIT DESC</a></li>'    
+						Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
-						Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" style="display: none;">SET AS ACTIVE</a></li>'
+						Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
