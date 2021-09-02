@@ -530,6 +530,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									
 								#     Sql.Upsert(tableInfo)
 						else:
+							Trace.Write('533-----------'+str(TableName))
 							Sql.Upsert(tableInfo)
 						# sectional edit error message - ends
 				
