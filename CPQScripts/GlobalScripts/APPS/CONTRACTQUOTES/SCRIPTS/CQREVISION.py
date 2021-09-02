@@ -118,7 +118,7 @@ def create_new_revision(Opertion):
 	return True
 
 def set_active_revision(Opertion,select_active):
-	Trace.Write('121---')
+	Trace.Write('121---'+str(select_active))
 	return True
 Opertion = Param.Opertion
 try:
