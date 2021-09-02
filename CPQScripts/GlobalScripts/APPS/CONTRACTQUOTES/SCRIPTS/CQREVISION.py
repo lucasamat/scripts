@@ -147,7 +147,7 @@ def set_active_revision(Opertion,cartrev):
 
 #edit quote description field start
 def save_desc_revision(Opertion,cartrev,cartrev_id,):
-	Trace.Write(str(cartrev_id)"-------cartrev----146---------"+str(cartrev))
+	Trace.Write(str(cartrev_id)+"-------cartrev----146---------"+str(cartrev))
 	ObjectName = cartrev_id.split('-')[0].strip()
 	cpqid = cartrev_id.split('-')[1].strip()
 	recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
