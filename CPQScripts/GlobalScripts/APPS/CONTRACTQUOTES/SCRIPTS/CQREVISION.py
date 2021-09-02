@@ -129,9 +129,12 @@ def set_active_revision(Opertion,select_active):
 		cpqid = val.split('-')[1].strip()
 		recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 		recordslist.append(recid)
-	#Trace.Write("recccccccc--128---"+str(recordslist))	
+	Trace.Write("recccccccc--128---"+str(recordslist))	
 	recordslist = str(tuple(recordslist)).replace(',)',')')
-	#Trace.Write("recordslist--->"+str(recordslist))
+	Trace.Write("recordslist--->"+str(recordslist))
+	get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
+	Quote.SetGlobal("contract_quote_record_id",quote_contract_recordId)
+	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 	return True
 Opertion = Param.Opertion
 select_active = list(Param.select_active)
