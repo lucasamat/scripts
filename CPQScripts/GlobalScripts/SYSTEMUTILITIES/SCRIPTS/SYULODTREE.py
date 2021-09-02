@@ -2445,7 +2445,8 @@ class TreeView:
 						.replace("NodeText", str(NodeText))
 						.replace("where_string", where_string)
 					)
-					childQuery = Sql.GetList("" + str(DynamicQuery) + "")				
+					childQuery = Sql.GetList("" + str(DynamicQuery) + "")		
+					Trace.Write("@2449----------->" + str(DynamicQuery) + "")		
 				else:   
 					Trace.Write("@2442---")                 
 					if (str(ObjName).strip() != 'SAQSGB' and str(NodeApiName) != 'FABLOCATION_ID') or (str(ObjName).strip() != 'SAQFGB' and str(NodeApiName) != 'GREENBOOK'):
