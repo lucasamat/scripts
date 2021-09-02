@@ -790,7 +790,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParentParam}' AND GREENBOOK = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, TreeParentParam = TreeParentParam,TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
         QueryCount = ""
-
+ 
         QueryCountObj = Sql.GetFirst(
             """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParentParam}' and GREENBOOK = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParentParam = TreeParentParam,TreeParam = TreeParam, equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
         )
