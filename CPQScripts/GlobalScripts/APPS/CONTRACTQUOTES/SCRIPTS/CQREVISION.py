@@ -42,7 +42,7 @@ def create_new_revision(Opertion,cartrev):
 		"SAQSSA":"QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID",
 		"SAQFEA":"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"SAQFGB":"QUOTE_FAB_LOC_GB_RECORD_ID",
-  		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID"
+		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID"
 		}
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
