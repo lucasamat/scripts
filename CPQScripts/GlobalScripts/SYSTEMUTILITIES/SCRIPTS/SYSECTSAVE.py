@@ -463,6 +463,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id"), SERVICE_ID=TreeParam.split('-')[1].strip() +" - "+TreeParam.split('-')[2].strip(), revision_rec_id = quote_revision_record_id
 							))
 							getting_cps_tax(check_itm_obj,'tool')
+					#A055S000P01-4288 start
 					elif TableName == "SAQTRV":
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
@@ -472,6 +473,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						Trace.Write("TEZTZ--475-472-----"+str(tablerow))
 						update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0))
 						productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(newdict.get("REVISION_DESCRIPTION"))+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
+					#A055S000P01-4288 end
 					else:
 						
 						notification = 'Billing Start Date should be less than Billing End Date'
