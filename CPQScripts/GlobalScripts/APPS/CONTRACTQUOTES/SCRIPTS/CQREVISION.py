@@ -119,6 +119,15 @@ def create_new_revision(Opertion):
 
 def set_active_revision(Opertion,select_active):
 	Trace.Write('121---'+str(select_active))
+	recordslist = []
+	for val in select_active:
+		ObjectName = val.split('-')[0].strip()
+		cpqid = val.split('-')[1].strip()
+		recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+		recordslist.append(recid)
+	Trace.Write("recccccccc--128---"+str(recordslist))	
+	recordslist = str(tuple(recordslist)).replace(',)',')')
+	Trace.Write("recordslist--->"+str(recordslist))
 	return True
 Opertion = Param.Opertion
 try:
