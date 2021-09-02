@@ -13648,7 +13648,7 @@ elif ACTION == "CHILDLOAD":
             Trace.Write("toolschild")
             ApiResponse = ApiResponseFactory.JsonResponse(CommonChildTable(ATTR_NAME, PerPage, PageInform, A_Keys, A_Values))    
     elif TABNAME == "WITH BUNLDLE PARENT TABLE":
-        if pagination_flag:
+        if pagination_flag: 
             try:
                 ATTR_NAME = Param.REC_ID
                 PerPage = Param.PerPage
