@@ -16,6 +16,8 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import re
 from datetime import timedelta , date
+import SYTABACTIN as Table
+import SYCNGEGUID as CPQID
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
