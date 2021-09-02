@@ -117,7 +117,16 @@ def create_new_revision(Opertion):
 
 	return True
 
-
+def set_active_revision(Opertion,select_active):
+	Trace.Write('121---')
+	return True
 Opertion = Param.Opertion
+try:
+	select_active = Pram.select_active
+except:
+	select_active = ''
 #Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
-ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,))
+if Opertion == "SET_ACTIVE":
+	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,select_active,))
+else:
+	ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,))
