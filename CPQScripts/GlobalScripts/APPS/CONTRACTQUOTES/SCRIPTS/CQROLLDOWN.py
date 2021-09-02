@@ -179,7 +179,7 @@ def CoveredObjEntitlement():
 		QuoteRecordId=Qt_rec_id, 
 		ServiceId=TreeParam, 
         revision_rec_id = rev_rec_id)
-	Log.Info('qtqsce_query-renewal----179=---Qt_rec_id--'+str(Qt_rec_id))
+	Log.Info('@182qtqsce_query-renewal----179=---Qt_rec_id--'+str(qtqsce_query))
 	Sql.RunQuery(qtqsce_query)
 	
 	get_SAQSCO = Sql.GetFirst("""SELECT count(*) as cnt FROM SAQSCO (NOLOCK) WHERE SAQSCO.QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id))
