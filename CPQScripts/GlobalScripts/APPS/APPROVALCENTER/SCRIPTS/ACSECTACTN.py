@@ -3302,7 +3302,7 @@ except:
 	grid_flag = ""
 #Trace.Write("grid_flag"+str(grid_flag))
 ##Showing approve/reject in list grid ends
-Trace.Write("ACTION-->"+str(ACTION))
+Trace.Write("ACTION--->"+str(ACTION))
 """Object Initialization by Factory Method."""
 try:
 	objDef = eval(violationruleInsert.Factory(ACTION))(QuoteNumber=QuoteNumber)
