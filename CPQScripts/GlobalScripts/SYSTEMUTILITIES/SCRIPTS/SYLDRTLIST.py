@@ -3195,6 +3195,7 @@ class SYLDRTLIST:
 														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + value1234 + "</abbr>") 
 													else:
 														Trace.Write('At line 2924')
+														Trace.Write(value1234)
 														new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														#new_dict[value123] = value1234
 												
