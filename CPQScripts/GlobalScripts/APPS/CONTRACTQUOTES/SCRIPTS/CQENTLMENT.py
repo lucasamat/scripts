@@ -952,7 +952,7 @@ class Entitlements:
 					if getpriceimpact == 0.00:
 						getpriceimpact = ""
 					##storing values for multi select  starts
-					
+					Trace.Write('product_id---'+str(product_obj.PRD_ID))
 					if str((val).split("||")[2]) == "Check Box" :
 						display_vals = str((val).split("||")[0])
 						if display_vals:
