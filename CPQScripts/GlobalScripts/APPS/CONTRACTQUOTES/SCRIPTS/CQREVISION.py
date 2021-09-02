@@ -125,16 +125,14 @@ def set_active_revision(Opertion,select_active):
 		cpqid = val.split('-')[1].strip()
 		recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 		recordslist.append(recid)
-	Trace.Write("recccccccc--128---"+str(recordslist))	
+	#Trace.Write("recccccccc--128---"+str(recordslist))	
 	recordslist = str(tuple(recordslist)).replace(',)',')')
-	Trace.Write("recordslist--->"+str(recordslist))
+	#Trace.Write("recordslist--->"+str(recordslist))
 	return True
 Opertion = Param.Opertion
-try:
-	select_active = list(Pram.select_active)
-except:
-	select_active = ''
-#Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
+select_active = list(Pram.select_active)
+
+Trace.Write("--select_active--------------"+str(select_active))
 if Opertion == "SET_ACTIVE":
 	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,select_active,))
 else:
