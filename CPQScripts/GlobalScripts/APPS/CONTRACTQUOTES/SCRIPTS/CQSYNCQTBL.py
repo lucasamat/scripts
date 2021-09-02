@@ -572,7 +572,7 @@ class SyncQuoteAndCustomTables:
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y")
 					expired_date = datetime.datetime.now().strftime("%m/%d/%Y")
 					Trace.Write('571-------'+str(created_date))
-					quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
+					quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
 					quote_revision_table_info.AddRow(quote_rev_data)
 					# UPDATE REVISION DETAILS TO SAQTMT
 					contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
