@@ -24,7 +24,7 @@ ScriptExecutor = ScriptExecutor
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----')
 #A055S000P01-8729 start
-def create_new_revision(Opertion):
+def create_new_revision(Opertion,cartrev):
 	CloneObject={
 		"SAQTSO":"QUOTE_SALESORG_RECORD_ID",
 		"SAQFBL":"QUOTE_FABLOCATION_RECORD_ID",
@@ -123,12 +123,12 @@ def create_new_revision(Opertion):
 
 	return True
 
-def set_active_revision(Opertion,select_active):
-	Trace.Write('121---'+str(select_active))
+def set_active_revision(Opertion,cartrev):
+	Trace.Write('121---'+str(cartrev))
 	recid = ''
 	#for val in select_active:
-	ObjectName = select_active.split('-')[0].strip()
-	cpqid = val.split('-')[1].strip()
+	ObjectName = cartrev.split('-')[0].strip()
+	cpqid = cartrev.split('-')[1].strip()
 	recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 	Trace.Write('121---recid---'+str(recid))
 	get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
@@ -137,10 +137,10 @@ def set_active_revision(Opertion,select_active):
 	update_quote_set_active_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QUOTE_REVISION_RECORD_ID = '{recid}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 1,recid =recid))
 	return True
 Opertion = Param.Opertion
-select_active = Param.select_active
+cartrev = Param.cartrev
 
-Trace.Write("--select_active--------------"+str(select_active))
+Trace.Write("--select_active--------------"+str(cartrev))
 if Opertion == "SET_ACTIVE":
-	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,select_active,))
+	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,cartrev,))
 else:
-	ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,))
+	ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,cartrev,))
