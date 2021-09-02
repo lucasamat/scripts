@@ -131,7 +131,7 @@ def set_active_revision(Opertion,select_active):
 	return True
 Opertion = Param.Opertion
 try:
-	select_active = Pram.select_active
+	select_active = list(Pram.select_active)
 except:
 	select_active = ''
 #Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
