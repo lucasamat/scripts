@@ -824,7 +824,7 @@ def CommonTreeViewHTMLDetail(
 					+ " = '"
 					+ str(RECORD_ID) 
 					+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
-					+ "' AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+					+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 				)
 			elif ObjectName == "SAQICO":
 				RECORD_ID = primary_value
