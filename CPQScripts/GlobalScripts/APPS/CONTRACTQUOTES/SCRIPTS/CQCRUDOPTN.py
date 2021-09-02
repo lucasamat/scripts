@@ -5357,7 +5357,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		entries = str(self.contract_quote_id)
 		revision = str(self.quote_revision_record_id)
 		user = self.user_name		
-		CQPARTIFLW.iflow_pricing_call(user,entries)
+		CQPARTIFLW.iflow_pricing_call(user,entries,revision)
 		
 		self._process_query("""UPDATE SAQICO SET PRICING_STATUS = CASE  
 						WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
