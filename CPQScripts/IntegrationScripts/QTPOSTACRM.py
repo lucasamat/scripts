@@ -29,7 +29,7 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
 			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
-  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</QUOTE_ID></REVISION_ID><RE></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
 			
 
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_CRM_QUOTE_ASYNC'")
@@ -54,7 +54,7 @@ try:
 			
 			
 			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
-  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</QUOTE_ID></REVISION_ID></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
 			
 
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_QUOTE_ASYNC'")
