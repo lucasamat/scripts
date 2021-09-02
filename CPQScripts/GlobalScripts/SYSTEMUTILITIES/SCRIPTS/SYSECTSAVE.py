@@ -463,7 +463,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id"), SERVICE_ID=TreeParam.split('-')[1].strip() +" - "+TreeParam.split('-')[2].strip(), revision_rec_id = quote_revision_record_id
 							))
 							getting_cps_tax(check_itm_obj,'tool')
-
+					elif TableName == "SAQTRV":
+						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
+						newdict.update(dictc)
+						tableInfo = Sql.GetTable(str(TableName))
+						tablerow = newdict
+						tableInfo.AddRow(tablerow)
+						Trace.Write("TEZTZ--475-472-----"+str(tablerow))
+						
 					else:
 						
 						notification = 'Billing Start Date should be less than Billing End Date'
