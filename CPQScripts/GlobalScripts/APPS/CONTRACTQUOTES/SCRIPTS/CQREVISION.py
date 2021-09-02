@@ -24,18 +24,18 @@ Trace.Write('23----')
 #A055S000P01-8729 start
 def create_new_revision(Opertion):
 	CloneObject={
-     	"SAQTSO":"QUOTE_SALESORG_RECORD_ID",
-      	"SAQFBL":"QUOTE_FABLOCATION_RECORD_ID",
-        "SAQFEQ":"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID",
-        "SAQTSV":"QUOTE_SERVICE_RECORD_ID",
+		"SAQTSO":"QUOTE_SALESORG_RECORD_ID",
+		"SAQFBL":"QUOTE_FABLOCATION_RECORD_ID",
+		"SAQFEQ":"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID",
+		"SAQTSV":"QUOTE_SERVICE_RECORD_ID",
 		"SAQSCO":"QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID",
 		"SAQSCA":"QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID",
-  		"SAQSCE":"QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID",
+		"SAQSCE":"QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID",
 		"SAQSGE":"QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID",
 		"SAQSFE":"QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID",
 		"SAQIEN":"QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID",
 		"SAQSAE":"QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID"
- 		}
+		}
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		#Get Old Revision ID - Start
@@ -74,7 +74,7 @@ def create_new_revision(Opertion):
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 0))
 			#update SAQTMT end
 			
-   			#INSERT salesorg start
+			#INSERT salesorg start
 			for cloneobjectname in CloneObject.keys():
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
