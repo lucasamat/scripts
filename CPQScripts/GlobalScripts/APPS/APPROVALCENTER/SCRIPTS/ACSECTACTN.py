@@ -42,7 +42,11 @@ class approvalCenter:
 		now = datetime.now()
 		self.datetime_value = now.strftime("%m/%d/%Y %H:%M:%S")
 		self.exceptMessage = ""
-		self.quote_revision_record_id = Quote.GetGlobal('quote_revision_record_id')
+		try:
+			self.quote_revision_record_id = Quote.GetGlobal('quote_revision_record_id')
+		except:
+			quote_revision_record_id_query = Sql.GetFirst("SELECT QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.QuoteNumber)+"'")
+			self.quote_revision_record_id = quote_revision_record_id_query.QTEREV_RECORD_ID
 		LOGIN_CREDENTIALS = Sql.GetFirst("SELECT top 1 Domain FROM SYCONF (nolock) order by CpqTableEntryId")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Domain = str(LOGIN_CREDENTIALS.Domain)
