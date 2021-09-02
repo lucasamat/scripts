@@ -633,8 +633,8 @@ def CommonTreeViewHTMLDetail(
 		# Billing Matrix Details Load - Start
 		if ObjectName == 'SAQTBP':
 			billing_plan_obj = SqlHelper.GetFirst(
-					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id),
-					quote_revision_record_id
+					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id,quote_revision_record_id)
+					
 				)
 			if billing_plan_obj:
 				RECORD_ID = billing_plan_obj.QUOTE_BILLING_PLAN_RECORD_ID
