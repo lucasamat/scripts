@@ -2734,6 +2734,8 @@ class SYLDRTLIST:
 								'<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)"  >VIEW<a><li>'
 							)
 						elif ObjectName == "SAQTRV":
+							Trace.Write('2737----'+str(value123))
+							Trace.Write('2737---1234-'+str(value1234))
 							Action_str += '<li><a id = "" class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'     
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
