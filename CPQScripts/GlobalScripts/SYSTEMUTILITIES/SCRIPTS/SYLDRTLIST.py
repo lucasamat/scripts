@@ -2725,7 +2725,7 @@ class SYLDRTLIST:
 						elif ObjectName == "SAQTRV":
 							quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 							get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
-							if get_activerev.CpqTableEntryId == str(value1234):
+							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
 								Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
@@ -2743,7 +2743,7 @@ class SYLDRTLIST:
 							Trace.Write('2737---1234-'+str(value1234))
 							quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 							get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
-							if get_activerev.CpqTableEntryId == str(value1234):
+							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none; onclick="edit_desc(this)">EDIT DESC</a></li>'  
@@ -7776,7 +7776,7 @@ class SYLDRTLIST:
 					elif ObjectName == "SAQTRV" :
 						quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 						get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
-						if get_activerev.CpqTableEntryId == str(value1234):
+						if get_activerev:
 							Action_str += '<li><a class="dropdown-item" href="#"  onclick="edit_desc(this)">EDIT DESC</a></li>'
 						else:
 							Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
