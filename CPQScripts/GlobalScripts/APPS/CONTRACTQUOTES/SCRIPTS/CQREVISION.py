@@ -141,11 +141,17 @@ def set_active_revision(Opertion,cartrev):
 	get_rev_info_details = Sql.GetFirst("select QTEREV_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QUOTE_REVISION_RECORD_ID = '"+str(recid)+"'")
 	Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 	return True
+
+def save_desc_revision(Opertion,cartrev,):
+	Trace.Write("-------cartrev----146---------"+str(cartrev))
+	return True
 Opertion = Param.Opertion
 cartrev = Param.cartrev
 
 Trace.Write("--select_active--------------"+str(cartrev))
 if Opertion == "SET_ACTIVE":
 	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,cartrev,))
+elif Opertion == "SAVE_DESC":
+	ApiResponse = ApiResponseFactory.JsonResponse(save_desc_revision(Opertion,cartrev,))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,cartrev,))
