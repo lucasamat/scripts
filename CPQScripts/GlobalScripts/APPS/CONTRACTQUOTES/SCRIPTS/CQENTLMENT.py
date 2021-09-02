@@ -279,7 +279,7 @@ class Entitlements:
 		stp_account_id = ""
 		if account_obj:
 			stp_account_id = str(account_obj.ACCOUNT_ID)
-		salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId = self.revision_recordid))
+		salesorg_obj = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.ContractRecordId,RevisionRecordId = self.revision_recordid))
 		if salesorg_obj:
 			Trace.Write("serviceId--22--"+str(serviceId))			
 			
@@ -338,7 +338,7 @@ class Entitlements:
 		totalpriceimpact = 0.00
 		join = defaultval = ''
 		ParentwhereReq=''
-		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,self.revision_recordid))
+		getregion=Sql.GetFirst("SELECT REGION from SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,self.revision_recordid))
 		if getregion:
 			getregionval = getregion.REGION		
 		
@@ -1029,7 +1029,7 @@ class Entitlements:
 				where = " QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK,PLATFORM  FROM SAQSCO (NOLOCK) WHERE {where}".format(where=where))
-				GetRegion = Sql.GetFirst("SELECT SAQTSO.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.REGION,SAQTMT.GLOBAL_CURRENCY FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTSO.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,self.revision_recordid))
+				GetRegion = Sql.GetFirst("SELECT SAQTRV.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.REGION,SAQTMT.GLOBAL_CURRENCY FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,self.revision_recordid))
 				Region = GetRegion.REGION
 				SalesOrg = GetRegion.SALESORG_ID
 				import datetime as dt

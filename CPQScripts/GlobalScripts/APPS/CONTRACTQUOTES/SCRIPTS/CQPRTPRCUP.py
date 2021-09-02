@@ -52,7 +52,7 @@ all_count = 0
 loop_count = 0
 #GET PRICING PROCEDURE
 contract_quote_record_id = None
-GetPricingProcedure = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE,DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID,ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID, QUOTE_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
+GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
     #PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
     PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
@@ -159,7 +159,7 @@ else:
         stp_account_id = str(account_obj.ACCOUNT_ID)
     if service_obj:
         serviceId = str(service_obj.SERVICE_ID)
-    salesorg_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE, DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(QuoteRecordId=QUOTE,revision_rec_id = revision))
+    salesorg_obj = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(QuoteRecordId=QUOTE,revision_rec_id = revision))
     item_string = ''
     if salesorg_obj:
         Trace.Write("serviceId--22--"+str(serviceId))			

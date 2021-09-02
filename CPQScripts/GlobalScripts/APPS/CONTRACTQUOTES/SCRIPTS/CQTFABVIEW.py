@@ -1226,7 +1226,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	userId = str(User.Id)
 	userName = str(User.UserName)
 	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
-	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTSO(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"
 			+ str(quote_revision_record_id)
 			+ "'")

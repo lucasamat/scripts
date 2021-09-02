@@ -1101,7 +1101,7 @@ def CommonTreeViewHTMLDetail(
 				Quote_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				if Quote_Type is not None:
 					if Quote_Type.QUOTE_TYPE == "ZWK1 - SPARES":
-						if ObjectName == "SAQTSO":
+						if ObjectName == "SAQTRV":
 							notinlist = [
 								"EXCHANGE_RATE_DATE",
 								"EXCHANGE_RATE"
@@ -2522,7 +2522,7 @@ def EntitlementTreeViewHTMLDetail(
 		# ServiceContainer = Product.GetContainerByName("Services")
 		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 		multi_select_attr_list = {}
-		getregion=Sql.GetFirst("SELECT REGION from SAQTSO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quoteid,quote_revision_record_id))
+		getregion=Sql.GetFirst("SELECT REGION from SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quoteid,quote_revision_record_id))
 		if getregion:
 			getregionval = getregion.REGION
 			

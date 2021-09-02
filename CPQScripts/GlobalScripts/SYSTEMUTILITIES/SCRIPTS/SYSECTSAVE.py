@@ -856,15 +856,15 @@ def getting_cps_tax(item_obj,quote_type):
 	x= str(x)
 	y = x.split(" ")
 	
-	GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(EXCHANGE_RATE_TYPE,'') as EXCHANGE_RATE_TYPE, ISNULL(DIVISION_ID, '') as DIVISION_ID,ISNULL(COUNTRY, '') as COUNTRY, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(DOC_CURRENCY,'') as DOC_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID, ISNULL(CUSTAXCLA_ID,1) as CUSTAXCLA_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_ID = '{}'".format(contract_quote_obj.QUOTE_ID))
+	GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(DIVISION_ID, '') as DIVISION_ID,ISNULL(COUNTRY, '') as COUNTRY, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(DOC_CURRENCY,'') as DOC_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(contract_quote_obj.QUOTE_ID))
 	if GetPricingProcedure is not None:			
 		PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 		curr = GetPricingProcedure.DOC_CURRENCY
 		dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 		salesorg = GetPricingProcedure.SALESORG_ID
 		div = GetPricingProcedure.DIVISION_ID
-		exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
-		taxk1 = GetPricingProcedure.CUSTAXCLA_ID
+		#exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
+		#taxk1 = GetPricingProcedure.CUSTAXCLA_ID
 		country = GetPricingProcedure.COUNTRY
 	#update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=self.contract_quote_id)
 	#Sql.RunQuery(update_SAQITM)

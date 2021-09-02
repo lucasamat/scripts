@@ -73,19 +73,19 @@ class ContractQuoteC4CSync:
         return {}
     
     def _insert_quote_salesorg(self, quote_data):
-        quote_salesorg_table_info = Sql.GetTable("SAQTSO")
+        quote_salesorg_table_info = Sql.GetTable("SAQTRV")
         if self.contract_quote_data.get("SALESORG_RECORD_ID"):
             
             salesorg_data = {
-                "QUOTE_SALESORG_RECORD_ID": str(Guid.NewGuid()).upper(),
+                #"QUOTE_SALESORG_RECORD_ID": str(Guid.NewGuid()).upper(),
                 "QUOTE_ID": self.cpq_quote_id,
                 "QUOTE_NAME": self.contract_quote_data.get("QUOTE_NAME"),
                 "QUOTE_RECORD_ID": self.contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
                 "SALESORG_ID": self.contract_quote_data.get("SALESORG_ID"),
                 "SALESORG_NAME": self.contract_quote_data.get("SALESORG_NAME"),
                 "SALESORG_RECORD_ID": self.contract_quote_data.get("SALESORG_NAME"),
-                "QUOTE_CURRENCY":self.contract_quote_data.get("QUOTE_CURRENCY"),
-                "QUOTE_CURRENCY_RECORD_ID":self.contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
+                #"QUOTE_CURRENCY":self.contract_quote_data.get("QUOTE_CURRENCY"),
+                #"QUOTE_CURRENCY_RECORD_ID":self.contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
             }
             if quote_data.get('DistributionChannel'):
                 distribution_obj = Sql.GetFirst(

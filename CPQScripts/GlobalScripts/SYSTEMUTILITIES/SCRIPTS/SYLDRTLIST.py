@@ -6314,14 +6314,14 @@ class SYLDRTLIST:
 						Qury_str = (
 							"SELECT DISTINCT TOP "
 							+ str(PerPage)
-							+ "QUOTE_SALESORG_RECORD_ID,QUOTE_ID,QUOTE_NAME,SALESORG_ID,SALESORG_NAME,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,SALESOFFICE_ID,SALESOFFICE_NAME,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQTSO (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"') m where m.ROW BETWEEN "
+							+ "QUOTE_SALESORG_RECORD_ID,QUOTE_ID,QUOTE_NAME,SALESORG_ID,SALESORG_NAME,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,SALESOFFICE_ID,SALESOFFICE_NAME,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQTRV (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"') m where m.ROW BETWEEN "
 							+ str(Page_start)
 							+ " AND "
 							+ str(Page_End)
 							+ ""
 						)
 						QuryCount_str = (
-							"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTSO (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
+							"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE "+ str(ATTRIBUTE_VALUE_STR)+" SALESORG_ID = '"+str(TP)+"' and DOC_CURRENCY='"+str(PR_CURR)+"'"
 						)
 
 					elif RECORD_ID == "SYOBJR-95866":                        
