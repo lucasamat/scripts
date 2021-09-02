@@ -6033,7 +6033,7 @@ class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 		#		)
 		#QuoteID = contract_quote_obj.QUOTE_ID
 		#Trace.Write("QuoteID--> "+str(QuoteID))
-		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id, 'Fun_type':'cpq_to_sscm'})
+		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.quote_revision_id, 'Fun_type':'cpq_to_sscm'})
 		# Approval Trigger - Start		
 		#import ACVIORULES
 		#violationruleInsert = ACVIORULES.ViolationConditions()
