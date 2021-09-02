@@ -152,7 +152,6 @@ class ConfigUpdateScript:
 				INNER JOIN SYOBJS (NOLOCK) ON SYOBJS.OBJ_REC_ID = SYSECT.PRIMARY_OBJECT_RECORD_ID
 				WHERE
 					SYOBJS.NAME='Header list' AND
-					SYSECT.SECTION_NAME = 'BASIC INFORMATION' AND
 					SYTABS.SAPCPQ_ALTTAB_NAME = '{}' """.format(
 				self.current_tab_name
 			)
