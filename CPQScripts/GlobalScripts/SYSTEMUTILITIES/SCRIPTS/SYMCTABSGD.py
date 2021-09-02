@@ -167,7 +167,11 @@ class CONTAINER:
             for s in subtab_list:
                 subtabs.append(s.SUBTAB_NAME)
                 tab_name_sub = s.SUBTAB_TYPE
-            subtab_str = '<div class="row tabsfiled material_subtab_top"><div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 material_subtab_bg"><div class="subtab_inner"><ul class="nav-tabs">'
+            if s.SUBTAB_NAME == "My Approvals Queue" or s.SUBTAB_NAME == "Team Approvals Queue":
+                subtab_down = "subtab-down"
+            else:
+                subtab_down = "subtab-down"
+            subtab_str = '<div class="row tabsfiled material_subtab_top '+str(subtab_down)+'"><div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 material_subtab_bg"><div class="subtab_inner"><ul class="nav-tabs">'
         
             for s in subtabs:
                 Trace.Write("SUBTAB_J "+str(s))
