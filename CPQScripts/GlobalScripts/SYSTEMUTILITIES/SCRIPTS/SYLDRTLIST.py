@@ -7766,7 +7766,7 @@ class SYLDRTLIST:
 
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
-						Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+						Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" style="display: none;">SET AS ACTIVE</a></li>'
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
