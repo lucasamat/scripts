@@ -130,7 +130,7 @@ def set_active_revision(Opertion,select_active):
 	#Trace.Write("recordslist--->"+str(recordslist))
 	return True
 Opertion = Param.Opertion
-select_active = list(Pram.select_active)
+select_active = list(Param.select_active)
 
 Trace.Write("--select_active--------------"+str(select_active))
 if Opertion == "SET_ACTIVE":
