@@ -167,6 +167,7 @@ class CONTAINER:
             for s in subtab_list:
                 subtabs.append(s.SUBTAB_NAME)
                 tab_name_sub = s.SUBTAB_TYPE
+            Trace.Write("Subtab_Name_j "+str(s.SUBTAB_NAME))
             if s.SUBTAB_NAME == "My Approvals Queue" or s.SUBTAB_NAME == "Team Approvals Queue":
                 subtab_down = "subtab-down"
             else:
