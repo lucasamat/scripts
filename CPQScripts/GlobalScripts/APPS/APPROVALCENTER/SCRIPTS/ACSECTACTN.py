@@ -3307,7 +3307,7 @@ Trace.Write("ACTION--->"+str(ACTION))
 try:
 	objDef = eval(violationruleInsert.Factory(ACTION))(QuoteNumber=QuoteNumber)
 except Exception, e:
-	if ACTION in ["APPROVEBTN", "REJECTBTN","PREVIEW_APPROVAL"]:
+	if ACTION in ["APPROVEBTN", "REJECTBTN"]:
 		objDef = approvalCenter(QuoteNumber=QuoteNumber)
 	else:
 		Trace.Write("Class reference is not created" + str(e))
