@@ -126,6 +126,9 @@ def create_new_revision(Opertion,cartrev):
 
 	return True
 
+
+
+#set active revision  from grid- start
 def set_active_revision(Opertion,cartrev):
 	recid = ''
 	#for val in select_active:
@@ -139,16 +142,32 @@ def set_active_revision(Opertion,cartrev):
 	get_rev_info_details = Sql.GetFirst("select QTEREV_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QUOTE_REVISION_RECORD_ID = '"+str(recid)+"'")
 	Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 	return True
+#set active revision  from grid- end
 
-def save_desc_revision(Opertion,cartrev,):
-	Trace.Write("-------cartrev----146---------"+str(cartrev))
+
+#edit quote description field start
+def save_desc_revision(Opertion,cartrev,cartrev_id,):
+	Trace.Write(str(cartrev_id)"-------cartrev----146---------"+str(cartrev))
+	ObjectName = cartrev_id.split('-')[0].strip()
+	cpqid = cartrev_id.split('-')[1].strip()
+	recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET QUOTE_NAME = '{rev_desc}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND  QUOTE_REVISION_RECORD_ID = '{recid}' """.format(QuoteRecordId=quote_contract_recordId,recid =recid,rev_desc= cartrev))
+	productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(cartrev)+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 	return True
+#edit quote description field end
+
+
+
 Opertion = Param.Opertion
 cartrev = Param.cartrev
+try:
+	cartrev_id =Param.cartrev_id
+except:
+	cartrev_id =''
 
 if Opertion == "SET_ACTIVE":
 	ApiResponse = ApiResponseFactory.JsonResponse(set_active_revision(Opertion,cartrev,))
 elif Opertion == "SAVE_DESC":
-	ApiResponse = ApiResponseFactory.JsonResponse(save_desc_revision(Opertion,cartrev,))
+	ApiResponse = ApiResponseFactory.JsonResponse(save_desc_revision(Opertion,cartrev,cartrev_id,))
 else:
 	ApiResponse = ApiResponseFactory.JsonResponse(create_new_revision(Opertion,cartrev,))
