@@ -5284,7 +5284,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		# Temp table creation and delete(if altready there) for SAQICO - Start
 		temp_table = "SAQICO_BKP_"+str(self.c4c_quote_id)
 		temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
-		SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(temp_table)+" FROM SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"'' ' ")
+		SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(temp_table)+" FROM SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"''' ")
 		# Temp table creation and delete(if altready there) for SAQICO - End
 
 		#Temp table for storing price and cost impact
