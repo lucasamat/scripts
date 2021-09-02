@@ -1741,8 +1741,8 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
-                    + "' AND QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " AND QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
                         )
                     + str(Page_start)
@@ -1761,7 +1761,8 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}') m where m.ROW BETWEEN ".format(
                         ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParam")
                     )
                     + str(Page_start)
@@ -1776,12 +1777,14 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
             )
             elif TreeSuperParentParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=TreeParentParam
                     )
                     + str(Page_start)
@@ -1796,13 +1799,15 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
             )
         elif sale_type == "TOOL RELOCATION":
             if TreeParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
                         )
                     + str(Page_start)
@@ -1815,12 +1820,14 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     + "'and EQUIPMENT_ID = '"
                     + str(EquipmentID)
                     + "'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
             elif TreeParentParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' ) m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' ) m where m.ROW BETWEEN ".format(
                         ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParam")
                     )
                     + str(Page_start)
@@ -1833,12 +1840,14 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                 )
             elif TreeSuperParentParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=TreeParam
                     )
                     + str(Page_start)
@@ -1853,12 +1862,14 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
             ) 
             elif TreeTopSuperParentParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}')m where m.ROW BETWEEN ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=TreeParentParam
                     )
                     + str(Page_start)
@@ -1873,6 +1884,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
             ) 
         chld_list = []
         QueryCount = ""
@@ -2353,7 +2365,8 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
                         )
                     + str(Page_start)
@@ -2366,12 +2379,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 + "'and SND_EQUIPMENT_ID = '"
                 + str(EquipmentID)
                 + "'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                 ) 
             elif TreeSuperParentParam == 'Complementary Products':
                     child_obj_recid = Sql.GetList(
                         "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                         + str(recid)
-                        + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
+                        + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                        + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam
                             )
                         + str(Page_start)
@@ -2386,12 +2401,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     + "' and SERVICE_ID = '"
                     +str(TreeParentParam)
                     +"'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
             elif TreeParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam = TreeSuperParentParam,TreeParam=TreeParam
                         )
                     + str(Page_start)
@@ -2408,12 +2425,15 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 +"' and SNDFBL_ID = '"
                 +str(TreeParam)
                 +"'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    
                 ) 
             elif TreeSuperParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeTopSuperParentParam = TreeTopSuperParentParam,TreeParentParam=TreeParentParam
                         )
                     + str(Page_start)
@@ -2430,6 +2450,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 +"' and SNDFBL_ID = '"
                 +str(TreeParentParam)
                 +"'"
+                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                 ) 
             # elif TreeParentParam == 'Fab Locations':
             #     child_obj_recid = Sql.GetList(
@@ -2477,7 +2498,8 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
                         )
                     + str(Page_start)
@@ -2490,6 +2512,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     + "'and SND_EQUIPMENT_ID = '"
                     + str(EquipmentID)
                     + "'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
 
             elif TreeSuperParentParam == 'Complementary Products':
@@ -2498,7 +2521,8 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam=TreeParentParam
                         )
                     + str(Page_start)
@@ -2513,12 +2537,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     + "' and SERVICE_ID = '"
                     +str(TreeParentParam)
                     +"'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
             elif TreeParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeSuperParentParam}' and SNDFBL_ID = '{TreeParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam=TreeSuperParentParam,TreeParam=TreeParam
                         )
                     + str(Page_start)
@@ -2535,12 +2561,14 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     +"' and SNDFBL_ID = '"
                     +str(TreeParam)
                     +"'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
             elif TreeSuperParentParam == 'Sending Equipment':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
+                    + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeTopSuperParentParam}' and SNDFBL_ID = '{TreeParentParam}') m where m.ROW BETWEEN ".format(
                             ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),TreeTopSuperParentParam=TreeTopSuperParentParam,TreeParentParam=TreeParentParam
                         )
                     + str(Page_start)
@@ -2557,6 +2585,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     +"' and SNDFBL_ID = '"
                     +str(TreeParentParam)
                     +"'"
+                    + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
                     ) 
             # elif TreeParentParam == 'Fab Locations':
             #     child_obj_recid = Sql.GetList(
@@ -3009,11 +3038,15 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
         if TreeParam == 'Fab Locations':
             parent_obj = Sql.GetList(
             "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
-            + str(ContractRecordId)            
-            + "' ORDER BY "
+            + str(ContractRecordId)
+            + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+            + " ORDER BY "
             + str(orderby)
             )
-            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'")
+            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
+            + str(ContractRecordId)
+            + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
+            + "'")
             if Count:
                 QueryCount = Count.cnt
         else:
