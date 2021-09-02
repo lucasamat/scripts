@@ -3311,6 +3311,7 @@ except Exception, e:
         objDef = approvalCenter(QuoteNumber=QuoteNumber)
     else:
         Trace.Write("Class reference is not created" + str(e))
+        objDef = ''
 if ACTION in ["APPROVE", "REJECT"]:
     AllParams = eval(Param.AllParams)
     ApproveDesc = Param.ApproveDesc
