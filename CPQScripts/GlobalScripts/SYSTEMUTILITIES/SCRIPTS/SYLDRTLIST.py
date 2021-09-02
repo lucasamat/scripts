@@ -298,7 +298,7 @@ class SYLDRTLIST:
 		if obj_obj is None:
 			return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
 		# Billing Matrix - Pivot - Start
-		billing_date_column = ''        
+		billing_date_column = getQuotetype =''        
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			Columns = obj_obj.COLUMNS
@@ -309,8 +309,11 @@ class SYLDRTLIST:
 				Trace.Write('306-------')           
 				if  quote_rec_id:                
 					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
-					getQuotetype = getQuote.QUOTE_TYPE
-					Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
+					if getQuote:
+						getQuotetype = getQuote.QUOTE_TYPE
+					else:
+						getQuotetype =''
+					#Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
 						if RECORD_ID == "SYOBJR-00006" and str(TreeParam) == "Quote Preview":
 							rem_list_sp = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID","ITEM_LINE_SEQUENCE","SCHEDULE_MODE","DELIVERY_MODE"]
