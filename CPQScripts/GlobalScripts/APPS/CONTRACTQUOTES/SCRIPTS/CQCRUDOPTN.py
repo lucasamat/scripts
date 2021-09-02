@@ -5361,7 +5361,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		
 		self._process_query("""UPDATE SAQICO SET PRICING_STATUS = CASE  
 						WHEN ISNULL(TOTAL_COST, 0) > 0 THEN 'ACQUIRED'                        
-						ELSE 'ERROR'RevisionRecordId
+						ELSE 'ERROR'
 					END FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		self._process_query("""UPDATE SAQICO
 			SET
