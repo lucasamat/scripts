@@ -526,7 +526,7 @@ class SyncQuoteAndCustomTables:
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					expired_date = date.today()+ timedelta(days=365)
 					#A055S000P01-7866
-					document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
+					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
 					opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
 					contract_quote_data.update(
@@ -538,7 +538,8 @@ class SyncQuoteAndCustomTables:
 							#"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
 							"SALE_TYPE": custom_fields_detail.get("SalesType"),
 							"CANCELLATION_PERIOD":"90 DAYS",
-							"DOCUMENT_TYPE": document_type.get(self.quote.DocumentTypeCode),
+							#"DOCUMENT_TYPE": document_type.get(self.quote.DocumentTypeCode),
+							"DOCUMENT_TYPE": "",
 							#"OPPORTUNITY_TYPE": opportunity_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_STATUS": "IN-PROGRESS",
 							"QUOTE_LEVEL": custom_fields_detail.get("QuoteLevel")
