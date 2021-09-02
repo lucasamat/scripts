@@ -470,7 +470,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						tablerow = newdict
 						tableInfo.AddRow(tablerow)
 						Trace.Write("TEZTZ--475-472-----"+str(tablerow))
-						
+						update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0))
 					else:
 						
 						notification = 'Billing Start Date should be less than Billing End Date'
