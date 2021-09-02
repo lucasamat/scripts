@@ -3337,6 +3337,7 @@ elif ACTION == "Notifications":
     mailType = Param.MailType
     ApiResponse = ApiResponseFactory.JsonResponse(objDef.CreateMailContent(mailType))
 elif ACTION == "PREVIEW_APPROVAL":    
+    Trace.Write('In Preview Approval Action')
     AllParams = eval(Param.AllParams)
     try:        
         FromSeg = Param.FromSeg
