@@ -631,14 +631,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 				Trace.Write('QUOTE_STATUS -- inside')
 				if RECORD.get("QUOTE_STATUS") ==  'APPROVED':
 					quote_id = Sql.GetFirst(
-						"""SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' """.format(
+						"""SELECT QUOTE_ID,QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' """.format(
 						QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"),
 						revision_rec_id = quote_revision_record_id
 						)
 					)
 					
 					Trace.Write('inside---'+str({'QUOTE_ID':str(quote_id.QUOTE_ID),'Fun_type':'cpq_to_crm'}))
-					crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(quote_id.QUOTE_ID),'Fun_type':'cpq_to_crm'})
+					crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(quote_id.QUOTE_ID),'REVISION_ID':str(quote_id.QTEREV_ID),'Fun_type':'cpq_to_crm'})
 					Trace.Write("ends--"+str(crm_result))
 		except Exception,e:
 			Trace.Write("except---"+str(e))
