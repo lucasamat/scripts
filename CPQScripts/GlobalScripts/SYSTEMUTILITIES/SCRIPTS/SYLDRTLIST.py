@@ -2746,7 +2746,7 @@ class SYLDRTLIST:
 							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
-								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none; onclick="edit_desc(this)">EDIT DESC</a></li>'  
+								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'  
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -2808,7 +2808,12 @@ class SYLDRTLIST:
 							elif ObjectName == "SYPROF":
 								Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
 							elif ObjectName == "SAQTRV":
-								Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'    
+								quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
+								get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
+								if get_activerev:
+									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+								else:
+									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'     
 							else:
 								if str(current_tab).upper() == "PROFILE":
 									Action_str += (
@@ -7783,7 +7788,11 @@ class SYLDRTLIST:
 
 				if str(Action_permission.get("Edit")).upper() == "TRUE":
 					if ObjectName == "SAQTRV":
-						Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
+						get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
+						if get_activerev:
+							Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+						else:
+							Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
