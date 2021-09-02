@@ -2665,7 +2665,7 @@ def Related_Sub_Banner(
         
         if TabName == "Quote":            
             ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-            Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+ str(quote_revision_record_id) + "'")
+            Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+  "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
             User_Name = User.UserName 
             
             recall_edit = ''
