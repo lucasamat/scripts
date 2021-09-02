@@ -6488,7 +6488,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                     + str(Page_start)
                     + " and "
                     + str(Page_End)
-                )
+                ) 
             else:
                 Qstr = (
                     "select top "
