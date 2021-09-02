@@ -472,8 +472,8 @@ def FabValueDrivers():
     sendEmail(level)
 
 def pre_def_wafernode():
-    Trace.Write("TreeParam"+str(TreeParam))
-
+    #Trace.Write("TreeParam"+str(TreeParam))
+    Log.Info("pre_def_wafernode")
 
 
 try:
