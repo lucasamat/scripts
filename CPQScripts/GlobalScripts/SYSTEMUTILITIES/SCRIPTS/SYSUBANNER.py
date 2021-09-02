@@ -249,7 +249,9 @@ def Related_Sub_Banner(
                         PrimaryLable = 'Acitve Revision'
                         PrimaryValue = rev_quote.QTEREV_ID
                         SecondLable = 'Revision Creation Date'
-                        SecondValue = rev_quote.REV_CREATE_DATE
+                        rev_create_date = rev_quote.REV_CREATE_DATE
+                        rev_create_date = str(rev_create_date).upper().split(" ")[0].strip()
+                        SecondValue = rev_create_date
                         ThirdLable = 'Revision Description'
                         ThirdValue = rev_quote.REVISION_DESCRIPTION
                         FourthLable = 'Status'
