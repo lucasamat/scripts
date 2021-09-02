@@ -1144,6 +1144,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["CPS_MATCH_ID"] = 11
 			tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
 			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
+			tbrow["QTEREV_RECORD_ID"] = self.quote_revision_record_id
+			tbrow["QTEREV_ID"] = self.quote_revision_id
 			#tbrow["IS_DEFAULT"] = '1'
 
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
