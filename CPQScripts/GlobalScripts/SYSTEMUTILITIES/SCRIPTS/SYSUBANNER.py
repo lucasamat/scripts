@@ -250,10 +250,12 @@ def Related_Sub_Banner(
                         PrimaryValue = rev_quote.QTEREV_ID
                         SecondLable = 'Revision Creation Date'
                         SecondValue = rev_quote.REV_CREATE_DATE
-                        # ThirdLable = 'Revision Description'
-                        # ThirdValue = 
-                        ThirdLable = 'Status'
-                        ThirdValue = rev_quote.REVISION_STATUS
+                        ThirdLable = 'Revision Description'
+                        ThirdValue = rev_quote.REVISION_DESCRIPTION
+                        FourthLable = 'Status'
+                        FourthValue = rev_quote.REVISION_STATUS
+                        #ThirdLable = 'Status'
+                        #ThirdValue = rev_quote.REVISION_STATUS
             if str(CurrentRecordId) == 'SYOBJR-98799' and str(ObjName) == 'SAQDOC':                
                 PrimaryLable = "Documents"
                 PrimaryValue = "All"
