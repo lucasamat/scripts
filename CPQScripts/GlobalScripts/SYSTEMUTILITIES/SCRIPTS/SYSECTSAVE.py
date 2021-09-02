@@ -472,7 +472,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						tableInfo = Sql.GetTable(str(TableName))
 						tablerow = newdict
 						tableInfo.AddRow(tablerow)
-						Trace.Write("TEZTZ"+str(tablerow))
+						Trace.Write("TEZTZ--475---"+str(tablerow))
 						# sectional edit error message - starts
 						req_obj = Sql.GetList(
 							"select API_NAME from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' and REQUIRED = 1 "
