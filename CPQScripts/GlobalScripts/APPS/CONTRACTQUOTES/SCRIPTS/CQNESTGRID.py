@@ -10941,7 +10941,7 @@ def GetCommonParentContract(PerPage, PageInform, A_Keys, A_Values):
     error = '<img title="Error" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg>'
     partially_priced = '<img title="Partially Priced" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg>'
     assembly_missing = '<img title="Assembly Missing" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg>'
-    CheckBundle = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_record_id")))
+    CheckBundle = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_record_id"),Quote.GetGlobal("quote_revision_record_id")))
     
 
 
@@ -11905,7 +11905,7 @@ def CommonChildTable(recid, PerPage, PageInform, A_Keys, A_Values):
                     + str(col_name)
                     + " AS CHAR(100)) FROM "
                     + str(ObjectName)
-                    + " (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '"+str(service_id)+"'"
+                    + " (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(Quote.GetGlobal("quote_revision_record_id"))+"' AND SERVICE_ID = '"+str(service_id)+"'"
                     + " FOR XML PATH('') ), 1, 2, '')  ) AS StringValue"
                 )
             except:
@@ -12477,6 +12477,7 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
     chld_list = []
     FablocationId = Product.GetGlobal("TreeParam")
     Quote_Record_id = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_idval = "SYOBJ_00929_SYOBJ_00929"
     obj_id1 = "SYOBJ-00929"
     objh_getid = Sql.GetFirst(
@@ -12613,7 +12614,9 @@ def WithBundleParentTable(recid, PerPage, PageInform, A_Keys, A_Values):
         QueryCountObj = Sql.GetFirst(
             "select count(CpqTableEntryId) as cnt from SAQITM (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(Quote_Record_id)
-            + "'and PARQTEITM_LINE = '"
+            + "' and  QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
+            + "' and PARQTEITM_LINE = '"
             + str(EquipmentID)
             + "'"
         )
