@@ -858,6 +858,7 @@ def CommonTreeViewHTMLDetail(
 					+ " = '"
 					+ str(RECORD_ID)
 					+ "'"
+					+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 				)
 			Custom_obj = Sql.GetFirst(script)
 			
