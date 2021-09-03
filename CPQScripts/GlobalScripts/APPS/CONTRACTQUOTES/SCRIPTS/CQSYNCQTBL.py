@@ -635,151 +635,163 @@ class SyncQuoteAndCustomTables:
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})								
-					# if salesorg_obj:
-					# 	quote_salesorg_table_info = Sql.GetTable("SAQTSO")
-					# 	salesorg_data = {
-					# 		"QUOTE_SALESORG_RECORD_ID": str(Guid.NewGuid()).upper(),
-					# 		"QUOTE_ID": quote_id,
-					# 		"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
-					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-					# 		"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
-					# 		"COUNTRY": salesorg_country.COUNTRY,
-					# 		"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
-					# 		"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-					# 		"REGION":salesorg_obj.REGION,
-					# 		"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
-					# 		"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,
-					# 		"QUOTE_CURRENCY":contract_quote_data.get("QUOTE_CURRENCY"),
-					# 		"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),
-					# 		"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-					# 		"QUOTE_CURRENCY_RECORD_ID":contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
-					# 		"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
-					# 		"QTEREV_RECORD_ID":quote_revision_id,
-					# 		"QTEREV_ID":quote_rev_id
-					# 	}
-					# 	account_obj = Sql.GetFirst(
-					# 		"SELECT REGION FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
-					# 			custom_fields_detail.get("STPAccountID")
-					# 		)
-					# 	)
-					# 	#if account_obj:
-					# 	#salesorg_data.update({"REGION":account_obj.REGION})
-					# 	if custom_fields_detail.get('DistributionChannel'):
-					# 		distribution_obj = Sql.GetFirst(
-					# 			"SELECT DISTRIBUTION_CHANNEL_RECORD_ID, DISTRIBUTIONCHANNEL_ID FROM SADSCH (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID = '{}'".format(
-					# 				custom_fields_detail.get('DistributionChannel')
-					# 			)
-					# 		)
-					# 		if distribution_obj:
-					# 			salesorg_data.update({"DISTRIBUTIONCHANNEL_ID":distribution_obj.DISTRIBUTIONCHANNEL_ID , 
-					# 								"DISTRIBUTIONCHANNEL_RECORD_ID":distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID})
-					# 	if custom_fields_detail.get('SalesOrgID'):
-					# 		createddate_up = ""
-					# 		SalesOrg_obj = Sql.GetFirst(
-					# 			"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
-					# 				custom_fields_detail.get('SalesOrgID')
-					# 			)
-					# 		)
+					if salesorg_obj and get_rev_details:
+						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
+						salesorg_data = {
+							"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
+							"QUOTE_ID": quote_id,
+							"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
+							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+							"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
+							"COUNTRY": salesorg_country.COUNTRY,
+							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
+							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+							"REGION":salesorg_obj.REGION,
+							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
+							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
+							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
+							"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id,
+							"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
+							"ACTIVE":get_rev_details.ACTIVE_REV,
+							"REV_CREATE_DATE":str(created_date),
+							"REV_EXPIRE_DATE":str(expired_date),
+							"REVISION_STATUS":"IN-PROGRESS",
+							"REV_APPROVE_DATE":'',
+							"CART_ID":get_rev_details.CART_ID
+						}
+						account_obj = Sql.GetFirst(
+							"SELECT REGION FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
+								custom_fields_detail.get("STPAccountID")
+							)
+						)
+						#if account_obj:
+						#salesorg_data.update({"REGION":account_obj.REGION})
+						if custom_fields_detail.get('DistributionChannel'):
+							distribution_obj = Sql.GetFirst(
+								"SELECT DISTRIBUTION_CHANNEL_RECORD_ID, DISTRIBUTIONCHANNEL_ID FROM SADSCH (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID = '{}'".format(
+									custom_fields_detail.get('DistributionChannel')
+								)
+							)
+							if distribution_obj:
+								salesorg_data.update({"DISTRIBUTIONCHANNEL_ID":distribution_obj.DISTRIBUTIONCHANNEL_ID , 
+													"DISTRIBUTIONCHANNEL_RECORD_ID":distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID})
+						if custom_fields_detail.get('SalesOrgID'):
+							createddate_up = ""
+							SalesOrg_obj = Sql.GetFirst(
+								"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+									custom_fields_detail.get('SalesOrgID')
+								)
+							)
 							
 							
-					# 		salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
-					# 		if salesorg_currency:
-					# 			salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-					# 								"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
-					# 								})
-					# 		# if SalesOrg_obj:
+							salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+							if salesorg_currency:
+								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+													})
+							# if SalesOrg_obj:
 								
-					# 		#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
-					# 		#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
-					# 			exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 ".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY))
+							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
+							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
+								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 ".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY))
 								
-					# 			if exchange_obj:
-					# 				ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
-					# 				ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
+								if exchange_obj:
+									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
+									ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
 								
-					# 				createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-					# 				if createddate > ex_rate_begin:										
-					# 					createddate_up = createddate
+									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									if createddate > ex_rate_begin:										
+										createddate_up = createddate
 									
-					# 				salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
-					# 			TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
-					# 			if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
-					# 				try:
-					# 					QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-					# 				except:
-					# 					QuoteStartDate =''
-					# 				Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
-					# 				salesorg_data.update({'EXCHANGE_RATE':'1'})
-					# 				salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
-					# 			#commented the below code we updated the exchange rate type from Custom field.	
-					# 			#exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
+									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
+								TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
+								if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
+									try:
+										QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+									except:
+										QuoteStartDate =''
+									Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
+									salesorg_data.update({'EXCHANGE_RATE':'1'})
+									salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
+								#commented the below code we updated the exchange rate type from Custom field.	
+								#exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
 								
-					# 			#if exchange_rate_obj:
-					# 				#salesorg_data.update({'EXCHANGE_RATE_TYPE':exchange_rate_obj.EXCHANGE_RATE_TYPE})
-					# 	if custom_fields_detail.get('Division'):
-					# 		division_obj = Sql.GetFirst(
-					# 			"SELECT DIVISION_RECORD_ID, DIVISION_ID FROM SADIVN (NOLOCK) WHERE DIVISION_ID = '{}'".format(
-					# 				custom_fields_detail.get('Division')
-					# 			)
-					# 		)
-					# 		if division_obj:
-					# 			salesorg_data.update({"DIVISION_RECORD_ID":division_obj.DIVISION_RECORD_ID , 
-					# 								"DIVISION_ID":division_obj.DIVISION_ID})
+								#if exchange_rate_obj:
+									#salesorg_data.update({'EXCHANGE_RATE_TYPE':exchange_rate_obj.EXCHANGE_RATE_TYPE})
+						if custom_fields_detail.get('Division'):
+							division_obj = Sql.GetFirst(
+								"SELECT DIVISION_RECORD_ID, DIVISION_ID FROM SADIVN (NOLOCK) WHERE DIVISION_ID = '{}'".format(
+									custom_fields_detail.get('Division')
+								)
+							)
+							if division_obj:
+								salesorg_data.update({"DIVISION_RECORD_ID":division_obj.DIVISION_RECORD_ID , 
+													"DIVISION_ID":division_obj.DIVISION_ID})
 						
-					# 	if custom_fields_detail.get('SalesOfficeID'):
-					# 		salesoffice_obj = Sql.GetFirst(
-					# 			"SELECT SALES_OFFICE_RECORD_ID, SALES_OFFICE_ID, SALES_OFFICE_NAME FROM SASLOF (NOLOCK) WHERE SALES_OFFICE_ID = '{}'".format(
-					# 				custom_fields_detail.get('SalesOfficeID')
-					# 			)
-					# 		)
-					# 		if salesoffice_obj:
-					# 			salesorg_data.update({"SALESOFFICE_ID":salesoffice_obj.SALES_OFFICE_ID , 
-					# 								"SALESOFFICE_NAME":salesoffice_obj.SALES_OFFICE_NAME,
-					# 								"SALESOFFICE_RECORD_ID":salesoffice_obj.SALES_OFFICE_RECORD_ID
-					# 								})
-					# 	if custom_fields_detail.get('SalesOrgID'):
-					# 		salesorg_obj = Sql.GetFirst(
-					# 			"SELECT * FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
-					# 				custom_fields_detail.get('SalesOrgID')
-					# 			)
-					# 		)
-					# 		salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
-					# 		if salesorg_currency:
-					# 			salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-					# 								"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
-					# 								})
-					# 		# if salesorg_obj:
-					# 			# salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
-					# 			#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
-					# 			#                     })
-					# 	if str(salesorg_data.get('SALESORG_ID')):
-					# 		#Log.Info("TAX_DETAILS")
-					# 		tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
-					# 		#Log.Info("""SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}'""".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID')))
-					# 		if tax_details:
-					# 			salesorg_data.update({"CUSTAXCAT_ID": tax_details.TAXCATEGORY_ID,"CUSTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "CUSTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "CUSTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
-					# 	quote_salesorg_table_info.AddRow(salesorg_data)
-					# 	#Log.Info('salesorg_data---443--'+str(salesorg_data))
-					# 	#Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
-					# 	Sql.Upsert(quote_salesorg_table_info)
-					# 	##Commented the condition to update the pricing procedure for both spare and tool based quote
-					# 	#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
-					# 	# Get Pricing Procedure
-					# 	GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTSO (NOLOCK) ON SAQTSO.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTSO.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTSO.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTSO.QUOTE_ID = '{}' AND SAQTSO.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
-					# 	if GetPricingProcedure:
-					# 		CustPricing = GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE
-					# 	else:
-					# 		CustPricing = ""
-					# 	#Log.Info(GetPricingProcedure)
-					# 	if GetPricingProcedure is not None:
-					# 		UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
-					# 		prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
-					# 		prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
-					# 		customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
-					# 		docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
-					# 		quote_id=quote_id,quote_revision_id=quote_revision_id)
-					# 		#Log.Info(UpdateSAQTSO)
-					# 		Sql.RunQuery(UpdateSAQTSO)
+						if custom_fields_detail.get('SalesOfficeID'):
+							salesoffice_obj = Sql.GetFirst(
+								"SELECT SALES_OFFICE_RECORD_ID, SALES_OFFICE_ID, SALES_OFFICE_NAME FROM SASLOF (NOLOCK) WHERE SALES_OFFICE_ID = '{}'".format(
+									custom_fields_detail.get('SalesOfficeID')
+								)
+							)
+							if salesoffice_obj:
+								salesorg_data.update({"SALESOFFICE_ID":salesoffice_obj.SALES_OFFICE_ID , 
+													"SALESOFFICE_NAME":salesoffice_obj.SALES_OFFICE_NAME,
+													"SALESOFFICE_RECORD_ID":salesoffice_obj.SALES_OFFICE_RECORD_ID
+													})
+						if custom_fields_detail.get('SalesOrgID'):
+							salesorg_obj = Sql.GetFirst(
+								"SELECT * FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+									custom_fields_detail.get('SalesOrgID')
+								)
+							)
+							salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+							if salesorg_currency:
+								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+													})
+							# if salesorg_obj:
+								# salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
+								#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
+								#                     })
+						# if str(salesorg_data.get('SALESORG_ID')):
+						# 	#Log.Info("TAX_DETAILS")
+						# 	tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
+						# 	#Log.Info("""SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}'""".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID')))
+						# 	if tax_details:
+						# 		salesorg_data.update({"CUSTAXCAT_ID": tax_details.TAXCATEGORY_ID,"CUSTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "CUSTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "CUSTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
+						quote_salesorg_table_info.AddRow(salesorg_data)
+						#Log.Info('salesorg_data---443--'+str(salesorg_data))
+						#Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
+						Sql.Upsert(quote_salesorg_table_info)
+						##Commented the condition to update the pricing procedure for both spare and tool based quote
+						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
+						# Get Pricing Procedure
+						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTRV.QUOTE_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
+						if GetPricingProcedure:
+							CustPricing = GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE
+						else:
+							CustPricing = ""
+						#Log.Info(GetPricingProcedure)
+						if GetPricingProcedure is not None:
+							# UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							# prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
+							# prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
+							# customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
+							# docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
+							# quote_id=quote_id,quote_revision_id=quote_revision_id)
+
+							UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTRV.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
+							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
+							customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
+							docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
+							quote_id=quote_id,quote_revision_id=quote_revision_id)
+
+							#Log.Info(UpdateSAQTRV)
+							Sql.RunQuery(UpdateSAQTRV)
 					
 					
 					if custom_fields_detail.get("STPAccountID"):
