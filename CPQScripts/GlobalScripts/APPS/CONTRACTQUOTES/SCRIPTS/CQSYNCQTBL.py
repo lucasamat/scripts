@@ -787,13 +787,19 @@ class SyncQuoteAndCustomTables:
 							# customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
 							# docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
 							# quote_id=quote_id,quote_revision_id=quote_revision_id)
-
-							UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTRV.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
 							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
 							customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
 							docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
 							quote_id=quote_id,quote_revision_id=quote_revision_id)
+
+							# UpdateSAQTRV = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTRV.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							# prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
+							# prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
+							# customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
+							# docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
+							# quote_id=quote_id,quote_revision_id=quote_revision_id)
 
 							#Log.Info(UpdateSAQTRV)
 							Sql.RunQuery(UpdateSAQTRV)
