@@ -416,6 +416,7 @@ class TreeView:
 			current_prod = Product.Name
 		except Exception:
 			current_prod = "Sales"
+		Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
 		CurrentModuleObj = Sql.GetFirst("select APP_ID from SYAPPS where APP_LABEL = '" + str(current_prod) + "'")
 		try:
 			TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
