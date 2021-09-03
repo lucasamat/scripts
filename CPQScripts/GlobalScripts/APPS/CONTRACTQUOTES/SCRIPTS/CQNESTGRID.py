@@ -3742,6 +3742,8 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             + str(ATTRIBUTE_VALUE_STR)
             + " 1=1 and QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' ORDER BY "+str(orderby)+"" 
         )
         Count = Sql.GetFirst("select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
@@ -3750,6 +3752,8 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             + str(ATTRIBUTE_VALUE_STR)
             + " 1=1 and QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' " )
         if Count:
             QueryCount = Count.cnt
@@ -3758,9 +3762,10 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
     # Data construction for table.
     for cld in child_obj_recid:
         '''cld = Sql.GetFirst(
-            "select QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,SERIAL_NUMBER,EQUIPMENTCATEGORY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,SALESORG_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(
+            "select QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,SERIAL_NUMBER,EQUIPMENTCATEGORY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,SALESORG_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  and FABLOCATION_ID = '{FablocationId}'".format(
                 EquipmentID=child.EQUIPMENT_ID,
                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                 FablocationId=Product.GetGlobal("TreeParentLevel0"),
             )
         )'''
@@ -3885,6 +3890,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
             + str(PerPage)
             + " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ) m where m.ROW BETWEEN "
             + str(Page_start)
             + " and "
@@ -3895,6 +3902,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
         QueryCountObj = Sql.GetFirst(
             "select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
         )
     if QueryCountObj is not None:
@@ -3941,8 +3950,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 
     hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"]
     ParentObj = Sql.GetList(
-        "select ASSEMBLY_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and ASSEMBLY_ID = '{AssemblyId}'".format(
-            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), AssemblyId = ASSEMBLYID,
+        "select ASSEMBLY_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}'".format(
+            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), AssemblyId = ASSEMBLYID,
         )
     )
     table_header += "<tr>"
@@ -4314,8 +4323,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
     Parent_assembly_id = ""
     if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
         Parent_assembly_id = Sql.GetFirst(
-            "select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' AND ASSEMBLY_ID = '{AssemblyId}' AND EQUIPMENT_ID = '{EquipmentId}'".format(
+            "select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' AND ASSEMBLY_ID = '{AssemblyId}' AND EQUIPMENT_ID = '{EquipmentId}'".format(
                 ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
+                RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                 PreventiveMaintainenceId = recid,
                 AssemblyId = ASSEMBLYID,
                 EquipmentId = EQUIPMENTID,
@@ -4327,8 +4337,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
             """child_obj_recid = Sql.GetList(
                 "select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,PART_DESCRIPTION,QUANTITY,TKM_FLAG from SAQSKP (NOLOCK) where PM_ID = '"
                 + str(recid)
-                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and ASSEMBLY_ID = '{AssemblyId}' ".format(
+                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}' ".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
                     AssemblyId = ASSEMBLYID,
                 )
             )"""
@@ -4337,7 +4348,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
                     + str(PerPage)
                     + " * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,PART_DESCRIPTION,QUANTITY,TKM_FLAG from SAQSKP (NOLOCK) where PM_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and ASSEMBLY_ID ='"
+                    + "' and QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
+                    + "' and ASSEMBLY_ID ='"
                     + str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"') m where m.ROW BETWEEN "
                     + str(Page_start)
                     + " and "
@@ -4346,7 +4359,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
             QueryCountObj = Sql.GetFirst(
             "select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) as cnt from SAQSKP (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
-            + "'and PM_ID = '"
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
+            + "' and PM_ID = '"
             + str(Preventive_Maintainence_ID)
             + "'and ASSEMBLY_ID = '"
             + str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"'and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"'")
@@ -4747,10 +4762,14 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
             parent_obj = Sql.GetList(
             "select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)            
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
         )
         Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)            
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
         if Count:
             QueryCount = Count.cnt
@@ -4764,6 +4783,8 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "'  and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
             )
 
@@ -4771,6 +4792,8 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
             if Count:
                 QueryCount = Count.cnt
@@ -4870,8 +4893,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, AT
         child_obj_recid = Sql.GetList(
             "select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,PM_ID,KIT_ID,PART_NUMBER,TKM_FLAG,PART_DESCRIPTION,QUANTITY from SAQSKP (NOLOCK) where PM_ID = '"
             + str(recid)
-            + "' and QUOTE_RECORD_ID = '{ContractRecordId}'and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' and KIT_ID = '{kitid}' and KIT_NUMBER = '{kitnumber}' ORDER BY {ord_by}".format(
+            + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' and KIT_ID = '{kitid}' and KIT_NUMBER = '{kitnumber}' ORDER BY {ord_by}".format(
                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                 AssemblyId = ASSEMBLYID,
                 EquipmentId = EQUIPMENTID,
                 kitid = KITID,
@@ -4883,8 +4907,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, AT
         QueryCountObj = Sql.GetFirst(
                 "select count(*) as cnt from SAQSKP (NOLOCK) where PM_ID = '"
             + str(recid)
-            + "' and QUOTE_RECORD_ID = '{ContractRecordId}'and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' and KIT_ID = '{kitid}' and KIT_NUMBER = '{kitnumber}' ".format(
+            + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' and KIT_ID = '{kitid}' and KIT_NUMBER = '{kitnumber}' ".format(
                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                 AssemblyId = ASSEMBLYID,
                 EquipmentId = EQUIPMENTID,
                 kitid = KITID,
@@ -4902,7 +4927,9 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, AT
             + str(ATTRIBUTE_VALUE_STR)
             + " 1=1 and QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
-            + "' and  ASSEMBLY_ID = '"
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
+            + "'and  ASSEMBLY_ID = '"
             + str(ASSEMBLYID)
             + "'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"' ORDER BY "+str(orderby)+" "
         )
@@ -4914,6 +4941,8 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, AT
             + str(ATTRIBUTE_VALUE_STR)
             + " 1=1 and QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and  ASSEMBLY_ID = '"
             + str(ASSEMBLYID)
             + "'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"' ")
@@ -4925,9 +4954,11 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, AT
     # Data construction for table.
     for child in child_obj_recid:
         '''cld = Sql.GetFirst(
-            "select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,TKM_FLAG,PART_DESCRIPTION,QUANTITY from SAQSKP (NOLOCK) where PM_ID = '{PreventiveMaintainenceId}' and QUOTE_RECORD_ID = '{ContractRecordId}' and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' ".format(
+            "select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,TKM_FLAG,PART_DESCRIPTION,QUANTITY from SAQSKP (NOLOCK) where PM_ID = '{PreventiveMaintainenceId}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+                and ASSEMBLY_ID = '{AssemblyId}' and EQUIPMENT_ID = '{EquipmentId}' ".format(
                 PreventiveMaintainenceId = child.PM_ID,
                 ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                 AssemblyId = ASSEMBLYID,
                 EquipmentId = EQUIPMENTID,
             )
@@ -5047,6 +5078,8 @@ def GetAssembliesMaster(PerPage, PageInform, A_Keys, A_Values):
         + "'"
         + "and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"
         + str(CURR_REC_ID)
+        + "' and QTEREV_RECORD_ID = '"
+        + str(RevisionRecordId)
         + "') m where m.ROW BETWEEN "
         + str(Page_start)
         + " and "
@@ -5059,6 +5092,8 @@ def GetAssembliesMaster(PerPage, PageInform, A_Keys, A_Values):
         + "'"
         + " and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"
         + str(CURR_REC_ID)
+        + "' and QTEREV_RECORD_ID = '"
+        + str(RevisionRecordId)
         + "'"
     )
     if QueryCountObj is not None:
@@ -5736,8 +5771,9 @@ def GetAssembliesChild(recid, PerPage, PageInform, A_Keys, A_Values):
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
     Parent_Equipmentid = Sql.GetFirst(
-        "select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{CurrRecId}'".format(
-            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), CurrRecId=CURR_REC_ID
+        """select EQUIPMENT_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{CurrRecId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+        """.format(
+            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), CurrRecId=CURR_REC_ID
         )
     )
     if Parent_Equipmentid:
