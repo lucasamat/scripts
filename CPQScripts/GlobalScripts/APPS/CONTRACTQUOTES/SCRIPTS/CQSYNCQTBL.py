@@ -639,7 +639,7 @@ class SyncQuoteAndCustomTables:
 					if salesorg_obj and get_rev_details:
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
-							"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
+							"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
 							"QUOTE_ID": quote_id,
 							"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
