@@ -143,7 +143,7 @@ def create_new_revision(Opertion,cartrev):
 						selectcols = selectcols + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + " 'CONVERT(VARCHAR(4000),NEWID())' AS " + str(col.COLUMN_NAME)
+						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					#	selectcols = selectcols + " '{}' AS ".format(str(Guid.NewGuid()).upper()) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
