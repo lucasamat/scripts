@@ -132,7 +132,7 @@ def create_new_revision(Opertion,cartrev):
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 			#update SAQTMT end
 			
-			#INSERT salesorg start
+			#CLONE ALL OBJECTS 
 			for cloneobjectname in cloneobject.keys():
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
@@ -144,7 +144,6 @@ def create_new_revision(Opertion,cartrev):
 					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
-					#	selectcols = selectcols + " '{}' AS ".format(str(Guid.NewGuid()).upper()) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
 						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
@@ -161,7 +160,15 @@ def create_new_revision(Opertion,cartrev):
 				finalquery=insertcols+' '+selectcols
 				Trace.Write(finalquery)
 				ExecObjQuery = Sql.RunQuery(finalquery)
-			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			
+			## SAQSCO (QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) MAPPED INTO  SAQSCE (QTESRVCOB_RECORD_ID):
+			updatestatement = """UPDATE B SET B.QTESRVCOB_RECORD_ID = A.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID FROM SAQSCO A JOIN SAQSCE B ON A.EQUIPMENT_ID=B.EQUIPMENT_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.FABLOCATION_ID=B.FABLOCATION_ID AND A.QUOTE_ID=B.QUOTE_ID AND A.SERIAL_NO=B.SERIAL_NO WHERE A.QTEREV_ID={} AND B.QTEREV_ID={} AND A.QUOTE_RECORD_ID=''{}'' AND B.QUOTE_RECORD_ID=''{}'' """.format(int(newrev_inc),int(newrev_inc),str(quote_contract_recordId),str(quote_contract_recordId))
+
+			query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement) + "'")
+			Trace.Write(query_result)
+			## END CLONE OBJECT SAQSCO TO SAQSCE
+   			
+      		#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
 			#Insert fabs start
