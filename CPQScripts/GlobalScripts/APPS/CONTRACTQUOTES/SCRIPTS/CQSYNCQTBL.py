@@ -611,9 +611,9 @@ class SyncQuoteAndCustomTables:
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})								
 					if salesorg_obj:
-						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
+						quote_salesorg_table_info = Sql.GetTable("SAQTSO")
 						salesorg_data = {
-							#"QUOTE_SALESORG_RECORD_ID": str(Guid.NewGuid()).upper(),
+							"QUOTE_SALESORG_RECORD_ID": str(Guid.NewGuid()).upper(),
 							"QUOTE_ID": quote_id,
 							"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
@@ -624,10 +624,10 @@ class SyncQuoteAndCustomTables:
 							"REGION":salesorg_obj.REGION,
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,
-							#"QUOTE_CURRENCY":contract_quote_data.get("QUOTE_CURRENCY"),
+							"QUOTE_CURRENCY":contract_quote_data.get("QUOTE_CURRENCY"),
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),
-							#"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-							#"QUOTE_CURRENCY_RECORD_ID":contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
+							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
+							"QUOTE_CURRENCY_RECORD_ID":contract_quote_data.get("QUOTE_CURRENCY_RECORD_ID"),
 							"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
@@ -740,16 +740,17 @@ class SyncQuoteAndCustomTables:
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
-						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTRV (NOLOCK) ON SAQTRV.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTRV.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTRV.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTRV.QUOTE_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
+						GetPricingProcedure = Sql.GetFirst("SELECT DISTINCT SASAPP.PRICINGPROCEDURE_ID, SASAPP.PRICINGPROCEDURE_NAME, SASAPP.PRICINGPROCEDURE_RECORD_ID, SASAPP.DOCUMENT_PRICING_PROCEDURE,SASAPP.CUSTOMER_PRICING_PROCEDURE FROM SASAPP (NOLOCK) JOIN SASAAC (NOLOCK) ON SASAPP.SALESORG_ID = SASAAC.SALESORG_ID AND SASAPP.DIVISION_ID = SASAAC.DIVISION_ID AND SASAPP.DISTRIBUTIONCHANNEL_ID = SASAAC.DISTRIBUTIONCHANNEL_ID JOIN SAQTSO (NOLOCK) ON SAQTSO.DIVISION_ID = SASAPP.DIVISION_ID AND SAQTSO.DISTRIBUTIONCHANNEL_ID = SASAPP.DISTRIBUTIONCHANNEL_ID AND SAQTSO.SALESORG_ID = SASAPP.SALESORG_ID WHERE SASAPP.DOCUMENT_PRICING_PROCEDURE = 'A' AND SAQTSO.QUOTE_ID = '{}' AND SAQTSO.QTEREV_RECORD_ID = '{}'".format(quote_id,quote_revision_id))
 						if GetPricingProcedure:
 							CustPricing = GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE
 						else:
 							CustPricing = ""
 						#Log.Info(GetPricingProcedure)
 						if GetPricingProcedure is not None:
-							UpdateSAQTSO = """UPDATE SAQTRV SET SAQTRV.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTRV.PRICINGPROCEDURE_NAME = '{prcname}',SAQTRV.PRICINGPROCEDURE_RECORD_ID = '{prcrec}', SAQTRV.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTRV.QUOTE_ID = '{quote_id}' AND SAQTRV.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
+							UpdateSAQTSO = """UPDATE SAQTSO SET SAQTSO.PRICINGPROCEDURE_ID = '{pricingprocedure_id}', SAQTSO.PRICINGPROCEDURE_NAME = '{prcname}',SAQTSO.PRICINGPROCEDURE_RECORD_ID = '{prcrec}',SAQTSO.CUSTOMER_PRICING_PROCEDURE = '{customer_pricing_procedure}', SAQTSO.DOCUMENT_PRICING_PROCEDURE = '{docpricingprocedure}' WHERE SAQTSO.QUOTE_ID = '{quote_id}' AND SAQTSO.QTEREV_RECORD_ID = '{quote_revision_id}'""".format(pricingprocedure_id=GetPricingProcedure.PRICINGPROCEDURE_ID,
 							prcname=GetPricingProcedure.PRICINGPROCEDURE_NAME,
-							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,							
+							prcrec=GetPricingProcedure.PRICINGPROCEDURE_RECORD_ID,
+							customer_pricing_procedure=GetPricingProcedure.CUSTOMER_PRICING_PROCEDURE,					
 							docpricingprocedure=GetPricingProcedure.DOCUMENT_PRICING_PROCEDURE,
 							quote_id=quote_id,quote_revision_id=quote_revision_id)
 							#Log.Info(UpdateSAQTSO)
