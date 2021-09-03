@@ -82,6 +82,7 @@ def create_new_revision(Opertion,cartrev):
 				"REV_EXPIRE_DATE":get_quote_info_details.CONTRACT_VALID_TO,
 				"REVISION_STATUS":"IN-PROGRESS",
 				"QTEREV_ID":newrev_inc,
+				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
 				"CART_ID":get_quote_id,
 				"SALESORG_ID": get_previous_rev_data.SALESORG_ID,
