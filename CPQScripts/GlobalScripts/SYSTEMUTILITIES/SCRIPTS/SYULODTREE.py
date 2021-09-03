@@ -421,7 +421,7 @@ class TreeView:
 			TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 			tab_name = TestProduct.CurrentTab
 			TabName = str(TestProduct.CurrentTab)
-			#Trace.Write("==================>>>>"+str(TabName))
+			Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
 			#if tab_name == "Contract":
 			#  crnt_prd_val = "CT"
 			#else:
