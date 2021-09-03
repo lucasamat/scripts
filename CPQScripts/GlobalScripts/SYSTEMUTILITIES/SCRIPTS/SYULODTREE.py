@@ -1452,7 +1452,7 @@ class TreeView:
 				except:
 					CurrentTabName = "Quotes"
 				if CurrentTabName in ('Quotes', 'Quote'):
-					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if quote_obj:
 						quote_id = quote_obj.QUOTE_ID
 				if objd_where_obj is not None:
@@ -2136,7 +2136,7 @@ class TreeView:
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
 										
 										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
-											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
+											Subwhere_string += " AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(NodeText,quote_revision_record_id)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
 										elif addon_obj:											
