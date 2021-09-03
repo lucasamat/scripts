@@ -130,9 +130,9 @@ class ContractQuoteSummaryUpdate:
             self._quote_item_lines_update()
             self._quote_item_update()
             self._update_quote_summary()
-    def CalculatePlusDiscount():
+    def CalculatePlusDiscount(self):
         Trace.Write("Plus")
-    def CalculateMinusDiscount():
+    def CalculateMinusDiscount(self):
         Trace.Write("Minus")
 
 discount = Param.Discount
