@@ -141,19 +141,22 @@ def create_new_revision(Opertion,cartrev):
 					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + str(col.COLUMN_NAME)
+					elif cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
+						insertcols = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "CpqTableEntryId":
 						continue
 					else:
-						insertcols  = insertcols + "," + str(col.COLUMN_NAME)
+						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
