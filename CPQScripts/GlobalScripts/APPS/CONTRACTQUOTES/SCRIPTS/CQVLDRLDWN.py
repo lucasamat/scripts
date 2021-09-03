@@ -110,7 +110,7 @@ def ServiceCostAndValueDrivers():
     sendEmail(level)
 
 def sendEmail(level):
-    getQuoteId = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,qurev_rec_id))
+    getQuoteId = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_rec_id,quote_revision_record_id))
     getEmail = SqlHelper.GetFirst("SELECT email from users where id={}".format(userId))
     #Log.Info("SELECT email from users where id='{}'".format(userId))
     userEmail = ""
