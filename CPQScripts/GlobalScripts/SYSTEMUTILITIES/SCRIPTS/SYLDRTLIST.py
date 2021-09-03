@@ -3218,7 +3218,7 @@ class SYLDRTLIST:
 														try:
 															new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														except:
-															new_dict[value123] = ('<abbr title="{}">{}</abbr>'.format(value1234))
+															new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
 														#new_dict[value123] = value1234
 												
 						
