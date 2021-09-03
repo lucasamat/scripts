@@ -28,7 +28,7 @@ TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 
-
+Trace.Write("quote_revision_record_id "+str(quote_revision_record_id))
 def fabview(ACTION,CurrentRecordId,subtab):	
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
@@ -1223,6 +1223,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	userId = str(User.Id)
 	userName = str(User.UserName)
 	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
