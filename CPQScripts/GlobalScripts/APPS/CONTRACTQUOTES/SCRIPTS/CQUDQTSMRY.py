@@ -130,7 +130,18 @@ class ContractQuoteSummaryUpdate:
             self._quote_item_lines_update()
             self._quote_item_update()
             self._update_quote_summary()
+    def CalculatePlusDiscount():
+        Trace.Write("Plus")
+    def CalculateMinusDiscount():
+        Trace.Write("Minus")
 
 discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
-summary_obj.update_summary()
+if "+" in discount:
+    discount = str(discount).replace("+","").strip()
+    summary_obj.CalculatePlusDiscount()
+elif "-" in discount:
+    discount = str(discount).replace("-","").strip()
+    summary_obj.CalculateMinusDiscount()
+else:
+    summary_obj.update_summary()
