@@ -31,6 +31,7 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     FablocationId = Product.GetGlobal("TreeParam")
     data_list = []
     obj_idval = "SYOBJ_00937_SYOBJ_00937"
@@ -110,19 +111,19 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             
             account_id = TreeSuperParentParam.split(' - ')
             account_id = account_id[len(account_id)-1]
-            get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(ContractRecordId,account_id) )
+            get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(ContractRecordId,RevisionRecordId,account_id) )
             if get_fab_query:
                 get_fab = tuple([fab.FABLOCATION_ID for fab in get_fab_query])
             else:
                 get_fab = ""
             Trace.Write("Fab47")    
             Qstr = (
-                """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' {where_string} AND FABLOCATION_ID = '{get_fab}'  and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, get_fab = Product.GetGlobal("TreeParentLevel0"), get_pp = Product.GetGlobal("TreeParam"),where_string = " AND "+str(where_string) if str(where_string)!="" else "", Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" ) )
+                """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID = '{get_fab}'  and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = Product.GetGlobal("TreeParentLevel0"), get_pp = Product.GetGlobal("TreeParam"),where_string = " AND "+str(where_string) if str(where_string)!="" else "", Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" ) )
 
             QueryCount = ""
 
             QueryCountObj = Sql.GetFirst(
-                """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' {where_string} and FABLOCATION_ID = '{get_fab}' and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,where_string = " AND "+str(where_string) if str(where_string)!="" else "",get_fab = Product.GetGlobal("TreeParentLevel0"), get_pp = Product.GetGlobal("TreeParam"), equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" )
+                """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' {where_string} and FABLOCATION_ID = '{get_fab}' and GREENBOOK = '{get_pp}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,where_string = " AND "+str(where_string) if str(where_string)!="" else "",get_fab = Product.GetGlobal("TreeParentLevel0"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_pp = Product.GetGlobal("TreeParam"), equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeSuperParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeSuperParentParam else "" )
             )      
     elif TreeSuperParentParam == "Fab Locations":
         Trace.Write("Fab")
@@ -131,18 +132,18 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             
             account_id = TreeParentParam.split(' - ')
             account_id = account_id[len(account_id)-1]
-            get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(ContractRecordId,account_id) )
+            get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(ContractRecordId,RevisionRecordId,account_id) )
             if get_fab_query:
                 get_fab = tuple([fab.FABLOCATION_ID for fab in get_fab_query])
             else:
                 get_fab = ""
             Qstr = (
-                """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' {where_string} AND FABLOCATION_ID = '{get_fab}'  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, get_fab = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
+                """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' {where_string} AND FABLOCATION_ID = '{get_fab}'  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
             QueryCount = ""
 
             QueryCountObj = Sql.GetFirst(
-                """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{get_fab}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,get_fab = TreeParam,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "" )
+                """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{get_fab}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,get_fab = TreeParam,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "" )
             )
         
         else:
@@ -152,7 +153,9 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(PerPage)
                 + " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
-                + "' and GREENBOOK = '"
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
+                + "'  and GREENBOOK = '"
                 + str(FablocationId)
                 + "' and FABLOCATION_ID = '"
                 + str(TreeParentParam)
@@ -165,7 +168,9 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             QueryCountObj = Sql.GetFirst(
                 "select count(QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
-                + "' and GREENBOOK = '"
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
+                + "'  and GREENBOOK = '"
                 + str(TreeParam)
                 + "' and FABLOCATION_ID = '"
                 + str(TreeParentParam)
@@ -180,6 +185,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             + str(PerPage)
             + " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' "+str(where_string)+") m where m.ROW BETWEEN "
             + str(Page_start)
             + " and "
@@ -189,6 +196,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         QueryCountObj = Sql.GetFirst(
             "select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' "+str(where_string)
         )
     # elif TreeParam == "Quote Items":
@@ -215,18 +224,18 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 
         account_id = account_id[len(account_id)-1]
         fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
-        get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,account_id,fab_type) )
+        get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and QTEREV_RECORD_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,account_id,RevisionRecordId,fab_type) )
         if get_fab_query:
             get_fab = "in "+ str(tuple([fab.FABLOCATION_ID for fab in get_fab_query])).replace(",)",')')
         else:
             get_fab = "= ''"
         Qstr = (
-            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,SERIAL_NUMBER,CUSTOMER_TOOL_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,QUOTE_ID,FABLOCATION_NAME from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' {where_string} AND FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, get_fab = get_fab, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
+            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,SERIAL_NUMBER,CUSTOMER_TOOL_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENTCATEGORY_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,QUOTE_ID,FABLOCATION_NAME from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'{where_string} AND FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}') m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = RevisionRecordId, get_fab = get_fab, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
         QueryCount = ""
 
         QueryCountObj = Sql.GetFirst(
-            """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' {where_string} AND FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
+            """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' {where_string} AND FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ContractRecordId = ContractRecordId,RevisionRecordId = RevisionRecordId,get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
         )
 
     else:
@@ -297,6 +306,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             QueryCountObj = Sql.GetFirst(
                 "select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and FABLOCATION_ID = '"
                 + str(TreeParentParam)
                 + "' and RELOCATION_FAB_TYPE = 'SENDING FAB' and GREENBOOK ='"
@@ -309,6 +320,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(PerPage)
                 + " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and FABLOCATION_ID = '"
                 + str(TreeParentParam)
                 + "' and RELOCATION_FAB_TYPE = 'RECEIVING FAB' and GREENBOOK = '"
@@ -324,6 +337,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             QueryCountObj = Sql.GetFirst(
                 "select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and FABLOCATION_ID = '"
                 + str(TreeParentParam)
                 + "' and RELOCATION_FAB_TYPE = 'RECEIVING FAB' and GREENBOOK ='"
@@ -339,6 +354,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(PerPage)
                 + " * from ( select  ROW_NUMBER() OVER( ORDER BY "+str(orderby)+") AS ROW, QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and FABLOCATION_ID = '"
                 + str(FablocationId)
                 + "' "+str(where_string)+") m where m.ROW BETWEEN "
@@ -352,6 +369,8 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
             QueryCountObj = Sql.GetFirst(
                 "select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and FABLOCATION_ID = '"
                 + str(FablocationId)
                 + "' "
@@ -409,14 +428,14 @@ def GetEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
     hyper_link = ["QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID"]
     if TreeTopSuperParentParam == "Fab Locations" and ("Sending Account -" in TreeSuperParentParam) or ("Receiving Account -" in TreeSuperParentParam):
         ParentObj = Sql.GetList(
-            "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(
-                ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParentLevel0")
+            "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(
+                ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParentLevel0"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
             )
         )
     else:    
         ParentObj = Sql.GetList(
-            "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(
-                ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParam")
+            "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(
+                ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FablocationId=Product.GetGlobal("TreeParam"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
             )
         )
     table_header += "<tr>"
@@ -772,27 +791,27 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
 
         account_id = account_id[len(account_id)-1]
         fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
-        get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,account_id,fab_type) )
+        get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}'  and QTEREV_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,RevisionRecordId,account_id,fab_type) )
         if get_fab_query:
             get_fab = "in "+ str(tuple([fab.FABLOCATION_ID for fab in get_fab_query])).replace(",)",')')
         else:
             get_fab = "= ''"
         Qstr = (
-            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParam}' {where_string} ) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ))
+            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SNDFBL_ID = '{TreeParam}' {where_string} ) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ))
 
         QueryCount = ""
 
         QueryCountObj = Sql.GetFirst(
-            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParam = TreeParam, equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
+            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SNDFBL_ID = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParam = TreeParam, equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
         )
     elif (("Sending Equipment" in TreeSuperParentParam) or ("Receiving Equipment" in TreeSuperParentParam)):
         Qstr = (
-            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParentParam}' AND GREENBOOK = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, TreeParentParam = TreeParentParam,TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
+            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SNDFBL_ID = '{TreeParentParam}' AND GREENBOOK = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParentParam = TreeParentParam,TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" ) )
 
         QueryCount = ""
  
         QueryCountObj = Sql.GetFirst(
-            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SNDFBL_ID = '{TreeParentParam}' and GREENBOOK = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParentParam = TreeParentParam,TreeParam = TreeParam, equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
+            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SNDFBL_ID = '{TreeParentParam}' and GREENBOOK = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParentParam = TreeParentParam,TreeParam = TreeParam, equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "",where_string = " AND "+str(where_string) if str(where_string)!="" else "" )
         )
     elif ("Sending Equipment" in TreeParam) :
         Qstr = (
@@ -801,16 +820,17 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
         QueryCount = ""
 
         QueryCountObj = Sql.GetFirst(
-            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParentParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParentParam = TreeParentParam,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "" ,where_string = " AND "+str(where_string) if str(where_string)!="" else "") )
+            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'
+            and SERVICE_ID = '{TreeParentParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParentParam = TreeParentParam,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "" ,where_string = " AND "+str(where_string) if str(where_string)!="" else "") )
 
     elif TreeParentParam == "Complementary Products":
         Qstr = (
-            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId, TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string=" AND "+str(where_string) if str(where_string)!="" else ""))
+            """select top {PerPage} * from ( select  ROW_NUMBER() OVER( ORDER BY {orderby}) AS ROW, QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' {where_string}) m where m.ROW BETWEEN {Page_start} and {Page_End} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), TreeParam = TreeParam, Page_start = Page_start, Page_End = Page_End,PerPage = PerPage,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParam else "",where_string=" AND "+str(where_string) if str(where_string)!="" else ""))
 
         QueryCount = ""
 
         QueryCountObj = Sql.GetFirst(
-            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and SERVICE_ID = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,TreeParam = TreeParam,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "",where_string=" AND "+str(where_string) if str(where_string)!="" else ""))            
+            """select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeParam}' {where_string}""".format(ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParam = TreeParam,equp_type = 'SENDING EQUIPMENT' if "Sending Equipment" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Equipment" in TreeParentParam else "",where_string=" AND "+str(where_string) if str(where_string)!="" else ""))            
     
 
     if QueryCountObj is not None:
@@ -1666,7 +1686,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
     GetSaleType = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
-    GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+    GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
         #Trace.Write("count--"+str(list(GetToolReloc)))
     GetSaleType = list(GetSaleType)
     if len(GetSaleType) == 2:
@@ -1676,23 +1696,26 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     if sale_type != "TOOL RELOCATION":
         if TreeParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,
                 )
             )
         elif TreeParentParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and  FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     FablocationId=Product.GetGlobal("TreeParam"),
                     EquipmentId=recid,
                 )
             )
         elif TreeSuperParentParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     FablocationId = Product.GetGlobal("TreeParentLevel0"),
                     EquipmentId = recid,
                     GreenBook = Product.GetGlobal("TreeParam"),
@@ -1701,23 +1724,26 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     elif sale_type == "TOOL RELOCATION":
         if TreeParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,
                 )
             )
         elif TreeParentParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     FablocationId=Product.GetGlobal("TreeParam"),
                     EquipmentId=recid,
                 )
             )
         elif TreeTopSuperParentParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}'AND GREENBOOK = '{GreenBook}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     FablocationId = Product.GetGlobal("TreeParentLevel0"),
                     EquipmentId = recid,
                     GreenBook = Product.GetGlobal("TreeParam"),
@@ -1725,8 +1751,9 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
             )
         elif TreeSuperParentParam == 'Fab Locations':
             Parent_Equipmentid = Sql.GetFirst(
-                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
+                "select EQUIPMENT_ID from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FablocationId}' AND EQUIPMENT_ID = '{EquipmentId}' AND ISNULL(SERIAL_NUMBER,'') <> ''".format(
                     ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     FablocationId = Product.GetGlobal("TreeParam"),
                     EquipmentId = recid,
                     #GreenBook = Product.GetGlobal("TreeParam"),
@@ -1742,8 +1769,9 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
                     + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
-                    + " AND QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
-                            ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
+                    + " AND QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ) m where m.ROW BETWEEN ".format(
+                            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                            RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                         )
                     + str(Page_start)
                     + " and "
@@ -1752,11 +1780,11 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                 QueryCountObj = Sql.GetFirst(
                 "select count(CpqTableEntryId) as cnt from SAQFEA (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
-                + "'and EQUIPMENT_ID = '"
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
+                + "' and EQUIPMENT_ID = '"
                 + str(EquipmentID)
-                + "'"
-                + " AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
-                ) 
+                + "' ") 
             elif TreeParentParam == 'Fab Locations':
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID) AS ROW, QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID as ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
@@ -2271,7 +2299,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
     lookup_str = ",".join(list(lookup_disply_list))
     GetSaleType = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(ContractRecordId))
-    GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+    GetSaleType = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP WHERE (PARTY_ROLE = 'RECEIVING ACCOUNT' OR PARTY_ROLE = 'SENDING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
         #Trace.Write("count--"+str(list(GetToolReloc)))
     GetSaleType = list(GetSaleType)
     if len(GetSaleType) == 2:
@@ -2281,29 +2309,33 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     if sale_type != "TOOL RELOCATION":
         if TreeParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,
                 )
             )
         elif TreeSuperParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeParentParam=TreeParentParam
                 )
             )
         elif TreeParentParam == 'Sending Equipment':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeSuperParentParam}' AND SNDFBL_ID='{TreeParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeSuperParentParam}' AND SNDFBL_ID='{TreeParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeSuperParentParam=TreeSuperParentParam,TreeParam=TreeParam
                 )
             )
         elif TreeSuperParentParam == 'Sending Equipment':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeTopSuperParentParam}' AND SNDFBL_ID='{TreeParentParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeTopSuperParentParam}' AND SNDFBL_ID='{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeTopSuperParentParam=TreeTopSuperParentParam,TreeParentParam=TreeParentParam
                 )
             )
@@ -2327,29 +2359,33 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     elif sale_type == "TOOL RELOCATION":
         if TreeParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,
                 )
             )
         elif TreeSuperParentParam == 'Complementary Products':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeParentParam=TreeParentParam
                 )
             )
         elif TreeParentParam == 'Sending Equipment':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeSuperParentParam}' AND SNDFBL_ID = '{TreeParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}'  AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeSuperParentParam}' AND SNDFBL_ID = '{TreeParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeSuperParentParam=TreeSuperParentParam,TreeParam=TreeParam
                 )
             )
         elif TreeSuperParentParam == 'Sending Equipment':
             Parent_Equipmentid = Sql.GetFirst(
-                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeTopSuperParentParam}' AND SNDFBL_ID = '{TreeParentParam}'".format(
+                "select SND_EQUIPMENT_ID from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' AND SND_EQUIPMENT_ID = '{EquipmentId}' AND SERVICE_ID = '{TreeTopSuperParentParam}' AND SNDFBL_ID = '{TreeParentParam}'".format(
                     ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                     EquipmentId=recid,TreeTopSuperParentParam=TreeTopSuperParentParam,TreeParentParam=TreeParentParam
                 )
             )
@@ -2366,8 +2402,9 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
                     "select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID) AS ROW, QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID,SND_EQUIPMENT_ID,SND_ASSEMBLY_ID,SND_ASSEMBLY_DESCRIPTION,GOT_CODE,SNDFBL_ID,GREENBOOK,EQUIPMENTCATEGORY_ID,EQUIPMENTTYPE_ID,INCLUDED from SAQSSA (NOLOCK) where SND_EQUIPMENT_ID = '"
                     + str(recid)
                     + "' AND QTEREV_RECORD_ID = '{}' ".format(str(Quote.GetGlobal("quote_revision_record_id")))
-                    + " and QUOTE_RECORD_ID = '{ContractRecordId}') m where m.ROW BETWEEN ".format(
-                            ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
+                    + " and QUOTE_RECORD_ID = '{ContractRecordId}' AND  QTEREV_RECORD_ID = '{RevisionRecordId}' ) m where m.ROW BETWEEN ".format(
+                            ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
+                            RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
                         )
                     + str(Page_start)
                     + " and "
@@ -3054,23 +3091,23 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                 account_id = TreeParam.split(' - ')
                 account_id = account_id[len(account_id)-1]
                 fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
-                get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,account_id,fab_type) )
+                get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,RevisionRecordId,account_id,fab_type) )
                 if get_fab_query:
                     get_fab = "in "+ str(tuple([fab.FABLOCATION_ID for fab in get_fab_query])).replace(",)",')')
                 else:
                     get_fab = "= ''"
                 parent_obj = Sql.GetList(
-                    "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby}".format(orderby = orderby, ContractRecordId = ContractRecordId, get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "")
+                    "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby}".format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "")
                 )
-                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'".format(ContractRecordId = ContractRecordId, get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "")
+                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'".format(ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "")
                 )
                 if Count:
                     QueryCount = Count.cnt
             elif (("Sending Account -" in TreeParentParam) or ("Receiving Account -" in TreeParentParam)) and TreeSuperParentParam == 'Fab Locations':
                 parent_obj = Sql.GetList(
-                    "select top {PerPage} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{TreeParam}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby}".format(PerPage=str(PerPage),ContractRecordId=str(ContractRecordId),TreeParam=str(TreeParam),equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",orderby=str(orderby))
+                    "select top {PerPage} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{TreeParam}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby}".format(PerPage=str(PerPage),ContractRecordId=str(ContractRecordId),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParam=str(TreeParam),equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else "",orderby=str(orderby))
                 )
-                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{TreeParam}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ".format(PerPage=str(PerPage),ContractRecordId=str(ContractRecordId),TreeParam=str(TreeParam),equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else ""))
+                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  and FABLOCATION_ID = '{TreeParam}' and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ".format(PerPage=str(PerPage),ContractRecordId=str(ContractRecordId),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),TreeParam=str(TreeParam),equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParentParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParentParam else ""))
                 if Count:
                     QueryCount = Count.cnt
             elif (("Sending Account -" in TreeSuperParentParam) or ("Receiving Account -" in TreeSuperParentParam)) and TreeTopSuperParentParam == 'Fab Locations':
@@ -3082,6 +3119,8 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                 parent_obj = Sql.GetList(
                     "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and FABLOCATION_ID = '"
                     + str(TreeParentParam)
                     + "' AND GREENBOOK = '"
@@ -3089,7 +3128,7 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + "' AND RELOCATION_EQUIPMENT_TYPE = '"+str(equp_type)+"' ORDER BY "
                     + str(orderby)
                 )
-                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND RELOCATION_EQUIPMENT_TYPE = '"+str(equp_type)+"' ")
+                Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND RELOCATION_EQUIPMENT_TYPE = '"+str(equp_type)+"' ")
                 if Count:
                     QueryCount = Count.cnt
             else:
@@ -3109,17 +3148,21 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     parent_obj = Sql.GetList(
                         "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                         + str(ContractRecordId)
+                        + "'and QTEREV_RECORD_ID = '"
+                        + str(RevisionRecordId)
                         + "' and FABLOCATION_ID = '"
                         + str(TreeParam)
                         + "' ORDER BY "
                         + str(orderby)
                     )
-                    Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and FABLOCATION_ID = '" + str(TreeParam) + "' ")
+                    Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and FABLOCATION_ID = '" + str(TreeParam) + "' ")
                 else:
                     Trace.Write('filter---------')                  
                     parent_obj = Sql.GetList(
                         "select top "+str(PerPage)+" QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,WARRANTY_START_DATE,QUOTE_ID,FABLOCATION_NAME,WARRANTY_END_DATE from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"
                         + str(ContractRecordId)
+                        + "' and QTEREV_RECORD_ID = '"
+                        + str(RevisionRecordId)
                         + "' and FABLOCATION_ID = '"
                         + str(TreeParentParam)
                         + "' AND GREENBOOK = '"
@@ -3127,7 +3170,7 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                         + "' ORDER BY "
                         + str(orderby)
                     )
-                    Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
+                    Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
                 if Count:
                     QueryCount = Count.cnt
 
@@ -3145,6 +3188,8 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and FABLOCATION_ID = '"
                     + str(TreeParam)
                     + "' and RELOCATION_EQUIPMENT_TYPE = '"+str(equp_type)+"' ORDER BY "
@@ -3154,6 +3199,8 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and FABLOCATION_ID = '"
                     + str(TreeParam)
                     + "' and RELOCATION_EQUIPMENT_TYPE = '"+str(equp_type)+"' ")
@@ -3163,6 +3210,8 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and GREENBOOK = '"
                     + str(TreeParam)
                     + "' ORDER BY "+ str(orderby) )
@@ -3171,6 +3220,8 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and GREENBOOK = '"
                     + str(TreeParam)
                     + "'")
@@ -3183,15 +3234,15 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                 account_id = TreeParam.split(' - ')
                 account_id = account_id[len(account_id)-1]
                 fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
-                get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,account_id,fab_type) )
+                get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and ACCOUNT_ID = '{}' and RELOCATION_FAB_TYPE = '{}'".format(ContractRecordId,RevisionRecordId,account_id,fab_type) )
                 if get_fab_query:
                     get_fab = "in "+ str(tuple([fab.FABLOCATION_ID for fab in get_fab_query])).replace(",)",')')
                 else:
                     get_fab = "= ''"
                 parent_obj = Sql.GetList(
-                    """select top {PerPage} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,QUOTE_ID,FABLOCATION_NAME from SAQFEQ (NOLOCK) where {ATTRIBUTE_VALUE_STR} QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby} """.format(orderby = orderby, ContractRecordId = ContractRecordId, get_fab = get_fab,PerPage = PerPage,ATTRIBUTE_VALUE_STR=str(ATTRIBUTE_VALUE_STR) if str(ATTRIBUTE_VALUE_STR) else " ",equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "" ) )
+                    """select top {PerPage} QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,EQUIPMENT_ID,MNT_PLANT_ID,CUSTOMER_TOOL_ID,SERIAL_NUMBER,GREENBOOK,QUOTE_NAME,SALESORG_NAME,EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,FABLOCATION_ID,CONVERT(varchar,WARRANTY_START_DATE,101) AS WARRANTY_START_DATE,CONVERT(varchar,WARRANTY_END_DATE,101) WARRANTY_END_DATE,QUOTE_ID,FABLOCATION_NAME from SAQFEQ (NOLOCK) where {ATTRIBUTE_VALUE_STR} QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID {get_fab}  and RELOCATION_EQUIPMENT_TYPE = '{equp_type}' ORDER BY {orderby} """.format(orderby = orderby, ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), get_fab = get_fab,PerPage = PerPage,ATTRIBUTE_VALUE_STR=str(ATTRIBUTE_VALUE_STR) if str(ATTRIBUTE_VALUE_STR) else " ",equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "" ) )
                 Count = Sql.GetFirst(
-                    """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where {ATTRIBUTE_VALUE_STR} QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ATTRIBUTE_VALUE_STR=str(ATTRIBUTE_VALUE_STR) if str(ATTRIBUTE_VALUE_STR) else " ",ContractRecordId = ContractRecordId,get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "" )
+                    """select count(CpqTableEntryId) as cnt from SAQFEQ (NOLOCK) where {ATTRIBUTE_VALUE_STR} QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID  {get_fab} and RELOCATION_EQUIPMENT_TYPE = '{equp_type}'""".format(ATTRIBUTE_VALUE_STR=str(ATTRIBUTE_VALUE_STR) if str(ATTRIBUTE_VALUE_STR) else " ",ContractRecordId = ContractRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),get_fab = get_fab,equp_type = 'SENDING EQUIPMENT' if "Sending Account -" in TreeParam else "RECEIVING EQUIPMENT" if "Receiving Account -" in TreeParam else "" )
                 )
                 if Count:
                     QueryCount = Count.cnt       
@@ -3206,9 +3257,13 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "'  and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' and FABLOCATION_ID = '"+str(TreeParentParam)+"' AND  RELOCATION_EQUIPMENT_TYPE ='"+str(fab_type)+"' AND GREENBOOK = '"+str(TreeParam)+"' ORDER BY "+ str(orderby)
                 )
-                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND  RELOCATION_EQUIPMENT_TYPE ='"+str(fab_type)+"' AND GREENBOOK = '"+str(TreeParam)+"' ")
+                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
+                    + "' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND  RELOCATION_EQUIPMENT_TYPE ='"+str(fab_type)+"' AND GREENBOOK = '"+str(TreeParam)+"' ")
                 if Count:
                     QueryCount = Count.cnt
             # elif TreeParentParam == 'Sending Equipment' or TreeParentParam == 'Receiving equipment':
@@ -3262,9 +3317,11 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "' and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' AND FABLOCATION_ID = '"+str(TreeParam)+"' ORDER BY "+ str(orderby)
                 )
-                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' AND FABLOCATION_ID = '"+str(TreeParam)+"'")
+                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' AND FABLOCATION_ID = '"+str(TreeParam)+"'")
                 if Count:
                     QueryCount = Count.cnt
             else:
@@ -3273,9 +3330,11 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
                     + str(ATTRIBUTE_VALUE_STR)
                     + " 1=1 and QUOTE_RECORD_ID = '"
                     + str(ContractRecordId)
+                    + "'  and QTEREV_RECORD_ID = '"
+                    + str(RevisionRecordId)
                     + "' ORDER BY "+ str(orderby)
                 )
-                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'")
+                Count = Sql.GetFirst("select count(*) as cnt from SAQFEQ (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "'")
                 if Count:
                     QueryCount = Count.cnt
     for par in parent_obj:
@@ -3590,16 +3649,16 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             child_obj_recid = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
-                + "' and QUOTE_RECORD_ID = '{ContractRecordId}'  ORDER BY  {ORDER_BY}".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), ORDER_BY = orderby
+                + "' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY  {ORDER_BY}".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), ORDER_BY = orderby
                 )
             )
 
             Count = Sql.GetFirst(
                 "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                 + str(recid)
-                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' ".format(
-                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"))
+                + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
+                    ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"))
             )
             if Count:
                 QueryCount = Count.cnt
@@ -3608,9 +3667,9 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             Trace.Write("Level 2 empty search ---->")
             if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")):
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), ORDER_BY = orderby))
+                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), ORDER_BY = orderby))
                 Count = Sql.GetFirst(
-                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id")))
+                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
                 if Count:
                     QueryCount = Count.cnt
             
@@ -3618,16 +3677,16 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(
-                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),FabId=TreeParam, ORDER_BY = orderby
+                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(
+                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),FabId=TreeParam, ORDER_BY = orderby
                     )
                 )
 
                 Count = Sql.GetFirst(
                     "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}'".format(
-                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id")
+                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(
+                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
                     )
                 )
                 if Count:
@@ -3637,17 +3696,17 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
             Trace.Write("Level 3 empty search ---->")
             if (TreeParentParam.startswith("Sending") or TreeParentParam.startswith("Receiving")):
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),FabId=TreeParam, ORDER_BY = orderby))
+                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),FabId=TreeParam, ORDER_BY = orderby))
                 Count = Sql.GetFirst(
-                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParam))
+                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), FabId=TreeParam))
                 if Count:
                     QueryCount = Count.cnt  
 
             elif (TreeSuperParentParam.startswith("Sending") or TreeSuperParentParam.startswith("Receiving")):
                 child_obj_recid = Sql.GetList(
-                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),FabId=TreeParentParam, ORDER_BY = orderby))
+                    "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), FabId=TreeParam,FabId=TreeParentParam, ORDER_BY = orderby))
                 Count = Sql.GetFirst(
-                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParentParam))
+                    "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"+ str(recid)+ "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}'".format(ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),FabId=TreeParentParam))
                 if Count:
                     QueryCount = Count.cnt
 
@@ -3655,16 +3714,16 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
                 child_obj_recid = Sql.GetList(
                     "select top "+str(PerPage)+" QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID,EQUIPMENT_ID,SERIAL_NUMBER,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,GOT_CODE,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,EQUIPMENTCATEGORY_ID,WARRANTY_END_DATE,SALESORG_ID,EQUIPMENTTYPE_ID AS ASSEMBLYTYPE_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(
-                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParentParam, ORDER_BY = orderby
+                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}' ORDER BY  {ORDER_BY}".format(
+                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), FabId=TreeParentParam, ORDER_BY = orderby
                     )
                 )
 
                 Count = Sql.GetFirst(
                     "select count(*) as cnt from SAQFEA (NOLOCK) where EQUIPMENT_ID = '"
                     + str(recid)
-                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FabId}'".format(
-                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"), FabId=TreeParentParam
+                    + "' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and FABLOCATION_ID = '{FabId}'".format(
+                        ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), FabId=TreeParentParam
                     )
                 )
                 if Count:
