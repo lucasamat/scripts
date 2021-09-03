@@ -9323,7 +9323,7 @@ def GetCovObjChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfor
 
 def ServiceFabDetails():
     try:
-        query = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB WHERE FABLOCATION_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(TreeParam,Quote.GetGlobal("contract_quote_record_id"),TreeParentParam))
+        query = Sql.GetFirst("SELECT QUOTE_SERVICE_FAB_LOCATION_RECORD_ID FROM SAQSFB WHERE FABLOCATION_ID = '{}' AND QUOTE_RECORD_ID = '{}'  and QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{}'".format(TreeParam,Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"),TreeParentParam))
 
         fab_rec_id = query.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID
     except:
@@ -9337,7 +9337,7 @@ def BundleCalc(REC_ID):
     SERVICE_ID = ""
     SERVICE_ID = getservice.SERVICE_ID
     try:
-        query = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),str(SERVICE_ID.split("-")[0]).strip()))
+        query = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' and QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),str(SERVICE_ID.split("-")[0]).strip(),Quote.GetGlobal("quote_revision_record_id")))
     except:
         Trace.Write("check10")   
         query = "" 
@@ -10064,6 +10064,7 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     ATTRIBUTE_VALUE_STR = ""
     Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
     for quer_key, quer_value in enumerate(Dict_formation):
@@ -10124,36 +10125,42 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
             parent_obj = Sql.GetList(
             "select top "+str(PerPage)+" QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"
             + str(ContractRecordId)
+            + "' and QTEREV_RECORD_ID = '"
+            + str(RevisionRecordId)
             + "' and SNDFBL_ID = '"
             + str(TreeParam)
             + "' ORDER BY "
             + str(orderby)
             )
-            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SNDFBL_ID = '" + str(TreeParam) + "'")
+            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and SNDFBL_ID = '" + str(TreeParam) + "'")
             if Count:
                 QueryCount = Count.cnt
         elif TreeParam == 'Sending Equipment' or TreeParam == 'Receiving equipment':
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SERVICE_ID = '"
                 + str(TreeParentParam)
                 + "' ORDER BY "
                 + str(orderby)
             )
-            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SERVICE_ID = '" + str(TreeParentParam) + "' ")
+            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SERVICE_ID = '" + str(TreeParentParam) + "'  and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' ")
             if Count:
                 QueryCount = Count.cnt
         elif TreeParentParam == "Complementary Products":
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "'  and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SERVICE_ID = '"
                 + str(TreeParam)
                 + "' ORDER BY "
                 + str(orderby)
             )
-            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SERVICE_ID = '" + str(TreeParam) + "' ")
+            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SERVICE_ID = '" + str(TreeParam) + "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' ")
             if Count:
                 QueryCount = Count.cnt
         else: 
@@ -10161,6 +10168,8 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
             parent_obj = Sql.GetList(
                 "select top "+str(PerPage)+" QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID,SALESORG_ID,EQUIPMENTCATEGORY_ID,SND_EQUIPMENT_ID,MNT_PLANT_ID,GREENBOOK,QUOTE_NAME,SALESORG_NAME,SND_EQUIPMENT_DESCRIPTION,EQUIPMENT_STATUS,PLATFORM,SNDFBL_ID,QUOTE_ID,SNDFBL_NAME from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SNDFBL_ID = '"
                 + str(TreeParentParam)
                 + "' AND GREENBOOK = '"
@@ -10168,7 +10177,7 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + "' ORDER BY "
                 + str(orderby)
             )
-            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'and SNDFBL_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
+            Count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSSE (NOLOCK) where QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' and SNDFBL_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
             if Count:
                 QueryCount = Count.cnt
 
@@ -10181,6 +10190,8 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SNDFBL_ID = '"
                 + str(TreeParam)
                 + "' ORDER BY "
@@ -10190,6 +10201,8 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SNDFBL_ID = '"
                 + str(TreeParam)
                 + "'")
@@ -10202,6 +10215,8 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SNDFBL_ID = '"
                 + str(TreeParentParam)
                 + "'  and GREENBOOK = '"
@@ -10213,6 +10228,8 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' and SNDFBL_ID = '"
                 + str(TreeParentParam)
                 + "'  and GREENBOOK = '"
@@ -10226,9 +10243,11 @@ def GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform
                 + str(ATTRIBUTE_VALUE_STR)
                 + " 1=1 and QUOTE_RECORD_ID = '"
                 + str(ContractRecordId)
+                + "' and QTEREV_RECORD_ID = '"
+                + str(RevisionRecordId)
                 + "' ORDER BY "+ str(orderby)
             )
-            Count = Sql.GetFirst("select count(*) as cnt from SAQSSE (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "'")
+            Count = Sql.GetFirst("select count(*) as cnt from SAQSSE (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+ " 1=1 and QUOTE_RECORD_ID = '"+ str(ContractRecordId)+ "' and QTEREV_RECORD_ID = '"+ str(RevisionRecordId)+ "' ")
             if Count:
                 QueryCount = Count.cnt
     for par in parent_obj:
@@ -10551,20 +10570,6 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
         Trace.Write("123 Common Parent Child RECID --->"+str(RECID))
         ApiResponse = ApiResponseFactory.JsonResponse(
             WithBundleParentTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,SortPerPage,SortPageInform))
-
-    elif TABNAME == "Common Parent CommonChild":
-        REC_ID = Param.REC_ID
-        RECID = REC_ID.split("_")[-1]
-        Trace.Write("123 Common Parent CommonChild RECID --->"+str(RECID))
-        ApiResponse = ApiResponseFactory.JsonResponse(
-            CommonChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,SortPerPage,SortPageInform))
-
-    elif TABNAME == "Common Parent SparesChild":
-        REC_ID = Param.REC_ID
-        RECID = REC_ID.split("_")[-1]
-        Trace.Write("123 Common Parent SparesChildTableFilter RECID --->"+str(RECID))
-        ApiResponse = ApiResponseFactory.JsonResponse(
-            SparesChildTableFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,SortPerPage,SortPageInform))
     elif TABNAME == "Sending Equipment Parent Filter":
         ApiResponse = ApiResponseFactory.JsonResponse(GetSendingEquipmentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,SortPerPage,SortPageInform))
     elif TABNAME == "Sending Equipment Parent":
