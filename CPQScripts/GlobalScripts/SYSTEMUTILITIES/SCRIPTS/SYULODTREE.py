@@ -1886,6 +1886,7 @@ class TreeView:
 									NodeName2 = Nodesplit[1]
 									NodeText1 = str(eval("childdata." + str(NodeName2))).title()
 									NodeText = NodeName1 + "-" + NodeText1									
+									Trace.Write('childQueryObj1--'+str(where_string)) 
 									childQueryObj = Sql.GetFirst(
 										"select * from "
 										+ str(ObjName)
@@ -1899,7 +1900,8 @@ class TreeView:
 									)
 							
 							if childQueryObj is not None:
-								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))                               
+								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))   
+								Trace.Write('child id1--'+str(NodeRecId))                            
 								ChildDict["id"] = str(NodeRecId)
 								if str(NodeName) == "SECTION_NAME" and TabName == "App":
 									Product.SetGlobal("NodeRecIdS",NodeRecId)
@@ -2158,7 +2160,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write('2121')
+										Trace.Write('2121'+str(Subwhere_string)+str(SubNodeName))
 										if ACTION != 'ADDNEW':
 											SubChildData = self.getChildOne(
 												SubNodeType,
