@@ -574,39 +574,40 @@ class SyncQuoteAndCustomTables:
 					expired_date = datetime.datetime.now().strftime("%m/%d/%Y")
 					Trace.Write('571-------'+str(created_date))
 					#quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
-					if salesorg_obj and get_rev_details:
-						quote_rev_data = {
-							"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"QUOTE_ID": quote_id,
-							"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
-							"COUNTRY": salesorg_country.COUNTRY,
-							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
-							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-							"REGION":salesorg_obj.REGION,
-							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
-							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
-							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
-							"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id,
-							"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
-							"ACTIVE":get_rev_details.ACTIVE_REV,
-							"REV_CREATE_DATE":str(created_date),
-							"REV_EXPIRE_DATE":str(expired_date),
-							"REVISION_STATUS":"IN-PROGRESS",
-							"REV_APPROVE_DATE":'',
-							"CART_ID":get_rev_details.CART_ID
-						}
-						quote_revision_table_info.AddRow(quote_rev_data)
-						# UPDATE REVISION DETAILS TO SAQTMT
-						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
-													"QTEREV_ID":quote_rev_id })
-						Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
-						Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
-						Sql.Upsert(quote_revision_table_info)
-						Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
+					# if salesorg_obj and get_rev_details:
+					# 	quote_rev_data = {
+					# 		"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"QUOTE_ID": quote_id,
+					# 		"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
+					# 		"COUNTRY": salesorg_country.COUNTRY,
+					# 		"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
+					# 		"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+					# 		"REGION":salesorg_obj.REGION,
+					# 		"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
+					# 		"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
+					# 		"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
+					# 		"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id,
+					# 		"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
+					# 		"ACTIVE":get_rev_details.ACTIVE_REV,
+					# 		"REV_CREATE_DATE":str(created_date),
+					# 		"REV_EXPIRE_DATE":str(expired_date),
+					# 		"REVISION_STATUS":"IN-PROGRESS",
+					# 		"REV_APPROVE_DATE":'',
+					# 		"CART_ID":get_rev_details.CART_ID
+					# 	}
+					# 	#quote_revision_table_info.AddRow(quote_rev_data)
+					# 	# UPDATE REVISION DETAILS TO SAQTMT
+					# 	contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
+					# 								"QTEREV_ID":quote_rev_id })
+					# 	Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
+					# 	Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
+					# 	#Sql.Upsert(quote_revision_table_info)
+					# 	Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
+					
 					#insert in revision table while creating quote end
 					if custom_fields_detail.get('Currency'):
 							Currency_obj = Sql.GetFirst(
@@ -661,6 +662,10 @@ class SyncQuoteAndCustomTables:
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID
 						}
+						# UPDATE REVISION DETAILS TO SAQTMT
+						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
+													"QTEREV_ID":quote_rev_id })
+						Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
 						account_obj = Sql.GetFirst(
 							"SELECT REGION FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
 								custom_fields_detail.get("STPAccountID")
