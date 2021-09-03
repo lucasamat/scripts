@@ -1945,7 +1945,8 @@ class TreeView:
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME
 									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss"+str(subTabName)+'--1947---'+str(NodeText))
-									if str(ObjRecId) == "26B8147E-C59C-4010-AA3A-38176869E305":	
+									if str(ObjRecId) == "26B8147E-C59C-4010-AA3A-38176869E305":
+										Trace.Write(str(ObjRecId)+"---1949---"+str(subTabName)+'--1947---'+str(NodeText))
 										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
 										if item_billing_plan_obj is not None:
 											quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
