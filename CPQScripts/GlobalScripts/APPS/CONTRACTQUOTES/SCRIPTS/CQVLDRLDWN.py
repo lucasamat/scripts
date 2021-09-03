@@ -474,7 +474,11 @@ def FabValueDrivers():
 def pre_def_wafernode():
     #Trace.Write("TreeParam"+str(TreeParam))
     Log.Info("pre_def_wafernode")
-
+    Log.Info("LEVEL1---"+str(quote_revision_record_id))
+    Log.Info("LEVEL2---"+str(TreeTopSuperParentParam))
+    Log.Info("LEVEL3---"+str(TreeSuperParentParam))
+    Log.Info("LEVEL4---"+str(TreeParentParam))
+    Log.Info("LEVEL5---"+str(TreeParam))
 
 try:
     Qt_rec_id = Param.CPQ_Columns['Quote'] 
