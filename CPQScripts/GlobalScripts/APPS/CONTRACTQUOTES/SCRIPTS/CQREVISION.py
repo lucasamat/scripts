@@ -25,8 +25,7 @@ quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----test')
 #A055S000P01-8729 start
 def create_new_revision(Opertion,cartrev):
-	CloneObject={
-		#"SAQTSO":"QUOTE_SALESORG_RECORD_ID",
+	cloneobject={
 		"SAQFBL":"QUOTE_FABLOCATION_RECORD_ID",
 		"SAQFEQ":"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID",
 		"SAQTSV":"QUOTE_SERVICE_RECORD_ID",
@@ -84,12 +83,12 @@ def create_new_revision(Opertion,cartrev):
 			#update SAQTMT end
 			
 			#INSERT salesorg start
-			for cloneobjectname in CloneObject.keys():
+			for cloneobjectname in cloneobject.keys():
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
 				selectcols = "SELECT "
 				for col in sqlobj:
-					if col.COLUMN_NAME == CloneObject[str(cloneobjectname)]:
+					if col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + " '{}' AS ".format(str(Guid.NewGuid()).upper()) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
