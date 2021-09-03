@@ -454,7 +454,7 @@ class SYLDRTLIST:
                     Trace.Write('SubTab----'+str(SubTab))
                     end = int(SubTab.split(' ')[-1]) * 12
                     start = end - 12 + 1
-                Trace.Write('452----TreeParentLevel0----'+str(TreeParentLevel0))
+                Trace.Write('452----TreeParentLevel0----'+str(TreeParentParam))
                 item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
