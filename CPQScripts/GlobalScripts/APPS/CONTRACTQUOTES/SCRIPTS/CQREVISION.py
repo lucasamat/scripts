@@ -138,7 +138,10 @@ def create_new_revision(Opertion,cartrev):
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
 				selectcols = "SELECT "
 				for col in sqlobj:
-					if col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
+					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
+						insertcols = insertcols + str(col.COLUMN_NAME)
+						selectcols = selectcols + str(col.COLUMN_NAME)
+					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + " '{}' AS ".format(str(Guid.NewGuid()).upper()) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
