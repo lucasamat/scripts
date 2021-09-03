@@ -90,7 +90,7 @@ def create_new_revision(Opertion,cartrev):
 				"COUNTRY_RECORD_ID":get_previous_rev_data.COUNTRY_RECORD_ID,
 				"REGION":get_previous_rev_data.REGION,
 				"SALESORG_NAME": get_previous_rev_data.SALESORG_NAME,
-				"SALESORG_RECORD_ID": get_previous_rev_data.SALES_ORG_RECORD_ID,							
+				"SALESORG_RECORD_ID": get_previous_rev_data.SALESORG_RECORD_ID,							
 				"GLOBAL_CURRENCY":get_previous_rev_data.GLOBAL_CURRENCY,							
 				"GLOBAL_CURRENCY_RECORD_ID":get_previous_rev_data.GLOBAL_CURRENCY,
 			}
