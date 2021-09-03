@@ -68,7 +68,33 @@ def create_new_revision(Opertion,cartrev):
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
 		get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID, CART_REVISIONS.DESCRIPTION as DESCRIPTION,CART.ACTIVE_REV, CART_REVISIONS.CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}'  and REVISION_ID  = '{}' ".format(Quote.CompositeNumber,newrev_inc))
-		quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": get_quote_info_details.QUOTE_ID,"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,"QUOTE_NAME":get_quote_info_details.QUOTE_NAME,"QUOTE_RECORD_ID": quote_contract_recordId,"ACTIVE":1,"REV_CREATE_DATE":get_quote_info_details.CONTRACT_VALID_FROM,"REV_EXPIRE_DATE":get_quote_info_details.CONTRACT_VALID_TO,"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":newrev_inc,"REV_APPROVE_DATE":'',"CART_ID":get_quote_id}
+		
+		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND REVISION_ID = '"+str(get_current_rev.rev_id)+"'")
+		if get_previous_rev_data:
+			quote_rev_data = {
+				"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
+				"QUOTE_ID": get_quote_info_details.QUOTE_ID,
+				"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,
+				"QUOTE_NAME":get_quote_info_details.QUOTE_NAME,
+				"QUOTE_RECORD_ID": quote_contract_recordId,
+				"ACTIVE":1,
+				"REV_CREATE_DATE":get_quote_info_details.CONTRACT_VALID_FROM,
+				"REV_EXPIRE_DATE":get_quote_info_details.CONTRACT_VALID_TO,
+				"REVISION_STATUS":"IN-PROGRESS",
+				"QTEREV_ID":newrev_inc,
+				"REV_APPROVE_DATE":'',
+				"CART_ID":get_quote_id,
+				"SALESORG_ID": get_previous_rev_data.SALESORG_ID,
+				"COUNTRY": get_previous_rev_data.COUNTRY,
+				"COUNTRY_NAME": get_previous_rev_data.COUNTRY_NAME,
+				"COUNTRY_RECORD_ID":get_previous_rev_data.COUNTRY_RECORD_ID,
+				"REGION":get_previous_rev_data.REGION,
+				"SALESORG_NAME": get_previous_rev_data.SALESORG_NAME,
+				"SALESORG_RECORD_ID": get_previous_rev_data.SALES_ORG_RECORD_ID,							
+				"GLOBAL_CURRENCY":get_previous_rev_data.GLOBAL_CURRENCY,							
+				"GLOBAL_CURRENCY_RECORD_ID":get_previous_rev_data.GLOBAL_CURRENCY,
+			}
+
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
