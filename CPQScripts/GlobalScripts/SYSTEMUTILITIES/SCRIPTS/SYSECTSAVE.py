@@ -653,7 +653,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 					Trace.Write('inside---'+str({'QUOTE_ID':str(quote_id.QUOTE_ID),'Fun_type':'cpq_to_crm'}))
 					crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(quote_id.QUOTE_ID),'REVISION_ID':str(quote_id.QTEREV_ID),'Fun_type':'cpq_to_crm'})
 					Trace.Write("ends--"+str(crm_result))
-		except Exception,e:
+		except Exception:
 			Trace.Write("except---"+str(e))
 		##ends
 
@@ -833,7 +833,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								Sql.RunQuery(Updatecps)
 								
 
-		except Exception,e:
+		except Exception:
 			Trace.Write("except---"+str(e))
 			pass
 
