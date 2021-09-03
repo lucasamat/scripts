@@ -4484,11 +4484,19 @@ class SYLDRTLIST:
                     Trace.Write('SubTab--ww--'+str(SubTab))
                     end = int(SubTab.split(' ')[-1]) * 12
                     start = end - 12 + 1
-                    item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+                    if TreeParentParam == "Billing":
+                        item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
                                     AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
                                                         FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
                                                         GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
                                                             contract_quote_record_id, quote_revision_record_id, start, end))
+                    else:
+                        item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+                                    AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+                                                        FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
+                                                        GROUP BY EQUIPMENT_ID, BILLING_DATE) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+                                                            contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+
                 
                 if item_billing_plans_obj:
                     billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
