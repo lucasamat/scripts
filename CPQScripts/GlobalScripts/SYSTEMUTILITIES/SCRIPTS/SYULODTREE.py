@@ -571,6 +571,8 @@ class TreeView:
 								)
 						# Billing Matrix Dynamic Tabs - Start
 						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing':
+							treeparentparam = Product.GetGlobal("TreeParentLevel0")
+							Trace.Write('treeparentparam--576--'+str(treeparentparam))
 							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
