@@ -2922,6 +2922,7 @@ def EntitlementTreeViewHTMLDetail(
 		getnameentallowed = []
 		multi_select_attr_list = {}
 		attributedefaultvalue = []
+
 		Trace.Write('after inserting in table-----')
 		getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
 		GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
@@ -3090,6 +3091,7 @@ def EntitlementTreeViewHTMLDetail(
 				if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 					#Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 					for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
+						info_column = ""
 						new_value_dicta = {}
 						attrName = attribute['attribute_name']
 						attrLabel = attribute['attribute_label']
@@ -3141,7 +3143,13 @@ def EntitlementTreeViewHTMLDetail(
 							disable_edit = ''
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
-					
+						##info tooltip adding in entitlement grid starts..
+						info_column = "<a  title="'
+						+ str(attrSysId)
+						+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
+						+ str(attrSysId)
+						+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a>"
+						##info tooltip adding in entitlement grid ends..
 						disp_val = ""
 						userselectedvalue = []
 						#for val in GetXMLsecField:
@@ -3483,7 +3491,7 @@ def EntitlementTreeViewHTMLDetail(
 									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
 									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
-									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str_ipp
+									new_value_dicta["ENTITLEMENT VALUE"] =  str(sec_str_ipp) +str(info_column)
 									Trace.Write("@3323-----"+str(attrSysId))
 								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
