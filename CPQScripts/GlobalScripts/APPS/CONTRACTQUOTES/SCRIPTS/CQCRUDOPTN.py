@@ -862,7 +862,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			row_values = {"QUOTE_NAME": self.contract_quote_name,
 				"SALESORG_ID": self.salesorg_id,
 				"SALESORG_NAME": self.salesorg_name,
-				"SALESORG_RECORD_ID": self.salesorg_record_id,}
+				"SALESORG_RECORD_ID": self.salesorg_record_id,
+				"QTEREV_RECORD_ID": self.quote_revision_record_id,
+				"QTEREV_ID":self.quote_revision_id}
 
 			offering_table_info = Sql.GetTable(table_name)
 			existing_offering_ids = []
