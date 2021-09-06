@@ -189,7 +189,8 @@ def create_new_revision(Opertion,cartrev):
 			#quote_table_info.AddRow(quote_detials)
 			#Sql.Upsert(quote_table_info)
 		#get quote data for update in SAQTMT end
-
+		Quote = QuoteHelper.Edit(str(get_quote_id))				
+		Quote.RefreshActions()
 
 	return True
 
