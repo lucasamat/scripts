@@ -13,7 +13,13 @@ Sql = SQL()
 
 class ContractQuoteSummaryUpdate:
     def __init__(self, discount=0):
-        self.discount = discount
+        if "+" not in discount and "-" not in discount:
+            self.discount = discount
+        else:
+            if "+" in discount:
+                self.discount = str(discount).replace("+","").strip()
+            elif "-" in discount:
+                self.discount = str(discount).replace("-","").strip()
         try:
             self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         except Exception:
