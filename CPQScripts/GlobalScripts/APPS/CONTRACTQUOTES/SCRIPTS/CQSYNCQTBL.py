@@ -1246,7 +1246,7 @@ class SyncQuoteAndCustomTables:
 									employee_dict["CpqTableEntryDateModified"] = ""
 									employee_dict["ADDUSR_RECORD_ID"] = User.Id
 									tableInfo = Sql.GetTable("SAEMPL")
-									Log.Info("tablerow"+str(tablerow))
+									Log.Info("employee_dict"+str(employee_dict))
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
