@@ -1585,6 +1585,7 @@ class TreeView:
 						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
 					)                    
 					if 'QTEREV_RECORD_ID' not in where_string:
+						quote_revision_record_id = Quote.GetGlobal("quote_rev_id")
 						where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
