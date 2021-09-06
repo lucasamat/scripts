@@ -39,7 +39,7 @@ class ContractQuoteSummaryUpdate:
                                             END
                                         FROM SAQICO (NOLOCK) 
                                         JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
-                                        WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
+                                        WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                             QuoteRecordId=self.contract_quote_record_id,
                                             RevisionRecordId=self.quote_revision_record_id,
                                             Year=count,
