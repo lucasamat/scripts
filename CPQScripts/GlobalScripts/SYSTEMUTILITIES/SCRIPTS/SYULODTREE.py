@@ -1452,6 +1452,7 @@ class TreeView:
 				except:
 					CurrentTabName = "Quotes"
 				if CurrentTabName in ('Quotes', 'Quote'):
+					quote_revision_record_id = Quote.GetGlobal("quote_rev_id")
 					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if quote_obj:
 						quote_id = quote_obj.QUOTE_ID
