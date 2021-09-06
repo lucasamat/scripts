@@ -5396,16 +5396,14 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		
 		Sql.RunQuery("""UPDATE SAQITM
-							SET 
-							TOTAL_COST = IQ.TOTAL_COST,			
+							SET 									
 							TARGET_PRICE = IQ.TARGET_PRICE,
 							YEAR_1 = IQ.YEAR_1,
 							YEAR_2 = IQ.YEAR_2,
 							PRICING_STATUS = 'ACQUIRED',
 							OBJECT_QUANTITY = IQ.EQUIPMENT_ID_COUNT
 							FROM SAQITM (NOLOCK)
-							INNER JOIN (SELECT SAQITM.CpqTableEntryId,						
-										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.TOTAL_COST, 0)), 0), 0) as decimal(18,2)) as TOTAL_COST,
+							INNER JOIN (SELECT SAQITM.CpqTableEntryId,	
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.TARGET_PRICE, 0)), 0), 0) as decimal(18,2)) as TARGET_PRICE,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
