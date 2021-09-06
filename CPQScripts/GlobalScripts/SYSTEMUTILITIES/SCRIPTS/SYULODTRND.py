@@ -3048,7 +3048,7 @@ def EntitlementTreeViewHTMLDetail(
 				if EntitlementType == "EQUIPMENT" or EntitlementType == "BUSINESSUNIT" or EntitlementType == "TOOLS":
 					#Trace.Write("@@2794")
 					sec_bnr += (
-						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down" id="'
+						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down entitle_select_out" id="'
 						+ str(Section_id)+ '" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sec_'
 						+ str(Section_id)
 						+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
@@ -3062,7 +3062,7 @@ def EntitlementTreeViewHTMLDetail(
 				else:
 					
 					sec_bnr += (
-						'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
+						'<div class="dyn_main_head master_manufac glyphicon pointer entitle_select_out  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
 						+ str(Section_id)
 						+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
 						+ str(Section_desc)
@@ -3144,7 +3144,7 @@ def EntitlementTreeViewHTMLDetail(
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						##info tooltip adding in entitlement grid starts..
-						info_column = '''<a  title="{attrSysId}" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="{attrSysId}" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a>'''.format(attrSysId= attrSysId)
+						info_column = '''<a  title="{attrSysId}" data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a>'''.format(attrSysId= attrSysId)
 						##info tooltip adding in entitlement grid ends..
 						disp_val = ""
 						userselectedvalue = []
@@ -3484,10 +3484,10 @@ def EntitlementTreeViewHTMLDetail(
 								#Trace.Write("=============MMMMM "+str(sec_str1))
 								#Trace.Write("dtype----"+str(val.ENTITLEMENT_TYPE)+str(attrSysId))
 								if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
-									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1 +str(info_column)
+									new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1 
 									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
-									new_value_dicta["ENTITLEMENT VALUE"] =  str(sec_str_ipp) +str(info_column)
+									new_value_dicta["ENTITLEMENT VALUE"] = str(info_column) + str(sec_str_ipp)
 									Trace.Write("@3323-----"+str(attrSysId))
 								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
