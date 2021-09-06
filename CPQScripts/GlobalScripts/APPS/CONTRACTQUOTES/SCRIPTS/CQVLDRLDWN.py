@@ -470,8 +470,7 @@ def FabValueDrivers():
     level = ""
     level = "Fab Value Drivers"
     sendEmail(level)
-def csa_tools():
-    Trace.Write("CSA TOOLS ENTRY")
+
 
 def predefined_wafernode():
     #Trace.Write("TreeParam"+str(TreeParam))
