@@ -3484,7 +3484,7 @@ def EntitlementTreeViewHTMLDetail(
 								#Trace.Write("=============MMMMM "+str(sec_str1))
 								#Trace.Write("dtype----"+str(val.ENTITLEMENT_TYPE)+str(attrSysId))
 								if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
-									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+									new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1 +str(info_column)
 									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] =  str(sec_str_ipp) +str(info_column)
