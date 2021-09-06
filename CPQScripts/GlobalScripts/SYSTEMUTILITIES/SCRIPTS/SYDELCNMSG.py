@@ -353,9 +353,8 @@ class DeleteConfirmPopup:
             # UPDATE SAQITM
             if count_of_existing_equipment:
                 if int(count_of_existing_equipment.COUNT_OF_EQUIP) > 0:
-                    sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQITM SET OBJECT_QUANTITY = '{}', TOTAL_COST = '{}', EXTENDED_PRICE = '{}' WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
+                    sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQITM SET OBJECT_QUANTITY = '{}', EXTENDED_PRICE = '{}' WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
                         count_of_existing_equipment.COUNT_OF_EQUIP,
-                        count_of_existing_equipment.TOTAL_COST,
                         count_of_existing_equipment.TOTAL_COST,
                         QUOTE_ID.QUOTE_ID,
                         SERVICE_ID.SERVICE_ID,

@@ -139,7 +139,7 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 			##Upading the quote tables for quote document
 			quote_line_items_covered_obj ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
 			Sql.RunQuery(quote_line_items_covered_obj)
-			quote_line_item_obj ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
+			quote_line_item_obj ="""UPDATE a SET aTOTAL_COST.TOTAL_COST = b.,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
 			Sql.RunQuery(quote_line_item_obj)
 	
 			
