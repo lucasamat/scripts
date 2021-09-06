@@ -1241,11 +1241,12 @@ class SyncQuoteAndCustomTables:
 									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
 									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
-									employee_dict["CPQTABLEENTRYDATEADDED"] = GETDATE()
+									employee_dict["CPQTABLEENTRYDATEADDED"] = ""
 									employee_dict["CpqTableEntryModifiedBy"] = User.Id
-									employee_dict["CpqTableEntryDateModified"] = GETDATE()
+									employee_dict["CpqTableEntryDateModified"] = ""
 									employee_dict["ADDUSR_RECORD_ID"] = User.Id
 									tableInfo = Sql.GetTable("SAEMPL")
+									Log.Info("tablerow"+str(tablerow))
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
@@ -1286,8 +1287,8 @@ class SyncQuoteAndCustomTables:
 												EmployeeId = employee.get("EMPLOYEE_ID"),
 												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
 												UserName=User.Name,
-												QuoteId = quote_id,
-												QuoteRecordId=quote_record_id,
+												QuoteId = contract_quote_data.get("QUOTE_ID"),
+												QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 												RevisionId=quote_rev_id,
 												RevisionRecordId=quote_revision_id,
 												))
@@ -1328,8 +1329,8 @@ class SyncQuoteAndCustomTables:
 												EmployeeId = employee.get("EMPLOYEE_ID"),
 												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
 												UserName=User.Name,
-												QuoteId = quote_id,
-												QuoteRecordId=quote_record_id,
+												QuoteId = contract_quote_data.get("QUOTE_ID"),
+												QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 												RevisionId=quote_rev_id,
 												RevisionRecordId=quote_revision_id,
 												)
