@@ -6319,7 +6319,17 @@ def UpdateBreadcrumb():
         if qry:
             eq_id = str(qry.PARTY_ID)
         else:
-            eq_id = "Involved Parties" 
+            eq_id = "Involved Parties"
+    ##A055S000P01-8690 code starts..
+    elif TreeParam == "Sales Team" and TABLENAME == 'SAQDLT':
+        qry = Sql.GetFirst(
+        "SELECT MEMBER_ID,MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE QUOTE_REV_DEAL_TEAM_MEMBER_ID = '{recid}'".format(recid=CURR_REC_ID)
+        )
+        if qry:
+            eq_id = str(qry.MEMBER_ID)
+        else:
+            eq_id = "Sales Team"
+    ##A055S000P01-8690 code ends..      
     elif TreeParam == "Contract Information" and TABLENAME == 'CTCTIP':
         qry = Sql.GetFirst(
         "SELECT PARTY_ID FROM CTCTIP (NOLOCK) WHERE CONTRACT_INVOLVED_PARTIES_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
