@@ -38,7 +38,7 @@ class ContractQuoteSummaryUpdate:
                                                 ELSE 0
                                             END
                                         FROM SAQICO (NOLOCK) 
-                                        JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
+                                        JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
                                         WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                             QuoteRecordId=self.contract_quote_record_id,
                                             RevisionRecordId=self.quote_revision_record_id,
@@ -210,7 +210,7 @@ class ContractQuoteSummaryUpdate:
         #Trace.Write("discount"+str(discount_value))
         Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
         Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-        Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency        
+        Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency      
         Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
         Quote.Save()
     
