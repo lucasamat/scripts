@@ -2825,7 +2825,15 @@ tree = TreeView()
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
-	quote_revision_record_id = ""
+	try:
+		GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+		if GetActiveRevision:
+			Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+			Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+	except Exception,e:
+		Trace.Write("error--"+str(e))
+		quote_revision_record_id = ""
 LOAD = Param.LOAD
 Trace.Write(str(LOAD))
 try:
