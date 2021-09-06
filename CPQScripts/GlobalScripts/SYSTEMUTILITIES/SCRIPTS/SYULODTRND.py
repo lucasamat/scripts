@@ -3069,7 +3069,7 @@ def EntitlementTreeViewHTMLDetail(
 						+ "</div></label></div>"
 					)
 				
-				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10 entitle_select_out" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
+				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10 " onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in entitle_select_out"><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
 				for key, invs in enumerate(list(desc_list)):
 					invs = str(invs).strip()
 					qstring = attr_dict.get(str(invs)) or ""
