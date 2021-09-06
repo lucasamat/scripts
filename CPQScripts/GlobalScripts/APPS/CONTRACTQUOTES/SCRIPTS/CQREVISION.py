@@ -55,7 +55,7 @@ def create_new_revision(Opertion,cartrev):
 		#edit_new_rev_quote = QuoteHelper.Edit(Quote.CompositeNumber)
 		create_new_rev = Quote.CreateNewRevision(True)
 		Quote.SetGlobal("contract_quote_record_id",quote_contract_recordId)
-		#composite_number = Quote.CompositeNumber
+		composite_number = create_new_rev.CompositeNumber
 		current_revison = Quote.RevisionNumber
 		Trace.Write("============>> "+str(current_revison))
 		#craete new revision ends
@@ -190,7 +190,7 @@ def create_new_revision(Opertion,cartrev):
 			#quote_table_info.AddRow(quote_detials)
 			#Sql.Upsert(quote_table_info)
 		#get quote data for update in SAQTMT end
-		NRev = QuoteHelper.Edit(get_quote_id)
+		NRev = QuoteHelper.Edit(composite_number)
 		Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
 		Trace.Write("============>>1111 "+str(current_revison1))
