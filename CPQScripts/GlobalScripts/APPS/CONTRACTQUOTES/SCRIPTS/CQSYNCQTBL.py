@@ -1215,6 +1215,85 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')] 
+						##A055S000P01-8690 starts..
+						if payload_json.get('SAEMPL'):
+							for employee in payload_json.get('SAEMPL'):
+								employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
+								if employee_obj is None:
+									country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+									salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+									employee_dict = {}
+									employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+									employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+									employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+									employee_dict["CITY"] = employee.get("CITY")
+									employee_dict["COUNTRY"] = employee.get("COUNTRY")
+									employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+									employee_dict["EMAIL"] = employee.get("EMAIL")
+									employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
+									employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+									employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+									employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+									employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+									employee_dict["PHONE"] = employee.get("PHONE")
+									employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+									employee_dict["STATE"] = employee.get("STATE")
+									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+									employee_dict["CPQTABLEENTRYDATEADDED"] = GETDATE()
+									employee_dict["CpqTableEntryModifiedBy"] = User.Id
+									employee_dict["CpqTableEntryDateModified"] = GETDATE()
+									employee_dict["ADDUSR_RECORD_ID"] = User.Id
+									tableInfo = Sql.GetTable("SAEMPL")
+									tablerow = employee_dict
+									tableInfo.AddRow(tablerow)
+									Sql.Upsert(tableInfo)
+
+								Sql.RunQuery("""INSERT SAQDLT (
+												C4C_PARTNERFUNCTION_ID,
+												CRM_PARTNERFUNCTION_ID,
+												PARTNERFUNCTION_DESC,
+												PARTNERFUNCTION_ID,
+												PARTNERFUNCTION_RECORD_ID,
+												EMAIL,
+												MEMBER_ID,
+												MEMBER_NAME,
+												MEMBER_RECORD_ID,
+												QUOTE_ID,
+												QUOTE_RECORD_ID,
+												QTEREV_ID,
+												QTEREV_RECORD_ID,
+												QUOTE_REV_DEAL_TEAM_MEMBER_ID,
+												CPQTABLEENTRYADDEDBY,
+												CPQTABLEENTRYDATEADDED
+												) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
+												SELECT DISTINCT  
+												(SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS C4C_PARTNERFUNCTION_ID,
+												(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS CRM_PARTNERFUNCTION_ID,
+												(SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_DESC,
+												(SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_ID,
+												(SELECT TOP 1 * FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_RECORD_ID,
+												SAEMPL.EMAIL,
+												SAEMPL.EMPLOYEE_ID,
+												SAEMPL.EMPLOYEE_NAME,
+												SAEMPL.EMPLOYEE_RECORD_ID,
+												'{QuoteId}' as QUOTE_ID,
+												'{QuoteRecordId}' as QUOTE_RECORD_ID,
+												'{RevisionId}' as QTEREV_ID,
+												'{RevisionRecordId}' as QTEREV_RECORD_ID,
+												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
+												) emp """.format(
+												EmployeeId = employee.get("EMPLOYEE_ID"),
+												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
+												UserName=User.Name,
+												QuoteId = quote_id,
+												QuoteRecordId=quote_record_id,
+												RevisionId=quote_rev_id,
+												RevisionRecordId=quote_revision_id,
+												)
+											)
+						##A055S000P01-8690 endss..
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
 							OpportunityType = {"23":"PROSPECT FOR PRODUCT SALES","24":"PROSPECT FOR SERVICE","25":"PROSPECT FOR TRAINING","26":"PROSPECT FOR CONSULTING","Z27":"FPM/EXE","Z28":"TKM","Z29":"POES","Z30":"LOW","Z31":"AGS"}
