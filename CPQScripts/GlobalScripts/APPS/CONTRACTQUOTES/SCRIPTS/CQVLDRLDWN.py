@@ -470,7 +470,9 @@ def FabValueDrivers():
     level = ""
     level = "Fab Value Drivers"
     sendEmail(level)
-
+def csa_tools():
+    Trace>Write("CSA TOOLS ENTRY")
+    
 def predefined_wafernode():
     #Trace.Write("TreeParam"+str(TreeParam))
     Log.Info("pre_def_wafernode")
@@ -574,4 +576,6 @@ elif LEVEL == 'FAB VALUE DRIVER':
     ApiResponse = ApiResponseFactory.JsonResponse(FabValueDrivers())
 elif LEVEL == 'PREDEFINED WAFER DRIVER':
     ApiResponse = ApiResponseFactory.JsonResponse(predefined_wafernode())
+elif LEVEL == 'CSA TOOLS':
+    ApiResponse = ApiResponseFactory.JsonResponse(csa_tools())
 
