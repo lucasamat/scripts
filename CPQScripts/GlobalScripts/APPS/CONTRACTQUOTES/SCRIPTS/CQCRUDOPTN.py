@@ -2619,6 +2619,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							QUOTE_RECORD_ID,
 							QUOTE_ID,
 							QUOTE_NAME,
+							ACCOUNT_ID,
+							ACCOUNT_NAME,
+							ACCOUNT_RECORD_ID,
 							QTEREV_ID,
 							QTEREV_RECORD_ID,
 							RELOCATION_EQUIPMENT_TYPE,
@@ -2666,6 +2669,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQFEQ.QUOTE_RECORD_ID,
 								SAQFEQ.QUOTE_ID,
 								SAQFEQ.QUOTE_NAME,
+								'{account_id}' as ACCOUNT_ID,
+								'{account_name}' as ACCOUNT_NAME,
+								'{account_record_id}' as ACCOUNT_RECORD_ID,
 								SAQFEQ.QTEREV_ID,
 								SAQFEQ.QTEREV_RECORD_ID,
 								'{RelocationEqType}' AS RELOCATION_EQUIPMENT_TYPE,
@@ -2711,6 +2717,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								BatchGroupRecordId=kwargs.get('batch_group_record_id'),
 								UserName=self.user_name,
 								UserId=self.user_id,
+								account_id=self.account_id,
+								account_name=self.account_name,
+								account_record_id=self.account_record_id,
 								RelocationEqType=relocation if self.tree_parent_level_1 == 'Complementary Products' else ''
 							)
 				)
@@ -2931,6 +2940,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						QUOTE_RECORD_ID,
 						QUOTE_ID,
 						QUOTE_NAME,
+						ACCOUNT_ID,
+						ACCOUNT_NAME,
+						ACCOUNT_RECORD_ID,
 						QTEREV_ID,
 						QTEREV_RECORD_ID,
 						RELOCATION_EQUIPMENT_TYPE,
@@ -2979,6 +2991,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQFEQ.QUOTE_RECORD_ID,
 							SAQFEQ.QUOTE_ID,
 							SAQFEQ.QUOTE_NAME,
+							'{account_id}' as ACCOUNT_ID,
+							'{account_name}' as ACCOUNT_NAME,
+							'{account_record_id}' as ACCOUNT_RECORD_ID,
 							SAQFEQ.QTEREV_ID,
 							SAQFEQ.QTEREV_RECORD_ID,
 							'{RelocationEqType}' AS RELOCATION_EQUIPMENT_TYPE,
@@ -3028,6 +3043,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
 							UserName=self.user_name,
 							UserId=self.user_id,
+							account_id=self.account_id,
+							account_name=self.account_name,
+							account_record_id=self.account_record_id,
 							RelocationEqType='Receiving Equipment' 
 						)
 				)
@@ -3159,6 +3177,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						QUOTE_RECORD_ID,
 						QUOTE_ID,
 						QUOTE_NAME,
+						ACCOUNT_ID,
+						ACCOUNT_NAME,
+						ACCOUNT_RECORD_ID,
 						QTEREV_ID,
 						QTEREV_RECORD_ID,
 						RELOCATION_EQUIPMENT_TYPE,
@@ -3203,6 +3224,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQFEQ.QUOTE_RECORD_ID,
 							SAQFEQ.QUOTE_ID,
 							SAQFEQ.QUOTE_NAME,
+							'{account_id}' as ACCOUNT_ID,
+							'{account_name}' as ACCOUNT_NAME,
+							'{account_record_id}' as ACCOUNT_RECORD_ID,
 							SAQFEQ.QTEREV_ID,
 							SAQFEQ.QTEREV_RECORD_ID,
 							'{RelocationEqType}' AS RELOCATION_EQUIPMENT_TYPE,
@@ -3248,6 +3272,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
 							UserName=self.user_name,
 							UserId=self.user_id,
+							account_id=self.account_id,
+							account_name=self.account_name,
+							account_record_id=self.account_record_id,
 							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 						)
 			)
@@ -3270,6 +3297,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						QUOTE_RECORD_ID,
 						QUOTE_ID,
 						QUOTE_NAME,
+						ACCOUNT_ID,
+						ACCOUNT_NAME,
+						ACCOUNT_RECORD_ID,
 						QTEREV_ID,
 						QTEREV_RECORD_ID,
 						RELOCATION_EQUIPMENT_TYPE,
@@ -3314,6 +3344,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQSCO.QUOTE_RECORD_ID,
 								SAQSCO.QUOTE_ID,
 								SAQSCO.QUOTE_NAME,
+								'{account_id}' as ACCOUNT_ID,
+								'{account_name}' as ACCOUNT_NAME,
+								'{account_record_id}' as ACCOUNT_RECORD_ID,
 								SAQSCO.QTEREV_ID,
 								SAQSCO.QTEREV_RECORD_ID,
 								SAQSCO.RELOCATION_EQUIPMENT_TYPE,
@@ -3356,6 +3389,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								desc="COMP SA VARIABLE",
 								rec="CA6BB39A-947F-401B-830B-9D8B8942303D",
 								UserName=self.user_name,
+								account_id=self.account_id,
+								account_name=self.account_name,
+								account_record_id=self.account_record_id,
 								UserId=self.user_id
 								
 								
