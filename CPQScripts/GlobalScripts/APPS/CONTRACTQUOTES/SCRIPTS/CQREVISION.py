@@ -56,7 +56,8 @@ def create_new_revision(Opertion,cartrev):
 		create_new_rev = Quote.CreateNewRevision(True)
 		Quote.SetGlobal("contract_quote_record_id",quote_contract_recordId)
 		#composite_number = Quote.CompositeNumber
-		#current_revison = Quote.RevisionNumber
+		current_revison = Quote.RevisionNumber
+		Trace.Write("============>> "+str(current_revison))
 		#craete new revision ends
 		get_quote_id = create_new_rev.QuoteId
 		#create new revision -SAQTRV - update-start
