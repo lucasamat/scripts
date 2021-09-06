@@ -160,6 +160,7 @@ discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
 if "+" in discount:
     discount = str(discount).replace("+","").strip()
+    Trace.Write("DISCOUNT="+str(discount))
     summary_obj.CalculatePlusDiscount()
 elif "-" in discount:
     discount = str(discount).replace("-","").strip()
