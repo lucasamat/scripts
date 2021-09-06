@@ -3048,7 +3048,7 @@ def EntitlementTreeViewHTMLDetail(
 				if EntitlementType == "EQUIPMENT" or EntitlementType == "BUSINESSUNIT" or EntitlementType == "TOOLS":
 					#Trace.Write("@@2794")
 					sec_bnr += (
-						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down entitle_select_out" id="'
+						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down " id="'
 						+ str(Section_id)+ '" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sec_'
 						+ str(Section_id)
 						+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
@@ -3062,14 +3062,14 @@ def EntitlementTreeViewHTMLDetail(
 				else:
 					
 					sec_bnr += (
-						'<div class="dyn_main_head master_manufac glyphicon pointer entitle_select_out  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
+						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
 						+ str(Section_id)
 						+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
 						+ str(Section_desc)
 						+ "</div></label></div>"
 					)
 				
-				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
+				sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10 entitle_select_out" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
 				for key, invs in enumerate(list(desc_list)):
 					invs = str(invs).strip()
 					qstring = attr_dict.get(str(invs)) or ""
