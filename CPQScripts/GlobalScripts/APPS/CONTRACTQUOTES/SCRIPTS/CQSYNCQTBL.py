@@ -233,7 +233,7 @@ class SyncQuoteAndCustomTables:
 							except:
 								#Log.Info('except-----')
 								ent_disp_val = ent_disp_val 
-						   
+						
 									
 						else:
 							ent_disp_val = ent_disp_val
@@ -1194,7 +1194,7 @@ class SyncQuoteAndCustomTables:
 						payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
 						payload_json = eval(payload_json.get('Param'))
 						payload_json = payload_json.get('CPQ_Columns')
-						Trace.Write("payload_json----->"+str(payload_json))
+						Log.Info("payload_json----->"+str(payload_json))
 						if payload_json.get('OPPORTUNITY_ID'):
 							contract_quote_obj = Sql.GetFirst("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
 							Log.Info("""SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'""".format(contract_quote_data.get('C4C_QUOTE_ID')))
@@ -1303,7 +1303,7 @@ class SyncQuoteAndCustomTables:
 								SAQFBL_end = time.time()
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
-							   
+							
 							
 
 							if service_ids:			
