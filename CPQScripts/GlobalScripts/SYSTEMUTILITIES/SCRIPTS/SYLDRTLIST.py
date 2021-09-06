@@ -5543,14 +5543,14 @@ class SYLDRTLIST:
                                 + str(PerPage)
                                 + " QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,LIST_PRICE,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",BASE_PRICE,SERIAL_NO, GREENBOOK,FABLOCATION_ID, TOTAL_COST, TARGET_PRICE_MARGIN, TARGET_PRICE, SALES_DISCOUNT_PRICE, CEILING_PRICE, SALES_DISCOUNT, TAX_PERCENTAGE,TAX,LINE,SRVTAXCLA_DESCRIPTION, NET_VALUE,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
                                 + str(qt_rec_id.QUOTE_ID)
-                                + "') m where m.ROW BETWEEN "
+                                + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
                                 + str(Page_start)
                                 + " and "
                                 + str(Page_End)
                             )
                             QuryCount_str = (
-                                    "select count(*) as cnt FROM SAQICO where " + str(ATTRIBUTE_VALUE_STR) +" QUOTE_ID = '{}'".format(
-                                        str(qt_rec_id.QUOTE_ID))
+                                    "select count(*) as cnt FROM SAQICO where " + str(ATTRIBUTE_VALUE_STR) +" QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(
+                                        str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
                             )
                     elif str(RECORD_ID) == "SYOBJR-00009":
                         Trace.Write("123")
