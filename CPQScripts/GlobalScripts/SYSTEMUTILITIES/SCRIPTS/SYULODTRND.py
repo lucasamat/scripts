@@ -3144,7 +3144,7 @@ def EntitlementTreeViewHTMLDetail(
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						##info tooltip adding in entitlement grid starts..
-						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= attrValue)
+						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= attrName)
 						##info tooltip adding in entitlement grid ends..
 						disp_val = ""
 						userselectedvalue = []
