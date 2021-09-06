@@ -453,6 +453,7 @@ class TreeView:
 			if GetActiveRevision:
 				Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
 				Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
 			#GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID LIKE '%{}%' AND ACTIVE = 1".format(Quote.CompositeNumber))
@@ -1452,7 +1453,7 @@ class TreeView:
 				except:
 					CurrentTabName = "Quotes"
 				if CurrentTabName in ('Quotes', 'Quote'):
-					quote_revision_record_id = Quote.GetGlobal("quote_rev_id")
+					
 					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if quote_obj:
 						quote_id = quote_obj.QUOTE_ID
@@ -1586,7 +1587,7 @@ class TreeView:
 						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
 					)                    
 					if 'QTEREV_RECORD_ID' not in where_string:
-						quote_revision_record_id = Quote.GetGlobal("quote_rev_id")
+						
 						where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
@@ -2361,6 +2362,7 @@ class TreeView:
 										Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
 									else:
 										#Trace.Write('Subwhere_string-----'+str(NodeText))
+										
 										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}'".format(NodeText,quote_revision_record_id)
 								elif NodeText in  ("Pages"):
 									#Trace.Write("NodeText"+str(NodeText)+"---")
