@@ -4588,7 +4588,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				#COVERED OBJ PRE DEFINED LOGIC
 				try:	
 					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")					
-					CQTVLDRIFW.ValueDriverPreDefined(self.contract_quote_record_id,"PREDEFINED WAFER DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
+					CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED WAFER DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				except:
 					Trace.Write("EXCEPT----PREDEFINED WAFER DRIVER IFLOW")
 				#COVERED OBJ DRIVER ROLL DOWN
