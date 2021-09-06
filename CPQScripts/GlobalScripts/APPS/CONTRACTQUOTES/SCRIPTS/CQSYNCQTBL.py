@@ -1249,7 +1249,48 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
-
+								Log.Info("""INSERT SAQDLT (
+												C4C_PARTNERFUNCTION_ID,
+												CRM_PARTNERFUNCTION_ID,
+												PARTNERFUNCTION_DESC,
+												PARTNERFUNCTION_ID,
+												PARTNERFUNCTION_RECORD_ID,
+												EMAIL,
+												MEMBER_ID,
+												MEMBER_NAME,
+												MEMBER_RECORD_ID,
+												QUOTE_ID,
+												QUOTE_RECORD_ID,
+												QTEREV_ID,
+												QTEREV_RECORD_ID,
+												QUOTE_REV_DEAL_TEAM_MEMBER_ID,
+												CPQTABLEENTRYADDEDBY,
+												CPQTABLEENTRYDATEADDED
+												) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
+												SELECT DISTINCT  
+												(SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS C4C_PARTNERFUNCTION_ID,
+												(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS CRM_PARTNERFUNCTION_ID,
+												(SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_DESC,
+												(SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_ID,
+												(SELECT TOP 1 * FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_RECORD_ID,
+												SAEMPL.EMAIL,
+												SAEMPL.EMPLOYEE_ID,
+												SAEMPL.EMPLOYEE_NAME,
+												SAEMPL.EMPLOYEE_RECORD_ID,
+												'{QuoteId}' as QUOTE_ID,
+												'{QuoteRecordId}' as QUOTE_RECORD_ID,
+												'{RevisionId}' as QTEREV_ID,
+												'{RevisionRecordId}' as QTEREV_RECORD_ID,
+												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
+												) emp """.format(
+												EmployeeId = employee.get("EMPLOYEE_ID"),
+												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
+												UserName=User.Name,
+												QuoteId = quote_id,
+												QuoteRecordId=quote_record_id,
+												RevisionId=quote_rev_id,
+												RevisionRecordId=quote_revision_id,
+												))
 								Sql.RunQuery("""INSERT SAQDLT (
 												C4C_PARTNERFUNCTION_ID,
 												CRM_PARTNERFUNCTION_ID,
