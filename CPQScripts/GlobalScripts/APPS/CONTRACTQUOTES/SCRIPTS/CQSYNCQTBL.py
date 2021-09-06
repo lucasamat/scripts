@@ -1281,7 +1281,7 @@ class SyncQuoteAndCustomTables:
 												'{QuoteId}' as QUOTE_ID,
 												'{QuoteRecordId}' as QUOTE_RECORD_ID,
 												'{RevisionId}' as QTEREV_ID,
-												'{RevisionRecordId}' as QTEREV_RECORD_ID,
+												'{RevisionRecordId}' as QTEREV_RECORD_ID
 												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
 												) emp """.format(
 												EmployeeId = employee.get("EMPLOYEE_ID"),
@@ -1323,7 +1323,7 @@ class SyncQuoteAndCustomTables:
 												'{QuoteId}' as QUOTE_ID,
 												'{QuoteRecordId}' as QUOTE_RECORD_ID,
 												'{RevisionId}' as QTEREV_ID,
-												'{RevisionRecordId}' as QTEREV_RECORD_ID,
+												'{RevisionRecordId}' as QTEREV_RECORD_ID
 												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
 												) emp """.format(
 												EmployeeId = employee.get("EMPLOYEE_ID"),
