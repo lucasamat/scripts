@@ -115,7 +115,7 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 					)
 				)
 			#update TAX column  and Extended price for each SAQICO records
-			QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}') """.format(			
+			'''QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}') """.format(			
 			item_line_record_ids_str = item_line_record_ids_str,
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			)
@@ -124,20 +124,20 @@ def getting_cps_tax(quote_id = None,quote_record_id = None,item_lines_record_ids
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			item_line_record_ids_str = item_line_record_ids_str
 			)
-			Sql.RunQuery(QueryStatement)
+			Sql.RunQuery(QueryStatement)'''
 			#update SAQITM role up 
 			QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}') GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(			
 			item_line_record_ids_str = item_line_record_ids_str,
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			)
 			Sql.RunQuery(QueryStatement)
-			QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}') GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(		
+			'''QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QUOTE_ITEM_COVERED_OBJECT_RECORD_ID IN ('{item_line_record_ids_str}') GROUP BY QUOTE_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID """.format(		
 			item_line_record_ids_str = item_line_record_ids_str,
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id")
 			)
-			Sql.RunQuery(QueryStatement)
+			Sql.RunQuery(QueryStatement)'''
 			##Upading the quote tables for quote document
-			quote_line_items_covered_obj ="""UPDATE a SET a.TOTAL_COST = b.TOTAL_COST,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
+			quote_line_items_covered_obj ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
 			Sql.RunQuery(quote_line_items_covered_obj)
 			quote_line_item_obj ="""UPDATE a SET aTOTAL_COST.TOTAL_COST = b.,a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.TAX_PERCENTAGE = b.TAX_PERCENTAGE,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' """.format(QuoteRecordId= Quote.GetGlobal("contract_quote_record_id"))
 			Sql.RunQuery(quote_line_item_obj)

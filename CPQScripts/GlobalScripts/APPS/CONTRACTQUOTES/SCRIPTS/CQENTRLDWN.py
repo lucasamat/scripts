@@ -150,10 +150,6 @@ def update_entitlement_price_impact(where_condition=None):
 												WHEN SAQICO.EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(SAQICO.EXCHANGE_RATE,0)
 												ELSE {cost_impact}
 												END,
-						SAQICO.TOTAL_COST = CASE  
-												WHEN SAQICO.TOTAL_COST > 0 THEN ISNULL({cost_impact}, 0) + ISNULL(SAQICO.TOTAL_COST,0)
-												ELSE SAQICO.TOTAL_COST
-												END,
 						SAQICO.TARGET_PRICE = CASE  
 												WHEN SAQICO.TARGET_PRICE > 0 THEN SAQICO.TARGET_PRICE + (ISNULL(SAQICO.EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
 												ELSE SAQICO.TARGET_PRICE
@@ -233,10 +229,6 @@ def update_entitlement_price_impact(where_condition=None):
 						SAQICO.ENTITLEMENT_COST_IMPACT = CASE
 												WHEN SAQICO.EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(SAQICO.EXCHANGE_RATE,0)
 												ELSE {cost_impact}
-												END,
-						SAQICO.TOTAL_COST = CASE  
-												WHEN SAQICO.TOTAL_COST > 0 THEN ISNULL({cost_impact}, 0) + ISNULL(SAQICO.TOTAL_COST,0)
-												ELSE SAQICO.TOTAL_COST
 												END,
 						SAQICO.TARGET_PRICE = CASE  
 												WHEN SAQICO.TARGET_PRICE > 0 THEN SAQICO.TARGET_PRICE + (ISNULL(SAQICO.EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
@@ -347,7 +339,6 @@ def update_entitlement_price_impact(where_condition=None):
 				WHERE {Where} """.format(WhereCondition=where_condition.replace("SAQICO","A"),Where=SAQITMWhere))'''
 	Sql.RunQuery("""UPDATE A
 				SET OBJECT_QUANTITY = EQUIPMENT_ID_COUNT,
-				TOTAL_COST = B.TOTAL_COST,
 				EXTENDED_PRICE = B.EXTENDED_PRICE,
 				BD_PRICE = B.BD_PRICE,
 				SALES_PRICE = B.SALES_PRICE,
@@ -362,11 +353,9 @@ def update_entitlement_price_impact(where_condition=None):
 				FROM SAQITM A(NOLOCK)
 				INNER JOIN (SELECT QUOTE_ID,QTEITM_RECORD_ID AS QUOTE_ITEM_RECORD_ID,
 				COUNT(EQUIPMENT_ID) as EQUIPMENT_ID_COUNT,
-				ISNULL(SUM(ISNULL(TOTAL_COST, 0)), 0) as TOTAL_COST,
 				ISNULL(SUM(ISNULL(BD_PRICE, 0)), 0) as BD_PRICE,
 				ISNULL(SUM(ISNULL(SALES_PRICE, 0)), 0) as SALES_PRICE,
 				ISNULL(SUM(ISNULL(TARGET_PRICE, 0)), 0) as TARGET_PRICE,
-				ISNULL(SUM(ISNULL(BASE_PRICE, 0)), 0) as BASE_PRICE,
 				ISNULL(SUM(ISNULL(CEILING_PRICE, 0)), 0) as CEILING_PRICE,
 				ISNULL(SUM(ISNULL(SALES_DISCOUNT_PRICE, 0)), 0) as SALES_DISCOUNT_PRICE,
 				ISNULL(SUM(ISNULL(EXTENDED_PRICE, 0)), 0) as EXTENDED_PRICE,

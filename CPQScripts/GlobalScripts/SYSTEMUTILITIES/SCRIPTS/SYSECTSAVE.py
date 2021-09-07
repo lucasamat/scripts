@@ -931,18 +931,18 @@ def getting_cps_tax(item_obj,quote_type):
 			)
 			Sql.RunQuery(update_tax_item_covered_obj)
 			#update TAX column  and Extended price for each SAQICO records
-			QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}'""".format(			
+			'''QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}'""".format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			revision_rec_id = quote_revision_record_id
 			)
-			Sql.RunQuery(QueryStatement)
-			QueryStatement ="""UPDATE a SET a.EXTENDED_PRICE = CASE WHEN a.TAX > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) + (a.TAX) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}' """.format(			
+			Sql.RunQuery(QueryStatement)'''
+			'''QueryStatement ="""UPDATE a SET a.EXTENDED_PRICE = CASE WHEN a.TAX > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) + (a.TAX) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}' """.format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			revision_rec_id = quote_revision_record_id
 			)
-			Sql.RunQuery(QueryStatement)
+			Sql.RunQuery(QueryStatement)'''
 			#update SAQITM role up 
 			QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID='{revision_rec_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
@@ -950,12 +950,12 @@ def getting_cps_tax(item_obj,quote_type):
 			revision_rec_id = quote_revision_record_id
 			)
 			Sql.RunQuery(QueryStatement)
-			QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,QTEREV_RECORD_ID, SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID='{revision_rec_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID  AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(			
+			'''QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,QTEREV_RECORD_ID, SERVICE_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID='{revision_rec_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID  AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
 			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
 			revision_rec_id = quote_revision_record_id
 			)
-			Sql.RunQuery(QueryStatement)
+			Sql.RunQuery(QueryStatement)'''
 
 
 RECORD = Param.RECORD

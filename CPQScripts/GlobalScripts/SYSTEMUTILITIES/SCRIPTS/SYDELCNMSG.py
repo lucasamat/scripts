@@ -341,7 +341,7 @@ class DeleteConfirmPopup:
         # STEP 3: START FROM 10 AND UPDATE ALL LINE ITEM IDS IN SAQITM ABOVE SET BY INCREMENT OF 10
         
         all_equip_of_quote = Sql.GetList("SELECT QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, LINE_ITEM_ID FROM SAQICO (nolock) WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
-        count_of_existing_equipment = Sql.GetFirst("SELECT ISNULL(COUNT(ISNULL(QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,0)),0) AS COUNT_OF_EQUIP, SUM(TOTAL_COST) AS TOTAL_COST FROM SAQICO (nolock) WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
+        count_of_existing_equipment = Sql.GetFirst("SELECT ISNULL(COUNT(ISNULL(QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,0)),0) AS COUNT_OF_EQUIP FROM SAQICO (nolock) WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QUOTE_ID.QUOTE_ID, SERVICE_ID.SERVICE_ID,quote_revision_record_id))
         if all_equip_of_quote is not None:
             start_line_item_id = 0
             sql_to_upd_SAQICO_SAQITM_li_item = ""
@@ -353,9 +353,8 @@ class DeleteConfirmPopup:
             # UPDATE SAQITM
             if count_of_existing_equipment:
                 if int(count_of_existing_equipment.COUNT_OF_EQUIP) > 0:
-                    sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQITM SET OBJECT_QUANTITY = '{}', EXTENDED_PRICE = '{}' WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
+                    sql_to_upd_SAQICO_SAQITM_li_item += "UPDATE SAQITM SET OBJECT_QUANTITY = '{}' WHERE QUOTE_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'; ".format(
                         count_of_existing_equipment.COUNT_OF_EQUIP,
-                        count_of_existing_equipment.TOTAL_COST,
                         QUOTE_ID.QUOTE_ID,
                         SERVICE_ID.SERVICE_ID,
                         quote_revision_record_id
