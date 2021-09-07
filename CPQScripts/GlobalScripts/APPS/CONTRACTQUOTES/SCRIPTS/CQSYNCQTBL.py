@@ -562,7 +562,7 @@ class SyncQuoteAndCustomTables:
 							"SOURCE_CONTRACT_ID": custom_fields_detail.get("SourceContractID"),
 							"QUOTE_TYPE":quote_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
-							"GLOBAL_CURRENCY":"EUR",
+							"GLOBAL_CURRENCY":"USD",
 							"INCOTERMS":custom_fields_detail.get("Incoterms"),
 							"INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
 							#"PRICING_DATE":pricing_date,
@@ -746,15 +746,18 @@ class SyncQuoteAndCustomTables:
 									
 									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
 									##A055S000P01-4418 exchange rate details ends..
-								TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
-								if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
-									try:
-										QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
-									except:
-										QuoteStartDate =''
-									Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
-									salesorg_data.update({'EXCHANGE_RATE':'1'})
-									salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
+								##Commented the below code already we updated the exchange rate details in the above code..
+								# TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
+								# if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
+								# 	try:
+								# 		QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
+								# 	except:
+								# 		QuoteStartDate =''
+								# 	Trace.Write('QuoteStartDate------'+str(QuoteStartDate))
+								# 	salesorg_data.update({'EXCHANGE_RATE':'1'})
+								# 	salesorg_data.update({'EXCHANGE_RATE_DATE':str(QuoteStartDate)})
+								##Commented the below code already we updated the exchange rate details in the above code..
+
 								#commented the below code we updated the exchange rate type from Custom field.	
 								#exchange_rate_obj = Sql.GetFirst("SELECT EXCHANGE_RATE_TYPE from SASAAC where SALESORG_ID = '{}' and DIVISION_ID='{}' AND ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("SalesOrgID"),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
 								
