@@ -1849,7 +1849,7 @@ class SYLDRTLIST:
                                     
                     ## involved parties equipmemt starts
                     elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start
-                        Trace.Write('1844---Billing------'+str(TreeParam))                        
+                        Trace.Write(str(TreeParentParam)+'--1844---Billing------'+str(TreeParam))                        
                         pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
                         if Qustr:
                             Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
