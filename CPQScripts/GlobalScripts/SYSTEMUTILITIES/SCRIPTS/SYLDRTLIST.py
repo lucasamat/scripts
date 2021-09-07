@@ -1853,7 +1853,7 @@ class SYLDRTLIST:
 						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 						Trace.Write(str(TreeParentParam))
 						if Qustr:
-							if str(TreeParentParam)== "Billing"
+							if str(TreeParentParam)== "Billing":
 								Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
 							else:
 								Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
