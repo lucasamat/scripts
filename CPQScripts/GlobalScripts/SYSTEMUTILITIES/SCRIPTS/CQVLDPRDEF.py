@@ -47,7 +47,7 @@ except:
 
 
 
-def predefined_toolvalues():
+def predefined_wafer():
     #WAFERNODE VALUEDRIVER PREDEFINED STARTS
     #GREENBOOK ==DISPLAY
     Log.Info('wafer fn')
@@ -149,7 +149,7 @@ def predefined_device_type():
 #if LEVEL == 'PREDEFINED WAFER DRIVER':
 def predefined_values():
     ##predefined value for wafer
-    predefined_toolvalues()
+    predefined_wafer()
 
     ####calling function for device type predefined logic
     get_devicetype = Sql.GetFirst("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id) )
