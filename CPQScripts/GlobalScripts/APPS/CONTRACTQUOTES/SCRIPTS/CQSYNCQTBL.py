@@ -481,7 +481,7 @@ class SyncQuoteAndCustomTables:
 				payid =""
 				paydesc = ""
 				payrec = ""
-				pay_days = ""
+				pay_days = pay_name = ""
 				if not quote_obj:
 					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
 					if custom_fields_detail.get("SalesOrgID"):
@@ -514,6 +514,7 @@ class SyncQuoteAndCustomTables:
 							paydesc = payterm_obj.DESCRIPTION
 							payrec = payterm_obj.PAYMENT_TERM_RECORD_ID
 							pay_days = payterm_obj.NUMBER_OF_DAYS
+							pay_name = payterm_obj.PAYMENT_TERM_NAME
 							contract_quote_data.update(
 								{
 									"PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
@@ -672,7 +673,8 @@ class SyncQuoteAndCustomTables:
 							"CONTRACT_VALID_FROM":str(created_date),
 							"CONTRACT_VALID_TO":str(expired_date_val),
 							"PAYMENTTERM_DAYS":pay_days,
-							"PAYMENTTERM_ID":payid
+							"PAYMENTTERM_ID":payid,
+							"PAYMENTTERM_NAME":pay_name
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
