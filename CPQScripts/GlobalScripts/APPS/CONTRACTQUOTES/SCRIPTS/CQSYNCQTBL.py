@@ -1257,9 +1257,9 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')] 
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
-							salesteam_details = payload_json.get('SAEMPL')
-							if type(salesteam_details) is dict:
-								employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = salesteam_details.get("EMPLOYEE_ID")))
+							employee = payload_json.get('SAEMPL')
+							if type(employee) is dict:
+								employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
 								if employee_obj is None:
 									country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 									salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1288,6 +1288,7 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
+								salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id)
 							else:
 								for employee in payload_json.get('SAEMPL'):
 									employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
@@ -1319,52 +1320,7 @@ class SyncQuoteAndCustomTables:
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
 										Sql.Upsert(tableInfo)
-								Sql.RunQuery("""INSERT SAQDLT (
-												C4C_PARTNERFUNCTION_ID,
-												CRM_PARTNERFUNCTION_ID,
-												PARTNERFUNCTION_DESC,
-												PARTNERFUNCTION_ID,
-												PARTNERFUNCTION_RECORD_ID,
-												EMAIL,
-												MEMBER_ID,
-												MEMBER_NAME,
-												MEMBER_RECORD_ID,
-												QUOTE_ID,
-												QUOTE_RECORD_ID,
-												QTEREV_ID,
-												QTEREV_RECORD_ID,
-												QUOTE_REV_DEAL_TEAM_MEMBER_ID,
-												CPQTABLEENTRYADDEDBY,
-												CPQTABLEENTRYDATEADDED,
-												CpqTableEntryModifiedBy, 
-												CpqTableEntryDateModified
-												) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-												SELECT DISTINCT  
-												(SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS C4C_PARTNERFUNCTION_ID,
-												(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS CRM_PARTNERFUNCTION_ID,
-												(SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_DESC,
-												(SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_ID,
-												(SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_RECORD_ID,
-												SAEMPL.EMAIL,
-												SAEMPL.EMPLOYEE_ID,
-												SAEMPL.EMPLOYEE_NAME,
-												SAEMPL.EMPLOYEE_RECORD_ID,
-												'{QuoteId}' as QUOTE_ID,
-												'{QuoteRecordId}' as QUOTE_RECORD_ID,
-												'{RevisionId}' as QTEREV_ID,
-												'{RevisionRecordId}' as QTEREV_RECORD_ID
-												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
-												) emp """.format(
-												UserId = User.Id,
-												EmployeeId = employee.get("EMPLOYEE_ID"),
-												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
-												UserName=User.Name,
-												QuoteId = contract_quote_data.get("QUOTE_ID"),
-												QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-												RevisionId=quote_rev_id,
-												RevisionRecordId=quote_revision_id,
-												)
-											)
+									salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id)
 						##A055S000P01-8690 endss..
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
@@ -1674,5 +1630,53 @@ class SyncQuoteAndCustomTables:
 		# Log.Info("SALETYPE_J "+str(SalesType.get(payload_json.get("SalesType"))))
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
+
+	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id):
+		Sql.RunQuery("""INSERT SAQDLT (
+								C4C_PARTNERFUNCTION_ID,
+								CRM_PARTNERFUNCTION_ID,
+								PARTNERFUNCTION_DESC,
+								PARTNERFUNCTION_ID,
+								PARTNERFUNCTION_RECORD_ID,
+								EMAIL,
+								MEMBER_ID,
+								MEMBER_NAME,
+								MEMBER_RECORD_ID,
+								QUOTE_ID,
+								QUOTE_RECORD_ID,
+								QTEREV_ID,
+								QTEREV_RECORD_ID,
+								QUOTE_REV_DEAL_TEAM_MEMBER_ID,
+								CPQTABLEENTRYADDEDBY,
+								CPQTABLEENTRYDATEADDED,
+								CpqTableEntryModifiedBy, 
+								CpqTableEntryDateModified
+								) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+								SELECT DISTINCT  
+								(SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS C4C_PARTNERFUNCTION_ID,
+								(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS CRM_PARTNERFUNCTION_ID,
+								(SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_DESC,
+								(SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_ID,
+								(SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS PARTNERFUNCTION_RECORD_ID,
+								SAEMPL.EMAIL,
+								SAEMPL.EMPLOYEE_ID,
+								SAEMPL.EMPLOYEE_NAME,
+								SAEMPL.EMPLOYEE_RECORD_ID,
+								'{QuoteId}' as QUOTE_ID,
+								'{QuoteRecordId}' as QUOTE_RECORD_ID,
+								'{RevisionId}' as QTEREV_ID,
+								'{RevisionRecordId}' as QTEREV_RECORD_ID
+								FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
+								) emp """.format(
+								UserId = User.Id,
+								EmployeeId = employee.get("EMPLOYEE_ID"),
+								C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
+								UserName=User.Name,
+								QuoteId = contract_quote_data.get("QUOTE_ID"),
+								QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+								RevisionId=quote_rev_id,
+								RevisionRecordId=quote_revision_id,
+								)
+							)
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
