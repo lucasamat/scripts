@@ -6608,7 +6608,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                     + str(ContractRecordId)
                     + "' and QTEREV_RECORD_ID = '"
                     + str(RevisionRecordId)
-                    + "' SERVICE_ID = '"
+                    + "' AND SERVICE_ID = '"
                     + str(TreeSuperParentParam)
                     + "' and SERVICE_TYPE = '"
                     + str(TreeTopSuperParentParam)
@@ -6649,7 +6649,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
                 + str(ContractRecordId)
                 + "' and QTEREV_RECORD_ID = '"
                 + str(RevisionRecordId)
-                + "' SERVICE_ID = '"
+                + "' AND SERVICE_ID = '"
                 + str(TreeSuperParentParam)
                 + "' and SERVICE_TYPE = '"
                 + str(TreeTopSuperParentParam)
