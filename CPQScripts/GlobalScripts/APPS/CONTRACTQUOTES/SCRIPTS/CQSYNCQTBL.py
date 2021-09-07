@@ -478,6 +478,10 @@ class SyncQuoteAndCustomTables:
 						quote_id, self.quote.CompositeNumber
 					)
 				)
+				payid =""
+				paydesc = ""
+				payrec = ""
+				pay_days = ""
 				if not quote_obj:
 					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
 					if custom_fields_detail.get("SalesOrgID"):
@@ -509,6 +513,7 @@ class SyncQuoteAndCustomTables:
 							payid =payterm_obj.PAYMENT_TERM_ID
 							paydesc = payterm_obj.DESCRIPTION
 							payrec = payterm_obj.PAYMENT_TERM_RECORD_ID
+							pay_days = payterm_obj.NUMBER_OF_DAYS
 							contract_quote_data.update(
 								{
 									"PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
@@ -521,6 +526,7 @@ class SyncQuoteAndCustomTables:
 						payid =""
 						paydesc = ""
 						payrec = ""
+						pay_days =""
 					# self.quote.OrderStatus.Name
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
@@ -664,7 +670,8 @@ class SyncQuoteAndCustomTables:
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":str(created_date),
-							"CONTRACT_VALID_TO":str(expired_date)
+							"CONTRACT_VALID_TO":str(expired_date),
+							"PAYMENTTERM_DAYS":pay_days
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
