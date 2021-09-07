@@ -1155,7 +1155,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 			try:
-				if OfferingRow_detail.SERVICE_ID == 'Z0016_AG':
+				if OfferingRow_detail.SERVICE_ID == 'Z0016':
 					try:
 						QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
 						QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
