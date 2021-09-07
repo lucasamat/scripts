@@ -8225,8 +8225,73 @@ class SYLDRTLIST:
             PageInformS = str(Page_start) + " - " + str(QueryCount) + " of"
         else:
             PageInformS = str(Page_start) + " - " + str(Page_End) + " of"
+        dbl_clk_function = ""
+        if ObjectName == 'SAQICO':
+            cls = "eq(3)"
+            SAQICO_dbl_clk_function += (
+                'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
+                + str(table_ids)
+                + '").on("check.bs.table", function (e, row, $element) { console.log("checked00009==");checkedRows.push($element.closest("tr").find("td:'
+                + str(cls)
+                + '").text()); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                + str(table_ids)
+                + '").on("check-all.bs.table", function (e) { var table = $("'
+                + str(table_ids)
+                + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(4)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); }); $("'
+                + str(table_ids)
+                + '").on("uncheck-all.bs.table", function (e) { localStorage.setItem("multiedit_checkbox_clicked", []); checkedRows=[]; }); $("'
+                + str(table_ids)
+                + '").on("uncheck.bs.table", function (e, row, $element) { var rec_ids=$element.closest("tr").find("td:'
+                + str(cls)
+                + '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
+            )
+            buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
+
+            SAQICO_dbl_clk_function += (    
+                '$("'   
+                + str(table_ids)    
+                + '").on("dbl-click-cell.bs.table", onClickCell); $("'  
+                + str(table_ids)    
+                + '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'  
+                + str(table_ids)    
+                + '\ th.bs-checkbox div.th-inner").before(""); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'   
+                + str(cls)  
+                + '").text());  data1 = $element.closest("tr").find("td:'   
+                + str(cls)  
+                + '").text(); localStorage.setItem("multiedit_save_date", data1); reco_id = removeDuplicates(reco); }else{reco_id=$element.closest("tr").find("td:' 
+                + str(cls)  
+                + '").text(); reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id); } localStorage.setItem("multiedit_data_clicked", reco_id); localStorage.setItem("table_id_RL_edit", "'  
+                + str(table_id) 
+                + '");edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'   
+                + str(table_id) 
+                + '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3; $("#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F").find(inp).prop("disabled", false);localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+' "+inp).closest("tr").find("td:nth-child("+edit_index+")").attr("contenteditable", true);  var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){  RecId = "SYOBJR-00009";RecName = "div_CTR_Assemblies";$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'loadRelatedList(RecId,RecName);\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");}$("'+str(table_ids)+' " +inp).closest("tr").find("td:nth-child("+edit_index+")").addClass("light_yellow"); document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("' 
+                + str(table_ids)    
+                + "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('" 
+                + str(table_id) 
+                + "_SortColumn', name); localStorage.setItem('" 
+                + str(table_id) 
+                + "_SortColumnOrder', order); }); " 
+            )   
+            Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))
+
+            SAQICO_dbl_clk_function += (
+                    '$("'
+                    + str(table_ids)
+                    + '").on("all.bs.table", function (e, name, args) { console.log("sort.bs.table ============>11");$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+                    + str(table_ids)
+                    + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
+                    + str(table_ids)
+                    + "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+                    + str(table_id)
+                    + "_SortColumn', name); localStorage.setItem('"
+                    + str(table_id)
+                    + "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_list)+"  QuoteitemContainerSorting(name, order, '"
+                    + str(table_id)
+                    + "',"+ str(list(eval(Columns)))+", ATTRIBUTE_VALUEList,'"+str(PR_CURR)+"','"+str(TP)+"','"+str(SubTab)+"'); }); "
+                    ) 
+            dbl_clk_function = SAQICO_dbl_clk_function         
         
-        return table_list, QueryCount, PageInformS,footer_str
+        return table_list, QueryCount, PageInformS,footer_str,dbl_clk_function
 
 
 ObjSYLDRTLIST = SYLDRTLIST()
