@@ -660,7 +660,9 @@ class SyncQuoteAndCustomTables:
 							"REV_EXPIRE_DATE":str(expired_date),
 							"REVISION_STATUS":"IN-PROGRESS",
 							"REV_APPROVE_DATE":'',
-							"CART_ID":get_rev_details.CART_ID
+							"CART_ID":get_rev_details.CART_ID,
+							"CONTRACT_VALID_FROM":str(created_date),
+							"CONTRACT_VALID_TO":str(expired_date)
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
