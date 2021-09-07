@@ -121,6 +121,7 @@ def predefined_toolvalues():
     #Log.Info("quer_statement_18 ->"+str(quer_statement_18))
     #WAFERNODE VALUEDRIVER PREDEFINED ENDS
     # Predefined Values for CSA TOOLS - Starts
+    Log.Info("CSA TOOLS - Starts"+str(Qt_rec_id))
     account_id_query = Sql.GetList("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
     account_bluebook_query = Sql.GetList("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_RECORD_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
 
