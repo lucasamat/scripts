@@ -714,6 +714,7 @@ def GetSendingEquipmentMaster(PerPage, PageInform, A_Keys, A_Values):
     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     FablocationId = Product.GetGlobal("TreeParam")
     data_list = []
     obj_idval = "SYOBJ_003012_SYOBJ_003012"
@@ -1636,6 +1637,7 @@ def GetEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     chld_list = []
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_idval = "SYOBJ_00942_SYOBJ_00942"
     obj_id1 = "SYOBJ-00942"
     objh_getid = Sql.GetFirst(
@@ -2250,6 +2252,7 @@ def GetSendingEquipmentChild(recid, PerPage, PageInform, A_Keys, A_Values):
     chld_list = []
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_idval = "SYOBJ_1176889_SYOBJ_1176889"
     obj_id1 = "SYOBJ-1176889"
     objh_getid = Sql.GetFirst(
@@ -3017,6 +3020,7 @@ def GetEquipmentMasterFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,PerPage,PageInform)
     TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     ATTRIBUTE_VALUE_STR = ""
     Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
     for quer_key, quer_value in enumerate(Dict_formation):
@@ -3608,6 +3612,7 @@ def GetEquipmentChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,PerPage,PageI
 
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_id1 = "SYOBJ-00942"
     objh_getid = Sql.GetFirst(
         "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
@@ -3833,7 +3838,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     TopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-    
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     data_list = []
     obj_idval = "SYOBJ_00974_SYOBJ_00974"
     rec_id = "SYOBJ_00974"
@@ -4272,6 +4277,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
     chld_list = []
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_idval = "SYOBJ_00948_SYOBJ_00948"
     obj_id1 = "SYOBJ-00948"
     objh_getid = Sql.GetFirst(
@@ -4705,6 +4711,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
     TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     ATTRIBUTE_VALUE_STR = ""
     Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
     for quer_key, quer_value in enumerate(Dict_formation):
@@ -4848,6 +4855,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 def QuoteAssemblyPreventiveMaintainenceKitMaterialChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE, RECID,ASSEMBLYID,EQUIPMENTID,KITID,KITNUMBER,PerPage,PageInform):    
     FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     obj_id1 = "SYOBJ-00948"
     objh_getid = Sql.GetFirst(
         "SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id1) + "'"
@@ -5016,6 +5024,7 @@ def GetAssembliesMaster(PerPage, PageInform, A_Keys, A_Values):
         Page_End = int(PageInform.split("___")[1])
         PerPage = PerPage
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     # FablocationId = Product.GetGlobal("TreeParam")
     data_list = []
     obj_idval = "SYOBJ_00904_SYOBJ_00904"
@@ -7107,6 +7116,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
     quote_record_id = Quote.GetGlobal("contract_quote_record_id")
     if TreeParentParam == "Comprehensive Services" and TreeSuperParentParam == "Product Offerings":        
         quoteid = Quote.GetGlobal("contract_quote_record_id")
+        RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
         addon_details = Sql.GetList("SELECT SERVICE_ID FROM SAQSAO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"'")
         equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"' AND QTEREV_RECORD_ID ='"+str(RevisionRecordId)+"' ")
         if addon_details and equipment_details:
@@ -7149,6 +7159,7 @@ def GetSendEupChildFilter(ATTRIBUTE_NAME, ATTRIBUTE_VALUE,RECID,PerPage,PageInfo
     TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
     # FablocationId = Product.GetGlobal("TreeParam")
     ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     ATTRIBUTE_VALUE_STR = ""
     Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
     
