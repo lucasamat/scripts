@@ -1570,7 +1570,9 @@ def CommonTreeViewHTMLDetail(
 							+ '><span class="lbl"></span></td>'
 						)
 
-				elif data_type == "PICKLIST" and MODE == "EDIT":					
+				elif data_type == "PICKLIST" and MODE == "EDIT":
+					Trace.Write("apiname--1574----"+str(current_obj_api_name))
+					Trace.Write("current_obj_value--1574----"+str(current_obj_value))					
 					if str(ObjectName) == 'ACACSA' or (str(ObjectName)== "SAQTMT" and SubtabName == "Idling Attributes"):						
 						sec_str += "<td>"
 						sec_str += (
