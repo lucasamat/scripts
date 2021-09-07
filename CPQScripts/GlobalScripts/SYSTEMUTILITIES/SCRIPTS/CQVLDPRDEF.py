@@ -281,7 +281,7 @@ def predefined_values():
     except Exception,e:
         Log.Info('wafer type--'+str(e))
 
-    ####calling function for device type predefined logic...
+    ####calling function for device type predefined logic... 
     try:
         get_devicetype = Sql.GetFirst("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id) )
         # Log.Info("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id))
