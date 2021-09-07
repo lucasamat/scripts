@@ -562,7 +562,7 @@ class SyncQuoteAndCustomTables:
 							"SOURCE_CONTRACT_ID": custom_fields_detail.get("SourceContractID"),
 							"QUOTE_TYPE":quote_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
-							"GLOBAL_CURRENCY":"USD",
+							"GLOBAL_CURRENCY":"EUR",
 							"INCOTERMS":custom_fields_detail.get("Incoterms"),
 							"INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
 							#"PRICING_DATE":pricing_date,
