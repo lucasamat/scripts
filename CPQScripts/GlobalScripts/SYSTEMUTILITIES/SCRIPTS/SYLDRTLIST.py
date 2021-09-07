@@ -5715,7 +5715,10 @@ class SYLDRTLIST:
 						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 						Qustr = " where " + str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						if Qustr:
-							Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+							if str(TreeParentParam)== "Billing":
+								Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
+							else:
+								Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
 						pivot_query_str = """
 									SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 									AS ROW, *
@@ -7666,7 +7669,10 @@ class SYLDRTLIST:
 					   Trace.Write("Pagination ifffff")
 					   pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 					   if Qustr:
-							Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+						   	if str(TreeParentParam)== "Billing":
+								Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
+							else:
+								Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
 					   pivot_query_str = """
 									SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
 									AS ROW, *
