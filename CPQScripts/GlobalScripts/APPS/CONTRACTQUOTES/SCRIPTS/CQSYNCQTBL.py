@@ -685,15 +685,14 @@ class SyncQuoteAndCustomTables:
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
 													"QTEREV_ID":quote_rev_id })
 						Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
-						account_obj = Sql.GetFirst(
-							"SELECT REGION FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
+						#UPDATE BLUEBOOK TO SAQTRV
+						bluebook_obj = Sql.GetFirst(
+							"SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SASAAC(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
 								custom_fields_detail.get("STPAccountID")
 							)
 						)
-						Account_id = custom_fields_detail.get("STPAccountID")
-						Log.Info("quer_statement_18 ->"+str(Account_id))
-						#if account_obj:
-						#salesorg_data.update({"REGION":account_obj.REGION})
+						if bluebook_obj:
+							salesorg_data.update({"BLUEBOOK":bluebook_obj.BLUEBOOK,"BLUEBOOK_RECORD_ID":bluebook_obj.BLUEBOOK_RECORD_ID,})
 						if custom_fields_detail.get("Incoterms"):
 							incid = ""
 							incdesc = ""
