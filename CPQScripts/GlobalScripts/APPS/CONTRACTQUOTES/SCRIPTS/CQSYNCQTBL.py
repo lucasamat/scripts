@@ -668,7 +668,7 @@ class SyncQuoteAndCustomTables:
 							"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
 							"ACTIVE":get_rev_details.ACTIVE_REV,
 							"REV_CREATE_DATE":str(start_date),
-							"REV_EXPIRE_DATE":str(expired_date),
+							"REV_EXPIRE_DATE":str(expired_date_val),
 							"REVISION_STATUS":"IN-PROGRESS",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
