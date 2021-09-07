@@ -41,7 +41,8 @@ def create_new_revision(Opertion,cartrev):
 		"SAQSSA":"QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID",
 		"SAQFEA":"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"SAQFGB":"QUOTE_FAB_LOC_GB_RECORD_ID",
-		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID"
+		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID",
+		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID"
 		}
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
@@ -143,10 +144,10 @@ def create_new_revision(Opertion,cartrev):
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
 				selectcols = "SELECT "
 				for col in sqlobj:
-					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
+					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
 						insertcols = insertcols + str(col.COLUMN_NAME)
 						selectcols = selectcols + str(col.COLUMN_NAME)
-					elif cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
+					elif cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
