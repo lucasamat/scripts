@@ -690,6 +690,8 @@ class SyncQuoteAndCustomTables:
 								custom_fields_detail.get("STPAccountID")
 							)
 						)
+						Account_id = custom_fields_detail.get("STPAccountID")
+						Log.Info("quer_statement_18 ->"+str(Account_id))
 						#if account_obj:
 						#salesorg_data.update({"REGION":account_obj.REGION})
 						if custom_fields_detail.get("Incoterms"):
