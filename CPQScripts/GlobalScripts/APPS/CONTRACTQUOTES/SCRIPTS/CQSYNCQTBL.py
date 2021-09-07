@@ -688,6 +688,20 @@ class SyncQuoteAndCustomTables:
 						)
 						#if account_obj:
 						#salesorg_data.update({"REGION":account_obj.REGION})
+						if custom_fields_detail.get("Incoterms"):
+							incid = ""
+							incdesc = ""
+							increc = ""
+							getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
+							if getInc:
+								incid = getInc.INCOTERM_ID
+								incdesc = getInc.DESCRIPTION
+								increc = getInc.INCOTERM_RECORD_ID
+						else:
+							incid = ""
+							incdesc = ""
+							increc = ""
+						salesorg_data.update({"INCOTERM_ID":incid,"INCOTERM_NAME":incdesc,"INCOTERM_RECORD_ID":increc})
 						if custom_fields_detail.get('DistributionChannel'):
 							distribution_obj = Sql.GetFirst(
 								"SELECT DISTRIBUTION_CHANNEL_RECORD_ID, DISTRIBUTIONCHANNEL_ID FROM SADSCH (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID = '{}'".format(
