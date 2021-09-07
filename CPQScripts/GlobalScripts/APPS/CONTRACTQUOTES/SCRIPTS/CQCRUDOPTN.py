@@ -6413,7 +6413,7 @@ node_object = Factory(node_type)(
 	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
 	tree_param=service_id, tree_parent_level_0=service_type,tree_parent_level_1 = tree_parent_level_1,apr_current_record_id= apr_current_record_id,
 )
-Trace.Write('operation--->'+str(operation))
+
 if opertion == "INSERT":
 	node_object._insert_billing_matrix()
 elif opertion == "ADD":
