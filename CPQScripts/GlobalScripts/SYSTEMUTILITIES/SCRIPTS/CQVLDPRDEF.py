@@ -284,7 +284,8 @@ def predefined_values():
 
         if account_bluebook_query.BLUEBOOK != "DISPLAY":
             predefined_csa_tools_non_display()
-
+    except Exception,e:
+        Log.Info('csa tools--'+str(e))
 
         # Predefined Values for CSA TOOLS - Ends
     except:
