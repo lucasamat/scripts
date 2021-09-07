@@ -842,6 +842,23 @@ def CommonTreeViewHTMLDetail(
 					+ str(RECORD_ID)
 					+ "'"
 				)
+			elif ObjectName == "SAQTRV":
+				RECORD_ID = RECORD_ID.split("|")[0]
+				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
+				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
+				script = (
+					"SELECT "
+					+ str(API_NAMES)
+					+ " FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) WHERE "
+					+ str(autoNumber)
+					+ " = '"
+					+ str(RECORD_ID)
+					+ "'"
+					+ ""
+				)
 			else:	
 				Trace.Write("test746")		
 				RECORD_ID = RECORD_ID.split("|")[0]
