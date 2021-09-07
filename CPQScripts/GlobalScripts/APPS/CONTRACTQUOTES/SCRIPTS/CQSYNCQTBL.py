@@ -486,7 +486,7 @@ class SyncQuoteAndCustomTables:
 					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
 					if custom_fields_detail.get("SalesOrgID"):
 						salesorg_obj = Sql.GetFirst(
-							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
 								custom_fields_detail.get("SalesOrgID")
 							)
 						)
@@ -659,6 +659,7 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
 							"REGION":salesorg_obj.REGION,
+							"REGION_RECORD_ID":salesorg_obj.REGION_RECORD_ID,
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
