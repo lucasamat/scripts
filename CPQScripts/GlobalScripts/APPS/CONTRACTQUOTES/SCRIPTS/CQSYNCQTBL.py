@@ -1241,9 +1241,9 @@ class SyncQuoteAndCustomTables:
 									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
 									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
-									employee_dict["CPQTABLEENTRYDATEADDED"] = GETDATE()
+									employee_dict["CPQTABLEENTRYDATEADDED"] = ""
 									employee_dict["CpqTableEntryModifiedBy"] = User.Id
-									employee_dict["CpqTableEntryDateModified"] = GETDATE()
+									employee_dict["CpqTableEntryDateModified"] = ""
 									employee_dict["ADDUSR_RECORD_ID"] = User.Id
 									tableInfo = Sql.GetTable("SAEMPL")
 									Log.Info("employee_dict"+str(employee_dict))
