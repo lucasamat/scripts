@@ -8276,21 +8276,7 @@ class SYLDRTLIST:
             )   
             Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))
 
-            SAQICO_dbl_clk_function += (
-                    '$("'
-                    + str(table_ids)
-                    + '").on("all.bs.table", function (e, name, args) { console.log("sort.bs.table ============>11");$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
-                    + str(table_ids)
-                    + '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
-                    + str(table_ids)
-                    + "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
-                    + str(table_id)
-                    + "_SortColumn', name); localStorage.setItem('"
-                    + str(table_id)
-                    + "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_list)+"  QuoteitemContainerSorting(name, order, '"
-                    + str(table_id)
-                    + "',"+ str(list(eval(Columns)))+", ATTRIBUTE_VALUEList,'"+str(PR_CURR)+"','"+str(TP)+"','"+str(SubTab)+"'); }); "
-                    ) 
+            
             dbl_clk_function = SAQICO_dbl_clk_function         
         
         return table_list, QueryCount, PageInformS,footer_str,dbl_clk_function
