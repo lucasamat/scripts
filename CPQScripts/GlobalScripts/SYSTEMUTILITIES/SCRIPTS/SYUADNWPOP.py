@@ -4087,7 +4087,7 @@ def POPUPLISTVALUEADDNEW(
 						sec_str += (
 							'<tr class="iconhvr borbot1" style="display: none;"><td class="width350"><label class="fltltpadlt15">'
 							+ str(current_obj_field_lable)
-							+ '</label></td><td class="width40"><a class="color_align_width" href="#" data-placement="top" data-toggle="popover" data-content="'
+							+ '</label></td><td class="width40"><a class="color_align_width" href="#" data-placement="top" data-toggle="popover" title="'+ str(current_obj_field_lable)+'" data-content="'
 							+ str(current_obj_field_lable)
 							+ '" ><i class="fa fa-info-circle flt_lt"></i>'
 						)                        
@@ -4112,7 +4112,7 @@ def POPUPLISTVALUEADDNEW(
 							+ str(add_style)
 							+ '"><td class="width350"><label class="fltltpadlt">'
 							+ str(current_obj_field_lable)
-							+ '</label></td><td class="width40"><a class="bgcccwth10" href="#" data-placement="top" data-toggle="popover" data-content="'
+							+ '</label></td><td class="width40"><a class="bgcccwth10" href="#" data-placement="top" title="'+ str(current_obj_field_lable)+'" data-toggle="popover" data-content="'
 							+ str(current_obj_field_lable)
 							+ '"><i class="fa fa-info-circle flt_lt"></i>'
 						)
