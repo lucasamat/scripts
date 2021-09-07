@@ -123,7 +123,7 @@ def predefined_wafer():
     # Predefined Values for CSA TOOLS - Starts
     Log.Info("CSA TOOLS - Starts"+str(Qt_rec_id))
     account_id_query = Sql.GetList("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
-    account_bluebook_query = Sql.GetList("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_RECORD_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
+    account_bluebook_query = Sql.GetList("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
 
     if account_bluebook_query.BLUEBOOK != "DISPLAY":
         tools_count_query = SqlHelper.GetList("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' GROUP BY FABLOCATION_NAME")
