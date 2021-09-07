@@ -18,7 +18,7 @@ import sys
 
 
 #A055S000P01-6826- Relocation chamber starts...
-def UpdateAssemblyLevel(Values):
+def update_assembly_level(Values):
     #TreeParentParam = Product.GetGlobal("TreeParentLevel0")
     # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
@@ -81,13 +81,13 @@ def UpdateAssemblyLevel(Values):
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
-                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
+                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
                     where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-                    RollDown(where_cond)
+                    rolldown(where_cond)
         ##update chmaber as included for SAQSSE,SAQSCO and assembly rolldown
         else:
             Sql.RunQuery("update SAQSSE set INCLUDED = 'CHAMBER' where SND_EQUIPMENT_ID ='{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(equipment_id,ContractRecordId, revision_record_id,TreeParentParam))
@@ -97,18 +97,18 @@ def UpdateAssemblyLevel(Values):
                 add_where = "and INCLUDED = 'CHAMBER'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Chamber based'
-                update_flag = EntitlementUpdate(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
+                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
                     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
                     where_cond = "SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' and SRC.SERVICE_ID = '{}' AND SRC.EQUIPMENT_ID = '{}'".format(ContractRecordId, revision_record_id,TreeParentParam,equipment_id)
-                    RollDown(where_cond)
+                    rolldown(where_cond)
                     
 
     return True
 
-def EditAssemblyLevel(Values):
+def edit_assembly_level(Values):
     #TreeParentParam = Product.GetGlobal("TreeParentLevel0")
     # TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
     # TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
@@ -131,7 +131,7 @@ def Request_access_token():
         return eval(response)
 
 
-def ChildEntRequest(tableName,where,serviceId):		
+def child_ent_request(tableName,where,serviceId):		
     response = Request_access_token()
     webclient = System.Net.WebClient()		
     Trace.Write(response["access_token"])
@@ -205,7 +205,7 @@ def ChildEntRequest(tableName,where,serviceId):
 
 
 
-def EntitlementUpdate(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None):
+def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None):
     #whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format('50243B0C-C53B-4BE5-8923-939BB9DCEB73','Z0007','100000181')
     #add_where = "and INCLUDED = 'CHAMBER'""
     #AttributeID = 'AGS_QUO_QUO_TYP'
@@ -214,7 +214,7 @@ def EntitlementUpdate(whereReq=None,add_where=None,AttributeID=None,NewValue=Non
     get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
     if get_equp_xml and get_query:
         #Trace.Write('inside')
-        cpsConfigID,cpsmatchID = ChildEntRequest('SAQSCE',whereReq,service_id)
+        cpsConfigID,cpsmatchID = child_ent_request('SAQSCE',whereReq,service_id)
         # cpsmatchID = get_equp_xml.CPS_MATCH_ID
         # cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
         try:       
@@ -358,7 +358,7 @@ def EntitlementUpdate(whereReq=None,add_where=None,AttributeID=None,NewValue=Non
         except Exception,e:
             Trace.Write("except---"+str(e))
 
-def RollDown(where_cond):
+def rolldown(where_cond):
     userId = User.Id
     datetimenow = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
     update_query = """ UPDATE TGT 
@@ -407,10 +407,10 @@ except:
 if ACTION == 'UPDATE_ASSEMBLY':
     #selected_values = list(selected_values)
     #Trace.Write('values----'+str(selected_values))
-    ApiResponse = ApiResponseFactory.JsonResponse(UpdateAssemblyLevel(selected_values))
+    ApiResponse = ApiResponseFactory.JsonResponse(update_assembly_level(selected_values))
 elif ACTION == 'EDIT_ASSEMBLY':
     #Trace.Write('values----'+str(selected_values))
-    ApiResponse = ApiResponseFactory.JsonResponse(EditAssemblyLevel(selected_values))
+    ApiResponse = ApiResponseFactory.JsonResponse(edit_assembly_level(selected_values))
 
 elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
     Trace.Write('inside update')
@@ -419,11 +419,11 @@ elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list)
     ent_attr_id = ent_params_list[2]
     ent_newval = ent_params_list[3]
     ent_serviceid = ent_params_list[4]
-    ApiResponse = EntitlementUpdate(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid )
+    ApiResponse = entitlement_update(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid )
 
 elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
     ent_where = ent_params_list[0]  
-    ApiResponse =RollDown(ent_where )
+    ApiResponse =rolldown(ent_where )
 
 
 
