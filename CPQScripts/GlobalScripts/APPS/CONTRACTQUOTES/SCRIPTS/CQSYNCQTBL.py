@@ -669,13 +669,8 @@ class SyncQuoteAndCustomTables:
 							"REV_EXPIRE_DATE":str(expired_date),
 							"REVISION_STATUS":"IN-PROGRESS",
 							"REV_APPROVE_DATE":'',
-							"CART_ID":get_rev_details.CART_ID,
-							"CONTRACT_VALID_FROM":str(start_date),
-							"CONTRACT_VALID_TO":str(end_date),
-							"PAYMENTTERM_DAYS":pay_days,
-							"PAYMENTTERM_ID":payid,
-							"PAYMENTTERM_NAME":pay_name,
-							"PAYMENTTERM_RECORD_ID":payrec
+							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"), ##A055S000P01-4418 code starts, ends..
+							"CART_ID":get_rev_details.CART_ID
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
@@ -729,7 +724,9 @@ class SyncQuoteAndCustomTables:
 								
 							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
-								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 ".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY))
+								##A055S000P01-4418 exchange rate details starts..
+								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								
 								if exchange_obj:
 									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
@@ -739,7 +736,8 @@ class SyncQuoteAndCustomTables:
 									if createddate > ex_rate_begin:										
 										createddate_up = createddate
 									
-									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up})
+									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
+								##A055S000P01-4418 exchange rate details ends..
 								TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
 								if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
 									try:
