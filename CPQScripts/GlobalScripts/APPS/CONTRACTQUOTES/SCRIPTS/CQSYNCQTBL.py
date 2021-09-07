@@ -670,7 +670,7 @@ class SyncQuoteAndCustomTables:
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":str(created_date),
-							"CONTRACT_VALID_TO":str(expired_date),
+							"CONTRACT_VALID_TO":str(expired_date_val),
 							"PAYMENTTERM_DAYS":pay_days,
 							"PAYMENTTERM_ID":payid
 						}
