@@ -288,7 +288,5 @@ def predefined_values():
         Log.Info('csa tools--'+str(e))
 
         # Predefined Values for CSA TOOLS - Ends
-    except:
-        pass
 ###calling all functions for predefined
 predefined_values()
