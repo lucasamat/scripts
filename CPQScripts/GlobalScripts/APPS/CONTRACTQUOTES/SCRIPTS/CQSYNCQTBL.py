@@ -674,7 +674,8 @@ class SyncQuoteAndCustomTables:
 							"CONTRACT_VALID_TO":str(expired_date_val),
 							"PAYMENTTERM_DAYS":pay_days,
 							"PAYMENTTERM_ID":payid,
-							"PAYMENTTERM_NAME":pay_name
+							"PAYMENTTERM_NAME":pay_name,
+							"PAYMENTTERM_RECORD_ID":payrec
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
