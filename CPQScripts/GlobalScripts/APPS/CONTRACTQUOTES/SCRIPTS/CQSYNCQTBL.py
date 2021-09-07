@@ -1308,8 +1308,10 @@ class SyncQuoteAndCustomTables:
 												QTEREV_RECORD_ID,
 												QUOTE_REV_DEAL_TEAM_MEMBER_ID,
 												CPQTABLEENTRYADDEDBY,
-												CPQTABLEENTRYDATEADDED
-												) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
+												CPQTABLEENTRYDATEADDED,
+            									CpqTableEntryModifiedBy, 
+                     							CpqTableEntryDateModified
+												) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 												SELECT DISTINCT  
 												(SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS C4C_PARTNERFUNCTION_ID,
 												(SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = '{C4c_partner_function}' ) AS CRM_PARTNERFUNCTION_ID,
@@ -1326,6 +1328,7 @@ class SyncQuoteAndCustomTables:
 												'{RevisionRecordId}' as QTEREV_RECORD_ID
 												FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
 												) emp """.format(
+												UserId = User.Id,
 												EmployeeId = employee.get("EMPLOYEE_ID"),
 												C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
 												UserName=User.Name,
