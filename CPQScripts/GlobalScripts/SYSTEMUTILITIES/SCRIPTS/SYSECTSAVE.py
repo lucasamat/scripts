@@ -474,6 +474,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						Sql.Upsert(tableInfo)
 						Trace.Write("TEZTZ--475-472-after insert----")
 						update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and ACTIVE != 1""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0))
+						NRev = QuoteHelper.Edit(newdict.get("QUOTE_ID"))
+						Quote.RefreshActions()
+						for item in Quote.MainItems:
+							item.Delete()
+						Quote.Save()
+						Quote.RefreshActions()
+						current_revison1 = Quote.RevisionNumber
 						productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(newdict.get("REVISION_DESCRIPTION"))+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 					#A055S000P01-4288 end
 					else:

@@ -216,6 +216,13 @@ def set_active_revision(Opertion,cartrev):
 	update_quote_set_active_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QUOTE_REVISION_RECORD_ID = '{recid}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 1,recid =recid))
 	get_rev_info_details = Sql.GetFirst("select QTEREV_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and QUOTE_REVISION_RECORD_ID = '"+str(recid)+"'")
 	Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
+	NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
+	Quote.RefreshActions()
+	for item in Quote.MainItems:
+		item.Delete()
+	Quote.Save()
+	Quote.RefreshActions()
+	current_revison1 = Quote.RevisionNumber
 	return True
 #set active revision  from grid- end
 
