@@ -1,6 +1,6 @@
 #===================================================================================================================#======================
 #   __script_name : CQREVISION.PY
-#   __script_description : THIS SCRIPT IS USED TO CREATE NEW REVISIONS AND UPDATE CUSTOM TABLES
+#   __script_description : THIS SCRIPT IS USED TO CREATE NEW REVISIONS,EDIT REVISIONS AND UPDATE CUSTOM TABLES
 #   __primary_author__ : SRIJAYDHURGA
 #   __create_date :08/30/2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
