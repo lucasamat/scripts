@@ -671,7 +671,8 @@ class SyncQuoteAndCustomTables:
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":str(created_date),
 							"CONTRACT_VALID_TO":str(expired_date),
-							"PAYMENTTERM_DAYS":pay_days
+							"PAYMENTTERM_DAYS":pay_days,
+							"PAYMENTTERM_ID":payid
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
