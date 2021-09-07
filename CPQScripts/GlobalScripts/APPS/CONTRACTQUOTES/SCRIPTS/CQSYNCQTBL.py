@@ -678,7 +678,7 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_ID":payid,
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
-							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"), ##A055S000P01-4418 code starts, ends..
+							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType")
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
