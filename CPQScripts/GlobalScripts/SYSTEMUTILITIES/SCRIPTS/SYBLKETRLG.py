@@ -580,7 +580,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 				try:
 					if float(getPRCFVA.FACTOR_PCTVAR) < discount:
-						Sql.RunQuery("UPDATE SAQICO SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
+						Sql.RunQuery("UPDATE SAQICO SET STATUS = 'APPROVAL REQUIRED' WHERE CpqTableEntryId = {}".format(cpqid))
 						Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,quote_revision_record_id))
 				except:
 					Trace.Write("NO STATUS UPDATE")

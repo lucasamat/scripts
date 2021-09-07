@@ -1189,9 +1189,9 @@ class Entitlements:
 						Sql.RunQuery(QueryStatement)
 						'''QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
 						Sql.RunQuery(QueryStatement)'''
-						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+						QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
 						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.PRICING_STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+						QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
 						Sql.RunQuery(QueryStatement) 
 						QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
 						Sql.RunQuery(QueryStatement)
@@ -1267,13 +1267,13 @@ class Entitlements:
 																								END
 															ELSE ISNULL(EXTENDED_PRICE,0)
 														END,
-								PRICING_STATUS = CASE
+								STATUS = CASE
 														WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
-														ELSE PRICING_STATUS
+														ELSE STATUS
 														END
 								FROM SAQICO where
 								{WhereCondition}
-							AND PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
+							AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
 						#Sql.RunQuery(updateSAQICO)
 				else:					
 					updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
@@ -1345,13 +1345,13 @@ class Entitlements:
 																							END
 														ELSE ISNULL(EXTENDED_PRICE,0)
 													END,
-							PRICING_STATUS = CASE
+							STATUS = CASE
 													WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
-													ELSE PRICING_STATUS
+													ELSE STATUS
 													END
 							FROM SAQICO where
 							{WhereCondition}
-						AND PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
+						AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
 					#Sql.RunQuery(updateSAQICO)
 
 				'''UpdateEntitlement = " UPDATE {} SET CALCULATION_FACTOR={},ENTITLEMENT_COST_IMPACT={},ENTITLEMENT_PRICE_IMPACT={} WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(tableName,calc_factor,costimpact,priceimapct,AttributeID, whereReq)

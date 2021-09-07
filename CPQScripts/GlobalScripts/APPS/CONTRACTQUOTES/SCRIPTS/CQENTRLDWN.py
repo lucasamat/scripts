@@ -122,9 +122,9 @@ def update_entitlement_price_impact(where_condition=None):
 																						END
 													ELSE ISNULL(SAQICO.EXTENDED_PRICE,0)
 												END,
-						SAQICO.PRICING_STATUS = CASE
+						SAQICO.STATUS = CASE
 												WHEN SAQIEN.ENTITLEMENT_PRICE_IMPACT > 0 THEN 'ACQUIRED'
-												ELSE SAQICO.PRICING_STATUS
+												ELSE SAQICO.STATUS
 												END
 						FROM SAQICO
 						JOIN SAQIEN (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND 
@@ -132,7 +132,7 @@ def update_entitlement_price_impact(where_condition=None):
 												SAQIEN.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND
 												SAQIEN.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID						
 						{WhereCondition}
-					AND SAQICO.PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') AND SAQIEN.ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1'.format(WhereCondition=where_condition)))"""
+					AND SAQICO.STATUS IN ('PARTIALLY PRICED','ACQUIRED') AND SAQIEN.ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1'.format(WhereCondition=where_condition)))"""
 	costimp = priceimp = ''
 	entitlement_obj = Sql.GetFirst("""select ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_NAME from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQIEN.QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) JOIN SAQICO (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND
 	SAQIEN.EQUIPMENT_RECORD_ID = SAQICO.EQUIPMENT_RECORD_ID AND
@@ -210,9 +210,9 @@ def update_entitlement_price_impact(where_condition=None):
 																						END
 													ELSE ISNULL(SAQICO.EXTENDED_PRICE,0)
 												END,
-						SAQICO.PRICING_STATUS = CASE
+						SAQICO.STATUS = CASE
 												WHEN {price_impact} > 0 OR {cost_impact}> 0 THEN 'ACQUIRED'
-												ELSE SAQICO.PRICING_STATUS
+												ELSE SAQICO.STATUS
 												END
 						FROM SAQICO
 						JOIN SAQIEN (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND 
@@ -220,7 +220,7 @@ def update_entitlement_price_impact(where_condition=None):
 												SAQIEN.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND
 												SAQIEN.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID						
 						{WhereCondition}
-					AND SAQICO.PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=where_condition,price_impact=priceimp,cost_impact=costimp)))
+					AND SAQICO.STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=where_condition,price_impact=priceimp,cost_impact=costimp)))
 	Sql.RunQuery("""UPDATE SAQICO
 						SET SAQICO.ENTITLEMENT_PRICE_IMPACT = CASE
 												WHEN SAQICO.EXCHANGE_RATE > 0 THEN ISNULL({price_impact}, 0) * ISNULL(SAQICO.EXCHANGE_RATE,0)
@@ -290,9 +290,9 @@ def update_entitlement_price_impact(where_condition=None):
 																						END
 													ELSE ISNULL(SAQICO.EXTENDED_PRICE,0)
 												END,
-						SAQICO.PRICING_STATUS = CASE
+						SAQICO.STATUS = CASE
 												WHEN {price_impact} > 0 OR {cost_impact}> 0 THEN 'ACQUIRED'
-												ELSE SAQICO.PRICING_STATUS
+												ELSE SAQICO.STATUS
 												END
 						FROM SAQICO
 						JOIN SAQIEN (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND 
@@ -300,7 +300,7 @@ def update_entitlement_price_impact(where_condition=None):
 												SAQIEN.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND
 												SAQIEN.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID						
 						{WhereCondition}
-					AND SAQICO.PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=where_condition,price_impact=priceimp,cost_impact=costimp))
+					AND SAQICO.STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=where_condition,price_impact=priceimp,cost_impact=costimp))
 	# Update ENTITLEMENT_PRICE_IMPACT in SAQICO - End
 	# Update SAQITM from SAQICO - Start
 	'''Log.Info("""UPDATE A
