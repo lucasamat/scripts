@@ -6405,7 +6405,8 @@ else:
 		except Exception:
 			contract_quote_record_id = False
 		
-	except:
+	except Exception as e:
+		Trace.Write('error-'+str(e))
 		pass	
 
 node_object = Factory(node_type)(
