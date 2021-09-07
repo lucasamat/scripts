@@ -579,9 +579,9 @@ class SyncQuoteAndCustomTables:
 					Quote.SetGlobal("quote_revision_id",str(quote_rev_id))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y")
 					expired_date = datetime.datetime.now().strftime("%m/%d/%Y")
-					Trace.Write('571-------'+str(created_date))
+					Trace.Write('571-------'+str(end_date))
 					expired_date_val = date.today()+ timedelta(days=365)
-					Trace.Write('571----expired_date_val---'+str(expired_date_val))
+					Trace.Write('571----expired_date_val---'+str(type(end_date)))
 					#quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
 					# if salesorg_obj and get_rev_details:
 					# 	quote_rev_data = {
@@ -665,13 +665,13 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id,
 							"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
 							"ACTIVE":get_rev_details.ACTIVE_REV,
-							"REV_CREATE_DATE":str(created_date),
+							"REV_CREATE_DATE":str(start_date),
 							"REV_EXPIRE_DATE":str(expired_date),
 							"REVISION_STATUS":"IN-PROGRESS",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
-							"CONTRACT_VALID_FROM":str(created_date),
-							"CONTRACT_VALID_TO":str(expired_date_val),
+							"CONTRACT_VALID_FROM":str(start_date),
+							"CONTRACT_VALID_TO":str(end_date),
 							"PAYMENTTERM_DAYS":pay_days,
 							"PAYMENTTERM_ID":payid,
 							"PAYMENTTERM_NAME":pay_name,
