@@ -123,6 +123,7 @@ def predefined_wafer():
 
 
 def predefined_device_type():
+    Log.Info('device fn')
     saqscd_insert = """ INSERT SAQSCD (
         QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID,
         EQUIPMENT_DESCRIPTION,
@@ -244,7 +245,8 @@ def predefined_device_type():
             SAQSCO.QTEREV_ID as QTEREV_ID,
             SAQSCO.QTEREV_RECORD_ID 
             from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSDVL ON SAQSCO.SERVICE_ID = PRSDVL.SERVICE_ID INNER JOIN SAQSCD ON SAQSCO.SERVICE_ID = SAQSCD.SERVICE_ID AND SAQSCO.QTEREV_RECORD_ID = SAQSCD.QTEREV_RECORD_ID AND SAQSCO.EQUIPMENT_ID = SAQSCD.EQUIPMENT_ID WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSDVL.VALUEDRIVER_ID = 'Device Type' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND  PRSDVL.VALUEDRIVER_VALUE_CODE = (CASE WHEN MAEQUP.DEVICE_TYPE in ('Analog','LOGIC','CIS','Foundry','MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer') THEN 'Logic/Foundry' WHEN MAEQUP.DEVICE_TYPE in ('DRAM','FLASH') THEN 'Memory' WHEN MAEQUP.DEVICE_TYPE = 'DISPLAY' THEN 'Display' ELSE ''  END ) AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCV WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' AND PRSDVL.VALUEDRIVER_ID = 'Device Type')""".format(rec=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id)
-
+    Log.Info('saqscd_insert--'+str(saqscd_insert))
+    Log.Info('saqscv_insert--'+str(saqscv_insert))
     Sql.RunQuery(saqscd_insert)
     Sql.RunQuery(saqscv_insert)
 
@@ -267,8 +269,8 @@ def predefined_values():
 
     ####calling function for device type predefined logic... 
     try:
-        get_devicetype = Sql.GetFirst("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id) )
-        # Log.Info("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id))
+        get_devicetype = Sql.GetFirst("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY')  )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id) )
+        Log.Info("""SELECT MAEQUP.EQUIPMENT_ID from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND MAEQUP.DEVICE_TYPE IN ('Analog', 'CIS','Foundry', 'LOGIC', 'MEMS','Equip/Matl','Packaging','Photomask','R&D','Si Wafer','DRAM','FLASH','DISPLAY')  )""".format(rec=Qt_rec_id,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id))
         if get_devicetype:  
             predefined_device_type()
     except Exception,e:
