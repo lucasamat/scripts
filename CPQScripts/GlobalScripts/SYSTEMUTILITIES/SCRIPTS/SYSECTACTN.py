@@ -958,16 +958,17 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 				if TABLE_NAME == "SAQTMT":
 
 					GetquoteID = Sql.GetFirst(
-						"SELECT QUOTE_ID,QUOTE_STATUS,PAYMENTTERM_NAME FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
+						"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
 						+ str(Rec_Id_Value)
 						+ "' AND QTEREV_RECORD_ID = '"
 						+ str(quote_revision_record_id)
 						+ "'"
 					)
-					QuoteID = GetquoteID.QUOTE_ID					
+					QuoteID = GetquoteID.QUOTE_ID	
+					Payment_Term = SqlHelper.GetFirst(" SELECT PAYMENTTERM_NAME FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Rec_Id_Value)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")				
 					if GetquoteID.QUOTE_STATUS == "APPROVED":						
 						result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": QuoteID, 'Fun_type':'cpq_to_crm'})
-					Quoteupdate = "UPDATE QT__QTQTMT SET PAYMENTTERM_NAME = '{PaymentTermName}' where MASTER_TABLE_QUOTE_RECORD_ID ='{Rec_Id_Value}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(PaymentTermName = GetquoteID.PAYMENTTERM_NAME, Rec_Id_Value=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id )
+					Quoteupdate = "UPDATE QT__QTQTMT SET PAYMENTTERM_NAME = '{PaymentTermName}' where MASTER_TABLE_QUOTE_RECORD_ID ='{Rec_Id_Value}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(PaymentTermName = Payment_Term.PAYMENTTERM_NAME, Rec_Id_Value=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id )
 					Sql.RunQuery(Quoteupdate)
 					
 					# Billing Matrix Notification - Start

@@ -264,7 +264,7 @@ def englishdoc():
 		pass
 
 	try:
-		Payment_Term = SqlHelper.GetFirst(" SELECT PAYMENTTERM_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+		Payment_Term = SqlHelper.GetFirst(" SELECT PAYMENTTERM_NAME FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('PaymentTermName').Content = str(Payment_Term.PAYMENTTERM_NAME)
 		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
