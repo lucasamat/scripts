@@ -271,9 +271,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			date_field.append(new_value_dict)
 		
 		if str(TreeSuperParentParam).strip() != 'Quote Items':
-			dbl_clk_function += (
-				"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-			)
+			# dbl_clk_function += (
+			# 	"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+			# )
+			dbl_clk_function = ""
 			#Trace.Write('date_field---'+str(date_field))
 		if str(CurrentTabName) == "Contract":
 			dbl_clk_function = ""	
