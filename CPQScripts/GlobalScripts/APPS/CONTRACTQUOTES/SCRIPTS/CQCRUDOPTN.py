@@ -895,6 +895,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				row_detail.update(row_values)
 				offering_table_info.AddRow(row_detail)
 				Sql.Upsert(offering_table_info)
+				"""service_obj  = Sql.GetFirst("select COUNT(SERVICE_ID) as count,SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+				if service_obj.count == '1':
+					document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service_obj.SERVICE_ID))
+					self._process_query("UPDATE SAQTMT SET DOCUMENT_TYPE = '{}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(document_type_obj.DOCTYP_ID,self.contract_quote_record_id))"""
+
 				self.CreateEntitlements(row_detail)
 			# ADD VD TO THE OFFERINGS
 			#QTSID = str(row_detail["SERVICE_ID"])
