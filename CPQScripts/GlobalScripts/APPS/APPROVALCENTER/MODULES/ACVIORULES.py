@@ -689,7 +689,7 @@ class ViolationConditions:
 										Transcationrulebody = self.ApprovalTranscationDataInsert()
 										Rulebodywithcondition = Transcationrulebody +where_conditon
 										b= Sql.RunQuery(Rulebodywithcondition)"""
-        except Exception, e:
+        except Exception as e:
             Trace.Write(str(e))
         return True
 
