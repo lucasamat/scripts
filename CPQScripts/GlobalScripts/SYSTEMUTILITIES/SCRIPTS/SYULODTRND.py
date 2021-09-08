@@ -3655,10 +3655,10 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["APPROVAL"] = ""	
 							new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
 							if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
-								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+								new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1
 								#Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
 							else:
-								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
+								new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ attrValue
 							#new_value_dicta["FACTOR CURRENCY"] = ""
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
