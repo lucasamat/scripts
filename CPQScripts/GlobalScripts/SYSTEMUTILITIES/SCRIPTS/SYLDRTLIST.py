@@ -1451,9 +1451,10 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM SAQICO where SERVICE_ID = '"+str(LineAndEquipIDList)+"' and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"'"
 								)
 							elif TreeParam == "Quote Items":
-								if Quote.GetCustomField('PRICING_PICKLIST').Content == 'Global Currency':
-									gl_str = "_INGL_CURR"
-									col_year = ','.join(map(lambda x: str(x)+gl_str, col_year.split(',')))
+								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
+								if pricing_curr == 'Global Currency':
+									# gl_str = "_INGL_CURR"
+									# col_year = ','.join(map(lambda x: str(x)+gl_str, col_year.split(',')))
 									#Trace.Write('GlobalCurr----'+str(saqico_cols)) 
 									Qury_str = (
 										"select top "
@@ -1466,7 +1467,7 @@ class SYLDRTLIST:
 											+ str(Page_End)
 									)
 									
-								elif Quote.GetCustomField('PRICING_PICKLIST').Content == 'Document Currency':
+								elif pricing_curr == 'Document Currency':
 									Trace.Write('Document Currency')
 								
 									Qury_str = (
@@ -1483,6 +1484,7 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM SAQICO where QUOTE_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(
 											str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 								)
+							
 							elif Product.GetGlobal("TreeParentLevel1") == 'Quote Items': 
 								try:                               
 									if str(TreeParentParam.split("-")[3]):
