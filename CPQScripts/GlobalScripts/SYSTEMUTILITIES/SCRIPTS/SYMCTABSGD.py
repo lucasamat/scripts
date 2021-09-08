@@ -303,13 +303,7 @@ class CONTAINER:
                             + "'"
                         )'''
                         if data_obj is not None:
-<<<<<<< HEAD
-                            a_dict = {}
-                            b_dict = {}
-                            if tab_name != "Quotes":
-=======
                             # if tab_name == "Quotes":
->>>>>>> parent of 5ca52968 (Update SYMCTABSGD.py)
                             #     name_obj = Sql.GetList(
                             #         "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
                             #         + str(tuple(eval(data_obj.COLUMNS)))
@@ -373,28 +367,6 @@ class CONTAINER:
                                         except:
                                             a_dict[ins.API_NAME] = ins.DATA_TYPE
                                             b_dict[ins.API_NAME] = str(ins.PICKLIST)
-<<<<<<< HEAD
-                                    checkbox_list = [
-                                        ins.API_NAME.strip()
-                                        for ins in name_obj
-                                        if (
-                                            (ins.DATA_TYPE).upper() == "CHECKBOX"
-                                            or (ins.FORMULA_DATA_TYPE).upper() == "CHECKBOX"
-                                        )
-                                    ]
-                                    currency_list = [
-                                        ins.API_NAME.strip()
-                                        for ins in name_obj
-                                        if (
-                                            (ins.DATA_TYPE).upper() == "CURRENCY"
-                                            or (ins.FORMULA_DATA_TYPE).upper() == "CURRENCY"
-                                        )
-                                    ]
-                                    for ins in name_obj:
-                                        if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
-                                            currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
-                                lookup_str = ",".join(list(lookup_disply_list))
-=======
                                     else:
                                         a_dict[ins.API_NAME] = ins.DATA_TYPE
                                         b_dict[ins.API_NAME] = str(ins.PICKLIST)
@@ -418,7 +390,6 @@ class CONTAINER:
                                     if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
                                         currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                             lookup_str = ",".join(list(lookup_disply_list))
->>>>>>> parent of 5ca52968 (Update SYMCTABSGD.py)
                             NAME = eval(data_obj.COLUMNS)
                             ind = 1
                             nameList = {}
