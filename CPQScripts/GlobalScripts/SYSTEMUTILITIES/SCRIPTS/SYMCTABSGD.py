@@ -322,6 +322,8 @@ class CONTAINER:
                                     + str(tuple(eval(data_obj.COLUMNS)))
                                     + ")"
                                 )
+                            else:
+                                name_obj = ""    
                             lookup_disply_list = []
                             lookup_str = ""
                             checkbox_list = []
