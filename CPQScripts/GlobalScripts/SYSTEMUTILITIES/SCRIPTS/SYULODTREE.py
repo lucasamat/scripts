@@ -2831,7 +2831,7 @@ class TreeView:
 			try:
 				picklist_value = Param.picklist_value
 			except:
-				picklist_value = 'Global Currency'
+				picklist_value = ''
 			Quote.GetCustomField('PRICING_PICKLIST').Content = picklist_value
 			return True
 
