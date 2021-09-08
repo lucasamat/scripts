@@ -59,6 +59,8 @@ def CommonTreeViewHTMLDetail(
 	date_field = []
 	primary_value = RECORD_ID
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
+	if primary_value == "4DC1E894-CA0F-4EC2-8E68-6A1B4F76CED1":
+		ObjectName = "SAQTBP"
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
