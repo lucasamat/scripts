@@ -199,7 +199,9 @@ def create_new_revision(Opertion,cartrev):
 		Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
 		Trace.Write("============>>1111 "+str(current_revison1))
-
+		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
+		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
+		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
 	return True
 
 
