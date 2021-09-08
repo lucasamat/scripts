@@ -2820,7 +2820,7 @@ class TreeView:
 		#Trace.Write("=====================> SubTabDict"+str(SubTabDict))
 		return SubTabDict
 
-	def pricing_picklist():
+	def pricing_picklist(self):
 		try:
 			picklist = Quote.GetCustomField('PRICING_PICKLIST').Content
 		except:
