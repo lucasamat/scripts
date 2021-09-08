@@ -244,7 +244,9 @@ class ContractQuoteCrudOpertion:
 				row[auto_number_column_name] = str(Guid.NewGuid()).upper()
 				row.update(common_row_values)				
 				yield dict(row)
-
+		##A055S000P01-8740 code ends...
+		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
+		##A055S000P01-8740 code ends...
 	def _create(self):
 		pass
 
@@ -902,6 +904,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				#		self._process_query("UPDATE SAQTMT SET DOCUMENT_TYPE = '{}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(document_type_obj.DOCTYP_ID,self.contract_quote_record_id))
 
 				self.CreateEntitlements(row_detail)
+			##A055S000P01-8740 code starts...
+			ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
+			##A055S000P01-8740 code ends...
 			# ADD VD TO THE OFFERINGS
 			#QTSID = str(row_detail["SERVICE_ID"])
 			#Trace.Write("service_ID"+str(QTSID))
