@@ -305,7 +305,7 @@ class CONTAINER:
                         if data_obj is not None:
                             if active_tab == "Quotes":
                                     name_obj = Sql.GetList(
-                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in('SAQTMT','SAQTRV','SAOPQT') and (API_NAME in "
+                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
                                     + str(tuple(eval(data_obj.COLUMNS)))
                                     + " or lookup_api_name in "
                                     + str(tuple(eval(data_obj.COLUMNS)))
