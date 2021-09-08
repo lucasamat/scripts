@@ -4088,6 +4088,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		
 	def _insert_quote_service_greenbook(self, **kwargs):
 		if self.sale_type == "TOOL RELOCATION":
+				Trace.Write("SALE TYPE IS TOOL RELOCATION")
 				self._process_query(
 				"""
 					INSERT SAQSGB (
@@ -4162,7 +4163,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							UserId=self.user_id
 						)
 			)
-		else:	
+		else:
+			Trace.Write("SALE TYPE IS NOT TOOL RELOCATION")
 			self._process_query(
 				"""
 					INSERT SAQSGB (
