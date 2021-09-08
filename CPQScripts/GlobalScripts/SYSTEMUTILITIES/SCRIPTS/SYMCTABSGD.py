@@ -304,6 +304,7 @@ class CONTAINER:
                         )'''
                         if data_obj is not None:
                             a_dict = {}
+                            b_dict = {}
                             if tab_name != "Quotes":
                             #     name_obj = Sql.GetList(
                             #         "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
