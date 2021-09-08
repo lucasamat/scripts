@@ -3835,9 +3835,10 @@ def EntitlementTreeViewHTMLDetail(
 	##Adding Audit information section in Entitlement ends...
 
 	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id ))
-	if quote_status.QUOTE_STATUS == "APPROVED":
-		Trace.Write('dbl_click123====')
-		dbl_clk_function = ""
+	if quote_status:
+		if quote_status.QUOTE_STATUS == "APPROVED":
+			Trace.Write('dbl_click123====')
+			dbl_clk_function = ""
 
 		
 	date_field = ""
