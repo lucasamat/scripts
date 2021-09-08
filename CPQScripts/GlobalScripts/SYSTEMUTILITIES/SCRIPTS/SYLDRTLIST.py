@@ -1456,6 +1456,7 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM SAQICO where SERVICE_ID = '"+str(LineAndEquipIDList)+"' and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"'"
 								)
 							elif TreeParam == "Quote Items":
+								saqico_cols =""
 								Trace.Write('column---'+str(Columns)+str(type(Columns)))
 								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
 								if pricing_curr == 'Global Currency':
