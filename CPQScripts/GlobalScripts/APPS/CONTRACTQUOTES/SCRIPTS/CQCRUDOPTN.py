@@ -6085,7 +6085,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		quote_notif_obj = self._get_record_obj(
 					columns=["CPQTABLEENTRYDATEADDED", "CPQTABLEENTRYADDEDBY"],
 					table_name="SAQICO",
-					where_condition="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PRICING_STATUS = 'APPROVAL REQUIRED'".format(self.contract_quote_record_id,self.quote_revision_record_id),
+					where_condition="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS = 'APPROVAL REQUIRED'".format(self.contract_quote_record_id,self.quote_revision_record_id),
 					single_record=True,
 				)
 		# commented for time being performance need to rework
