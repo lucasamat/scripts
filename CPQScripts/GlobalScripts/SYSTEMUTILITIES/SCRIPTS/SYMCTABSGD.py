@@ -390,8 +390,8 @@ class CONTAINER:
                                         if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
                                             currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                                 lookup_str = ",".join(list(lookup_disply_list))
-                                NAME = eval(data_obj.COLUMNS)
-                                ind = 1
+                            NAME = eval(data_obj.COLUMNS)
+                            ind = 1
                             nameList = {}
                             NameListS = {}
                             NameListSK = {}
