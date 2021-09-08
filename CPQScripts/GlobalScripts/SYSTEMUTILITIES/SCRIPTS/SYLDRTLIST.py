@@ -4839,7 +4839,7 @@ class SYLDRTLIST:
 											ATTRIBUTE_VALUE_STR += (
 												str(quer_value) + " in " + str(tuple(quer_values)) + " and "
 											) 
-								elif str(quer_value) == 'PRICING_STATUS' and str(RECORD_ID) == 'SYOBJR-00009':
+								elif str(quer_value) == 'STATUS' and str(RECORD_ID) == 'SYOBJR-00009':
 									if 'ACQUIRING' in quer_values:
 										quer_values = "ACQUIRING"
 									elif 'MISSING' in quer_values:
@@ -4941,7 +4941,7 @@ class SYLDRTLIST:
 									+ str(tuple(quer_values))
 									+ ") and "
 								)
-							elif str(quer_value) == 'PRICING_STATUS' and str(RECORD_ID) == 'SYOBJR-00009':
+							elif str(quer_value) == 'STATUS' and str(RECORD_ID) == 'SYOBJR-00009':
 								quer_values = list(quer_values)
 								
 								for i in range(0,len(quer_values)):
