@@ -303,7 +303,7 @@ class CONTAINER:
                             + "'"
                         )'''
                         if data_obj is not None:
-                            # if tab_name == "Quotes":
+                            if tab_name != "Quotes":
                             #     name_obj = Sql.GetList(
                             #         "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
                             #         + str(tuple(eval(data_obj.COLUMNS)))
@@ -312,83 +312,83 @@ class CONTAINER:
                             #         + ")"
                             #     )
                             # else:                            
-                            name_obj = Sql.GetList(
-                                "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
-                                + PRIMARY_OBJECT_NAMes
-                                + "' and (API_NAME in "
-                                + str(tuple(eval(data_obj.COLUMNS)))
-                                + " or lookup_api_name in "
-                                + str(tuple(eval(data_obj.COLUMNS)))
-                                + ")"
-                            )                           
-                                   
-                            lookup_disply_list = []
-                            lookup_str = ""
-                            checkbox_list = []
-                            currency_dict = {}
-                            currency_list = []
-                            a_dict = {}
-                            b_dict = {}
-                            non_hyper_list = ["APROBJ_LABEL"]
-                            if name_obj is not None:
-                                for text in name_obj:
-                                    if names == "":
-                                        names = str(text.API_NAME)
-                                    else:
-                                        names = names + "," + str(text.API_NAME)
-                                    if (
-                                        text.LOOKUP_API_NAME != ""
-                                        and text.LOOKUP_API_NAME is not None
-                                        and text.LOOKUP_API_NAME not in non_hyper_list
-                                    ):
-                                        lookup_disply_list.append(str(text.LOOKUP_API_NAME))
-                                lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in name_obj}
+                                name_obj = Sql.GetList(
+                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+                                    + PRIMARY_OBJECT_NAMes
+                                    + "' and (API_NAME in "
+                                    + str(tuple(eval(data_obj.COLUMNS)))
+                                    + " or lookup_api_name in "
+                                    + str(tuple(eval(data_obj.COLUMNS)))
+                                    + ")"
+                                )                           
+                                    
+                                lookup_disply_list = []
+                                lookup_str = ""
+                                checkbox_list = []
+                                currency_dict = {}
+                                currency_list = []
+                                a_dict = {}
+                                b_dict = {}
+                                non_hyper_list = ["APROBJ_LABEL"]
+                                if name_obj is not None:
+                                    for text in name_obj:
+                                        if names == "":
+                                            names = str(text.API_NAME)
+                                        else:
+                                            names = names + "," + str(text.API_NAME)
+                                        if (
+                                            text.LOOKUP_API_NAME != ""
+                                            and text.LOOKUP_API_NAME is not None
+                                            and text.LOOKUP_API_NAME not in non_hyper_list
+                                        ):
+                                            lookup_disply_list.append(str(text.LOOKUP_API_NAME))
+                                    lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in name_obj}
 
-                                for ins in name_obj:
-                                    if ins.DATA_TYPE == "FORMULA":
-                                        try:
-                                            FORMULA_LOGIC = ins.FORMULA_LOGIC
-                                            FORMULA_col = ins.API_NAME
-                                            FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
-                                            ins_obj = Sql.GetFirst(
-                                                "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
-                                                + " WHERE OBJECT_NAME='"
-                                                + str(FORMULA_table)
-                                                + "' and API_NAME = '"
-                                                + str(FORMULA_col)
-                                                + "'"
-                                            )
-                                            a_dict[ins.API_NAME] = (
-                                                ins_obj.DATA_TYPE
-                                                if ins.DATA_TYPE == "FORMULA" and ins.FORMULA_DATA_TYPE != "CHECKBOX"
-                                                else ins_obj.FORMULA_DATA_TYPE
-                                            )
-                                            b_dict[ins.API_NAME] = str(ins.PICKLIST)
-                                        except:
+                                    for ins in name_obj:
+                                        if ins.DATA_TYPE == "FORMULA":
+                                            try:
+                                                FORMULA_LOGIC = ins.FORMULA_LOGIC
+                                                FORMULA_col = ins.API_NAME
+                                                FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+                                                ins_obj = Sql.GetFirst(
+                                                    "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
+                                                    + " WHERE OBJECT_NAME='"
+                                                    + str(FORMULA_table)
+                                                    + "' and API_NAME = '"
+                                                    + str(FORMULA_col)
+                                                    + "'"
+                                                )
+                                                a_dict[ins.API_NAME] = (
+                                                    ins_obj.DATA_TYPE
+                                                    if ins.DATA_TYPE == "FORMULA" and ins.FORMULA_DATA_TYPE != "CHECKBOX"
+                                                    else ins_obj.FORMULA_DATA_TYPE
+                                                )
+                                                b_dict[ins.API_NAME] = str(ins.PICKLIST)
+                                            except:
+                                                a_dict[ins.API_NAME] = ins.DATA_TYPE
+                                                b_dict[ins.API_NAME] = str(ins.PICKLIST)
+                                        else:
                                             a_dict[ins.API_NAME] = ins.DATA_TYPE
                                             b_dict[ins.API_NAME] = str(ins.PICKLIST)
-                                    else:
-                                        a_dict[ins.API_NAME] = ins.DATA_TYPE
-                                        b_dict[ins.API_NAME] = str(ins.PICKLIST)
-                                checkbox_list = [
-                                    ins.API_NAME.strip()
-                                    for ins in name_obj
-                                    if (
-                                        (ins.DATA_TYPE).upper() == "CHECKBOX"
-                                        or (ins.FORMULA_DATA_TYPE).upper() == "CHECKBOX"
-                                    )
-                                ]
-                                currency_list = [
-                                    ins.API_NAME.strip()
-                                    for ins in name_obj
-                                    if (
-                                        (ins.DATA_TYPE).upper() == "CURRENCY"
-                                        or (ins.FORMULA_DATA_TYPE).upper() == "CURRENCY"
-                                    )
-                                ]
-                                for ins in name_obj:
-                                    if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
-                                        currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
+                                    checkbox_list = [
+                                        ins.API_NAME.strip()
+                                        for ins in name_obj
+                                        if (
+                                            (ins.DATA_TYPE).upper() == "CHECKBOX"
+                                            or (ins.FORMULA_DATA_TYPE).upper() == "CHECKBOX"
+                                        )
+                                    ]
+                                    currency_list = [
+                                        ins.API_NAME.strip()
+                                        for ins in name_obj
+                                        if (
+                                            (ins.DATA_TYPE).upper() == "CURRENCY"
+                                            or (ins.FORMULA_DATA_TYPE).upper() == "CURRENCY"
+                                        )
+                                    ]
+                                    for ins in name_obj:
+                                        if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
+                                            currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                             lookup_str = ",".join(list(lookup_disply_list))
                             NAME = eval(data_obj.COLUMNS)
                             ind = 1
