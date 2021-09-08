@@ -303,16 +303,15 @@ class CONTAINER:
                             + "'"
                         )'''
                         if data_obj is not None:
-                            # if tab_name == "Quotes":
-                            #     name_obj = Sql.GetList(
-                            #         "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
-                            #         + str(tuple(eval(data_obj.COLUMNS)))
-                            #         + " or lookup_api_name in "
-                            #         + str(tuple(eval(data_obj.COLUMNS)))
-                            #         + ")"
-                            #     )
-                            # else:
-                            if tab_name != "Quotes":
+                            if tab_name == "Quotes":
+                                name_obj = Sql.GetList(
+                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
+                                    + str(tuple(eval(data_obj.COLUMNS)))
+                                    + " or lookup_api_name in "
+                                    + str(tuple(eval(data_obj.COLUMNS)))
+                                    + ")"
+                                )
+                            else:                            
                                 name_obj = Sql.GetList(
                                     "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
                                     + PRIMARY_OBJECT_NAMes
@@ -321,9 +320,8 @@ class CONTAINER:
                                     + " or lookup_api_name in "
                                     + str(tuple(eval(data_obj.COLUMNS)))
                                     + ")"
-                                )
-                            else:
-                                name_obj = ""    
+                                )                           
+                                   
                             lookup_disply_list = []
                             lookup_str = ""
                             checkbox_list = []
