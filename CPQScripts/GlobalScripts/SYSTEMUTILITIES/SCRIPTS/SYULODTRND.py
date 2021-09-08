@@ -1395,7 +1395,8 @@ def CommonTreeViewHTMLDetail(
 							+ '"   type="image" data-toggle="modal" data-target="#cont_viewModalSection"  src="../mt/default/images/customer_lookup.gif"></td>'
 						)
 					else:
-						if str(formula_data_type) == "TEXT" and str(readonly) != "readonly":						Trace.Write('api---1398----'+str(current_obj_api_name))
+						if str(formula_data_type) == "TEXT" and str(readonly) != "readonly":			
+							Trace.Write('api---1398----'+str(current_obj_api_name))
 							sec_str += (
 								'<td><input id="'
 								+ str(current_obj_api_name)
