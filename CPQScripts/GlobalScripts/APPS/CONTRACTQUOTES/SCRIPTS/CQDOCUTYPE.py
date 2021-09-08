@@ -34,5 +34,5 @@ try:
     update_document_type(QuoteRecordId,RevisionRecordId)
     Log.Info("function called---------------->")
 except:
-    Trace.Write("CQDOCUTYPE ERROR---->:" + str(sys.exc_info()[1]))
-    Trace.Write("CQDOCUTYPE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
+    Log.Info("CQDOCUTYPE ERROR---->:" + str(sys.exc_info()[1]))
+    Log.Info("CQDOCUTYPE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
