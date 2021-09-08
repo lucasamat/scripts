@@ -2914,6 +2914,10 @@ elif LOAD == "CommonGlobalSet":
 	Trace.Write("GetTreeParamValues" + str(AllTreeParams))
 	for key, value in AllTreeParamsValue.items():
 		Trace.Write("check12345"+str(value))
+		try:
+			Trace.Write('picklist---'+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
+		except:
+			pass
 		Product.SetGlobal(str(key), str(value))
 elif LOAD == "GlobalSet":
 	try:
