@@ -1491,13 +1491,13 @@ def Related_Sub_Banner(
             SecondValue = ""
         ThirdLable = ""
         ThirdValue = ""
-# SHP Contract Document Starts
+    # SHP Contract Document Starts
     elif TreeParam == "Contract Documents" and  ObjName == "SAQDOC":
         PrimaryLable = "Account ID"
         PrimaryValue = "ALL"
         SecondLable = "Account Name"
         SecondValue = "ALL"	
-# SHP Contract Document Ends
+    # SHP Contract Document Ends
     elif ObjName == "SAQSCA" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
         Trace.Write(1497)		
         PrimaryLable = "Product Offering ID"
@@ -2464,7 +2464,7 @@ def Related_Sub_Banner(
         # 	Trace.Write("elseeee")
     Trace.Write("tabNameeee"+str(TabName))
     Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
-# Added to update configure status in work flow status bar - start
+    # Added to update configure status in work flow status bar - start
     if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
         Trace.Write('sales11=======')
         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -2507,7 +2507,7 @@ def Related_Sub_Banner(
         else:
             Trace.Write('No button--2')
             buttonvisibility = "Hide_button"
-# Added to update configure status in work flow status bar - end        
+    # Added to update configure status in work flow status bar - end        
     
 
     if subTabName == 'Subtotal by Offerings' and TreeParam == "Quote Items" and (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
