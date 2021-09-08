@@ -1459,17 +1459,18 @@ class SYLDRTLIST:
 								saqico_cols =""
 								Trace.Write('column---'+str(Columns)+str(type(Columns)))
 								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
-								if pricing_curr == 'Global Currency':
+									
+								if pricing_curr == 'Document Currency':
+									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, "+col_year
+									Trace.Write('DocumentCurr----'+str(saqico_cols)) 
+								else:
+									##Global Currency
 									gl_str = "_INGL_CURR"
 									col_year = col_year.split(',')
 									col_year = ','.join([i+gl_str for i in col_year])
 									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, "+col_year
-									Trace.Write('GlobalCurr----'+str(saqico_cols)) 
+									Trace.Write('GlobalCurr----'+str(saqico_cols))
 
-									
-								elif pricing_curr == 'Document Currency':
-									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, "+col_year
-									Trace.Write('DocumentCurr----'+str(saqico_cols)) 
 								
 								Qury_str = (
 									"select top "
