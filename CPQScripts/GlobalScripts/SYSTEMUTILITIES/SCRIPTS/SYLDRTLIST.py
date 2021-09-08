@@ -447,6 +447,11 @@ class SYLDRTLIST:
 				else:
 					Columns
 			#Contract valid start date & End date Calculation--END
+			#Quote items column based on pricing picklist strts
+			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and Quote.GetCustomField('PRICING_PICKLIST').Content == 'Global Currency':
+				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR')
+			#Quote items column based on pricing picklist ends
+
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
@@ -1459,7 +1464,6 @@ class SYLDRTLIST:
 									col_year = ','.join([i+gl_str for i in col_year])
 									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, "+col_year
 									Trace.Write('GlobalCurr----'+str(saqico_cols)) 
-									Columns = "['STATUS', 'QUOTE_ITEM_COVERED_OBJECT_RECORD_ID', 'EQUIPMENT_LINE_ID', 'SERVICE_ID', 'EQUIPMENT_ID', 'SERIAL_NO', 'ASSEMBLY_ID', 'GREENBOOK', 'FABLOCATION_ID', 'KPU', 'TECHNOLOGY', 'MODEL_PRICE_INGL_CURR', 'TARGET_PRICE_INGL_CURR', 'CEILING_PRICE_INGL_CURR', 'SALES_DISCOUNT_PRICE', 'BD_PRICE_MARGIN', 'DISCOUNT', 'NET_PRICE_INGL_CURR', 'YEAR_OVER_YEAR', 'YEAR_1', 'SRVTAXCLA_DESCRIPTION', 'TAX_PERCENTAGE', 'TAX', 'NET_VALUE_INGL_CURR', 'PRICE_BENCHMARK_TYPE', 'TOOL_CONFIGURATION', 'ANNUAL_BENCHMARK_BOOKING_PRICE', 'CONTRACT_ID', 'CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO', 'BENCHMARKING_THRESHOLD']"
 
 									
 								elif pricing_curr == 'Document Currency':
