@@ -48,6 +48,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		#table_id = 'fabvaluedrives'
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_1D6BC7AD-6FF6-46CB-808C-18204521C9C0" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>OPPORTUNITY INFORMATION</div></label></label></div>''')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  > <thead><tr>')
 	
 	for key, invs in enumerate(list(desc_list)):
