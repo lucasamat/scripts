@@ -3065,7 +3065,7 @@ class SYLDRTLIST:
 							#value1234 = value1234.split("&quot;")
 							#value1234 = value1234[1]
 							
-							img_list = ['PO_NOTES','PRICING_STATUS','EQUIPMENT_STATUS']
+							img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 							if str(ObjectName) == "SAQIFP":
 								img_list.append('PRICING_STATUS')
 							if str(ObjectName) == "SAQDOC":
@@ -3205,7 +3205,7 @@ class SYLDRTLIST:
 														Trace.Write('At line 2904')
 												else:
 													
-													img_list = ['PO_NOTES','PRICING_STATUS','EQUIPMENT_STATUS']
+													img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 													if str(ObjectName) == "SAQIFP":
 														img_list.append('PRICING_STATUS')
 													if str(ObjectName) == "SAQDOC":
@@ -8027,7 +8027,7 @@ class SYLDRTLIST:
 						value1234 = value1234[1]
 					else:                 
 						Trace.Write('at 7306')
-						img_list = ['PO_NOTES','PRICING_STATUS','EQUIPMENT_STATUS']
+						img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 						if str(ObjectName) == "SAQIFP":
 							img_list.append('PRICING_STATUS')     
 						if value123 in img_list:
