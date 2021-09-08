@@ -860,23 +860,6 @@ class CONTAINER:
                                             QueryCountStr = (
                                             "select rowcnt= count(SAQTMT.QUOTE_ID) from SAQTMT (NOLOCK) JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID " + str(where)
                                             )
-                                        elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
-                                            QueryStr = (
-                                                "select DISTINCT top "
-                                                + PerPage
-                                                + " SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_TYPE, SAQTMT.QUOTE_ID, SAQTMT.SALE_TYPE, SAQTMT.QUOTE_NAME, SAQTMT.QUOTE_STATUS, SAQTMT.ACCOUNT_NAME,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS, SAQTRV.SALESORG_ID,SAOPPR.OPPORTUNITY_NAME from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, "
-                                                + str(tot_names)
-                                                + " from SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID JOIN SAOPPR (NOLOCK) ON SAOPPR.QUOTE_ID = SAQTRV.QUOTE_ID"
-                                                + str(where)
-                                                + " ) S where S.ROW BETWEEN "
-                                                + str(Page_start)
-                                                + " and "
-                                                + str(Page_End)
-                                            )
-                                            
-                                            QueryCountStr = (
-                                            "select rowcnt= count(SAQTMT.QUOTE_ID) from SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QUOTE_ID = SAQTRV.QUOTE_ID JOIN SAOPPR (NOLOCK) ON SAOPPR.QUOTE_ID = SAQTRV.QUOTE_ID" + str(where)
-                                            )    
                                         else:
                                             QueryStr = (
                                                 "select top "
