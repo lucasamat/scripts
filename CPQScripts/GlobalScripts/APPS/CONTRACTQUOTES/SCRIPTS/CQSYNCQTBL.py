@@ -515,14 +515,14 @@ class SyncQuoteAndCustomTables:
 							payrec = payterm_obj.PAYMENT_TERM_RECORD_ID
 							pay_days = payterm_obj.NUMBER_OF_DAYS
 							pay_name = payterm_obj.PAYMENT_TERM_NAME
-							contract_quote_data.update(
-								{
-									"PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
-									"PAYMENTTERM_DAYS": payterm_obj.NUMBER_OF_DAYS,
-									"PAYMENTTERM_NAME": payterm_obj.PAYMENT_TERM_NAME,
-									"PAYMENTTERM_RECORD_ID": payterm_obj.PAYMENT_TERM_RECORD_ID,
-								}
-							)
+							# contract_quote_data.update(
+							# 	{
+							# 		"PAYMENTTERM_ID": payterm_obj.PAYMENT_TERM_ID,
+							# 		"PAYMENTTERM_DAYS": payterm_obj.NUMBER_OF_DAYS,
+							# 		"PAYMENTTERM_NAME": payterm_obj.PAYMENT_TERM_NAME,
+							# 		"PAYMENTTERM_RECORD_ID": payterm_obj.PAYMENT_TERM_RECORD_ID,
+							# 	}
+							# )
 					else:
 						payid =""
 						paydesc = ""
