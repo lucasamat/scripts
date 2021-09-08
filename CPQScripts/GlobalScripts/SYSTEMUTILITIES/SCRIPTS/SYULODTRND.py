@@ -58,7 +58,7 @@ def CommonTreeViewHTMLDetail(
 	auto_field = ""
 	date_field = []
 	primary_value = RECORD_ID
-	Trace.Write("Recordid"+str(primary_value))
+	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
