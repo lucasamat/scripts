@@ -226,6 +226,7 @@ def set_active_revision(Opertion,cartrev):
 	current_revison1 = Quote.RevisionNumber
 	get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 	Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
+	Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
 	return True
 #set active revision  from grid- end
 
