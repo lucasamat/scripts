@@ -1453,8 +1453,8 @@ class SYLDRTLIST:
 							elif TreeParam == "Quote Items":
 								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
 								if pricing_curr == 'Global Currency':
-									# gl_str = "_INGL_CURR"
-									# col_year = ','.join(map(lambda x: str(x)+gl_str, col_year.split(',')))
+									gl_str = "_INGL_CURR"
+									col_year = ','.join(map(lambda x: str(x)+gl_str, col_year.split(',')))
 									#Trace.Write('GlobalCurr----'+str(saqico_cols)) 
 									Qury_str = (
 										"select top "
