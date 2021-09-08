@@ -1228,9 +1228,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	userName = str(User.UserName)
 	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
-	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"
-			+ str(quote_revision_record_id)
-			+ "'")
+	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	for val in FabLocateDT:
 		getval = str(val).replace("('","").replace("',)","")
 		getdescription =getval.split('-')[0]		
@@ -1248,7 +1246,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			
 			tablerow = {}
 			SAQTVDENTRY = Sql.GetFirst(
-				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}".format(
+				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'".format(
 					str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),quote_revision_record_id
 				)
 			)
