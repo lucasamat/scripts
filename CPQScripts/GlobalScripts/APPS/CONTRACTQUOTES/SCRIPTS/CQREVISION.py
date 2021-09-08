@@ -224,6 +224,7 @@ def set_active_revision(Opertion,cartrev):
 	Quote.Save()
 	Quote.RefreshActions()
 	current_revison1 = Quote.RevisionNumber
+	Quote.SetGlobal("contract_quote_record_id",Quote.CompositeNumber)
 	return True
 #set active revision  from grid- end
 
