@@ -287,7 +287,10 @@ class CONTAINER:
                 if sql_obj is not None:
                     for sql in sql_obj:
                         tot_names = ""
-                        PRIMARY_OBJECT_NAMes = str(sql.PRIMARY_OBJECT_NAME).strip()
+                        if tab_name == "Quotes":
+                            PRIMARY_OBJECT_NAMes = 'SAQTMT','SAQTRV','SAOPPR'
+                        else:                                
+                            PRIMARY_OBJECT_NAMes = str(sql.PRIMARY_OBJECT_NAME).strip()
                         #syproh permissions start
                         data_obj = Sql.GetFirst(
                             "SELECT S.RECORD_ID,S.CONTAINER_NAME,S.COLUMNS,S.CAN_DELETE,S.CAN_EDIT FROM SYOBJS S (NOLOCK) INNER JOIN SYPROH P ON P.OBJECT_NAME = S.CONTAINER_NAME INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = P.PROFILE_RECORD_ID WHERE S.NAME='Tab list' AND S.OBJ_REC_ID = '"
