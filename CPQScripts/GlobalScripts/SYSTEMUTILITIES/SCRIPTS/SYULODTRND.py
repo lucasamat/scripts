@@ -3790,7 +3790,7 @@ def EntitlementTreeViewHTMLDetail(
 						+ str(sefl.FIELD_LABEL)
 						+ '</label></abbr></td><td width40><a  title="'
 						+ str(sefl.FIELD_LABEL)
-						+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
+						+ '"data-content="'
 						+ str(sefl.FIELD_LABEL)
 						+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i></a></td>'
 					)
