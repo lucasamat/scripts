@@ -544,9 +544,9 @@ class SyncQuoteAndCustomTables:
 							"REGION": salesorg_obj.REGION,
 							#"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
 							"SALE_TYPE": custom_fields_detail.get("SalesType"),
-							"CANCELLATION_PERIOD":"90 DAYS",
+							#"CANCELLATION_PERIOD":"90 DAYS",
 							#"DOCUMENT_TYPE": document_type.get(self.quote.DocumentTypeCode),
-							"DOCUMENT_TYPE": "",
+							#"DOCUMENT_TYPE": "",
 							#"OPPORTUNITY_TYPE": opportunity_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_STATUS": "IN-PROGRESS",
 							"QUOTE_LEVEL": custom_fields_detail.get("QuoteLevel")
@@ -563,8 +563,8 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_TYPE":quote_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
 							"GLOBAL_CURRENCY":"USD",
-							"INCOTERMS":custom_fields_detail.get("Incoterms"),
-							"INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
+							#"INCOTERMS":custom_fields_detail.get("Incoterms"),
+							#"INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
 							#"PRICING_DATE":pricing_date,
 							#"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
 							
