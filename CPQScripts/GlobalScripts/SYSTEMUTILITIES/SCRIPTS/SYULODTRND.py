@@ -1034,9 +1034,6 @@ def CommonTreeViewHTMLDetail(
 						"DIVISION_ID",
 						"PRICINGPROCEDURE_ID",
 						"PRICINGPROCEDURE_NAME",
-						"PRICELIST_ID",
-						"PRICELIST_NAME",
-						"SEGMENT_ID",
 						"REASONFOR_REJECTION",
 						"PREDECESSOR_CONTRACT_ID",
 						"PREDECESSOR_CONTRACT_NAME",
@@ -1045,7 +1042,6 @@ def CommonTreeViewHTMLDetail(
 						"EMPLOYEE_ID",
 						"NET_VALUE",
 						"OPPORTUNITY_NAME",
-						"ADVANCED_SHIPPING_EMAIL",
 						"ACCOUNT_ID",
 						"ACCOUNT_NAME"
 					]
