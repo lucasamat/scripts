@@ -2821,11 +2821,21 @@ class TreeView:
 		return SubTabDict
 
 	def pricing_picklist(self):
-		try:
-			picklist = Quote.GetCustomField('PRICING_PICKLIST').Content
-		except:
-			picklist = ""
-		return picklist
+		if ACTION == 'VIEW':
+			try:
+				picklist = Quote.GetCustomField('PRICING_PICKLIST').Content
+			except:
+				picklist = ""
+			return picklist
+		elif ACTION == 'ONCHANGE':
+			try:
+				picklist_value = Param.picklist_value
+			except:
+				picklist_value = 'Global Currency'
+			Quote.GetCustomField('PRICING_PICKLIST').Content = picklist_value
+			return True
+
+			
 tree = TreeView()
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
