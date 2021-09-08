@@ -26,11 +26,13 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
         document_type = document_type_obj.DOCTYP_ID
     document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID = '{}'".format(document_type))
     Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+    Log.Info("inside the function call--------------->")
 
 try:
     QuoteRecordId = Param.QUOTE_RECORD_ID
     RevisionRecordId = Param.QTEREV_RECORD_ID
     update_document_type(QuoteRecordId,RevisionRecordId)
+    Log.Info("function called---------------->")
 except:
     Trace.Write("CQDOCUTYPE ERROR---->:" + str(sys.exc_info()[1]))
     Trace.Write("CQDOCUTYPE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
