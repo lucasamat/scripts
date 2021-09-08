@@ -1451,12 +1451,14 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM SAQICO where SERVICE_ID = '"+str(LineAndEquipIDList)+"' and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"'"
 								)
 							elif TreeParam == "Quote Items":
+								Trace.Write('column---'+str(Columns))
 								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
 								if pricing_curr == 'Global Currency':
 									gl_str = "_INGL_CURR"
 									col_year = col_year.split(',')
 									col_year = ','.join([i+gl_str for i in col_year])
-									#Trace.Write('GlobalCurr----'+str(saqico_cols)) 
+									saqico_cols ="CEILING_PRICE_INGL_CURR,MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, "+col_year+"
+									Trace.Write('GlobalCurr----'+str(saqico_cols)) 
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
@@ -1469,18 +1471,19 @@ class SYLDRTLIST:
 									)
 									
 								elif pricing_curr == 'Document Currency':
-									Trace.Write('Document Currency')
+									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, "+col_year+"
+									Trace.Write('GlobalCurr----'+str(saqico_cols)) 
 								
-									Qury_str = (
-										"select top "
-											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,"+col_year+",SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,MODEL_PRICE, TARGET_PRICE_MARGIN, TARGET_PRICE, SALES_DISCOUNT_PRICE, CEILING_PRICE, SALDIS_PERCENT, SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE, NET_VALUE,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
-											+ str(qt_rec_id.QUOTE_ID)
-											+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
-											+ str(Page_start)
-											+ " and "
-											+ str(Page_End)
-									)
+								Qury_str = (
+									"select top "
+										+ str(PerPage)
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,BD_DISCOUNT, "+saqico_cols+", BD_PRICE_MARGIN,DISCOUNT,YEAR_OVER_YEAR,SERIAL_NO, GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE_MARGIN, SALES_DISCOUNT_PRICE, SALDIS_PERCENT, SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE, PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ str(qt_rec_id.QUOTE_ID)
+										+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
+										+ str(Page_start)
+										+ " and "
+										+ str(Page_End)
+								)
 								QuryCount_str = (
 										"select count(*) as cnt FROM SAQICO where QUOTE_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(
 											str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
