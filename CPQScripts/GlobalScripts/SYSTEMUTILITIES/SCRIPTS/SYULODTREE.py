@@ -2820,7 +2820,12 @@ class TreeView:
 		#Trace.Write("=====================> SubTabDict"+str(SubTabDict))
 		return SubTabDict
 
-
+	def pricing_picklist():
+		try:
+			picklist = Quote.GetCustomField('PRICING_PICKLIST').Content
+		except:
+			picklist = ""
+		return picklist
 tree = TreeView()
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -2948,6 +2953,10 @@ elif LOAD == "GlobalSet":
 	Product.SetGlobal("CommonTreeTopSuperParentParam", str(TreeTopSuperParentParam))
 	Product.SetGlobal("CommonTopTreeSuperParentParam", str(TreeSuperTopParentParam))
 	Product.SetGlobal("CommonTreeFirstSuperTopParentParam", str(TreeFirstSuperTopParentParam))
+
+elif LOAD == 'PRICING PICKLIST':
+    ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
+
 #else:
 #Trace.Write("elsee")
 #ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonLeftTreeView())
