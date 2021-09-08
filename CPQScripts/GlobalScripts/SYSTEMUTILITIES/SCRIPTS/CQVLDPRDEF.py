@@ -149,7 +149,6 @@ def predefined_wafer():
         Sql.RunQuery(quer_statement_28)
 
 
-
 def predefined_device_type():
     Log.Info('device fn')
     saqscd_insert = """ INSERT SAQSCD (
@@ -469,7 +468,11 @@ def predefined_csa_tools():
                 Sql.RunQuery(quer_statement_2)
             Log.Info("SAQSCD_CSA_INSERT-----> "+str(quer_statement))
             Log.Info("SAQSCV_CSA_INSERT-----> "+str(quer_statement_2))
-#if LEVEL == 'PREDEFINED WAFER DRIVER':
+
+
+def predefined_contract_coverage_and_response_time():
+
+
 def predefined_values():
     ##predefined value for wafer
     try:
@@ -488,6 +491,10 @@ def predefined_values():
     except Exception,e:
         Log.Info('csa tools--'+str(e))
 
+    try:
+        predefined_contract_coverage_and_response_time()
+    except Exception,e:
+        Log.Info('predefined_contract_coverage_and_response_time--'+str(e))
 
 ###calling all functions for predefined
 predefined_values()
