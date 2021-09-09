@@ -3921,8 +3921,8 @@ class SYLDRTLIST:
 				+ "'"
 			)           
 			if objss_obj:
+				Trace.Write('chk--'+str(key)+str(col_name))
 				try:
-					
 					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
 					FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
 					FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
