@@ -862,7 +862,7 @@ def CommonTreeViewHTMLDetail(
 					+ "'"
 					+ ""
 				)
-			elif ObjectName == "SAQTBP":
+			elif ObjectName == "SAQTBP" and TreeParentParam == "Billing":
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--867-----TreeParam-----"+str(TreeParam))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -876,7 +876,7 @@ def CommonTreeViewHTMLDetail(
 					+ str(autoNumber)
 					+ " = '"
 					+ str(RECORD_ID)
-					+ "'"
+					+ "' and SERVICE_ID = '"+str(TreeParam)+"'"
 					+ ""
 				)
 			else:	
