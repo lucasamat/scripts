@@ -1417,6 +1417,10 @@ class CONTAINER:
                                         product_num = ""
                                         qwe = ""
                                         try:
+                                            Trace.Write("col_name111"+str(col_name))
+                                            Trace.Write("col_name222"+str(lookup_disply_list))
+                                            Trace.Write("col_name333"+str(checkbox_list))
+                                            Trace.Write("col_name444"+str(currency_list))
                                             if col_name in lookup_disply_list:
                                                 for key, value in lookup_list.items():
                                                     #Trace.Write("aaaa" + str(value))
