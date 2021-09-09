@@ -8305,6 +8305,7 @@ class SYLDRTLIST:
 				+ str(table_id) 
 				+ "_SortColumnOrder', order); }); " 
 			)   
+			
 			Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))
 
 			
