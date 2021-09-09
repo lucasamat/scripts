@@ -342,7 +342,7 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 		)
 		Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ(NOLOCK) WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'"+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 		if TreeTopSuperParentParam == 'Quote Items':
-			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ " AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND EQUIPMENT_ID = '"+str(Get_EQUIP.EQUIPMENT_ID)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 		userselected = []
 		userselectedeff =[]
