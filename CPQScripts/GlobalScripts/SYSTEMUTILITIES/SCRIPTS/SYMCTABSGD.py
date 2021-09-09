@@ -674,13 +674,20 @@ class CONTAINER:
                             col = ""
                             name = names.split(",")
                             for text in list(name):
-                                s = Sql.GetList(
-                                    "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
-                                    + str(text)
-                                    + "' and OBJECT_NAME='"
-                                    + str(sql.PRIMARY_OBJECT_NAME).strip()
-                                    + "'"
-                                )
+                                if tab_name == "Quotes":
+                                    s = Sql.GetList(
+                                        "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
+                                        + str(text)
+                                        + "' and OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR')"
+                                    )
+                                else:    
+                                    s = Sql.GetList(
+                                        "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
+                                        + str(text)
+                                        + "' and OBJECT_NAME='"
+                                        + str(sql.PRIMARY_OBJECT_NAME).strip()
+                                        + "'"
+                                    )
                                 for ins in s:
                                     if ins.DATA_TYPE == "DATE":
                                         if texts != "":
