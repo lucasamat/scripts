@@ -1378,7 +1378,7 @@ try:
 	sendEmail(level)
 
 except Exception,e:
-	Log.Info("error on roll up--"+str(e))
+	Log.Info("error on roll up--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")	
 	ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")	
 #Log.Info('Log before calling ftscostcalc--')
