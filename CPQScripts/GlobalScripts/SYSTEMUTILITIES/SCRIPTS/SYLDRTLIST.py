@@ -3921,7 +3921,7 @@ class SYLDRTLIST:
 				+ "'"
 			)           
 			if objss_obj:
-				Trace.Write('chk--'+str(key)+str(col_name))
+				#Trace.Write('chk--'+str(key)+str(col_name))
 				try:
 					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
 					FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
@@ -5650,6 +5650,7 @@ class SYLDRTLIST:
 							
 
 							if TreeParam == "Quote Items":
+
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
@@ -7108,7 +7109,21 @@ class SYLDRTLIST:
 								qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
 								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 								if TreeParam == "Quote Items":
-									
+									Trace.Write('xchk--')
+									saqico_cols =""
+									Trace.Write('column---'+str(Columns)+str(type(Columns)))
+									pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
+										
+									if pricing_curr == 'Document Currency':
+										saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
+										Trace.Write('DocumentCurr----'+str(saqico_cols)) 
+									else:
+										##Global Currency
+										gl_str = "_INGL_CURR"
+										col_year = col_year.split(',')
+										col_year = ','.join([i+gl_str for i in col_year])
+										saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR, "+col_year
+										Trace.Write('GlobalCurr----'+str(saqico_cols))
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
