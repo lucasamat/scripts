@@ -1472,7 +1472,7 @@ class SYLDRTLIST:
 									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR "+col_year
 									Trace.Write('GlobalCurr----'+str(saqico_cols))
 
-								
+								 
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
