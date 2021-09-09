@@ -495,10 +495,6 @@ def predefined_csa_tools():
             Log.Info("SAQSCD_CSA_INSERT-----> "+str(quer_statement))
             Log.Info("SAQSCV_CSA_INSERT-----> "+str(quer_statement_2))
 
-
-def predefined_contract_coverage_and_response_time():
-
-
 def predefined_values():
     ##predefined value for wafer
     try:
@@ -516,11 +512,6 @@ def predefined_values():
         predefined_csa_tools()
     except Exception,e:
         Log.Info('csa tools--'+str(e))
-
-    try:
-        predefined_contract_coverage_and_response_time()
-    except Exception,e:
-        Log.Info('predefined_contract_coverage_and_response_time--'+str(e))
 
 ###calling all functions for predefined
 predefined_values()
