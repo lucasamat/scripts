@@ -473,7 +473,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						Trace.Write("TEZTZ--475-472-----"+str(tablerow))
 						Sql.Upsert(tableInfo)
 						Trace.Write("TEZTZ--475-472-after insert----")
-						update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and ACTIVE != 1""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0))
+						getactive = newdict.get("ACTIVE")
+						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
+						if getactive == 'false':
+							getactive = 0
+						else:
+							getactive = 1
+						if getactive == 1:
+							update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and  QUOTE_REVISION_RECORD_ID = '{get_record_val}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = getactive,get_record_val =get_record_val))
 						NRev = QuoteHelper.Edit(newdict.get("QUOTE_ID"))
 						Quote.RefreshActions()
 						for item in Quote.MainItems:
