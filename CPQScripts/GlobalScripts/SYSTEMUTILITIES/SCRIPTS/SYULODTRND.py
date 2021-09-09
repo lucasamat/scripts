@@ -2046,22 +2046,39 @@ def CommonTreeViewHTMLDetail(
 						+ "</td>"
 					)
 				else:	
-					Trace.Write('2032---'+ str(current_obj_api_name))				
-					sec_str += (
-						'<td><input id="'
-						+ str(current_obj_api_name)
-						+ '" type="text" value="'
-						+ current_obj_value.lstrip()
-						+ '" title="'
-						+ current_obj_value
-						+ '" class="form-control related_popup_css" style="'
-						+ str(left_float)
-						+ ' " '
-						+ disable
-						+ " maxlength = '"+str(max_length)+"'>"
-						+ str(edit_warn_icon)
-						+ "</td>"
-					)
+					Trace.Write('2032---'+ str(current_obj_api_name))
+					if str(MODE) == "EDIT":				
+						sec_str += (
+							'<td><input id="'
+							+ str(current_obj_api_name)
+							+ '" type="text" value="'
+							+ current_obj_value.lstrip()
+							+ '" title="'
+							+ current_obj_value
+							+ '" class="form-control related_popup_css light_yellow" style="'
+							+ str(left_float)
+							+ ' " '
+							+ disable
+							+ " maxlength = '"+str(max_length)+"'>"
+							+ str(edit_warn_icon)
+							+ "</td>"
+						)
+					else:
+						sec_str += (
+							'<td><input id="'
+							+ str(current_obj_api_name)
+							+ '" type="text" value="'
+							+ current_obj_value.lstrip()
+							+ '" title="'
+							+ current_obj_value
+							+ '" class="form-control related_popup_css" style="'
+							+ str(left_float)
+							+ ' " '
+							+ disable
+							+ " maxlength = '"+str(max_length)+"'>"
+							+ str(edit_warn_icon)
+							+ "</td>"
+						)
 				sec_str += (
 					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
 					+ str(edit_pencil_icon)
