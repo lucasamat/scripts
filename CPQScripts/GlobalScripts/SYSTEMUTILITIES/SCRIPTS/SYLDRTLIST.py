@@ -3256,7 +3256,10 @@ class SYLDRTLIST:
 														Trace.Write('At line 2924')
 														Trace.Write(value1234)
 														try:
-															new_dict[value123] = ('<abbr title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+															if RECORD_ID == 'SYOBJR-00009' and value123 == DISCOUNT:
+																new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+															else:
+																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														except:
 															new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
 														#new_dict[value123] = value1234
