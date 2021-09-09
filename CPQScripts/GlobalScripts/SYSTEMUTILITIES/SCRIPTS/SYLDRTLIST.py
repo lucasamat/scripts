@@ -4623,6 +4623,7 @@ class SYLDRTLIST:
 							if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 						]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+				Trace.Write('####Lookup List-->'+str(lookup_list))
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
