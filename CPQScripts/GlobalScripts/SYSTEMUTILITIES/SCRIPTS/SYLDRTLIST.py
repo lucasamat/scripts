@@ -8196,7 +8196,8 @@ class SYLDRTLIST:
 													#     if value123 in image_list:
 												
 													#         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
-													else:    
+													else: 
+														Trace.Write("@@@@@@@@@@8200")   
 														# new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
 														new_dict[value123] = value1234
 
