@@ -8260,7 +8260,7 @@ class SYLDRTLIST:
 		dbl_clk_function = ""
 		SAQICO_dbl_clk_function = ""
 		if ObjectName == 'SAQICO':
-			table_ids = "SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F"
+			table_ids = "#SYOBJR_00009_E5504B40_36E7_4EA6_9774_EA686705A63F"
 			cls = "eq(3)"
 			SAQICO_dbl_clk_function += (
 				'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
