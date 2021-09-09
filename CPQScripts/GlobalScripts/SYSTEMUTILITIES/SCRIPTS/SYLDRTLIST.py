@@ -8207,6 +8207,7 @@ class SYLDRTLIST:
 					new_dict["primary"] = primary
 				Trace.Write('new_dict-->'+str(new_dict))
 				table_list.append(new_dict)
+				Trace.Write('After append table_list--->'+str(table_list))
 				footer_str, footer = "", ""
 				footer_tot = ""
 				if ObjectName == "SAQIBP":
