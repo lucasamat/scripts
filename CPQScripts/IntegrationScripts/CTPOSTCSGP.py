@@ -24,7 +24,7 @@ try :
         Parameter=SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME='SELECT' ")
         Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
 
-        if len(rebuilt_data) != 0:      
+        if len(rebuilt_data) != 0 and 'CPQ_Columns' in rebuilt_data:      
 
             rebuilt_data = rebuilt_data["CPQ_Columns"]
             Table_Names = rebuilt_data.keys()
