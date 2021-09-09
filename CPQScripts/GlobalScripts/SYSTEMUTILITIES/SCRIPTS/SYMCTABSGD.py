@@ -1421,13 +1421,21 @@ class CONTAINER:
                                                 for key, value in lookup_list.items():
                                                     #Trace.Write("aaaa" + str(value))
                                                     if key == col_name:
-                                                        lookup_obj = Sql.GetFirst(
-                                                            "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME = '"
-                                                            + PRIMARY_OBJECT_NAMes
-                                                            + "' AND LOOKUP_API_NAME ='"
-                                                            + str(key)
-                                                            + "' AND DATA_TYPE = 'LOOKUP'"
-                                                        )
+                                                        if tab_name == "Quotes":
+                                                            Trace.Writ("QQQQ@@@")
+                                                            lookup_obj = Sql.GetFirst(
+                                                                "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME IN ('SAQTMT','SAQTRV','SAOPPR')AND LOOKUP_API_NAME ='"
+                                                                + str(key)
+                                                                + "' AND DATA_TYPE = 'LOOKUP'"
+                                                            )
+                                                        else:    
+                                                            lookup_obj = Sql.GetFirst(
+                                                                "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME = '"
+                                                                + PRIMARY_OBJECT_NAMes
+                                                                + "' AND LOOKUP_API_NAME ='"
+                                                                + str(key)
+                                                                + "' AND DATA_TYPE = 'LOOKUP'"
+                                                            )
                                                         lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                                         tab_obj = Sql.GetFirst(
                                                             "SELECT SYPAGE.TAB_NAME,SYPAGE.TAB_RECORD_ID FROM SYPAGE (nolock) join SYSECT (NOLOCK) on SYPAGE.RECORD_ID = SYSECT.PAGE_RECORD_ID WHERE SYSECT.PRIMARY_OBJECT_NAME='"
