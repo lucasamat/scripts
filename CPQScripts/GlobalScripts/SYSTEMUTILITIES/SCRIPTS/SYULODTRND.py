@@ -2028,7 +2028,8 @@ def CommonTreeViewHTMLDetail(
 						+ str(edit_warn_icon)
 						+ "</td>"
 					)
-				else:					
+				else:	
+					Trace.Write('2032---'+ str(current_obj_api_name))				
 					sec_str += (
 						'<td><input id="'
 						+ str(current_obj_api_name)
