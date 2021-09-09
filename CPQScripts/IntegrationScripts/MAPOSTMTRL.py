@@ -171,8 +171,9 @@ try :
 		else:
 			check_flag = 0
 			
-	if status_flag== 1 :               
-		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Data successfully uploaded in staging tables"}]})
+	if status_flag== 1 : 
+		resp = ScriptExecutor.ExecuteGlobal("MAPOSTBULK")              
+		ApiResponse = ApiResponseFactory.JsonResponse(resp)
 	
 except:
 	Log.Info("MAPOSTMTRL ERROR---->:" + str(sys.exc_info()[1]))
@@ -180,5 +181,3 @@ except:
 	Log.Info("MAPOSTMTRL catch_info ---->:" + str(catch_info))
 
 	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
-			
-			
