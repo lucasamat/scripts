@@ -4788,7 +4788,7 @@ class SYLDRTLIST:
 				for quer_key, quer_value in enumerate(Dict_formation):                    
 					if Dict_formation.get(quer_value) != "" and Dict_formation.get(quer_value) is not None:
 						quer_values = str(Dict_formation.get(quer_value)).strip()
-						
+						Trace.Write('**API_NAME-->'+str(quer_value))
 						SYOBJD_obj = Sql.GetFirst(
 							"select DATA_TYPE, PICKLIST, FORMULA_DATA_TYPE from SYOBJD (nolock) where API_NAME = '"
 							+ str(quer_value)
@@ -8052,7 +8052,7 @@ class SYLDRTLIST:
 						
 						value1234 = value1234[1]
 					else:                 
-						Trace.Write('at 7306')
+						Trace.Write('at 7306'+str(value123)+' val-->'+str(value1234))
 						img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
 						if str(ObjectName) == "SAQIFP":
 							img_list.append('PRICING_STATUS')     
@@ -8205,10 +8205,10 @@ class SYLDRTLIST:
 					new_dict["seg_pric"] = seg_pric
 					new_dict["pop_val"] = pop_val
 					new_dict["primary"] = primary
+				Trace.Write('new_dict-->'+str(new_dict))
 				table_list.append(new_dict)
 				footer_str, footer = "", ""
 				footer_tot = ""
-				
 				if ObjectName == "SAQIBP":
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
 					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column))))
