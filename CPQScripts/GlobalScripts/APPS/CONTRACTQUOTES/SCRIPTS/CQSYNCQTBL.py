@@ -575,6 +575,7 @@ class SyncQuoteAndCustomTables:
 					quote_revision_table_info = Sql.GetTable("SAQTRV")
 					quote_revision_id = str(Guid.NewGuid()).upper()
 					get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1000 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID as REVISION_ID,CART_REVISIONS.DESCRIPTION as DESCRIPTION, CART.ACTIVE_REV as ACTIVE_REV, CART_REVISIONS.CART_ID as CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}'".format(Quote.CompositeNumber))
+					Quote.SetGlobal("contract_quote_record_id",str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID")))
 					Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 					quote_rev_id = get_rev_details.REVISION_ID
 					Quote.SetGlobal("quote_revision_id",str(quote_rev_id))
