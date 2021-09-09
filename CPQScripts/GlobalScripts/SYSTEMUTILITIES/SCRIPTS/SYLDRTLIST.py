@@ -8251,6 +8251,7 @@ class SYLDRTLIST:
 							#footer += '<th>{}</th>'.format(sum([float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0]) for data in table_list]))
 						except Exception:                    
 							footer += '<th>0.00</th>'
+		Trace.Write('**at 8254')
 		if ObjectName == 'SAQIBP':
 			#footer_str = '<tfoot><tr><th colspan="7" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format(str(SubTab)+" Total", footer)
 			footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
