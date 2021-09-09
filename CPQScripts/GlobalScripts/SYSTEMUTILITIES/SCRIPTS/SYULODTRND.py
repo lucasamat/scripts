@@ -5115,6 +5115,7 @@ else:
 	# 	+ str(SectionList)
 	# )
 	Trace.Write('else part---')
+	Trace.Write('Section List-->'+str(SectionList))
 	ApiResponse = ApiResponseFactory.JsonResponse(
 		CommonTreeViewHTMLDetail(
 			MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList
