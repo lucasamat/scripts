@@ -303,24 +303,24 @@ class CONTAINER:
                             + "'"
                         )'''
                         if data_obj is not None:
-                            if tab_name == "Quotes":
-                                name_obj = Sql.GetList(
-                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
-                                    + str(tuple(eval(data_obj.COLUMNS)))
-                                    + " or lookup_api_name in "
-                                    + str(tuple(eval(data_obj.COLUMNS)))
-                                    + ")"
-                                )
-                            else:                            
-                                name_obj = Sql.GetList(
-                                    "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
-                                    + PRIMARY_OBJECT_NAMes
-                                    + "' and (API_NAME in "
-                                    + str(tuple(eval(data_obj.COLUMNS)))
-                                    + " or lookup_api_name in "
-                                    + str(tuple(eval(data_obj.COLUMNS)))
-                                    + ")"
-                                )                           
+                            # if tab_name == "Quotes":
+                            #     name_obj = Sql.GetList(
+                            #         "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR') and (API_NAME in "
+                            #         + str(tuple(eval(data_obj.COLUMNS)))
+                            #         + " or lookup_api_name in "
+                            #         + str(tuple(eval(data_obj.COLUMNS)))
+                            #         + ")"
+                            #     )
+                            # else:                            
+                            name_obj = Sql.GetList(
+                                "SELECT API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME, DATA_TYPE, FORMULA_DATA_TYPE,  CURRENCY_INDEX,FORMULA_LOGIC,PICKLIST,DECIMALS FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME='"
+                                + PRIMARY_OBJECT_NAMes
+                                + "' and (API_NAME in "
+                                + str(tuple(eval(data_obj.COLUMNS)))
+                                + " or lookup_api_name in "
+                                + str(tuple(eval(data_obj.COLUMNS)))
+                                + ")"
+                            )                           
                                    
                             lookup_disply_list = []
                             lookup_str = ""
@@ -352,24 +352,24 @@ class CONTAINER:
                                             FORMULA_LOGIC = ins.FORMULA_LOGIC
                                             FORMULA_col = ins.API_NAME
                                             FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
-                                            if tab_name == "Quotes":
-                                                ins_obj = Sql.GetFirst(
-                                                    "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
-                                                    + " WHERE OBJECT_NAME='"
-                                                    + str(FORMULA_table)
-                                                    + "' and API_NAME = '"
-                                                    + str(FORMULA_col)
-                                                    + "'"
-                                                )
-                                            else:    
-                                                ins_obj = Sql.GetFirst(
-                                                    "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
-                                                    + " WHERE OBJECT_NAME='"
-                                                    + str(FORMULA_table)
-                                                    + "' and API_NAME = '"
-                                                    + str(FORMULA_col)
-                                                    + "'"
-                                                )
+                                            # if tab_name == "Quotes":
+                                            #     ins_obj = Sql.GetFirst(
+                                            #         "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
+                                            #         + " WHERE OBJECT_NAME='"
+                                            #         + str(FORMULA_table)
+                                            #         + "' and API_NAME = '"
+                                            #         + str(FORMULA_col)
+                                            #         + "'"
+                                            #     )
+                                            # else:    
+                                            ins_obj = Sql.GetFirst(
+                                                "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
+                                                + " WHERE OBJECT_NAME='"
+                                                + str(FORMULA_table)
+                                                + "' and API_NAME = '"
+                                                + str(FORMULA_col)
+                                                + "'"
+                                            )
                                             a_dict[ins.API_NAME] = (
                                                 ins_obj.DATA_TYPE
                                                 if ins.DATA_TYPE == "FORMULA" and ins.FORMULA_DATA_TYPE != "CHECKBOX"
@@ -691,20 +691,20 @@ class CONTAINER:
                             col = ""
                             name = names.split(",")
                             for text in list(name):
-                                if tab_name == "Quotes":
-                                    s = Sql.GetList(
-                                        "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
-                                        + str(text)
-                                        + "' and OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR')"
-                                    )
-                                else:    
-                                    s = Sql.GetList(
-                                        "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
-                                        + str(text)
-                                        + "' and OBJECT_NAME='"
-                                        + str(sql.PRIMARY_OBJECT_NAME).strip()
-                                        + "'"
-                                    )
+                                # if tab_name == "Quotes":
+                                #     s = Sql.GetList(
+                                #         "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
+                                #         + str(text)
+                                #         + "' and OBJECT_NAME in ('SAQTMT','SAQTRV','SAOPPR')"
+                                #     )
+                                # else:    
+                                s = Sql.GetList(
+                                    "select DATA_TYPE from  SYOBJD (NOLOCK) WHERE API_NAME='"
+                                    + str(text)
+                                    + "' and OBJECT_NAME='"
+                                    + str(sql.PRIMARY_OBJECT_NAME).strip()
+                                    + "'"
+                                )
                                 for ins in s:
                                     if ins.DATA_TYPE == "DATE":
                                         if texts != "":
@@ -1449,21 +1449,21 @@ class CONTAINER:
                                                 for key, value in lookup_list.items():
                                                     #Trace.Write("aaaa" + str(value))
                                                     if key == col_name:
-                                                        if tab_name == "Quotes":
-                                                            Trace.Writ("QQQQ@@@")
-                                                            lookup_obj = Sql.GetFirst(
-                                                                "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME IN ('SAQTMT','SAQTRV','SAOPPR')AND LOOKUP_API_NAME ='"
-                                                                + str(key)
-                                                                + "' AND DATA_TYPE = 'LOOKUP'"
-                                                            )
-                                                        else:    
-                                                            lookup_obj = Sql.GetFirst(
-                                                                "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME = '"
-                                                                + PRIMARY_OBJECT_NAMes
-                                                                + "' AND LOOKUP_API_NAME ='"
-                                                                + str(key)
-                                                                + "' AND DATA_TYPE = 'LOOKUP'"
-                                                            )
+                                                        # if tab_name == "Quotes":
+                                                        #     Trace.Writ("QQQQ@@@")
+                                                        #     lookup_obj = Sql.GetFirst(
+                                                        #         "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME IN ('SAQTMT','SAQTRV','SAOPPR')AND LOOKUP_API_NAME ='"
+                                                        #         + str(key)
+                                                        #         + "' AND DATA_TYPE = 'LOOKUP'"
+                                                        #     )
+                                                        # else:    
+                                                        lookup_obj = Sql.GetFirst(
+                                                            "SELECT LOOKUP_OBJECT FROM  SYOBJD (NOLOCK) WHERE OBJECT_NAME = '"
+                                                            + PRIMARY_OBJECT_NAMes
+                                                            + "' AND LOOKUP_API_NAME ='"
+                                                            + str(key)
+                                                            + "' AND DATA_TYPE = 'LOOKUP'"
+                                                        )
                                                         lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                                         tab_obj = Sql.GetFirst(
                                                             "SELECT SYPAGE.TAB_NAME,SYPAGE.TAB_RECORD_ID FROM SYPAGE (nolock) join SYSECT (NOLOCK) on SYPAGE.RECORD_ID = SYSECT.PAGE_RECORD_ID WHERE SYSECT.PRIMARY_OBJECT_NAME='"
