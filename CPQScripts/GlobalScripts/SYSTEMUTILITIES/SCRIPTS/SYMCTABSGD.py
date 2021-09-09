@@ -341,6 +341,7 @@ class CONTAINER:
                                         and text.LOOKUP_API_NAME is not None
                                         and text.LOOKUP_API_NAME not in non_hyper_list
                                     ):
+                                        Trace.Write("lokpp")
                                         lookup_disply_list.append(str(text.LOOKUP_API_NAME))
                                 lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in name_obj}
 
