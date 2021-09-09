@@ -8197,9 +8197,11 @@ class SYLDRTLIST:
 												
 													#         new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")    
 													else: 
-														Trace.Write("@@@@@@@@@@8200")   
-														# new_dict[value123] = ('<abbr id="'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
-														new_dict[value123] = value1234
+														#Trace.Write("@@@@@@@@@@8200")   
+														if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
+															new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
+														else:
+															new_dict[value123] = value1234
 
 					new_dict["ACTIONS"] = Action_str       
 					new_dict["ids"] = ids
