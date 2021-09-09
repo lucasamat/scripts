@@ -1231,7 +1231,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	userName = str(User.UserName)
 	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
-	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+	
 	for val in FabLocateDT:
 		getval = str(val).replace("('","").replace("',)","")
 		getdescription =getval.split('-')[0]		
@@ -1340,6 +1340,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			except:
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":
+			GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			GETFBVD = Sql.GetFirst(
