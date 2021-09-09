@@ -3203,7 +3203,7 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-			query_shp_values = Sql.GetFirst(" SELECT SALESORG_ID FROM SAQFBL (NOLOCK) WHERE FABLOCATION_ID = '{}' AND QUOTE_RECORD_ID = '{}' ".format(Product.GetGlobal("TreeParam"),contract_quote_record_id,))
+			query_shp_values = Sql.GetFirst(" SELECT SALESORG_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
 			if	query_shp_values:
 				sales_org = query_shp_values.SALESORG_ID	
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
