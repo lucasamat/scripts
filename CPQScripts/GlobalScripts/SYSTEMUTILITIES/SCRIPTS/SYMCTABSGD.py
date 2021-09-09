@@ -1187,7 +1187,7 @@ class CONTAINER:
                                         # + str(where)
                                         # + " ") 
                                         QueryCountOBJ = Sql.GetFirst(
-                                            "select  rowcnt= count(*) from SAQTMT (nolock) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID" + str(where))   
+                                            "select  rowcnt= count(*) from SAQTMT (nolock) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID " + str(where))   
                                     else:
                                         QueryCountOBJ = Sql.GetFirst(
                                             "select  rowcnt= count(*) from "
