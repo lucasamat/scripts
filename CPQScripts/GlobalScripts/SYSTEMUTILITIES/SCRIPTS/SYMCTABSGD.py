@@ -346,6 +346,7 @@ class CONTAINER:
 
                                 for ins in name_obj:
                                     if ins.DATA_TYPE == "FORMULA":
+                                        Trace.Write("formul@@@@")
                                         try:
                                             FORMULA_LOGIC = ins.FORMULA_LOGIC
                                             FORMULA_col = ins.API_NAME
@@ -364,10 +365,15 @@ class CONTAINER:
                                                 else ins_obj.FORMULA_DATA_TYPE
                                             )
                                             b_dict[ins.API_NAME] = str(ins.PICKLIST)
+                                            Trace.Write("formul44"+str(a_dict))
+                                            Trace.Write("formul55"+str(b_dict))
                                         except:
                                             a_dict[ins.API_NAME] = ins.DATA_TYPE
                                             b_dict[ins.API_NAME] = str(ins.PICKLIST)
                                     else:
+                                        Trace.Write("formul111")
+                                        Trace.Write("formul22"+str(a_dict))
+                                        Trace.Write("formul33"+str(b_dict))
                                         a_dict[ins.API_NAME] = ins.DATA_TYPE
                                         b_dict[ins.API_NAME] = str(ins.PICKLIST)
                                 checkbox_list = [
