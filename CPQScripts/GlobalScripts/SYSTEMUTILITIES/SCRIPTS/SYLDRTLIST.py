@@ -449,7 +449,7 @@ class SYLDRTLIST:
 			#Contract valid start date & End date Calculation--END
 			#Quote items column based on pricing picklist strts A055S000P01-8778
 			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and Quote.GetCustomField('PRICING_PICKLIST').Content == 'Global Currency':
-				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR')
+				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-8778
 
 			# Billing Matrix - Pivot - Start
@@ -1462,14 +1462,14 @@ class SYLDRTLIST:
 								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
 									
 								if pricing_curr == 'Document Currency':
-									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE, "+col_year
+									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
 									Trace.Write('DocumentCurr----'+str(saqico_cols)) 
 								else:
 									##Global Currency
 									gl_str = "_INGL_CURR"
 									col_year = col_year.split(',')
 									col_year = ','.join([i+gl_str for i in col_year])
-									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR, "+col_year
+									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR, "+col_year
 									Trace.Write('GlobalCurr----'+str(saqico_cols))
 
 								 
