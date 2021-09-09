@@ -49,9 +49,9 @@ def create_new_revision(Opertion,cartrev):
 		"SAQIAP":"QUOTE_ITEM_COV_OBJ_ASS_PM_RECORD_ID",
 		"SAQICA":"QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID",
 		"SAQIPE":"QUOTE_ITEM_FORECAST_PART_ENT_RECORD_ID",
-		"SAQIFP":"QUOTE_ITEM_FORECAST_PART_RECORD_ID",
-		"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
+		"SAQIFP":"QUOTE_ITEM_FORECAST_PART_RECORD_ID"
 		}
+	#"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
 	if Quote is not None:
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		#Get Old Revision ID - Start
