@@ -3254,7 +3254,7 @@ class SYLDRTLIST:
 														Trace.Write(value1234)
 														try:
 															if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
-																new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
+																new_dict[value123] = ('<abbr id ="discount_' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 															else:
 																new_dict[value123] = ('<abbr  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 														except:
