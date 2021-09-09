@@ -563,6 +563,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_TYPE":quote_type.get(custom_fields_detail.get("ContractType")),
 							"QUOTE_CURRENCY":custom_fields_detail.get("Currency"),
 							"GLOBAL_CURRENCY":"USD",
+							"QTEREV_STATUS":"NEW REVISION"
 							#"INCOTERMS":custom_fields_detail.get("Incoterms"),
 							#"INCOTERMS_LOCATION":custom_fields_detail.get("IncotermsLocation"),
 							#"PRICING_DATE":pricing_date,
@@ -666,7 +667,7 @@ class SyncQuoteAndCustomTables:
 							"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id,
-							"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
+							"REVISION_DESCRIPTION":"REVISION 0 DESCRIPTION",
 							"ACTIVE":get_rev_details.ACTIVE_REV,
 							"REV_CREATE_DATE":str(start_date),
 							"REV_EXPIRE_DATE":str(expired_date_val),
