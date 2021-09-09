@@ -59,8 +59,7 @@ def CommonTreeViewHTMLDetail(
 	date_field = []
 	primary_value = RECORD_ID
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
-	if primary_value == "4DC1E894-CA0F-4EC2-8E68-6A1B4F76CED1":
-		ObjectName = "SAQTBP"
+	
 	try:
 		CurrentTab = TestProduct.CurrentTab
 	except:
@@ -131,6 +130,8 @@ def CommonTreeViewHTMLDetail(
 				
 	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV"]:
 			canedit = "TRUE"
+	if TreeParentParam == "Billing":
+		ObjectName = "SAQTBP"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
 		if str(CurrentTab == "Object"):
