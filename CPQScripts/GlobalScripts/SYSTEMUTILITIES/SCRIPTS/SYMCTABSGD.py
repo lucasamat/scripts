@@ -351,14 +351,24 @@ class CONTAINER:
                                             FORMULA_LOGIC = ins.FORMULA_LOGIC
                                             FORMULA_col = ins.API_NAME
                                             FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
-                                            ins_obj = Sql.GetFirst(
-                                                "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
-                                                + " WHERE OBJECT_NAME='"
-                                                + str(FORMULA_table)
-                                                + "' and API_NAME = '"
-                                                + str(FORMULA_col)
-                                                + "'"
-                                            )
+                                            if tab_name == "Quotes":
+                                                ins_obj = Sql.GetFirst(
+                                                    "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
+                                                    + " WHERE OBJECT_NAME='"
+                                                    + str(FORMULA_table)
+                                                    + "' and API_NAME = '"
+                                                    + str(FORMULA_col)
+                                                    + "'"
+                                                )
+                                            else:    
+                                                ins_obj = Sql.GetFirst(
+                                                    "SELECT API_NAME, DATA_TYPE FROM  SYOBJD (NOLOCK) "
+                                                    + " WHERE OBJECT_NAME='"
+                                                    + str(FORMULA_table)
+                                                    + "' and API_NAME = '"
+                                                    + str(FORMULA_col)
+                                                    + "'"
+                                                )
                                             a_dict[ins.API_NAME] = (
                                                 ins_obj.DATA_TYPE
                                                 if ins.DATA_TYPE == "FORMULA" and ins.FORMULA_DATA_TYPE != "CHECKBOX"
