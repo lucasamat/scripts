@@ -31,8 +31,11 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
 try:
     QuoteRecordId = Param.QUOTE_RECORD_ID
     RevisionRecordId = Param.QTEREV_RECORD_ID
-    update_document_type(QuoteRecordId,RevisionRecordId)
-    Log.Info("function called---------------->")
 except:
-    Log.Info("CQDOCUTYPE ERROR---->:" + str(sys.exc_info()[1]))
-    Log.Info("CQDOCUTYPE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
+    QuoteRecordId = Param.QUOTE_RECORD_ID
+    RevisionRecordId = Param.QTEREV_RECORD_ID    
+update_document_type(QuoteRecordId,RevisionRecordId)
+Log.Info("function called---------------->")
+# except:
+#     Log.Info("CQDOCUTYPE ERROR---->:" + str(sys.exc_info()[1]))
+#     Log.Info("CQDOCUTYPE ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
