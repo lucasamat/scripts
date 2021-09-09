@@ -1633,7 +1633,7 @@ class SyncQuoteAndCustomTables:
 		# Log.Info("SALETYPE_J "+str(SalesType.get(payload_json.get("SalesType"))))
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
-
+	##A055S000P01-8690 starts..
 	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id):
 		Sql.RunQuery("""INSERT SAQDLT (
 								C4C_PARTNERFUNCTION_ID,
@@ -1737,9 +1737,12 @@ class SyncQuoteAndCustomTables:
 								RevisionRecordId=quote_revision_id,
 								)
 							)
+	##A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
+##A055S000P01-8740 code starts..
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+##A055S000P01-8740 code ends..
 
