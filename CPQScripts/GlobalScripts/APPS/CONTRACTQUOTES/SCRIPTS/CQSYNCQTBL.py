@@ -1688,5 +1688,7 @@ class SyncQuoteAndCustomTables:
 							)
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
+quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
 
