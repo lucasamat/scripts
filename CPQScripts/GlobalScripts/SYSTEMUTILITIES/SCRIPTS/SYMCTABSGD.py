@@ -1011,11 +1011,6 @@ class CONTAINER:
                                                 QueryStr = Sql.GetList(" select RV.SALESORG_ID,RV.REVISION_STATUS,RV.REVISION_DESCRIPTION,QT.ACCOUNT_ID,QT.ACCOUNT_NAME,QT.CONTRACT_VALID_FROM,QT.CONTRACT_VALID_TO,QT.OWNER_ID,QT.MASTER_TABLE_QUOTE_RECORD_ID,QT.QTEREV_ID,QT.QUOTE_ID,OP.OPPORTUNITY_NAME FROM SAQTMT (NOLOCK) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID "
                                                 + str(where)
                                                 + " ")
-                                                # QueryCountOBJ = Sql.GetFirst(
-                                                #     "select  rowcnt= count(*) from SAQTMT (NOLOCK) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID "
-                                                #     + str(where)
-                                                #     + " "                                            
-                                                #     ) 
                                             elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                                 QueryStr = (
@@ -1188,13 +1183,9 @@ class CONTAINER:
                                     elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                         Trace.Write("flag22====")
                                         #where += " AND QT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
-                                        # QueryStr = Sql.GetList(" select RV.SALESORG_ID,RV.REVISION_STATUS,RV.REVISION_DESCRIPTION,QT.ACCOUNT_ID,QT.ACCOUNT_NAME,QT.CONTRACT_VALID_FROM,QT.CONTRACT_VALID_TO,QT.OWNER_ID,QT.MASTER_TABLE_QUOTE_RECORD_ID,QT.QTEREV_ID,QT.QUOTE_ID,OP.OPPORTUNITY_NAME FROM SAQTMT (NOLOCK) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID "
-                                        # + str(where)
-                                        # + " ")
-                                        QueryCountOBJ = Sql.GetFirst(
-                                            "select  rowcnt= count(*) from SAQTMT (NOLOCK) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID "
-                                            +str(where)                                       
-                                            )    
+                                        QueryStr = Sql.GetList(" select RV.SALESORG_ID,RV.REVISION_STATUS,RV.REVISION_DESCRIPTION,QT.ACCOUNT_ID,QT.ACCOUNT_NAME,QT.CONTRACT_VALID_FROM,QT.CONTRACT_VALID_TO,QT.OWNER_ID,QT.MASTER_TABLE_QUOTE_RECORD_ID,QT.QTEREV_ID,QT.QUOTE_ID,OP.OPPORTUNITY_NAME FROM SAQTMT (NOLOCK) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID "
+                                        + str(where)
+                                        + " ")    
                                     else:
                                         QueryCountOBJ = Sql.GetFirst(
                                             "select  rowcnt= count(*) from "
