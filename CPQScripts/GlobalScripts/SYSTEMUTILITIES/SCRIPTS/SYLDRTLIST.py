@@ -3152,6 +3152,10 @@ class SYLDRTLIST:
 											new_dict[value123] = (
 												'<input id ="' + key_value + '" value="' + value1234 + '" style="border: 0px solid;" disabled> </input>'
 											)
+										if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
+											new_dict[value123] = (
+												'<td style =" text-align: right;" id ="' + key_value + '" <abbr title="' + value1234 + '">'+value1234+'</abbr> </td>'
+											)
 										#the Billing Matrix based on the Warranty Date  start
 										if str(value123) == "WARRANTY_END_DATE":
 											#Trace.Write('getindication--3075---'+str(getindication))
