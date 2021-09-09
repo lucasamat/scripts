@@ -1297,6 +1297,8 @@ def CommonTreeViewHTMLDetail(
 				# 			+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i>'
 				# 		)
 				# 	Trace.Write("cm to this data-original"+str(sec_str))
+				elif data_type == "TEXT":
+					Trace.Write('MODE---'+str(MODE)+'----1301----'+str(current_obj_api_name)) 
 				elif data_type == "LONG TEXT AREA":
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
