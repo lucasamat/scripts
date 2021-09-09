@@ -1545,7 +1545,8 @@ class SyncQuoteAndCustomTables:
 																		"tree_parent_level_1": tree_parent_level_1,
 																	},
 																)
-												end_time = time.time()
+											ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+											end_time = time.time()
 												#Log.Info("CQCRUDOPTN end==> "+str(end_time - start_time))
 									""" for equipment_json_data in payload_json.get('SAQFEQ'):
 										quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND FABLOCATION_ID = '{fablocation_id}' AND QUOTE_ID = '{quote_id}'".format(equipment_ids = equipment_json_data.get('EQUIPMENT_IDS'),fablocation_id = equipment_json_data.get('FAB_LOCATION_ID'),quote_id = contract_quote_data.get("QUOTE_ID")))
@@ -1688,5 +1689,5 @@ class SyncQuoteAndCustomTables:
 							)
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
-ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+#ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
 
