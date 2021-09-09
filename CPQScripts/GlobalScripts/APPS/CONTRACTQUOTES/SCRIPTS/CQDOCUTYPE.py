@@ -17,9 +17,11 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
     service_obj  = Sql.GetList("select SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
     document_type_list = []
     for service in service_obj:
+        Log.Info("service--------------->"+str(service.SERVICE_ID))
         document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service.SERVICE_ID))
         if document_type_obj is not None:
             document_type_list.append(document_type_obj.DOCTYP_ID)
+        Log.Info("document_type_list--------------->"+str(document_type_list))
     if 'ZTBC' in document_type_list:
         document_type = 'ZTBC'
     else:
