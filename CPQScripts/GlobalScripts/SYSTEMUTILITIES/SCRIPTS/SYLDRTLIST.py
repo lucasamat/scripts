@@ -447,10 +447,10 @@ class SYLDRTLIST:
 				else:
 					Columns
 			#Contract valid start date & End date Calculation--END
-			#Quote items column based on pricing picklist strts A055S000P01-8778
+			#Quote items column based on pricing picklist strts A055S000P01-4578
 			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and Quote.GetCustomField('PRICING_PICKLIST').Content == 'Global Currency':
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
-			#Quote items column based on pricing picklist ends A055S000P01-8778
+			#Quote items column based on pricing picklist ends A055S000P01-4578
 
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
@@ -1455,7 +1455,7 @@ class SYLDRTLIST:
 								QuryCount_str = (
 										"select count(*) as cnt FROM SAQICO where SERVICE_ID = '"+str(LineAndEquipIDList)+"' and QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and LINE_ITEM_ID = '"+str(TreeParam.split(' -')[0])+"'"
 								)
-							#A055S000P01-8778 starts
+							#A055S000P01-4578 starts
 							elif TreeParam == "Quote Items":
 								saqico_cols =""
 								Trace.Write('column---'+str(Columns)+str(type(Columns)))
@@ -1487,7 +1487,7 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM SAQICO where QUOTE_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(
 											str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 								)
-							#A055S000P01-8778 ends
+							#A055S000P01-4578 ends
 							elif Product.GetGlobal("TreeParentLevel1") == 'Quote Items': 
 								try:                               
 									if str(TreeParentParam.split("-")[3]):
@@ -7109,7 +7109,7 @@ class SYLDRTLIST:
 								qt_rec_id = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='" + str(
 								contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 								if TreeParam == "Quote Items":
-									##A055S000P01-8778 strts
+									##A055S000P01-4578 strts
 									#Trace.Write('xchk--')
 									saqico_cols =""
 									Trace.Write('column---'+str(Columns)+str(type(Columns)))
@@ -7136,7 +7136,7 @@ class SYLDRTLIST:
 											+ " and "
 											+ str(Page_End)+" ORDER BY "+ str(Wh_API_NAMEs)
 									)
-									##A055S000P01-8778 ends
+									##A055S000P01-4578 ends
 									QuryCount_str = (
 											"select count(*) as cnt FROM SAQICO where  QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'".format(
 												str(qt_rec_id.QUOTE_ID))
