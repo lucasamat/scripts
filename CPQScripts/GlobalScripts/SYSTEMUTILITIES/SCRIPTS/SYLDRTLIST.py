@@ -7986,6 +7986,7 @@ class SYLDRTLIST:
 											)
 											lookup_val = str(lookup_obj.LOOKUP_OBJECT)
 											pop_val[key] = value1234 + "|" + lookup_val
+										Trace.Write('##value1234-->'+str(value1234))
 								else:
 									lookup_obj = Sql.GetFirst(
 										"SELECT LOOKUP_OBJECT FROM  SYOBJD (nolock) WHERE OBJECT_NAME = '"
