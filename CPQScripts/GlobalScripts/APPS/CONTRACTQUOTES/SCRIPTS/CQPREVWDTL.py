@@ -309,6 +309,26 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ str(datetime_value)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
+				elif sefl_api=="ACTIVE_REV" or sefl_api=="POES"
+					if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
+						sec_str += (
+							'<td><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ (eval("col_name." + str(sefl_api)))
+							+ '" class="custom" '
+							+ disable
+							+ ' checked><span class="lbl"></span></td>'
+						)			
+						
+					else:
+						sec_str += (
+							'<td><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="False" class="custom" '
+							+ disable
+							+ '><span class="lbl"></span></td>'
+						)
 				else:
 					# if sefl_api != "REGION":
 					Trace.Write('At line 289-->'+str(sefl_api))
