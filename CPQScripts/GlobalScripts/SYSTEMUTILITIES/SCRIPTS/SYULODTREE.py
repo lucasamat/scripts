@@ -2819,7 +2819,7 @@ class TreeView:
 				SubTabDict.update({subTabName: DetailDict})
 		#Trace.Write("=====================> SubTabDict"+str(SubTabDict))
 		return SubTabDict
-
+	#A055S000P01-8778 starts
 	def pricing_picklist(self):
 		if ACTION == 'VIEW':
 			try:
@@ -2834,7 +2834,7 @@ class TreeView:
 				picklist_value = ''
 			Quote.GetCustomField('PRICING_PICKLIST').Content = picklist_value
 			return True
-
+	#A055S000P01-8778 ends
 			
 tree = TreeView()
 try:
@@ -2964,9 +2964,10 @@ elif LOAD == "GlobalSet":
 	Product.SetGlobal("CommonTopTreeSuperParentParam", str(TreeSuperTopParentParam))
 	Product.SetGlobal("CommonTreeFirstSuperTopParentParam", str(TreeFirstSuperTopParentParam))
 
+#A055S000P01-8778 starts
 elif LOAD == 'PRICING PICKLIST':
     ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
-
+##A055S000P01-8778 ends
 #else:
 #Trace.Write("elsee")
 #ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonLeftTreeView())
