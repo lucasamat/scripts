@@ -464,7 +464,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				#A055S000P01-8729 start
 				if obj_name == "SAQTRV":
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-					update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=contract_quote_record_id,active_rev = 0))
+					get_active_revrec = row.get("QUOTE_REVISION_RECORD_ID")
+					update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QUOTE_REVISION_RECORD_ID = '{get_active_revrec}'""".format(QuoteRecordId=contract_quote_record_id,active_rev = 0,get_active_revrec = get_active_revrec))
 					quote_revision_id = row.get("QUOTE_REVISION_RECORD_ID")
 					active_rev = row.get("ACTIVE")
 					Table.TableActions.Update(obj_name, objh_head, row)
