@@ -480,7 +480,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						else:
 							getactive = 1
 						if getactive == 1:
-							update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and  QUOTE_REVISION_RECORD_ID = '{get_record_val}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = getactive,get_record_val =get_record_val))
+							update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and  QUOTE_REVISION_RECORD_ID != '{get_record_val}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0,get_record_val =get_record_val))
 						NRev = QuoteHelper.Edit(newdict.get("QUOTE_ID"))
 						Quote.RefreshActions()
 						for item in Quote.MainItems:
