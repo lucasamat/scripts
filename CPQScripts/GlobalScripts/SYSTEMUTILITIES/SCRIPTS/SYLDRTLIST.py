@@ -1469,7 +1469,7 @@ class SYLDRTLIST:
 									gl_str = "_INGL_CURR"
 									col_year = col_year.split(',')
 									col_year = ','.join([i+gl_str for i in col_year])
-									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR "+col_year
+									saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR, "+col_year
 									Trace.Write('GlobalCurr----'+str(saqico_cols))
 
 								 
