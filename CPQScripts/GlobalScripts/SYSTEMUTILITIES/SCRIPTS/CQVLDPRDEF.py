@@ -507,7 +507,7 @@ def predefined_contract_cov_time():
             time=coverageresponse.ENTITLEMENT_DISPLAY_VALUE          
     time=time.split(' ')[0]
     value = coverage+time
-    saqscd_insert_contract ="""INSERT SAQSCD (
+    saqscd_insert_contract = """INSERT SAQSCD (
         QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID,
         EQUIPMENT_DESCRIPTION,
         EQUIPMENT_ID,
@@ -563,7 +563,7 @@ def predefined_contract_cov_time():
         SAQSCO.QTEREV_RECORD_ID 
         from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSVDR ON SAQSCO.SERVICE_ID = PRSVDR.SERVICE_ID  WHERE  SAQSCO.QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSVDR.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCD.VALUEDRIVER_ID = 'Contract Coverage & Response Time' )""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id)
 
-    saqscv_insert_contract=="""INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
+    saqscv_insert_contract = """INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
         EQUIPMENT_DESCRIPTION,
         EQUIPMENT_ID,
         EQUIPMENT_RECORD_ID,
