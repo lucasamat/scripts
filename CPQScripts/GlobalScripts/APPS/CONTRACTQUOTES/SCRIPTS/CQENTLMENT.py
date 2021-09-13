@@ -1828,7 +1828,7 @@ class Entitlements:
 			Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			Log.Info('where---'+str(where))
-    		Log.Info('tableName---'+str(tableName))
+			Log.Info('tableName---'+str(tableName))
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where)
 			except Exception as e:
