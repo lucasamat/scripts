@@ -3559,39 +3559,40 @@ class SYLDRTLIST:
 									+ "</th>"
 								)    
 								
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
-					if invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
-						if pricing_picklist_value == 'Pricing':
-							rowspan_level1 = 'rowspan="2"'
-						else:
-							rowspan_level1 = ""
-						align = ''
+				
+				if RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
+					if pricing_picklist_value == 'Pricing':
+						rowspan_level1 = 'rowspan="2"'
+					else:
+						rowspan_level1 = ""
+					align = ''
 
-						if not table_group_columns :
-							table_header += '<th colspan="7" '+rowspan_level1+' data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
-						if str(invs) in right_align_list:
-							align = 'right'
-						elif str(invs) in center_align_list:
-							align = 'center'
-						table_group_columns += (
-									'<th data-toggle="bootstrap-table" data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="'
-									+ str(align)
-									+'" data-title-tooltsip="'
-									+ str(qstring)
-									+ '" data-sortable="true">'
-									+ str(qstring)
-									+ "</th>"
-								)           
-						continue
-					##NET_VALUE_INGL_CURR is given for developmental purpose.. will chnage to actual col name later
-					elif pricing_picklist_value == 'Pricing' and invs == "NET_VALUE_INGL_CURR":
-						Trace.Write('3 tier header')
-						if header1:
-							table_header += header1
+					if not table_group_columns :
+						table_header += '<th colspan="7" '+rowspan_level1+' data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				
+				##NET_VALUE_INGL_CURR is given for developmental purpose.. will chnage to actual col name later
+				if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and invs == "NET_VALUE_INGL_CURR":
+					Trace.Write('3 tier header')
+					if header1:
+						table_header += header1
 
-						continue
+					continue
 						
 						  
 
