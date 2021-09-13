@@ -260,7 +260,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
 				elif sefl_api == "QUOTE_REVISION_RECORD_ID":
-    					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTRV", str(eval("col_name." + str(sefl_api))))
+					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTRV", str(eval("col_name." + str(sefl_api))))
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
 						+ str(cpq_key_id)
@@ -316,7 +316,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ str(datetime_value)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
-				elif sefl_api=="ACTIVE_REV" or sefl_api=="POES"
+				elif sefl_api=="ACTIVE_REV" or sefl_api=="POES":
 					#if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
 					Trace.Write("313")
 					sec_str += (
