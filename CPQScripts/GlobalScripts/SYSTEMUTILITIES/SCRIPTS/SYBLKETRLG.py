@@ -586,15 +586,22 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					Trace.Write("NO STATUS UPDATE")
 			elif TITLE == 'DISCOUNT':
 				
-				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
-				if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
-					#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
-					amt = (float(VALUE)*float(a.SALES_DISCOUNT_PRICE))/100
+				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE,ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
 
-				else:
-					amt = 0.00
+				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
+					if "+" not in VALUE and "-" not in VALUE:
+					#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
+						amt = float(a.TARGET_PRICE) - ((float(VALUE)*float(a.TARGET_PRICE))/100)
+					elif "+" in VALUE:
+						VALUE = VALUE.replace("+","").replace("%","").strip()
+						amt = float(a.TARGET_PRICE) - ((float(VALUE)*float(a.TARGET_PRICE))/100)
+					elif "-" in VALUE:
+						VALUE = VALUE.replace("-","").replace("%","").strip()
+						amt = float(a.TARGET_PRICE) + ((float(VALUE)*float(a.TARGET_PRICE))/100)
+					else:
+						amt = 0.00
 				
-				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(a.SALES_DISCOUNT_PRICE)-amt,cpqid=cpqid,discount=float(VALUE)))
+				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=amt,cpqid=cpqid,discount=float(VALUE)))
 
 				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 
@@ -636,8 +643,46 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				ext_price = year1 + year2 + year3 + year4 + year5
 
+				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=amt,cpqid=cpqid,discount=VALUE,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
 
-				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
+				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
+				
+				
+				TotalDiscount = ((float(b.TARGET_PRICE)-float(b.SUM_PRICE))/float(b.TARGET_PRICE)) * 100.00
+				Trace.Write("Total Discount = "+str(TotalDiscount))
+
+				c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK,quote_revision_record_id))
+				
+				saqitm_extprice = b.YEAR1 + b.YEAR2 + b.YEAR3 + b.YEAR4 + b.YEAR5
+
+				Sql.RunQuery("UPDATE SAQITM SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}, NET_VALUE = {ext}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,y1=b.YEAR1,y2=b.YEAR2,y3=b.YEAR3,y4=b.YEAR4,y5=b.YEAR5,ext=saqitm_extprice,quote_revision_record_id=quote_revision_record_id))
+
+				
+				Sql.RunQuery("UPDATE SAQIGB SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.GREENBOOK,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
+
+				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
+				
+				TotalServiceDiscount = ((float(getServiceSum.TARGET_PRICE)-float(getServiceSum.SUM_PRICE))/float(getServiceSum.TARGET_PRICE)) *100.00
+				Trace.Write("Total Service Discount = "+str(TotalServiceDiscount))
+				get_curr = str(Quote.GetCustomField('Currency').Content)
+
+				Quote.GetCustomField('TOTAL_NET_VALUE').Content =str(getServiceSum.NET_VALUE) + " " + get_curr
+				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
+				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
+				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
+				Quote.GetCustomField('DISCOUNT').Content =str(TotalServiceDiscount)
+				for item in Quote.MainItems:
+					if item.PartNumber == a.SERVICE_ID:
+						item.NET_PRICE.Value = str(b.SUM_PRICE)
+						item.YEAR_1.Value = str(b.YEAR1)
+						item.YEAR_2.Value = str(b.YEAR2)
+						item.YEAR_3.Value = str(b.YEAR3)
+						item.YEAR_4.Value = str(b.YEAR4)
+						item.YEAR_5.Value = str(b.YEAR5)
+						item.EXTENDED_PRICE.Value = str(b.NET_VALUE)
+						item.DISCOUNT.Value = str(TotalDiscount)
+				Quote.Save()
+				#getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 
 				#if float(getPRCFVA.FACTOR_PCTVAR) < discount:
 				#Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
