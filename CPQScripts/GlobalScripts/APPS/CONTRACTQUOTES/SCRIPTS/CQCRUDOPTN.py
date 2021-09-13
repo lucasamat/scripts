@@ -1926,6 +1926,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"')  ")
 			acunt_info = Sql.GetFirst("SELECT ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(self.tree_param).split('-')[1].strip()+"'")
 			if master_fab:
+
 				unmapped_fab_table_info = SqlHelper.GetTable("SAQFBL")
 				fab_table ={
 					"QUOTE_FABLOCATION_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1952,7 +1953,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					"RELOCATION_FAB_TYPE": "SENDING FAB",
 					"ACCOUNT_ID": str(acunt_info.ACCOUNT_ID),
 					"ACCOUNT_NAME": str(acunt_info.ACCOUNT_NAME),
-					"ACCOUNT_RECORD_ID": str(acunt_info.ACCOUNT_RECORD_ID)
+					"ACCOUNT_RECORD_ID": str(acunt_info.ACCOUNT_RECORD_ID),
+					"QTEREV_RECORD_ID": str(RevisionRecordId)
 
 				}
 				unmapped_fab_table_info.AddRow(fab_table)
