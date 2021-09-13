@@ -723,7 +723,8 @@ def constructapprovalchaininformation(MODE,record_id):
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 ' + str(sect.RECORD_ID) + '">'        
-		sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'")        
+		sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'")      
+		edit_action = ""  
 		if len(sec_html_btn) > 0:            
 			for btn in sec_html_btn:                
 				if "EDIT" in btn.HTML_CONTENT:
