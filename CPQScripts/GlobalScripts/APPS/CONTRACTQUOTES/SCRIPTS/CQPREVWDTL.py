@@ -383,24 +383,26 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 	sec_str += "</tbody></table></div>"
 	sec_str += "</div>"
 	#Trace.Write(str(sec_str))
-	if ACTION == "QUOTE_INFO" :
-		quote_id = str(eval("col_name.QUOTE_ID"))
-		accunt_id = str(eval("col_name.ACCOUNT_ID"))
-		accunt_name = str(eval("col_name.ACCOUNT_NAME"))
-		quote_type = str(eval("col_name.QUOTE_TYPE"))
-		sale_type = str(eval("col_name.SALE_TYPE"))
-		valid_from=str(eval("col_name.CONTRACT_VALID_FROM")).split(" ")[0]
-		valid_to = str(eval("col_name.CONTRACT_VALID_TO")).split(" ")[0]
-	else:
-		quote_id = ""
-		accunt_id = ""
-		accunt_name = ""
-		quote_type = ""
-		sale_type = ""
-		valid_from= ""
-		valid_to = ""	
+	##Commented the below code because we dont need to return these fields..
+	# if ACTION == "QUOTE_INFO" :
+	# 	quote_id = str(eval("col_name.QUOTE_ID"))
+	# 	accunt_id = str(eval("col_name.ACCOUNT_ID"))
+	# 	accunt_name = str(eval("col_name.ACCOUNT_NAME"))
+	# 	quote_type = str(eval("col_name.QUOTE_TYPE"))
+	# 	sale_type = str(eval("col_name.SALE_TYPE"))
+	# 	valid_from=str(eval("col_name.CONTRACT_VALID_FROM")).split(" ")[0]
+	# 	valid_to = str(eval("col_name.CONTRACT_VALID_TO")).split(" ")[0]
+	# else:
+	# 	quote_id = ""
+	# 	accunt_id = ""
+	# 	accunt_name = ""
+	# 	quote_type = ""
+	# 	sale_type = ""
+	# 	valid_from= ""
+	# 	valid_to = ""	
 
-	return sec_str,quote_id,accunt_id,accunt_name,quote_type,sale_type,valid_from,valid_to
+	#return sec_str,quote_id,accunt_id,accunt_name,quote_type,sale_type,valid_from,valid_to
+	return sec_str
 
 # def constructidlingattributes(Qt_rec_id, Quote, MODE):    
 # 	anchor_tag_id_value = ""
