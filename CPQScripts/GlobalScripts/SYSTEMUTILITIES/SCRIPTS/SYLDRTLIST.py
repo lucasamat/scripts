@@ -3274,7 +3274,7 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			if RECORD_ID == 'SYOBJR-00009':
-				rowspan = 'rowspan="2"'  
+				rowspan = 'rowspan="3"'  
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
@@ -3391,6 +3391,29 @@ class SYLDRTLIST:
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
 			
+			header1 = ""
+			header3 = ""
+			header2 = ""
+			if RECORD_ID == 'SYOBJR-00009':
+				ent_cat_list = ['KPI','MISC TERMS']
+				if ent_cat_list:
+					header1 = '<th colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
+					for i in ent_cat_list:
+						header2 += (
+										'<th colspan=3 data-toggle="bootstrap-table" data-field="'
+										+ str(i)
+										+ '" data-filter-control="input" data-align="right" data-title-tooltsip="'
+										+ str(i)
+										+ '" data-sortable="true">'
+										+ str(i)
+										+ "</th>"
+									)
+
+						header3 += (
+									'<th data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME" data-sortable="true">ENTITLEMENT_NAME</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST" data-sortable="true">ENTITLEMENT_COST</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE" data-sortable="true">ENTITLEMENT_PRICE</th>'
+									)     
+
+				
 			for key, invs in enumerate(list(eval(Columns))):
 				table_ids = "#" + str(table_id)
 				invs = str(invs).strip()
@@ -3401,7 +3424,7 @@ class SYLDRTLIST:
 			
 				rowspan = ''
 				if RECORD_ID == 'SYOBJR-00009':
-					rowspan = 'rowspan="2"'
+					rowspan = 'rowspan="3"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				if key == 0:
 					if invs in primary_link_popup:
@@ -3532,30 +3555,43 @@ class SYLDRTLIST:
 									+ "</th>"
 								)    
 								
+				elif RECORD_ID == 'SYOBJR-00009':
+					if invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
+						rowspan_level1 = 'rowspan="2"'
+						align = ''
 
-				
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
-					
-					align = ''
-				
-					if not table_group_columns:
-						table_header += '<th colspan="7" data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+						if not table_group_columns:
+							table_header += '<th colspan="7" data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
+						if str(invs) in right_align_list:
+							align = 'right'
+						elif str(invs) in center_align_list:
+							align = 'center'
+						table_group_columns += (
+									'<th '
+									+ rowspan_level1
+									+ ' data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)           
+						continue
+					##NET_VALUE_INGL_CURR is given for developmental purpose.. will chnage to actual col name later
+					elif ent_cat_list and invs == "NET_VALUE_INGL_CURR":
+						Trace.Write('3 tier header')
+						table_header += header1
+
+						table_group_columns += header3
+						
+						  
+
+
+
+
 				elif len(cell_api) > 0 and invs in cell_api:                    
 					table_header += (
 						'<th  data-field="'
@@ -3751,8 +3787,13 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 			table_header += "</tr>"
-		if RECORD_ID == 'SYOBJR-00009' and table_group_columns:
-			table_header += '<tr>{}</tr>'.format(table_group_columns)
+		if RECORD_ID == 'SYOBJR-00009':
+			if header2:
+				Trace.Write('header2---'+str(header2))
+				table_header += '<tr>{}</tr>'.format(header2)
+			if table_group_columns:
+				Trace.Write('table_group_columns---'+str(table_group_columns))
+				table_header += '<tr>{}</tr>'.format(table_group_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
