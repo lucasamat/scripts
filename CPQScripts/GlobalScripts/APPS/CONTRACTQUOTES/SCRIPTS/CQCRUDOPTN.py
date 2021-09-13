@@ -1923,6 +1923,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
 			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
 			Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
+			
 			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"')  ")
 			acunt_info = Sql.GetFirst("SELECT ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(self.tree_param).split('-')[1].strip()+"'")
 			if master_fab:
@@ -1954,7 +1955,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					"ACCOUNT_ID": str(acunt_info.ACCOUNT_ID),
 					"ACCOUNT_NAME": str(acunt_info.ACCOUNT_NAME),
 					"ACCOUNT_RECORD_ID": str(acunt_info.ACCOUNT_RECORD_ID),
-					"QTEREV_RECORD_ID": str(RevisionRecordId)
+					"QTEREV_RECORD_ID": str(self.quote_revision_record_id)
 
 				}
 				unmapped_fab_table_info.AddRow(fab_table)
