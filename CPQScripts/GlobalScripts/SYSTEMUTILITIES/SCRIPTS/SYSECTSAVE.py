@@ -1042,7 +1042,7 @@ elif TreeParentParam == "Questions" and TopSuperParentParam == "Sections" and Ta
 elif TreeParam == "Quote Information" and TableId == "SYOBJR-98798":
 	ObjectName = "SAQTIP"    
 elif TreeParam == "Quote Information":
-	ObjectName = "SAQTMT"
+	ObjectName = "SAQTRV"
 	
 elif TreeParam == "Approval Chain Information":
 	ObjectName = "ACAPCH"
