@@ -448,7 +448,7 @@ class SYLDRTLIST:
 					Columns
 			#Contract valid start date & End date Calculation--END
 			#Quote items column based on pricing picklist strts A055S000P01-4578
-			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and Quote.GetCustomField('PRICING_PICKLIST').Content == 'Global Currency':
+			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Global Currency':
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-4578
 
@@ -1459,7 +1459,7 @@ class SYLDRTLIST:
 							elif TreeParam == "Quote Items":
 								saqico_cols =""
 								Trace.Write('column---'+str(Columns)+str(type(Columns)))
-								pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
+								pricing_curr = pricing_picklist_value
 									
 								if pricing_curr == 'Document Currency':
 									saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
@@ -3393,7 +3393,7 @@ class SYLDRTLIST:
 			header1 = ""
 			header3 = ""
 			header2 = ""
-			if RECORD_ID == 'SYOBJR-00009':
+			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing':
 				ent_cat_list = ['KPI','MISC TERMS']
 				if ent_cat_list:
 					header1 = '<th colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
@@ -3580,9 +3580,10 @@ class SYLDRTLIST:
 								)           
 						continue
 					##NET_VALUE_INGL_CURR is given for developmental purpose.. will chnage to actual col name later
-					elif ent_cat_list and invs == "NET_VALUE_INGL_CURR":
+					elif pricing_picklist_value == 'Pricing' and invs == "NET_VALUE_INGL_CURR":
 						Trace.Write('3 tier header')
-						table_header += header1
+						if header1:
+							table_header += header1
 
 						continue
 						
@@ -3787,13 +3788,13 @@ class SYLDRTLIST:
 							)
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
-			if header2:
+			if header2 and pricing_picklist_value == 'Pricing':
 				Trace.Write('header2---'+str(header2))
 				table_header += '<tr>{}</tr>'.format(header2)
 				
 			if table_group_columns:
 				Trace.Write('table_group_columns---'+str(table_group_columns))
-				table_header += '<tr>{}</tr>'.format(header3+table_group_columns)
+				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 else table_group_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
@@ -7154,7 +7155,7 @@ class SYLDRTLIST:
 									#Trace.Write('xchk--')
 									saqico_cols =""
 									Trace.Write('column---'+str(Columns)+str(type(Columns)))
-									pricing_curr = Quote.GetCustomField('PRICING_PICKLIST').Content
+									pricing_curr = pricing_picklist_value
 										
 									if pricing_curr == 'Document Currency':
 										saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
@@ -8434,8 +8435,10 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = None
-
-
+try:
+	pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
+except:
+	pricing_picklist_value = ''
 if ACTION == "PRODUCT_ONLOAD": 
 	ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
