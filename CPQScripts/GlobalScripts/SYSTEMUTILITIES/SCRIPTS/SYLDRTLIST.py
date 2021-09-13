@@ -3974,8 +3974,9 @@ class SYLDRTLIST:
 				+ "' and API_NAME = '"
 				+ str(col_name)
 				+ "'"
-			)           
-			if objss_obj:
+			)     
+			#A055S000P01-4401      
+			if objss_obj or col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('chk--'+str(key)+str(col_name))
 				try:
 					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
