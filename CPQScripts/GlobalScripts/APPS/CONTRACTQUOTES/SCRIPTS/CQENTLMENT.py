@@ -1823,19 +1823,24 @@ class Entitlements:
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
+			Coverage_where = where.replace('SRC.','SAQSCO.')
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			Trace.Write("where---"+str(where))
 			#Trace.Write("Getprevdict---"+str(Getprevdict))
 			Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			Log.Info('where---'+str(responsive_where))
+			Log.Info('where-2--'+str(Coverage_where))
 			Log.Info('tableName---'+str(objName))
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where)
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
-		
+			try:			
+				CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,self.userId,self.userName,self.revision_recordid)
+			except:
+				Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 		return True
 
 	def popup(self):
