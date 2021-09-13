@@ -219,7 +219,7 @@ class ConfigUpdateScript:
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
 				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Revision status,Sales Org ID,Contract Valid From,Contract Valid To"
 				else:
 					field_lables = ",".join(labels)
 			#Trace.Write("selftab"+str(self.current_tab_name))
