@@ -319,12 +319,13 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				elif sefl_api=="ACTIVE" or sefl_api=="POES":
 					#if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
 					Trace.Write("313")
+					act_status = (eval("col_name." + str(sefl_api)))
 					sec_str += (
 						'<td><input id="'
 						+ str(sefl_api)
 						+ '" type="CHECKBOX" value="'
-						#+ str(sefl_api)
-						+ (eval("col_name." + str(sefl_api)))
+						+ str(act_status)
+						#+ (eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
 						+ 'disable checked><span class="lbl"></span></td>'
 					)			
