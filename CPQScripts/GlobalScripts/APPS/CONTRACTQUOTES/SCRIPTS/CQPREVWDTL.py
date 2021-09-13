@@ -190,7 +190,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 	if ACTION == "CONTRACT_INFO":
 		primary_objname = "CTCNRT"
 	else:
-		primary_objname = "SAQTMT"
+		primary_objname = "SAQTRV"
 
 	Oppp_SECT = Sql.GetList(
 		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname)
@@ -240,7 +240,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
 			else:
-				col_name = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
+				col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy	
@@ -254,6 +254,13 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					)
 				elif sefl_api == "MASTER_TABLE_QUOTE_RECORD_ID":
 					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTMT", str(eval("col_name." + str(sefl_api))))
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
+						+ str(cpq_key_id)
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)
+				elif sefl_api == "QUOTE_REVISION_RECORD_ID":
+    					cpq_key_id = CPQID.KeyCPQId.GetCPQId("SAQTRV", str(eval("col_name." + str(sefl_api))))
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input id= 'key_field_id' type='text' title = '"+ str(cpq_key_id)+"' value = '"
 						+ str(cpq_key_id)
