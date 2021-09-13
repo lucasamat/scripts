@@ -3274,8 +3274,10 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			if RECORD_ID == 'SYOBJR-00009':
-				rowspan = 'rowspan="3"'  
-				
+				if pricing_picklist_value == 'Pricing'
+					rowspan = 'rowspan="3"'
+				else:
+					rowspan = 'rowspan="2"'
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
 				table_header += ''            
@@ -3423,7 +3425,10 @@ class SYLDRTLIST:
 			
 				rowspan = ''
 				if RECORD_ID == 'SYOBJR-00009':
-					rowspan = 'rowspan="3"'
+					if pricing_picklist_value == 'Pricing'
+						rowspan = 'rowspan="3"'
+					else:
+						rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				if key == 0:
 					if invs in primary_link_popup:
@@ -3556,7 +3561,10 @@ class SYLDRTLIST:
 								
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD','NET_VALUE_INGL_CURR'):
 					if invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
-						rowspan_level1 = 'rowspan="2"'
+						if pricing_picklist_value == 'Pricing'
+							rowspan_level1 = 'rowspan="2"'
+						else:
+							rowspan_level1 = ""
 						align = ''
 
 						if not table_group_columns :
