@@ -3561,7 +3561,7 @@ class SYLDRTLIST:
 								
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD','NET_VALUE_INGL_CURR'):
 					if invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
-						if pricing_picklist_value == 'Pricing'
+						if pricing_picklist_value == 'Pricing':
 							rowspan_level1 = 'rowspan="2"'
 						else:
 							rowspan_level1 = ""
