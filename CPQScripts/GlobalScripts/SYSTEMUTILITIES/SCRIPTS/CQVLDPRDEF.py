@@ -170,7 +170,7 @@ def predefined_wafer():
             SAQSCO.QTEREV_RECORD_ID 
             from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSDVL ON SAQSCO.SERVICE_ID = PRSDVL.SERVICE_ID AND PRSDVL.VALUEDRIVER_VALUE_CODE = MAEQUP.VALDRV_DEVICETYPE INNER JOIN SAQSCD ON SAQSCO.SERVICE_ID = SAQSCD.SERVICE_ID AND SAQSCO.QUOTE_RECORD_ID = SAQSCD.QUOTE_RECORD_ID  AND SAQSCO.QTEREV_RECORD_ID = SAQSCD.QTEREV_RECORD_ID AND SAQSCO.EQUIPMENT_RECORD_ID = SAQSCD.EQUIPMENT_RECORD_ID and SAQSCD.VALUEDRIVER_ID = 'Wafer-Node' WHERE SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSDVL.VALUEDRIVER_ID = 'Wafer-Node' AND (MAEQUP.VALDRV_WAFERNODE is not null or MAEQUP.VALDRV_WAFERNODE != '') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCV WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' AND SAQSCV.TOOL_VALUEDRIVER_ID = 'Wafer-Node')""".format(rec=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id)
     Log.Info('saqscd_insert--wafer'+str(saqscd_insert_wafer))
-    Log.Info('saqscv_insert--wafer'+str(saqscv_insert))
+    Log.Info('saqscv_insert--wafer'+str(saqscd_insert_wafer))
     Sql.RunQuery(saqscd_insert_wafer)
     Sql.RunQuery(saqscv_insert_wafer)
 
