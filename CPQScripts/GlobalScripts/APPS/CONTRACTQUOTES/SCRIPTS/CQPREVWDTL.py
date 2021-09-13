@@ -316,20 +316,29 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ str(datetime_value)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
-				elif sefl_api=="ACTIVE" or sefl_api=="POES":
+				elif sefl_api=="POES":
 					#if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
 					Trace.Write("313")
 					act_status = (eval("col_name." + str(sefl_api)))
 					sec_str += (
-						'<div class="col-md-3 padtop5 padleft10"><td><input id="'
+						'<td><input id="'
 						+ str(sefl_api)
 						+ '" type="CHECKBOX" value="'
 						+ str(act_status)
 						#+ (eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
-						+ 'disable checked><span class="lbl"></span></td></div>'
+						+ 'disable checked><span class="lbl"></span></td>'
 					)			
-						
+				elif sefl_api=="ACTIVE":
+					act_status = (eval("col_name." + str(sefl_api)))
+					sec_str += (
+						'<div class="col-md-3 padtop5 padleft10"><input id="'
+						+ str(sefl_api)
+						+ '" type="CHECKBOX" value="'
+						+ str(act_status)
+						+ '" class="custom" '
+						+ 'disabled checked><span class="lbl"></span></div>'
+					)	
 					# else:
 					# 	sec_str += (
 					# 		'<td><input id="'
