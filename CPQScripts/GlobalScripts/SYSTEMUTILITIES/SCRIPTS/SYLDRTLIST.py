@@ -452,7 +452,9 @@ class SYLDRTLIST:
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-4578
 			#A055S000P01-4401
+			Trace.Write('inside'+str(pricing_picklist_value)+str(TreeParam))
 			if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
+				Trace.Write('inside')
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
 				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
@@ -4000,7 +4002,24 @@ class SYLDRTLIST:
 							+ str(col_name)
 							+ '">'
 						)
-						filter_level_list.append(filter_level_data)
+						#A055S000P01-4401
+						if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+							ent_cat_list = ['KPI','MISC TERMS']
+							for i in ent_cat_list:
+								filter_clas_name = (
+									'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
+									+ str(i).replace(' ','_')
+									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
+									+ str(i).replace(' ','_')
+									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
+									+ str(i).replace(' ','_')
+									+ '">'
+								)
+							Trace.Write('ENTITLEMENT_CATEGORY')
+
+						else:
+
+							filter_level_list.append(filter_level_data)
 				except:
 					if str(objss_obj.PICKLIST).upper() == "TRUE": 
 										
@@ -4019,24 +4038,7 @@ class SYLDRTLIST:
 						filter_level_list.append(filter_level_data)
 					else:                        
 						filter_level_data = "input"
-						#A055S000P01-4401
-						if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-							ent_cat_list = ['KPI','MISC TERMS']
-							for i in ent_cat_list:
-								filter_clas_name = (
-									'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
-									+ str(i).replace(' ','_')
-									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
-									+ str(i).replace(' ','_')
-									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
-									+ str(i).replace(' ','_')
-									+ '">'
-								)
-							Trace.Write('ENTITLEMENT_CATEGORY')
-
-						else:
-
-							filter_clas_name = (
+						filter_clas_name = (
 								'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
 								+ '">'
