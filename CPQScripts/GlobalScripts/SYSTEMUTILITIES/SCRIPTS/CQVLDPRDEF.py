@@ -235,7 +235,7 @@ def predefined_device_type():
         from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSVDR ON SAQSCO.SERVICE_ID = PRSVDR.SERVICE_ID  WHERE  SAQSCO.QUOTE_RECORD_ID ='{rec}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}'  AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSVDR.VALUEDRIVER_ID = 'Device Type' AND (MAEQUP.VALDRV_DEVICETYPE is not null or MAEQUP.VALDRV_DEVICETYPE != '') AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{rec}' AND SAQSCD.VALUEDRIVER_ID = 'Device Type' )""".format(rec=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id)
 
 
-    saqscv_insert = """ INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
+    saqscv_insert_device = """ INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
             EQUIPMENT_DESCRIPTION,
             EQUIPMENT_ID,
             EQUIPMENT_RECORD_ID,
