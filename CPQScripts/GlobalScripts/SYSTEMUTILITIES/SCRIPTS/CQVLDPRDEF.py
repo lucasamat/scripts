@@ -659,5 +659,5 @@ except:
     quote_revision_record_id = ""
 
 if 'PREDEFINED DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(predefined_values())
+    predefined_values()
 
