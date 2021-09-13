@@ -171,15 +171,26 @@ class ConfigUpdateScript:
 		if record_obj is not None:
 			columns = (record_obj.COLUMNS).replace("'", "").replace(" ", "").split(",")
 			table_name = ""
-			objd_records_obj = Sql.GetList(
-				"""
-					SELECT TOP 10
-						DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
-					FROM
-						SYOBJD (NOLOCK)
-					WHERE API_NAME IN %s AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
-				% (tuple(columns), record_obj.PRIMARY_OBJECT_RECORD_ID)
-			)
+			if self.current_tab_name == "Quote":
+				objd_records_obj = Sql.GetList(
+					"""
+						SELECT TOP 10
+							DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
+						FROM
+							SYOBJD (NOLOCK)
+						WHERE API_NAME IN %s AND OBJECT_NAME IN ('SAQTMT','SAQTRV')  ORDER BY abs(DISPLAY_ORDER) """
+					% (tuple(columns))
+				)
+			else:
+				objd_records_obj = Sql.GetList(
+					"""
+						SELECT TOP 10
+							DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
+						FROM
+							SYOBJD (NOLOCK)
+						WHERE API_NAME IN %s AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
+					% (tuple(columns), record_obj.PRIMARY_OBJECT_RECORD_ID)
+				)
 			# Trace.Write(
 			# 	""" SELECT TOP 10 DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME FROM SYOBJD (NOLOCK) WHERE API_NAME IN %s
 			# 		AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
@@ -207,10 +218,7 @@ class ConfigUpdateScript:
 					# 	labels.append(dynamicLable.FIELD_LABEL)
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
-				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
-				else:
-					field_lables = ",".join(labels)
+				field_lables = ",".join(labels)
 			#Trace.Write("selftab"+str(self.current_tab_name))
 			"""if str(self.current_tab_name.upper()) == "QUOTE": 
 				key_column = "MASTER_TABLE_QUOTE_RECORD_ID"
@@ -222,7 +230,7 @@ class ConfigUpdateScript:
 			if table_name == 'SAQTMT':
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
-				key_column = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
+				key_column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID"
 			if key_column and record_id:
 				query_string = self.build_query(
 					column=",".join(columns),
