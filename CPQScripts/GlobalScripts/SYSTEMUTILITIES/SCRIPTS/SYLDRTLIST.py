@@ -4023,15 +4023,15 @@ class SYLDRTLIST:
 						if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 							ent_cat_list = ['KPI','MISC TERMS']
 							for i in ent_cat_list:
-							filter_clas_name = (
-								'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
-								+ str(i).replace(' ','_')
-								+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
-								+ str(i).replace(' ','_')
-								+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
-								+ str(i).replace(' ','_')
-								+ '">'
-							)
+								filter_clas_name = (
+									'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
+									+ str(i).replace(' ','_')
+									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
+									+ str(i).replace(' ','_')
+									+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
+									+ str(i).replace(' ','_')
+									+ '">'
+								)
 							Trace.Write('ENTITLEMENT_CATEGORY')
 
 						else:
