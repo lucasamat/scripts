@@ -407,7 +407,10 @@ class CONTAINER:
                                     if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
                                         currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                             lookup_str = ",".join(list(lookup_disply_list))
-                            NAME = eval(data_obj.COLUMNS)
+                            if PRIMARY_OBJECT_NAMes == "SAQTMT":
+                                NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO']
+                            else:
+                                NAME = eval(data_obj.COLUMNS)
                             Trace.Write("NAMe"+str(NAME))
                             ind = 1
                             nameList = {}
