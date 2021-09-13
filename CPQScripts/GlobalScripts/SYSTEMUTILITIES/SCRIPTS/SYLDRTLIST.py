@@ -3805,7 +3805,7 @@ class SYLDRTLIST:
 				
 			if table_group_columns:
 				Trace.Write('table_group_columns---'+str(table_group_columns))
-				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 and and str(TreeParam) == "Quote Items" else table_group_columns)
+				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items" else table_group_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
