@@ -2440,7 +2440,7 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 		sec_str1 += (
 			'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
 			+ str(field_name).replace(" ", "_")
-			+ '" disabled><option value="Select">..Select</option>'
+			+ '" disabled><option value="Select">'+str(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)+'</option>'
 			+ str(VAR1)
 			+ "</select>"
 		)
