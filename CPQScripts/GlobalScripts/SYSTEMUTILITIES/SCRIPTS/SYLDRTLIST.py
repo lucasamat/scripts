@@ -3587,7 +3587,7 @@ class SYLDRTLIST:
 							)           
 					continue
 				
-				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and invs == "NET_VALUE_INGL_CURR":
+				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and invs in ("NET_VALUE_INGL_CURR",'NET_VALUE'):
 					Trace.Write('3 tier header')
 					if header1:
 						table_header += header1
