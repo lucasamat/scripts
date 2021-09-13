@@ -2436,14 +2436,22 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 					+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
 					+ "</option>"
 				)
-			
-		sec_str1 += (
-			'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
-			+ str(field_name).replace(" ", "_")
-			+ '" disabled><option value="Select">'+str(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)+'</option>'
-			+ str(VAR1)
-			+ "</select>"
-		)
+		try:
+			sec_str1 += (
+				'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
+				+ str(field_name).replace(" ", "_")
+				+ '" disabled><option value="Select">'+str(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)+'</option>'
+				+ str(VAR1)
+				+ "</select>"
+			)
+		except:
+			sec_str1 += (
+				'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
+				+ str(field_name).replace(" ", "_")
+				+ '" disabled><option value="Select">..Select</option>'
+				+ str(VAR1)
+				+ "</select>"
+			)
 		for data in qstn:
 			new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 			new_value_dict["VALUE DRIVER COEFFICIENT"]  = userselectedeffi
