@@ -451,6 +451,7 @@ class SYLDRTLIST:
 			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Global Currency':
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-4578
+			#A055S000P01-4401
 			if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
 				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
@@ -3276,8 +3277,9 @@ class SYLDRTLIST:
 				table_header += "<tr id='getbannername'>"
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
+			#A055S000P01-4401
 			if RECORD_ID == 'SYOBJR-00009':
-				if pricing_picklist_value == 'Pricing':
+				if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					rowspan = 'rowspan="3"' 
 				else:
 					rowspan = 'rowspan="2"' 
@@ -3395,11 +3397,12 @@ class SYLDRTLIST:
 					
 		
 			# Item Covered Object Column Grouping - Start
+			#A055S000P01-4401 pricing view
 			table_group_columns = ''
 			header1 = ""
 			header3 = ""
 			header2 = ""
-			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing':
+			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				ent_cat_list = ['KPI','MISC TERMS']
 				if ent_cat_list:
 					header1 = '<th colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
@@ -3427,8 +3430,9 @@ class SYLDRTLIST:
 					qstring = invs.replace("_", " ")
 			
 				rowspan = ''
+				#A055S000P01-4401
 				if RECORD_ID == 'SYOBJR-00009':
-					if pricing_picklist_value == 'Pricing':
+					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 						rowspan = 'rowspan="3"'
 					else:
 						rowspan = 'rowspan="2"'
@@ -3567,7 +3571,8 @@ class SYLDRTLIST:
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
 					
 					align = ''
-					if pricing_picklist_value == 'Pricing':
+					#A055S000P01-4401
+					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 						rowspan_level1 = 'rowspan="2"'
 					else:
 						rowspan_level1 = ""
@@ -3589,8 +3594,8 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				
-				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and invs in ("NET_VALUE_INGL_CURR",'NET_VALUE'):
+				##A055S000P01-4401
+				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
 					Trace.Write('3 tier header')
 					if header1:
 						table_header += header1
@@ -3793,13 +3798,14 @@ class SYLDRTLIST:
 							)
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
-			if header2 and pricing_picklist_value == 'Pricing':
+			#A055S000P01-4401
+			if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('header2---'+str(header2))
 				table_header += '<tr>{}</tr>'.format(header2)
 				
 			if table_group_columns:
 				Trace.Write('table_group_columns---'+str(table_group_columns))
-				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 else table_group_columns)
+				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 and and str(TreeParam) == "Quote Items" else table_group_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
