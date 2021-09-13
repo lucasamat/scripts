@@ -3560,7 +3560,7 @@ class SYLDRTLIST:
 						align = ''
 
 						if not table_group_columns :
-							table_header += '<th colspan="7" data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
+							table_header += '<th colspan="7" rowspan =2 data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
 						if str(invs) in right_align_list:
 							align = 'right'
 						elif str(invs) in center_align_list:
