@@ -3274,7 +3274,10 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			if RECORD_ID == 'SYOBJR-00009':
-				rowspan = 'rowspan="2"'  
+				if pricing_picklist_value == 'Pricing':
+					rowspan = 'rowspan="3"' 
+				else:
+					rowspan = 'rowspan="2"' 
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
