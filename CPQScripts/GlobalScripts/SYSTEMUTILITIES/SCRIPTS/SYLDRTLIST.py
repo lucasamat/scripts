@@ -451,7 +451,8 @@ class SYLDRTLIST:
 			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Global Currency':
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-4578
-
+			if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
+				Columns.remove('ENTITLEMENT_CATEGORY')
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
@@ -3965,7 +3966,7 @@ class SYLDRTLIST:
 				+ "'"
 			)           
 			if objss_obj:
-				#Trace.Write('chk--'+str(key)+str(col_name))
+				Trace.Write('chk--'+str(key)+str(col_name))
 				try:
 					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
 					FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
