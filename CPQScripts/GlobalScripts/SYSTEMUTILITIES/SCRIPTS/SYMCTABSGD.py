@@ -1030,6 +1030,7 @@ class CONTAINER:
                                                 + str(Page_End)
                                                 + " "
                                             )
+                                                Trace.Write("QueryStr---->"+str(QueryStr))
                                             elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                                 QueryStr = (
@@ -1258,7 +1259,6 @@ class CONTAINER:
                                         QueryCount = QueryCountOBJ.rowcnt
                                                                 
                             Query = Sql.GetList(QueryStr)
-                            
                             ArrayErpHide = []
                             try:
                                 Product.SetGlobal("ArrayErpHide", str(ArrayErpHide))
