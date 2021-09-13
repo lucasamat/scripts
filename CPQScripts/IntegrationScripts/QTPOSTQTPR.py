@@ -159,6 +159,12 @@ try:
 					copyEmail8 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail8)
 
+					copyEmail2 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail2)
+
+					copyEmail9 = MailAddress("siva.subramani@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail9)
+
 					# Send the message
 					mailClient.Send(msg)
 
@@ -190,7 +196,7 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 						+ str(Parameter1.QUERY_CRITERIA_1)
-						+ "  A SET CM_PART_COST=B.CM_PART_COST,PM_PART_COST = B.PM_PART_COST,ASSEMBLY_NOT_MAPPED = B.ASSEMBLY_NOT_REQUIRED_FLAG,CLEANING_COST = B.CLEAN_COST,COST_MODULE_AVAILABLE = B.COST_MODULE_AVAILABLE,COST_MODULE_STATUS = B.COST_CALCULATION_STATUS,GREATER_THAN_QTLY_PM_COST = B.GREATER_THAN_QTLY_COST,KPI_COST = B.KPI_COST,LABOR_COST = B.LABOUR_COST,LESS_THAN_QTLY_PM_COST= B.LESS_THAN_QTLY_COST,METROLOGY_COST= B.METROLOGY_COST,RECOATING_COST = B.RECOATING_COST,REFURB_COST = B.REFURB_COST,SEEDSTOCK_COST = B.SEEDSTOCK_COST,TOTAL_COST_WOSEEDSTOCK = B.TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK = TOTAL_COST_WISEEDSTOCK,NPI = B.NPI,SERVICE_COMPLEXITY = B.SERVICE_COMPLEXITY FROM SAQICA A(NOLOCK) JOIN SAQICO_INBOUND B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.REVISION_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"'  ' ")
+						+ "  A SET CM_PART_COST=CONVERT(FLOAT,B.CM_PART_COST),PM_PART_COST = CONVERT(FLOAT,B.PM_PART_COST),ASSEMBLY_NOT_MAPPED = B.ASSEMBLY_NOT_REQUIRED_FLAG,CLEANING_COST = CONVERT(FLOAT,B.CLEAN_COST),COST_MODULE_AVAILABLE = B.COST_MODULE_AVAILABLE,COST_MODULE_STATUS = B.COST_CALCULATION_STATUS,GREATER_THAN_QTLY_PM_COST = CONVERT(FLOAT,B.GREATER_THAN_QTLY_COST),KPI_COST = CONVERT(FLOAT,B.KPI_COST),LABOR_COST = CONVERT(FLOAT,B.LABOUR_COST),LESS_THAN_QTLY_PM_COST= CONVERT(FLOAT,B.LESS_THAN_QTLY_COST),METROLOGY_COST=CONVERT(FLOAT, B.METROLOGY_COST),RECOATING_COST = CONVERT(FLOAT,B.RECOATING_COST),REFURB_COST = CONVERT(FLOAT,B.REFURB_COST),SEEDSTOCK_COST = CONVERT(FLOAT,B.SEEDSTOCK_COST),TOTAL_COST_WOSEEDSTOCK = CONVERT(FLOAT,B.TOTAL_COST_WOSEEDSTOCK),TOTAL_COST_WSEEDSTOCK = CONVERT(FLOAT,TOTAL_COST_WISEEDSTOCK),NPI = B.NPI,SERVICE_COMPLEXITY = B.SERVICE_COMPLEXITY FROM SAQICA A(NOLOCK) JOIN SAQICO_INBOUND B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.REVISION_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.ASSEMBLY_ID = B.ASSEMBLY_ID WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"'  ' ")
 					
 					#Quote Item Covered Object Roll Up Cost
 					primaryQueryItems = SqlHelper.GetFirst(
@@ -253,7 +259,7 @@ try:
 											+ " A SET TOOL_VALUEDRIVER_VALUE_CODE = VALUEDRIVER_VALUE_CODE ,TOOL_VALUEDRIVER_VALUE_DESCRIPTION = VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT = C.VALUEDRIVER_COEFFICIENT  FROM SAQSCV A(NOLOCK) JOIN (SELECT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,QTEREV_ID,SCORE/SERVICE_COMPLEXITY AS WA FROM (SELECT A.QUOTE_ID,A.SERVICE_ID,A.EQUIPMENT_ID,A.REVISION_ID AS QTEREV_ID,COUNT(*) AS SERVICE_COMPLEXITY,SUM(CASE WHEN SERVICE_COMPLEXITY=''DIFFICULT'' THEN 100 WHEN SERVICE_COMPLEXITY=''MEDIUM'' THEN 50 ELSE 0 END) AS SCORE FROM SAQICO_INBOUND (NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.REVISION_ID = B.QTEREV_ID  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND B.GREENBOOK NOT IN (''CMP'',''PDC'',''MPS'',''IMPLANT'') GROUP BY A.QUOTE_ID,A.SERVICE_ID,A.EQUIPMENT_ID,A.REVISION_ID)B )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.QTEREV_ID = B.QTEREV_ID JOIN PRVDVL C(NOLOCK) ON A.TOOL_VALUEDRIVER_ID = C.VALUEDRIVER_ID WHERE A.TOOL_VALUEDRIVER_ID = ''SERVICE COMPLEXITY'' AND VALUEDRIVER_VALUE_CODE= CASE WHEN WA>=75 THEN ''HIGH'' WHEN WA>=25 AND WA<75 THEN ''MEDIUM'' WHEN WA<25 THEN ''EASY'' ELSE NULL END   '")
 					
 					#Swap Kit AMAT Provided
-					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_STK_SWKIT_A<'',entitlement_xml),charindex (''>Swap Kits (Applied provided)</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_STK_SWKIT_A<'',entitlement_xml)+len(''>Swap Kits (Applied provided)</ENTITLEMENT_DESCRIPTION>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID IN (''Z0004'',''Z0091'',''Z0099'',''Z0035'' )) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_DESCRIPTION=''Swap Kits (Applied provided)''  '")
+					S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET SWAP_KIT=ENTITLEMENT_DISPLAY_VALUE FROM SAQICO_INBOUND A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_DESCRIPTION)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DESCRIPTION FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_NAME>AGS_STK_SWKIT_A<'',entitlement_xml),charindex (''>Swap Kits (Applied provided)</ENTITLEMENT_DESCRIPTION>'',entitlement_xml)-charindex (''<ENTITLEMENT_NAME>AGS_STK_SWKIT_A<'',entitlement_xml)+len(''>Swap Kits (Applied provided)</ENTITLEMENT_DESCRIPTION>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM SAQSCE (nolock)a WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND SERVICE_ID IN (''Z0004'',''Z0091'',''Z0035'' )) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_DESCRIPTION=''Swap Kits (Applied provided)''  '")
 					
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
@@ -579,6 +585,12 @@ try:
 					copyEmail8 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
 					msg.Bcc.Add(copyEmail8)
 
+					copyEmail7 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail7)
+
+					copyEmail9 = MailAddress("siva.subramani@bostonharborconsulting.com")
+					msg.Bcc.Add(copyEmail9)
+
 					# Send the message
 					mailClient.Send(msg)
 
@@ -653,6 +665,12 @@ try:
 
 							copyEmail5 = MailAddress("baji.baba@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail5) 
+
+							copyEmail7 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail7)
+
+							copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail8)
 
 							# Bcc Emails	
 							if len(UserEmail) > 0:
@@ -771,6 +789,14 @@ try:
 						copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
 						msg.CC.Add(copyEmail3) 
 
+						copyEmail8 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail8)
+
+						copyEmail2 = MailAddress("siva.subramani@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail2)
+
+
+
 
 						# Send the message
 						mailClient.Send(msg)
@@ -831,6 +857,12 @@ except:
 
 	copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
 	msg.CC.Add(copyEmail6)
+
+	copyEmail8 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
+	msg.CC.Add(copyEmail8)
+
+	copyEmail2 = MailAddress("siva.subramani@bostonharborconsulting.com")
+	msg.CC.Add(copyEmail2)
 	
 	# Send the message
 	mailClient.Send(msg) 
