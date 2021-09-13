@@ -541,7 +541,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
 
 				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
-				(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
+				#(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
 				
 				TotalDiscount = ((float(b.TARGET_PRICE)-float(b.SUM_PRICE))/float(b.TARGET_PRICE)) * 100.00
 				Trace.Write("Total Discount = "+str(TotalDiscount))
@@ -991,7 +991,10 @@ VALUE = Param.VALUE
 ELEMENT = Param.ELEMENT
 CLICKEDID = Param.CLICKEDID
 RECORDID = Param.RECORDID
-quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = ""
 if hasattr(Param, "selectPN"):
 
 	selectPN = list(Param.selectPN)
