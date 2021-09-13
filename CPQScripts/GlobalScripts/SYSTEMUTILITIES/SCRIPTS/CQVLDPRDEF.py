@@ -631,4 +631,34 @@ def predefined_values():
     except Exception,e:
         Log.Info('contract coverage time--'+str(e))
 ###calling all functions for predefined
-predefined_values()
+try:
+    Qt_rec_id = Param.CPQ_Columns['Quote'] 
+except:
+    Qt_rec_id = ""
+
+#Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
+try:
+    LEVEL = Param.CPQ_Columns['Level']
+except:
+    LEVEL = ""
+Log.Info("LEVEL---"+str(LEVEL))
+try:
+    TreeParam = Param.CPQ_Columns['TreeParam']
+    TreeParentParam = Param.CPQ_Columns['TreeParentParam']
+    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam']
+    TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
+    userId = Param.CPQ_Columns['Userid']
+    userName = Param.CPQ_Columns['Username']
+    quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
+except: 
+    TreeParam = ""
+    TreeParentParam = ""
+    TreeSuperParentParam = ""
+    TreeTopSuperParentParam = ""
+    userId = ""
+    userName = ""
+    quote_revision_record_id = ""
+if 'PREDEFINED WAFER DRIVER' in LEVEL:
+    ApiResponse = ApiResponseFactory.JsonResponse(predefined_values())
+elif 'FAB COST AND VALUE DRIVER' in LEVEL:
+    ApiResponse = ApiResponseFactory.JsonResponse(FabCostAndValueDrivers())
