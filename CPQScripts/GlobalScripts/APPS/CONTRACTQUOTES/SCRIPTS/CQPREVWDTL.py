@@ -323,7 +323,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						'<td><input id="'
 						+ str(sefl_api)
 						+ '" type="CHECKBOX" value="'
-						+ (eval("col_name." + str(sefl_api)))
+						+ str(sefl_api)
+						#+ (eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
 						+ 'disable checked><span class="lbl"></span></td>'
 					)			
