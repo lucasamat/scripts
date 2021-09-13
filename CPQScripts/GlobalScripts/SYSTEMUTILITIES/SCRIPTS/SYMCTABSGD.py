@@ -420,22 +420,6 @@ class CONTAINER:
                             ctr_TotalRow = []
                             if current_prod == "":
                                 for ik in NAME:
-                                    if PRIMARY_OBJECT_NAMes == "SAQTMT":
-                                        if ik == 'QUOTE_ID' or ik == 'QTEREV_ID' or ik == 'REVISION_STATUS' or ik == 'REVISION_DESCRIPTION' or ik == 'CONTRACT_VALID_FROM' or ik == 'CONTRACT_VALID_TO':
-                                            objh_obj = Sql.GetFirst(
-                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAQTRV' and DATA_TYPE ='AUTO NUMBER' "
-                                            )
-                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
-                                        if ik == 'ACCOUNT_ID' or ik == 'ACCOUNT_NAME' or ik == 'SALESORG_ID' or ik == 'OWNER_NAME' or ik == 'QUOTE_ID' or ik == 'QUOTE_ID':
-                                            objh_obj = Sql.GetFirst(
-                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAQTMT' and DATA_TYPE ='AUTO NUMBER' "
-                                            )
-                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
-                                        if ik == 'Opportunity Name':
-                                            objh_obj = Sql.GetFirst(
-                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAOPQT' and DATA_TYPE ='AUTO NUMBER' "
-                                            )
-                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
                                     fieldLabel = Sql.GetFirst(
                                         "SELECT FIELD_LABEL, DATA_TYPE, FORMULA_LOGIC, FIELD_SHORT_LABEL FROM  SYOBJD (NOLOCK) WHERE PARENT_OBJECT_RECORD_ID='"
                                         + str(sql.PRIMARY_OBJECT_RECORD_ID)
@@ -475,6 +459,22 @@ class CONTAINER:
                                         ind += 1
                             else:
                                 for ik in NAME:
+                                    if PRIMARY_OBJECT_NAMes == "SAQTMT":
+                                        if ik == 'QUOTE_ID' or ik == 'QTEREV_ID' or ik == 'REVISION_STATUS' or ik == 'REVISION_DESCRIPTION' or ik == 'CONTRACT_VALID_FROM' or ik == 'CONTRACT_VALID_TO':
+                                            objh_obj = Sql.GetFirst(
+                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAQTRV' and DATA_TYPE ='AUTO NUMBER' "
+                                            )
+                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
+                                        if ik == 'ACCOUNT_ID' or ik == 'ACCOUNT_NAME' or ik == 'SALESORG_ID' or ik == 'OWNER_NAME' or ik == 'QUOTE_ID' or ik == 'QUOTE_ID':
+                                            objh_obj = Sql.GetFirst(
+                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAQTMT' and DATA_TYPE ='AUTO NUMBER' "
+                                            )
+                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
+                                        if ik == 'Opportunity Name':
+                                            objh_obj = Sql.GetFirst(
+                                                "select PRIMARY_OBJECT_RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAOPQT' and DATA_TYPE ='AUTO NUMBER' "
+                                            )
+                                            sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.PRIMARY_OBJECT_RECORD_ID
                                     fieldLabel = Sql.GetFirst(
                                         "SELECT FIELD_LABEL,DATA_TYPE,FORMULA_LOGIC, FIELD_SHORT_LABEL FROM  SYOBJD (NOLOCK) "
                                         + " WHERE PARENT_OBJECT_RECORD_ID='"
