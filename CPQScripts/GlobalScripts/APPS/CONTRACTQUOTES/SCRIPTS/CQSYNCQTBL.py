@@ -682,6 +682,7 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType")
+							"CANCELLATION_PERIOD":"90 DAYS"
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
