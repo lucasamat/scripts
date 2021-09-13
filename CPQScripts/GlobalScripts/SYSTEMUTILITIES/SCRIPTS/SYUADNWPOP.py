@@ -3547,7 +3547,8 @@ def POPUPLISTVALUEADDNEW(
 			if ObjectName == "ACACST":
 				lookup_val.append("APROBJ_LABEL")
 			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}			
-			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}	Trace.Write('###Lookup List--->'+str(lookup_list))		
+			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}
+			Trace.Write('###Lookup List--->'+str(lookup_list))		
 			new_value_dict = {}
 			new_value_dict1 = {}
 			val_list = []
