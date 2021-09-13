@@ -364,7 +364,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
 				WHERE SYSEFL.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND SYSEFL.SECTION_RECORD_ID = '{2}'""".format(str(sefl.RECORD_ID), str(User.Id),str(sect.RECORD_ID)))
 			if permission_chk_query:
-				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.QUOTE_STATUS).upper() != "APPROVED":
+				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APPROVED":
 					edit_lock_icon = "fa fa-pencil"
 				else:
 					edit_lock_icon = "fa fa-lock"  
