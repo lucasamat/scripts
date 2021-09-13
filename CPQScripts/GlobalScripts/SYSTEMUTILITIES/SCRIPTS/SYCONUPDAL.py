@@ -179,7 +179,7 @@ class ConfigUpdateScript:
 						FROM
 							SYOBJD (NOLOCK)
 						WHERE API_NAME IN %s AND OBJECT_NAME IN ('SAQTMT','SAQTRV')  ORDER BY abs(DISPLAY_ORDER) """
-					% (tuple(columns))
+					% (tuple(columns),)
 				)
 			else:
 				objd_records_obj = Sql.GetList(
