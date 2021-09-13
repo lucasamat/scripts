@@ -174,7 +174,7 @@ def predefined_wafer():
     Sql.RunQuery(saqscd_insert_wafer)
     Sql.RunQuery(saqscv_insert_wafer)
 
-
+##A055S000P01-8778 starts
 def predefined_device_type():
     Log.Info('device fn')
     saqscd_insert_device = """ INSERT SAQSCD (
@@ -303,7 +303,7 @@ def predefined_device_type():
     Sql.RunQuery(saqscd_insert_device)
     Sql.RunQuery(saqscv_insert_device)
 
-
+##A055S000P01-8778 ends
 def predefined_csa_tools():
     account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
     account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
