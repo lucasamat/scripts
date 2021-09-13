@@ -218,7 +218,10 @@ class ConfigUpdateScript:
 					# 	labels.append(dynamicLable.FIELD_LABEL)
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
-				field_lables = ",".join(labels)
+				if self.current_tab_name == "Quote":
+    				field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
+				else:
+					field_lables = ",".join(labels)
 			#Trace.Write("selftab"+str(self.current_tab_name))
 			"""if str(self.current_tab_name.upper()) == "QUOTE": 
 				key_column = "MASTER_TABLE_QUOTE_RECORD_ID"
