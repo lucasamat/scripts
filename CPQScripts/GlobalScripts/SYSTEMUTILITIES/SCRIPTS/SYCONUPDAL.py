@@ -67,13 +67,24 @@ class ConfigUpdateScript:
 
 	def build_query(self, column, obj_name, where_string):
 		"""TO DO."""
-		query_string = """
-				SELECT {Column_Name}
-				FROM {Table_Name} (NOLOCK)
-				WHERE {Where_String}
-				""".format(
-			Column_Name=column, Table_Name=obj_name, Where_String=where_string
-		)
+		if obj_name == "SAQTMT":
+			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTMT.QUOTE_ID,SAQTMT.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO"
+			query_string = """
+					SELECT {Column_Name}
+					FROM {Table_Name} (NOLOCK)
+					INNER JOIN SAQTRV ON  SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID AND SAQTMT.ACTIVE_REV = '1'
+					WHERE {Where_String}
+					""".format(
+				Column_Name=column, Table_Name=obj_name, Where_String=where_string
+			)
+		else:
+			query_string = """
+					SELECT {Column_Name}
+					FROM {Table_Name} (NOLOCK)
+					WHERE {Where_String}
+					""".format(
+				Column_Name=column, Table_Name=obj_name, Where_String=where_string
+			)
 		return query_string
 
 	def get_value_from_obj(self, record_obj, column):
@@ -140,6 +151,7 @@ class ConfigUpdateScript:
 
 	def banner_content(self, record_id):
 		"""TO DO."""
+		Trace.Write("self.current_tab_name"+str(self.current_tab_name))
 		field_lables, field_values = "", ""
 		record_obj = Sql.GetFirst(
 			"""
@@ -195,7 +207,10 @@ class ConfigUpdateScript:
 					# 	labels.append(dynamicLable.FIELD_LABEL)
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
-				field_lables = ",".join(labels)
+				if self.current_tab_name == "Quote":
+					field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
+				else:
+					field_lables = ",".join(labels)
 			#Trace.Write("selftab"+str(self.current_tab_name))
 			"""if str(self.current_tab_name.upper()) == "QUOTE": 
 				key_column = "MASTER_TABLE_QUOTE_RECORD_ID"
@@ -207,6 +222,7 @@ class ConfigUpdateScript:
 			if table_name == 'SAQTMT':
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
+				key_column = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 			if key_column and record_id:
 				query_string = self.build_query(
 					column=",".join(columns),
