@@ -316,7 +316,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ str(datetime_value)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
-				elif sefl_api=="ACTIVE_REV" or sefl_api=="POES":
+				elif sefl_api=="ACTIVE" or sefl_api=="POES":
 					#if str((eval("col_name." + str(sefl_api)))).upper() == "TRUE" or (eval("col_name." + str(sefl_api))) == "1":
 					Trace.Write("313")
 					sec_str += (
@@ -724,8 +724,7 @@ def constructapprovalchaininformation(MODE,record_id):
 	)
 	for sect in Oppp_SECT:
 		sec_str += '<div id="container" class="wdth100 ' + str(sect.RECORD_ID) + '">'        
-		sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'") 
-		edit_action = ""       
+		sec_html_btn = Sql.GetList("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'")        
 		if len(sec_html_btn) > 0:            
 			for btn in sec_html_btn:                
 				if "EDIT" in btn.HTML_CONTENT:
