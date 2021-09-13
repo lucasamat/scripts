@@ -46,7 +46,7 @@ except:
     quote_revision_record_id = ""
 
 
-
+##A055S000P01-4420 starts
 def predefined_wafer():
     saqscd_insert_wafer = """ INSERT SAQSCD (
         QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID,
@@ -173,6 +173,7 @@ def predefined_wafer():
     Log.Info('saqscv_insert--wafer'+str(saqscv_insert_wafer))
     Sql.RunQuery(saqscd_insert_wafer)
     Sql.RunQuery(saqscv_insert_wafer)
+##A055S000P01-4420 ends
 
 ##A055S000P01-8778 starts
 def predefined_device_type():
@@ -495,6 +496,10 @@ def predefined_csa_tools():
             Log.Info("SAQSCD_CSA_INSERT-----> "+str(quer_statement))
             Log.Info("SAQSCV_CSA_INSERT-----> "+str(quer_statement_2))
 
+
+def predefined_contract_cov_time():
+    
+
 def predefined_values():
     ##predefined value for wafer
     try:
@@ -513,5 +518,9 @@ def predefined_values():
     except Exception,e:
         Log.Info('csa tools--'+str(e))
 
+    try:
+        predefined_contract_cov_time()
+    except Exception,e:
+        Log.Info('contract coverage time--'+str(e))
 ###calling all functions for predefined
 predefined_values()
