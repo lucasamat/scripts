@@ -1864,7 +1864,7 @@ def CommonTreeViewHTMLDetail(
 							# )
 							if cur_api_name is not None:
 								curr_symbol_obj = Sql.GetFirst(
-									"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select "
+									"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select "
 									+ cur_api_name.CURRENCY_INDEX
 									+ " from "
 									+ str(ObjectName)
