@@ -219,7 +219,7 @@ class ConfigUpdateScript:
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
 				if self.current_tab_name == "Quote":
-    				field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
+					field_lables = "Key,Quote Id,Active Revision Id,Account Id,Account Name,Revision status,Sales Org Id,Contract Valid From,Contract Valid To"
 				else:
 					field_lables = ",".join(labels)
 			#Trace.Write("selftab"+str(self.current_tab_name))
@@ -324,22 +324,22 @@ class ConfigUpdateScript:
 						section_edit_access.RECORD_ID
 					)'''
 					objd_records_obj_query = """
-                            SELECT
-                                DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE
-                                FROM SYOBJD (NOLOCK)
-                                INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
-                                INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
-                                INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
-                                INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
-                                AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
+							SELECT
+								DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE
+								FROM SYOBJD (NOLOCK)
+								INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
+								INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
+								INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
+								INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+								AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
 
-                            WHERE
+							WHERE
 
-                                SYSECT.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND
-                                SYSEFL.SECTION_RECORD_ID = '{0}'
-                                """.format(
-                            section_edit_access.RECORD_ID, str(User.Id)
-                        )
+								SYSECT.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND
+								SYSEFL.SECTION_RECORD_ID = '{0}'
+								""".format(
+							section_edit_access.RECORD_ID, str(User.Id)
+						)
 					objd_records_obj = Sql.GetList(objd_records_obj_query)
 					if objd_records_obj is not None:
 						for objd_record in objd_records_obj:
