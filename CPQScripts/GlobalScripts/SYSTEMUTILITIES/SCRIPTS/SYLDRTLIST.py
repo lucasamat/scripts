@@ -3274,7 +3274,7 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			if RECORD_ID == 'SYOBJR-00009':
-				if pricing_picklist_value == 'Pricing'
+				if pricing_picklist_value == 'Pricing':
 					rowspan = 'rowspan="3"'
 				else:
 					rowspan = 'rowspan="2"'
@@ -3425,7 +3425,7 @@ class SYLDRTLIST:
 			
 				rowspan = ''
 				if RECORD_ID == 'SYOBJR-00009':
-					if pricing_picklist_value == 'Pricing'
+					if pricing_picklist_value == 'Pricing':
 						rowspan = 'rowspan="3"'
 					else:
 						rowspan = 'rowspan="2"'
