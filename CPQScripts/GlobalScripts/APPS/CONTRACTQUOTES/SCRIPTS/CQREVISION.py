@@ -128,6 +128,7 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_ID" : get_previous_rev_data.PRICINGPROCEDURE_ID,
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
+				"CANCELLATION_PERIOD":"90 DAYS"
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
