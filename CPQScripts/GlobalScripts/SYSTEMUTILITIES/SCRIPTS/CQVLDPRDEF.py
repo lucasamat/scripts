@@ -306,9 +306,11 @@ def predefined_device_type():
 
 ##A055S000P01-8778 ends
 def predefined_csa_tools():
+    
     account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
     account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
     tools_count_query = SqlHelper.GetList("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' GROUP BY FABLOCATION_NAME")
+    Log.Info("tools_count_query-----> "+str(tools_count_query))
     if account_bluebook_query.BLUEBOOK != "DISPLAY":
         for count in tools_count_query:
             if count.COUNT > 50:
