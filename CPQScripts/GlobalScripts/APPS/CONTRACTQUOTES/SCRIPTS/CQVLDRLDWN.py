@@ -512,6 +512,5 @@ elif 'FAB GREENBOOK VALUE DRIVER' in LEVEL:
     ApiResponse = ApiResponseFactory.JsonResponse(FabGreenbookValueDrivers())
 elif LEVEL == 'FAB VALUE DRIVER':
     ApiResponse = ApiResponseFactory.JsonResponse(FabValueDrivers())
-elif LEVEL == 'CSA TOOLS':
-    ApiResponse = ApiResponseFactory.JsonResponse(csa_tools())
+
 
