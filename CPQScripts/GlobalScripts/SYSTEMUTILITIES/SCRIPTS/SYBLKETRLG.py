@@ -619,7 +619,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				
 				yoy = float(a.YEAR_OVER_YEAR)
 				#VALUE = amt
-				year1 = float(VALUE)
+				year1 = float(amt)
 				year2 = 0.00
 				year3 = 0.00
 				year4 = 0.00
