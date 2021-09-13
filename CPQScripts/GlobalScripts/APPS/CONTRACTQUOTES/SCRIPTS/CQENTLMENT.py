@@ -1839,8 +1839,8 @@ class Entitlements:
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
 			try:			
 				CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,self.userId,self.userName,self.revision_recordid)
-			except:
-				Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+			except Exception as e:
+				Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
 		return True
 
 	def popup(self):
