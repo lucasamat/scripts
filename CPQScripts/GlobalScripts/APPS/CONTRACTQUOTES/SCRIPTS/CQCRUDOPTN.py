@@ -4708,7 +4708,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				
 				#SAQSGB_start_time = time.time()
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
-				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(contract_quote_record_id), quote_revision_record_id))
+				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(self.contract_quote_record_id), self.quote_revision_record_id))
 				if d2:
 					Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri2 '+str(d2.GREENBOOK))
 				#SAQSGB_end_time = time.time()				
@@ -4757,7 +4757,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					))
 				covered_end_time = time.time()
 				Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
-				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(contract_quote_record_id),quote_revision_record_id))
+				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
 				if d2:
 					Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri3 '+str(d2.GREENBOOK))		
 		return True
