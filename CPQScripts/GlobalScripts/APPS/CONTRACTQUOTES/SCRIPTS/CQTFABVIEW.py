@@ -1653,6 +1653,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	userId = str(User.Id)
 	userName = str(User.UserName)
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	#getQuoteId = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
 	#DELETE_SYELOG = """DELETE FROM SYELOG WHERE ERRORMESSAGE_RECORD_ID = 'EBDD1157-CD03-409E-8257-57A36753360E' AND OBJECT_VALUE_REC_ID = '{}'""".format(getQuoteId.QUOTE_ID)
 	#Sql.RunQuery(DELETE_SYELOG)
