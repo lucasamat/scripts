@@ -43,7 +43,9 @@ except:
     userName = ""
     quote_revision_record_id = ""
 
-
+Log.Info('TreeParam---'+str(TreeParam))
+Log.Info('TreeParentParam---'+str(TreeParentParam))
+Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam))
 ##A055S000P01-4420 starts
 def predefined_wafer():
     saqscd_insert_wafer = """ INSERT SAQSCD (
