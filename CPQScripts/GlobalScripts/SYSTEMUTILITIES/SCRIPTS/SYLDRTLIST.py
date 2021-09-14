@@ -3411,8 +3411,10 @@ class SYLDRTLIST:
 					
 		
 			# Item Covered Object Column Grouping - Start
-			#A055S000P01-4401 pricing view
 			table_group_columns = ''
+			#A055S000P01-4401 pricing view
+			##cost grouping
+			table_group_columns2 = ''
 			header1 = ""
 			header3 = ""
 			header2 = ""
@@ -3609,7 +3611,36 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
+				
 				##A055S000P01-4401
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					
+					align = ''
+					#A055S000P01-4401
+					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+						rowspan_level1 = 'rowspan="2"'
+					else:
+						rowspan_level1 = ""
+					if not table_group_columns:
+						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="entitlement_category_toggle(this)"></button>COST</div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				
+
 				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
 					Trace.Write('3 tier header')
 					if header1:
@@ -3813,14 +3844,21 @@ class SYLDRTLIST:
 							)
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
-			#A055S000P01-4401
+			#A055S000P01-4401 Pricing view
 			if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('header2---'+str(header2))
 				table_header += '<tr>{}</tr>'.format(header2)
-				
+			grouping_columns = ""
+			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				grouping_columns += table_group_columns2
+			
+			if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
+				grouping_columns += header3
+			
 			if table_group_columns:
-				Trace.Write('table_group_columns---'+str(table_group_columns))
-				table_header += '<tr>{}</tr>'.format(header3+table_group_columns if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items" else table_group_columns)
+				#Trace.Write('table_group_columns---'+str(table_group_columns))
+				grouping_columns += table_group_columns
+			table_header += '<tr>{}</tr>'.format(grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
