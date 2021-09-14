@@ -4037,19 +4037,23 @@ class SYLDRTLIST:
 			if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('ENTITLEMENT_CATEGORY')
 				ent_cat_list = ['KPI','MISC TERMS']
+				header3_list = ['ENTITLEMENT_NAME','ENTITLEMENT_COST','ENTITLEMENT_PRICE']
 				for i in ent_cat_list:
-					filter_level_data = "input"
-					filter_clas_name = (
-						'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
-						+ str(i).replace(' ','_')
-						+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
-						+ str(i).replace(' ','_')
-						+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
-						+ str(i).replace(' ','_')
-						+ '">'
-					)
-					filter_level_list.append(filter_level_data)
-					cv_list.append(filter_clas_name)
+					filter_level_data = ["input","input",'input']
+					temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'-'+ str(i).replace(' ','_')+ '">' for j in header3_list]
+
+					# filter_clas_name = (
+					# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
+					# 	+ str(i).replace(' ','_')
+					# 	+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
+					# 	+ str(i).replace(' ','_')
+					# 	+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
+					# 	+ str(i).replace(' ','_')
+					# 	+ '">'
+					# )
+					filter_level_list.extend(filter_level_data)
+					cv_list.extend(temp_list)
+				#filter_level_list.append(filter_level_data)
 				
 
 				
