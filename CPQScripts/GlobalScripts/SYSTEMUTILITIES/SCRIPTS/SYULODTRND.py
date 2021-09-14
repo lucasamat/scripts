@@ -879,6 +879,20 @@ def CommonTreeViewHTMLDetail(
 					+ "' and SERVICE_ID = '"+str(TreeParam)+"'"
 					+ ""
 				)
+			elif ObjectName == "ACAPCH" and TreeParam == "Approval Chain Information":
+				RECORD_ID = RECORD_ID.split("|")[0]
+				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				script = (
+					"SELECT "
+					+ str(API_NAMES)
+					+ " FROM "
+					+ str(ObjectName)
+					+ " (NOLOCK) WHERE "
+					+ str(autoNumber)
+					+ " = '"
+					+ str(RECORD_ID)
+					+ "' 
+				)
 			else:	
 				Trace.Write("test746")		
 				RECORD_ID = RECORD_ID.split("|")[0]
