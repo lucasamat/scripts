@@ -3206,7 +3206,7 @@ def EntitlementTreeViewHTMLDetail(
 						
 						attribute_Name_list.append(attrSysId)
 						DType = attribute['attribute_dtype']
-						#Trace.Write("attrValue_else_j --3109---"+str(attrValue) + " attrName_else_j "+str(attrName)+ " || "+str(attrSysId)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+						Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 						if attrSysId in attributesdisallowedlst:
 							if attrSysId in attributedefaultvalue:
 								add_style = "display:none;color:#1B78D2"
