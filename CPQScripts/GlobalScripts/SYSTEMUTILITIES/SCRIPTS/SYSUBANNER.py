@@ -1151,7 +1151,7 @@ def Related_Sub_Banner(
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
                         # FifthValue = "ALL" 
-                if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
+                if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" or subTabName =="Customer Value Drivers" or subTabName =="Product Value Drivers"):
                     Trace.Write("Fab2333")
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
                         if TreeParam == "Receiving Equipment":			
