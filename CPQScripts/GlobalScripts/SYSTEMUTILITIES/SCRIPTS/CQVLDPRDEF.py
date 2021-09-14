@@ -789,5 +789,7 @@ except:
     quote_revision_record_id = ""
 
 if 'PREDEFINED DRIVER' in LEVEL:
-    #predefined_values()
+    predefined_values()
+elif 'ENTITLEMENT PREDEFINED DRIVER' in LEVEL:
     predefined_contract_cov_time_entitlemen_trolldown()
+    Log.Info("LEVEL--2222222")
