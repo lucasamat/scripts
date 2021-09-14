@@ -3423,7 +3423,7 @@ class SYLDRTLIST:
 										# + str(i)
 										# + "</th>"
 						header3 += (
-									'<th data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT_NAME_{val}</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">ENTITLEMENT_COST_{val}</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">ENTITLEMENT_PRICE_{val}</th>'.format(val = str(i).replace(' ','_'))
+									'<th data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">ENTITLEMENT COST</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">ENTITLEMENT PRICE</th>'.format(val = str(i).replace(' ','_'))
 									)    
 			
 			for key, invs in enumerate(list(eval(Columns))):
@@ -4037,10 +4037,9 @@ class SYLDRTLIST:
 			if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('ENTITLEMENT_CATEGORY')
 				ent_cat_list = ['KPI','MISC TERMS']
-				filter_clas_name =''
 				for i in ent_cat_list:
 					filter_level_data = "input"
-					filter_clas_name += (
+					filter_clas_name = (
 						'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
 						+ str(i).replace(' ','_')
 						+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
@@ -4050,7 +4049,7 @@ class SYLDRTLIST:
 						+ '">'
 					)
 					filter_level_list.append(filter_level_data)
-				cv_list.append(filter_clas_name)
+					cv_list.append(filter_clas_name)
 				
 
 				
