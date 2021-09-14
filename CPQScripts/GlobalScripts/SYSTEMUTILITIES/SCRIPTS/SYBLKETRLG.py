@@ -590,7 +590,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					if "+" not in VALUE and "-" not in VALUE:
-					#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
+						#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
 						amt = float(a.TARGET_PRICE) - ((float(VALUE)*float(a.TARGET_PRICE))/100)
 					elif "-" in VALUE:
 						VALUE = VALUE.replace("-","").replace("%","").strip()
@@ -599,7 +599,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					else:
 						amt = 0.00
 				
-				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = '{discount}' WHERE CpqTableEntryId = {cpqid}".format(VALUE=amt,cpqid=cpqid,discount=float(VALUE)))
+				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}', DISCOUNT = {discount} WHERE CpqTableEntryId = {cpqid}".format(VALUE=float(amt),cpqid=cpqid,discount=float(VALUE)))
 
 				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 
