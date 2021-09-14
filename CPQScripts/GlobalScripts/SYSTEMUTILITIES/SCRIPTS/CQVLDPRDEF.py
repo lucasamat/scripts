@@ -629,7 +629,7 @@ def predefined_contract_cov_time_entitlemen_trolldown():
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {treeparam} (nolock) {treeParentParam} ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('AGS_CRT_RSP_TIM','AGS_CRT_CON_COV')".format(treeparam=TreeParam,treeParentParam=TreeParentParam))
     
     #delete to reduce duplicates in SAQSCV
-    QueryStatement = "DELETE FROM SAQSCV {TreeParentParam} AND TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time'".format(treeParentParam=TreeParentParam))
+    QueryStatement = "DELETE FROM SAQSCV {TreeParentParam} AND TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time'".format(treeParentParam=TreeParentParam)
     QueryStatement = QueryStatement.replace("'", "''")
     a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
     for coverageresponse in entitlement_obj:
