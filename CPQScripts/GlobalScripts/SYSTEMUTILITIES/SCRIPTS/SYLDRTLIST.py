@@ -363,7 +363,8 @@ class SYLDRTLIST:
 							else:
 								rem_list_sp = ["SERVICE_ID","BASE_PRICE"]    
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                                                         
-					else:                    
+					else:         
+						Trace.Write('else part')           
 						Columns = obj_obj.COLUMNS
 			# elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
 				
@@ -458,7 +459,7 @@ class SYLDRTLIST:
 				Columns = Columns.replace('CEILING_PRICE','CEILING_PRICE_INGL_CURR').replace('MODEL_PRICE','MODEL_PRICE_INGL_CURR').replace('NET_PRICE','NET_PRICE_INGL_CURR').replace('NET_VALUE','NET_VALUE_INGL_CURR').replace('TARGET_PRICE','TARGET_PRICE_INGL_CURR').replace('YEAR_1','YEAR_1_INGL_CURR').replace('YEAR_2','YEAR_2_INGL_CURR').replace('YEAR_3','YEAR_3_INGL_CURR').replace('YEAR_4','YEAR_4_INGL_CURR').replace('YEAR_5','YEAR_5_INGL_CURR').replace('SALES_DISCOUNT_PRICE','SLSDIS_PRICE_INGL_CURR').replace('TAX_AMOUNT','TAX_AMOUNT_INGL_CURR')
 			#Quote items column based on pricing picklist ends A055S000P01-4578
 			#A055S000P01-4401
-			Trace.Write('inside'+str(pricing_picklist_value)+str(TreeParam))
+			Trace.Write('inside'+str(pricing_picklist_value)+str(TreeParam)+'--'+str(Columns))
 			if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
 				Trace.Write('inside')
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
