@@ -1878,34 +1878,35 @@ class SYLDRTLIST:
 									
 					## involved parties equipmemt starts
 					elif str(RECORD_ID) == "SYOBJR-00007": # Billing Matrix - Pivot - Start
-						Trace.Write(str(billing_date_column)+'--1844---Billing------'+str(TreeParam))                        
-						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
-						Trace.Write('billing_date_column----'+str(billing_date_column))
-						if Qustr:
-							if str(TreeParentParam)== "Billing":
-								Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
-							else:
-								Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
-						pivot_query_str = """
-									SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
-									AS ROW, *
-										FROM (
-											SELECT 
-												{Columns}                                           
-											FROM {ObjectName}
-											{WhereString}
-										) AS IQ
-										PIVOT
-										(
-											SUM(BILLING_AMOUNT)
-											FOR BILLING_DATE IN ({PivotColumns})
-										)AS PVT
-									""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
-												WhereString=Qustr, PivotColumns=pivot_columns)                        
-						Qury_str = """
-									SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
-									""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
-						QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
+						Trace.Write(str(billing_date_column)+'--1844---Billing------'+str(TreeParam))
+						if billing_date_column:                        
+							pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
+							Trace.Write('billing_date_column----'+str(billing_date_column))
+							if Qustr:
+								if str(TreeParentParam)== "Billing":
+									Qustr += " AND SERVICE_ID = '{}' AND BILLING_DATE BETWEEN '{}' AND '{}'".format(TreeParam,billing_date_column[0], billing_date_column[-1])
+								else:
+									Qustr += " AND BILLING_DATE BETWEEN '{}' AND '{}'".format(billing_date_column[0], billing_date_column[-1])
+							pivot_query_str = """
+										SELECT ROW_NUMBER() OVER(ORDER BY EQUIPMENT_ID)
+										AS ROW, *
+											FROM (
+												SELECT 
+													{Columns}                                           
+												FROM {ObjectName}
+												{WhereString}
+											) AS IQ
+											PIVOT
+											(
+												SUM(BILLING_AMOUNT)
+												FOR BILLING_DATE IN ({PivotColumns})
+											)AS PVT
+										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
+													WhereString=Qustr, PivotColumns=pivot_columns)                        
+							Qury_str = """
+										SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
+										""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
+							QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ ".format(InnerQuery=pivot_query_str)
 						
 						# Billing Matrix - Pivot - End 
 					##involved parties equipmemt starts
