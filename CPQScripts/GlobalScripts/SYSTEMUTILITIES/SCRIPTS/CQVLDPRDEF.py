@@ -16,7 +16,7 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-Log.Info("hitted----->")
+#Log.Info("hitted----->")
 try:
     Qt_rec_id = Param.CPQ_Columns['Quote'] 
 except:
@@ -25,7 +25,7 @@ try:
     LEVEL = Param.CPQ_Columns['Level']
 except:
     LEVEL = ""
-Log.Info("LEVEL ->"+str(LEVEL))
+#Log.Info("LEVEL ->"+str(LEVEL))
 try:
     TreeParam = Param.CPQ_Columns['TreeParam']
     TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
@@ -43,9 +43,9 @@ except:
     userName = ""
     quote_revision_record_id = ""
 
-Log.Info('TreeParam---'+str(TreeParam))
-Log.Info('TreeParentParam---'+str(TreeParentParam))
-Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam))
+# Log.Info('TreeParam---'+str(TreeParam))
+# Log.Info('TreeParentParam---'+str(TreeParentParam))
+# Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam))
 ##A055S000P01-4420 starts
 def predefined_wafer():
     saqscd_insert_wafer = """ INSERT SAQSCD (
@@ -625,10 +625,6 @@ def predefined_contract_cov_time():
 
 
 def predefined_contract_cov_time_entitlemen_trolldown():
-    Log.Info('TreeParam'+str(TreeParam))
-    Log.Info('TreeParentParam'+str(TreeParentParam))
-    Log.Info('TreeSuperParentParam'+str(TreeSuperParentParam))
-    
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {treeparam} (nolock) {treeParentParam} ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('AGS_CRT_RSP_TIM','AGS_CRT_CON_COV')".format(treeparam=TreeParam,treeParentParam=TreeParentParam))
 
     for coverageresponse in entitlement_obj:
@@ -638,7 +634,7 @@ def predefined_contract_cov_time_entitlemen_trolldown():
             time=coverageresponse.ENTITLEMENT_DISPLAY_VALUE          
     time=time.split(' ')[0]
     value = coverage+time
-    saqscd_insert_contract = """INSERT SAQSCD (
+    saqscd_insert_contractentitlemnet = """INSERT SAQSCD (
         QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID,
         EQUIPMENT_DESCRIPTION,
         EQUIPMENT_ID,
@@ -692,9 +688,9 @@ def predefined_contract_cov_time_entitlemen_trolldown():
         '' as CPQTABLEENTRYDATEADDED ,
         SAQSCO.QTEREV_ID,
         SAQSCO.QTEREV_RECORD_ID 
-        from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSVDR ON SAQSCO.SERVICE_ID = PRSVDR.SERVICE_ID  WHERE  SAQSCO.QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSVDR.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCD.VALUEDRIVER_ID = 'Contract Coverage & Response Time' )""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,treeParentParam=TreeParentParam,qurev_rec_id=quote_revision_record_id)
+        from MAEQUP INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK INNER JOIN PRSVDR ON SAQSCO.SERVICE_ID = PRSVDR.SERVICE_ID {treesuperparentparam} AND PRSVDR.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCD {treeParentParam} AND SAQSCD.VALUEDRIVER_ID = 'Contract Coverage & Response Time' )""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,treeParentParam=TreeParentParam,treesuperparentparam=TreeSuperParentParam,qurev_rec_id=quote_revision_record_id)
 
-    saqscv_insert_contract = """INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
+    saqscv_insert_contractentitlemnet = """INSERT SAQSCV (QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,
         EQUIPMENT_DESCRIPTION,
         EQUIPMENT_ID,
         EQUIPMENT_RECORD_ID,
@@ -726,15 +722,14 @@ def predefined_contract_cov_time_entitlemen_trolldown():
         QTEREV_RECORD_ID)
         SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID, SAQSCO.EQUIPMENT_DESCRIPTION,SAQSCO.EQUIPMENT_ID,SAQSCO.EQUIPMENT_RECORD_ID,SAQSCO.QUOTE_ID,SAQSCO.QUOTE_NAME,SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQSCO.SERIAL_NO as SERIAL_NUMBER,SAQSCO.SERVICE_DESCRIPTION,SAQSCO.SERVICE_ID,SAQSCO.SERVICE_RECORD_ID,PRSDVL.VALUEDRIVER_ID,PRSDVL.VALUEDRIVER_RECORD_ID,PRSDVL.VALUEDRIVER_VALUE_CODE,PRSDVL.VALUEDRIVER_VALUE_DESCRIPTION,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID,PRSDVL.VALUEDRIVER_VALUE_RECORD_ID,PRSDVL.VALUEDRIVER_COEFFICIENT,PRSDVL.SRVDRVAL_RECORD_ID as VALUEDRIVER_COEFFICIENT_RECORD_ID,SAQSCO.FABLOCATION_ID,'' as CPQTABLEENTRYADDEDBY,'' as ADDUSR_RECORD_ID,SAQSCO.FABLOCATION_NAME,SAQSCO.FABLOCATION_RECORD_ID,'' as CPQTABLEENTRYDATEADDED,'' as QTESRVFBL_RECORD_ID,'' as QTEREV_ID,SAQSCO.QTEREV_RECORD_ID from MAEQUP 
         INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK 
-        INNER JOIN PRSDVL ON SAQSCO.SERVICE_ID = PRSDVL.SERVICE_ID
-        WHERE SAQSCO.QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSDVL.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND PRSDVL.VALUEDRIVER_VALUE_DESCRIPTION ='{value}' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCV WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCV.TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time')""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id,value = value,treeParentParam=TreeParentParam)
+        INNER JOIN PRSDVL ON SAQSCO.SERVICE_ID = PRSDVL.SERVICE_ID {treesuperparentparam} AND PRSDVL.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND PRSDVL.VALUEDRIVER_VALUE_DESCRIPTION ='{value}' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCV {treeParentParam} AND SAQSCV.TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time')""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id,value = value,treeParentParam=TreeParentParam,treesuperparentparam=TreeSuperParentParam)
     Log.Info('value'+str(value))
     Log.Info('time'+str(time))
-    Log.Info('saqscd_insert--contract'+str(saqscd_insert_contract))
-    Log.Info('saqscv_insert--contract'+str(saqscv_insert_contract))
+    Log.Info('saqscd_insert--contract'+str(saqscd_insert_contractentitlemnet))
+    Log.Info('saqscv_insert--contract'+str(saqscv_insert_contractentitlemnet))
     
-    Sql.RunQuery(saqscd_insert_contract)
-    Sql.RunQuery(saqscv_insert_contract)
+    Sql.RunQuery(saqscd_insert_contractentitlemnet)
+    Sql.RunQuery(saqscv_insert_contractentitlemnet)
 
 
 
