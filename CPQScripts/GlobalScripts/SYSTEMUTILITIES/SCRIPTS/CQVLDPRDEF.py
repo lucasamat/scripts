@@ -763,7 +763,7 @@ def predefined_values():
 ###calling all functions for predefined
 
 
-if 'PREDEFINED DRIVER' in LEVEL:
+if LEVEL == 'PREDEFINED DRIVER':
     predefined_values()
 elif LEVEL == 'ENTITLEMENT PREDEFINED DRIVER':
     Log.Info('contract coverage time-22222-')
