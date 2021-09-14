@@ -3415,9 +3415,14 @@ class SYLDRTLIST:
 			#A055S000P01-4401 pricing view
 			##cost grouping
 			table_group_columns2 = ''
-			header1 = ""
-			header3 = ""
-			header2 = ""
+			##price grouping
+			table_group_columns3 =''
+			##Line summary grouping
+			table_group_columns4 =''
+			##Entitlement category grouping
+			header1 = ''
+			header3 = ''
+			header2 = ''
 			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				ent_cat_list = ['KPI','MISC TERMS']
 				if ent_cat_list:
@@ -3435,7 +3440,7 @@ class SYLDRTLIST:
 										# + str(i)
 										# + "</th>" 
 						header3 += (
-									'<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">ENTITLEMENT COST</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">ENTITLEMENT PRICE</th>'.format(val = category_val)
+									'<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">COST IMPACT</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">PRICE_IMPACT</th>'.format(val = category_val)
 									)    
 			
 			for key, invs in enumerate(list(eval(Columns))):
@@ -3612,11 +3617,11 @@ class SYLDRTLIST:
 							)           
 					continue
 				
-				##A055S000P01-4401
+				##A055S000P01-4401 
+				##cost grouping
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					
 					align = ''
-					#A055S000P01-4401
 					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 						rowspan_level1 = 'rowspan="2"'
 					else:
@@ -3628,6 +3633,60 @@ class SYLDRTLIST:
 					elif str(invs) in center_align_list:
 						align = 'center'
 					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				##price grouping
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					
+					align = ''
+					
+					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+						rowspan_level1 = 'rowspan="2"'
+					else:
+						rowspan_level1 = ""
+					if not table_group_columns3:
+						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="entitlement_category_toggle(this)"></button>PRICE</div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns3 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				##Line summary grouping
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					
+					align = ''
+					
+					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+						rowspan_level1 = 'rowspan="2"'
+					else:
+						rowspan_level1 = ""
+					if not table_group_columns4:
+						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="entitlement_category_toggle(this)"></button>PRICE</div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns4 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -3854,7 +3913,10 @@ class SYLDRTLIST:
 			
 			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				grouping_columns += table_group_columns2
-			
+			if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				grouping_columns += table_group_columns3
+			if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				grouping_columns += table_group_columns4
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
@@ -4088,7 +4150,7 @@ class SYLDRTLIST:
 				header3_list = ['ENTITLEMENT_NAME','ENTITLEMENT_COST','ENTITLEMENT_PRICE']
 				for i in ent_cat_list:
 					filter_level_data = ["input","input",'input']
-					temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'-'+ str(i).replace(' ','_')+ '">' for j in header3_list]
+					temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'_'+ str(i).replace(' ','_')+ '">' for j in header3_list]
 
 					# filter_clas_name = (
 					# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
@@ -4272,7 +4334,7 @@ class SYLDRTLIST:
 			+ str(table_id)
 			+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,width: 200, autoDropDownHeight: true, dropDownWidth:200});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
 			+ str(table_id)
-			+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { debugger;document.getElementById('"
+			+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
 			+ str(table_id)
 			+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data7[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); $('#"
 			+ str(table_id)
