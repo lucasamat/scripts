@@ -304,7 +304,9 @@ class SYLDRTLIST:
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			##A055S000P01-4401
+			
 			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':
+				##column for pricing view
 				Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"
 			else:
 				Columns = obj_obj.COLUMNS
@@ -365,6 +367,7 @@ class SYLDRTLIST:
 							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                                                         
 					else:         
 						##A055S000P01-4401
+						##column for pricing view
 						if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':
 							Trace.Write('else part') 
 							Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"  
@@ -3908,15 +3911,19 @@ class SYLDRTLIST:
 				Trace.Write('header2---'+str(header2))
 				table_header += '<tr>{}</tr>'.format(header2)
 			grouping_columns = ""
+			#entitlement category header 
 			if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
 				grouping_columns += header3
-			
+			#cost header
 			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				grouping_columns += table_group_columns2
+			#price header
 			if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				grouping_columns += table_group_columns3
+			#line summary header
 			if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				grouping_columns += table_group_columns4
+			#benchmark header
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
@@ -4144,6 +4151,7 @@ class SYLDRTLIST:
 				cv_list.append(filter_clas_name)
 			
 			#A055S000P01-4401
+			##filter control for entitlement category for pricing view
 			if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				Trace.Write('ENTITLEMENT_CATEGORY')
 				ent_cat_list = ['KPI','MISC TERMS']
@@ -4152,24 +4160,10 @@ class SYLDRTLIST:
 					filter_level_data = ["input","input",'input']
 					temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'_'+ str(i).replace(' ','_')+ '">' for j in header3_list]
 
-					# filter_clas_name = (
-					# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
-					# 	+ str(i).replace(' ','_')
-					# 	+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
-					# 	+ str(i).replace(' ','_')
-					# 	+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_PRICE-'
-					# 	+ str(i).replace(' ','_')
-					# 	+ '">'
-					# )
+					
 					filter_level_list.extend(filter_level_data)
 					cv_list.extend(temp_list)
-				#filter_level_list.append(filter_level_data)
-				
 
-				
-
-
-			
 			if filter_level_data == "select" and col_name not in checkbox_list:                
 				try:
 					if str(col_name) == "EXCHANGE_RATE_DATE":
