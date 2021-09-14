@@ -902,7 +902,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				#	document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service_obj.SERVICE_ID))
 				#	if document_type_obj is not None:
 				#		self._process_query("UPDATE SAQTMT SET DOCUMENT_TYPE = '{}' WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(document_type_obj.DOCTYP_ID,self.contract_quote_record_id))
-
+				Trace.Write("row_detail--"+str(row_detail))
 				self.CreateEntitlements(row_detail)
 			##A055S000P01-8740 code starts...
 			ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
