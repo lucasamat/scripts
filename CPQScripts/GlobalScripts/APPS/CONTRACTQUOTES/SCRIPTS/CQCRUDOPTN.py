@@ -1921,8 +1921,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		
 		elif self.action_type == "ADD_UNMAPPED_EQUIPMENTS":
 			# SAQFBL INSERT FOR UNMAPPED EQUIPMENTS STARTS
-			Trace.Write("Unmapped_chk_j "+str(list(self.values)))
-			Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
+			#Trace.Write("Unmapped_chk_j "+str(list(self.values)))
+			#Trace.Write("self.contract_quote_id "+str(self.contract_quote_id))
 			
 			master_fab = Sql.GetFirst("SELECT * FROM MAFBLC (NOLOCK) WHERE FAB_LOCATION_ID = 'UNMAPPED' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"')  ")
 			acunt_info = Sql.GetFirst("SELECT ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(self.tree_param).split('-')[1].strip()+"'")
@@ -1967,7 +1967,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			master_object_name = "MAEQUP"
 			if self.values:
 				record_ids = [value for value in self.values]
-				Trace.Write("record_ids_chk_j "+str(record_ids))
+				#Trace.Write("record_ids_chk_j "+str(record_ids))
 				for rec in record_ids:
 					obj = rec.split('-')[0]
 					cpq_entry = rec.split('-')[1].lstrip('0')
@@ -2244,7 +2244,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 					Query_String=query_string
 				)
-				Trace.Write("query_string_for_count"+str(query_string))
+				#Trace.Write("query_string_for_count"+str(query_string))
 				get_fab = "('"+str(self.tree_param)+"')"
 				table_count_data = Sql.GetFirst(query_string_for_count)
 				if table_count_data is not None:
@@ -2253,7 +2253,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					record_ids = [data for data in self.get_res(query_string, table_total_rows)]   
 			##equipment auto insert for sending equipment
 			elif auto_equp_insert == "true": 
-				Trace.Write('ifff1--')       
+				#Trace.Write('ifff1--')       
 				account_id = self.tree_param.split(' - ')
 				account_id = account_id[len(account_id)-1]
 				fab_type = 'SENDING FAB' if "Sending Account -" in self.tree_param else 'RECEIVING FAB' if "Receiving Account -" in self.tree_param else ""
@@ -3177,7 +3177,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		# 				)
 		# 	)
 		else:
-			Trace.Write('3436---'+str(self.tree_param))
+			#Trace.Write('3436---'+str(self.tree_param))
 			self._process_query(
 				"""
 					INSERT SAQSCO (
@@ -3436,21 +3436,13 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					WARRANTY_val = datetime.datetime.strptime(str(val.WARRANTY_END_DATE), "%Y-%m-%d")
 					get_con_date = str(getdate.CONTRACT_VALID_FROM).split(" ")[0]
 					get_con_date = datetime.datetime.strptime(str(get_con_date), "%m/%d/%Y")
-					Trace.Write('get_con_date---562--'+str(type(get_con_date)))
-					Trace.Write('WARRANTY_val---562--'+str(type(WARRANTY_val)))
 					if WARRANTY_val > get_con_date:
-						Trace.Write('get_con_date--564---'+str(get_con_date))
-						Trace.Write('WARRANTY_END_DATE--564-'+str(val.WARRANTY_END_DATE))
 						update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 					else:
-						Trace.Write('WARRANTY_val---568--'+str(val.WARRANTY_END_DATE))
 						update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and  QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
-						Trace.Write('no end date--')
 					Sql.RunQuery(update_warranty_enddate_alert)
 				else:
-					Trace.Write('WARRANTY_val--600-'+str(val.WARRANTY_END_DATE))
 					update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
-					Trace.Write('no end date--')
 					Sql.RunQuery(update_warranty_enddate_alert)
 				#4393 end
 				# if val.WARRANTY_START_DATE:
@@ -4108,7 +4100,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		
 	def _insert_quote_service_greenbook(self, **kwargs):
 		if self.sale_type == "TOOL RELOCATION":
-				Trace.Write("SALE TYPE IS TOOL RELOCATION")
 				self._process_query(
 				"""
 					INSERT SAQSGB (
@@ -4188,7 +4179,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 		else:
-			Trace.Write("SALE TYPE IS NOT TOOL RELOCATION")
 			d1 = Sql.GetFirst(
 				"""SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
 							SAQSCO.FABLOCATION_ID,
@@ -4693,7 +4683,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					]
 				batch_group_record_id = str(Guid.NewGuid()).upper()
 				record_ids = str(str(record_ids)[1:-1].replace("'",""))
-				Trace.Write("@4546--"+str(record_ids))
 				parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")				
 				primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT SAQFEQ.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, SAQFEQ.QUOTE_ID, SAQFEQ.QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM SAQFEQ (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID'")
 				#self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) 
