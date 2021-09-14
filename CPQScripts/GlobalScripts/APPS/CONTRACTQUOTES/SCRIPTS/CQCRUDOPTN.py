@@ -4305,7 +4305,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 		
-		d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
+		d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='{}' """.format(str(self.contract_quote_record_id), self.quote_revision_record_id, str(d1.GREENBOOK)))
 		if d2:
 			Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri '+str(d2.GREENBOOK))
 				
