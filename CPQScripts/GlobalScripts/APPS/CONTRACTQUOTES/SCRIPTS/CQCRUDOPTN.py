@@ -4276,7 +4276,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQSCO.QUOTE_NAME,
 							SAQSCO.QUOTE_RECORD_ID,
 							--SAQSCO.QTEREV_ID,
-							0 AS QTEREV_ID,
+							'0' AS QTEREV_ID,
        						SAQSCO.QTEREV_RECORD_ID,
 							SAQSCO.SALESORG_ID,
 							SAQSCO.SALESORG_NAME,
