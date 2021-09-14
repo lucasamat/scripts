@@ -4305,6 +4305,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							UserId=self.user_id
 						)
 			)
+		import time
+		time.sleep(50)
 		getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO, QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
 		if getdate:
 			Trace.Write("getdate: {}".format(str(getdate)))
