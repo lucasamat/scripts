@@ -3410,7 +3410,7 @@ class SYLDRTLIST:
 			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				ent_cat_list = ['KPI','MISC TERMS']
 				if ent_cat_list:
-					header1 = '<th class = "header1" colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign header1" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
+					header1 = '<th class = "header1" colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign header1" id="entitlement-header-category-toggle" onclick="entitlement_category_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
 					for i in ent_cat_list:
 						header2 += (									
 									'<th class = "entitlement_category_header header2" data-field='+str(i).replace(' ','_')+' colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
