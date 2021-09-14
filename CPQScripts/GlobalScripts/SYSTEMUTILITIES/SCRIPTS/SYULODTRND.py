@@ -912,6 +912,9 @@ def CommonTreeViewHTMLDetail(
 					+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 				)
 			Custom_obj = Sql.GetFirst(script)
+			Trace.Write("ObjName"+str(ObjectName))
+			Trace.Write("TreeParam"+str(TreeParam))
+			
 			
 		except:
 			Trace.Write("Test2")
