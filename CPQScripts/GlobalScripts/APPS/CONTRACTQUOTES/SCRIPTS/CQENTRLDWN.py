@@ -698,7 +698,7 @@ try:
 						
 
 			else:
-				Log.Info('service level-----'+str(get_serviceid))
+				#Log.Info('service level-----'+str(get_serviceid))
 				updateentXML = ""
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
@@ -747,7 +747,7 @@ try:
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			if objectName == 'SAQTSE' and GetXMLsecField:
-				Log.Info('fab if level-----'+str(get_serviceid))
+				#Log.Info('fab if level-----'+str(get_serviceid))
 				get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
 				#updateentXML = ""
 				for fab in get_value_query:
@@ -827,7 +827,7 @@ try:
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
 						
-						Log.Info('updateentXML--fab2-'+str(updateentXML))
+						#Log.Info('updateentXML--fab2-'+str(updateentXML))
 					
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 									
@@ -1024,7 +1024,7 @@ try:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-				Log.Info('updateentXML--grn1-'+str(updateentXML))
+				#Log.Info('updateentXML--grn1-'+str(updateentXML))
 				
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
@@ -1165,7 +1165,7 @@ try:
 			
 
 			else:
-				Log.Info('grn else level-----'+str(get_serviceid))
+				#Log.Info('grn else level-----'+str(get_serviceid))
 				#Log.Info('grnbk_dict----'+str(grnbk_dict))
 				#where_condition = where_cond 
 				get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
@@ -1203,13 +1203,13 @@ try:
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
 					
-					Log.Info('updateentXML--grn2-'+str(updateentXML))
+					#Log.Info('updateentXML--grn2-'+str(updateentXML))
 					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-					Log.Info('UpdateEntitlement_grn---'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
+					#Log.Info('UpdateEntitlement_grn---'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))		
 					Sql.RunQuery(UpdateEntitlement)
 
 		elif obj == 'SAQSCE' and GetXMLsecField:
-			Log.Info('equp level-----'+str(get_serviceid))
+			#Log.Info('equp level-----'+str(get_serviceid))
 			# if objectName == 'SAQSGE':
 			# 	get_fab_query = Sql.GetList("select FABLOCATION_ID,count(*) as cnt from SAQSGB  {} group by FABLOCATION_ID".format(where_cond))
 			# 	for fab in get_fab_query:
@@ -1252,9 +1252,9 @@ try:
 					<PRICE_METHOD>{pm}</PRICE_METHOD>
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
-			Log.Info('updateentXML--equp-'+str(updateentXML))
+			#Log.Info('updateentXML--equp-'+str(updateentXML))
 			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-			Log.Info("UpdateEntitlement_tst---"+" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition))
+			#Log.Info("UpdateEntitlement_tst---"+" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition))
 			Sql.RunQuery(UpdateEntitlement)
 
 			##temp table creation for z0016
@@ -1279,7 +1279,7 @@ try:
 			{}
 			FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
 			ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,update_field_str,objectName,obj,join,where)
-			Log.Info('else--'+str(update_query))
+			#Log.Info('else--'+str(update_query))
 			Sql.RunQuery(update_query)
 			
 
