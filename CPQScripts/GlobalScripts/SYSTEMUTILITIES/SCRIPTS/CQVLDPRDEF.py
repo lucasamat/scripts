@@ -43,9 +43,7 @@ except:
     userName = ""
     quote_revision_record_id = ""
 
-# Log.Info('TreeParam---'+str(TreeParam))
-# Log.Info('TreeParentParam---'+str(TreeParentParam))
-# Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam))
+
 ##A055S000P01-4420 starts
 def predefined_wafer():
     saqscd_insert_wafer = """ INSERT SAQSCD (
@@ -625,8 +623,11 @@ def predefined_contract_cov_time():
 
 
 def predefined_contract_cov_time_entitlemen_trolldown():
+    Log.Info('TreeParam---'+str(TreeParam))
+    Log.Info('TreeParentParam---'+str(TreeParentParam))
+    Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam)) 
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {treeparam} (nolock) {treeParentParam} ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('AGS_CRT_RSP_TIM','AGS_CRT_CON_COV')".format(treeparam=TreeParam,treeParentParam=TreeParentParam))
-
+    Log.Info('s'+str(entitlement_obj))
     for coverageresponse in entitlement_obj:
         if coverageresponse.ENTITLEMENT_DESCRIPTION =="Contract Coverage":
             coverage=coverageresponse.ENTITLEMENT_DISPLAY_VALUE	
