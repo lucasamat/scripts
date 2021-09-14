@@ -303,7 +303,11 @@ class SYLDRTLIST:
 		billing_date_column = getQuotetype =''        
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
-			Columns = obj_obj.COLUMNS
+			##A055S000P01-4401
+			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':
+				Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"
+			else:
+				Columns = obj_obj.COLUMNS
 			Trace.Write('302-------')
 			#Hide columns in Related list based on Quote type start
 			if Currenttab == 'Quotes':
