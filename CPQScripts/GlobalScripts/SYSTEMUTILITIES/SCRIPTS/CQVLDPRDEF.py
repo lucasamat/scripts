@@ -30,8 +30,8 @@ except:
 
 try:
     TreeParam = Param.CPQ_Columns['TreeParam']
-    TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("&&&&","'")
-    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam'].replace("&&&&","'")
+    TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
+    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam'].replace("$$","'")
     TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
     userId = Param.CPQ_Columns['Userid']
     userName = Param.CPQ_Columns['Username']
