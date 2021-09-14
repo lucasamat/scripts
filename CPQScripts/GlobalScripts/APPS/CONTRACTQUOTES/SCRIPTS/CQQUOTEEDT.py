@@ -50,8 +50,11 @@ def bannerdetails(Quoteid,active_tab_name):
 			Quote.RefreshActions()
 			#A055S000P01-8729 start
 			if active_tab_name == "Quotes":
-				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
+				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID, QTEREV_RECORD_ID, MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
 				if get_rev_info:
+					# C4C to CPQ - New Revision - Start
+					Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
+					# C4C to CPQ - New Revision - End
 					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
 					Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
 			#A055S000P01-8729 end	
