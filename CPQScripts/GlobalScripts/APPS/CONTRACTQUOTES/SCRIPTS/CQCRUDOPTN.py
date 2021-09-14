@@ -4313,7 +4313,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		#time.sleep(50)
 		getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO, QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
 		if getdate:
-			return True
+			sys.exit()
 			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = 'CONVERT(VARCHAR(10),{},101)', CONTRACT_VALID_TO = 'CONVERT(VARCHAR(10),{},101)', QTEREV_ID='{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, getdate.QTEREV_ID, self.contract_quote_record_id,self.quote_revision_record_id)
 			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET QTEREV_ID='zero' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id)
 			#Sql.RunQuery(update_contract_date_greenbook_level)
