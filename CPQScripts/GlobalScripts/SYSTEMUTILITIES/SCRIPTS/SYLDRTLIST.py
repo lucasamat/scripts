@@ -3414,7 +3414,7 @@ class SYLDRTLIST:
 					for i in ent_cat_list:
 						category_val = str(i).replace(' ','_')
 						header2 += (									
-									'<th id ='+category_val+' class = "entitlement_category_header header2" data-field='+category_val+' colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
+									'<th id ='+category_val+' class = "header2" data-field='+category_val+' colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
 									) 
 						#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
 										# + str(i)
