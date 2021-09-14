@@ -16,18 +16,16 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-
+Log.Info("hitted----->")
 try:
     Qt_rec_id = Param.CPQ_Columns['Quote'] 
 except:
     Qt_rec_id = ""
-
-#Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 try:
     LEVEL = Param.CPQ_Columns['Level']
 except:
     LEVEL = ""
-
+Log.Info("LEVEL ->"+str(LEVEL))
 try:
     TreeParam = Param.CPQ_Columns['TreeParam']
     TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
