@@ -4004,6 +4004,7 @@ class SYLDRTLIST:
 						)
 						filter_level_list.append(filter_level_data)
 				except:
+					Trace.Write("except-filter-"+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE": 
 										
 						filter_level_data = "select"
@@ -4035,7 +4036,7 @@ class SYLDRTLIST:
 				ent_cat_list = ['KPI','MISC TERMS']
 				for i in ent_cat_list:
 					filter_level_data = "input"
-					filter_clas_name = (
+					filter_clas_name += (
 						'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_NAME-'
 						+ str(i).replace(' ','_')
 						+ '"><input type="text"  class="width100_vis form-control bootstrap-table-filter-control-ENTITLEMENT_COST-'
@@ -4044,8 +4045,9 @@ class SYLDRTLIST:
 						+ str(i).replace(' ','_')
 						+ '">'
 					)
-				filter_level_list.append(filter_level_data)
-				cv_list.append(filter_clas_name)
+				# 	cv_list.append(filter_clas_name)
+				# filter_level_list.append(filter_level_data)
+				
 
 				
 
@@ -4215,7 +4217,7 @@ class SYLDRTLIST:
 			+ str(table_id)
 			+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,width: 200, autoDropDownHeight: true, dropDownWidth:200});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
 			+ str(table_id)
-			+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+			+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { debugger;document.getElementById('"
 			+ str(table_id)
 			+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data7[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); $('#"
 			+ str(table_id)
