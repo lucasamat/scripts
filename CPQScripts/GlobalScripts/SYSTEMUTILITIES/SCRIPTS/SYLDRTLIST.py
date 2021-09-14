@@ -3411,7 +3411,7 @@ class SYLDRTLIST:
 					for i in ent_cat_list:
 						header2 += (									
 									'<th  colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>'+str(i)+'</div></th>'
-									)
+									) 
 						#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
 										# + str(i)
 										# + '" data-filter-control="input" data-align="right" data-title-tooltsip="'
