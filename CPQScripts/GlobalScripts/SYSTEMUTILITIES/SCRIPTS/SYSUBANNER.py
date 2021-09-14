@@ -2557,6 +2557,7 @@ def Related_Sub_Banner(
                                                     #if getPRGBVD.VALUEDRIVER_ID == get_SAQFGV.VALUEDRIVER_ID:
                                                     Trace.Write('button found')
                                                     buttonvisibility = "Show_button"
+                                                    Quote.SetGlobal('Show_button','Show_button')
                                             else:
                                                 Trace.Write('No button-2448-')
                                                 buttonvisibility = "Hide_button"
