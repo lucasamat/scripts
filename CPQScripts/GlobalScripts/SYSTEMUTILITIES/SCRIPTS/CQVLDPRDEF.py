@@ -630,8 +630,8 @@ def predefined_contract_cov_time_entitlemen_trolldown():
     
     #delete to reduce duplicates in SAQSCV
     QueryStatement = "DELETE FROM SAQSCV {TreeParentParam} AND TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time'".format(treeParentParam=TreeParentParam)
-    QueryStatement = QueryStatement.replace("'", "''")
-    a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
+    Log.Info('DELETE'+str(QueryStatement))
+    Sql.RunQuery(QueryStatement)
     for coverageresponse in entitlement_obj:
         if coverageresponse.ENTITLEMENT_DESCRIPTION =="Contract Coverage":
             coverage=coverageresponse.ENTITLEMENT_DISPLAY_VALUE	
