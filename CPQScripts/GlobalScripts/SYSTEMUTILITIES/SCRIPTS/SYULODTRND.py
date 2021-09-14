@@ -891,7 +891,7 @@ def CommonTreeViewHTMLDetail(
 					+ str(autoNumber)
 					+ " = '"
 					+ str(RECORD_ID)
-					+ "' 
+					+ "'"
 				)
 			else:	
 				Trace.Write("test746")		
