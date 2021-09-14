@@ -298,9 +298,9 @@ def CoveredObjItemEntitlement():
 
 def sendEmail(level):
 	Log.Info('284-----entitlement email started-----')
-	userid=User.Id
+	#userid=User.Id
 	getQuoteId = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
-	getEmail = SqlHelper.GetFirst("SELECT email from users where id={}".format(userid))
+	getEmail = SqlHelper.GetFirst("SELECT email from users where id={}".format(userId))
 	#Log.Info("SELECT email from users where id='{}'".format(userid))
 	userEmail = ""
 	userEmail = str(getEmail.email)
