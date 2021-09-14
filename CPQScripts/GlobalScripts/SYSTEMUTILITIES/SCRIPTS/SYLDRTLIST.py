@@ -3849,11 +3849,11 @@ class SYLDRTLIST:
 				Trace.Write('header2---'+str(header2))
 				table_header += '<tr>{}</tr>'.format(header2)
 			grouping_columns = ""
-			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				grouping_columns += table_group_columns2
-			
 			if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
 				grouping_columns += header3
+			
+			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				grouping_columns += table_group_columns2
 			
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
