@@ -513,7 +513,7 @@ def predefined_csa_tools():
             Log.Info("SAQSCD_CSA_INSERT-----> "+str(quer_statement))
             Log.Info("SAQSCV_CSA_INSERT-----> "+str(quer_statement_2))
 
-
+##A055S000P01-8775 Starts
 def predefined_contract_cov_time():
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' and SERVICE_ID = '{treeparam}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('AGS_CRT_RSP_TIM','AGS_CRT_CON_COV')".format('SAQTSE',Qt_rec_id=Qt_rec_id,qurev_rec_id=quote_revision_record_id,treeparam=TreeParam))
 
@@ -623,9 +623,9 @@ def predefined_contract_cov_time():
 
 
 def predefined_contract_cov_time_entitlemen_trolldown():
-    Log.Info('TreeParam---'+str(TreeParam))
-    Log.Info('TreeParentParam---'+str(TreeParentParam))
-    Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam)) 
+    # Log.Info('TreeParam---'+str(TreeParam))
+    # Log.Info('TreeParentParam---'+str(TreeParentParam))
+    # Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam)) 
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {treeparam} (nolock) {treeParentParam} ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('AGS_CRT_RSP_TIM','AGS_CRT_CON_COV')".format(treeparam=TreeParam,treeParentParam=TreeParentParam))
     
     #delete to reduce duplicates in SAQSCV
@@ -737,7 +737,7 @@ def predefined_contract_cov_time_entitlemen_trolldown():
     
     Sql.RunQuery(saqscd_insert_contractentitlemnet)
     Sql.RunQuery(saqscv_insert_contractentitlemnet)
-
+##A055S000P01-8775 ends
 
 
 def predefined_values():
@@ -768,5 +768,4 @@ def predefined_values():
 if LEVEL == 'PREDEFINED DRIVER':
     predefined_values()
 elif LEVEL == 'ENTITLEMENT PREDEFINED DRIVER':
-    Log.Info('contract coverage time-22222-')
     predefined_contract_cov_time_entitlemen_trolldown()
