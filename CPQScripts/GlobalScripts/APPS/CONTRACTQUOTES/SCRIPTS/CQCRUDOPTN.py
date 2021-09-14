@@ -4304,6 +4304,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							UserId=self.user_id
 						)
 			)
+		
+		d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
+		if d2:
+			Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri '+str(d2.GREENBOOK))
+				
 		#import time
 		#time.sleep(50)
 		getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO, QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
