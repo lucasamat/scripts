@@ -3412,8 +3412,9 @@ class SYLDRTLIST:
 				if ent_cat_list:
 					header1 = '<th class = "header1" colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign header1" id="entitlement-header-category-toggle" onclick="entitlement_category_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
 					for i in ent_cat_list:
+						category_val = str(i).replace(' ','_')
 						header2 += (									
-									'<th class = "entitlement_category_header header2" data-field='+str(i).replace(' ','_')+' colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
+									'<th id ='+category_val+' class = "entitlement_category_header header2" data-field='+category_val+' colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
 									) 
 						#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
 										# + str(i)
@@ -3423,7 +3424,7 @@ class SYLDRTLIST:
 										# + str(i)
 										# + "</th>" 
 						header3 += (
-									'<th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">ENTITLEMENT COST</th><th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">ENTITLEMENT PRICE</th>'.format(val = str(i).replace(' ','_'))
+									'<th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">ENTITLEMENT COST</th><th class = "entitlement_category_header entitlement_category" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">ENTITLEMENT PRICE</th>'.format(val = category_val)
 									)    
 			
 			for key, invs in enumerate(list(eval(Columns))):
