@@ -4313,7 +4313,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		#time.sleep(50)
 		getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO, QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
 		if getdate:
-			sys.exit()
+			Trace.Write("Value Exists")
 			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = 'CONVERT(VARCHAR(10),{},101)', CONTRACT_VALID_TO = 'CONVERT(VARCHAR(10),{},101)', QTEREV_ID='{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, getdate.QTEREV_ID, self.contract_quote_record_id,self.quote_revision_record_id)
 			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET QTEREV_ID='zero' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id)
 			#Sql.RunQuery(update_contract_date_greenbook_level)
@@ -4708,6 +4708,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				
 				#SAQSGB_start_time = time.time()
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
+				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(contract_quote_record_id), quote_revision_record_id))
+				if d2:
+					Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri2 '+str(d2.GREENBOOK))
 				#SAQSGB_end_time = time.time()				
 				self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 				#COVERED OBJ PRE DEFINED LOGIC
@@ -4754,7 +4757,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					))
 				covered_end_time = time.time()
 				Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
-						
+				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='ALD' """.format(str(contract_quote_record_id),quote_revision_record_id))
+				if d2:
+					Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri3 '+str(d2.GREENBOOK))		
 		return True
 	
 	def _update(self):
