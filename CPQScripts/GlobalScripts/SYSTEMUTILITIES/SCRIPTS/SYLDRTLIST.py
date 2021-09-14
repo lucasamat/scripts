@@ -3654,7 +3654,7 @@ class SYLDRTLIST:
 					else:
 						rowspan_level1 = ""
 					if not table_group_columns3:
-						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
+						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -3681,7 +3681,7 @@ class SYLDRTLIST:
 					else:
 						rowspan_level1 = ""
 					if not table_group_columns4:
-						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
+						table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>LINE SUMMARY</div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
