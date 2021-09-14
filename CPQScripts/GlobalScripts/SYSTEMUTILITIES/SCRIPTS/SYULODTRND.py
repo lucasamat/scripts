@@ -3003,7 +3003,7 @@ def EntitlementTreeViewHTMLDetail(
 			if val.IS_DEFAULT == '1':
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
 				attributedefaultvalue.append(val.ENTITLEMENT_NAME)
-		#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
+		Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		attdisllowlist = []
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
@@ -3203,7 +3203,7 @@ def EntitlementTreeViewHTMLDetail(
 							#Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
 							add_style = ""
 						if attrSysId in attributedefaultvalue:
-							#Trace.Write("add_style----3077----- "+str(attrSysId))
+							Trace.Write("add_style----3077----- "+str(attrSysId))
 							add_style = "color:#1B78D2"
 						#Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
 						if attrSysId in attributeEditlst :
