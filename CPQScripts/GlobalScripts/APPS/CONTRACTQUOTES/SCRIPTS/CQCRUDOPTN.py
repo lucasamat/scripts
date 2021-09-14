@@ -4189,6 +4189,55 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			)
 		else:
 			Trace.Write("SALE TYPE IS NOT TOOL RELOCATION")
+			d1 = Sql.GetFirst(
+				"""SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
+							SAQSCO.FABLOCATION_ID,
+							SAQSCO.GREENBOOK,
+							SAQSCO.GREENBOOK_RECORD_ID,
+							SAQSCO.QUOTE_ID,
+							SAQSCO.QUOTE_NAME,
+							SAQSCO.QUOTE_RECORD_ID,
+							SAQSCO.QTEREV_ID,
+							SAQSCO.QTEREV_RECORD_ID,
+							SAQSCO.SALESORG_ID,
+							SAQSCO.SALESORG_NAME,
+							SAQSCO.SALESORG_RECORD_ID,
+							SAQSCO.SERVICE_DESCRIPTION,
+							SAQSCO.SERVICE_ID,
+							SAQSCO.SERVICE_RECORD_ID,
+							SAQSCO.EQUIPMENT_QUANTITY,								
+							SAQSCO.FABLOCATION_NAME,
+							SAQSCO.FABLOCATION_RECORD_ID,
+							SAQTMT.CONTRACT_VALID_FROM,
+       						SAQTMT.CONTRACT_VALID_TO,
+							SAQTSV.PAR_SERVICE_DESCRIPTION,
+							SAQTSV.PAR_SERVICE_ID,
+							SAQTSV.PAR_SERVICE_RECORD_ID,
+							'{UserName}' AS CPQTABLEENTRYADDEDBY,
+							GETDATE() as CPQTABLEENTRYDATEADDED,
+							{UserId} as CpqTableEntryModifiedBy,
+							GETDATE() as CpqTableEntryDateModified
+							FROM SAQSCO (NOLOCK) JOIN SAQTSV (NOLOCK) ON
+							SAQSCO.QUOTE_ID = SAQTSV.QUOTE_ID AND
+							SAQTSV.SERVICE_ID = '{TreeParam}' AND
+							SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
+							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
+							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
+							WHERE 
+							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
+							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
+					""".format(
+							TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
+							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
+							QuoteRecordId=self.contract_quote_record_id,
+							RevisionRecordId=self.quote_revision_record_id,
+							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
+							UserName=self.user_name,
+							UserId=self.user_id
+						)
+			)
+			if d1:
+				Trace.Write(str(d1.QTEREV_ID)+'==================>>>>>nnnn '+str(d1.GREENBOOK))
 			self._process_query(
 				"""
 					INSERT SAQSGB (
