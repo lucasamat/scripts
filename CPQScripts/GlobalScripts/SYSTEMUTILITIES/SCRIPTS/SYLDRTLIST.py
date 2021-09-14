@@ -20,7 +20,9 @@ get_user_id = User.Id
 
 productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByName(productAttribute) or ""
 
-
+GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+if GetActiveRevision:
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 class SYLDRTLIST:
 	def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id): 
 		#current_prod = Product.Name or "Sales" 
