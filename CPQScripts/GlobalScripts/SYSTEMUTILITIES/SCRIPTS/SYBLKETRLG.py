@@ -592,12 +592,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					if "+" not in VALUE and "-" not in VALUE:
 					#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
 						amt = float(a.TARGET_PRICE) - ((float(VALUE)*float(a.TARGET_PRICE))/100)
-					elif "+" in VALUE:
-						VALUE = VALUE.replace("+","").replace("%","").strip()
-						amt = float(a.TARGET_PRICE) - ((float(VALUE)*float(a.TARGET_PRICE))/100)
 					elif "-" in VALUE:
 						VALUE = VALUE.replace("-","").replace("%","").strip()
 						amt = float(a.TARGET_PRICE) + ((float(VALUE)*float(a.TARGET_PRICE))/100)
+						VALUE = "-"+str(VALUE)
 					else:
 						amt = 0.00
 				
