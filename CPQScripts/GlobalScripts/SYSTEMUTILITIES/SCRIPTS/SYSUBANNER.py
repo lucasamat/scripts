@@ -650,7 +650,7 @@ def Related_Sub_Banner(
                 ThirdValue = str(TreeParam)
                 FourthLable = "Equipment"
                 FourthValue = "All"   
-            elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Greenbook Fab Value Drivers"):	
+            elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Customer Value Drivers"):	
                 Trace.Write('su=========')		
                 if ("Sending" in TreeParentParam or "Receiving" in TreeParentParam):	
                     getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
@@ -1298,7 +1298,7 @@ def Related_Sub_Banner(
                         FourthValue = "All"
                         FifthLable = ""
                         FifthValue = ""
-                elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Fab Value Drivers"):
+                elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Customer Value Drivers" or subTabName == "Fab Value Drivers"):
                     #getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
                     Trace.Write("Fab Locations")
                     if subTabName == "Details" and TreeParentParam.startswith("Sending"):
@@ -1710,7 +1710,7 @@ def Related_Sub_Banner(
             Trace.Write("check345"+str(FifthValue))
             #FourthLable = "Equipment"
             #FourthValue = "ALL"
-    elif (TreeTopSuperParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Equipment Details' or subTabName == 'Greenbook Fab Value Drivers' or subTabName == 'Details'  or subTabName == 'Equipment Fab Value Drivers')) and ("Sending" not in TreeParam or "Receiving" not in TreeParam):
+    elif (TreeTopSuperParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Equipment Details' or subTabName == 'Customer Value Drivers' or subTabName == 'Details'  or subTabName == 'Equipment Fab Value Drivers')) and ("Sending" not in TreeParam or "Receiving" not in TreeParam):
         if ("Sending" not in TreeParam and "Receiving" not in TreeParam) and ("Sending" not in TreeParentParam and "Receiving" not in TreeParentParam):
             getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
             if (subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details") and TreeSuperParentParam.startswith("Sending"):
