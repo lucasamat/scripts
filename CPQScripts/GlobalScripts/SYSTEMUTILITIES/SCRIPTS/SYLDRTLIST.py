@@ -3621,7 +3621,7 @@ class SYLDRTLIST:
 						rowspan_level1 = 'rowspan="2"'
 					else:
 						rowspan_level1 = ""
-					if not table_group_columns:
+					if not table_group_columns2:
 						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="entitlement_category_toggle(this)"></button>COST</div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
