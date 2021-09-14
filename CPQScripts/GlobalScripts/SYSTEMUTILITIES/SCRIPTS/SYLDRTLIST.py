@@ -3409,16 +3409,16 @@ class SYLDRTLIST:
 				if ent_cat_list:
 					header1 = '<th colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>CATEGORY 4 </div></th>'.format(len(ent_cat_list)*3)
 					for i in ent_cat_list:
-						header2 += (
-										'<th colspan=3 data-toggle="bootstrap-table" data-field="'
-										+ str(i)
-										+ '" data-filter-control="input" data-align="right" data-title-tooltsip="'
-										+ str(i)
-										+ '" data-sortable="true">'
-										+ str(i)
-										+ "</th>"
+						header2 += (									
+									'<th  colspan=3 data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>'+str(i)+'</div></th>'
 									)
-
+						#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
+										# + str(i)
+										# + '" data-filter-control="input" data-align="right" data-title-tooltsip="'
+										# + str(i)
+										# + '" data-sortable="true">'
+										# + str(i)
+										# + "</th>"
 						header3 += (
 									'<th data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME" data-sortable="true">ENTITLEMENT_NAME</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST" data-sortable="true">ENTITLEMENT_COST</th><th data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE" data-sortable="true">ENTITLEMENT_PRICE</th>'
 									)    
