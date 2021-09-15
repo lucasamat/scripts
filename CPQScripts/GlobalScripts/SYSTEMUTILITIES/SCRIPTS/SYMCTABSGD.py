@@ -1256,7 +1256,7 @@ class CONTAINER:
                                         #     "select  rowcnt= count(*) from SAQTMT (nolock) QT JOIN SAQTRV(NOLOCK) RV ON RV.QUOTE_ID = QT.QUOTE_ID and RV.QUOTE_REVISION_RECORD_ID = QT.QTEREV_RECORD_ID JOIN SAOPPR(NOLOCK) OP on OP.SALESORG_ID = RV.SALESORG_ID " + str(where))
                                     #elif flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                     elif flag == 0:
-                                        Trace.Write("Line no: 1138 => {}".format(str(flag))) 
+                                        Trace.Write("Line no: 1138 =>"+str(flag)) 
                                         where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
                                         QueryCountOBJ = Sql.GetFirst(
                                             "select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' " + str(where)
