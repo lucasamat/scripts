@@ -28,6 +28,9 @@ userName = str(User.UserName)
 Sql = SQL()
 import time
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
+GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+if GetActiveRevision:
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 class Entitlements:
 	def __init__(self):
 		self.treeparam = Product.GetGlobal("TreeParam")
