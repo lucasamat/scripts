@@ -724,8 +724,26 @@ def Comp_fabview(ACTION,CurrentRecordId):
 		
 		#sec_str += ('')
 		new_value_dict = {}
+
+		if str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":
+			GetDRIVNAME = Sql.GetList(
+				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND VALUEDRIVER_RECORD_ID = '"
+				+ str(mastername)
+				+ "'"
+			)
+			selecter = Sql.GetFirst(
+				"SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
+				+ str(Qt_rec_id)
+				+ "' AND VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(quote_revision_record_id)
+				+ "'"
+			)
 		
-		if str(TreeParam) != "Sending Equipment" and str(TreeParam) != "Receiving Equipment":
+		elif str(TreeParam) != "Sending Equipment" and str(TreeParam) != "Receiving Equipment":
 			GetDRIVNAME = SqlHelper.GetList(
 				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 				+ str(field_name)
