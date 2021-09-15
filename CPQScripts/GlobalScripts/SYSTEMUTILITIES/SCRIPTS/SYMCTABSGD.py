@@ -685,9 +685,14 @@ class CONTAINER:
                                                             + "%'"
                                                         )
                                                     else:
-                                                        # if PRIMARY_OBJECT_NAMes == "SAQTMT":
-                                                        #     if ("QUOTE_TYPE" or "SALE_TYPE" or "QUOTE_STATUS" or "MASTER_TABLE_QUOTE_RECORD_ID" or "ACCOUNT_ID" or "ACCOUNT_NAME" or "ACCOUNT_RECORD_ID" or "OWNER_NAME" or "QTEREV_RECORD_ID") in str(where):
-                                                        Trace.Write("#### "+str(record))
+                                                        if PRIMARY_OBJECT_NAMes == "SAQTMT":
+                                                            if str(record) in ("QUOTE_TYPE" or "SALE_TYPE" or "QUOTE_STATUS" or "MASTER_TABLE_QUOTE_RECORD_ID" or "ACCOUNT_ID" or "ACCOUNT_NAME" or "ACCOUNT_RECORD_ID" or "OWNER_NAME" or "QTEREV_RECORD_ID"):
+                                                                record = "SAQTMT." + str(record) 
+                                                            elif str(record) == "OPPORTUNITY_NAME":
+                                                                record = "SAOPQT." +str(record)
+                                                            elif str(record) in ("QUOTE_ID" or "QTEREV_ID" or "SALESORG_ID" or "REVISION_STATUS" or "REVISION_DESCRIPTION" or "CONTRACT_VALID_FROM" or "CONTRACT_VALID_TO"):
+                                                                record = "SAQTRV." +str(record)
+                                                            Trace.Write("#### "+str(record))
                                                         where += " AND " + str(record) + " like '%" + str(rec) + "%'"
                                                         
 
