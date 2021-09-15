@@ -745,8 +745,8 @@ class Entitlements:
 							# 				SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{ContractValidFrom}' as CONTRACT_VALID_FROM, '{ContractValidTo}' as CONTRACT_VALID_TO, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
 							# 				WHERE SAP_PART_NUMBER = 'Z0046')
 							# 				) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid))
-						Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
-						Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
+						#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
+						#Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
 						if self.treeparam == "Z0091":
 							where = ""
 						elif self.treeparentparam == "Z0091":
