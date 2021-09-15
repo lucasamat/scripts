@@ -5040,9 +5040,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	
 	def _quote_item_lines_insert_process(self, where_string='', join_string='', quote_item_line_temp='', price_temp=''):
 		##inserting SAQICO except chamber based equipment A055S000P01-6826
-		entitlement_join = """LEFT JOIN (
-						SELECT QUOTE_ID, EQUIPMENT_ID, SERVICE_ID, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) * 1 AS TARGET_PRICE, SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS TOTAL_COST, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_2, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME NOT LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_1 from (SELECT * FROM {PriceTemp}) IQ GROUP BY QUOTE_ID, EQUIPMENT_ID, SERVICE_ID
-					) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID""".format(PriceTemp=price_temp)
+		
 		self._process_query("""INSERT SAQICO (BD_PRICE,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_COST_IMPACT, EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID, NET_PRICE, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TARGET_PRICE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, BD_DISCOUNT, BD_DISCOUNT_RECORD_ID, BD_PRICE_MARGIN, BD_PRICE_MARGIN_RECORD_ID, CEILING_PRICE, CLEANING_COST, CM_PART_COST, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, KPI_COST, LABOR_COST, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PM_PART_COST, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, NET_VALUE, SALES_DISCOUNT_PRICE, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, LINE, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 				SELECT DISTINCT
@@ -5150,14 +5148,29 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 											AND SAQITM.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID
 											AND SAQITM.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 											{JoinString}
-					{EntitlementJoinString}
 					
 				WHERE 
 					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-				TempTable=quote_item_line_temp, JoinString=join_string, EntitlementJoinString=entitlement_join if 'Z0016' in where_string else '', WhereString=where_string )
+				TempTable=quote_item_line_temp, JoinString=join_string, WhereString=where_string )
 			)
+		if 'Z0016' in where_string:
+			self._process_query("""UPDATE SAQICO
+									SET
+									SAQICO.ENTITLEMENT_PRICE_IMPACT = SAQSCE_TEMP.TARGET_PRICE,
+									SAQICO.ENTITLEMENT_COST_IMPACT = SAQSCE_TEMP.TOTAL_COST,
+									SAQICO.TARGET_PRICE = SAQSCE_TEMP.TARGET_PRICE,
+									SAQICO.NET_VALUE = SAQSCE_TEMP.TARGET_PRICE,
+									SAQICO.YEAR_1 = SAQSCE_TEMP.YEAR_1,
+									SAQICO.YEAR_2 = SAQSCE_TEMP.YEAR_2					
+									FROM SAQICO	(NOLOCK)
+									LEFT JOIN (
+											SELECT QUOTE_ID, EQUIPMENT_ID, SERVICE_ID, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) * 1 AS TARGET_PRICE, SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS TOTAL_COST, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_2, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME NOT LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_1 from (SELECT * FROM {PriceTemp}) IQ GROUP BY QUOTE_ID, EQUIPMENT_ID, SERVICE_ID
+										) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID				
+									WHERE 
+										SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId} AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'		
+									""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	 
 		
 		##inserting assembly to SAQICO if a equipemnt is chamber based FTS A055S000P01-6826
 		if self.sale_type == 'TOOL RELOCATION':
@@ -5273,15 +5286,31 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 												AND SAQITM.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID
 												AND SAQITM.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 												{JoinString}
-						{EntitlementJoinString}
 						
 					WHERE 
 						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1
 					) IQ
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, 
-					TempTable=quote_item_line_temp, JoinString=join_string, EntitlementJoinString=entitlement_join if 'Z0016' in where_string else '', WhereString= str(where_string) )
+					TempTable=quote_item_line_temp, JoinString=join_string, WhereString= str(where_string) )
 				)
 			
+			if 'Z0016' in where_string:
+				self._process_query("""UPDATE SAQICO
+										SET
+										SAQICO.ENTITLEMENT_PRICE_IMPACT = SAQSCE_TEMP.TARGET_PRICE,
+										SAQICO.ENTITLEMENT_COST_IMPACT = SAQSCE_TEMP.TOTAL_COST,
+										SAQICO.TARGET_PRICE = SAQSCE_TEMP.TARGET_PRICE,
+										SAQICO.NET_VALUE = SAQSCE_TEMP.TARGET_PRICE,
+										SAQICO.YEAR_1 = SAQSCE_TEMP.YEAR_1,
+										SAQICO.YEAR_2 = SAQSCE_TEMP.YEAR_2					
+										FROM SAQICO	(NOLOCK)
+										JOIN SAQSCA (NOLOCK) ON SAQSCA.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCA.SERVICE_ID = 	SAQSCO.SERVICE_ID AND SAQSCA.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID
+										LEFT JOIN (
+												SELECT QUOTE_ID, EQUIPMENT_ID, SERVICE_ID, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) * 1 AS TARGET_PRICE, SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS TOTAL_COST, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_2, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME NOT LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_1 from (SELECT * FROM {PriceTemp}) IQ GROUP BY QUOTE_ID, EQUIPMENT_ID, SERVICE_ID
+											) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID				
+										WHERE 
+											SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId} AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1		
+										""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	 
 
 		###Value Driver coefficient Sum up  A055S000P01-8778 starts
 		self._process_query("UPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.SERVICE_ID = B.SERVICE_ID")
@@ -5301,12 +5330,11 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		# Temp table creation and delete(if altready there) for SAQICO - End
 
 		#Temp table for storing price and cost impact
-		#price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)
-		#price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
-		#SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSCE(nolock) where quote_record_id=''"+str(self.contract_quote_record_id)+"'' )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT INTO "+str(price_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'') ; exec sys.sp_xml_removedocument @H; '")
-		#SqlHelper.GetFirst("sp_executesql @T=N'CREATE TABLE  "+str(price_temp)+" (TARGET_PRICE DECIMAL(18,5),TOTAL_COST DECIMAL(18,5),YEAR_2 DECIMAL(18,5),YEAR_1 DECIMAL(18,5),EQUIPMENT_ID VARCHAR(10), EQUIPMENT_RECORD_ID VARCHAR(50), QUOTE_RECORD_ID VARCHAR(50))'")
-
-		#Sql.RunQuery("INSERT "+str(price_temp)+" (QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID, TARGET_PRICE, TOTAL_COST, YEAR_2, YEAR_1) select QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) * 1 AS ENTITLEMENT_PRICE_IMPACT, SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_2, SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CASE WHEN ENTITLEMENT_NAME NOT LIKE 'AGS_LAB_OPT%_P%' THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END ELSE 0 END) AS YEAR_1 from (SELECT distinct e.QUOTE_RECORD_ID, e.EQUIPMENT_RECORD_ID, e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.EQUIPMENT_RECORD_ID, SAQSCE.EQUIPMENT_ID, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"') e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ GROUP BY QUOTE_RECORD_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_ID")
+		price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)
+		quote_services_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_id = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0016'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		if quote_services_obj:			
+			price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
+			SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSCE(nolock) where quote_record_id=''"+str(self.contract_quote_record_id)+"'' )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT INTO "+str(price_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'') ; exec sys.sp_xml_removedocument @H; '")
 		
 		for table_name in ('SAQICO', 'SAQITM'):
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
@@ -5328,7 +5356,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
 			join_string = "AND SAQITM.LINE_ITEM_ID = CAST(ISNULL(SAQSCE.ENTITLEMENT_GROUP_ID,'1.1') AS DECIMAL(5,1))"
-			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string=join_string, quote_item_line_temp=temp_table, price_temp='')
+			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string=join_string, quote_item_line_temp=temp_table, price_temp=price_temp)
 			#(select SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) AS ENTITLEMENT_PRICE_IMPACT from (SELECT distinct replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select convert(xml,replace(replace(SAQSCE.ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)) IQ) * ISNULL(SAQTSO.EXCHANGE_RATE, 1)
 			#(select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT distinct replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT FROM (select convert(xml,replace(replace(SAQSCE.ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)) IQ)
 			# Insert Quote Items Covered Object - End
@@ -5345,7 +5373,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 			item_line_where_string = "AND SAQSCO.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
-			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='', quote_item_line_temp=temp_table, price_temp='')
+			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='', quote_item_line_temp=temp_table, price_temp=price_temp)
 			#(select SUM(CASE WHEN Isnumeric(ENTITLEMENT_PRICE_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_PRICE_IMPACT) ELSE 0 END) AS ENTITLEMENT_PRICE_IMPACT from (SELECT distinct replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select convert(xml,replace(replace(SAQSCE.ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)) IQ) * ISNULL(SAQTSO.EXCHANGE_RATE, 1)
 			#(select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT distinct replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT FROM (select convert(xml,replace(replace(SAQSCE.ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)) IQ)
 			# Insert Quote Items Covered Object - End
@@ -5526,7 +5554,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
 		# Delete SAQICO temp table - End
 		#get_billing_matrix_year =[]
-		#price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
+		price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 		if Getyear:
 			start_date = datetime.datetime(Getyear.CONTRACT_VALID_FROM)
