@@ -773,13 +773,13 @@ def Related_Sub_Banner(
                     FourthValue = getown.OWNER_NAME                   
             elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
                 
-                if subTabName == "Details" and TreeParam.startswith('Sending'):
+                if subTabName == "Details" and TreeParam.startswith('Sending Account'):
                     account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Sending Account ID"
                     PrimaryValue = str(TreeParam).split("-")[1].strip()
                     SecondLable = "Sending Account Name"
                     SecondValue = account_name.PARTY_NAME
-                elif subTabName == "Details" and TreeParam.startswith('Receiving'):
+                elif subTabName == "Details" and TreeParam.startswith('Receiving Account'):
                     account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     PrimaryLable = "Receiving Account ID"
                     PrimaryValue = str(TreeParam).split("-")[1].strip()
