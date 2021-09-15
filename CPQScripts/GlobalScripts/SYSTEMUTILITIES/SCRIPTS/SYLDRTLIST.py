@@ -8531,7 +8531,7 @@ class SYLDRTLIST:
 			
 			dbl_clk_function = SAQICO_dbl_clk_function         
 		Trace.Write('**at 8319')
-		return table_list, QueryCount, PageInformS,footer_str,dbl_clk_function
+		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 
 ObjSYLDRTLIST = SYLDRTLIST()
