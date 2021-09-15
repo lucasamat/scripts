@@ -220,6 +220,7 @@ def create_new_revision(Opertion,cartrev):
 #set active revision  from grid- start
 def set_active_revision(Opertion,cartrev):
 	recid = ''
+	Trace.Write('223-----')
 	#for val in select_active:
 	ObjectName = cartrev.split('-')[0].strip()
 	cpqid = cartrev.split('-')[1].strip()
