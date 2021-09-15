@@ -47,6 +47,7 @@ def ServiceCostAndValueDrivers():
 
     QueryStatement = "DELETE FROM SAQSGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID = '" + str(TreeParam) + "' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' "
     Sql.RunQuery(QueryStatement)
+    Log.Info("Line---> ServiceCostAndValueDrivers")
     # ADDING GREEN BOOK TO ALREADY AVAILABLE COVERED OBJECTS 1520 
     Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
     primaryQueryItems = SqlHelper.GetFirst(""
@@ -181,6 +182,7 @@ def sendEmail(level):
 def FabCostAndValueDrivers():
     QueryStatement = "DELETE FROM SAQSGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParam) + "'AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'"
     Sql.RunQuery(QueryStatement)
+    Log.Info("Line---> FabCostAndValueDrivers")
     # ADDING GREEN BOOK TO ALREADY AVAILABLE COVERED OBJECTS 1520 
     Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
     primaryQueryItems = SqlHelper.GetFirst(
