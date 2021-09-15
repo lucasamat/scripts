@@ -2762,7 +2762,7 @@ def EntitlementTreeViewHTMLDetail(
 							<IS_DEFAULT>{is_default}</IS_DEFAULT>
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default = '1',pm = '',cf = '')
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default =  '1' if str(attrSysId) in attributedefaultvalue else '0',pm = '',cf = '')
 						if DType == "Drop Down":
 							Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
 							#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
