@@ -2800,9 +2800,9 @@ def EntitlementTreeViewHTMLDetail(
 										selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 									VAR1 += (
 										'<option '+disallow_style+' id="'+value.SYSTEM_ID+'"  value = "'
-										+ value.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-										+ '"'+select_option+'>'
-										+ value.STANDARD_ATTRIBUTE_DISPLAY_VAL
+										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
+										+ '"'+str(select_option)+'>'
+										+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 										+ "</option>"
 									)
 							sec_str1 += (
