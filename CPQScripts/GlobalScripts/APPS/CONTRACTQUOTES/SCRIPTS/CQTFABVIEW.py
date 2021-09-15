@@ -198,6 +198,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ "</select>"
 				)
 			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":	
+				Trace.Write("send_condtn_J"+str(TreeParentParam))
 				if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):
 					GetDRIVNAME = SqlHelper.GetList(
 							"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
