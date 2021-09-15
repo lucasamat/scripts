@@ -234,6 +234,8 @@ class Entitlements:
 								requestdata +=','
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
+				else:
+					requestdata += '{"value":"' + NewValue + '","selected":true}'
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
 				Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
