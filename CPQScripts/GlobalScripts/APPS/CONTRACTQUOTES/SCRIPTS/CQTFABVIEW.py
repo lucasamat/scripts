@@ -648,10 +648,10 @@ def costfabview(ACTION,CurrentRecordId):
 			
 			
 		date_field.append(new_value_dict)
-	if TreeParentParam != "Quote Items":
-		dbl_clk_function += (
-			"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#servicecostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-		)
+	# if TreeParentParam != "Quote Items":
+	# 	dbl_clk_function += (
+	# 		"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#servicecostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+	# 	)
 		
 	
 	if str(CurrentTabName) == "Contract":
