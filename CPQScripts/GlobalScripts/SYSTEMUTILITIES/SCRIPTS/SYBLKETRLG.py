@@ -825,6 +825,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}' AND SAQSCO.RELOCATION_EQUIPMENT_TYPE = 'Receiving Equipment' ) IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=User.Id, QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"), ServiceId=Quote.GetGlobal("TreeParentLevel0"),quote_revision_record_id=quote_revision_record_id))
 
 			Trace.Write("SAQSGB INSERT FROM SYBLKETRLG")
+			Log.Info("SYBLKETRLG - SAQSGB")
 			Sql.RunQuery(
 				"""
 					INSERT SAQSGB (

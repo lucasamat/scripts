@@ -615,6 +615,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 					#A055S000P01-4393 end
 					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"), quote_revision_record_id))
 					if getdate:
+						Log.Info("SYSECTSAVE - SAQSGB")
 						billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(billing_query)
 
