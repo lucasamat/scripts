@@ -2363,7 +2363,7 @@ class TreeView:
 									else:
 										#Trace.Write('Subwhere_string-----'+str(NodeText))
 										
-										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}'".format(NodeText,quote_revision_record_id)
+										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046'".format(NodeText,quote_revision_record_id)
 								elif NodeText in  ("Pages"):
 									#Trace.Write("NodeText"+str(NodeText)+"---")
 									if NodeText == "Pages":
