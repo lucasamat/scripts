@@ -2806,7 +2806,7 @@ def EntitlementTreeViewHTMLDetail(
 										+ "</option>"
 									)
 							sec_str1 += (
-								'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+								'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 								+ str(attrSysId)
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
