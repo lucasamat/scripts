@@ -1241,7 +1241,7 @@ class SYLDRTLIST:
 						# 	+ " AND "
 						# 	+ str(Page_End)+" "
 						# )
-						#Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'"           
+						Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'"           
 					elif RECORD_ID == "SYOBJR-93130":
 						CommonTreeSuperParentParam = Product.GetGlobal("CommonTreeSuperParentParam")
 						CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
