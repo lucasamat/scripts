@@ -476,7 +476,11 @@ class SYLDRTLIST:
 				Trace.Write('inside')
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
 				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-				
+			if RECORD_ID == "SYOBJR-98869":
+				Trace.Write('480------Columns---'+str(Columns))
+				rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+				Trace.Write('480---4333---Columns---'+str(Columns))	
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
