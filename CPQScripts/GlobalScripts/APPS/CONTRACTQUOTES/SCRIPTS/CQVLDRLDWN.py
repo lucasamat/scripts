@@ -403,7 +403,7 @@ def FabGreenbookValueDrivers():
     level = "Fab Greenbook Value Drivers"
     sendEmail(level)
 
-def FabValueDrivers():
+def fabValueDrivers():
     QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParam)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' "
     Sql.RunQuery(QueryStatement)
     Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
@@ -513,6 +513,6 @@ elif 'QUOTE VALUE DRIVER' in LEVEL:
 elif 'FAB GREENBOOK VALUE DRIVER' in LEVEL:
     ApiResponse = ApiResponseFactory.JsonResponse(FabGreenbookValueDrivers())
 elif LEVEL == 'FAB VALUE DRIVER':
-    ApiResponse = ApiResponseFactory.JsonResponse(FabValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(fabValueDrivers())
 
 
