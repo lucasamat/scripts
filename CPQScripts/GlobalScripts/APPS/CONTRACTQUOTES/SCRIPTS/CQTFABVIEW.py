@@ -81,7 +81,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
 			#sec_str += ('')
 			new_value_dict = {}
-			if str(TreeParam).upper() == "QUOTE INFORMATION" or TreeParam.startswith('Sending Account') or TreeParam.startswith('Receiving Account') or TreeParam.startswith('Sending Equipment') or TreeParam.startswith('Receiving Equipment'):				
+			if str(TreeParam).upper() == "QUOTE INFORMATION" or TreeParam.startswith('Sending Account') or TreeParam.startswith('Receiving Account') or str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":				
 				GetDRIVNAME = Sql.GetList(
 					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
