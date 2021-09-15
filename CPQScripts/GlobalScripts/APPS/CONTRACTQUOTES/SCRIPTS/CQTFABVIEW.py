@@ -2539,6 +2539,7 @@ if hasattr(Param, "SerLocateDT"):
 else:
 	SerLocateDT =""
 Trace.Write('SerLocateDT--------------------'+str(SerLocateDT))
+Trace.Write("ACTION_CHK-----> "+str(ACTION))
 try:
 	FabLocateDT = Param.FabLocateDT
 	#SerLocateDT = Param.SerLocateDT
