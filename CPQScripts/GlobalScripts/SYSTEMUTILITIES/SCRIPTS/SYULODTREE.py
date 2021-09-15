@@ -2858,7 +2858,7 @@ if not quote_revision_record_id and quote_revision_record_id!="":
 		Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
 		Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(Quote.GetGlobal("contract_quote_record_id")), GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(Quote.GetGlobal("contract_quote_record_id")), str(Quote.GetGlobal("quote_revision_record_id"))))
 if d2:
 	Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri5 '+str(d2.GREENBOOK))
 		
