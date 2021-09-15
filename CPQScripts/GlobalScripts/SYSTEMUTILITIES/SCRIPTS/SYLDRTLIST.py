@@ -2267,7 +2267,7 @@ class SYLDRTLIST:
 							Qury_str = (
 								"SELECT DISTINCT TOP "
 								+ str(PerPage)
-								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QUOTE_REVISION_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
+								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
 								+"' AND QTEREV_RECORD_ID = '"
 								+str(quote_revision_record_id)
 								+"') m WHERE m.ROW BETWEEN "
@@ -6213,7 +6213,7 @@ class SYLDRTLIST:
 							Qury_str = (
 								"SELECT DISTINCT TOP "
 								+ str(PerPage)
-								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QUOTE_REVISION_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
+								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
 								+"' AND QTEREV_RECORD_ID = '"
 								+str(quote_revision_record_id)
 								+"') m WHERE m.ROW BETWEEN "
@@ -7666,7 +7666,7 @@ class SYLDRTLIST:
 							Qury_str = (
 								"SELECT DISTINCT TOP "
 								+ str(PerPage)
-								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QUOTE_REVISION_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
+								+ " CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
 								+"' AND QTEREV_RECORD_ID = '"
 								+str(quote_revision_record_id)
 								+"') m WHERE m.ROW BETWEEN "
