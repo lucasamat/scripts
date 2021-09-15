@@ -742,11 +742,11 @@ class Entitlements:
 
 							# Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 							# 			SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-							# 				SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{ContractValidFrom}' as CONTRACT_VALID_FROM, '{ContractValidTo}' as CONTRACT_VALID_TO, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
-							# 				WHERE SAP_PART_NUMBER = 'Z0046')
-							# 				) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid))
-						#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
-						#Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
+							# 				SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UNIT_OF_MEASURE, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0046' AS SERVICE_ID, '{recordid}' AS SERVICE_RECORD_ID, '', CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
+							# 				WHERE SERVICE_ID = 'Z0091' AND QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{revision}')
+							# 				) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
+						Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
+						Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
 						if self.treeparam == "Z0091":
 							where = ""
 						elif self.treeparentparam == "Z0091":
