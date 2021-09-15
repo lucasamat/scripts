@@ -28,12 +28,6 @@ except:
 	current_prod = ""
 
 import time
-try:
-	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
-	if GetActiveRevision:
-		Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
-except:
-	Log.Info("_process_query----36---->:")
 class ContractQuoteCrudOpertion:
 	def __init__(self, **kwargs):
 		self.trigger_from = kwargs.get('trigger_from')
