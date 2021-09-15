@@ -42,10 +42,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 	if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
 		###NEW GREEN BOOK TABLE#
-		if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):
-			GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
-		else:
-			GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
+		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
 		#table_id = 'fabvaldrives'
 	else:
 		#table_id = 'fabvaluedrives'
@@ -77,12 +74,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			userselectedeffi = []
 			
 			if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
-				if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):
-					mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
-					field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
-				else:
-					mastername = str(qstn.VALUEDRIVER_RECORD_ID)
-					field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
+				mastername = str(qstn.VALUEDRIVER_RECORD_ID)
+				field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
 			else:
 				mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
 				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
@@ -260,11 +253,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				)
 			for data in qstn:
 				if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
-					if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):	
-						new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
-					else:
-						new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
-						new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
+					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
+					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
 				else:
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
