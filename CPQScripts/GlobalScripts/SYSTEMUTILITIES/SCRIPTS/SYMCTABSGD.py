@@ -692,7 +692,7 @@ class CONTAINER:
                                                                 record = "SAOPQT." +str(record)
                                                             elif str(record) in ("QUOTE_ID" or "QTEREV_ID" or "SALESORG_ID" or "REVISION_STATUS" or "REVISION_DESCRIPTION" or "CONTRACT_VALID_FROM" or "CONTRACT_VALID_TO"):
                                                                 record = "SAQTRV." +str(record)
-                                                            Trace.Write("#### "+str(record))
+                                                            Trace.Write("####"+str(record)+"|")
                                                         where += " AND " + str(record) + " like '%" + str(rec) + "%'"
                                                         
 
