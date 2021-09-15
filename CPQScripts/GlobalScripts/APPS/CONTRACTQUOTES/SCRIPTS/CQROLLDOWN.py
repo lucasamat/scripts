@@ -1167,36 +1167,8 @@ Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
 
-if 'QUOTE LEVEL' in LEVEL:
-	a = LEVEL.split(",")
-	userId = a[1]
-	userName = a[2]
-	ApiResponse = ApiResponseFactory.JsonResponse(QuoteLevel())
-elif 'SERVICE GREENBOOK LEVEL' in LEVEL:
-	a = LEVEL.split(",")
-	TreeParam = a[1]
-	TreeParentParam = a[2]
-	userId = a[3]
-	userName = a[4]
-	#Log.Info("treeSERVICE GREENBOOK LEVEL----"+str(TreeParam))
-	ApiResponse = ApiResponseFactory.JsonResponse(ServiceGreenbookLevel())
-elif 'FAB GREENBOOK LEVEL' in LEVEL:
-	a = LEVEL.split(",")
-	TreeParam = a[1]
-	TreeParentParam = a[2]
-	userId = a[3]
-	userName = a[4]
-	#Log.Info("tree-FAB GREENBOOK LEVEL----"+str(TreeParam))
-	ApiResponse = ApiResponseFactory.JsonResponse(FabGreenbookLevel())
-elif 'SERVICE COST and VALUE LEVEL' in LEVEL:
-	a = LEVEL.split(",")
-	TreeParam = a[1]
-	TreeParentParam = a[2]
-	userId = a[3]
-	userName = a[4]
-	#Log.Info("tree-SERVICE COST and VALUE LEVEL---"+str(a))
-	ApiResponse = ApiResponseFactory.JsonResponse(ServiceLevel())
-elif 'COV OBJ ENTITLEMENT' in LEVEL:
+
+if 'COV OBJ ENTITLEMENT' in LEVEL:
 	a = LEVEL.split(",")
 	TreeParam = a[1]
 	TreeParentParam = a[2]
@@ -1239,14 +1211,6 @@ elif 'COV OBJ RENEWAL TWO' in LEVEL:
 	ContractRecordId = a[3]
 	#Log.Info("tree----"+str(TreeParam))
 	ApiResponse = ApiResponseFactory.JsonResponse(covobjrenewal_two())
-elif 'FAB LEVEL' in LEVEL:
-	a = LEVEL.split(",")
-	TreeParam = a[1]
-	TreeParentParam = a[2]
-	userId = a[3]
-	userName = a[4]
-	#Log.Info("===FAB LEVEL----"+str(TreeParam))
-	ApiResponse = ApiResponseFactory.JsonResponse(FabLocLevel())
 elif 'SPARE PART ITEM' in LEVEL:
 	a = LEVEL.split(",")
 	TreeParam = a[1]
