@@ -67,6 +67,7 @@ class ConfigUpdateScript:
 
 	def build_query(self, column, obj_name, where_string):
 		"""TO DO."""
+		##A055S000P01-9370 code starts...
 		if obj_name == "SAQTMT":
 			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTMT.QUOTE_ID,SAQTMT.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO"
 			query_string = """
@@ -85,6 +86,7 @@ class ConfigUpdateScript:
 					""".format(
 				Column_Name=column, Table_Name=obj_name, Where_String=where_string
 			)
+		##A055S000P01-9370 code ends..
 		return query_string
 
 	def get_value_from_obj(self, record_obj, column):
@@ -151,7 +153,6 @@ class ConfigUpdateScript:
 
 	def banner_content(self, record_id):
 		"""TO DO."""
-		Trace.Write("self.current_tab_name"+str(self.current_tab_name))
 		field_lables, field_values = "", ""
 		record_obj = Sql.GetFirst(
 			"""
@@ -171,6 +172,7 @@ class ConfigUpdateScript:
 		if record_obj is not None:
 			columns = (record_obj.COLUMNS).replace("'", "").replace(" ", "").split(",")
 			table_name = ""
+			##A055S000P01-9370 code starts..
 			if self.current_tab_name == "Quote":
 				objd_records_obj = Sql.GetList(
 					"""
@@ -191,6 +193,7 @@ class ConfigUpdateScript:
 						WHERE API_NAME IN %s AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
 					% (tuple(columns), record_obj.PRIMARY_OBJECT_RECORD_ID)
 				)
+			##A055S000P01-9370 code ends..
 			# Trace.Write(
 			# 	""" SELECT TOP 10 DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME FROM SYOBJD (NOLOCK) WHERE API_NAME IN %s
 			# 		AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
@@ -218,10 +221,12 @@ class ConfigUpdateScript:
 					# 	labels.append(dynamicLable.FIELD_LABEL)
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
+				##A055S000P01-9370 code starts...
 				if self.current_tab_name == "Quote":
 					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Revision status,Sales Org ID,Contract Valid From,Contract Valid To"
 				else:
 					field_lables = ",".join(labels)
+				##A055S000P01-9370 code ends..
 			#Trace.Write("selftab"+str(self.current_tab_name))
 			"""if str(self.current_tab_name.upper()) == "QUOTE": 
 				key_column = "MASTER_TABLE_QUOTE_RECORD_ID"
@@ -230,10 +235,12 @@ class ConfigUpdateScript:
 			key_column = columns[0]
 			if table_name == 'CTCNRT' and (self.product_name != "SYSTEM ADMIN" and self.product_name != "APPROVAL CENTER"):
 				record_id = Quote.GetGlobal("contract_record_id")
+			##A055S000P01-9370 code starts..
 			if table_name == 'SAQTMT':
 				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
 				key_column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID"
+			##A055S000P01-9370 code ends..
 			if key_column and record_id:
 				query_string = self.build_query(
 					column=",".join(columns),
