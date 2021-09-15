@@ -769,7 +769,10 @@ def Comp_fabview(ACTION,CurrentRecordId):
 		if selecter:
 			# userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
 			# userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-			userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
+			if str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":
+				userselecteddrive.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+			else:	
+				userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
 			if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
 				userselectedeffi ='0.0%'
 			else:
