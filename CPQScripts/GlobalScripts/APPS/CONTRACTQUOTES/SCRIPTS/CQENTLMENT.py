@@ -180,7 +180,7 @@ class Entitlements:
 			requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 			attribute_code = []
 			Trace.Write("field_type--"+str(field_type))
-			Trace.Write("previous_val "+str(Getprevdict))
+			Trace.Write(str(AttributeID)+"--AttributeID---previous_val---- "+str(Getprevdict))
 			
 			
 			if field_type != 'input':
@@ -235,6 +235,7 @@ class Entitlements:
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
 				else:
+					Trace.Write("--238---NewValue----- "+str(NewValue))
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
 			else:
 				requestdata += '{"value":"' + NewValue + '","selected":true}'
