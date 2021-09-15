@@ -4179,55 +4179,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 		else:
-			d1 = Sql.GetFirst(
-				"""SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
-							SAQSCO.FABLOCATION_ID,
-							SAQSCO.GREENBOOK,
-							SAQSCO.GREENBOOK_RECORD_ID,
-							SAQSCO.QUOTE_ID,
-							SAQSCO.QUOTE_NAME,
-							SAQSCO.QUOTE_RECORD_ID,
-							SAQSCO.QTEREV_ID,
-							SAQSCO.QTEREV_RECORD_ID,
-							SAQSCO.SALESORG_ID,
-							SAQSCO.SALESORG_NAME,
-							SAQSCO.SALESORG_RECORD_ID,
-							SAQSCO.SERVICE_DESCRIPTION,
-							SAQSCO.SERVICE_ID,
-							SAQSCO.SERVICE_RECORD_ID,
-							SAQSCO.EQUIPMENT_QUANTITY,								
-							SAQSCO.FABLOCATION_NAME,
-							SAQSCO.FABLOCATION_RECORD_ID,
-							SAQTMT.CONTRACT_VALID_FROM,
-       						SAQTMT.CONTRACT_VALID_TO,
-							SAQTSV.PAR_SERVICE_DESCRIPTION,
-							SAQTSV.PAR_SERVICE_ID,
-							SAQTSV.PAR_SERVICE_RECORD_ID,
-							'{UserName}' AS CPQTABLEENTRYADDEDBY,
-							GETDATE() as CPQTABLEENTRYDATEADDED,
-							{UserId} as CpqTableEntryModifiedBy,
-							GETDATE() as CpqTableEntryDateModified
-							FROM SAQSCO (NOLOCK) JOIN SAQTSV (NOLOCK) ON
-							SAQSCO.QUOTE_ID = SAQTSV.QUOTE_ID AND
-							SAQTSV.SERVICE_ID = '{TreeParam}' AND
-							SAQTSV.SERVICE_TYPE = '{TreeParentParam}'
-							JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
-							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
-							WHERE 
-							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
-							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
-					""".format(
-							TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
-							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
-							QuoteRecordId=self.contract_quote_record_id,
-							RevisionRecordId=self.quote_revision_record_id,
-							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
-							UserName=self.user_name,
-							UserId=self.user_id
-						)
-			)
-			if d1:
-				Trace.Write(str(d1.QTEREV_ID)+'==================>>>>>nnnn '+str(d1.GREENBOOK))
 			self._process_query(
 				"""
 					INSERT SAQSGB (
@@ -4305,20 +4256,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						)
 			)
 		
-		d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='{}' """.format(str(self.contract_quote_record_id), self.quote_revision_record_id, str(d1.GREENBOOK)))
-		if d2:
-			Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri '+str(d2.GREENBOOK))
-				
-		#import time
-		#time.sleep(50)
-		getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO, QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(str(self.contract_quote_record_id), self.quote_revision_record_id))
-		if getdate:
-			Trace.Write("Value Exists")
-			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = 'CONVERT(VARCHAR(10),{},101)', CONTRACT_VALID_TO = 'CONVERT(VARCHAR(10),{},101)', QTEREV_ID='{}' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, getdate.QTEREV_ID, self.contract_quote_record_id,self.quote_revision_record_id)
-			#update_contract_date_greenbook_level = "UPDATE SAQSGB SET QTEREV_ID='zero' WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id)
-			#Sql.RunQuery(update_contract_date_greenbook_level)
-					
-	
 	def _insert_quote_service_preventive_maintenance_kit_parts(self, **kwargs):
 		Sql.RunQuery("""DELETE FROM SAQSAP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		Sql.RunQuery("""DELETE FROM SAQSKP WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
@@ -4708,9 +4645,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				
 				#SAQSGB_start_time = time.time()
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
-				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id), self.quote_revision_record_id))
-				if d2:
-					Trace.Write(str(d2.QTEREV_ID)+'==================>>>>>suri2 '+str(d2.GREENBOOK))
 				#SAQSGB_end_time = time.time()				
 				self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
 				#COVERED OBJ PRE DEFINED LOGIC
