@@ -1585,7 +1585,7 @@ def Related_Sub_Banner(
     elif TreeParentParam == "Quote Items" and subTabName == "Entitlements" and getQuotetype == "ZWK1 - SPARES":
         PrimaryLable = ""
         PrimaryValue = ""
-    elif TopSuperParentParam == "Quote Items" and (subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details"):
+    elif TopSuperParentParam == "Quote Items" and (subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
         #PrimaryLable = "Product Offering ID"
         #PrimaryValue = str(TreeSuperParentParam)
         #SecondLable = "Line Item Id"
@@ -1880,7 +1880,7 @@ def Related_Sub_Banner(
         SecondValue = "ALL"
         ThirdLable = ""
         ThirdValue = ""
-    elif TreeParentParam == 'Quote Items' and (subTabName == 'Equipment' or subTabName == 'Quote Item Fab Value Drivers' or subTabName == 'Quote Item Cost and Value Drivers'):
+    elif TreeParentParam == 'Quote Items' and (subTabName == 'Equipment' or subTabName == 'Quote Item Fab Value Drivers' or subTabName == 'Quote Item Cost and Value Drivers' or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
         TreeParam = TreeParam.split('-')
         PrimaryLable = "Line"
         PrimaryValue = TreeParam[0].strip()
