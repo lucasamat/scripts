@@ -374,10 +374,10 @@ class SYLDRTLIST:
 							Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"  
 						else:        
 							Columns = obj_obj.COLUMNS
-							if RECORD_ID == "SYOBJR-98869":
-								Trace.Write('306-----326-----Columns---'+str(Columns))
-								rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-								Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+							# if RECORD_ID == "SYOBJR-98869":
+							# 	Trace.Write('306-----326-----Columns---'+str(Columns))
+							# 	rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+							# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 			# elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
 				
 			#     getContracttype = Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004").GetValue()
@@ -476,11 +476,11 @@ class SYLDRTLIST:
 				Trace.Write('inside')
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
 				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-			if RECORD_ID == "SYOBJR-98869":
-				Trace.Write('480------Columns---'+str(Columns))
-				rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-				Trace.Write('480---4333---Columns---'+str(Columns))	
+			# if RECORD_ID == "SYOBJR-98869":
+			# 	Trace.Write('480------Columns---'+str(Columns))
+			# 	rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+			# 	Trace.Write('480---4333---Columns---'+str(Columns))	
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
