@@ -322,6 +322,10 @@ class SYLDRTLIST:
 					else:
 						getQuotetype =''
 					#Trace.Write("QUOTE_TYP "+str(getQuotetype)+" TP_J "+str(TreeParam))
+					if RECORD_ID == "SYOBJR-98869":
+						Trace.Write('306-----326-----')
+						rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+						Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp]) 
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
 						if RECORD_ID == "SYOBJR-00006" and str(TreeParam) == "Quote Preview":
 							rem_list_sp = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID","ITEM_LINE_SEQUENCE","SCHEDULE_MODE","DELIVERY_MODE"]
