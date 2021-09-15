@@ -374,10 +374,10 @@ class SYLDRTLIST:
 							Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"  
 						else:        
 							Columns = obj_obj.COLUMNS
-							# if RECORD_ID == "SYOBJR-98869":
-							# 	Trace.Write('306-----326-----Columns---'+str(Columns))
-							# 	rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-							# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+							if RECORD_ID == "SYOBJR-98869":
+								Trace.Write('306-----326-----Columns---'+str(Columns))
+								rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+								Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 			# elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
 				
 			#     getContracttype = Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004").GetValue()
@@ -476,11 +476,7 @@ class SYLDRTLIST:
 				Trace.Write('inside')
 				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
 				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-			# if RECORD_ID == "SYOBJR-98869":
-			# 	Trace.Write('480------Columns---'+str(Columns))
-			# 	rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-			# 	Trace.Write('480---4333---Columns---'+str(Columns))	
+				
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
@@ -6228,22 +6224,21 @@ class SYLDRTLIST:
 							+ str(RecAttValue)
 							+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 						)
-					# elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
-					# 		Qury_str = (
-					# 			"SELECT DISTINCT TOP "
-					# 			+ str(PerPage)
-					# 			+ "QUOTE_REVISION_RECORD_ID, CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
-					# 			+"') m WHERE m.ROW BETWEEN "
-					# 			+ str(Page_start)
-					# 			+ " AND "
-					# 			+ str(Page_End)+" "
-					# 		)
-					# 		QuryCount_str = (
-					# 			"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
-					# 			+ str(RecAttValue)
-					# 			+ "' AND QTEREV_RECORD_ID = '"
-					# 			+ str(quote_revision_record_id)+"' "
-					# 		)
+					elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
+						Qury_str = ("select DISTINCT TOP "
+							+ str(PerPage)
+							+ " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
+							+ str(contract_quote_record_id) + "' ) m where m.ROW BETWEEN "
+							+ str(Page_start)
+							+ " and "
+							+ str(Page_End)
+							+ ""
+						)
+						QuryCount_str = (
+							"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
+							+ str(RecAttValue)
+							+ "'"
+						)
 					elif RECORD_ID == 'SYOBJR-00010':
 						imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 						acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'                     
@@ -7679,22 +7674,21 @@ class SYLDRTLIST:
 								+ str(RecAttValue)
 								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 							)
-						# elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
-						# 	Qury_str = (
-						# 		"SELECT DISTINCT TOP "
-						# 		+ str(PerPage)
-						# 		+ "QUOTE_REVISION_RECORD_ID, CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
-						# 		+"') m WHERE m.ROW BETWEEN "
-						# 		+ str(Page_start)
-						# 		+ " AND "
-						# 		+ str(Page_End)+" "
-						# 	)
-						# 	QuryCount_str = (
-						# 		"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
-						# 		+ str(RecAttValue)
-						# 		+ "' AND QTEREV_RECORD_ID = '"
-						# 		+ str(quote_revision_record_id)+"' "
-						# 	)
+						elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
+							Qury_str = ("select DISTINCT TOP "
+								+ str(PerPage)
+								+ " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
+								+ str(contract_quote_record_id) + "' ) m where m.ROW BETWEEN "
+								+ str(Page_start)
+								+ " and "
+								+ str(Page_End)
+								+ ""
+							)
+							QuryCount_str = (
+						 		"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
+						 		+ str(RecAttValue)
+						 		+ "'"
+						 	)
 						elif RECORD_ID == 'SYOBJR-00010':    
 							imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 							acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
