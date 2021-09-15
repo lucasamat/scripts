@@ -179,7 +179,7 @@ def sendEmail(level):
     mailClient.Send(msg)
 
     return True
-def FabCostAndValueDrivers():
+def fabcostandvaluedrivers():
     QueryStatement = "DELETE FROM SAQSGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID = '" + str(TreeParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParam) + "'AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"'"
     Sql.RunQuery(QueryStatement)
     Log.Info("Line---> FabCostAndValueDrivers")
@@ -248,7 +248,7 @@ def FabCostAndValueDrivers():
     level = "Fab Cost and Value Drivers"
     sendEmail(level)
 
-def GreenbookCostAndValueDrivers():
+def greenbookcostandvaluedrivers():
     try:
         QueryStatement = """
         MERGE SAQSCD SRC USING ( SELECT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.EQUIPMENT_DESCRIPTION,A.EQUIPMENT_ID,A.EQUIPMENT_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.TOOL_VALUEDRIVER_RECORD_ID,A.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,B.TOOL_VALUEDRIVER_ID,B.SERVICE_RECORD_ID,B.SERVICE_ID,B.SERVICE_DESCRIPTION,A.GREENBOOK,A.GREENBOOK_RECORD_ID,B.CpqTableEntryDateModified,B.CpqTableEntryModifiedBy,A.SERIAL_NO,B.QTEREV_RECORD_ID FROM SAQSCO(NOLOCK) A JOIN SAQSGD (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID  AND A.SERVICE_ID = B.SERVICE_ID AND A.FABLOCATION_ID = B.FABLOCATION_ID and A.GREENBOOK = B.GREENBOOK where B.QUOTE_RECORD_ID = '{rec}' and B.SERVICE_ID = '{treesuperparentparam}' and B.FABLOCATION_ID = '{treeparentparam}' AND B.GREENBOOK = '{treeparam}' AND B.QTEREV_RECORD_ID='{qurev_rec_id}')
@@ -280,7 +280,7 @@ def GreenbookCostAndValueDrivers():
     level = "Greenbook Cost and Value Drivers"
     sendEmail(level)
 
-def QuoteValueDrivers():    
+def quotevaluedrivers():    
     try:
         Log.Info("inside QUOTE VALUE DRIVERS")
         
@@ -373,7 +373,7 @@ def QuoteValueDrivers():
     level = "Quote Fab Value Drivers"
     sendEmail(level)
 
-def FabGreenbookValueDrivers():
+def fabgreenbookvaluedrivers():
     QueryStatement = """
     MERGE SAQFED SRC USING (SELECT A.EQUIPMENT_DESCRIPTION,A.EQUIPMENT_ID,A.EQUIPMENT_RECORD_ID,A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.SERIAL_NUMBER,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.VALUEDRIVER_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_TYPE,A.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,B.CpqTableEntryDateModified,B.CpqTableEntryModifiedBy,B.QTEREV_RECORD_ID  FROM SAQFEQ(NOLOCK) A JOIN SAQFGD (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.FABLOCATION_ID =B.FABLOCATION_ID AND A.GREENBOOK= B.GREENBOOK where B.QUOTE_RECORD_ID = '{rec}' and B.GREENBOOK = '{gb}' and B.FABLOCATION_ID = '{fb}' AND B.QTEREV_RECORD_ID='{qurev_rec_id}')
     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.FABLOCATION_RECORD_ID = TGT.FABLOCATION_RECORD_ID AND SRC.VALUEDRIVER_ID = TGT.VALUEDRIVER_ID AND SRC.GREENBOOK = TGT.GREENBOOK AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID)
@@ -403,7 +403,7 @@ def FabGreenbookValueDrivers():
     level = "Fab Greenbook Value Drivers"
     sendEmail(level)
 
-def fabValueDrivers():
+def fabvaluedrivers():
     QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParam)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"' "
     Sql.RunQuery(QueryStatement)
     Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
@@ -503,16 +503,16 @@ except:
     userName = ""
     quote_revision_record_id = ""
 if 'SERVICE COST AND VALUE DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(ServiceCostAndValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(servicecostandvaluedrivers())
 elif 'FAB COST AND VALUE DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(FabCostAndValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(fabcostandvaluedrivers())
 elif 'GREENBOOK COST AND VALUE DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(GreenbookCostAndValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(greenbookcostandvaluedrivers())
 elif 'QUOTE VALUE DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(QuoteValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(quotevaluedrivers())
 elif 'FAB GREENBOOK VALUE DRIVER' in LEVEL:
-    ApiResponse = ApiResponseFactory.JsonResponse(FabGreenbookValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(fabgreenbookvaluedrivers())
 elif LEVEL == 'FAB VALUE DRIVER':
-    ApiResponse = ApiResponseFactory.JsonResponse(fabValueDrivers())
+    ApiResponse = ApiResponseFactory.JsonResponse(fabvaluedrivers())
 
 
