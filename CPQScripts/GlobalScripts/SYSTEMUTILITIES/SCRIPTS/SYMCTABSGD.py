@@ -965,6 +965,7 @@ class CONTAINER:
                                 except:
 
                                     if PageInform != "":
+                                        Trace.Write("##At line 968")
                                         QueryStr = (
                                             "select TOP "
                                             + str(PerPage)
@@ -983,6 +984,7 @@ class CONTAINER:
                                             + ""
                                         )
                                     else:
+                                        Trace.Write("##At line 986")
                                         QueryStr = (
                                             "select TOP "
                                             + str(PerPage)
@@ -1183,6 +1185,7 @@ class CONTAINER:
                                                     + " "
                                                 )
                                     else:
+                                        Trace.Write("## At line 1186")
                                         QueryStr = (
                                             "select TOP  "
                                             + str(PerPage)
