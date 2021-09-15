@@ -197,17 +197,37 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(VAR1)
 					+ "</select>"
 				)
-			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":				
-				GetDRIVNAME = Sql.GetList(
-					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
-					+ str(field_name)
-					+ "' AND VALUEDRIVER_RECORD_ID = '"
-					+ str(mastername)
-					+ "' AND GREENBOOK = '"
-					+ str(TreeParam)
-					+ "'"
-				)
-				selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id) + "'")
+			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":	
+				if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):
+					GetDRIVNAME = SqlHelper.GetList(
+							"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+							+ str(field_name)
+							+ "' AND VALUEDRIVER_RECORD_ID = '"
+							+ str(mastername)
+							+ "'"
+						)
+					selecter = Sql.GetFirst(
+						"SELECT VALUEDRIVER_VALUEDESC,VALUEDRIVER_COEFFICIENT FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
+						+ str(Qt_rec_id)
+						+ "' AND VALUEDRIVER_ID = '"
+						+ str(field_name)
+						+ "' AND FABLOCATION_ID = '"
+						+ str(TreeParam)
+						+ "' AND QTEREV_RECORD_ID = '"
+						+ str(quote_revision_record_id)
+						+ "'"
+					)
+				else:
+					GetDRIVNAME = Sql.GetList(
+						"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+						+ str(field_name)
+						+ "' AND VALUEDRIVER_RECORD_ID = '"
+						+ str(mastername)
+						+ "' AND GREENBOOK = '"
+						+ str(TreeParam)
+						+ "'"
+					)
+					selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id) + "'")
 				userselected = []
 				userselectedeff =[]
 				if selecter:
