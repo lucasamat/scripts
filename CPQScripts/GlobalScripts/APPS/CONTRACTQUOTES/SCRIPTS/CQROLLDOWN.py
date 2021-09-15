@@ -10,6 +10,7 @@ import clr
 import System.Net
 import sys
 import datetime
+import re
 from SYDATABASE import SQL
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
@@ -107,8 +108,17 @@ def CoveredObjEntitlement():
 	
 	#Log.Info("get_SAQSCA--222-> "+ str(get_SAQSCA.cnt))
 	#Log.Info("get_SAQSCE--222-> "+ str(get_SAQSCE.cnt))
+	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK
+	if (TreeParam == 'Z0091'):
+		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID ='{revision_rec_id}' AND SERVICE_ID ='{serviceId}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=TreeParam))
+		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
+		getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+		getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
 
-
+		QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' WHERE QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' and SERVICE_ID = '{serviceId}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=TreeParam)
+		QueryStatement = QueryStatement.replace("'", "''")
+		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
+ 
 
 	'''SAQIEN = """INSERT SAQIEN 
 		(ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,ITEM_LINE_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,	
