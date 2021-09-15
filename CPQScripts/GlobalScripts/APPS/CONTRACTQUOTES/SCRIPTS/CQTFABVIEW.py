@@ -77,8 +77,12 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			userselectedeffi = []
 			
 			if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
-				mastername = str(qstn.VALUEDRIVER_RECORD_ID)
-				field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
+				if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):
+					mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
+					field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
+				else:
+					mastername = str(qstn.VALUEDRIVER_RECORD_ID)
+					field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
 			else:
 				mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
 				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
