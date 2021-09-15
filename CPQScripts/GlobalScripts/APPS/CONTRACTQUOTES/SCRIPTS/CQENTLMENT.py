@@ -210,7 +210,7 @@ class Entitlements:
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
 						elif field_type == 'Drop Down':
-							Trace.Write("New_VALUE_J "+str(val.STANDARD_ATTRIBUTE_VALUE))
+							Trace.Write("New_VALUE_J 213----"+str(val.STANDARD_ATTRIBUTE_VALUE))
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							# Trace.Write("list_of_vals_J "+str(list_of_vals))
@@ -225,8 +225,8 @@ class Entitlements:
 							if NewValue != 'select':
 								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
-								Trace.Write("ent_total_val "+str(ent_total_val))
-								Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
+								#Trace.Write("ent_total_val "+str(ent_total_val))
+								#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 							elif NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
 								requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
@@ -327,7 +327,7 @@ class Entitlements:
 			NewValue = list(NewValue)	
 			multiselect_arr = NewValue
 			multiselect_arr = Product.SetGlobal('multiselect_arr',str(multiselect_arr))
-			Trace.Write('ArrayList-----'+str(NewValue))
+			#Trace.Write('ArrayList-----'+str(NewValue))
 		if calc_factor == '':
 			calc_factor = 'null'
 		if costimpact == '':
