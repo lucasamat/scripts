@@ -224,7 +224,10 @@ def set_active_revision(Opertion,cartrev):
 	#for val in select_active:
 	ObjectName = cartrev.split('-')[0].strip()
 	cpqid = cartrev.split('-')[1].strip()
-	recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+	#recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+	get_rev_quote_info_details = Sql.GetFirst("select * from SAQTRV where QUOTE_ID = '{}' and QTEREV_ID = {}".format(ObjectName,cpqid))
+	if get_rev_quote_info_details:
+		recid = get_rev_quote_info_details.QUOTE_REVISION_RECORD_ID
 	get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 	Quote.SetGlobal("contract_quote_record_id",quote_contract_recordId)
 	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
