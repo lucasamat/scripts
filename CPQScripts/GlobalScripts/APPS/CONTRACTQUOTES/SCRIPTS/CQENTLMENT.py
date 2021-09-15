@@ -731,13 +731,17 @@ class Entitlements:
 						GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 						if getAddOn is None:
 							
-							
-							
+							if GetMaterial:
+								sap_desc = GetMaterial.SAP_DESCRIPTION
+								sap_matid = GetMaterial.MATERIAL_RECORD_ID
+							else:
+								sap_matid = sap_desc = ''
+
 							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 										SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 											SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{ContractValidFrom}' as CONTRACT_VALID_FROM, '{ContractValidTo}' as CONTRACT_VALID_TO, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
 											WHERE SAP_PART_NUMBER = 'Z0046')
-											) A""".format(description=GetMaterial.SAP_DESCRIPTION,recordid=GetMaterial.MATERIAL_RECORD_ID,quote=self.ContractRecordId,revision= self.revision_recordid))
+											) A""".format(description=sap_desc,recordid=sap_matid,quote=self.ContractRecordId,revision= self.revision_recordid))
 						Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
 						Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
 						if self.treeparam == "Z0091":
