@@ -675,17 +675,20 @@ class CONTAINER:
                                                     where += " AND " + str(record) + " = '" + str(rec) + "'"
                                                 else:
                                                     if str(record) == "CpqTableEntryId":
-                                                        where += "AND " + str(record) + " = '" + str(rec) + "'"
+                                                        where += " AND " + str(record) + " = '" + str(rec) + "'"
                                                     elif str(record) == "ATTRIBUTE_NAME":
                                                         where += (
-                                                            "AND "
+                                                            " AND "
                                                             + str(record)
                                                             + " like '%"
                                                             + (str(rec).replace("'", "''"))
                                                             + "%'"
                                                         )
                                                     else:
-                                                        where += "AND " + str(record) + " like '%" + str(rec) + "%'"
+                                                        # if PRIMARY_OBJECT_NAMes == "SAQTMT":
+                                                        #     if ("QUOTE_TYPE" or "SALE_TYPE" or "QUOTE_STATUS" or "MASTER_TABLE_QUOTE_RECORD_ID" or "ACCOUNT_ID" or "ACCOUNT_NAME" or "ACCOUNT_RECORD_ID" or "OWNER_NAME" or "QTEREV_RECORD_ID") in str(where):
+                                                        Trace.Write("#### "+str(record))
+                                                        where += " AND " + str(record) + " like '%" + str(rec) + "%'"
                                                         
 
                                     else:
