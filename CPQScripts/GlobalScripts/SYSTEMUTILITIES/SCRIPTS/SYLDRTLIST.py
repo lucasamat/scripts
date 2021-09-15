@@ -2281,22 +2281,16 @@ class SYLDRTLIST:
 						+ "' AND QTEREV_RECORD_ID = '"
 						+ str(quote_revision_record_id)+"' "
 					)
-				# elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
-				# 			Qury_str = (
-				# 				"SELECT DISTINCT TOP "
-				# 				+ str(PerPage)
-				# 				+ "QUOTE_REVISION_RECORD_ID, CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE FROM ( SELECT TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID ='"+str(RecAttValue)
-				# 				+"') m WHERE m.ROW BETWEEN "
-				# 				+ str(Page_start)
-				# 				+ " AND "
-				# 				+ str(Page_End)+" "
-				# 			)
-				# 			QuryCount_str = (
-				# 				"SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
-				# 				+ str(RecAttValue)
-				# 				+ "' AND QTEREV_RECORD_ID = '"
-				# 				+ str(quote_revision_record_id)+"' "
-				# 			)
+				elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
+					Qury_str = ("select DISTINCT TOP "
+						+ str(PerPage)
+						+ " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
+						+ str(contract_quote_record_id) + "' ) m where m.ROW BETWEEN "
+						+ str(Page_start)
+						+ " and "
+						+ str(Page_End)
+						+ ""
+					)
 				elif RECORD_ID == 'SYOBJR-00010':
 					imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
 					acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'  
