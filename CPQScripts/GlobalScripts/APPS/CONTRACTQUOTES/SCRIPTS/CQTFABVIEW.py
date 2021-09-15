@@ -260,8 +260,11 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				)
 			for data in qstn:
 				if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
-					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
-					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
+					if TreeParentParam.startswith("Sending Account") or TreeParentParam.startswith("Receiving Account"):	
+						new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
+					else:
+						new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
+						new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
 				else:
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
