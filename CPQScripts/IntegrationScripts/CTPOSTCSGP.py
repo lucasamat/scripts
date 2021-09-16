@@ -11,11 +11,11 @@ import datetime
 try :
     Jsonquery = SqlHelper.GetList("SELECT  INTEGRATION_PAYLOAD,INTEGRATION_KEY from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = 'CRM_TO_CPQ_CONTRACT_DATA' AND ISNULL(STATUS,'')='' ")
     for json_data in Jsonquery:
-        if "Param" in str(json_data.INTEGRATION_PAYLOAD):
-            splited_list = str(json_data.INTEGRATION_PAYLOAD).split("%%")
-            rebuilt_data = eval(str(splited_list[1]))
+        if "Param" in json_data.INTEGRATION_PAYLOAD:
+            splited_list = json_data.INTEGRATION_PAYLOAD.split("%%")
+            rebuilt_data = eval(splited_list[1])
         else:
-            splited_list = str(json_data.INTEGRATION_PAYLOAD)
+            splited_list = json_data.INTEGRATION_PAYLOAD
             rebuilt_data = eval(splited_list)
         
         primaryQuerysession =  SqlHelper.GetFirst("SELECT NEWID() AS Guid")
@@ -46,7 +46,7 @@ try :
                             if "OPPORTUNITY_ID" not in record_dict:
                                 record_dict['OPPORTUNITY_ID'] = ""
                                 
-                            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCNRT_INBOUND (SESSION_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,NET_VALUE,PO_NUMBER,CONTRACT_CURRENCY,CONTRACT_ID,CONTRACT_NAME,CONTRACT_STATUS,CONTRACT_TYPE,SALESOFFICE_ID,SALESORG_ID,cpqtableentrydatemodified,QUOTE_ID,OPPORTUNITY_ID)  select  ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(record_dict['CONTRACT_VALID_FROM'])+ "'',''"+str(record_dict['CONTRACT_VALID_TO'])+ "'',''"+str(record_dict['NET_VALUE'])+ "'',''"+str(record_dict['PO_NUMBER'])+ "'',''"+str(record_dict['CONTRACT_CURRENCY'])+ "'',''"+str(record_dict['CONTRACT_ID'])+ "'',''"+str(record_dict['CONTRACT_NAME'])+ "'',''"+str(record_dict['CONTRACT_STATUS'])+ "'',''"+str(record_dict['CONTRACT_TYPE'])+ "'',''"+str(record_dict['SALESOFFICE_ID'])+ "'',''"+str(record_dict['SALESORG_ID'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['QUOTE_ID'])+ "'',''"+str(record_dict['OPPORTUNITY_ID'])+ "'' ' ")
+                            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCNRT_INBOUND (SESSION_ID,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,NET_VALUE,PO_NUMBER,CONTRACT_CURRENCY,CONTRACT_ID,CONTRACT_NAME,CONTRACT_STATUS,CONTRACT_TYPE,SALESOFFICE_ID,SALESORG_ID,cpqtableentrydatemodified,QUOTE_ID,OPPORTUNITY_ID)  select  ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(record_dict['CONTRACT_VALID_FROM'])+ "'',''"+str(record_dict['CONTRACT_VALID_TO'])+ "'',''"+str(record_dict['NET_VALUE'])+ "'',''"+str(record_dict['PO_NUMBER'])+ "'',''"+record_dict['CONTRACT_CURRENCY']+ "'',''"+str(record_dict['CONTRACT_ID'])+ "'',''"+record_dict['CONTRACT_NAME']+ "'',''"+record_dict['CONTRACT_STATUS']+ "'',''"+record_dict['CONTRACT_TYPE']+ "'',''"+str(record_dict['SALESOFFICE_ID'])+ "'',''"+str(record_dict['SALESORG_ID'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['QUOTE_ID'])+ "'',''"+str(record_dict['OPPORTUNITY_ID'])+ "'' ' ")
                             
                     elif str(tn).upper() == "CTCITM":
                         if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -75,7 +75,7 @@ try :
                         for record_dict in Tbl_data:
                             if "ENTITLEMENT_VALUE_CODE" not in record_dict:
                                 record_dict['ENTITLEMENT_VALUE_CODE'] = ""
-                            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCSCE_INBOUND (SESSION_ID,ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,CONTRACT_ID,LINE_ITEM_ID,cpqtableentrydatemodified)  select  ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(record_dict['ENTITLEMENT_NAME'])+ "'',''"+str(record_dict['ENTITLEMENT_VALUE_CODE'])+ "'',''"+str(record_dict['CONTRACT_ID'])+ "'',''"+str(record_dict['LINE_ITEM_ID'])+ "'',''"+ str(Modi_date)+ "'' ' ")
+                            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCSCE_INBOUND (SESSION_ID,ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,CONTRACT_ID,LINE_ITEM_ID,cpqtableentrydatemodified)  select  ''"+ str(primaryQuerysession.Guid)+ "'',''"+record_dict['ENTITLEMENT_NAME']+ "'',''"+str(record_dict['ENTITLEMENT_VALUE_CODE'])+ "'',''"+str(record_dict['CONTRACT_ID'])+ "'',''"+str(record_dict['LINE_ITEM_ID'])+ "'',''"+ str(Modi_date)+ "'' ' ")
                             
                     elif str(tn).upper() == "CTCIFP":
                         if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -99,7 +99,7 @@ try :
                             for partyrole in record_dict:
                                 PARTY_ID= record_dict[partyrole] 
                             
-                                primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCTIP_INBOUND (SESSION_ID,CONTRACT_ID,PARTY_ROLE,PARTY_ID,cpqtableentrydatemodified) select ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(Dt['CONTRACT_ID'])+ "'',''"+str(partyrole)+ "'',''"+str(PARTY_ID)+ "'',''"+ str(Modi_date)+ "'' ' ")
+                                primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " CTCTIP_INBOUND (SESSION_ID,CONTRACT_ID,PARTY_ROLE,PARTY_ID,cpqtableentrydatemodified) select ''"+ str(primaryQuerysession.Guid)+ "'',''"+str(Dt['CONTRACT_ID'])+ "'',''"+partyrole+ "'',''"+str(PARTY_ID)+ "'',''"+ str(Modi_date)+ "'' ' ")
                                 
             primaryItems = SqlHelper.GetFirst(  ""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''PROCESSED'' from SYINPL  (NOLOCK) WHERE INTEGRATION_KEY  = ''"+str(json_data.INTEGRATION_KEY)+ "'' AND ISNULL(STATUS ,'''')= '''' ' "    )
             if Check_flag == 1:                 
@@ -109,5 +109,3 @@ except:
     Log.Info("CTPOSTCSGP ERROR---->:" + str(sys.exc_info()[1]))
     Log.Info("CTPOSTCSGP ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
     ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
-            
-            
