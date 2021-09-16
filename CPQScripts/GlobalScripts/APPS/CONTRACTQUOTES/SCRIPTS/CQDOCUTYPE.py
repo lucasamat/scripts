@@ -24,12 +24,11 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
             document_type_list.append(document_type_obj.DOCTYP_ID)
     if 'ZTBC' in document_type_list:
         document_type = 'ZTBC'
+    elif service_obj is None:
+        document_type = 'ZTBC'
     else:
         document_type = document_type_obj.DOCTYP_ID
     #Log.Info(document_type_list)
-    length_of_product = len(list(Quote.MainItems))
-    if service_obj is None or length_of_product == '0':
-        document_type = 'ZTBC'
     document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID = '{}'".format(document_type))
     Log.Info("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
     Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
