@@ -188,6 +188,9 @@ def create_new_revision(Opertion,cartrev):
 			## SAQSCO (QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) MAPPED INTO  SAQSCE (QTESRVCOB_RECORD_ID):
 			updatestatement = """UPDATE B SET B.QTESRVCOB_RECORD_ID = A.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID FROM SAQSCO A JOIN SAQSCE B ON A.EQUIPMENT_ID=B.EQUIPMENT_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.FABLOCATION_ID=B.FABLOCATION_ID AND A.QUOTE_ID=B.QUOTE_ID AND A.SERIAL_NO=B.SERIAL_NO WHERE A.QTEREV_ID={} AND B.QTEREV_ID={} AND A.QUOTE_RECORD_ID=''{}'' AND B.QUOTE_RECORD_ID=''{}'' """.format(int(newrev_inc),int(newrev_inc),str(quote_contract_recordId),str(quote_contract_recordId))
 
+			### SAQTSV (QUOTE_SERVICE_RECORD_ID) MAPPED INTO  SAQTSE (QTESRV_RECORD_ID):
+			updatestatement = """UPDATE B SET B.QTESRV_RECORD_ID = A.QUOTE_SERVICE_RECORD_ID FROM SAQTSV A JOIN SAQTSE B ON A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID AND A.QUOTE_ID=B.QUOTE_ID  WHERE A.QTEREV_ID={} AND B.QTEREV_ID={} AND A.QUOTE_RECORD_ID=''{}'' AND B.QUOTE_RECORD_ID=''{}'' """.format(int(newrev_inc),int(newrev_inc),str(quote_contract_recordId),str(quote_contract_recordId))
+
 			query_result = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement) + "'")
 			Trace.Write(query_result)
 			## END CLONE OBJECT SAQSCO TO SAQSCE
