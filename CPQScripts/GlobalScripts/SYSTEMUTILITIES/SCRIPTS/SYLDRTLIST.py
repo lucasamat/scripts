@@ -3252,6 +3252,7 @@ class SYLDRTLIST:
 														'<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 													)
 												else:
+													Trace.Write('3259--3255----'+str(value1234))
 													new_dict[value123] = (
 														'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 													)
