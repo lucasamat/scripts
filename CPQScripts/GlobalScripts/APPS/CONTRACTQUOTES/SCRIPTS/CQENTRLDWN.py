@@ -1353,7 +1353,7 @@ try:
 		for attribute in attributeList:
 			if "calc" in attribute:
 				attribute = attribute.replace("_calc","")
-			
+	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start		
 	if (get_serviceid == 'Z0091'):
 		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
 		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
@@ -1367,7 +1367,7 @@ try:
 		QueryStatement = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
 		QueryStatement = QueryStatement.replace("'", "''")
 		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")	
-			
+		##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 ends	
 			
 			# update_query = """ UPDATE TGT 
 			# 	SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
