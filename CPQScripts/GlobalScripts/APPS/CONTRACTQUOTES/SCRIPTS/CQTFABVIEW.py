@@ -43,7 +43,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 	if TreeParentParam.startswith("Sending") or  TreeParentParam.startswith("Receiving"):
 		TreeParentParam = TreeParentParam.split("-")[0]
 		Trace.Write("Tree_Parent_sending"+str(TreeParentParam))
-	if (str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items') and (TreeParentParam != "Sending Account" and TreeParentParam != "Receiving Account") :
+	if (str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items') and (TreeParentParam != "Sending Account" or TreeParentParam != "Receiving Account") :
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
 		###NEW GREEN BOOK TABLE#
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
