@@ -18,7 +18,7 @@ Parameter2 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WH
 SYINPL_SESSION = SqlHelper.GetFirst("SELECT NEWID() AS A")
 
 exceptinfo = ''
-
+Log.Info("QTPOSTQTPR calling")
 try:
 
 	Stausquery = SqlHelper.GetFirst("SELECT count(*) as cnt from SYINPL(NOLOCK) WHERE INTEGRATION_NAME = 'SSCM_TO_CPQ_PRICING_DATA' AND ISNULL(STATUS,'') = 'INPROGRESS' ")	
@@ -698,7 +698,7 @@ try:
 
 							# Send the message QT_REC_ID
 							mailClient.Send(msg)
-
+					Log.Info("CallingCQIFWUDQTM1")
 					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":Qt_Id.QUOTE_ID})	
 					# Billing matrix async call
 					LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
