@@ -132,7 +132,7 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
 				"CANCELLATION_PERIOD":"90 DAYS",
-				"CONTRACT_VALID_FROM":get_quote_info_details.CONTRACT_VALID_FROM
+				"CONTRACT_VALID_FROM":get_quote_info_details.CONTRACT_VALID_FROM,
 				"CONTRACT_VALID_TO":get_quote_info_details.CONTRACT_VALID_TO
 			}
 
