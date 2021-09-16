@@ -140,8 +140,8 @@ class ContractQuoteSummaryUpdate:
         Trace.Write("Plus")
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_PRICE = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
-                                        YEAR_1 = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
                                         DISCOUNT = '{plus}{Discount}'
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
@@ -220,8 +220,8 @@ class ContractQuoteSummaryUpdate:
         Trace.Write("Minus")
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
-                                        YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        NET_PRICE = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1 = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
                                         DISCOUNT = '{plus}{Discount}'
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
