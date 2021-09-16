@@ -3254,7 +3254,7 @@ class SYLDRTLIST:
 												else:
 													Trace.Write('3259--3255----'+str(value1234))
 													if str(value1234) == "0.00":
-														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>") 
+														new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + str(value1234).upper() + '" style="border: 0px solid;" >' + str(value1234).upper() + "</abbr>") 
 														# new_dict[value123] = (
 														# 	'<input  type= "text" id ="billeditval_disable"   value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 														# )
