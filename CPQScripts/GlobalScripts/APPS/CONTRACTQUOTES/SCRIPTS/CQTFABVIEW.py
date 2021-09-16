@@ -263,6 +263,16 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ "</select>"
 				)
 			for data in qstn:
+				if TreeParentParam == "Sending Account":
+					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
+					if len(userselectedeffi) != 0:
+						Trace.Write("249line if")
+						coeffval = str(userselectedeffi).replace("['","").replace("']","")
+						#new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+						new_value_dict["VALUE DRIVER COEFFICIENT"] = userselectedeffi
+					else:
+						Trace.Write("253line ELSE")
+						new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
 				if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
