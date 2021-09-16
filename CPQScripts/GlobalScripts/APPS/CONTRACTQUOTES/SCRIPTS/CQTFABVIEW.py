@@ -44,7 +44,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		TreeParentParam = TreeParentParam.split("-")[0]
 		Trace.Write("Tree_Parent_sending"+str(TreeParentParam))
 	Trace.Write("Tree_Super_Parent_sending"+str(TreeSuperParentParam))
-	if (str(TreeParentParam == "Sending Account"):
+	if (str(TreeParentParam) == "Sending Account"):
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	elif (str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items') :
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
