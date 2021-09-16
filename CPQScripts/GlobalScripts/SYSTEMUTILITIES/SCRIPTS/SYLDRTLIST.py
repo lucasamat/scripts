@@ -6869,52 +6869,7 @@ class SYLDRTLIST:
                             + "' and TAB_RECORD_ID ='"
                             + str(GetAppname_query.TAB_RECORD_ID)
                             + "'"
-                        )
-                    # elif RECORD_ID == "SYOBJR-93123":                        
-                    #     prof_id = Product.GetGlobal("Profile_ID_val")
-                    #     proff_id = Product.GetGlobal("Profile_ID")
-                    #     if prof_id != "":
-                    #         Wh_API_NAME = "PROFILE_ID"
-                    #         Qustr = " where " + str(Wh_API_NAME) + " = '" + str(prof_id) + "'"
-                    #     else:
-                    #         Qustr = " where " + str(Wh_API_NAME) + " = '" + str(proff_id) + "'"
-
-                    elif RECORD_ID == "SYOBJR-90020":
-                        revision_id = Product.GetGlobal("segmentRevisionId")
-                        country_value = ""
-                        if (
-                            str(TreeParam) != ""
-                            and (str(TreeParam) != "Fulfillment Model" and str(TreeParam) != "User Countries")
-                        ) and (
-                            str(TreeParentParam) == "Fulfillment Model" or str(TreeSuperParentParam) == "Fulfillment Model"
-                        ):
-                            ctry_obj = Sql.GetFirst(
-                                "select * from SACTRY (nolock) where COUNTRY_NAME = '" + str(TreeParam) + "'"
-                            )
-                        else:
-                            ctry_obj = SqlHelper.GetFirst(
-                                "select * from PASACS (NOLOCK) where PRICEAGREEMENT_RECORD_ID = '"
-                                + str(RecAttValue)
-                                + "' AND AGMREV_ID = '"
-                                + str(revision_id)
-                                + "' AND COUNTRY_NAME = '"
-                                + str(TreeParam)
-                                + "'"
-                            )
-                        if ctry_obj is not None:
-                            country_value = str(ctry_obj.COUNTRY_RECORD_ID)
-
-                        Qustr = (
-                            " where PRICEAGREEMENT_RECORD_ID = '"
-                            + str(RecAttValue)
-                            + "' AND AGMREV_ID = '"
-                            + str(revision_id)
-                            + "' AND "
-                            + str(Wh_API_NAME)
-                            + " = '"
-                            + str(country_value)
-                            + "'"
-                        )
+                        )                    
                     elif RECORD_ID == "SYOBJR-98784":
                         gettabval = getptabname = ""
                         CommonTreeTopSuperParentParam = Product.GetGlobal("CommonTreeTopSuperParentParam")
