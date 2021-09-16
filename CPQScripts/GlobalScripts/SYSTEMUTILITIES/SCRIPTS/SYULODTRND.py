@@ -446,7 +446,7 @@ def CommonTreeViewHTMLDetail(
 		if action_visible_obj:
 			if action_visible_obj.OBJECT_RECORD_ID:
 				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
-		if ObjectName == "SYOBFD" or ObjectName == "SAQIGB":
+		if ObjectName == "SYOBFD" or ObjectName == "SAQIGB" or ObjectName == "SAQIFL":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
 		if editable_permission == "TRUE":			
