@@ -29,6 +29,7 @@ TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 
 Trace.Write("quote_revision_record_id "+str(quote_revision_record_id))
+Trace.Write("subtab---"+str(subtab))
 def fabview(ACTION,CurrentRecordId,subtab):	
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
