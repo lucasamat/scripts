@@ -407,10 +407,12 @@ class CONTAINER:
                                     if ins.DATA_TYPE == "CURRENCY" or ins.FORMULA_DATA_TYPE == "CURRENCY":
                                         currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                             lookup_str = ",".join(list(lookup_disply_list))
+                            ##A055S000P01-8871 Code starts..
                             if PRIMARY_OBJECT_NAMes == "SAQTMT":
                                 NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO','NET_VALUE']
                             else:
                                 NAME = eval(data_obj.COLUMNS)
+                            ##A055S000P01-8871 Code ends..
                             Trace.Write("NAMe"+str(NAME))
                             ind = 1
                             nameList = {}
@@ -459,6 +461,7 @@ class CONTAINER:
                                         ind += 1
                             else:
                                 for ik in NAME:
+                                    ##A055S000P01-8871 Code starts..
                                     if PRIMARY_OBJECT_NAMes == "SAQTMT":
                                         if ik == 'QUOTE_ID' or ik == 'QTEREV_ID' or ik == 'REVISION_STATUS' or ik == 'REVISION_DESCRIPTION' or ik == 'CONTRACT_VALID_FROM' or ik == 'CONTRACT_VALID_TO' or ik == 'SALESORG_ID' or ik == 'NET_VALUE':
                                             objh_obj = Sql.GetFirst(
@@ -475,6 +478,7 @@ class CONTAINER:
                                                 "select RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAOPQT' and DATA_TYPE ='AUTO NUMBER' "
                                             )
                                             sql.PRIMARY_OBJECT_RECORD_ID = objh_obj.RECORD_ID
+                                    ##A055S000P01-8871 Code ends..        
                                     fieldLabel = Sql.GetFirst(
                                         "SELECT FIELD_LABEL,DATA_TYPE,FORMULA_LOGIC, FIELD_SHORT_LABEL FROM  SYOBJD (NOLOCK) "
                                         + " WHERE PARENT_OBJECT_RECORD_ID='"
@@ -685,6 +689,7 @@ class CONTAINER:
                                                             + "%'"
                                                         )
                                                     else:
+                                                        ##A055S000P01-8871 Code starts..
                                                         if PRIMARY_OBJECT_NAMes == "SAQTMT":
                                                             if str(record) in ("QUOTE_TYPE","SALE_TYPE","QUOTE_STATUS","MASTER_TABLE_QUOTE_RECORD_ID","ACCOUNT_ID","ACCOUNT_NAME","ACCOUNT_RECORD_ID","OWNER_NAME","QTEREV_RECORD_ID"):
                                                                 record = "SAQTMT." + str(record) 
@@ -693,6 +698,7 @@ class CONTAINER:
                                                             elif str(record) in ("QUOTE_ID","QTEREV_ID","SALESORG_ID","REVISION_STATUS","REVISION_DESCRIPTION","CONTRACT_VALID_FROM","CONTRACT_VALID_TO","NET_VALUE"):
                                                                 record = "SAQTRV." +str(record)
                                                         where += " AND " + str(record) + " like '%" + str(rec) + "%'"
+                                                        ##A055S000P01-8871 Code ends..
                                                         
 
                                     else:
@@ -920,6 +926,7 @@ class CONTAINER:
                                             QueryCountStr = (
                                             "select rowcnt= count(SAQTMT.QUOTE_ID) from SAQTMT (NOLOCK) JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID " + str(where)
                                             )
+                                        ##A055S000P01-8871 Code starts..
                                         elif flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                             where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
                                             QueryStr = (
@@ -949,6 +956,7 @@ class CONTAINER:
                                                 "select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' " + str(where)
                                             )    
                                             Trace.Write('## QueryStr--->'+str(QueryStr))
+                                        ##A055S000P01-8871 Code ends..
                                         else:
                                             QueryStr = (
                                                 "select top "
@@ -1044,6 +1052,7 @@ class CONTAINER:
                                             )
 
                                         else:
+                                            ##A055S000P01-8871 Code starts..
                                             Trace.Write("flag__J_1 "+str(flag) + " x_tabs"+str(x_tabs))
                                             if flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                                 where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
@@ -1069,6 +1078,7 @@ class CONTAINER:
                                                 + " "
                                             )
                                                 Trace.Write("QueryStr---->"+str(QueryStr))
+                                            ##A055S000P01-8871 Code ends..    
                                             elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                                 where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                                 QueryStr = (
