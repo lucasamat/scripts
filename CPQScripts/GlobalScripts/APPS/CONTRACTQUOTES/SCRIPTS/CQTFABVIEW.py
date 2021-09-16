@@ -81,7 +81,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			VAR1 = coeffval = ""
 			userselectedeffi = []
 			
-			if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
+			if TreeParentParam == "Sending Account":
+				mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
+				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
+			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
 				mastername = str(qstn.VALUEDRIVER_RECORD_ID)
 				field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
 			else:
