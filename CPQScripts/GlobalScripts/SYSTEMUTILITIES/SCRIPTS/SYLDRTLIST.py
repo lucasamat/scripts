@@ -8218,6 +8218,7 @@ class SYLDRTLIST:
 						if value1234 is not None and value1234 != '':
 							my_format = "{:." + str(decimal_place) + "f}"
 							value1234 = str(my_format.format(round(float(value1234), int(decimal_place)))) + " %"
+					Trace.Write("@8221----->LOOKUP DISPLAY LIST"+str(lookup_disply_list))
 					if value123 in lookup_disply_list:
 						for key, value in lookup_list.items():
 							if value == value123:
