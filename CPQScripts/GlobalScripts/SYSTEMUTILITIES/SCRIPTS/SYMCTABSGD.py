@@ -408,7 +408,7 @@ class CONTAINER:
                                         currency_dict[str(ins.API_NAME).strip()] = str(ins.CURRENCY_INDEX)
                             lookup_str = ",".join(list(lookup_disply_list))
                             if PRIMARY_OBJECT_NAMes == "SAQTMT":
-                                NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO']
+                                NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO','NET_VALUE']
                             else:
                                 NAME = eval(data_obj.COLUMNS)
                             Trace.Write("NAMe"+str(NAME))
@@ -460,7 +460,7 @@ class CONTAINER:
                             else:
                                 for ik in NAME:
                                     if PRIMARY_OBJECT_NAMes == "SAQTMT":
-                                        if ik == 'QUOTE_ID' or ik == 'QTEREV_ID' or ik == 'REVISION_STATUS' or ik == 'REVISION_DESCRIPTION' or ik == 'CONTRACT_VALID_FROM' or ik == 'CONTRACT_VALID_TO' or ik == 'SALESORG_ID':
+                                        if ik == 'QUOTE_ID' or ik == 'QTEREV_ID' or ik == 'REVISION_STATUS' or ik == 'REVISION_DESCRIPTION' or ik == 'CONTRACT_VALID_FROM' or ik == 'CONTRACT_VALID_TO' or ik == 'SALESORG_ID' or ik == 'NET_VALUE':
                                             objh_obj = Sql.GetFirst(
                                                 "select RECORD_ID from SYOBJH (NOLOCK) where OBJECT_NAME = 'SAQTRV' and DATA_TYPE ='AUTO NUMBER' "
                                             )
@@ -690,7 +690,7 @@ class CONTAINER:
                                                                 record = "SAQTMT." + str(record) 
                                                             elif str(record) == "OPPORTUNITY_NAME":
                                                                 record = "SAOPQT." +str(record)
-                                                            elif str(record) in ("QUOTE_ID","QTEREV_ID","SALESORG_ID","REVISION_STATUS","REVISION_DESCRIPTION","CONTRACT_VALID_FROM","CONTRACT_VALID_TO"):
+                                                            elif str(record) in ("QUOTE_ID","QTEREV_ID","SALESORG_ID","REVISION_STATUS","REVISION_DESCRIPTION","CONTRACT_VALID_FROM","CONTRACT_VALID_TO","NET_VALUE"):
                                                                 record = "SAQTRV." +str(record)
                                                         where += " AND " + str(record) + " like '%" + str(rec) + "%'"
                                                         
@@ -923,7 +923,7 @@ class CONTAINER:
                                         elif flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                             where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
                                             QueryStr = (
-                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'  "
+                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'  "
                                                 + str(where)
                                                 + ") m where m.ROW BETWEEN "
                                                 + str(Page_start)
@@ -937,7 +937,7 @@ class CONTAINER:
                                             Trace.Write('## QueryStr--->'+str(QueryStr))
                                         elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                             QueryStr = (
-                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' "
+                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' "
                                                 + str(where)
                                                 + ") m where m.ROW BETWEEN "
                                                 + str(Page_start)
@@ -1048,7 +1048,7 @@ class CONTAINER:
                                             if flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                                 where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
                                                 QueryStr = (
-                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'"
+                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'"
                                                 + str(where)
                                                 + ") m where m.ROW BETWEEN "
                                                 + str(Page_start)
@@ -1060,7 +1060,7 @@ class CONTAINER:
                                                 Trace.Write("flag11====")
                                                 #where += " AND QT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
                                                 QueryStr = (
-                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' "
+                                                "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' "
                                                 + str(where)
                                                 + ") m where m.ROW BETWEEN "
                                                 + str(Page_start)
