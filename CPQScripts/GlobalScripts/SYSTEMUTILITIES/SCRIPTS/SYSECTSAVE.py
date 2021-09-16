@@ -470,9 +470,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						tableInfo = Sql.GetTable(str(TableName))
 						tablerow = newdict
 						tableInfo.AddRow(tablerow)
-						Trace.Write("TEZTZ--475-472-----"+str(tablerow))
 						Sql.Upsert(tableInfo)
-						Trace.Write("TEZTZ--475-472-after insert----")
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
 						get_rev_val =  newdict.get("QTEREV_ID")
