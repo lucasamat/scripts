@@ -39,7 +39,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
 				}
 	date_field = []
-	
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	if TreeParentParam.startswith("Sending") or  TreeParentParam.startswith("Receiving"):
 		TreeParentParam = TreeParentParam.split("-")[0]
 		Trace.Write("Tree_Parent_sending"+str(TreeParentParam))
