@@ -17,7 +17,9 @@ Sql = SQL()
 
 c_total = 0
 g_total = 0
-
+GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+if GetActiveRevision:
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 
 class TreeView:
 	def __init__(self):
