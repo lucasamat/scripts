@@ -258,10 +258,10 @@ def set_active_revision(Opertion,cartrev):
 	Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=recid,newrev_inc= get_rev_info_details.QTEREV_ID,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 	NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
 	Quote.RefreshActions()
-	for item in Quote.MainItems:
-		item.Delete()
+	#for item in Quote.MainItems:
+	#	item.Delete()
 	Quote.Save()
-	Quote.RefreshActions()
+	#Quote.RefreshActions()
 	current_revison1 = Quote.RevisionNumber
 	get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 	Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
