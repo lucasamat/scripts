@@ -446,7 +446,7 @@ def CommonTreeViewHTMLDetail(
 		if action_visible_obj:
 			if action_visible_obj.OBJECT_RECORD_ID:
 				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
-		if ObjectName == "SYOBFD":
+		if ObjectName == "SYOBFD" or ObjectName == "SAQIGB":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
 		if editable_permission == "TRUE":			
@@ -474,7 +474,9 @@ def CommonTreeViewHTMLDetail(
 				"SYSECT-AC-00003",
 				"SYSECT-AC-00004",
 				"SYSECT-AC-00005",
-				"SYSECT-AC-00006",							
+				"SYSECT-AC-00006",
+				"SYSECT-QT-00167",
+				"SYSECT-QT-00168"							
 				
 			]
 
@@ -482,9 +484,11 @@ def CommonTreeViewHTMLDetail(
 				sec_not_list.append(action_visible_str)
 			
 			if (MODE == "SEC_VIEW" or MODE == "VIEW" or MODE == "CANCEL" or MODE == "EDIT") and str(sec.RECORD_ID) not in sec_not_list:	
-				Trace.Write('=====>')			
+				Trace.Write('=====>')	
+				Trace.Write("@486")		
 				if sec.SECTION_NAME =="BASIC INFORMATION" and TreeParentParam == "Quote Items":					
 					sec_str += ("")
+					Trace.Write("@488")
 					#quote items edit issue
 					'''sec_str += (
 						'<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
@@ -495,6 +499,7 @@ def CommonTreeViewHTMLDetail(
 					)'''
 				elif sec.SECTION_NAME =="PRICING INFORMATION" and TreeParentParam == "Quote Items":					
 					sec_str += ("")
+					Trace.Write("@498")
 				
 				else:
 					# cancel_btn = save_btn = ''	
