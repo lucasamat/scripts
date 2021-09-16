@@ -1319,8 +1319,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
-					"QTEREV_RECORD_ID":quote_revision_record_id,
-					"QTEREV_ID":quote_revision_id
+					"QTEREV_RECORD_ID":str(GetSalesOrg.QTEREV_RECORD_ID),
+					"QTEREV_ID":str(GetSalesOrg.QTEREV_ID)
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1366,29 +1366,27 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
-						"QTEREV_RECORD_ID":quote_revision_record_id,
-						"QTEREV_ID":quote_revision_id
+						"QTEREV_RECORD_ID":str(GetSalesOrg.QTEREV_RECORD_ID),
+						"QTEREV_ID":str(GetSalesOrg.QTEREV_ID)
 					}
 				)
 				#Trace.Write(str(tablerow2))
 				tableInfo2.AddRow(tablerow2)
 				Sql.Upsert(tableInfo2)			
-			try:				
-				quote = Qt_rec_id
-				level = "QUOTE VALUE DRIVER"
-				userId = str(User.Id)
-				userName = str(User.UserName)
-				TreeParam = Product.GetGlobal("TreeParam")
-				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
-			except:
-				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
+			# try:				
+			# 	quote = Qt_rec_id
+			# 	level = "QUOTE VALUE DRIVER"
+			# 	userId = str(User.Id)
+			# 	userName = str(User.UserName)
+			# 	TreeParam = Product.GetGlobal("TreeParam")
+			# 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+			# 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+			# 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+			# 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			# 	CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
+			# except:
+			# 	Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":
-			if str(getdescription) == "Quality required by the clients' customers":
-				getdescription = "Quality required by the clients'' customers"
 			GETFBVD = Sql.GetFirst(
 				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
