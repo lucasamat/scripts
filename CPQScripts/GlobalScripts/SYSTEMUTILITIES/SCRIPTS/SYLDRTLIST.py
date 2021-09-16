@@ -44,22 +44,16 @@ class SYLDRTLIST:
 			TreeParentParam
 		) = (
 			TreeSuperParentParam
-		) = (
-			Erp_attr_obj_chck1
-		) = (
+		)  = (
 			current_rec_id
 		) = (
 			Query_Obj
-		) = (
-			rev_status_to_indicate
 		) = (
 			TreeParam
 		) = (
 			TreeParentParam
 		) = (
 			TreeSuperParentParam
-		) = (
-			TreeSuperTopParentParam
 		) = (
 			TopTreeSuperParentParam
 		) = (
@@ -88,7 +82,7 @@ class SYLDRTLIST:
 			Query_Obj
 		) = (
 			ObjectName
-		) = dbl_clk_function = col = QuotaSubCat_ID = text = texts = Qury_str = QuryCount_str = table_ids = lookup_str = curr_symbol_obj = curr_symbol = decimal_place = SAQICO_dbl_clk_function =  ""
+		) = dbl_clk_function = col = text = texts = Qury_str = QuryCount_str = table_ids = lookup_str = curr_symbol_obj = curr_symbol = decimal_place = SAQICO_dbl_clk_function =  ""
 
 		Action_permission, treeparam_dict, related_list_permissions, attr_list, attrs_datatype_dict = ({} for i in range(5))
 
@@ -378,39 +372,7 @@ class SYLDRTLIST:
 								Trace.Write('306-----326-----Columns---'+str(Columns))
 								rem_list_sp = []
 								Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-			# elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
-				
-			#     getContracttype = Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004").GetValue()
-			#     if str(getContracttype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Cart Items','Contract Preview']:
-			#         if RECORD_ID == "SYOBJR-98837" and str(TreeParam) == "Contract Preview":
-			#             rem_list_sp = ["CONTRACT_ITEM_FORECAST_PART_RECORD_ID","MATPRIGRP_ID","SCHEDULE_MODE","DELIVERY_MODE"]
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])    
-						
-			#         if RECORD_ID == "SYOBJR-98819" and str(TreeParam) == "Contract Preview":                    
-			#             rem_list_sp = ["CONTRACT_ITEM_RECORD_ID","PO_NOTES","QUANTITY","DISCOUNT"]
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])    
-						
-			#         else:
-			#             rem_list_sp = ['ITEM_TYPE','ITEM_STATUS','DISCOUNT','UOM_ID']
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                        
-			#     elif str(getContracttype).upper() == "ZTBC - TOOL BASED" and  str(TreeParam) in ['Cart Items','Contract Preview']:
-					
-			#         if RECORD_ID == "SYOBJR-98822" and str(TreeParam) == "Contract Preview":
-			#             rem_list_sp = ["CONTRACT_ITEM_COVERED_OBJECT_RECORD_ID","EQUIPMENT_STATUS"]
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])    
-						
-			#         if RECORD_ID == "SYOBJR-98819" and str(TreeParam) == "Contract Preview":                    
-			#             rem_list_sp = ["CONTRACT_ITEM_RECORD_ID","PO_NOTES","ONSITE_PURCHASE_COMMIT"]
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])    
-						
-			#         else:     
-			#             rem_list_sp = ['ITEM_TYPE','ITEM_STATUS','ONSITE_PURCHASE_COMMIT','UOM_ID','QUANTITY']
-			#             #rem_list_sp = ['ONSITE_PURCHASE_COMMIT']
-			#             Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])                            
-			#     else:
-					
-			#         Columns = obj_obj.COLUMNS 
-			# Trace.Write("CHKNG_J "+str(Columns))
+			
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID
 			
@@ -3546,14 +3508,7 @@ class SYLDRTLIST:
 									+'>'
 									+ str(qstring)
 									+ "</th>"
-								)    
-								
-					# elif TreeParam == "Quote Preview" and RECORD_ID == 'SYOBJR-98792':                        
-					#     table_header += ''
-					# elif TreeParam == "Quote Preview" and RECORD_ID == 'SYOBJR-98795':                        
-					#     table_header += ''
-					# elif TreeParam == "Quote Preview" and RECORD_ID == 'SYOBJR-00006':                        
-					#     table_header += ''                                           
+								)                         
 					else:        
 						
 						if str(qstring) == "Purchase Order Notes" or str(qstring) == "Equipment Status":
@@ -3632,8 +3587,6 @@ class SYLDRTLIST:
 									+ "</th>"
 								)    
 								
-
-				
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
 					
 					align = ''
@@ -4505,40 +4458,7 @@ class SYLDRTLIST:
 					)          
 
 			
-			dbl_clk_function = SAQICO_dbl_clk_function
-		# Added to append SUBTOTAL, TAX, TOTAL rows to Subtotal by offerings & line item details grids in quote preview node - start
-		
-		# if str(TreeParam) == "Quote Preview":
-		
-		#     subt = ''
-		#     Quote_Type = ''            
-		#     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-		#     var_subtotal = Sql.GetFirst("SELECT SUM(EXTENDED_PRICE) AS Total,SUM(TAX) AS Tax,CURRENCY FROM SAQITM WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' GROUP BY CURRENCY ")
-		#     total = Sql.GetFirst("SELECT SUM(EXTENDED_PRICE) AS Total,SUM(TAX) AS Tax,SUM(UNIT_PRICE) AS UnitPrice FROM SAQIFP WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' ")
-		#     Qt_total = Sql.GetFirst("SELECT SUM(EXTENDED_PRICE) AS Total,SUM(TAX) AS Tax FROM SAQICO WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' ")
-			
-		#     Quote_Type = Product.Attr('QSTN_SYSEFL_QT_00723').GetValue()
-		#     if var_subtotal:
-		#         if ObjectName == 'SAQITM'and TreeParam == "Quote Preview" and Quote_Type != 'ZTBC - TOOL BASED':
-		#             
-		#             dbl_clk_function += (
-		#                 '$("#SYOBJR_98792_3F435A71_A620_4F6A_AA5F_932100742526 tbody").after(\'<tr ><td style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="SUBTOTAL">SUBTOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(subt)+'">'+str(subt)+'</abbr></td></tr><tr ><td style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TAX/VAT/GST">TAX/VAT/GST</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(var_subtotal.Tax)+'">'+str(var_subtotal.Tax)+'</abbr></td></tr><tr ><td style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TOTAL">TOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(var_subtotal.Total)+'">'+str(var_subtotal.Total)+'</abbr></td></tr>\');')
-						
-		#         if ObjectName == 'SAQITM'and TreeParam == "Quote Preview" and Quote_Type == 'ZTBC - TOOL BASED':
-		#             
-		#             dbl_clk_function += (
-		#                 '$("#SYOBJR_98792_3F435A71_A620_4F6A_AA5F_932100742526 tbody").after(\'<tr ><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="SUBTOTAL">SUBTOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(subt)+'">'+str(subt)+'</abbr></td></tr><tr ><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TAX/VAT/GST">TAX/VAT/GST</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(var_subtotal.Tax)+'">'+str(var_subtotal.Tax)+'</abbr></td></tr><tr ><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TOTAL">TOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(var_subtotal.Total)+'">'+str(var_subtotal.Total)+'</abbr></td></tr>\');')
-							
-		#     if ObjectName == 'SAQIFP'and TreeParam == "Quote Preview":
-		#         
-		#         dbl_clk_function += (
-		#             '$("#SYOBJR_00006_C32BD9D5_A954_49A9_861A_544F30C66C26 tbody").after(\'<tr ><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="SUBTOTAL">SUBTOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(total.Total)+'">'+str(total.Total)+'</abbr></td></tr><tr ><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TAX/VAT/GST">TAX/VAT/GST</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(total.Tax)+'">'+str(total.Tax)+'</abbr></td></tr><tr ><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TOTAL">TOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(total.UnitPrice)+'">'+str(total.UnitPrice)+'</abbr></td></tr>\');')
-						
-		#     if ObjectName == 'SAQICO'and TreeParam == "Quote Preview":
-		#        
-		#         dbl_clk_function += (
-		#             '$("#SYOBJR_98795_E5504B40_36E7_4EA6_9774_EA686705A63F tbody").after(\'<tr ><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="SUBTOTAL">SUBTOTAL</abbr></td><td style="text-align: right; "><abbr id="" title=""></abbr></td></tr><tr ><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TAX/VAT/GST">TAX/VAT/GST</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(Qt_total.Tax)+'">'+str(Qt_total.Tax)+'</abbr></td></tr><tr ><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td class="cust_billing_name" style=""></td><td style=""></td><td style=""></td><td style="text-align: right; "></td><td style="text-align: right; "></td><td class="cust_billing_name" style=""></td><td style="text-align: right; "></td><td style="text-align: right; "><abbr id="" title="TOTAL">TOTAL</abbr></td><td style="text-align: right; "><abbr id="" title="'+str(Qt_total.Total)+'">'+str(Qt_total.Total)+'</abbr></td></tr>\');')          
-		# Added to append SUBTOTAL, TAX, TOTAL rows to Subtotal by offerings & line item details grids in quote preview node - end             
+			dbl_clk_function = SAQICO_dbl_clk_function		          
 		if QueryCount < int(Page_End):
 			PageInformS = str(Page_start) + " - " + str(QueryCount) + " of"
 		else:
@@ -4814,7 +4734,6 @@ class SYLDRTLIST:
 		k_list = []
 		table_list = []
 		dict_key = []
-		QuotaSubCat_ID = ""
 		Qury_str = ""
 
 		QuryCount_str = ""
