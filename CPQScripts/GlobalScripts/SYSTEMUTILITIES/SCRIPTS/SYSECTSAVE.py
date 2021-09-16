@@ -484,10 +484,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						if getactive == 1:
 							update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_ID = '{QuoteRecordId}' and  QUOTE_REVISION_RECORD_ID != '{get_record_val}'""".format(QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 0,get_record_val =get_record_val))
 							Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE QUOTE_ID = '{QuoteRecordId}'""".format(quote_revision_id=get_record_val,newrev_inc= get_rev_val,QuoteRecordId=newdict.get("QUOTE_ID"),active_rev = 1))
-						NRev = QuoteHelper.Edit(newdict.get("QUOTE_ID"))
-						Quote.RefreshActions()
 						
-						current_revison1 = Quote.RevisionNumber
 						productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(newdict.get("REVISION_DESCRIPTION"))+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 						get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 						Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
