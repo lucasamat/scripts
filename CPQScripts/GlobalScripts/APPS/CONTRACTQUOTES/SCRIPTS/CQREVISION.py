@@ -274,8 +274,12 @@ def set_active_revision(Opertion,cartrev):
 def save_desc_revision(Opertion,cartrev,cartrev_id,):
 	Trace.Write(str(cartrev_id)+"-------cartrev----146---------"+str(cartrev))
 	ObjectName = cartrev_id.split('-')[0].strip()
+	recid =''
 	cpqid = cartrev_id.split('-')[1].strip()
-	recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
+	get_rev_quote_info_details = Sql.GetFirst("select * from SAQTRV where QUOTE_ID = '{}' and QTEREV_ID = {}".format(ObjectName,cpqid))
+	if get_rev_quote_info_details:
+		recid = get_rev_quote_info_details.QUOTE_REVISION_RECORD_ID
+	#recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET REVISION_DESCRIPTION = '{rev_desc}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND  QUOTE_REVISION_RECORD_ID = '{recid}' """.format(QuoteRecordId=quote_contract_recordId,recid =recid,rev_desc= cartrev))
 	productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(cartrev)+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 	return True
