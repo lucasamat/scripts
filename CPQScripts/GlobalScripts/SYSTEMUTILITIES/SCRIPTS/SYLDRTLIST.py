@@ -376,7 +376,7 @@ class SYLDRTLIST:
 							Columns = obj_obj.COLUMNS
 							if RECORD_ID == "SYOBJR-98869":
 								Trace.Write('306-----326-----Columns---'+str(Columns))
-								rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+								rem_list_sp = []
 								Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 			# elif  Product.Attributes.GetByName("QSTN_SYSEFL_CT_00004"):
 				
