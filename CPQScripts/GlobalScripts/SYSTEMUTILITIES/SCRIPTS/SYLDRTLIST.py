@@ -8281,7 +8281,7 @@ class SYLDRTLIST:
 									if not value1234:
 										value1234 = ""
 									lookup_val = str(lookup_obj.LOOKUP_OBJECT)
-									pop_val[key] = value1234 + "|" + lookup_val
+									pop_val[key] = str(value1234) + "|" + lookup_val
 					elif value123 == objRecName:
 						key_value = str(value1234)
 						if str(ObjectName) == "USERS":                            
