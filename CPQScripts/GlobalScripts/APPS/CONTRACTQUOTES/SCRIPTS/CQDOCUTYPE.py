@@ -24,7 +24,7 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
             document_type_list.append(document_type_obj.DOCTYP_ID)
     if 'ZTBC' in document_type_list:
         document_type = 'ZTBC'
-    elif service_obj is None:
+    elif not service_obj:
         document_type = 'ZTBC'
     else:
         document_type = document_type_obj.DOCTYP_ID
