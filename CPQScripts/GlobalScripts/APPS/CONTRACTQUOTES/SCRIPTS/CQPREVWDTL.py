@@ -829,6 +829,7 @@ def constructapprovalchaininformation(MODE,record_id):
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
 				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO"):
+					Trace.Write(str(eval("col_name." + str(sefl_api))))
 					try:
 						datetime_value = datetime.strptime(str(eval("col_name." + str(sefl_api))), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y')
 					except:
