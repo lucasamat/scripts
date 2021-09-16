@@ -10,6 +10,7 @@ import clr
 import System.Net
 import sys
 import datetime
+import re
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
@@ -1353,8 +1354,19 @@ try:
 			if "calc" in attribute:
 				attribute = attribute.replace("_calc","")
 			
-			
-			
+	if (get_serviceid == 'Z0091'):
+		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
+		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
+		getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+		getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
+		##Greenbook level
+		QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
+		QueryStatement = QueryStatement.replace("'", "''")
+		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
+		##Equipment level
+		QueryStatement = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
+		QueryStatement = QueryStatement.replace("'", "''")
+		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")	
 			
 			
 			# update_query = """ UPDATE TGT 
