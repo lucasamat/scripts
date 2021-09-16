@@ -2766,7 +2766,7 @@ def EntitlementTreeViewHTMLDetail(
 						if DType == "Drop Down":
 							Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
 							#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-							STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+							STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD,PA.ATTRDESC A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 							, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -3181,7 +3181,7 @@ def EntitlementTreeViewHTMLDetail(
 				sec_str_boot += '</tr></thead><tbody onclick="Table_Onclick_Scroll(this)" ></tbody></table>'
 				sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
 
-				add_style = ""
+				add_style = get_info_tooltip = ""
 				attributes_disallowed_list = []
 				attribute_Name_list = []
 				if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
@@ -3194,7 +3194,7 @@ def EntitlementTreeViewHTMLDetail(
 						attrSysId = attribute['attribute_system_id']
 						attribute_code = attribute['attribute_code']
 						#Trace.Write('attrSysId---looping0507--'+str(attrSysId))
-						STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+						STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, PA.ATTRDESC,A.NON_STANDARD_DISPLAY_VALUE, 
 						A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 						, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -3212,9 +3212,10 @@ def EntitlementTreeViewHTMLDetail(
 						#STDVALUES =  Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES  where  STANDARD_ATTRIBUTE_CODE = {sys_id} ".format(sys_id = attribute_code)  )
 						if STDVALUES:
 							attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
+							get_info_tooltip = STDVALUES.ATTRDESC
 						else:
 							attrValue = ''
-						
+							get_info_tooltip = attrName
 						attribute_Name_list.append(attrSysId)
 						DType = attribute['attribute_dtype']
 						Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
@@ -3240,7 +3241,7 @@ def EntitlementTreeViewHTMLDetail(
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						##info tooltip adding in entitlement grid starts..
-						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= attrName)
+						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= get_info_tooltip)
 						##info tooltip adding in entitlement grid ends..
 						disp_val = ""
 						userselectedvalue = []
@@ -3265,7 +3266,7 @@ def EntitlementTreeViewHTMLDetail(
 									#Trace.Write('3152------'+str(val.ENTITLEMENT_NAME))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, PA.ATTRDESC,A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
