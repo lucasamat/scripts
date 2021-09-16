@@ -19,7 +19,7 @@ ScriptExecutor = ScriptExecutor
 def quoteiteminsert(Qt_id):
     #quote_number = Qt_id[2:12]
     Log.Info('quote_id---'+str(Qt_id))
-    quote_Edit = quote_Edit = QuoteHelper.Edit(Qt_id)
+    quote_Edit = QuoteHelper.Edit(Qt_id)
     #get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
     total_target_price = 0.00
