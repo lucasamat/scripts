@@ -29,7 +29,7 @@ TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 
 Trace.Write("quote_revision_record_id "+str(quote_revision_record_id))
-Trace.Write("subtab---"+str(subtab))
+
 def fabview(ACTION,CurrentRecordId,subtab):	
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
@@ -1275,6 +1275,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	userId = str(User.Id)
 	userName = str(User.UserName)
+	Trace.Write("subtab---"+str(subtab))
 	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
