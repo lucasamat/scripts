@@ -273,7 +273,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					else:
 						Trace.Write("253line ELSE")
 						new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
-				if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
+				elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
