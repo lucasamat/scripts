@@ -1359,7 +1359,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"VALUEDRIVER_VALUE_RECORD_ID": str(Getchildtable2.VALUE_DRIVER_VALUE_RECORD_ID),
 						"VALUEDRIVER_COEFFICIENT":Getchildtable2.VALUEDRIVER_COEFFICIENT,
 						"VALUEDRIVER_TYPE": str(Getchildtable.VALUE_DRIVER_TYPE),
-						#"VALUEDRIVER_VALUE_CODE":str(Getchildtable.VALUEDRIVER_VALUE_CODE),
+						"VALUEDRIVER_VALUE_CODE":str(Getchildtable.VALUEDRIVER_VALUE_CODE),
 						"SALESORG_ID":str(GetSalesOrg.SALESORG_ID),
 						"SALESORG_NAME":str(GetSalesOrg.SALESORG_NAME),
 						"SALESORG_RECORD_ID":str(GetSalesOrg.SALESORG_RECORD_ID),
