@@ -16,6 +16,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quoteiteminsert(Qt_id):
     quote_number = Qt_id[2:12]
     Log.Info('quote_revision_record_id- '+str(quote_revision_record_id)+'--'+str(Qt_id))
