@@ -479,7 +479,7 @@ class SyncQuoteAndCustomTables:
 					)
 				)
 				##To Set the Quote Revision Record while refreshing the page..
-				Quote.SetGlobal("quote_revision_record_id",str(quote_obj.QTEREV_RECORD_ID))
+				#Quote.SetGlobal("quote_revision_record_id",str(quote_obj.QTEREV_RECORD_ID))
 				##To Set the Quote Revision Record while refreshing the page..
 				payid =""
 				paydesc = ""
