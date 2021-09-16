@@ -62,7 +62,8 @@ if GetPricingProcedure is not None:
     div = GetPricingProcedure.DIVISION_ID
     exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
     contract_quote_record_id = GetPricingProcedure.QUOTE_RECORD_ID
-    taxk1 = GetPricingProcedure.CUSTAXCLA_ID
+    #taxk1 = GetPricingProcedure.CUSTAXCLA_ID
+    taxk1 = "1"
 #else:
 #PricingProcedure = 'RVCEU1'
 """curr = 'USD'
