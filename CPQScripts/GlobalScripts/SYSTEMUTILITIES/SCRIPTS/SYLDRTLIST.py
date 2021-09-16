@@ -3255,7 +3255,8 @@ class SYLDRTLIST:
 													new_dict[value123] = (
 														'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 													)
-											else:    
+											else:
+												Trace.Write('3259------'+str(value1234))   
 												new_dict[value123] = (
 													'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 												)
@@ -8430,7 +8431,8 @@ class SYLDRTLIST:
 												new_dict[value123] = (
 													'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 												)
-										else:    
+										else:
+											Trace.Write('8434----billing------')   
 											new_dict[value123] = (
 												'<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
 											)
