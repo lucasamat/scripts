@@ -15,7 +15,7 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 import re
-from datetime import timedelta , date
+from datetime import datetime, timedelta
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
 
@@ -82,6 +82,8 @@ def create_new_revision(Opertion,cartrev):
 		get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID, CART_REVISIONS.DESCRIPTION as DESCRIPTION,CART.ACTIVE_REV, CART_REVISIONS.CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}'  and REVISION_ID  = '{}' ".format(Quote.CompositeNumber,newrev_inc))
 		
 		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"'")
+		current_date = datetime.now()
+		end_date = current_date + timedelta(days=365)
 		if get_previous_rev_data:
 			quote_rev_data = {
 				"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
@@ -90,8 +92,8 @@ def create_new_revision(Opertion,cartrev):
 				"QUOTE_NAME":get_quote_info_details.QUOTE_NAME,
 				"QUOTE_RECORD_ID": quote_contract_recordId,
 				"ACTIVE":1,
-				"REV_CREATE_DATE":get_quote_info_details.CONTRACT_VALID_FROM,
-				"REV_EXPIRE_DATE":get_quote_info_details.CONTRACT_VALID_TO,
+				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
+				"REV_EXPIRE_DATE":end_date.strftime('%m/%d/%Y'),
 				"REVISION_STATUS":"NEW REVISION",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
