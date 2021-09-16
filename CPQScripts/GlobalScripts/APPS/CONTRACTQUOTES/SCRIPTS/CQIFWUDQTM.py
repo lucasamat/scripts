@@ -82,10 +82,7 @@ try:
     Qt_id = Param.QT_REC_ID
 except:
     Qt_id = ""
-try:
-    quote_revision_id = Param.QT_REV_ID
-except:
-    quote_revision_id =""
+
 
 calling_function = quoteiteminsert(Qt_id)
 
