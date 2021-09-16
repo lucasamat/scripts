@@ -2548,7 +2548,7 @@ def Related_Sub_Banner(
                                         get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 
                                         if GetPRVLDR and get_SAQVDV and get_SAQFDV:
-                                            if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID == get_SAQFDV.VALUEDRIVER_ID:
+                                            if GetPRVLDR.VALUE_DRIVER_ID == get_SAQVDV.VALUEDRIVER_ID:
                                                 get_quote = Quote.GetGlobal("contract_quote_record_id")
                                                 getPRGBVD = Sql.GetList("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID FROM PRGBVD(NOLOCK) WHERE  GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' and EDITABLE  = 'True'")
                                                 get_SAQFGV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+ str(quote_revision_record_id) + "'")
