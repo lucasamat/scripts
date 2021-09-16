@@ -41,7 +41,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 	date_field = []
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	if TreeParentParam.startswith("Sending") or  TreeParentParam.startswith("Receiving"):
-		TreeParentParam = TreeParentParam.split("-")[0]
+		TreeParentParam = TreeParentParam.split("-")[0].strip()
 		Trace.Write("Tree_Parent_sending"+str(TreeParentParam))
 	Trace.Write("Tree_Parent_sending_2"+str(TreeParentParam))
 	Trace.Write("Tree_Super_Parent_sending"+str(TreeSuperParentParam))
