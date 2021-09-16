@@ -41,7 +41,7 @@ def quoteiteminsert(Qt_id):
     if items_obj:
         for item_obj in items_obj:
             items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
-    #quote_Edit = QuoteHelper.Edit(Qt_id)
+    quote_Edit = QuoteHelper.Edit(Qt_id)
     for item in Quote.MainItems:
         item_number = int(item.RolledUpQuoteItem)
         if item_number in items_data.keys():
