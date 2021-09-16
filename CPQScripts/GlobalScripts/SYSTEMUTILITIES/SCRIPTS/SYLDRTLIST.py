@@ -7385,9 +7385,7 @@ class SYLDRTLIST:
 									)
 									##A055S000P01-4578 ends
 									QuryCount_str = (
-											"select count(*) as cnt FROM SAQICO where  QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'".format(
-												str(qt_rec_id.QUOTE_ID))
-									)
+											"select count(*) as cnt FROM SAQICO where  QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 
 
 								elif TreeParentParam == "Quote Items": 
