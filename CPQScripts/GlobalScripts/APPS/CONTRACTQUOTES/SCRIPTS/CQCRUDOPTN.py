@@ -5317,7 +5317,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
     	##A055S000P01-8778 ends
 
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
-		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Global Currency'
+		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 		
 		return True
 	
