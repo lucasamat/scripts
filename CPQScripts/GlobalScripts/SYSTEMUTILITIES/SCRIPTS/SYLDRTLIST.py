@@ -1729,11 +1729,8 @@ class SYLDRTLIST:
                             + "' "
                         )
                     elif str(RECORD_ID) == "SYOBJR-98816":
-                                            
-                        #contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-                        contract_quote_record_id = Quote.GetGlobal("contract_record_id")
-                        Trace.Write("Contract "+str(contract_quote_record_id))
-                        ct_rec_id= SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV WHERE CONTRACT_RECORD_ID ='"+str(contract_quote_record_id)+"'")
+                        contract_quote_record_id = Quote.GetGlobal("contract_record_id")                        
+                        ct_rec_id= SqlHelper.GetFirst("SELECT CONTRACT_ID FROM CTCTSV (NOLOCK) WHERE CONTRACT_RECORD_ID ='"+str(contract_quote_record_id)+"'")
                         try:
                             if TreeParentParam:
                                 Qustr = "where  CONTRACT_ID = '"+str(ct_rec_id.CONTRACT_ID)+"' and PRODUCT_TYPE = '{}'".format(TreeParam)
@@ -1796,11 +1793,8 @@ class SYLDRTLIST:
                         # Billing Matrix - Pivot - End 
                     ##involved parties equipmemt starts
                     elif (str(RECORD_ID) == "SYOBJR-98858" or str(RECORD_ID) == "SYOBJR-00028") and str(TreeParam) == "Quote Information":
-                        account_id = Product.GetGlobal("stp_account_id")
-                        
+                        account_id = Product.GetGlobal("stp_account_id")                        
                         Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY SAQSTE.FABLOCATION_ID DESC) AS ROW,SAQSTE.* from SAQSTE  inner join SAQSCF(nolock)  on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID = SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.QTEREV_RECORD_ID = '{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}')m where m.ROW BETWEEN """.format(PerPage = PerPage,account_id = account_id,revision_rec_id = quote_revision_record_id, contract_quote_record_id = str(RecAttValue))+ str(Page_start) + " and " + str(Page_End))
-                        
-                        
                         
                         QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' and SAQSTE.QTEREV_RECORD_ID = '{revision_rec_id}' and SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,revision_rec_id = quote_revision_record_id,contract_quote_record_id=str(RecAttValue))
                     ##involved parties equipmemt ends
@@ -1826,13 +1820,9 @@ class SYLDRTLIST:
                             + str(Page_End)
                             + ""
                         )
-                        
-                        
-                        
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     ##involved parties source fab ends
-                    elif str(RECORD_ID) == "SYOBJR-98859":
-                        
+                    elif str(RECORD_ID) == "SYOBJR-98859":                        
                         Qustr += " AND SERVICE_ID = '"+str(TreeParentParam)+"' "
                         Qury_str = (
                             "select DISTINCT top "
@@ -1850,8 +1840,7 @@ class SYLDRTLIST:
                             + " and "
                             + str(Page_End)
                             + ""
-                        )
-                        
+                        )                        
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     elif str(RECORD_ID) == "SYOBJR-98862":
                         Qustr = " WHERE APP_ID = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"
@@ -1871,8 +1860,7 @@ class SYLDRTLIST:
                             + " and "
                             + str(Page_End)
                             + ""
-                        )
-                        
+                        )                        
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     elif str(RECORD_ID) == "SYOBJR-98863":
                         Qustr = " WHERE TAB_ID = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"
@@ -1892,8 +1880,7 @@ class SYLDRTLIST:
                             + " and "
                             + str(Page_End)
                             + ""
-                        )
-                        
+                        )                        
                         QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     elif str(RECORD_ID) == "SYOBJR-98864":
                         Qustr = " WHERE TAB_NAME = '"+str(TreeParentParam)+"' AND PROFILE_RECORD_ID ='"+str(RecAttValue)+"'"
@@ -8056,117 +8043,100 @@ class SYLDRTLIST:
                             new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
                         else:
                             new_dict[value123] = str(value1234).upper() 
-                            
-                
                     if value123 in edit_field:                      
                         value1234 = value1234.replace('"', "&quot;")
                         value1234 = value1234.replace("<p>", " ")
-                        value1234 = value1234.replace("</p>", " ")                        
-                        # new_dict[value123] = (
-                        #     '<abbr id ="' + value1234 + '" title="' + str(value1234).upper() + '">' + str(value1234).upper() + "</abbr>"
-                        # )
-                        new_dict[value123] = value1234      
-
+                        value1234 = value1234.replace("</p>", " ")
+                        new_dict[value123] = value1234
                     else:               
                         if value123 in checkbox_list:
                             new_dict[value123] = value1234
                         else:
-                            if (value123 == "SET_NAME" or value123 == "SETMAT_NAME") and (
-                                RECORD_ID == "SYOBJR-90016" or RECORD_ID == "SYOBJR-30101"
-                            ):
-                                new_dict[value123] = (
-                                    "<a id='"
-                                    + str(primary_view)
-                                    + "' onclick='Move_to_parent_obj(this)'>"
-                                    + value1234
-                                    + "</a>"
-                                )
-                            else:
-                                value1234 = value1234.replace('"', "&quot;")
-                                value1234 = value1234.replace("<p>", " ")
-                                value1234 = value1234.replace("</p>", " ")
+                            value1234 = value1234.replace('"', "&quot;")
+                            value1234 = value1234.replace("<p>", " ")
+                            value1234 = value1234.replace("</p>", " ")
 
-                                if value123 in [
-                                    "ERROR",
-                                    "MINIMUM_PRICE",
-                                    "CATCLC_PRICE_INSORG_CURR",
-                                    "INVCLC_UNITPRICE_INSORG_CURR",
-                                ]:
-                                    new_dict[value123] = value1234
-                                    seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
-                                    seg_pric["PRICE_FACTOR"] = PriceFactor
-                                else:                                    
-                                    if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE'):
-                                        new_dict[value123] = (
-                                            '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" disabled>' + str(value1234).upper() + "</input>"
-                                        )
-                                    if str(value123) == "WARRANTY_END_DATE":
-                                        #Trace.Write('getindication--3075---'+str(getindication))
-                                        getdate_indication = str(value1234)
-                                        if getdate_indication:
-                                            getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')                                            
-                                    elif str(value123) in billing_date_column:                                        
-                                        getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')                                        
-                                        contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-                                        curr_symbol_obj = Sql.GetFirst(
-                                            "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
-                                            + " from SAQTMT"
-                                            + " where MASTER_TABLE_QUOTE_RECORD_ID  "
-                                            + " = '"
-                                            + str(contract_quote_record_id)
-                                            + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
-                                        )
-                                        concatedata = ""
-                                        if curr_symbol_obj:
-                                            curr_symbol = curr_symbol_obj.CURRENCY                                            
-                                            try:
-                                                decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                                                
-                                                my_format = "{:,." + str(decimal_place) + "f}"
-                                                value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
-                                            except:
-                                                value1234
-                                        if getdate_indication:                                            
-                                            if getdate_indication > getdate_indication_billing:
-                                                new_dict[value123] = (
-                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
-                                                )
-                                            else:
-                                                new_dict[value123] = (
-                                                    '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
-                                                )
-                                        else:                                            
+                            if value123 in [
+                                "ERROR",
+                                "MINIMUM_PRICE",
+                                "CATCLC_PRICE_INSORG_CURR",
+                                "INVCLC_UNITPRICE_INSORG_CURR",
+                            ]:
+                                new_dict[value123] = value1234
+                                seg_pric[value123] = value1234.replace(curr_symbol, "").replace(" ", "")
+                                seg_pric["PRICE_FACTOR"] = PriceFactor
+                            else:                                    
+                                if (str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and  str(RECORD_ID) == "SYOBJR-00005" and str(value123) in ['SCHEDULE_MODE','CUSTOMER_ANNUAL_QUANTITY']) or (str(RECORD_ID) == "SYOBJR-00009" and str(value123) == 'NET_PRICE'):
+                                    new_dict[value123] = (
+                                        '<input id ="' + key_value + '"   value="' + value1234 + '" style="border: 0px solid;" disabled>' + str(value1234).upper() + "</input>"
+                                    )
+                                if str(value123) == "WARRANTY_END_DATE":
+                                    #Trace.Write('getindication--3075---'+str(getindication))
+                                    getdate_indication = str(value1234)
+                                    if getdate_indication:
+                                        getdate_indication = datetime.strptime(str(getdate_indication), '%m/%d/%Y')                                            
+                                elif str(value123) in billing_date_column:                                        
+                                    getdate_indication_billing = datetime.strptime(str(value123), '%m-%d-%Y')                                        
+                                    contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
+                                    curr_symbol_obj = Sql.GetFirst(
+                                        "select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select QUOTE_CURRENCY_RECORD_ID"
+                                        + " from SAQTMT"
+                                        + " where MASTER_TABLE_QUOTE_RECORD_ID  "
+                                        + " = '"
+                                        + str(contract_quote_record_id)
+                                        + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') "
+                                    )
+                                    concatedata = ""
+                                    if curr_symbol_obj:
+                                        curr_symbol = curr_symbol_obj.CURRENCY                                            
+                                        try:
+                                            decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES                                                
+                                            my_format = "{:,." + str(decimal_place) + "f}"
+                                            value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+                                        except:
+                                            value1234
+                                    if getdate_indication:                                            
+                                        if getdate_indication > getdate_indication_billing:
+                                            new_dict[value123] = (
+                                                '<input  type= "text" id ="' + key_value + '" class= "billclassedit billclassedit_bg"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                            )
+                                        else:
                                             new_dict[value123] = (
                                                 '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
                                             )
-                                    else:
-                                        if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":                                                
-                                                precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT']
-                                                if value123 in precentage_columns:                                                    
-                                                    string_val = str(value1234)
-                                                    #string_val = string_val.replace('0','')
-                                                    string_val1 = string_val.split('.')
-                                                    str_val = string_val1[0]
-                                                    value1234 = str_val
-                                                    if value1234 is not None and value1234 != '':
-                                                        new_dict[value123] = (
-                                                            '<abbr id ="' + key_value + '" title="' + value1234 +'">' + value1234 +  ' %' +  "</abbr>"
-                                                        )
-                                                    else:
-                                                        new_dict[value123] = (
-                                                        '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
-                                                    )    
+                                    else:                                            
+                                        new_dict[value123] = (
+                                            '<input  type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  disabled>'
+                                        )
+                                else:
+                                    if str(value123) != "CUSTOMER_ANNUAL_QUANTITY":                                                
+                                            precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT']
+                                            if value123 in precentage_columns:                                                    
+                                                string_val = str(value1234)
+                                                #string_val = string_val.replace('0','')
+                                                string_val1 = string_val.split('.')
+                                                str_val = string_val1[0]
+                                                value1234 = str_val
+                                                if value1234 is not None and value1234 != '':
+                                                    new_dict[value123] = (
+                                                        '<abbr id ="' + key_value + '" title="' + value1234 +'">' + value1234 +  ' %' +  "</abbr>"
+                                                    )
                                                 else:
-                                                    img_list = ['PO_NOTES','PRICING_STATUS','EQUIPMENT_STATUS','STATUS']
-                                                    if str(ObjectName) == "SAQIFP":
-                                                        img_list.append('PRICING_STATUS')
-                                                    if value123 in img_list:
-                                                    
-                                                        new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")                                                   
-                                                    else:                                                           
-                                                        if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
-                                                            new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
-                                                        else:
-                                                            new_dict[value123] = value1234
+                                                    new_dict[value123] = (
+                                                    '<abbr id ="' + key_value + '" title="' + value1234 + '">' + value1234 + "</abbr>"
+                                                )    
+                                            else:
+                                                img_list = ['PO_NOTES','PRICING_STATUS','EQUIPMENT_STATUS','STATUS']
+                                                if str(ObjectName) == "SAQIFP":
+                                                    img_list.append('PRICING_STATUS')
+                                                if value123 in img_list:
+                                                
+                                                    new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")                                                   
+                                                else:                                                           
+                                                    if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
+                                                        new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
+                                                    else:
+                                                        new_dict[value123] = value1234
 
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
