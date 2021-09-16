@@ -7966,9 +7966,7 @@ class SYLDRTLIST:
                                                 + "'"
                                             )
                                         if product_id != "" and product_id is not None:
-                                            pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
-                                            Trace.Write('##value1234-->'+str(value1234))
-                                            Trace.Write('##pop_val-->'+str(pop_val[key]))
+                                            pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
                                         else:
                                             lookup_obj = Sql.GetFirst(
                                                 "SELECT LOOKUP_OBJECT FROM  SYOBJD (nolock) WHERE OBJECT_NAME = '"
@@ -8007,7 +8005,7 @@ class SYLDRTLIST:
                             + str(ObjectName)
                             + "' and SE.SECTION_NAME ='BASIC INFORMATION'"
                         )
-                        if tab_obj1 is not None and ObjectName != "PASACS":
+                        if tab_obj1 is not None:
                             tab_val = str(tab_obj1.TAB_NAME)
                             if tab_val in list_of_tabs:
                                 primary = value1234 + "|" + tab_val 
