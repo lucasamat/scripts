@@ -3187,7 +3187,7 @@ def EntitlementTreeViewHTMLDetail(
 				if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 					#Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 					for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-						info_column = ""
+						info_column = get_tooltip = ""
 						new_value_dicta = {}
 						attrName = attribute['attribute_name']
 						attrLabel = attribute['attribute_label']
@@ -3212,8 +3212,9 @@ def EntitlementTreeViewHTMLDetail(
 						#STDVALUES =  Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES  where  STANDARD_ATTRIBUTE_CODE = {sys_id} ".format(sys_id = attribute_code)  )
 						if STDVALUES:
 							attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
+							get_tooltip = STDVALUES.ATTRDESC
 						else:
-							attrValue = ''
+							attrValue = get_tooltip = ''
 						
 						attribute_Name_list.append(attrSysId)
 						DType = attribute['attribute_dtype']
@@ -3240,7 +3241,7 @@ def EntitlementTreeViewHTMLDetail(
 							edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
 						attrValueSysId = attributevalues.get(attrSysId)
 						##info tooltip adding in entitlement grid starts..
-						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= attrName)
+						info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= get_tooltip)
 						##info tooltip adding in entitlement grid ends..
 						disp_val = ""
 						userselectedvalue = []
