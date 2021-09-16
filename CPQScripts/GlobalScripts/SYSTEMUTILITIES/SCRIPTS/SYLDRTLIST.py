@@ -27,7 +27,7 @@ class SYLDRTLIST:
 	def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id): 
 		#current_prod = Product.Name or "Sales" 
 		TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or ""
-		materialRecID = useridval = getyears = col_year = footer_tot = ""
+		getyears = col_year = footer_tot = ""
 		column_names = getQuotetype = exclamation=""
 		PR_CURRENCY = PR_CURR
 		Page_start = (
@@ -2721,9 +2721,7 @@ class SYLDRTLIST:
 			)
 			
 			if Query_Obj is not None:
-				for ik in Query_Obj:
-					if str(ObjectName) == "USERS":
-						useridval = ik.ID                    
+				for ik in Query_Obj:					                  
 					new_dict = {}
 					ids = {}
 					seg_pric = {}
@@ -7960,9 +7958,7 @@ class SYLDRTLIST:
 					QueryCount = Query_CountObj.cnt
 			OBJ_CpqTableEntryId_New = ""
 		
-			for ik in Query_Obj:
-				if str(ObjectName) == "USERS":
-					useridval = ik.ID                    
+			for ik in Query_Obj:				                  
 				primary_view = ""
 				product_id = ""
 				product_name = ""
