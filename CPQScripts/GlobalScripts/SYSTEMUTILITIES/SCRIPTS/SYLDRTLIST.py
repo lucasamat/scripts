@@ -3198,11 +3198,6 @@ class SYLDRTLIST:
                                                     value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
                                                 except:
                                                     value1234
-                                            # new_dict[value123] = (
-                                            #     '<input type= "text" id ="' + key_value + '" class= "billclassedit"  value="' + value1234 + '" style="border: 0px solid;"  title="' + value1234 + '" disabled>'
-                                            # )
-                                            
-                                            #Trace.Write(str(getdate_indication)+'---3103--key_value--3075--'+str(type(getdate_indication)))
                                             
                                             if getdate_indication:
                                                 Trace.Write(str(getdate_indication_billing)+'--getindication--'+str(getdate_indication))
