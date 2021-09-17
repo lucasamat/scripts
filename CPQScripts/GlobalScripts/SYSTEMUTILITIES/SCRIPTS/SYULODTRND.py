@@ -410,9 +410,11 @@ def CommonTreeViewHTMLDetail(
 			if data.PERMISSION != "READ ONLY" and str(canedit).upper() == "TRUE":
 				editable_permission = "TRUE"
 			if data.DATA_TYPE == "DATE" or data.FORMULA_DATA_TYPE == "DATE" or str(data.API_NAME) == "EXCHANGE_RATE_DATE":				
-				if text == "":					
+				if text == "":	
+					Trace.Write('text if--'+str(text))				
 					text = "CONVERT(VARCHAR(10)," + str(data.API_NAME) + ",101) AS " + str(data.API_NAME)
-				else:					
+				else:	    
+					Trace.Write('text else--'+str(text))
 					text = text + "," + "CONVERT(VARCHAR(10)," + str(data.API_NAME) + ",101) AS " + str(data.API_NAME)
 				if text.startswith("CONVERT"):
 					Trace.Write("API_NAMES- API_NAMES->"+str(API_NAMES))
