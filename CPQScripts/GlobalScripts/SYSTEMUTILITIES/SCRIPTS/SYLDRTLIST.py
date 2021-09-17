@@ -18,7 +18,7 @@ productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByNa
 try:
     GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 except:
-    Trace.Write("EXCEPT: GetActiveRevision "+str(GetActiveRevision))
+    Trace.Write("EXCEPT: GetActiveRevision ")
     GetActiveRevision = ""
 if GetActiveRevision:
     Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
