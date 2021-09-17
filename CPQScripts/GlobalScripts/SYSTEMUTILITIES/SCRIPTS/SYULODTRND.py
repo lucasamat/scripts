@@ -877,8 +877,8 @@ def CommonTreeViewHTMLDetail(
 					+ str(API_NAMES)
 					+ " FROM "
 					+ str(ObjectName)
-					+ " (NOLOCK) WHERE "
-					+ str(autoNumber)
+					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
+					+ str(quote_record_id)
 					+ " = '"
 					+ str(RECORD_ID)
 					+ "' and SERVICE_ID = '"+str(TreeParam)+"'"
