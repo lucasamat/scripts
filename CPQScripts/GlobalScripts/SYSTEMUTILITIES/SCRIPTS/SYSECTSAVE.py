@@ -551,7 +551,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId,SAQITM.QTEREV_RECORD_ID)IQ
 											ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
 											WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
-											Discount=VALUE,plus="+"))
+											Discount=VALUE,plus="+",TreeParam=TreeParam))
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
