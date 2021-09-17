@@ -490,7 +490,7 @@ def CommonTreeViewHTMLDetail(
 			if (MODE == "SEC_VIEW" or MODE == "VIEW" or MODE == "CANCEL" or MODE == "EDIT") and str(sec.RECORD_ID) not in sec_not_list:	
 				Trace.Write('=====>')	
 				Trace.Write("@486")		
-				if sec.SECTION_NAME =="BASIC INFORMATION" and TreeParentParam == "Quote Items":					
+				if sec.SECTION_NAME =="BASIC INFORMATION" and Product.GetGlobal("TreeParentLevel0") == "Quote Items":					
 					sec_str += ("")
 					Trace.Write("@488")
 					#quote items edit issue
@@ -501,7 +501,7 @@ def CommonTreeViewHTMLDetail(
 						+ str(editclick)
 						+ '">EDIT</a></li></ul></div></div>'
 					)'''
-				elif sec.SECTION_NAME =="PRICING INFORMATION" and TreeParentParam == "Quote Items":					
+				elif sec.SECTION_NAME =="PRICING INFORMATION" and Product.GetGlobal("TreeParentLevel0") == "Quote Items":					
 					sec_str += ("")
 					Trace.Write("@498")
 				
@@ -523,7 +523,7 @@ def CommonTreeViewHTMLDetail(
 						cancel_save = '<div  class="g4 sec_' + str(SECTION_EDIT) + ' collapse in except_sec removeHorLine iconhvr sec_edit_sty">'+ str(cancel_btn) + str(save_btn) +'</div>'
 					
 
-					if TreeParentParam == 'Quote Items':
+					if Product.GetGlobal("TreeParentLevel0") == 'Quote Items':
 						if TreeParam.split('-')[1].strip() == 'Z0100':
 							if sec.SECTION_NAME == "PRICING INFORMATION":
 								sec.SECTION_NAME = "FPM INFORMATION"	
@@ -562,7 +562,7 @@ def CommonTreeViewHTMLDetail(
 			sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"		
 		else:			
 			Trace.Write("astrl"+str(TreeParam))
-			if sec.SECTION_NAME =="BASIC INFORMATION" and TreeParentParam == "Field Dependencies":
+			if sec.SECTION_NAME =="BASIC INFORMATION" and Product.GetGlobal("TreeParentLevel0") == "Field Dependencies":
 				'''sec_str += (
 					'<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
 					+ str(sec.RECORD_ID)
