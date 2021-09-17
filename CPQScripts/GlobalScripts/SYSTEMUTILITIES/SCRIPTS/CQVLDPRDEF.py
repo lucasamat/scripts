@@ -516,10 +516,11 @@ def predefined_csa_tools():
 
 ##A055S000P01-8775 Starts
 def predefined_contract_cov_time():
+    ##A055S000P01-9545 starts
     Coverage_time=TreeParam.replace(TreeParam,"AGS_"+str(TreeParam)+"_CVR_CNTCOV")
     response_time=TreeParam.replace(TreeParam,"AGS_"+str(TreeParam)+"_CVR_RSPTIM")
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{Qt_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' and SERVICE_ID = '{treeparam}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN  ('{Coverage_time}','{response_time}')".format('SAQTSE',Qt_rec_id=Qt_rec_id,qurev_rec_id=quote_revision_record_id,treeparam=TreeParam,Coverage_time=Coverage_time,response_time=response_time))
-
+    ##A055S000P01-9545 ends
     for coverageresponse in entitlement_obj:
         if coverageresponse.ENTITLEMENT_DESCRIPTION =="Contract Coverage":
             coverage=coverageresponse.ENTITLEMENT_DISPLAY_VALUE	
@@ -629,13 +630,15 @@ def predefined_contract_cov_time_entitlemen_trolldown():
     Log.Info('TreeParam---'+str(TreeParam))
     Log.Info('TreeParentParam---'+str(TreeParentParam))
     Log.Info('TreeSuperParentParam---'+str(TreeSuperParentParam)) 
+    ##A055S000P01-9545 starts
     obj =re.match(r".*SERVICE_ID\s+\=\s+\'([^>]*?)\'",TreeParentParam)
     treeparam_service=obj.group(1)
     Log.Info('treeparam_service---'+str(treeparam_service))
+   
     Coverage_time=treeparam_service.replace(treeparam_service,"AGS_"+str(treeparam_service)+"_CVR_CNTCOV")
     response_time=treeparam_service.replace(treeparam_service,"AGS_"+str(treeparam_service)+"_CVR_RSPTIM")
     entitlement_obj = Sql.GetList("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_DESCRIPTION from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {treeparam} (nolock) {treeParentParam} ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME IN ('{Coverage_time}','{response_time}')".format(treeparam=TreeParam,treeParentParam=TreeParentParam,Coverage_time=Coverage_time,response_time=response_time))
-    
+    #A055S000P01-9545 ends
     #delete to reduce duplicates in SAQSCV
     QueryStatement = "DELETE FROM SAQSCV {treeParentParam} AND TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time'".format(treeParentParam=TreeParentParam)
     Log.Info('DELETE'+str(QueryStatement))
