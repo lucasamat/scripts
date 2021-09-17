@@ -410,7 +410,7 @@ def CommonTreeViewHTMLDetail(
 			if data.PERMISSION != "READ ONLY" and str(canedit).upper() == "TRUE":
 				editable_permission = "TRUE"
 			if data.DATA_TYPE == "DATE" or data.FORMULA_DATA_TYPE == "DATE" or str(data.API_NAME) == "EXCHANGE_RATE_DATE":				
-				if text:					
+				if text == "":					
 					text = "CONVERT(VARCHAR(10)," + str(data.API_NAME) + ",101) AS " + str(data.API_NAME)
 				else:					
 					text = text + "," + "CONVERT(VARCHAR(10)," + str(data.API_NAME) + ",101) AS " + str(data.API_NAME)
