@@ -707,7 +707,11 @@ try:
 
 							# Send the message QT_REC_ID
 							mailClient.Send(msg)
-
+					##opening quote for update quote items
+					try:
+						quote_Edit = QuoteHelper.Edit(Qt_Id.QUOTE_ID)
+					except:
+						Log.Info("quote error")
 					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":Qt_Id.QUOTE_ID})	
 					# Billing matrix async call
 					LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
