@@ -57,10 +57,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		#table_id = 'fabvaluedrives'
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
-	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>''')
-	if str(TreeSuperParentParam) != "Quote Items":
-		sec_str += ('''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="customer_value_EDIT(this)">EDIT</a></li></ul></div></div>''')
-	sec_str += (''' CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> <div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="customer_value_EDIT(this)">EDIT</a></li></ul></div></div> CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
 	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  > <thead><tr>')
 	
@@ -571,17 +568,15 @@ def costfabview(ACTION,CurrentRecordId):
 	date_field = []
 	disabled_edit_drivers = ''
 	TreeParam = Product.GetGlobal("TreeParam")
+	sec_edit='''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div> '''
 	if TreeParentParam == "Quote Items":
 		TP = str(TreeParam)
 		TP1 = TP.split('-')
 		TreeParam = TP1[1].strip()
-	sec_edit=""
+		sec_edit=""
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
-	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> ''')
-	if str(TreeParentParam) != "Quote Items":
-		sec_str += (''' <div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div> ''')
-	sec_str += (''' PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> '''+str(sec_edit)+'''  PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
 	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
@@ -708,7 +703,7 @@ def Comp_fabview(ACTION,CurrentRecordId):
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
-	table_id = 'costfabvaldrives'
+	table_id = 'csservicefabvaldrives'
 	attr_dict = {"VALUE DRIVER DESCRIPTION": "VALUE DRIVER DESCRIPTION",
 					"VALUE DRIVER VALUE": "VALUE DRIVER VALUE",
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
