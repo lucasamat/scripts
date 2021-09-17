@@ -49,6 +49,9 @@ def CommonTreeViewHTMLDetail(
 	if CurrentModuleObj:
 		crnt_prd_val = str(CurrentModuleObj.APP_ID)
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+	TreeParam = Product.GetGlobal("TreeParam")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	sec_str = getyears = sec_str2 = ""
 	sec_bnr = ""
 	Second_Banner_Name = ""
