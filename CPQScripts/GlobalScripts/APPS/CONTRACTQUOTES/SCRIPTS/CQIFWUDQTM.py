@@ -37,7 +37,7 @@ def quoteiteminsert(Qt_id):
     get_billing_matrix_year =[]
     get_rev_rec_id = SqlHelper.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
     get_curr = get_rev_rec_id.QUOTE_CURRENCY
-    items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
+    items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE, ISNULL(MODEL_PRICE, 0) as MODEL_PRICE, ISNULL(CEILING_PRICE, 0) as CEILING_PRICE, ISNULL(SALES_DISCOUNT_PRICE, 0) as SALES_DISCOUNT_PRICE, ISNULL(BD_PRICE, 0) as BD_PRICE, ISNULL(NET_PRICE, 0) as NET_PRICE, ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
     if items_obj:
         for item_obj in items_obj:
             items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
@@ -50,6 +50,14 @@ def quoteiteminsert(Qt_id):
                 item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
                 total_cost += float(item_data.get('TOTAL_COST'))
                 item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
+                
+                item.MODEL_PRICE.Value = item_data.get('MODEL_PRICE')
+                item.CEILING_PRICE.Value = item_data.get('CEILING_PRICE')
+                item.SALES_DISCOUNT_PRICE.Value = item_data.get('SALES_DISCOUNT_PRICE')
+                item.BD_PRICE.Value = item_data.get('BD_PRICE')
+                item.NET_PRICE.Value = item_data.get('NET_PRICE')
+                item.BD_PRICE_MARGIN.Value = item_data.get('BD_PRICE_MARGIN')
+
                 total_target_price += item.TARGET_PRICE.Value
                 total_ceiling_price += item.CEILING_PRICE.Value
                 total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
@@ -66,7 +74,10 @@ def quoteiteminsert(Qt_id):
                 item.EXTENDED_PRICE.Value = item_data.get('TARGET_PRICE')
                 total_extended_price += item.EXTENDED_PRICE.Value	
                 item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
-                Log.Info('uu'+str(item.TOTAL_COST.Value))
+     
+
+                Log.Info('TOTAL_COST--'+str(item.TOTAL_COST.Value))
+                
     Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
     Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
     Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
