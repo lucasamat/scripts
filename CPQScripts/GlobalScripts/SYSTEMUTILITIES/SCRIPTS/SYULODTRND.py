@@ -416,6 +416,7 @@ def CommonTreeViewHTMLDetail(
 					text = text + "," + "CONVERT(VARCHAR(10)," + str(data.API_NAME) + ",101) AS " + str(data.API_NAME)
 				if text.startswith("CONVERT"):					
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
+					Trace.Write("API_NAMES-->"+str(API_NAMES))
 				else:					
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
 		Trace.Write("main container"+str(a))
