@@ -2851,7 +2851,7 @@ def EntitlementTreeViewHTMLDetail(
 								+ '" type="text"  data-content ="'
 								+ str(attrSysId)
 								+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  disabled>'
-								+ str(VAR1)
+								+ VAR1
 								+ "</select>"
 							)
 								#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
