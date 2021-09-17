@@ -680,7 +680,7 @@ def CommonTreeViewHTMLDetail(
 		if ObjectName == 'SAQFGB':			
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			fab_location_gb = Sql.GetFirst(
-				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"'"
+				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"'"
 			)
 			if fab_location_gb:
 				RECORD_ID = fab_location_gb.QUOTE_FAB_LOC_GB_RECORD_ID
@@ -4805,7 +4805,10 @@ NEWVAL = Param.NEWVAL
 LOOKUPOBJ = Param.LOOKUPOBJ
 LOOKUPAPI = Param.LOOKUPAPI
 MODE = Param.MODE
-
+TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+TreeParam = Product.GetGlobal("TreeParam")
+TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
