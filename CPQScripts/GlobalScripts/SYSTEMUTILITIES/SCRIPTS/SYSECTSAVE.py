@@ -509,8 +509,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						Sql.Upsert(tableInfo)
 						VALUE = float(newdict.get("DISCOUNT"))
 						Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
-						contract_quote_record_id = newdict.get("QUOTE_RECORD_ID")
-						quote_revision_record_id = newdict.get("QTEREV_RECORD_ID")
+						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 						decimal_discount = VALUE / 100.0
 						Sql.RunQuery("""UPDATE SAQICO SET 
 														NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
@@ -560,7 +560,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						total_net_value = 0.00
 						items_data = {}
 
-						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' ".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
 						if items_obj:
 							for item_obj in items_obj:
 								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
