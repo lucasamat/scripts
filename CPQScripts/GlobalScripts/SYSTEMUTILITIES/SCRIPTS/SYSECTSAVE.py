@@ -508,6 +508,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						tableInfo.AddRow(tablerow)
 						Sql.Upsert(tableInfo)
 						VALUE = float(newdict.get("DISCOUNT"))
+						Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
 						contract_quote_record_id = newdict.get("QUOTE_RECORD_ID")
 						quote_revision_record_id = newdict.get("QTEREV_RECORD_ID")
 						decimal_discount = VALUE / 100.0
