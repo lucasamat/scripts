@@ -1813,7 +1813,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							decimal_val = 2
 							formatting_string = "{0:." + str(decimal_val) + "f}"
 							current_obj_value = formatting_string.format(float(current_obj_value))
-							if current_obj_api_name == "DISCOUNT":
+						if current_obj_api_name == "DISCOUNT" and str(ObjectName) == "SAQIGB":
 								Trace.Write("@1809 inside discount")
 								sec_str += (
 									'<td><input id="'
