@@ -664,6 +664,7 @@ def CommonTreeViewHTMLDetail(
 					service_id = TreeSuperParentParam.split('-')[1].strip()
 			except:
 				Trace.Write("except")
+				Trace.Write("SuperParentParam-"+str(TreeSuperParentParam))
 				service_id = TreeSuperParentParam.split('-')[1].strip()
 			quote_item_gb = Sql.GetFirst(
 				"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
