@@ -560,7 +560,7 @@ def costfabview(ACTION,CurrentRecordId):
 	sec_str1 = sec_str = ""
 	dbl_clk_function = ""
 	desc_list = ["VALUE DRIVER DESCRIPTION","VALUE DRIVER VALUE","VALUE DRIVER COEFFICIENT",]
-	table_id = 'servicecostvaldrives'
+	table_id = 'costvaldrives'
 	attr_dict = {"VALUE DRIVER DESCRIPTION": "VALUE DRIVER DESCRIPTION",
 					"VALUE DRIVER VALUE": "VALUE DRIVER VALUE",
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
