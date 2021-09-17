@@ -654,7 +654,10 @@ def CommonTreeViewHTMLDetail(
 		
 		# Greenbook details load || Quote item Location Node - Start
 		if Product.GetGlobal("TreeParentLevel2") == 'Quote Items' or ObjectName == 'SAQIGB':
-			quote_record_id = Quote.GetGlobal("contract_quote_record_id")			
+			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+			TreeParam = Product.GetGlobal("TreeParam")
+			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			try:
 				if str(TreeSuperParentParam.split("-")[3]):
 					Trace.Write("try if") 
