@@ -782,7 +782,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 					crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(quote_id.QUOTE_ID),'REVISION_ID':str(quote_id.QTEREV_ID),'Fun_type':'cpq_to_crm'})
 					Trace.Write("ends--"+str(crm_result))
 		except Exception:
-			Trace.Write("except---"+str(e))
+			Trace.Write("except---")
 		##ends
 
 		##entitlement contract date update for z0016
@@ -962,7 +962,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								
 
 		except Exception:
-			Trace.Write("except---"+str(e))
+			Trace.Write("except---")
 			pass
 
 
