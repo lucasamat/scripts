@@ -2569,6 +2569,7 @@ def POPUPLISTVALUEADDNEW(
 				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam,qurev_rec_id = quote_revision_record_id
 			)
 			else:
+				Trace.Write('2572--POPUPPPPPPPPPPP----')
 				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
 					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id
 				)
