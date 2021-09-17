@@ -184,7 +184,7 @@ def Related_Sub_Banner(
         try:
             if subTabName.startswith("Year") and str(ObjName) == "SAQTBP":
                 Trace.Write('176---------------')
-                sec_rel_sub_bnr +=('<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>')
+                sec_rel_sub_bnr +=('<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button><button id="generatingbillingmatrix" onclick="generatingbillingmatrix(this)" class="btnconfig">GENERATE BILLING MATRIX</button>')
         except:
             Trace.Write('176--------EXCEPT-------')
             add_button = ""
