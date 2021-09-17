@@ -1809,6 +1809,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 								+ "></td>"
 							)								
 					else:
+						Trace.Write("else 1812")
 						if str(ObjectName) == "SAQIGB" and current_obj_value != "":
 							decimal_val = 2
 							formatting_string = "{0:." + str(decimal_val) + "f}"
