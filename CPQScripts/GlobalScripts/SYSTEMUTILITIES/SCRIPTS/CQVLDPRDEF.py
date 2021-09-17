@@ -614,10 +614,10 @@ def predefined_contract_cov_time():
         INNER JOIN SAQSCO (NOLOCK) ON MAEQUP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID and MAEQUP.GREENBOOK = SAQSCO.GREENBOOK 
         INNER JOIN PRSDVL ON SAQSCO.SERVICE_ID = PRSDVL.SERVICE_ID
         WHERE SAQSCO.QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCO.QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{treeparam}' AND PRSDVL.VALUEDRIVER_ID = 'Contract Coverage & Response Time' AND PRSDVL.VALUEDRIVER_VALUE_DESCRIPTION ='{value}' AND MAEQUP.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCV WHERE QTEREV_RECORD_ID = '{qurev_rec_id}' AND SERVICE_ID ='{treeparam}' AND QUOTE_RECORD_ID ='{Qt_rec_id}' AND SAQSCV.TOOL_VALUEDRIVER_ID = 'Contract Coverage & Response Time')""".format(Qt_rec_id=Qt_rec_id, datetimenow=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName,treeparam=TreeParam,qurev_rec_id=quote_revision_record_id,value = value)
-    Log.Info('value'+str(value))
-    Log.Info('time'+str(time))
-    Log.Info('saqscd_insert--contract'+str(saqscd_insert_contract))
-    Log.Info('saqscv_insert--contract'+str(saqscv_insert_contract))
+    # Log.Info('value'+str(value))
+    # Log.Info('time'+str(time))
+    # Log.Info('saqscd_insert--contract'+str(saqscd_insert_contract))
+    # Log.Info('saqscv_insert--contract'+str(saqscv_insert_contract))
     Sql.RunQuery(saqscd_insert_contract)
     Sql.RunQuery(saqscv_insert_contract)
 
