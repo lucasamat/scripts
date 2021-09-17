@@ -1736,7 +1736,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							+ disable
 							+ "></td>"
 						)											
-				elif data_type == "NUMBER" and formula_data_type != "CURRENCY":				
+				elif data_type == "NUMBER" and formula_data_type != "CURRENCY":	
+					Trace.Write("@1737 inside discount")			
 					precentage_columns = ['BD_DISCOUNT']
 					precent_column = ['TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','GREATER_THAN_QTLY_HRS','LESS_THAN_QTLY_HRS','LABOR_HOURS','CHAMBER_PM_HRS', 'MONTHLY_PM_HRS']					
 					if current_obj_api_name in precentage_columns and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM"):						
@@ -1807,7 +1808,24 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 						if str(ObjectName) == "SAQIGB" and current_obj_value != "":
 							decimal_val = 2
 							formatting_string = "{0:." + str(decimal_val) + "f}"
-							current_obj_value = formatting_string.format(float(current_obj_value))							
+							current_obj_value = formatting_string.format(float(current_obj_value))
+							if current_obj_api_name == "DISCOUNT":
+								Trace.Write("@1809 inside discount")
+								sec_str += (
+									'<td><input id="'
+									+ str(current_obj_api_name)
+									+ '" type="text" value="'
+									+ current_obj_value.lstrip()
+									+ '" title="'
+									+ current_obj_value
+									+ '" class="form-control related_popup_css light_yellow" style="'
+									+ str(left_float)
+									+ ' " '
+									+ disable
+									+ " maxlength = '"+str(max_length)+"'>"
+									+ str(edit_warn_icon)
+									+ "</td>"
+								)							
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
@@ -1819,6 +1837,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							+ disable
 							+ "></td>"
 						)
+						
 							
 				elif data_type == "FORMULA" and formula_data_type == "NUMBER":				
 					#precentage_columns = ['SALES_DISCOUNT','BD_DISCOUNT']
@@ -1845,6 +1864,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 								+ "></td>"
 							)
 						else:
+							
 							sec_str += (
 								'<td><input id="'
 								+ str(current_obj_api_name)
