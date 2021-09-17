@@ -1355,6 +1355,8 @@ try:
 				attribute = attribute.replace("_calc","")
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start		
 	if (get_serviceid == 'Z0091'):
+		Log.Info('where-get_serviceid--'+str(get_serviceid))
+		Log.Info('where-where--'+str(where_condition))
 		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
 		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
 		getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
