@@ -3361,18 +3361,18 @@ def EntitlementTreeViewHTMLDetail(
 														+ "</option>"
 													)
 											except:
-												Trace.Write('except dropdown {} {}'.format(value.SYSTEM_ID, val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+												Trace.Write('except dropdown {} {}'.format(value.SYSTEM_ID, value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 												#VAR1 = '<option value="select" ' +str(default)+'>Select </option>'
 												if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 													selected_option = val.ENTITLEMENT_DISPLAY_VALUE
 													VAR1 += (
-														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													)
 												else:
 													VAR1 += (
 														'<option '
 														+ str(disallow_style)
-														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= val.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													)
 
 										sec_str1 += (
