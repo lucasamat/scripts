@@ -1087,6 +1087,9 @@ def Offergreenfab(ACTION,CurrentRecordId):
 	
 	#GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
 	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' ")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -2281,6 +2284,9 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 		TreeSuperParentParam = str(TreeSuperParentParam.split('-')[1]).strip()
 	#GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> <div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div> PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
