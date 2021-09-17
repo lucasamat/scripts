@@ -3666,7 +3666,8 @@ def EntitlementTreeViewHTMLDetail(
 								selected_option = " "
 								if STDVALUES:
 									if attributevalues.get(attrSysId) is not None:
-										select_option = 'selected'
+										#select_option = 'selected'
+										select_option = ''
 										default = ''
 									else:
 										select_option = ""
