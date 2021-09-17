@@ -1427,18 +1427,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 						#current_obj_value = str(current_obj_api_name*int(100))				
 					if current_obj_value == "":
 						symbol = ""
-					sec_str += (
-						'<td><input id="'
-						+ str(current_obj_api_name)
-						+ '" type="text" value="'
-						+ current_obj_value
-						+ symbol
-						+ '" title="'
-						+ current_obj_value
-						+ symbol
-						+ '" class="form-control related_popup_css" disabled></td>'
-					)	
-					if current_obj_api_name == "DISCOUNT" and str(ObjectName) == "SAQIGB":
+					if current_obj_api_name == "DISCOUNT" and (str(ObjectName) == "SAQIGB" or str(ObjectName) == "SAQIFL"):
 						Trace.Write("@1809 inside discount")
 						sec_str += (
 							'<td><input id="'
@@ -1454,7 +1443,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							+ " maxlength = '"+str(max_length)+"'>"
 							+ str(edit_warn_icon)
 							+ "</td>"
-						)				
+						)
+					else:
+						sec_str += (
+							'<td><input id="'
+							+ str(current_obj_api_name)
+							+ '" type="text" value="'
+							+ current_obj_value
+							+ symbol
+							+ '" title="'
+							+ current_obj_value
+							+ symbol
+							+ '" class="form-control related_popup_css" disabled></td>'
+						)	
+								
 						
 				elif (
 					data_type == "FORMULA"
