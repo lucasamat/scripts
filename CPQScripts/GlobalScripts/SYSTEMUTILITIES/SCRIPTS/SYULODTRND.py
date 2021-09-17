@@ -699,20 +699,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 		# Greenbook details load || Product offering  Node - End
 		if ObjectName == 'SAQSFB':
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-			if TreeParentParam == 'Sending Equipment' or TreeParentParam == 'Receiving Equipment':
+			if Product.GetGlobal("TreeParentLevel0") == 'Sending Equipment' or Product.GetGlobal("TreeParentLevel0") == 'Receiving Equipment':
 				prd_location_fb = Sql.GetFirst(
 					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeSuperParentParam)
 				)				
 			else:
 				prd_location_fb = Sql.GetFirst(
-					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParentParam)
+					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,Product.GetGlobal("TreeParentLevel0"))
 				)
 			if prd_location_fb:
 				RECORD_ID = prd_location_fb.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID		
 		if ObjectName == 'CTCSCO':
 			quote_record_id = Quote.GetGlobal("contract_record_id")
 			prd_location_fb = Sql.GetFirst(
-				"select * from CTCSCO (NOLOCK) where CONTRACT_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,TreeParentParam)
+				"select * from CTCSCO (NOLOCK) where CONTRACT_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,Product.GetGlobal("TreeParentLevel0"))
 			)
 			if prd_location_fb:
 				RECORD_ID = prd_location_fb.CONTRACT_SERVICE_EQUIPMENT_RECORD_ID
