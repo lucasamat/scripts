@@ -970,7 +970,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 				keypressval = ""
 				onchange = ""
 				datepicker_onchange = "onchangedatepicker('" + current_obj_api_name + "')"
-
+				Trace.Write("CURRENTOBJAPINAME===="+str(current_obj_api_name))
 				if Custom_obj is not None:
 					try:
 						current_obj_value = eval(
