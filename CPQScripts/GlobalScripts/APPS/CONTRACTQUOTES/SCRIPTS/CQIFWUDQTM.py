@@ -18,7 +18,7 @@ ScriptExecutor = ScriptExecutor
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quoteiteminsert(Qt_id):
     #quote_number = Qt_id[2:12]
-    Log.Info('quote_id---'+str(Qt_id))
+    #Log.Info('quote_id---'+str(Qt_id))
     quote_Edit = QuoteHelper.Edit(Qt_id)
     #get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
@@ -35,7 +35,7 @@ def quoteiteminsert(Qt_id):
     total_extended_price = 0.00
     total_model_price = 0.00
     items_data = {}
-    get_billing_matrix_year =[]
+    
     get_rev_rec_id = SqlHelper.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
     get_curr = get_rev_rec_id.QUOTE_CURRENCY
     items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE, ISNULL(MODEL_PRICE, 0) as MODEL_PRICE, ISNULL(CEILING_PRICE, 0) as CEILING_PRICE, ISNULL(SALES_DISCOUNT_PRICE, 0) as SALES_DISCOUNT_PRICE, ISNULL(BD_PRICE, 0) as BD_PRICE,ISNULL(BD_PRICE_MARGIN, 0) as BD_PRICE_MARGIN, ISNULL(NET_PRICE, 0) as NET_PRICE, ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
@@ -78,7 +78,7 @@ def quoteiteminsert(Qt_id):
                 item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
      
 
-                Log.Info('TOTAL_COST--'+str(item.TOTAL_COST.Value))
+                #Log.Info('TOTAL_COST--'+str(item.TOTAL_COST.Value))
 
     Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
     Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
