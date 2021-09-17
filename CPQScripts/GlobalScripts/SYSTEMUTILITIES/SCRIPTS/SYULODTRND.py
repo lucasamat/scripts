@@ -657,7 +657,7 @@ def CommonTreeViewHTMLDetail(
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")			
 			try:
 				if str(TreeSuperParentParam.split("-")[3]):
-					Trace.Write("try if")
+					Trace.Write("try if") 
 					service_id = TreeSuperParentParam.split('-')[-2].strip()
 				else:
 					Trace.Write("try else")
