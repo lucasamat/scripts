@@ -103,6 +103,6 @@ try:
 except:
     Qt_id = ""
 
-
+ 
 calling_function = quoteiteminsert(Qt_id)
 
