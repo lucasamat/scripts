@@ -3323,7 +3323,7 @@ def EntitlementTreeViewHTMLDetail(
 									
 									
 									
-									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
+									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId): 
 										VAR1 = sec_str1 = ""
 										selected_option = "Select"
 										if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() != "":
