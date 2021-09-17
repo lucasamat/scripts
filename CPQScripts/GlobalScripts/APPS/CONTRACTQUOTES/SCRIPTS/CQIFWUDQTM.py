@@ -33,6 +33,7 @@ def quoteiteminsert(Qt_id):
     total_year_2 = 0.00
     total_tax = 0.00
     total_extended_price = 0.00
+    total_model_price = 0.00
     items_data = {}
     get_billing_matrix_year =[]
     get_rev_rec_id = SqlHelper.GetFirst("SELECT QTEREV_RECORD_ID,QUOTE_CURRENCY FROM SAQTMT where QUOTE_ID = '{}'".format(Qt_id))
@@ -63,6 +64,7 @@ def quoteiteminsert(Qt_id):
                 total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
                 total_bd_margin += item.BD_PRICE_MARGIN.Value
                 total_bd_price += item.BD_PRICE.Value
+                total_model_price += item.MODEL_PRICE.Value
                 #total_sales_price += item.SALES_PRICE.Value
                 item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
                 total_yoy += item.YEAR_OVER_YEAR.Value
@@ -90,6 +92,10 @@ def quoteiteminsert(Qt_id):
     Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
     Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
     Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
+    
+    Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
+    Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
+
     Quote.Save()
     return "True"
 try: 
