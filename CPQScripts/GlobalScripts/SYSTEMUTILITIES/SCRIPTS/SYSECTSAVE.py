@@ -507,10 +507,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						tablerow = newdict
 						tableInfo.AddRow(tablerow)
 						Sql.Upsert(tableInfo)
-						VALUE = newdict.get("DISCOUNT")
+						VALUE = float(newdict.get("DISCOUNT"))
 						contract_quote_record_id = newdict.get("QUOTE_RECORD_ID")
 						quote_revision_record_id = newdict.get("QTEREV_RECORD_ID")
-						decimal_discount = float(int(VALUE)) / 100.0
+						decimal_discount = VALUE / 100.0
 						Sql.RunQuery("""UPDATE SAQICO SET 
 														NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
 														YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
