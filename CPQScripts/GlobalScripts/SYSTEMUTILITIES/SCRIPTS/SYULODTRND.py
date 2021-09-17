@@ -1427,7 +1427,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 						#current_obj_value = str(current_obj_api_name*int(100))				
 					if current_obj_value == "":
 						symbol = ""
-					if current_obj_api_name == "DISCOUNT" and (str(ObjectName) == "SAQIGB" or str(ObjectName) == "SAQIFL"):
+					if current_obj_api_name == "DISCOUNT" and (str(ObjectName) == "SAQIGB" or str(ObjectName) == "SAQIFL") and MODE == "EDIT":
 						Trace.Write("@1809 inside discount")
 						sec_str += (
 							'<td><input id="'
