@@ -224,11 +224,11 @@ def create_new_revision(Opertion,cartrev):
 			#quote_table_info.AddRow(quote_detials)
 			#Sql.Upsert(quote_table_info)
 		#get quote data for update in SAQTMT end
-		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
+		Quote = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
 		Quote.RefreshActions()
 		#for item in Quote.MainItems:
 		#	item.Delete()
-		Quote.Save()
+		#Quote.Save()
 		#Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
 		Trace.Write("============>>1111 "+str(current_revison1))
