@@ -1401,7 +1401,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 					)
 				
 				elif data_type == "PERCENT" or formula_data_type == "PERCENT":
-					Trace.Write("else 1404"+str(current_obj_api_name))
+					Trace.Write("else 1404"+str(current_obj_api_name)) 
 					Coeff_values =""
 					symbol = " %"
 					Decimal_Value = 2 if str(ObjectName) == 'SAQIGB' else 3  ## decimal precision for SAQIGB
