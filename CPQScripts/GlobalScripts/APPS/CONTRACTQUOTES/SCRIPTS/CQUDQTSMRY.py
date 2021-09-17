@@ -141,7 +141,9 @@ class ContractQuoteSummaryUpdate:
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
                                         NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
                                         YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
                                         DISCOUNT = '{plus}{Discount}'
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
@@ -152,7 +154,8 @@ class ContractQuoteSummaryUpdate:
                                         plus="+"))
         self._update_year()
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0)
+                                        NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
+                                        NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0)
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id,
@@ -161,16 +164,24 @@ class ContractQuoteSummaryUpdate:
         Sql.RunQuery("""UPDATE SAQITM
                             SET 
                             NET_VALUE = IQ.NET_VALUE,
+                            NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
                             NET_PRICE = IQ.NET_PRICE,
+                            NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
                             YEAR_1 = IQ.YEAR_1,
+                            YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
                             YEAR_2 = IQ.YEAR_2,
+                            YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
                             DISCOUNT = '{plus}{Discount}'					
                             FROM SAQITM (NOLOCK)
                             INNER JOIN (SELECT SAQITM.CpqTableEntryId,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
-                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
                                         FROM SAQITM (NOLOCK) 
                                         JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
                                         WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'
@@ -185,7 +196,7 @@ class ContractQuoteSummaryUpdate:
         total_net_value = 0.00
         items_data = {}
         
-        items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
+        items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE,ISNULL(YEAR_1_INGL_CURR, 0) as YEAR_1_INGL_CURR ,ISNULL(YEAR_2_INGL_CURR, 0) as YEAR_2_INGL_CURR , ISNULL(NET_VALUE_INGL_CURR,0) AS NET_VALUE_INGL_CURR, ISNULL(NET_PRICE_INGL_CURR, 0) as NET_PRICE_INGL_CURR FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
         if items_obj:
             for item_obj in items_obj:
                 items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
@@ -221,7 +232,9 @@ class ContractQuoteSummaryUpdate:
         decimal_discount = float(int(self.discount)) / 100.0
         Sql.RunQuery("""UPDATE SAQICO SET 
                                         NET_PRICE = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
                                         YEAR_1 = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+                                        YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
                                         DISCOUNT = '{plus}{Discount}'
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
@@ -232,7 +245,9 @@ class ContractQuoteSummaryUpdate:
                                         plus="+"))
         self._update_year()
         Sql.RunQuery("""UPDATE SAQICO SET 
-                                        NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0)
+                                        NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
+                                        NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR
+,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0)
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id,
@@ -241,16 +256,24 @@ class ContractQuoteSummaryUpdate:
         Sql.RunQuery("""UPDATE SAQITM
                             SET 
                             NET_VALUE = IQ.NET_VALUE,
+                            NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
                             NET_PRICE = IQ.NET_PRICE,
+                            NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
                             YEAR_1 = IQ.YEAR_1,
+                            YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
                             YEAR_2 = IQ.YEAR_2,
+                            YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
                             DISCOUNT = '{plus}{Discount}'					
                             FROM SAQITM (NOLOCK)
                             INNER JOIN (SELECT SAQITM.CpqTableEntryId,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
-                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+                                        CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
                                         FROM SAQITM (NOLOCK) 
                                         JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
                                         WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'
