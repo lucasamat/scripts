@@ -3362,7 +3362,7 @@ def EntitlementTreeViewHTMLDetail(
 													)
 											except:
 												Trace.Write('except dropdown')
-												VAR1 = '<option value="select" ' +str(default)+'>Select </option>'
+												#VAR1 = '<option value="select" ' +str(default)+'>Select </option>'
 												if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 													selected_option = val.ENTITLEMENT_DISPLAY_VALUE
 													VAR1 += (
