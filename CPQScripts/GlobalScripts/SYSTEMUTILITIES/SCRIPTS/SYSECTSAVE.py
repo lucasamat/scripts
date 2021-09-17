@@ -525,6 +525,23 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														plus="+",
 														TreeParam=TreeParam))
 						#self._update_year()
+						for count in range(2, 6):
+							Sql.RunQuery("""UPDATE SAQICO SET
+															SAQICO.YEAR_{Year} = CASE  
+																WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
+																	THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+																ELSE 0
+															END
+														FROM SAQICO (NOLOCK) 
+														JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
+														WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.GREENBOOK = '{TreeParam}'""".format(
+															QuoteRecordId=contract_quote_record_id,
+															RevisionRecordId=quote_revision_record_id,
+															Year=count,
+															Count=count - 1,
+															TreeParam=TreeParam
+															)
+										)    
 						Sql.RunQuery("""UPDATE SAQICO SET 
 														NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0)
 													FROM SAQICO (NOLOCK)                                     
