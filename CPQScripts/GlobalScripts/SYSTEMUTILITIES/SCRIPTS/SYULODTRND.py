@@ -393,8 +393,8 @@ def CommonTreeViewHTMLDetail(
 		# )
 		data_obj = Sql.GetList(QuStr)
 		Trace.Write('388-----------')
-		API_NAMES = ",".join(str(data.API_NAME) for data in data_obj if data.DATA_TYPE != "DATE")
-
+		#API_NAMES = ",".join(str(data.API_NAME) for data in data_obj if data.DATA_TYPE != "DATE")
+		API_NAMES = ",".join(str(data.API_NAME) for data in data_obj)
 		for data in data_obj:
 			# Trace.Write(
 			# 	"PERMISSION : "
@@ -688,7 +688,7 @@ def CommonTreeViewHTMLDetail(
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			prd_location_gb = Sql.GetFirst(
 				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
- and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
+and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
 			)
 			if prd_location_gb:
 				RECORD_ID = prd_location_gb.QUOTE_SERVICE_GREENBOOK_RECORD_ID
