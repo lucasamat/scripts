@@ -573,7 +573,7 @@ def costfabview(ACTION,CurrentRecordId):
 		TP = str(TreeParam)
 		TP1 = TP.split('-')
 		TreeParam = TP1[1].strip()
-		sec_edit=""
+	sec_edit=""
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> '''+str(sec_edit)+'''  PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
