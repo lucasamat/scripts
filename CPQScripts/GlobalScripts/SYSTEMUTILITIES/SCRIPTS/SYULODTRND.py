@@ -2220,7 +2220,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 		quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 	except:
 		pass #to handle error while we are in system admin
-	if TreeParentParam == "Comprehensive Services" and TreeSuperParentParam == "Product Offerings":		
+	if Product.GetGlobal("TreeParentLevel0") == "Comprehensive Services" and TreeSuperParentParam == "Product Offerings":		
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
 		addon_details = Sql.GetList("SELECT SERVICE_ID FROM SAQSAO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"'")
 		equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
@@ -2230,7 +2230,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 			Ad_on_prd = "False"
 	else:
 		Ad_on_prd = ""
-	if	TreeParentParam == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
+	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id,quote_revision_record_id))
 		if entitlement_obj:
 			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
