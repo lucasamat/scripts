@@ -15,7 +15,11 @@ import time
 Sql = SQL()
 get_user_id = User.Id
 productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByName(productAttribute) or ""
-GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+try:
+    GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+except:
+    Trace.Write("EXCEPT: GetActiveRevision "+str(GetActiveRevision))
+    GetActiveRevision = ""
 if GetActiveRevision:
     Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 class SYLDRTLIST:
