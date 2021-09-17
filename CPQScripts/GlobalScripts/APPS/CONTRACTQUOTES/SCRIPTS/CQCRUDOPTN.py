@@ -2117,7 +2117,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							) FB""".format(
 											treeparam=self.tree_param,
 											QuoteRecordId=self.contract_quote_record_id,
-           									RevisionRecordId=self.quote_revision_record_id,
+											RevisionRecordId=self.quote_revision_record_id,
 											UserId=self.user_id,
 											UserName=self.user_name,
 											cpq_entry = cpq_entry,
@@ -2242,7 +2242,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 							salesorgrecid=self.salesorg_record_id,
 							QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id
-       					)			
+						)			
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
 					Query_String=query_string
 				)
@@ -4240,7 +4240,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQSCO.FABLOCATION_NAME,
 							SAQSCO.FABLOCATION_RECORD_ID,
 							SAQTMT.CONTRACT_VALID_FROM,
-       						SAQTMT.CONTRACT_VALID_TO,
+							SAQTMT.CONTRACT_VALID_TO,
 							SAQTSV.PAR_SERVICE_DESCRIPTION,
 							SAQTSV.PAR_SERVICE_ID,
 							SAQTSV.PAR_SERVICE_RECORD_ID,
@@ -5340,7 +5340,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 		###Value Driver coefficient Sum up  A055S000P01-8778 starts
 		self._process_query("UPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.SERVICE_ID = B.SERVICE_ID")
-    	##A055S000P01-8778 ends
+		##A055S000P01-8778 ends
 
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
@@ -5578,7 +5578,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
 		Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
-    	Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
+		Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
 		Quote.GetCustomField('DISCOUNT').Content = str(total_discount) + " %"
 		Quote.Save()
 		#assigning value to quote summary ends
@@ -5993,7 +5993,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
 				Quote.Save()			
 		# Native Cart Items Insert for spare quotes- End
- 
+
 		#assigning value to custom fields(quote summary section) in quote items node starts
 		get_curr = str(Quote.GetCustomField('Currency').Content)
 		total_cost = 0.00
