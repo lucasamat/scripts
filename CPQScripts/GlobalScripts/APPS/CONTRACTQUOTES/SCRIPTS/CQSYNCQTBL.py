@@ -1595,18 +1595,16 @@ class SyncQuoteAndCustomTables:
 									Log.Info("Ending Approval Trigger--")
 								# Approval Trigger - End '''
 								if "Z0007" in service_ids:
-									
-									GetAccount = Sql.GetFirst("SELECT DISTINCT ACCOUNT_ID, ACCOUNT_NAME,ACCOUNT_RECORD_ID FROM MAEQUP (NOLOCK) JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME".format(EquipmentIds=equipment_ids))
-									account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(GetAccount.ACCOUNT_ID))
-						
+									#GetAccount = Sql.GetFirst("SELECT DISTINCT ACCOUNT_ID, ACCOUNT_NAME,ACCOUNT_RECORD_ID FROM MAEQUP (NOLOCK) JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME".format(EquipmentIds=equipment_ids))
+									account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
 						
 									if not account_obj:
 										getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 										NewAccountRecordId = str(Guid.NewGuid()).upper()
 										Sql.RunQuery("""INSERT INTO SAACNT (ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_TYPE,ACTIVE,ADDRESS_1,CITY,COUNTRY,COUNTRY_RECORD_ID,PHONE,POSTAL_CODE,REGION,REGION_RECORD_ID,STATE,STATE_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)VALUES('{AccountRecordId}','{AccountId}','{AccountName}','{Type}',1,'{Address}','{City}','{Country}','{CountryRecordId}','{Phone}','{PostalCode}','{Region}','{RegionRecordId}','{State}','{StateRecordId}','{UserName}',GETDATE())
-										""".format(AccountRecordId=NewAccountRecordId,AccountId=GetAccount.ACCOUNT_ID,AccountName=GetAccount.ACCOUNT_NAME,Type="",Address=custom_fields_detail.get("PayerAddress1"),City=custom_fields_detail.get("PayerCity"),Country=custom_fields_detail.get("PayerCountry"),CountryRecordId=salesorg_country.COUNTRY_RECORD_ID,Phone=custom_fields_detail.get("PayerPhone"),PostalCode=custom_fields_detail.get("PayerPostalCode"),Region='',RegionRecordId='',State=custom_fields_detail.get("PayerState"),StateRecordId=getState.STATE_RECORD_ID,UserName=User.UserName))
+										""".format(AccountRecordId=NewAccountRecordId,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),Type="",Address=custom_fields_detail.get("PayerAddress1"),City=custom_fields_detail.get("PayerCity"),Country=custom_fields_detail.get("PayerCountry"),CountryRecordId=salesorg_country.COUNTRY_RECORD_ID,Phone=custom_fields_detail.get("PayerPhone"),PostalCode=custom_fields_detail.get("PayerPostalCode"),Region='',RegionRecordId='',State=custom_fields_detail.get("PayerState"),StateRecordId=getState.STATE_RECORD_ID,UserName=User.UserName))
 										
-										account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(GetAccount.ACCOUNT_ID))
+										account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
 
 									SourceAccountDetails = {
 										"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1626,13 +1624,13 @@ class SyncQuoteAndCustomTables:
 									quote_involved_party_table_info.AddRow(SourceAccountDetails)
 
 									Sql.RunQuery(""" INSERT SAQSCF (QUOTE_SOURCE_FAB_LOCATION_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SRCACC_ID,SRCACC_NAME,SRCACC_RECORD_ID,SRCFBL_ID,SRCFBL_NAME,SRCFBL_RECORD_ID) SELECT  CONVERT(VARCHAR(4000),NEWID()) AS QUOTE_SOURCE_FAB_LOCATION_RECORD_ID, '{QuoteId}', '{QuoteName}','{QuoteRecordId}',MAFBLC.ACCOUNT_ID, MAFBLC.ACCOUNT_NAME,MAFBLC.ACCOUNT_RECORD_ID,MAFBLC.FAB_LOCATION_ID,MAFBLC.FAB_LOCATION_NAME,MAFBLC.	
-										FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_ID = '{AccountId}' """.format(QuoteId=quote_id,QuoteName=custom_fields_detail.get("STPAccountName"),QuoteRecordId=quote_record_id,AccountId=GetAccount.ACCOUNT_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+										FAB_LOCATION_RECORD_ID FROM MAFBLC (NOLOCK) WHERE ACCOUNT_ID = '{AccountId}' """.format(QuoteId=quote_id,QuoteName=custom_fields_detail.get("STPAccountName"),QuoteRecordId=quote_record_id,AccountId=custom_fields_detail.get("STPAccountID"),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 
 									Sql.RunQuery(""" INSERT SAQSTE
 																(QTEREV_RECORD_ID,QTEREV_ID,SRCACC_ID,SRCACC_NAME,SRCACC_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, SRCFBL_ID, SRCFBL_NAME, SRCFBL_RECORD_ID, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID, QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 															SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID= '{AccountId}'
-																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=GetAccount.ACCOUNT_ID,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=custom_fields_detail.get("STPAccountID"),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
