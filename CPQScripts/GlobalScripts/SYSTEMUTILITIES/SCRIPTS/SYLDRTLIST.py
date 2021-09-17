@@ -8250,11 +8250,8 @@ class SYLDRTLIST:
                 + "_SortColumnOrder', order); }); " 
             )   
             
-            Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))
-
-            
-            dbl_clk_function = SAQICO_dbl_clk_function         
-        Trace.Write('**at 8319')
+            Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))            
+            dbl_clk_function = SAQICO_dbl_clk_function
         return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
 
@@ -8270,17 +8267,17 @@ ACTION = Param.ACTION
 try:
     PerPage = Param.PerPage
     PageInform = Param.PageInform
-
-
 except:
     PerPage = ""
     PageInform = ""
+
 try:
     SortColumn = Param.SortColumn
     SortColumnOrder = Param.SortColumnOrder
 except:
     SortColumn = ""
     SortColumnOrder = ""
+
 try:
     subTab = Param.SUBTAB
 
@@ -8298,6 +8295,7 @@ try:
     Trace.Write("EQUIPM_ID_CHK "+str(equipment_id))
 except:
     equipment_id = ""
+
 try:
     Currenttab = Param.Currenttab    
 except:
@@ -8307,6 +8305,7 @@ try:
     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
     quote_revision_record_id = None
+    
 try:
     pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
 except:
