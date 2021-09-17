@@ -3375,16 +3375,24 @@ def EntitlementTreeViewHTMLDetail(
 														+ ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													)
 
-										sec_str1 += (
-										'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-										+ str(attrSysId)
-										+ '" type="text"  data-content ="'
-										+ str(attrSysId)
-										+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-										+ str(VAR1)
-										+ "</select>"
-										)
-										
+										try:
+											sec_str1 += (
+											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+											+ str(VAR1)
+											+ "</select>"
+											)
+										except:
+											sec_str1 += (
+											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
+											)
 										#Trace.Write("curr = "+str(curr))
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
