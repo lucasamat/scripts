@@ -40,7 +40,7 @@ def quoteiteminsert(Qt_id):
     items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE, ISNULL(MODEL_PRICE, 0) as MODEL_PRICE, ISNULL(CEILING_PRICE, 0) as CEILING_PRICE, ISNULL(SALES_DISCOUNT_PRICE, 0) as SALES_DISCOUNT_PRICE, ISNULL(BD_PRICE, 0) as BD_PRICE, ISNULL(NET_PRICE, 0) as NET_PRICE, ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Qt_id,get_rev_rec_id.QTEREV_RECORD_ID))
     if items_obj:
         for item_obj in items_obj:
-            items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+            items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY, 'MODEL_PRICE':item_obj.MODEL_PRICE, 'CEILING_PRICE':item_obj.CEILING_PRICE, 'SALES_DISCOUNT_PRICE':item_obj.SALES_DISCOUNT_PRICE, 'BD_PRICE':item_obj.BD_PRICE, 'NET_PRICE':item_obj.NET_PRICE, 'BD_PRICE_MARGIN':item_obj.BD_PRICE_MARGIN }
     quote_Edit = QuoteHelper.Edit(Qt_id)
     for item in Quote.MainItems:
         item_number = int(item.RolledUpQuoteItem)
@@ -77,7 +77,7 @@ def quoteiteminsert(Qt_id):
      
 
                 Log.Info('TOTAL_COST--'+str(item.TOTAL_COST.Value))
-                
+
     Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
     Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
     Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
