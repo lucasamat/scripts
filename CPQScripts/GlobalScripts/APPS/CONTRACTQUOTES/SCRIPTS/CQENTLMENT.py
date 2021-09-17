@@ -800,6 +800,7 @@ class Entitlements:
 							CpqTableEntryModifiedBy,
 							CpqTableEntryDateModified,
 							QTEREV_RECORD_ID,
+							KPU,
 							QTEREV_ID
 													
 							) SELECT
@@ -845,6 +846,7 @@ class Entitlements:
 								{UserId},
 								GETDATE(),
 								QTEREV_RECORD_ID,
+								KPU,
 								QTEREV_ID
 								FROM SAQSCO (NOLOCK)
 								WHERE 
