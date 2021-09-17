@@ -152,6 +152,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 	conenddt = ""
 		
 	TreeParam = Product.GetGlobal("TreeParam")
+	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
+		ObjectName = "SAQIGB"
+	elif Product.GetGlobal("TreeParentLevel1") == "Quote Items":
+		ObjectName = "SAQIFL"
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
