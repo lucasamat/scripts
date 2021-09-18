@@ -660,7 +660,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														TreeParam=TreeParam
 														))
 						c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,TreeParentParam.split("-")[1].strip(),TreeParam,quote_revision_record_id))
-						Sql.RunQuery("UPDATE SAQIFL SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(c.SUM_PRICE),contract_quote_record_id,TreeParentParam.split("-")[1].strip(),TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
+						Sql.RunQuery("UPDATE SAQIFL SET DISCOUNT = {},NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(VALUE),float(c.SUM_PRICE),contract_quote_record_id,TreeParentParam.split("-")[1].strip(),TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
 						Sql.RunQuery("""UPDATE SAQITM
 											SET 
 											NET_VALUE = IQ.NET_VALUE,
