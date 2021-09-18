@@ -33,7 +33,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear):
 		SubTab = getamtval[0]
 		getannual_amt = value[3]		
 		getfinalmonth = 'MONTH_'+str(int(valuedate)).strip()
-		if float(getannual_amt) > float(value[2]):
+		if float(getannual_amt.replace(',','')) > float(value[2].replace(',','')):
 			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_AMOUNT = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
 			getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
 			if getmonthvalue:
