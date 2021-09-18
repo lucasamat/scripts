@@ -52,7 +52,7 @@ def CommonTreeViewHTMLDetail(
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-	sec_str = getyears = sec_str2 = ""
+	sec_str = getyears = ""
 	sec_bnr = ""
 	Second_Banner_Name = ""
 	Chkctry = ""
@@ -1332,38 +1332,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 						+ '" class="form-control related_popup_css" disabled></td><tr>'
 					)
 					#Trace.Write("cm to this data-original"+str(auto_field))
-				# elif data_type != "AUTO NUMBER":
-				# 	sec_str += (
-				# 			'<tr class="iconhvr brdbt" style="'
-				# 			+ str(add_style)
-				# 			+ ' "><td class="wth350"><abbr title="'
-				# 			+ str(current_obj_field_lable)
-				# 			+ '" ><label class="pad5mrgbt0">'
-				# 			+ str(current_obj_field_lable)
-				# 			+ '</label></abbr></td><td width40><a href="#" title="'
-				# 			+ str(hint_text)
-				# 			+ '" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
-				# 			+ str(hint_text_Copy)
-				# 			+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i>'
-				# 		)
-				# 	Trace.Write("cm to this data-original"+str(sec_str))
-				# elif data_type == "TEXT" and str(MODE)=="EDIT":
-				# 	Trace.Write('MODE---'+str(MODE)+'----1301----'+str(current_obj_api_name))
-				# 	sec_str += (
-				# 		'<td><input id="'
-				# 		+ str(current_obj_api_name)
-				# 		+ '" type="text" value="'
-				# 		+ current_obj_value.lstrip()
-				# 		+ '" title="'
-				# 		+ current_obj_value
-				# 		+ '" class="form-control related_popup_css light_yellow" style="'
-				# 		+ str(left_float)
-				# 		+ ' " '
-				# 		+ disable
-				# 		+ " maxlength = '"+str(max_length)+"'>"
-				# 		+ str(edit_warn_icon)
-				# 		+ "</td>"
-				# 	)
+				
 				elif data_type == "LONG TEXT AREA":
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
@@ -2545,7 +2514,6 @@ def EntitlementTreeViewHTMLDetail(
 		TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 		where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '" + str(TreeSuperParentParam) + "' AND GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 		join = ''		
-	OBJDObjd = Sql.GetList("select * from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "'")
 	if EntitlementType != "SENDING_LEVEL":
 		if TableObj is None and (EntitlementType == "EQUIPMENT"):
 			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
@@ -3050,8 +3018,7 @@ def EntitlementTreeViewHTMLDetail(
 		sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 		multi_select_attr_list = {}
 		getnameentallowed = []
-		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
-		attdisllowlist = []
+		sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
 		#sec_str = "Entitlements are not applicable at this level"
 		sec_str = "<div class='noRecDisp'>Entitlements are not applicable at this level</div>"
 	else:
@@ -3069,8 +3036,7 @@ def EntitlementTreeViewHTMLDetail(
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
 				attributedefaultvalue.append(val.ENTITLEMENT_NAME)
 		Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
-		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""
-		attdisllowlist = []
+		sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
 		previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
 		#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
@@ -3083,67 +3049,7 @@ def EntitlementTreeViewHTMLDetail(
 		Trace.Write('TreeParam----'+str(TreeParam)+'--'+str(ProductPartnumber))
 		if TreeParam.upper() == ProductPartnumber or TreeParentParam.upper() == ProductPartnumber or TreeSuperParentParam == ProductPartnumber:	
 			Trace.Write("@2756------->"+str(TreeParentParam))
-			'''if Quote.GetGlobal("TreeParentLevel1") == "Receiving Equipment":
-				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
-				getPlatform = Sql.GetFirst("SELECT PLATFORM, WAFER_SIZE FROM SAQSCO WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{}'".format(RECORD_ID))
-				if getPlatform:
-					getDeinstall = Sql.GetFirst("SELECT INSTALL_T0T1_CE_HRS,INSTALL_T0T1_TECH_HRS,ISNULL(INSTALL_T2_CE_HRS,0) AS INSTALL_T2_CE_HRS,ISNULL(INSTALL_T2_PSE_HRS,0) AS INSTALL_T2_PSE_HRS,ISNULL(INSTALL_T2_SSE_HRS,0) AS INSTALL_T2_SSE_HRS,ISNULL(INSTALL_T3_CE_HRS,0) AS INSTALL_T3_CE_HRS,ISNULL(INSTALL_T3_PSE_HRS,0) AS INSTALL_T3_PSE_HRS,ISNULL(INSTALL_T3_SSE_HRS,0) AS INSTALL_T3_SSE_HRS,DEINSTALL_CE_HRS,DEINSTALL_PRICE,DEINSTALL_TECH_HRS,DEINSTALL_TRDPTY_AMOUNT FROM PRLPBK (NOLOCK) WHERE GREENBOOK = '{TreeParam}' AND SUBSTRATESIZE_ID = '{sub}'".format(TreeParam=TreeParam,sub=getPlatform.WAFER_SIZE,plt=getPlatform.PLATFORM))
-					GetRegion = Sql.GetFirst("SELECT REGION,GLOBAL_CURRENCY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(quoteid))
-					Region = GetRegion.REGION
-					getRegionhrs = Sql.GetFirst("SELECT TECH_RATE,CE_RATE,PSE_RATE,SSE_RATE FROM SAREGN WHERE REGION = '{}'".format(Region))
-					EntCost =(float(getDeinstall.DEINSTALL_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getRegionhrs.TECH_RATE))
-					Trace.Write("ENTCOST1---------->"+str(EntCost))
-					EntCost2 = (float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getRegionhrs.TECH_RATE)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT)
-					Trace.Write("ENTCOST2---------->"+str(EntCost2))
-					EntCost3 = (float(getDeinstall.INSTALL_T2_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getRegionhrs.SSE_RATE))
-					Trace.Write("ENTCOST3---------->"+str(EntCost3))
-					EntCost4 = (float(getDeinstall.INSTALL_T3_CE_HRS)*float(getRegionhrs.CE_RATE)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getRegionhrs.PSE_RATE)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getRegionhrs.SSE_RATE))
-					Trace.Write("ENTCOST3---------->"+str(EntCost4))
-					#get_value_query = Sql.GetList("select CpqTableEntryId from SAQSCO  WHERE FABLOCATION_ID = '{}' AND GREENBOOK = '{}' AND QUOTE_RECORD_ID = '{}' ".format(Quote.GetGlobal("TreeParentLevel0"),Quote.GetGlobal("TreeParam"),quoteid))
 			
-					#for grnbk in get_value_query:
-						#where_condition = where_cond + " AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
-					updateentXML = ""
-					curr = GetRegion.GLOBAL_CURRENCY if GetRegion else ""
-					for value in GetXMLsecField:
-
-						
-						get_value = value.ENTITLEMENT_DISPLAY_VALUE
-						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-						get_curr = value.PRICE_METHOD
-						if 'AGS_SFM_DEI_PAC' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-							get_cost_impact = "{0:.2f}".format(EntCost)
-							get_curr = curr
-						if ('AGS_RFM_INS_T0' in value.ENTITLEMENT_NAME or 'AGS_RFM_INS_T1' in value.ENTITLEMENT_NAME) and 'Included' in get_value:
-							get_cost_impact = "{0:.2f}".format(EntCost2)
-							get_curr = curr
-						if 'AGS_RFM_INS_T2' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-							get_cost_impact = "{0:.2f}".format(EntCost3)
-							get_curr = curr
-						if 'AGS_RFM_INS_T3' in value.ENTITLEMENT_NAME and 'Included' in get_value:
-							get_cost_impact = "{0:.2f}".format(EntCost4)
-							get_curr = curr
-						
-						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-							<IS_DEFAULT>{is_default}</IS_DEFAULT>
-							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-							<PRICE_METHOD>{pm}</PRICE_METHOD>
-							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE) 
-						Trace.Write("@@2794------>"+str(updateentXML))
-					
-					UpdateEntitlement = " UPDATE SAQSCE SET ENTITLEMENT_XML= '{}' WHERE QTESRVCOB_RECORD_ID = '{}'".format(updateentXML,RECORD_ID)
-					# UpdateEntitlement_tst = " UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition)
-					Sql.RunQuery(UpdateEntitlement)'''
-					
-
 			for product_tab_obj in product_tabs_obj:
 				product_section =   str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
 				Trace.Write("product_tab_obj"+str(product_section))
@@ -3181,7 +3087,7 @@ def EntitlementTreeViewHTMLDetail(
 						Section_desc = product_section.split('_')
 						Section_desc =product_section.split('_')[len(Section_desc) - 1]
 
-				if EntitlementType == "EQUIPMENT" or EntitlementType == "BUSINESSUNIT" or EntitlementType == "TOOLS":
+				if EntitlementType in ("EQUIPMENT","BUSINESSUNIT","TOOLS"):
 					#Trace.Write("@@2794")
 					sec_bnr += (
 						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down " id="'
@@ -3193,10 +3099,7 @@ def EntitlementTreeViewHTMLDetail(
 						+ str(Section_desc)
 						+ "</div></label></div>"
 					)
-				
-					
-				else:
-					
+				else:					
 					sec_bnr += (
 						'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" id="'+ str(Section_id)+ '" data-target="#sec_'
 						+ str(Section_id)
@@ -3597,35 +3500,7 @@ def EntitlementTreeViewHTMLDetail(
 										Trace.Write('sec_str_cf chk ## '+str(sec_str_cf))
 										##FACTOR CURRENCY
 										sec_str_faccur += str(val.PRICE_METHOD)
-									# else:
-									# 	sec_str1 = ""
-									# 	attr_value = attributevalues.get(attrSysId)
-									# 	Trace.Write("DType free2---"+str(attr_value)+str(attrSysId))
-									# 	sec_str1 += (
-									# 		'<input class="form-control no_border_bg" id = "'
-									# 		+ str(attrSysId)
-									# 		+ '" type="text"  style ="display:none"  data-content ="'
-									# 		+ str(attr_value)
-									# 		+ '" value = "'+str(attr_value)+'" onclick="editent_bt(this)" disabled>'									
-									# 		+ "</input> "
-									# 	)
 									
-									# Trace.Write("DType free3----"+str(attr_value)+str(attrSysId))
-									# STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
-									
-									
-								
-								# else:
-								# 	#Trace.Write("else dtype"+str(DType))										
-								# 	sec_str_ipp = ""
-								# 	sec_str_ipp = ('<input class="form-control no_border_bg" id = "'
-								# 		+ str(attrSysId)
-								# 		+ '" type="text"  data-content ="'
-								# 		+ str(attrValueSysId)
-								# 		+ '" value = "'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'" style ="'+str(add_style)+'"  onclick="editent_bt(this)" disabled>'									
-								# 		+ "</input>"
-								# 	)
-								
 								if (str(val.ENTITLEMENT_DESCRIPTION) == "Addl Perf Guarantee 2" and str(val.ENTITLEMENT_VALUE_CODE).upper()== "MANUAL_INPUT"):
 									
 									imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
@@ -3633,30 +3508,19 @@ def EntitlementTreeViewHTMLDetail(
 									imgstr  = ""
 								new_value_dicta["APPROVAL"] = imgstr	
 								new_value_dicta["ENTITLEMENT DESCRIPTION"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
-								#Trace.Write("=============MMMMM "+str(sec_str1))
-								#Trace.Write("dtype----"+str(val.ENTITLEMENT_TYPE)+str(attrSysId))
+								
 								if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
-									new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1 
-									#Trace.Write("attrSysIdDType----- "+str(attrSysId)+str(DType))
+									new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1 									
 								else:
 									new_value_dicta["ENTITLEMENT VALUE"] = str(info_column) + str(sec_str_ipp)
 									Trace.Write("@3323-----"+str(attrSysId))
-								#new_value_dicta["FACTOR CURRENCY"] = str("<abbr title='"+str(sec_str_faccur)+"'>"+str(sec_str_faccur)+"</abbr>")
 								new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
-								#new_value_dicta["DATA TYPE"] = str("<abbr title='"+str(sec_str_dt)+"'>"+str(sec_str_dt)+"</abbr>")
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title='"+str(sec_str_primp)+"'>"+str(sec_str_primp)+"</abbr>")+str(edit_pencil_icon)
-								new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")
-						
-						
+								new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
 						else:
 							if attrSysId not in attributesdisallowedlst and attrSysId:
 								attributesdisallowedlst.append(attrSysId)
-							add_style = "display:none"
-							#Trace.Write('attrSysId---looping0507--'+str(attrSysId)+str(DType))
-							# if attrSysId in attributesdisallowedlst:						
-							# 	add_style = "display:none"
-							# else:
-							# 	add_style = ""
+							add_style = "display:none"							
 							if DType == "Drop Down":
 								#Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
@@ -3802,77 +3666,9 @@ def EntitlementTreeViewHTMLDetail(
 							new_value_dicta["CALCULATION FACTOR"] = ""	
 						Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 						totaldisallowlist = [item for item in attributesdisallowedlst]
-
-						#getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
-						#Trace.Write("check all-----"+str(attrLabel)+"userselectedvalue"+str(userselectedvalue)+str(totaldisallowlist)+str(getnameentallowed))
-						# if  str(attrLabel) not in userselectedvalue and len(userselectedvalue) > 0:							
-						# 	attributesdisallowedlst = [item for item in attributesdisallowedlst if item not in getnameentallowed]
-						# 	if attrSysId in attributesdisallowedlst:						
-						# 		#attributes_disallowed_list.append(attrSysId)
-						# 		add_style = "display:none"
-						# 	else:
-						# 		add_style = ""
-						# 	if DType == "FreeInputnoMatching":
-						# 		sec_str1 = ""
-								
-						# 		sec_str1 += (
-						# 			'<input class="form-control no_border_bg" id = "'
-						# 			+ str(attrSysId)
-						# 			+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
-						# 			+ str(attrValueSysId)
-						# 			+ '" value = "'+str(attrValue)+'" onclick="editent_bt(this)" >'									
-						# 			+ "</input disabled> "
-						# 		)
-						# 	elif DType == "CheckBox":				
-						# 		VAR1 = sec_str1 = ""
-						# 		STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-						# 		if STDVALUES:
-						# 			for value in STDVALUES:
-						# 				Trace.Write(str(val.ENTITLEMENT_DISPLAY_VALUE).strip()+"################====> "+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-						# 				#Trace.Write("VAR1--------1st"+str(VAR1))
-						# 				if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_VALUE).strip():
-						# 					#Trace.Write('2620--2710---'+str(val.ENTITLEMENT_DISPLAY_VALUE))
-						# 					VAR1 += (
-						# 							'<option id='+str(value.SYSTEM_ID)+' value = "'
-						# 							+ str(val.ENTITLEMENT_DISPLAY_VALUE)
-						# 							+ '" selected>'
-						# 							+ str(val.ENTITLEMENT_DISPLAY_VALUE)
-						# 							+ "</option>"
-						# 					)
-						# 				else:
-						# 					VAR1 += (
-						# 						'<li><input type="checkbox" id="'+str(value.SYSTEM_ID)+'" value = "'
-						# 						+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-						# 						+ '">'
-						# 						+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-						# 						+ "</input></li>"
-						# 					)
-						# 		#Trace.Write("VAR1--------2st"+str(VAR1))
-						# 		sec_str1 += (
-						# 			'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
-						# 			+ str(attrSysId)
-						# 			+ '" type="text"  data-content ="'
-						# 			+ str(attrSysId)
-						# 			+ '" class="form-control" onchange="editent_bt(this)" disabled>'
-						# 			+ str(VAR1)
-						# 			+ "</select>"
-						# 		)
-							
-						# 	new_value_dicta["APPROVAL"] = ""	
-						# 	new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
-						# 	if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
-						# 		new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
-						# 	else:
-						# 		new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-						# 	new_value_dicta["FACTOR CURRENCY"] = sec_str_faccur
-						# 	new_value_dicta["ENTITLEMENT COST IMPACT"]= sec_str_imt
-						# 	new_value_dicta["DATA TYPE"] = sec_str_dt
-						# 	new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
-						# 	new_value_dicta["CALCULATION FACTOR"] = sec_str_cf
 						
 						if new_value_dicta:
 							date_boot_field.append(new_value_dicta)
-					
 
 					tablistdict[Section_id] = date_boot_field					
 					if len(tablistdict) > 0:
@@ -4036,7 +3832,6 @@ def ContractEntitlementTreeViewHTMLDetail(
 			RECORD_ID = str(TableObj.SERVICE_RECORD_ID)
 		where = "CONTRACT_RECORD_ID = '" + str(quoteid) + "' AND SERVICE_RECORD_ID = '" + str(RECORD_ID) + "'"
 		join = ''
-	OBJDObjd = Sql.GetList("select * from SYOBJD (NOLOCK) where OBJECT_NAME = '" + str(ObjectName) + "'")
 
 	if TreeSuperParentParam == "Product Offerings":
 		# requestdata= '{"productKey":"'+TreeParam+'","date":"2020-10-14","context":[{"name":"VBAP-MATNR","value":"'+TreeParam+'"}]}'
@@ -4308,8 +4103,8 @@ def ContractEntitlementTreeViewHTMLDetail(
 		
 		GetXMLsecField = Sql.GetList("SELECT distinct e.CONTRACT_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(getinnercon.CONTRACT_RECORD_ID)+"' as CONTRACT_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 		
-		sec_str2 = sec_str_cf = sec_str_boot = sec_bnr = getprevdicts = sec_str_primp = sec_str1 = dbl_clk_function = ""
-		attdisllowlist = getnameentallowed = []
+		sec_str_cf = sec_str_boot = sec_bnr = getprevdicts = sec_str_primp = sec_str1 = dbl_clk_function = ""
+		getnameentallowed = []
 		## set entitlement_xml for cancel fn A055S000P01-3157 starts
 		previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")		
 		Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
@@ -4587,181 +4382,7 @@ def ContractEntitlementTreeViewHTMLDetail(
 				dbl_clk_function += (
 					"try { var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value--23001-',this.value);localStorage.setItem('EDITENT_SEC','EDIT');$('"+str(getdivid)+"').css('display','block');$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block'); $('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(5) input').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(7) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+"  tbody tr td:nth-child(7) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(8) input').attr('disabled', 'disabled');$('"+str(table_ids)+"  tbody tr td:nth-child(6) input').attr('disabled', 'disabled');$('#T2_LABOR_TYPE_calc').removeAttr('disabled');$('#T3_LABOR_TYPE_calc').removeAttr('disabled');$('#LABOR_TYPE_calc').removeAttr('disabled');$('#T0_T1_LABOR_TYPE_calc').removeAttr('disabled');$('"+str(table_ids)+" tbody tr td:nth-child(8) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');var testperf = $('#ADDL_PERF_GUARANTEE_91_1').val();console.log('testperf-----',testperf);if(testperf.toUpperCase() == 'MANUAL INPUT'){console.log('manual input val on donble click---');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').parent().css('position', 'relative');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');}else{$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('light_yellow')};$('#ADDL_PERF_GUARANTEE_91_1_dt').attr('disabled', 'disabled');$('#ADDL_PERF_GUARANTEE_91_1_calc').attr('disabled', 'disabled');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');console.log('manual input----');var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
 				)
-			'''dbl_clk_function += (
-				"try {var getentedict = [];$('"+str(table_ids)+"').on('click-row.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('focus', function () { var previousval = this.value;console.log('previous1---',previousval);localStorage.setItem('previousval', previousval);}).change(function() {var entchanged = this.value;console.log('previous--previous-----',entchanged);var getatbleid =  $(this).closest('table').attr('id');localStorage.setItem('getatbleid', getatbleid);console.log('getatbleid----',getatbleid);var getseltabledesc = this.id;console.log('getseltableid---',getseltabledesc);var previousval = localStorage.getItem('previousval');var concate_data = getatbleid +'='+previousval+'='+getseltabledesc+'='+entchanged;if(!getentedict.includes(concate_data)){getentedict.push(concate_data)};console.log('getentedict---',getentedict);getentedict = JSON.stringify(getentedict);localStorage.setItem('getentedict', getentedict);localStorage.setItem('previousval', '');});});}catch {console.log('error---')}"
-			)'''
-		# for row in ServiceContainer.Rows:			
-		# 	if TreeParam.upper().strip() == str(row.Product.PartNumber).upper().strip() or TreeParentParam.upper().strip() == str(row.Product.PartNumber).upper().strip():
-		# 		ContainerProduct = row.Product
-		# 		tabs = ContainerProduct.Tabs
-		# 		list_of_tabs = []
-		# 		for tab in tabs:
-		# 			list_of_tabs.append(tab.Name)
-		# 			sysectObj = Sql.GetFirst(
-		# 				"SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(tab.Name) + "'"
-		# 			)
-		# 			Section_id = sysectObj.RECORD_ID
-		# 			Section_desc = sysectObj.SECTION_DESC
-		# 			sec_str += '<div id="container" class="wdth100 margtop10 g4 ' + str(Section_id) + '">'
-		# 			if EntitlementType == "EQUIPMENT" or EntitlementType == "BUSINESSUNIT" or EntitlementType == "TOOLS":
-		# 				sec_str += (
-		# 					'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sec_'
-		# 					+ str(Section_id)
-		# 					+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
-		# 					+ str(Section_id)
-		# 					+ '" class="dropdown-item" href="#" onclick="edit_entitlement(this)">EDIT</a></li></ul></div></div>'
-		# 					+ str(Section_desc)
-		# 					+ "</div></label></div>"
-		# 				)
-		# 			else:
-		# 				sec_str += (
-		# 					'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sec_'
-		# 					+ str(Section_id)
-		# 					+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
-		# 					+ str(Section_desc)
-		# 					+ "</div></label></div>"
-		# 				)
-
-		# 			sec_str += '<div id="sec_' + str(Section_id) + '" class="collapse in">'
-		# 			sec_str += '<table class="wth100mrg8"><tbody>'
-		# 			add_style = ""
-		# 			for attr in tab.Attributes:						
-		# 				attrName = attr.Name
-		# 				attrLabel = attr.Name
-		# 				attrValue = attr.GetValue()
-		# 				attrSysId = attr.SystemId
-		# 				DType = attr.DisplayType						
-		# 				if attrSysId in attributesdisallowedlst:
-		# 					add_style = "display:none"
-		# 				else:
-		# 					add_style = ""	
-		# 				if attrSysId in attributeEditlst and (EntitlementType != "ITEMS" and EntitlementType != "ITEMGREENBOOK"):
-		# 					edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
-							
-		# 				else:
-		# 					edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
-		# 				attrValueSysId = attributevalues.get(attrSysId)
-						
-		# 				if DType in ("DropDown", "CheckBox"):
-		# 					Count = 0
-		# 					for value in attr.Values:
-		# 						Count += 1
-		# 						if "D:" in str(value.Display):
-		# 							attrValue = value.Display
-		# 							break
-		# 						elif Count == 1:
-		# 							attrValue = value.Display
-		# 				GetsecField = Sql.GetFirst(
-		# 					"SELECT * FROM "
-		# 					+ str(ObjectName)+" (NOLOCK) "+str(join)
-		# 					+ " WHERE ENTITLEMENT_DESCRIPTION = '"
-		# 					+ str(attrLabel)
-		# 					+ "' AND "
-		# 					+ str(where)
-		# 				)
-		# 				if GetsecField is not None:
-		# 					if DType == "DropDown":
-		# 						sec_str += (
-		# 							'<tr class="iconhvr brdbt" style="'
-		# 							+ str(add_style)
-		# 							+ '"><td class="wth350"> <abbr title="'
-		# 							+ str(attrLabel)
-		# 							+ '"> <label class="pad5mrgbt0">'
-		# 							+ str(attrLabel)
-		# 							+ '</label> </abbr> </td> <td width40=""> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
-		# 							+ str(attrLabel)
-		# 							+ '" class="bgcccwth10"> <i class="fa fa-info-circle fltlt"></i> </a> </td><td><select id="'
-		# 							+ str(attrSysId)
-		# 							+ '" type="text" value="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" title="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" data-content ="'
-		# 							+ str(attrValueSysId)
-		# 							+ '" class="form-control related_popup_css" disabled>'
-		# 						)
-		# 						for value in attr.Values:
-		# 							attrcode = str(value.ValueCode).replace(" ","_")
-		# 							if attrValueSysId == value.ValueCode:
-		# 								attrValue = value.Display
-										
-		# 							#elif "D:" in str(value.Display):
-		# 								#attrValue = value.Display
-		# 							else:
-		# 								attrValue = value.Display
-		# 							# Trace.Write(
-		# 							# 	"attrValue "
-		# 							# 	+ str(attrValue)
-		# 							# 	+ " Display Value "
-		# 							# 	+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							# )
-		# 							if str(GetsecField.ENTITLEMENT_DISPLAY_VALUE) == attrValue:										
-		# 								sec_str += (
-		# 									"<option id="+str(attrcode)+" selected>" + str(GetsecField.ENTITLEMENT_DISPLAY_VALUE) + "</option>"
-		# 								)
-		# 							else:										
-		# 								sec_str += "<option  id="+str(attrcode)+" >" + str(attrValue) + "</option>"
-		# 						sec_str += "</select></td>"
-		# 					elif DType == "CheckBox":
-		# 						sec_str += (
-		# 							'<tr class="iconhvr brdbt" style="'
-		# 							+ str(add_style)
-		# 							+ '"><td class="wth350"> <abbr title="'
-		# 							+ str(attrLabel)
-		# 							+ '"> <label class="pad5mrgbt0">'
-		# 							+ str(attrLabel)
-		# 							+ '</label> </abbr> </td> <td width40=""> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
-		# 							+ str(attrLabel)
-		# 							+ '" class="multiselect bgcccwth10"> <i class="fa fa-info-circle fltlt"></i> </a> </td><td><select id="'
-		# 							+ str(attrSysId)
-		# 							+ '" type="checkbox" value="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" title="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" data-content ="'
-		# 							+ str(attrValueSysId)
-		# 							+ '" class="form-control related_popup_css" disabled>'
-		# 						)
-		# 						for value in attr.Values:
-		# 							attrValue = value.Display
-		# 							attrcode = str(value.ValueCode).replace(" ","_")
-		# 							if str(GetsecField.ENTITLEMENT_DISPLAY_VALUE) == attrValue:
-		# 								sec_str += (
-		# 									"<option id="+str(attrcode)+" selected>" + str(GetsecField.ENTITLEMENT_DISPLAY_VALUE) + "</option>"
-		# 								)
-		# 							else:
-		# 								sec_str += "<option  id="+str(attrcode)+" >" + str(attrValue) + "</option>"
-		# 						sec_str += "</select></td>"
-		# 					else:
-		# 						sec_str += (
-		# 							'<tr class="iconhvr brdbt " style="'
-		# 							+ str(add_style)
-		# 							+ '"><td class="wth350"> <abbr title="'
-		# 							+ str(attrLabel)
-		# 							+ '"> <label class="pad5mrgbt0">'
-		# 							+ str(attrLabel)
-		# 							+ '</label> </abbr> </td> <td width40=""> <a href="#" title="" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-content="'
-		# 							+ str(attrLabel)
-		# 							+ '" class="bgcccwth10"><i class="fa fa-info-circle fltlt"></i> </a> </td><td><input id="'
-		# 							+ str(attrSysId)
-		# 							+ '" type="text" style="width: 90% ! important;" value="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" title="'
-		# 							+ str(GetsecField.ENTITLEMENT_DISPLAY_VALUE)
-		# 							+ '" data-content ="'
-		# 							+ str(attrValueSysId)
-		# 							+ '" class="form-control related_popup_css" disabled></td>'
-		# 						)
-		# 					sec_str += (
-		# 						'<td class="float_r_bor_bot" style ="'+str(add_style)+'"><div class="col-md-12 editiconright"><a href="#" class="editclick">'
-		# 						+ str(edit_pencil_icon)
-		# 						+ "</a></div></td></tr>"
-		# 					)
-		# 				#sec_str += '<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-lock" aria-hidden="true"></i></a></div></td></tr>'
-		# 			sec_str += "</tbody></table></div></div>"
-		# 	Trace.Write("ELSESEC"+sec_str)
-
-		
+				
 	date_field = ""
 	new_value_dict = ""
 	api_name = ""
