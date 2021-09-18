@@ -31,7 +31,8 @@ def BILLEDIT_SAVE(GET_DICT,totalyear):
 		valuedate = value[1][0:3]
 		getamtval = re.findall(r"\d",str(totalyear))
 		SubTab = getamtval[0]
-		getannual_amt = value[3]		
+		gettotalamount = value[3]
+		Trace.Write('gettotalamount-----'+str(gettotalamount))
 		getfinalmonth = 'MONTH_'+str(int(valuedate)).strip()
 		if float(getannual_amt.replace(',','')) > float(value[2].replace(',','')):
 			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_AMOUNT = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
