@@ -1353,6 +1353,10 @@ try:
 		for attribute in attributeList:
 			if "calc" in attribute:
 				attribute = attribute.replace("_calc","")
+		if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
+			where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID').replace('SRC.QTEREV_RECORD_ID','SAQICO.QTEREV_RECORD_ID')
+			#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
+			update_entitlement_price_impact(where_condition)
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start		
 	if (get_serviceid == 'Z0091'):
 		Log.Info('where-get_serviceid--'+str(get_serviceid))
@@ -1385,13 +1389,10 @@ try:
 			#Log.Info("ENTITLEMENT IFLOW--update_query1-- "+str(update_query1))
 			
 			#update SAQICO after reprice based on entitlement 
-			if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
-				where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID').replace('SRC.QTEREV_RECORD_ID','SAQICO.QTEREV_RECORD_ID')
-				#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
-				update_entitlement_price_impact(where_condition)
+	
 	sendEmail(level)
 
-except Exception,e:
+except Exception as e:
 	Log.Info("error on roll up--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")	
 	ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")	
