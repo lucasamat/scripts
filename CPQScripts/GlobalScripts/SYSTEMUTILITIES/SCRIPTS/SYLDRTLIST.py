@@ -6034,7 +6034,7 @@ class SYLDRTLIST:
                         )
                         QuryCount_str = (
                             "SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
-                            + str(RecAttValue)
+                            + str(contract_quote_record_id)
                             + "'"
                         )
                     elif RECORD_ID == 'SYOBJR-00010':
@@ -7421,7 +7421,7 @@ class SYLDRTLIST:
                             )
                             QuryCount_str = (
                                  "SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
-                                 + str(RecAttValue)
+                                 + str(contract_quote_record_id)
                                  + "'"
                              )
                         elif RECORD_ID == 'SYOBJR-00010':    
