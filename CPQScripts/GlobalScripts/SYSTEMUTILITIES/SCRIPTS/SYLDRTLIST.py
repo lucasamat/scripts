@@ -1098,6 +1098,11 @@ class SYLDRTLIST:
                             + str(Page_End)
                             + ""
                         )
+                        QuryCount_str = (
+                            "select count(U.QUOTE_REVISION_RECORD_ID) as cnt from SAQTRV U (nolock) where  up.QUOTE_RECORD_ID = '"
+                            + str(contract_quote_record_id)
+                            + "'  "
+                        )
                         # Qury_str = (
                         # 	"SELECT DISTINCT TOP "
                         # 	+ str(PerPage)
@@ -2134,6 +2139,11 @@ class SYLDRTLIST:
                         + " and "
                         + str(Page_End)
                         + ""
+                    )
+                    QuryCount_str = (
+                        "select count(U.QUOTE_REVISION_RECORD_ID) as cnt from SAQTRV U (nolock) where  up.QUOTE_RECORD_ID = '"
+                        + str(contract_quote_record_id)
+                        + "'  "
                     )
                 elif RECORD_ID == 'SYOBJR-00010':
                     imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
