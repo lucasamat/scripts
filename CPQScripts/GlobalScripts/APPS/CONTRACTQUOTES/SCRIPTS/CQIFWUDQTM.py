@@ -78,7 +78,7 @@ def quoteiteminsert(Qt_id):
                 item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
      
 
-                #Log.Info('TOTAL_COST--'+str(item.TOTAL_COST.Value))
+                Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
 
     Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
     Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
