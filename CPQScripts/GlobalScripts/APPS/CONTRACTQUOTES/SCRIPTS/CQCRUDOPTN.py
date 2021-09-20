@@ -4741,6 +4741,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+			Trace.Write('4739---------4744------')
 			for val in billing_plan_obj:
 				if billing_plan_obj or self.trigger_from == 'IntegrationScript':				
 					contract_start_date = val.BILLING_START_DATE
