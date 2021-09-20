@@ -22,11 +22,11 @@ try:
 					tyty = str(type(record_dict))
 					if str(tyty) == "<type 'KeyValuePair[str, object]'>":    
 						
-						Single_Record[str(record_dict.Key)] = (record_dict.Value)..replace('"','\\"')
+						Single_Record[str(record_dict.Key)] = (record_dict.Value).replace('"','\\"')
 					elif str(tyty) == "<type 'Dictionary[str, object]'>":
 						colu_Info1 = {}
 						for j in record_dict:												
-							colu_Info1[str(j.Key)] = (j.Value)..replace('"','\\"')         
+							colu_Info1[str(j.Key)] = (j.Value).replace('"','\\"')         
 						Multiple_Record.append(colu_Info1)	
 
 							
