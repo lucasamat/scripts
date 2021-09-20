@@ -1023,7 +1023,7 @@ for tab in Product.Tabs:
                                                 unique_val is not None
                                                 and unique_val != ""
                                                 or Product.Attributes.GetByName("QSTN_SYSEFL_MA_00387") != ""
-                                                and not None and len(row['APRCHN_ID']) >= 8:
+                                                and not None and len(row['APRCHN_ID']) >= 8
                                             ):
 
                                                 REC_OBJ = Sql.GetFirst(
