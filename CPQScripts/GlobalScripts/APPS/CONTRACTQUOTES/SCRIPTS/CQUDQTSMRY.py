@@ -311,7 +311,7 @@ class ContractQuoteSummaryUpdate:
         Quote.GetCustomField('DISCOUNT').Content = "-"+str(self.discount)+ " " + Percentage
         ##controlling decimal based on currency
         if quote_currency:
-            get_decimal_place = Sql.GerFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
+            get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
             if get_decimal_place:
                 decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
                 

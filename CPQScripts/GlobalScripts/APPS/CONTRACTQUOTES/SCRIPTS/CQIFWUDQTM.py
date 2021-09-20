@@ -81,7 +81,7 @@ def quoteiteminsert(Qt_id):
                 #Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
     ##controlling decimal based on currency
     if get_curr:
-        get_decimal_place = Sql.GerFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
+        get_decimal_place = Sql.GetFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
         if get_decimal_place:
             decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
             total_cost = "{:." + str(decimal_value) + "f}".format(total_cost)

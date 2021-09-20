@@ -6049,7 +6049,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
 		##controlling decimal based on currency
 		if get_curr:
-			get_decimal_place = Sql.GerFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
+			get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
 			if get_decimal_place:
 				decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
 				total_cost = "{:." + str(decimal_value) + "f}".format(total_cost)
