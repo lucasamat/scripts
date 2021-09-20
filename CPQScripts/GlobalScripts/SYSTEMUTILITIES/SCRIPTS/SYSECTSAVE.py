@@ -644,7 +644,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
 														NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
 														YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-														DISCOUNT = '{plus}{Discount}'
+														DISCOUNT = '{Discount}'
 													FROM SAQICO (NOLOCK)                                     
 													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
 														QuoteRecordId=contract_quote_record_id,
@@ -697,7 +697,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
-											DISCOUNT = '{plus}{Discount}'					
+											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
