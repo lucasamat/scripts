@@ -80,21 +80,21 @@ def quoteiteminsert(Qt_id):
 
                 Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
     ##controlling decimal based on currency
-    if get_curr:
-        get_decimal_place = Sql.GetFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
-        if get_decimal_place:
-            decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
-            total_cost = "{:." + str(decimal_value) + "f}".format(total_cost)
-            total_target_price = "{:." + str(decimal_value) + "f}".format(total_target_price)
-            total_ceiling_price = "{:." + str(decimal_value) + "f}".format(total_ceiling_price)
-            total_sls_discount_price = "{:." + str(decimal_value) + "f}".format(total_sls_discount_price)
-            total_sales_price = "{:." + str(decimal_value) + "f}".format(total_sales_price)
-            total_year_1 = "{:." + str(decimal_value) + "f}".format(total_year_1)
-            total_year_2 = "{:." + str(decimal_value) + "f}".format(total_year_2)
-            total_tax = "{:." + str(decimal_value) + "f}".format(total_tax)
-            total_extended_price = "{:." + str(decimal_value) + "f}".format(total_extended_price)
-            total_model_price = "{:." + str(decimal_value) + "f}".format(total_model_price)
-            total_bd_price = "{:." + str(decimal_value) + "f}".format(total_bd_price)
+    # if get_curr:
+    #     get_decimal_place = Sql.GetFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
+    #     if get_decimal_place:
+    #         decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
+    #         total_cost = "{:." + str(decimal_value) + "f}".format(total_cost)
+    #         total_target_price = "{:." + str(decimal_value) + "f}".format(total_target_price)
+    #         total_ceiling_price = "{:." + str(decimal_value) + "f}".format(total_ceiling_price)
+    #         total_sls_discount_price = "{:." + str(decimal_value) + "f}".format(total_sls_discount_price)
+    #         total_sales_price = "{:." + str(decimal_value) + "f}".format(total_sales_price)
+    #         total_year_1 = "{:." + str(decimal_value) + "f}".format(total_year_1)
+    #         total_year_2 = "{:." + str(decimal_value) + "f}".format(total_year_2)
+    #         total_tax = "{:." + str(decimal_value) + "f}".format(total_tax)
+    #         total_extended_price = "{:." + str(decimal_value) + "f}".format(total_extended_price)
+    #         total_model_price = "{:." + str(decimal_value) + "f}".format(total_model_price)
+    #         total_bd_price = "{:." + str(decimal_value) + "f}".format(total_bd_price)
 
 
     Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
