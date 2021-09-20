@@ -246,7 +246,7 @@ def GSCONTLOOKUPPOPUP(
     else:
         sec_str += (
             '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
-            + str(eval("Header_Obj.LABEL")).upper()
+            + str(eval(Header_Obj.LABEL)).upper()
             + " LOOKUP LIST"
             + '<button type="button" style="float:right;" class="close"  data-dismiss= "modal">X</button></div>'
         )
