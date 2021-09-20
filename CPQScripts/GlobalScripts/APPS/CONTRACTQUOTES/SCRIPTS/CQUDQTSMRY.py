@@ -310,15 +310,16 @@ class ContractQuoteSummaryUpdate:
         Percentage = '%'
         Quote.GetCustomField('DISCOUNT').Content = "-"+str(self.discount)+ " " + Percentage
         ##controlling decimal based on currency
-        # if quote_currency:
-        #     get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
-        #     if get_decimal_place:
-        #         decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
+        if quote_currency:
+            get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
+            if get_decimal_place:
+                decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
+                formatting_string = "{0:." + str(decimal_value) + "f}"
                 
-        #         total_net_price = "{:." + str(decimal_value) + "f}".format(total_net_price)
-        #         total_year_1 = "{:." + str(decimal_value) + "f}".format(total_year_1)
-        #         total_year_2 = "{:." + str(decimal_value) + "f}".format(total_year_2)
-        #         total_net_value = "{:." + str(decimal_value) + "f}".format(total_net_value)
+                total_net_price =formatting_string.format(total_net_price)
+                total_year_1 =formatting_string.format(total_year_1)
+                total_year_2 =formatting_string.format(total_year_2)
+                total_net_value =formatting_string.format(total_net_value)
         #discount_value = Quote.GetCustomField('DISCOUNT').Content
         #Trace.Write("discount"+str(discount_value))
         Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
