@@ -437,7 +437,7 @@ for tab in Product.Tabs:
                                         )
                                         Trace.Write("99999888"+str(flag))    
                                         if TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
-                                            flag = 'false'
+                                            flag = 'False'
                                         if iskey is not None and flag == "True": 
                                             Trace.Write("99999")                                           
                                             col_name = (iskey.API_NAME).strip()                                                                                                                                    
