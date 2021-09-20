@@ -60,7 +60,7 @@ try:
 		
 		SAQSCO_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT A.QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,B.SALESORG_ID,C.REGION,A.QTEREV_ID INTO "+str(SAQSCO)+" from SAQSCO(NOLOCK) A JOIN SAQTRV B(NOLOCK) ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID JOIN SASORG C(NOLOCK) ON B.SALESORG_ID = C.SALESORG_ID WHERE A.QUOTE_ID = ''"+str(Qt_id)+"'' AND A.QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' )  ' ")
 		
-		Sql = SqlHelper.GetFirst("sp_executesql @T=N'select * into "+str(SAQSAE)+" from  SAQSAE(nolock)a WHERE quote_id = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' '")
+		Sql = SqlHelper.GetFirst("sp_executesql @T=N'select quote_ID,equipment_id,assembly_id,service_id,ENTITLEMENT_XML into "+str(SAQSAE)+" from  SAQSAE(nolock)a WHERE quote_id = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' '")
 
 		"""
 		start = 1
@@ -295,6 +295,9 @@ try:
 
 			copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail8)
+			
+			copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail9)
 
 			# Send the message
 			mailClient.Send(msg)		
@@ -359,6 +362,9 @@ try:
 
 			copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail8)
+			
+			copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail9)
 			
 			# Send the message
 			mailClient.Send(msg)
