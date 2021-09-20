@@ -578,11 +578,7 @@ for tab in Product.Tabs:
                                                         ##CPQ Attribute name ends
                                                         tableInfo = Sql.GetTable(TABLE_NAME)                                                        
                                                         tableInfo.AddRow(row)
-                                                        Trace.Write("OBJ_J "+str(TABLE_NAME))
-                                                        if TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
-                                                            pass
-                                                        else:
-                                                            Sql.Upsert(tableInfo)
+                                                        Sql.Upsert(tableInfo)
                                                         
                                                         
                                                     Product.Attributes.GetByName(str(RECORD_ID)).Allowed = True
