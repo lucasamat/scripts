@@ -4736,7 +4736,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		self.node_id = ""		
 	
 	def _create(self):
-		
+		Trace.Write('4739---------------')
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
