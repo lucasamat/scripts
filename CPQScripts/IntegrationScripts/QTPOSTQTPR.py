@@ -508,12 +508,22 @@ try:
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQITM SET PRICING_STATUS=''ERROR'' FROM SAQITM (NOLOCK) WHERE QUOTE_ITEM_RECORD_ID IN (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO_INBOUND(NOLOCK)A JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID= B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' AND PRICING_STATUS=''ERROR'') '")
+					+ "  SAQITM SET PRICING_STATUS=''ERROR'' FROM SAQITM (NOLOCK) WHERE QUOTE_ITEM_RECORD_ID IN (SELECT DISTINCT QTEITM_RECORD_ID FROM SAQICO_INBOUND(NOLOCK)A JOIN SAQICO B(NOLOCK) ON A.QUOTE_ID= B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' AND B.STATUS=''ERROR'') '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(
+						""
+					+ str(Parameter1.QUERY_CRITERIA_1)
+					+ "  SAQTRV SET REVISION_STATUS=''ON HOLD - COSTING'' FROM SAQTRV A(NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,QTEREV_ID FROM SAQICO B(NOLOCK)  WHERE  STATUS=''ERROR'' AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'')B ON A.QUOTE_ID = B.QUOTE_ID AND A.QTEREV_ID = B.QTEREV_ID '")
+					
+					primaryQueryItems = SqlHelper.GetFirst(
+						""
+					+ str(Parameter1.QUERY_CRITERIA_1)
+					+ "  SAQTRV SET REVISION_STATUS=''APPROVAL PENDING'' FROM SAQTRV A(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND NOT EXISTS (SELECT ''X'' FROM SAQICO B(NOLOCK)  WHERE  STATUS=''ERROR'' AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'') '")
 					
 					"""primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
-					+ "  SAQICO SET STATUS=''ON HOLD - PRICING'' FROM SAQICO (NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''AVAILABLE'' AND EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' ) )SAQICO_INBOUND ON SAQICO.QUOTE_ID = SAQICO_INBOUND.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICO_INBOUND.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SAQICO_INBOUND.EQUIPMENT_ID AND SAQICO.QTEREV_ID = SAQICO_INBOUND.REVISION_ID '")
+					+ "  SAQICO SET STATUS=''ON HOLD - PRICING'' FROM SAQICO (NOLOCK) JOIN (SELECT DISTINCT QUOTE_ID,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''AVAILABLE'' AND EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQICO_INBOUND(NOLOCK)  WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' AND ISNULL(COST_MODULE_AVAILABLE,'''')=''UNAVAILABLE'' ) )SAQICO_INBOUND ON SAQICO.QUOTE_ID = SAQICO_INBOUND.QUOTE_ID AND SAQICO.SERVICE_ID = SAQICO_INBOUND.SERVICE_ID AND SAQICO.EQUIPMENT_ID = SQICO_INBOUND.EQUIPMENT_ID AND SAQICO.QTEREV_ID = SAQICO_INBOUND.REVISION_ID '")
 					
 					primaryQueryItems = SqlHelper.GetFirst(
 						""
@@ -698,6 +708,9 @@ try:
 
 							copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
 							msg.CC.Add(copyEmail8)
+							
+							copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
+							msg.CC.Add(copyEmail9)
 
 							# Bcc Emails	
 							if len(UserEmail) > 0:
@@ -707,11 +720,7 @@ try:
 
 							# Send the message QT_REC_ID
 							mailClient.Send(msg)
-					##opening quote for update quote items
-					try:
-						quote_Edit = QuoteHelper.Edit(Qt_Id.QUOTE_ID)
-					except:
-						Log.Info("quote error")
+
 					CallingCQIFWUDQTM = ScriptExecutor.ExecuteGlobal("CQIFWUDQTM",{"QT_REC_ID":Qt_Id.QUOTE_ID})	
 					# Billing matrix async call
 					LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
@@ -828,9 +837,9 @@ try:
 
 						copyEmail2 = MailAddress("siva.subramani@bostonharborconsulting.com")
 						msg.CC.Add(copyEmail2)
-
-
-
+						
+						copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
+						msg.CC.Add(copyEmail9)
 
 						# Send the message
 						mailClient.Send(msg)
@@ -897,6 +906,9 @@ except:
 
 	copyEmail2 = MailAddress("siva.subramani@bostonharborconsulting.com")
 	msg.CC.Add(copyEmail2)
+	
+	copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
+	msg.CC.Add(copyEmail9)
 	
 	# Send the message
 	mailClient.Send(msg) 
