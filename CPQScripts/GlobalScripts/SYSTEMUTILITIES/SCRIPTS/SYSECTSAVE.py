@@ -558,7 +558,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														TreeParentParam=TreeParentParam
 														))
 						c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(NET_PRICE_INGL_CURR) AS SUM_PRICE_INGL_CURR, SUM(YEAR_1) AS YEAR1, SUM(YEAR_1_INGL_CURR) AS YEAR1_INGL_CURR, SUM(YEAR_2) AS YEAR2,SUM(YEAR_2_INGL_CURR) AS YEAR2_INGL_CURR, SUM(YEAR_3) AS YEAR3, SUM(YEAR_3_INGL_CURR) AS YEAR3_INGL_CURR, SUM(YEAR_4) AS YEAR4, SUM(YEAR_4_INGL_CURR) AS YEAR4_INGL_CURR, SUM(YEAR_5) AS YEAR5, SUM(YEAR_5_INGL_CURR) AS YEAR5_INGL_CURR FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'  AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,TreeSuperParentParam.split("-")[1].strip(),TreeParam,TreeParentParam,quote_revision_record_id))
+						
 						Sql.RunQuery("UPDATE SAQIGB SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_PRICE_INGL_CURR = '{}',YEAR_1_INGL_CURR = {y1_gl},YEAR_2_INGL_CURR = {y2_gl},YEAR_3_INGL_CURR={y3_gl},YEAR_4_INGL_CURR={y4_gl},YEAR_5_INGL_CURR = {y5_gl}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = '{TreeParentParam}'".format(float(c.SUM_PRICE),float(c.SUM_PRICE_INGL_CURR),contract_quote_record_id,TreeSuperParentParam.split("-")[1].strip(),TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,y1_gl=c.YEAR1_INGL_CURR,y2_gl=c.YEAR2_INGL_CURR,y3_gl=c.YEAR3_INGL_CURR,y4_gl=c.YEAR4_INGL_CURR,y5_gl=c.YEAR5_INGL_CURR,quote_revision_record_id=quote_revision_record_id,TreeParentParam=TreeParentParam))
+						
 						Sql.RunQuery("""UPDATE SAQITM
 											SET 
 											NET_VALUE = IQ.NET_VALUE,
@@ -569,7 +571,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
-											DISCOUNT = '{plus}{Discount}'					
+											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
@@ -587,6 +589,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
 											WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
 											Discount=VALUE,plus="+",TreeParam=TreeParam,TreeParentParam=TreeParentParam))
+						
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
@@ -595,9 +598,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						items_data = {}
 
 						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						
 						if items_obj:
 							for item_obj in items_obj:
 								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+						
 						for item in Quote.MainItems:
 							item_number = int(item.RolledUpQuoteItem)
 							if item_number in items_data.keys():
