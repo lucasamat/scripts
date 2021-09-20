@@ -309,6 +309,14 @@ class ContractQuoteSummaryUpdate:
         ##Added the percentage symbol for discount custom field...
         Percentage = '%'
         Quote.GetCustomField('DISCOUNT').Content = "-"+str(self.discount)+ " " + Percentage
+        ##controlling decimal based on currency
+        if quote_currency:
+            get_decimal_place = Sql.GerFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
+            if get_decimal_place:
+                total_net_price = "{0:.2f}".format(total_net_price)
+                total_year_1 = "{0:.2f}".format(total_year_1)
+                total_year_2 = "{0:.2f}".format(total_year_2)
+                total_net_value = "{0:.2f}".format(total_net_value)
         #discount_value = Quote.GetCustomField('DISCOUNT').Content
         #Trace.Write("discount"+str(discount_value))
         Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
@@ -319,12 +327,12 @@ class ContractQuoteSummaryUpdate:
 
 discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
-if "+" in discount:
-    discount = str(discount).replace("+","").replace("%","").strip()
-    Trace.Write("DISCOUNT="+str(discount))
-    summary_obj.CalculatePlusDiscount()
-elif "-" in discount:
+
+if "-" in discount:
     discount = str(discount).replace("-","").strip()
     summary_obj.CalculateMinusDiscount()
 else:
-    summary_obj.update_summary()
+    discount = str(discount).replace("+","").replace("%","").strip()
+    Trace.Write("DISCOUNT="+str(discount))
+    summary_obj.CalculatePlusDiscount()
+#     summary_obj.update_summary()
