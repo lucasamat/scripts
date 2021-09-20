@@ -5560,7 +5560,10 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_bd_margin += item.BD_PRICE_MARGIN.Value
 					total_bd_price += item.BD_PRICE.Value
 					total_sales_price += item.NET_PRICE.Value
-					total_model_price += item.MODEL_PRICE.Value
+					if item.MODEL_PRICE.Value:
+						total_model_price += item.MODEL_PRICE.Value
+					else:
+						total_model_price +=0.00
 					item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
 					total_yoy += item.YEAR_OVER_YEAR.Value
 					item.YEAR_1.Value = item_data.get('YEAR_1')
