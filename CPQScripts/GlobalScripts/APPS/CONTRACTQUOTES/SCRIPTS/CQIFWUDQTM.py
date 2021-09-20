@@ -103,6 +103,7 @@ try:
 except:
     Qt_id = ""
 
- 
-calling_function = quoteiteminsert(Qt_id)
-
+try:
+    calling_function = quoteiteminsert(Qt_id)
+except Exception as e:
+    Log.Info('pricing error-'+str(e))
