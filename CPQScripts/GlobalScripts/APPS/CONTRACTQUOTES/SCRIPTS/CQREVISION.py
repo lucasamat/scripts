@@ -279,6 +279,9 @@ def set_active_revision(Opertion,cartrev):
 		UPDATEACTIVE = SqlHelper.GetFirst("sp_executesql @t=N'update CART set ACTIVE_REV =''1'' where CART_ID = ''"+str(gtcart_idval)+"'' and USERID =''"+str(User.Id)+"'' '")
 		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
 		##assigning active revision custom field value
+		
+		time.sleep( 5 )
+		Quote.RefreshActions()
 		get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(QuoteRecordId, get_rev_info_details.CART_ID, Quote.UserId ))
 		cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
 		if get_act_rev_custom_val:
@@ -288,9 +291,7 @@ def set_active_revision(Opertion,cartrev):
 				val = str(val[0][:-1].split(':')[1].strip() )
 				Trace.Write('res-'+str(val) )
 				Quote.GetCustomField(i).Content = val
-				
-		time.sleep( 5 )
-		Quote.RefreshActions()		
+						
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
