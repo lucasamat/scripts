@@ -6047,6 +6047,23 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.NET_VALUE.Value	
 					item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
+		##controlling decimal based on currency
+		if get_curr:
+			get_decimal_place = Sql.GerFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
+			if get_decimal_place:
+				decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
+				total_cost = "{:." + str(decimal_value) + "f}".format(total_cost)
+				total_target_price = "{:." + str(decimal_value) + "f}".format(total_target_price)
+				total_ceiling_price = "{:." + str(decimal_value) + "f}".format(total_ceiling_price)
+				total_sls_discount_price = "{:." + str(decimal_value) + "f}".format(total_sls_discount_price)
+				total_sales_price = "{:." + str(decimal_value) + "f}".format(total_sales_price)
+				total_year_1 = "{:." + str(decimal_value) + "f}".format(total_year_1)
+				total_year_2 = "{:." + str(decimal_value) + "f}".format(total_year_2)
+				total_tax = "{:." + str(decimal_value) + "f}".format(total_tax)
+				total_extended_price = "{:." + str(decimal_value) + "f}".format(total_extended_price)
+				total_model_price = "{:." + str(decimal_value) + "f}".format(total_model_price)
+				total_bd_price = "{:." + str(decimal_value) + "f}".format(total_bd_price)
+		
 		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
 		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
 		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
