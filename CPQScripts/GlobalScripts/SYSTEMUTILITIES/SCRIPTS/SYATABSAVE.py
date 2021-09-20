@@ -1018,11 +1018,12 @@ for tab in Product.Tabs:
                                         if str(tab_name) not in ("Tab","Page","Object","Variable","Script","Email Template","Role","Currency"):
                                             row[col_name] = str(col_name)
                                         unique_val = row[col_name]
+
                                         if (
                                                 unique_val is not None
                                                 and unique_val != ""
                                                 or Product.Attributes.GetByName("QSTN_SYSEFL_MA_00387") != ""
-                                                and not None
+                                                and not None and len(row['APRCHN_ID']) < 8:
                                             ):
 
                                                 REC_OBJ = Sql.GetFirst(
