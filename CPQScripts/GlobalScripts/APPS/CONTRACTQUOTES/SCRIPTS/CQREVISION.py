@@ -230,8 +230,19 @@ def create_new_revision(Opertion,cartrev):
 		Quote.RefreshActions()
 		for item in Quote.MainItems:
 			item.Delete()
-		Quote.GetCustomField('TOTAL_COST').Content = ''
-		Quote.GetCustomField('TOTAL_NET_PRICE').Content =''
+		## making the quote summary custom field empty
+		Quote.GetCustomField('TARGET_PRICE').Content = '' 
+		Quote.GetCustomField('CEILING_PRICE').Content = ''
+		Quote.GetCustomField('TOTAL_COST').Content = '' 
+		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = ''
+		Quote.GetCustomField('BD_PRICE_MARGIN').Content = ''
+		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = ''
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content = ''
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
+		Quote.GetCustomField('YEAR_1').Content = '' 
+		Quote.GetCustomField('YEAR_2').Content = '' 
+		Quote.GetCustomField('TAX').Content = '' 
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = '' 
 		Quote.Save()
 		#Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
