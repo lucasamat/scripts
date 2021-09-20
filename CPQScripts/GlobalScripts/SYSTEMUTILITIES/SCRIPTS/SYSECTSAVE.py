@@ -616,7 +616,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									total_year_1 += item.YEAR_1.Value
 									item.YEAR_2.Value = item_data.get('YEAR_2')
 									total_year_2 += item.YEAR_2.Value        
-									item.DISCOUNT.Value = "+"+str(VALUE)
+									item.DISCOUNT.Value = str(VALUE)
 						##Added the percentage symbol for discount custom field...
 						Percentage = '%'
 						Quote.GetCustomField('DISCOUNT').Content = "+"+str(VALUE)+ " " + Percentage
