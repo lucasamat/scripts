@@ -282,7 +282,7 @@ class ContractQuoteCrudOpertion:
 		#s=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
 		if remaining_months < 0:
 			divide_by = 12 + remaining_months
-		Trace.Write('272-----272-----')
+		Trace.Write('272-----272-----'+str(service_id))
 		
 		Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
