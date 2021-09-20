@@ -242,7 +242,9 @@ def create_new_revision(Opertion,cartrev):
 		Quote.GetCustomField('YEAR_1').Content = '' 
 		Quote.GetCustomField('YEAR_2').Content = '' 
 		Quote.GetCustomField('TAX').Content = '' 
-		Quote.GetCustomField('TOTAL_NET_VALUE').Content = '' 
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
+		Quote.GetCustomField('MODEL_PRICE').Content = ''
+		Quote.GetCustomField('BD_PRICE').Content = ''
 		Quote.Save()
 		#Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
@@ -275,7 +277,17 @@ def set_active_revision(Opertion,cartrev):
 		GETCARTID=SqlHelper.GetFirst("sp_executesql @t = N'update CART set ACTIVE_REV =''0'' WHERE CART_ID in (select distinct top 10 CART_REVISIONS.CART_ID as ID from CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId AND CART_REVISIONS.VISITOR_ID = CART2.OwnerId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId and CART.USERID = CART2.OwnerId WHERE CART2.CartCompositeNumber = ''"+ str(Quote.CompositeNumber)+ "'') '")
 		UPDATEACTIVE = SqlHelper.GetFirst("sp_executesql @t=N'update CART set ACTIVE_REV =''1'' where CART_ID = ''"+str(gtcart_idval)+"'' and USERID =''"+str(User.Id)+"'' '")
 		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
-		
+		##assigning active revision custom field value
+		get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(QuoteRecordId, get_rev_info_details.CART_ID, Quote.UserId ))
+		cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE']
+		if get_act_rev_custom_val:
+			for i in cust_list:
+				#a = "TOTAL_COST:0.0 USD,TOTAL_NET_PRICE:0.0 USD,DISCOUNT:60 %25,"
+				val = re.findall(r''+i+':[\w\W]*?,', get_act_rev_custom_val.globals)
+				val = str(val[0][:-1].split(':')[1].strip() )
+				Trace.Write('res-'+str(val) )
+				Quote.GetCustomField(i).Content = val
+				
 		time.sleep( 5 )
 		Quote.RefreshActions()		
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
