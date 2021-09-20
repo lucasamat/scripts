@@ -4747,7 +4747,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 					start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 					billing_day = int(val.BILLING_DAY)
 					get_service_val = val.SERVICE_ID
-					Trace.Write('get_service_val---4750--'=str(get_service_val))
+					Trace.Write('get_service_val---4750--'+str(get_service_val))
 					if billing_day in (29,30,31):
 						if start_date.month == 2:
 							isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
