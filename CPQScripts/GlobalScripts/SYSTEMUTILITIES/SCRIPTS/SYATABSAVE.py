@@ -576,7 +576,7 @@ for tab in Product.Tabs:
                                                         ##CPQ Attribute name ends
                                                         tableInfo = Sql.GetTable(TABLE_NAME)                                                        
                                                         tableInfo.AddRow(row)
-                                                        
+                                                        Trace.Write("OBJ_J "+str(Obj_Name))
                                                         Sql.Upsert(tableInfo)
                                                         
                                                         
@@ -711,6 +711,8 @@ for tab in Product.Tabs:
                                                     ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' are required fields </label></div></div></div>".format(
                                                         sectalert
                                                     )
+                                                elif "Approval Chain ID" in str(Field_Labels):
+                                                    Trace.Write("Comming inside length check")
 
                                                 else:
                                                     Product.Attributes.GetByName(
