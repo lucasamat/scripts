@@ -144,7 +144,7 @@ class ContractQuoteSummaryUpdate:
                                         NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
                                         YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
                                         YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-                                        DISCOUNT = '{plus}{Discount}'
+                                        DISCOUNT = '{Discount}'
                                     FROM SAQICO (NOLOCK)                                     
                                     WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
                                         QuoteRecordId=self.contract_quote_record_id,
@@ -171,7 +171,7 @@ class ContractQuoteSummaryUpdate:
                             YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
                             YEAR_2 = IQ.YEAR_2,
                             YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
-                            DISCOUNT = '{plus}{Discount}'					
+                            DISCOUNT = '{Discount}'					
                             FROM SAQITM (NOLOCK)
                             INNER JOIN (SELECT SAQITM.CpqTableEntryId,
                                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
@@ -213,7 +213,7 @@ class ContractQuoteSummaryUpdate:
                     total_year_1 += item.YEAR_1.Value
                     item.YEAR_2.Value = item_data.get('YEAR_2')
                     total_year_2 += item.YEAR_2.Value        
-                    item.DISCOUNT.Value = "+"+str(self.discount)
+                    item.DISCOUNT.Value = str(self.discount)
         ##Added the percentage symbol for discount custom field...
         Percentage = '%'
         Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
