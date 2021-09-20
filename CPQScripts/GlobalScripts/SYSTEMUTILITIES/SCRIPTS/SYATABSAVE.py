@@ -576,7 +576,7 @@ for tab in Product.Tabs:
                                                         ##CPQ Attribute name ends
                                                         tableInfo = Sql.GetTable(TABLE_NAME)                                                        
                                                         tableInfo.AddRow(row)
-                                                        Trace.Write("OBJ_J "+str(Obj_Name))
+                                                        Trace.Write("OBJ_J "+str(TABLE_NAME))
                                                         Sql.Upsert(tableInfo)
                                                         
                                                         
