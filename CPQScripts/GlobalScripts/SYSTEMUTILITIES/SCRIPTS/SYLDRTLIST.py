@@ -6023,6 +6023,7 @@ class SYLDRTLIST:
                             + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
                         )
                     elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
+                        Trace.Write('6026-------------')
                         Qury_str = ("select DISTINCT TOP "
                             + str(PerPage)
                             + " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
@@ -6032,8 +6033,17 @@ class SYLDRTLIST:
                             + str(Page_End)
                             + ""
                         )
+                        # Qury_str = ("select DISTINCT TOP "
+                        #     + str(PerPage)
+                        #     + " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
+                        #     + str(contract_quote_record_id) + "' ) m where m.ROW BETWEEN "
+                        #     + str(Page_start)
+                        #     + " and "
+                        #     + str(Page_End)
+                        #     + ""
+                        # )
                         QuryCount_str = (
-                            "SELECT COUNT(CpqTableEntryId) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
+                            "SELECT COUNT(QUOTE_REVISION_RECORD_ID) AS cnt FROM SAQTRV (nolock) WHERE QUOTE_RECORD_ID = '"
                             + str(contract_quote_record_id)
                             + "'"
                         )
