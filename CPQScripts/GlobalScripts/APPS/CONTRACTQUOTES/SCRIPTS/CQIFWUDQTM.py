@@ -18,7 +18,7 @@ ScriptExecutor = ScriptExecutor
 #Log.Info('quote_revision_record_id- '+str(quote_revision_record_id))
 def quoteiteminsert(Qt_id):
     #quote_number = Qt_id[2:12]
-    #Log.Info('quote_id---'+str(Qt_id))
+    Log.Info('quote_id---'+str(Qt_id))
     quote_Edit = QuoteHelper.Edit(Qt_id)
     #get_curr = str(Quote.GetCustomField('Currency').Content)
     total_cost = 0.00
@@ -78,7 +78,7 @@ def quoteiteminsert(Qt_id):
                 item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
      
 
-                #Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
+                Log.Info('SALES_DISCOUNT_PRICE--'+str(item.SALES_DISCOUNT_PRICE.Value))
     ##controlling decimal based on currency
     if get_curr:
         get_decimal_place = Sql.GetFirst("SELECT * FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
