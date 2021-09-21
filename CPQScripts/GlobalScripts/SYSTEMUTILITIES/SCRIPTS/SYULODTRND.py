@@ -3646,7 +3646,7 @@ def EntitlementTreeViewHTMLDetail(
 								if attrValue == "DefaultValue":
 									attrValue = ''
 								sec_str1 += (
-									'<input class="form-control remove_yellow'+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
+									'<input class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
