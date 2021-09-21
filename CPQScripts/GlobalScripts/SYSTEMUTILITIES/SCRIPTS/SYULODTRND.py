@@ -2535,6 +2535,7 @@ def EntitlementTreeViewHTMLDetail(
 		# where = ""
 		Trace.Write("Fullresponse_J "+str(Fullresponse))
 		Product.SetGlobal('Fullresponse_load',str(Fullresponse))
+		#Product.SetGlobal('Fullresponse',str(Fullresponse_load))
 		for rootattribute, rootvalue in Fullresponse.items():
 			if rootattribute == "rootItem":
 				for Productattribute, Productvalue in rootvalue.items():
