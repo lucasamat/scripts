@@ -3579,21 +3579,21 @@ def EntitlementTreeViewHTMLDetail(
 											)
 									try:
 										sec_str1 += (
-												'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 												+ str(attrSysId)
 												+ '" type="text"  data-content ="'
 												+ str(attrSysId)
-												+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >'
+												+ ' onchange="editent_bt(this)" '+str(selected_option)+'  >'
 												+ str(VAR1)
 												+ "</select>"
 											)
 									except:		
 										sec_str1 += (
-											'<select class="form-control remove_yellow" style ="'+str(add_style)+'" id = "'
+											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 											+ str(attrSysId)
 											+ '" type="text"  data-content ="'
 											+ str(attrSysId)
-											+ '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+											+ 'onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
 										)
 
 								
@@ -3634,7 +3634,7 @@ def EntitlementTreeViewHTMLDetail(
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ '" class="form-control" onchange="editent_bt(this)" >'
+									+ ' onchange="editent_bt(this)" >'
 									+ str(VAR1)
 									+ "</select>"
 								)
@@ -3646,7 +3646,7 @@ def EntitlementTreeViewHTMLDetail(
 								if attrValue == "DefaultValue":
 									attrValue = ''
 								sec_str1 += (
-									'<input class="form-control '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
+									'<input class="form-control remove_yellow'+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
