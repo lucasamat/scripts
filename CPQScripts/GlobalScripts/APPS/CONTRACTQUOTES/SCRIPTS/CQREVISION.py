@@ -278,10 +278,10 @@ def set_active_revision(Opertion,cartrev):
 		GETCARTID=SqlHelper.GetFirst("sp_executesql @t = N'update CART set ACTIVE_REV =''0'' WHERE CART_ID in (select distinct top 10 CART_REVISIONS.CART_ID as ID from CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId AND CART_REVISIONS.VISITOR_ID = CART2.OwnerId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId and CART.USERID = CART2.OwnerId WHERE CART2.CartCompositeNumber = ''"+ str(Quote.CompositeNumber)+ "'') '")
 		UPDATEACTIVE = SqlHelper.GetFirst("sp_executesql @t=N'update CART set ACTIVE_REV =''1'' where CART_ID = ''"+str(gtcart_idval)+"'' and USERID =''"+str(User.Id)+"'' '")
 		NRev = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
-		##assigning active revision custom field value
 		
 		time.sleep( 5 )
 		Quote.RefreshActions()
+		##assigning active revision custom field value
 		get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(quote_contract_recordId, get_rev_info_details.CART_ID, Quote.UserId ))
 		cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
 		if get_act_rev_custom_val:
