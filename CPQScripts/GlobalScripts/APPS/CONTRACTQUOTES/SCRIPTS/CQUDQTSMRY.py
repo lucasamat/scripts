@@ -223,7 +223,7 @@ class ContractQuoteSummaryUpdate:
             WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
             GROUP BY LINE_ITEM_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,GREENBOOK_RECORD_ID,SERVICE_ID,FABLOCATION_RECORD_ID)IQ
             ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID  AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID
-            WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIGB.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=QuoteRecordId,RevisionRecordId=RevisionRecordId,Discount=self.discount))
+            WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIGB.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,Discount=self.discount))
         Sql.RunQuery("""UPDATE SAQITM
                             SET 
                             NET_VALUE = IQ.NET_VALUE,
