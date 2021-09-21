@@ -173,7 +173,7 @@ class ContractQuoteSummaryUpdate:
             YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
             DISCOUNT = '{Discount}'					
             FROM SAQICO (NOLOCK)
-            INNER JOIN (SELECT FABLOCATION_ID,
+            INNER JOIN (SELECT FABLOCATION_ID, SERVICE_ID,QTEREV_RECORD_ID,QUOTE_RECORD_ID,
                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
