@@ -186,7 +186,7 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 
 
-			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME )  select ''"+str(Final_json)+ "'',''Hadoop_test2'' ' ")	
+			#primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME )  select ''"+str(Final_json)+ "'',''Hadoop_test2'' ' ")	
 
 			Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
 			#Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
