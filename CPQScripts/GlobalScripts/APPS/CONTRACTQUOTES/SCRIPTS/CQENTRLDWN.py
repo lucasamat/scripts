@@ -1358,38 +1358,40 @@ try:
 			#Log.Info('452---SAQICO-where_condition---'+str(where_condition))
 			update_entitlement_price_impact(where_condition)
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start		
-	if (get_serviceid == 'Z0091'):
-		Log.Info('where-get_serviceid--'+str(get_serviceid))
-		Log.Info('where-where--'+str(where_condition))
-		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
-		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
-		getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
-		getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
-		##Greenbook level
-		QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
-		QueryStatement = QueryStatement.replace("'", "''")
-		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
-		##Equipment level
-		QueryStatement = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
-		QueryStatement = QueryStatement.replace("'", "''")
-		a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")	
-		##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 ends	
-			
-			# update_query = """ UPDATE TGT 
-			# 	SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
-			# 	TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
-			# 	TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
-			# 	TGT.CpqTableEntryModifiedBy = {},
-			# 	TGT.CpqTableEntryDateModified = '{}'
-			# 	{}
-			# 	FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-			# 	ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
-			#Log.Info("ENTITLEMENT IFLOW-548-------update_query-------------- "+str(update_query))
-			#Sql.RunQuery(update_query)
-			#Log.Info("ENTITLEMENT IFLOW--update_query1-- "+str(update_query1))
-			
-			#update SAQICO after reprice based on entitlement 
-	
+	try:
+		if (get_serviceid == 'Z0091'):
+			Log.Info('where-get_serviceid--'+str(get_serviceid))
+			Log.Info('where-where--'+str(where_condition))
+			getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
+			getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
+			getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+			getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
+			##Greenbook level
+			QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
+			QueryStatement = QueryStatement.replace("'", "''")
+			a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")
+			##Equipment level
+			QueryStatement = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
+			QueryStatement = QueryStatement.replace("'", "''")
+			a = SqlHelper.GetFirst("sp_executesql @statement = N'"+str(QueryStatement)+"'")	
+			##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 ends	
+				
+				# update_query = """ UPDATE TGT 
+				# 	SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+				# 	TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+				# 	TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+				# 	TGT.CpqTableEntryModifiedBy = {},
+				# 	TGT.CpqTableEntryDateModified = '{}'
+				# 	{}
+				# 	FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+				# 	ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userId,datetimenow,update_field_str,objectName,obj,join,where)
+				#Log.Info("ENTITLEMENT IFLOW-548-------update_query-------------- "+str(update_query))
+				#Sql.RunQuery(update_query)
+				#Log.Info("ENTITLEMENT IFLOW--update_query1-- "+str(update_query1))
+				
+				#update SAQICO after reprice based on entitlement 
+	except:
+		Log.Info('value driver error')
 	sendEmail(level)
 
 except Exception as e:
