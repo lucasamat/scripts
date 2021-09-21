@@ -2492,8 +2492,6 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 			userselecteddrive.append(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)
 			if selecter.VALUEDRIVER_COEFFICIENT:
 				userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
-			else:
-				userselectedeffi.append(selecter.VALUEDRIVER_COEFFICIENT)
 		
 		for qstns in GetDRIVNAME:
 			if qstn.EDITABLE:
