@@ -3129,9 +3129,14 @@ class approvalCenter:
 					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = quote_record_id))
 				self.QuoteNumber = approval_queue_obj.APPROVAL_RECORD_ID
 		else:
-			TransactionId = self.QuoteNumber
-			transaction_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPTX where APPROVAL_TRANSACTION_RECORD_ID = '{TransactionId}'".format(TransactionId = TransactionId))
-			self.QuoteNumber = transaction_obj.APPROVAL_RECORD_ID
+			try:
+				TransactionId = self.QuoteNumber
+				transaction_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPTX where APPROVAL_TRANSACTION_RECORD_ID = '{TransactionId}'".format(TransactionId = TransactionId))
+				self.QuoteNumber = transaction_obj.APPROVAL_RECORD_ID
+			except:
+				Trace.Write("EXCEPT: TransactionId and QuoteNumber")
+				TransactionId = ''
+				self.QuoteNumber = ''
 		   #current_chain_step = approval_queue_obj.CUR_APRCHNSTP
 		try:
 			TreeParam = AllParams.get("TreeParam")
