@@ -680,7 +680,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 										)    
 						Sql.RunQuery("""UPDATE SAQICO SET 
 														NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
-														NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0)
+														NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0),
+														DISCOUNT_AMOUNT_INGL_CURR = TARGET_PRICE_INGL_CURR - NET_PRICE_INGL_CURR 
 													FROM SAQICO (NOLOCK)                                     
 													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
 														QuoteRecordId=contract_quote_record_id,
