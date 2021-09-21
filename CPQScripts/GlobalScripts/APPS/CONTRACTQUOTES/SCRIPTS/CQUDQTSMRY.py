@@ -173,7 +173,7 @@ class ContractQuoteSummaryUpdate:
             YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
             DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
             DISCOUNT = '{Discount}'					
-            FROM SAQICO (NOLOCK)
+            FROM  SAQIFL SAQICO (NOLOCK)
             INNER JOIN (SELECT FABLOCATION_ID, SERVICE_ID,QTEREV_RECORD_ID,QUOTE_RECORD_ID,
                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
                         CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
@@ -190,7 +190,7 @@ class ContractQuoteSummaryUpdate:
                         FROM SAQICO (NOLOCK) 
                         WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
                         GROUP BY FABLOCATION_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,LINE_ITEM_ID,SERVICE_ID)IQ
-            ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID 
+            ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.FABLOCATION_ID = IQ.FABLOCATION_ID 
             WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
             Discount=self.discount))
         Sql.RunQuery("""UPDATE SAQIGB
