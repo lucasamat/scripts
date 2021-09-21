@@ -693,7 +693,8 @@ for tab in Product.Tabs:
                                                             sectalert
                                                         )    
                                                 if len(Field_Labels) <= 1:
-                                            Trace.Write('Field_Labels2222======'+str(sectalert))                                                     if sectalert:  
+                                                    Trace.Write('Field_Labels2222======'+str(sectalert))                                                     
+                                                    if sectalert:  
                                                         Product.Attributes.GetByName(
                                                             "SEC_N_TAB_PAGE_ALERT"
                                                         ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
