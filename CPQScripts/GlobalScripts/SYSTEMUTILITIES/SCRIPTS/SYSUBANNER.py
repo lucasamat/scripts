@@ -1266,6 +1266,10 @@ def Related_Sub_Banner(
                         FourthValue = "All"
                         FifthLable = "Equipment"
                         FifthValue = "All"
+                        #status_image = 'config_status_icon.png'
+                        status_image = ''
+                        SixthLable = "Configuration Status"
+                        SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
                     elif covered_obj is not None and (subTabName == "Sending Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):
                         FourthLable = "Sending Equipment"
                         FourthValue = "All"
