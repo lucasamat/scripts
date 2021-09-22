@@ -316,8 +316,6 @@ def Related_Sub_Banner(
                 elif TabName == "Contract":
                     SecondLable = "Product Type"
                 SecondValue = str(TreeParam) 
-                ThirdLable = "Configuration Status"
-                ThirdValue = '<img class="treeinsideicon" src=""/>'
             elif TabName == "Contracts"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "CTCTSV" : 
                 Trace.Write('999---')               
                 PrimaryLable = "Offerings"
