@@ -1098,7 +1098,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 					ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
 				getquote_sales_val = AttributeID_Pass = ''
-				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID")+"'")
+				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get("QUOTE_RECORD_ID"))+"'")
 				if getslaes_value:
 					getquote_sales_val = getslaes_value.SALESORG_ID
 				get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
