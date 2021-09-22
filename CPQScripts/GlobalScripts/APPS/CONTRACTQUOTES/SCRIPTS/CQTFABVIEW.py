@@ -2488,9 +2488,9 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 		)
 		
 		userselecteddrive = []
-		if selecter:
-			userselecteddrive.append(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)
-			if selecter.VALUEDRIVER_COEFFICIENT:
+		if selecter.VALUEDRIVER_COEFFICIENT:
+			if selecter:
+				userselecteddrive.append(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)
 				userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
 		
 		for qstns in GetDRIVNAME:
@@ -2532,6 +2532,7 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 				+ str(VAR1)
 				+ "</select>"
 			)
+		
 		for data in qstn:
 			new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 			new_value_dict["VALUE DRIVER COEFFICIENT"]  = userselectedeffi
