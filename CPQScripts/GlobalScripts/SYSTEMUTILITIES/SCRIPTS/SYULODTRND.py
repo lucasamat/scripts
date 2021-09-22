@@ -3292,7 +3292,7 @@ def EntitlementTreeViewHTMLDetail(
 
 										try:
 											if str(attrName) == "Fab Location":
-												Trace.Write('FAB--DHURGA----')
+												Trace.Write(str(getquote_sales_val)+'----3295---'+str(get_il_sales_list))
 												sec_str1 += (
 												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 												+ str(attrSysId)
@@ -3321,10 +3321,8 @@ def EntitlementTreeViewHTMLDetail(
 											+ str(attrSysId)
 											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
 											)
-											Trace.Write("attrName--DHUrGA "+str(attrName))
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-											#Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
 											sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 											sec_str_faccur += str(val.PRICE_METHOD)
 										elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
