@@ -1097,7 +1097,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 					get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 					ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-
+				getquote_sales_val = AttributeID_Pass = ''
+				getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
+				if getslaes_value:
+					getquote_sales_val = getslaes_value.SALESORG_ID
+				get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+				get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 				if str(attrs) == 'AGS_REL_STDATE' and 'Z0007' in OfferingRow_detail.get("SERVICE_ID"):
 					try:						
 						QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
@@ -1109,6 +1114,15 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				else:
 					ent_disp_val = ent_disp_val
 					ent_val_code = ent_val_code
+				if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location":
+					AttributeID_Pass = attrs
+					if getquote_sales_val in get_il_sales_list:
+						NewValue = 'Israel'
+					else:
+						NewValue = 'ROW'
+				else:
+					AttributeID_Pass =''
+					NewValue = ''
 				if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.get("SERVICE_ID"): 
 					try:						
 						QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
@@ -1166,6 +1180,16 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
+			try:
+				Trace.Write('312---NewValue--'+str(NewValue))
+				Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+				add_where =''
+				ServiceId = OfferingRow_detail.SERVICE_ID
+				whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
+				ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+				result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+			except:
+				Trace.Write('error--296')
 			try:
 				if OfferingRow_detail.get("SERVICE_ID") == 'Z0016':
 					try:
