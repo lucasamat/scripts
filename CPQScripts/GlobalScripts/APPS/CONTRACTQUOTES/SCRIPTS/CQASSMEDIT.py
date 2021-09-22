@@ -218,7 +218,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
         # cpsmatchID = get_equp_xml.CPS_MATCH_ID
         # cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
         try:       
-            Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
+            Trace.Write(str(AttributeID)+"---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
             # webclient = System.Net.WebClient()
             # webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
             # webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
