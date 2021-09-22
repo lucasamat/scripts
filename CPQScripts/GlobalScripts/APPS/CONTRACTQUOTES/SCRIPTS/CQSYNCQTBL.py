@@ -258,7 +258,7 @@ class SyncQuoteAndCustomTables:
 							getquote_sales_val = getslaes_value.SALESORG_ID
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location"
+						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location":
 							AttributeID_Pass = attrs
 							if getquote_sales_val in get_il_sales_list:
 								NewValue = 'Israel'
