@@ -1247,8 +1247,9 @@ def Related_Sub_Banner(
                     PrimaryValue = TreeParam
                     ThirdLable = "Product Offering Type"
                     ThirdValue = TreeParentParam
-                    FourthLable = ""
-                    FourthValue = ""
+                    ##adding configuration status in offering subtab
+                    FourthLable = "Configuration Status"
+                    FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/Secondary config_status_icon.png"/>/>'
                     FifthLable = ""
                     FifthValue = ""
                     if getService is not None:
