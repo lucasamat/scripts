@@ -3321,7 +3321,7 @@ def EntitlementTreeViewHTMLDetail(
 											+ str(attrSysId)
 											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
 											)
-										#Trace.Write("curr = "+str(curr))
+											Trace.Write("attrName--DHUrGA "+str(attrName))
 										
 										if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 											#Trace.Write("@3091-----cost---------->"+str(val.ENTITLEMENT_COST_IMPACT))
