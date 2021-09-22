@@ -211,8 +211,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
     #AttributeID = 'AGS_QUO_QUO_TYP'
     #NewValue = 'Chamber based'
     get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
-    get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
-    if get_equp_xml and get_query:
+    #get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
+    if get_equp_xml:
         #Trace.Write('inside')
         cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
         # cpsmatchID = get_equp_xml.CPS_MATCH_ID
