@@ -51,9 +51,14 @@ class ConfigUpdateScript:
 		elif Param.CurrentTab == "Error Log":
 			self.current_tab_name = "Error Log"	
 		elif Param.CurrentTab == "Variable":
-			self.current_tab_name = "Variable"		
+			self.current_tab_name = "Variable"	
+		elif Param.CurrentTab == "My Approval Queue":
+			self.current_tab_name = "My Approval Queue"
+		elif Param.CurrentTab == "Team Approval Queue":
+			self.current_tab_name = "Team Approval Queue"
 		else:
-			self.current_tab_name = "Contract"
+			self.current_tab_name = Param.CurrentTab
+		Trace.Write("Current_Tab_CHK_J "+str(Param.CurrentTab))
 	def get_obj_name(self):
 		"""TO DO."""
 		CommonTreeParentParam = Product.GetGlobal("CommonTreeParentParam")
@@ -62,13 +67,26 @@ class ConfigUpdateScript:
 
 	def build_query(self, column, obj_name, where_string):
 		"""TO DO."""
-		query_string = """
-				SELECT {Column_Name}
-				FROM {Table_Name} (NOLOCK)
-				WHERE {Where_String}
-				""".format(
-			Column_Name=column, Table_Name=obj_name, Where_String=where_string
-		)
+		##A055S000P01-9370 ,A055S000P01-4191 code starts...
+		if obj_name == "SAQTMT":
+			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME"
+			query_string = """
+					SELECT {Column_Name}
+					FROM {Table_Name} (NOLOCK)
+					INNER JOIN SAQTRV ON  SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID AND SAQTRV.ACTIVE = 1
+					WHERE {Where_String}
+					""".format(
+				Column_Name=column, Table_Name=obj_name, Where_String=where_string
+			)
+		else:
+			query_string = """
+					SELECT {Column_Name}
+					FROM {Table_Name} (NOLOCK)
+					WHERE {Where_String}
+					""".format(
+				Column_Name=column, Table_Name=obj_name, Where_String=where_string
+			)
+		##A055S000P01-9370, A055S000P01-4191  code ends..
 		return query_string
 
 	def get_value_from_obj(self, record_obj, column):
@@ -147,7 +165,6 @@ class ConfigUpdateScript:
 				INNER JOIN SYOBJS (NOLOCK) ON SYOBJS.OBJ_REC_ID = SYSECT.PRIMARY_OBJECT_RECORD_ID
 				WHERE
 					SYOBJS.NAME='Header list' AND
-					SYSECT.SECTION_NAME = 'BASIC INFORMATION' AND
 					SYTABS.SAPCPQ_ALTTAB_NAME = '{}' """.format(
 				self.current_tab_name
 			)
@@ -155,15 +172,28 @@ class ConfigUpdateScript:
 		if record_obj is not None:
 			columns = (record_obj.COLUMNS).replace("'", "").replace(" ", "").split(",")
 			table_name = ""
-			objd_records_obj = Sql.GetList(
-				"""
-					SELECT TOP 10
-						DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
-					FROM
-						SYOBJD (NOLOCK)
-					WHERE API_NAME IN %s AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
-				% (tuple(columns), record_obj.PRIMARY_OBJECT_RECORD_ID)
-			)
+			##A055S000P01-9370 ,A055S000P01-4191 code starts..
+			if self.current_tab_name == "Quote":
+				objd_records_obj = Sql.GetList(
+					"""
+						SELECT TOP 10
+							DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
+						FROM
+							SYOBJD (NOLOCK)
+						WHERE API_NAME IN %s AND OBJECT_NAME IN ('SAQTMT','SAQTRV')  ORDER BY abs(DISPLAY_ORDER) """
+					% (tuple(columns),)
+				)
+			else:
+				objd_records_obj = Sql.GetList(
+					"""
+						SELECT TOP 10
+							DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME
+						FROM
+							SYOBJD (NOLOCK)
+						WHERE API_NAME IN %s AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
+					% (tuple(columns), record_obj.PRIMARY_OBJECT_RECORD_ID)
+				)
+			##A055S000P01-9370 , A055S000P01-4191 code ends..
 			# Trace.Write(
 			# 	""" SELECT TOP 10 DISPLAY_ORDER,FIELD_LABEL, OBJECT_NAME FROM SYOBJD (NOLOCK) WHERE API_NAME IN %s
 			# 		AND PARENT_OBJECT_RECORD_ID ='%s'  ORDER BY abs(DISPLAY_ORDER) """
@@ -191,18 +221,26 @@ class ConfigUpdateScript:
 					# 	labels.append(dynamicLable.FIELD_LABEL)
 					# else:
 					labels.append(objd_record.FIELD_LABEL)
-				field_lables = ",".join(labels)
+				##A055S000P01-9370 , A055S000P01-4191 code starts...
+				if self.current_tab_name == "Quote":
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner"
+				else:
+					field_lables = ",".join(labels)
+				##A055S000P01-9370, A055S000P01-4191 code ends..
 			#Trace.Write("selftab"+str(self.current_tab_name))
 			"""if str(self.current_tab_name.upper()) == "QUOTE": 
 				key_column = "MASTER_TABLE_QUOTE_RECORD_ID"
 			else:
 				key_column = columns[0]"""
 			key_column = columns[0]
-			if table_name == 'CTCNRT' and self.product_name != "SYSTEM ADMIN":
+			if table_name == 'CTCNRT' and (self.product_name != "SYSTEM ADMIN" and self.product_name != "APPROVAL CENTER"):
 				record_id = Quote.GetGlobal("contract_record_id")
+			##A055S000P01-9370 , A055S000P01-4191 code starts..
 			if table_name == 'SAQTMT':
-				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 				record_id = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
+				key_column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID"
+			##A055S000P01-9370, A055S000P01-4191  code ends..
 			if key_column and record_id:
 				query_string = self.build_query(
 					column=",".join(columns),
@@ -293,22 +331,22 @@ class ConfigUpdateScript:
 						section_edit_access.RECORD_ID
 					)'''
 					objd_records_obj_query = """
-                            SELECT
-                                DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE
-                                FROM SYOBJD (NOLOCK)
-                                INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
-                                INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
-                                INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
-                                INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
-                                AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
+							SELECT
+								DISTINCT SYOBJD.OBJECT_NAME, SYOBJD.FIELD_LABEL,case when SYOBJD.EDITABLE_ONINSERT ='TRUE' then 'EDITABLE' Else 'READ ONLY' end AS PERMISSION,SYPRSF.EDITABLE
+								FROM SYOBJD (NOLOCK)
+								INNER JOIN SYSECT (NOLOCK) ON SYSECT.PRIMARY_OBJECT_NAME = SYOBJD.OBJECT_NAME
+								INNER JOIN SYSEFL (NOLOCK) ON SYSEFL.SECTION_RECORD_ID = SYSECT.RECORD_ID
+								INNER JOIN SYPRSF (NOLOCK) ON SYPRSF.SECTIONFIELD_RECORD_ID = SYSEFL.RECORD_ID
+								INNER JOIN USERS_PERMISSIONS UP ON UP.PERMISSION_ID = SYPRSF.PROFILE_RECORD_ID
+								AND SYSEFL.API_FIELD_NAME = SYOBJD.API_NAME
 
-                            WHERE
+							WHERE
 
-                                SYSECT.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND
-                                SYSEFL.SECTION_RECORD_ID = '{0}'
-                                """.format(
-                            section_edit_access.RECORD_ID, str(User.Id)
-                        )
+								SYSECT.RECORD_ID = '{0}' AND UP.USER_ID ='{1}' AND
+								SYSEFL.SECTION_RECORD_ID = '{0}'
+								""".format(
+							section_edit_access.RECORD_ID, str(User.Id)
+						)
 					objd_records_obj = Sql.GetList(objd_records_obj_query)
 					if objd_records_obj is not None:
 						for objd_record in objd_records_obj:
@@ -394,7 +432,7 @@ class ConfigUpdateScript:
 						key_value = ""
 						cpq_record_id = ""
 				elif self.current_tab_name == 'Quote' or self.current_tab_name == 'Contract':
-					getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+					getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT WHERE QUOTE_ID = '{}'".format(Quote.CompositeNumber))
 
 					key_value = getQuote.MASTER_TABLE_QUOTE_RECORD_ID
 					#cpq_record_id = str(key_value)
@@ -513,7 +551,7 @@ if hasattr(Param, "keyData_val"):
 	# Changes for sales app primary banner load - start
 	if not keyData_val:
 		try:
-			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
+			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 			if quote_obj:
 				keyData_val = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 		except Exception:

@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO INSERT CRM TO CPQ DATA IN STAGING TABLE FROM ECC TO CPQ
 #   __primary_author__ : BAJI
 #   __create_date : 2020-11-26
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
 import clr
@@ -71,7 +71,7 @@ try:
 				sessionid = SqlHelper.GetFirst("SELECT NEWID() AS Guid")
 				timestamp_sessionid = "'" + str(sessionid.Guid) + "'"				
 
-				primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,CpqTableEntryDateModified,INTEGRATION_KEY)  select ''"+str(conv_data)+ "'','"+ str(timestamp_sessionid)+ "',''CRM_TO_CPQ_CONTRACT_DATA'',GETDATE(),''"+str(Cnt_Id.INTEGRATION_PAYLOAD)+ "'' ' ")
+				primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,CpqTableEntryDateModified,INTEGRATION_KEY)  select N''"+conv_data+ "'','"+ str(timestamp_sessionid)+ "',''CRM_TO_CPQ_CONTRACT_DATA'',GETDATE(),''"+str(Cnt_Id.INTEGRATION_PAYLOAD)+ "'' ' ")
 				
 				primaryQueryItems = SqlHelper.GetFirst(	""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''PROCESSED'' from SYINPL  (NOLOCK) WHERE INTEGRATION_PAYLOAD  = ''"+str(Cnt_Id.INTEGRATION_PAYLOAD)+ "'' and INTEGRATION_NAME = ''CRM_TO_CPQ_CONTRACT_ID'' AND ISNULL(STATUS ,'''')= '''' ' "	)
 					

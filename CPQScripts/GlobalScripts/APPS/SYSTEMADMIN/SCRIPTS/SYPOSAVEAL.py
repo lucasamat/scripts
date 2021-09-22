@@ -44,7 +44,7 @@ def do_process(TABLEID, LABLE, VALUE):
         RECORDFEILD = Param.RECORDFEILD
     except:
         Trace.Write("err")
-   
+
     err_msg = ""
     err_display=""
     Flag_unique = "True"
@@ -189,14 +189,16 @@ def do_process(TABLEID, LABLE, VALUE):
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
-                        quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"'")
+                        quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
                         row["QUOTE_RECORD_ID"]=quote_val.MASTER_TABLE_QUOTE_RECORD_ID
                         row["QUOTE_NAME"]=quote_val.QUOTE_NAME
+                        row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
+                        row["QTEREV_ID"]=quote_val.QTEREV_ID
                         if row["PARTY_ROLE"] != "..Select":
                             Table.TableActions.Create(TABLEID, row)
                         if row["PARTY_ROLE"] == "RECEIVING ACCOUNT":
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                            sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                            sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                             account_details = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID,CITY,COUNTRY,COUNTRY_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(row["PARTY_ID"])+"'")
                             receiving_account_row ={
                                 "ACCOUNT_ID": row["PARTY_ID"],
@@ -219,12 +221,15 @@ def do_process(TABLEID, LABLE, VALUE):
                                 "PHONE": row["PHONE"],
                                 "POSTAL_CODE": "",
                                 "STATE": "",
-                                "STATE_RECORD_ID": ""
+                                "STATE_RECORD_ID": "",
+                                "QTEREV_RECORD_ID" : quote_revision_record_id,
+                                "QTEREV_ID" : quote_revision_id
+
                             }
                             Table.TableActions.Create("SAQSRA", receiving_account_row)
                         elif row["PARTY_ROLE"] == "SENDING ACCOUNT":
                             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                            sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+                            sales_org_details = Sql.GetFirst("SELECT SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
                             account_details = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID,CITY,COUNTRY,COUNTRY_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(row["PARTY_ID"])+"'")
                             receiving_account_row ={
                                 "ACCOUNT_ID": row["PARTY_ID"],
@@ -247,7 +252,10 @@ def do_process(TABLEID, LABLE, VALUE):
                                 "PHONE": row["PHONE"],
                                 "POSTAL_CODE": "",
                                 "STATE": "",
-                                "STATE_RECORD_ID": ""
+                                "STATE_RECORD_ID": "",
+                                "QTEREV_RECORD_ID" : quote_revision_record_id,
+                                "QTEREV_ID" : quote_revision_id
+
                             }
                             Table.TableActions.Create("SAQSRA", receiving_account_row)
                     else:                       
@@ -466,4 +474,11 @@ def do_process(TABLEID, LABLE, VALUE):
 LABLE = list(Param.LABLE)
 VALUE = list(Param.VALUE)
 TABLEID = (Param.TABLEID).strip()
+try:
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    quote_revision_id = Quote.GetGlobal("quote_revision_id")
+except:
+    Trace.Write("EXCEPT: quote_revision_record_id and quote_revision_id")
+    quote_revision_record_id= ""
+    quote_revision_id= ""
 ApiResponse = ApiResponseFactory.JsonResponse(do_process(TABLEID, LABLE, VALUE))

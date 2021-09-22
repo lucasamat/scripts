@@ -19,6 +19,8 @@ try:
 except:
 	CurrentTabName = "Quotes"
 Qt_rec_id = Quote.GetGlobal("contract_quote_record_id")
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+quote_revision_id = Quote.GetGlobal("quote_revision_id")
 userId = str(User.Id)
 userName = str(User.UserName)
 TreeParam = Product.GetGlobal("TreeParam")
@@ -26,6 +28,7 @@ TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 
+Trace.Write("quote_revision_record_id "+str(quote_revision_record_id))
 
 def fabview(ACTION,CurrentRecordId,subtab):	
 	sec_str1 = sec_str = ""
@@ -37,15 +40,28 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					"VALUE DRIVER COEFFICIENT": "VALUE DRIVER COEFFICIENT",
 				}
 	date_field = []
-	if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	if TreeParentParam.startswith("Sending") or  TreeParentParam.startswith("Receiving"):
+		TreeParentParam = TreeParentParam.split("-")[0].strip()
+		Trace.Write("Tree_Parent_sending"+str(TreeParentParam))
+	Trace.Write("Tree_Parent_sending_2"+str(TreeParentParam))
+	Trace.Write("Tree_Super_Parent_sending"+str(TreeSuperParentParam))
+	if TreeParentParam == "Sending Account":
+		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
+	elif (str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items') :
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
 		###NEW GREEN BOOK TABLE#
-		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
+		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
 		#table_id = 'fabvaldrives'
 	else:
 		#table_id = 'fabvaluedrives'
 		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>''')
+	if str(TreeSuperParentParam) != "Quote Items" and str(TreeTopSuperParentParam) != "Quote Items":
+		sec_str += ('''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="customer_value_EDIT(this)">EDIT</a></li></ul></div></div>''')
+	sec_str += (''' CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  > <thead><tr>')
 	
 	for key, invs in enumerate(list(desc_list)):
@@ -60,7 +76,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			+ str(qstring)
 			+ "</th>"
 		)
-	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
+	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div></div>'
 	disabled_edit_drivers = ''
 	get_editable_list = []
 	if GetPRVLDR:
@@ -69,7 +85,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			VAR1 = coeffval = ""
 			userselectedeffi = []
 			
-			if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
+			if TreeParentParam == "Sending Account":
+				mastername = str(qstn.VALUE_DRIVER_RECORD_ID)
+				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
+			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items':
 				mastername = str(qstn.VALUEDRIVER_RECORD_ID)
 				field_name = str(qstn.VALUEDRIVER_ID).replace("'", "''")
 			else:
@@ -77,7 +96,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 				field_name = str(qstn.VALUE_DRIVER_ID).replace("'", "''")
 			#sec_str += ('')
 			new_value_dict = {}
-			if str(TreeParam).upper() == "QUOTE INFORMATION":				
+			if str(TreeParam).upper() == "QUOTE INFORMATION" or TreeParam.startswith('Sending Account') or TreeParam.startswith('Receiving Account') or str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":				
 				GetDRIVNAME = Sql.GetList(
 					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
@@ -90,6 +109,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(Qt_rec_id)
 					+ "' AND VALUEDRIVER_ID = '"
 					+ str(field_name)
+					+ "' AND QTEREV_RECORD_ID = '"
+					+ str(quote_revision_record_id)
 					+ "'"
 				)
 				userselected = []
@@ -145,6 +166,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(field_name)
 					+ "' AND FABLOCATION_ID = '"
 					+ str(TreeParam)
+					+ "' AND QTEREV_RECORD_ID = '"
+					+ str(quote_revision_record_id)
 					+ "'"
 				)
 				
@@ -189,7 +212,8 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(VAR1)
 					+ "</select>"
 				)
-			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":				
+			elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":	
+				Trace.Write("send_condtn_J"+str(TreeParentParam))
 				GetDRIVNAME = Sql.GetList(
 					"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRGBVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
 					+ str(field_name)
@@ -199,7 +223,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ str(TreeParam)
 					+ "'"
 				)
-				selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+				selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id) + "'")
 				userselected = []
 				userselectedeff =[]
 				if selecter:
@@ -243,7 +267,17 @@ def fabview(ACTION,CurrentRecordId,subtab):
 					+ "</select>"
 				)
 			for data in qstn:
-				if str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
+				if TreeParentParam == "Sending Account":
+					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUE_DRIVER_ID)
+					if len(userselectedeffi) != 0:
+						Trace.Write("249line if")
+						coeffval = str(userselectedeffi).replace("['","").replace("']","")
+						#new_value_dict["VALUE DRIVER COEFFICIENT"] = str(float(coeffval)*float(100))+" %"
+						new_value_dict["VALUE DRIVER COEFFICIENT"] = userselectedeffi
+					else:
+						Trace.Write("253line ELSE")
+						new_value_dict["VALUE DRIVER COEFFICIENT"] =  ""
+				elif str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam).upper() == "QUOTE ITEMS":
 					new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 					new_value_dict["VALUE DRIVER COEFFICIENT"] =  userselectedeff
 					
@@ -263,9 +297,10 @@ def fabview(ACTION,CurrentRecordId,subtab):
 			date_field.append(new_value_dict)
 		
 		if str(TreeSuperParentParam).strip() != 'Quote Items':
-			dbl_clk_function += (
-				"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-			)
+			# dbl_clk_function += (
+			# 	"try {var fablocatedict = [];$('#fabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#fabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#fabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#fabnotify').addClass('header_section_div  header_section_div_pad_bt10');$('#fabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fablocate_save').css('display','block');$('#fablocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'-'+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+			# )
+			dbl_clk_function = ""
 			#Trace.Write('date_field---'+str(date_field))
 		if str(CurrentTabName) == "Contract":
 			dbl_clk_function = ""	
@@ -294,8 +329,10 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 	date_field = []
 	disabled_edit_drivers = ''
 	#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' ")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' ")
 	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -331,10 +368,10 @@ def nestedfabview(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "'"
 		)
-		Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ(NOLOCK) WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
+		Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQFEQ(NOLOCK) WHERE QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 		if TreeTopSuperParentParam == 'Quote Items':
-			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND EQUIPMENT_ID = '"+str(Get_EQUIP.EQUIPMENT_ID)+"'")
+			Get_EQUIP = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQICO(NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID ='"+str(CurrentRecordId)+"' AND QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND EQUIPMENT_ID = '"+str(Get_EQUIP.EQUIPMENT_ID)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 		userselected = []
 		userselectedeff =[]
 		if selecter:
@@ -424,7 +461,10 @@ def servicefabview(ACTION,CurrentRecordId):
 	date_field = []
 	
 	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE LIKE '%QUOTE BASED%'")
-	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
+	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US" data-show-header="true"> <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
 		qstring = attr_dict.get(str(invs)) or ""
@@ -461,6 +501,8 @@ def servicefabview(ACTION,CurrentRecordId):
 			+ str(Qt_rec_id)
 			+ "' AND VALUEDRIVER_ID = '"
 			+ str(field_name)
+			+ "' AND QTEREV_RECORD_ID = '"
+			+ str(quote_revision_record_id)
 			+ "'"
 		)
 		userselected = []
@@ -529,12 +571,16 @@ def costfabview(ACTION,CurrentRecordId):
 	date_field = []
 	disabled_edit_drivers = ''
 	TreeParam = Product.GetGlobal("TreeParam")
+	sec_edit='''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div> '''
 	if TreeParentParam == "Quote Items":
 		TP = str(TreeParam)
 		TP1 = TP.split('-')
 		TreeParam = TP1[1].strip()
+		sec_edit=""
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div> '''+str(sec_edit)+'''  PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -548,7 +594,7 @@ def costfabview(ACTION,CurrentRecordId):
 			+ str(qstring)
 			+ "</th>"
 		)
-	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div>'
+	sec_str += '</tr></thead><tbody class ="app_id" ></tbody></table></div></div>'
 	for qstn in GetSAQSVD:
 		sec_str1 = sec_str_eff = ""
 		VAR1 = coeffval = ""
@@ -577,7 +623,9 @@ def costfabview(ACTION,CurrentRecordId):
 				+ str(field_name)
 				+ "' AND QTESRV_RECORD_ID = '"
 				+ str(CurrentRecordId)
-				+ "' "
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(quote_revision_record_id)
+				+ "'"
 			)
 		else:
 			selecter = Sql.GetList(
@@ -587,7 +635,9 @@ def costfabview(ACTION,CurrentRecordId):
 				+ str(field_name)
 				+ "' AND SERVICE_ID = '"
 				+ str(TreeParam)
-				+ "' "
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(quote_revision_record_id)
+				+ "'"
 			)
 		userselected = userselectedeff =  []
 		if selecter:
@@ -631,10 +681,10 @@ def costfabview(ACTION,CurrentRecordId):
 			
 			
 		date_field.append(new_value_dict)
-	if TreeParentParam != "Quote Items":
-		dbl_clk_function += (
-			"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#servicecostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-		)
+	# if TreeParentParam != "Quote Items":
+	# 	dbl_clk_function += (
+	# 		"try {var fablocatedict = [];$('#servicecostvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#servicecostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#servicecostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#servicecostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#servicecostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+	# 	)
 		
 	
 	if str(CurrentTabName) == "Contract":
@@ -664,6 +714,9 @@ def Comp_fabview(ACTION,CurrentRecordId):
 	date_field = []
 	
 	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -687,31 +740,54 @@ def Comp_fabview(ACTION,CurrentRecordId):
 		
 		#sec_str += ('')
 		new_value_dict = {}
+
+		if str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":
+			GetDRIVNAME = Sql.GetList(
+				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND VALUEDRIVER_RECORD_ID = '"
+				+ str(mastername)
+				+ "'"
+			)
+			selecter = Sql.GetFirst(
+				"SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
+				+ str(Qt_rec_id)
+				+ "' AND VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(quote_revision_record_id)
+				+ "'"
+			)
 		
-		
-		GetDRIVNAME = SqlHelper.GetList(
-			"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
-			+ str(field_name)
-			+ "' AND VALUEDRIVER_RECORD_ID = '"
-			+ str(mastername)
-			+ "'"
-		)
-		selecter = Sql.GetFirst(
-			"SELECT VALUEDRIVER_VALUEDESC,VALUEDRIVER_COEFFICIENT FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
-			+ str(Qt_rec_id)
-			+ "' AND VALUEDRIVER_ID = '"
-			+ str(field_name)
-			+ "' AND FABLOCATION_ID = '"
-			+ str(TreeParam)
-			+ "'"
-		)
-		
+		elif str(TreeParam) != "Sending Equipment" and str(TreeParam) != "Receiving Equipment":
+			GetDRIVNAME = SqlHelper.GetList(
+				"SELECT TOP 1000 VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM PRVDVL(NOLOCK) WHERE  VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND VALUEDRIVER_RECORD_ID = '"
+				+ str(mastername)
+				+ "'"
+			)
+			selecter = Sql.GetFirst(
+				"SELECT VALUEDRIVER_VALUEDESC,VALUEDRIVER_COEFFICIENT FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"
+				+ str(Qt_rec_id)
+				+ "' AND VALUEDRIVER_ID = '"
+				+ str(field_name)
+				+ "' AND FABLOCATION_ID = '"
+				+ str(TreeParam)
+				+ "' AND QTEREV_RECORD_ID = '"
+				+ str(quote_revision_record_id)
+				+ "'"
+			)
+			
 		userselecteddrive = []
 		
 		if selecter:
 			# userselecteddrive = [Valuedrivervalue.VALUEDRIVER_VALUEDESC for Valuedrivervalue in selecter]
 			# userselectedeffi = [Valuedrivereff.VALUEDRIVER_COEFFICIENT for Valuedrivereff in selecter if Valuedrivereff.VALUEDRIVER_COEFFICIENT]
-			userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
+			if str(TreeParam) == "Sending Equipment" or str(TreeParam) == "Receiving Equipment":
+				userselecteddrive.append(selecter.VALUEDRIVER_VALUE_DESCRIPTION)
+			else:	
+				userselecteddrive.append(selecter.VALUEDRIVER_VALUEDESC)
 			if selecter.VALUEDRIVER_COEFFICIENT == '0.00000':
 				userselectedeffi ='0.0%'
 			else:
@@ -811,7 +887,7 @@ def item_gb_fabview(ACTION,CurrentRecordId):
 					+ str(TreeParam)
 					+ "'"
 				)
-				selecter = Sql.GetList("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+				selecter = Sql.GetList("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 				userselected = []
 				if selecter:
 					userselected = [Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION for Valuedrivervalue in selecter if Valuedrivervalue.VALUEDRIVER_VALUE_DESCRIPTION]
@@ -891,6 +967,11 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 		TreeParentParam = TP1[1].strip()
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeParentParam)+"'")
 	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>''')
+	if str(TreeSuperParentParam) != "Quote Items":
+		sec_str += (''' <div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div>''')
+	sec_str += (''' PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"  data-locale = "en-US"  data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -934,6 +1015,8 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "' AND SERVICE_ID = '"
 			+ str(TreeParentParam)
+			+ "' AND QTEREV_RECORD_ID = '"
+			+ str(quote_revision_record_id)
 			+ "'"
 		)
 		
@@ -984,10 +1067,10 @@ def Comp_cost_fabview(ACTION,CurrentRecordId,subtab):
 			
 			
 		date_field.append(new_value_dict)
-	if TreeSuperParentParam != "Quote Items":
-		dbl_clk_function += (
-			"try {debugger; var fablocatedict = [];$('#csservicecostfabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#csservicecostfabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#csservicecostfabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#csservicecostfabvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#csservicecostfabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-		)
+	# if TreeSuperParentParam != "Quote Items":
+	# 	dbl_clk_function += (
+	# 		"try {debugger; var fablocatedict = [];$('#csservicecostfabvaldrives').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset---');$('#csservicecostfabvaldrives').find(':input(:disabled)').prop('disabled', false);$('#csservicecostfabvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#csservicecostfabvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#csservicecostfabvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+	# 	)
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
 		if (TreeTopSuperParentParam == "Complementary Products" and subtab == "Fab Cost and Value Drivers" and TreeParentParam.startswith("Sending")):
@@ -1011,7 +1094,10 @@ def Offergreenfab(ACTION,CurrentRecordId):
 	date_field = []
 	
 	#GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' ")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY' ")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -1046,7 +1132,9 @@ def Offergreenfab(ACTION,CurrentRecordId):
 				+ str(TreeParam)
 				+ "'"
 			)
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' ")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQFGV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '"
+			+ str(quote_revision_record_id)
+			+ "'")
 		userselecteddrive = []
 		
 		if selecter:
@@ -1110,7 +1198,10 @@ def Offerequipfab(ACTION,CurrentRecordId):
 	date_field = []
 	
 	#GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND GBLVALDRV_RECORD_ID != '' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRGBVD(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND VALUEDRIVER_TYPE ='FAB BASED SURVEY'")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -1145,7 +1236,9 @@ def Offerequipfab(ACTION,CurrentRecordId):
 				+ str(TreeParam)
 				+ "'"
 			)
-		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(CurrentRecordId)+"' ")
+		selecter = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,VALUEDRIVER_COEFFICIENT FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND VALUEDRIVER_ID = '"+ str(field_name)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND EQUIPMENT_ID = '"+str(CurrentRecordId)+ "' AND QTEREV_RECORD_ID = '"
+			+ str(quote_revision_record_id)
+			+ "'")
 		userselecteddrive = []
 		
 		if selecter:
@@ -1203,11 +1296,13 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	userId = str(User.Id)
 	userName = str(User.UserName)
-	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "'")
-	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTSO(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "'")
-	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "'")
+	Trace.Write("subtab---"+str(subtab))
+	Getmastertable = Sql.GetFirst("SELECT * FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+	GetSalesOrg = Sql.GetFirst("SELECT * FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Qt_rec_id) + "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
+	GETFABLOC = Sql.GetFirst("SELECT * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='" + str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'")
 	for val in FabLocateDT:
 		getval = str(val).replace("('","").replace("',)","")
 		getdescription =getval.split('-')[0]		
@@ -1225,8 +1320,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			
 			tablerow = {}
 			SAQTVDENTRY = Sql.GetFirst(
-				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' ".format(
-					str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+				"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'".format(
+					str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),quote_revision_record_id
 				)
 			)
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1248,6 +1343,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":str(GetSalesOrg.QTEREV_RECORD_ID),
+					"QTEREV_ID":str(GetSalesOrg.QTEREV_ID)
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1260,13 +1357,13 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				tablerow2 = {}
 				tableInfo2 = SqlHelper.GetTable("SAQVDV")
 				Q = Sql.GetFirst(
-					"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'".format(
-						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+					"Select QUOTE_VALUEDRIVER_RECORD_ID FROM SAQTVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{}'".format(
+						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),quote_revision_record_id
 					)
 				)
 				SAQVDVENTRY = Sql.GetFirst(
-					"Select QUOTE_VALUE_DRIVER_VALUE_RECORD_ID,CpqTableEntryId,QTEVDR_RECORD_ID FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'".format(
-						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID)
+					"Select QUOTE_VALUE_DRIVER_VALUE_RECORD_ID,CpqTableEntryId,QTEVDR_RECORD_ID FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEREV_RECORD_ID = '{} '".format(
+						str(Getmastertable.MASTER_TABLE_QUOTE_RECORD_ID), str(Getchildtable.VALUE_DRIVER_RECORD_ID),quote_revision_record_id
 					)
 				)
 				if SAQVDVENTRY:
@@ -1286,13 +1383,15 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"VALUEDRIVER_VALUE_RECORD_ID": str(Getchildtable2.VALUE_DRIVER_VALUE_RECORD_ID),
 						"VALUEDRIVER_COEFFICIENT":Getchildtable2.VALUEDRIVER_COEFFICIENT,
 						"VALUEDRIVER_TYPE": str(Getchildtable.VALUE_DRIVER_TYPE),
-						#"VALUEDRIVER_VALUE_CODE":str(Getchildtable.VALUEDRIVER_VALUE_CODE),
+						"VALUEDRIVER_VALUE_CODE":str(Getchildtable2.VALUEDRIVER_VALUE_CODE),
 						"SALESORG_ID":str(GetSalesOrg.SALESORG_ID),
 						"SALESORG_NAME":str(GetSalesOrg.SALESORG_NAME),
 						"SALESORG_RECORD_ID":str(GetSalesOrg.SALESORG_RECORD_ID),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":str(GetSalesOrg.QTEREV_RECORD_ID),
+						"QTEREV_ID":str(GetSalesOrg.QTEREV_ID)
 					}
 				)
 				#Trace.Write(str(tablerow2))
@@ -1307,12 +1406,11 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":
-			if str(getdescription) == "Quality required by the clients' customers":
-				getdescription = "Quality required by the clients'' customers"
 			GETFBVD = Sql.GetFirst(
 				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
@@ -1320,8 +1418,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			)
 			
 			SAQFVDENTRY = Sql.GetFirst(
-				"Select QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEFBL_RECORD_ID ='{}' ".format(
-					str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUE_DRIVER_RECORD_ID),str(GETFABLOC.QUOTE_FABLOCATION_RECORD_ID)
+				"Select QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTEFBL_RECORD_ID ='{}'  AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUE_DRIVER_RECORD_ID),str(GETFABLOC.QUOTE_FABLOCATION_RECORD_ID),quote_revision_record_id
 				)
 			)
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1343,6 +1441,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write('169----'+str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1361,14 +1461,18 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					+ str(getdescription)
 					+ "' and QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' and FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "'"
+					+ "'  AND QTEREV_RECORD_ID = '"
+					+ str(quote_revision_record_id)
+					+"'"
 				)
 				GETFABDRIVERS = Sql.GetFirst(
 					"SELECT * FROM SAQFVD WHERE VALUEDRIVER_ID = '"
 					+ str(getdescription)
 					+ "' and QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' and FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "' "
+					+ "'  AND QTEREV_RECORD_ID = '"
+					+ str(quote_revision_record_id)
+					+"'"
 				)
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQFDV")
@@ -1399,6 +1503,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write('225------------------'+str(tablerow))
@@ -1414,7 +1520,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 
@@ -1422,21 +1529,21 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			
-			QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND GREENBOOK ='"+str(TreeParam)+"'"
+			QueryStatement = "DELETE FROM SAQFGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"' AND GREENBOOK ='"+str(TreeParam)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 			Sql.RunQuery(QueryStatement)
 			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			primaryQueryItems = SqlHelper.GetFirst(
 			""
 			+ str(Parameter.QUERY_CRITERIA_1)
-			+ " SAQFGB (FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTEFBL_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_FAB_LOC_GB_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.QTEFBL_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQFEQ A left join SAQFGB b on a.QUOTE_RECORD_ID = ''"+str(Qt_rec_id)+"'' and a.QUOTE_ID =b.QUOTE_ID and a.FABLOCATION_RECORD_ID =b.FABLOCATION_RECORD_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.FABLOCATION_ID = ''"+str(TreeParentParam)+"'' AND a.GREENBOOK = ''"+str(TreeParam)+"'')A ' " )
+			+ " SAQFGB (FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,QTEFBL_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_FAB_LOC_GB_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.QTEFBL_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQFEQ A left join SAQFGB b on a.QUOTE_RECORD_ID = ''"+str(Qt_rec_id)+"'' and a.QTEREV_RECORD_ID = ''"+str(quote_revision_record_id)+"'' and a.QUOTE_ID =b.QUOTE_ID and a.FABLOCATION_RECORD_ID =b.FABLOCATION_RECORD_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.FABLOCATION_ID = ''"+str(TreeParentParam)+"'' AND a.GREENBOOK = ''"+str(TreeParam)+"'')A ' " )
 			
-			GETFABLOC = Sql.GetFirst("SELECT  * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParentParam)+ "'")
+			GETFABLOC = Sql.GetFirst("SELECT  * FROM SAQFBL(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and FABLOCATION_ID = '"+ str(TreeParentParam)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 			QTFAB = GETFABLOC.FABLOCATION_RECORD_ID
 			
 			GETFBVD = Sql.GetFirst("SELECT * FROM PRGBVD (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND GREENBOOK ='"+str(TreeParam)+"' ")
-			SAQFVDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_GB_VAL_DRIVER_RECORD_ID FROM SAQFGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'AND FABLOCATION_ID ='{}' AND GREENBOOK ='{}'".format(str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUEDRIVER_RECORD_ID),str(GETFABLOC.FABLOCATION_ID),str(TreeParam)))
-			QTGB = Sql.GetFirst("SELECT * FROM SAQFGB(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_RECORD_ID ='"+str(QTFAB)+"' ")
-			GETVDVD = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID ='"+str(TreeParentParam)+"' AND FABLOCATION_RECORD_ID='"+str(QTFAB)+"'")
+			SAQFVDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_GB_VAL_DRIVER_RECORD_ID FROM SAQFGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}'AND FABLOCATION_ID ='{}' AND GREENBOOK ='{}' AND QTEREV_RECORD_ID = '{}'".format(str(GETFABLOC.QUOTE_RECORD_ID), str(GETFBVD.VALUEDRIVER_RECORD_ID),str(GETFABLOC.FABLOCATION_ID),str(TreeParam),quote_revision_record_id))
+			QTGB = Sql.GetFirst("SELECT * FROM SAQFGB(NOLOCK) WHERE GREENBOOK ='"+str(TreeParam)+"' AND FABLOCATION_RECORD_ID ='"+str(QTFAB)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
+			GETVDVD = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID ='"+str(TreeParentParam)+"' AND FABLOCATION_RECORD_ID='"+str(QTFAB)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 			if SAQFVDENTRY is None:
 				tableInfo = SqlHelper.GetTable("SAQFGD")
 				tablerow = {
@@ -1457,6 +1564,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1464,7 +1573,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				#Trace.Write("GREENVD ADDED" + str(tablerow))
 			GETVALMAS = Sql.GetFirst("Select * from PRGBVL(NOLOCK) where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION ='"+ str(getvaluedriv)+ "' AND GREENBOOK = '"+str(TreeParam)+"'  ")
 			if GETVALMAS is not None:
-				GETFABVAL = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,CpqTableEntryId,VALUEDRIVER_VALUE_RECORD_ID from SAQFGV(NOLOCK) where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and FABLOCATION_ID ='"+ str(TreeParentParam)+ "'and GREENBOOK ='"+ str(TreeParam)+ "' AND QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "'")
+				GETFABVAL = Sql.GetFirst("SELECT VALUEDRIVER_VALUE_DESCRIPTION,CpqTableEntryId,VALUEDRIVER_VALUE_RECORD_ID from SAQFGV(NOLOCK) where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and FABLOCATION_ID ='"+ str(TreeParentParam)+ "'and GREENBOOK ='"+ str(TreeParam)+ "' AND QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 				GETFABDRIVERS = Sql.GetFirst("SELECT * FROM SAQFGD WHERE VALUEDRIVER_ID = '"+ str(getdescription)+ "' and FABLOCATION_ID ='"+ str(TreeParentParam)+ "' and GREENBOOK ='"+ str(TreeParam)+ "' AND QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "'")
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQFGV")
@@ -1489,11 +1598,13 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"VALUEDRIVER_VALUE_CODE": str(GETVALMAS.VALUEDRIVER_VALUE_CODE),
 						"VALUEDRIVER_TYPE": str(GETFABDRIVERS.VALUEDRIVER_TYPE),
 						"VALUEDRIVER_COEFFICIENT":str(GETVALMAS.VALUEDRIVER_COEFFICIENT),
-						"VALUEDRIVER_COEFFICIENT_RECORD_ID":str(GETVALMAS.GBLVDRVAL_RECORD_ID),
+						"VALUEDRIVER_COEFFICIENT_RECORD_ID":str(GETVALMAS.GBKVDRVAL_RECORD_ID),
 						"VALUEDRIVER_VALUE_RECORD_ID": str(GETVALMAS.VALUEDRIVER_VALUE_RECORD_ID),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
-						"ADDUSR_RECORD_ID": userId
+						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1510,7 +1621,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 			except:
 				Trace.Write("EXCEPT----FAB GREENBOOK VALUE DRIVER LEVEL IFLOW")
 
@@ -1518,9 +1630,9 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			
-			GETEQP = Sql.GetFirst("SELECT * FROM SAQFEQ(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '"+ str(CurrentRecordId)+ "'")
+			GETEQP = Sql.GetFirst("SELECT * FROM SAQFEQ(NOLOCK) WHERE QUOTE_RECORD_ID ='"+ str(Qt_rec_id)+ "' and QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID = '"+ str(CurrentRecordId)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 			GETPRVD = Sql.GetFirst("SELECT * FROM PRGBVD (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND GREENBOOK ='"+str(TreeParam)+"' ")
-			SAQFEDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_EQUIP_VAL_DRIVER_RECORD_ID FROM SAQFED(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND EQUIPMENT_ID ='{}' ".format(str(GETEQP.QUOTE_RECORD_ID), str(GETPRVD.VALUEDRIVER_RECORD_ID), str(GETEQP.EQUIPMENT_ID)))
+			SAQFEDENTRY = Sql.GetFirst("Select QUOTE_FAB_LOC_EQUIP_VAL_DRIVER_RECORD_ID FROM SAQFED(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND EQUIPMENT_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(str(GETEQP.QUOTE_RECORD_ID), str(GETPRVD.VALUEDRIVER_RECORD_ID), str(GETEQP.EQUIPMENT_ID),quote_revision_record_id))
 			GETFABDRIVER = Sql.GetFirst("SELECT QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE FABLOCATION_ID = '"+str(TreeParentParam)+"' ")
 			primarykey = str(Guid.NewGuid()).upper()
 			if SAQFEDENTRY is None:
@@ -1546,7 +1658,9 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"GREENBOOK_RECORD_ID": str(GETEQP.GREENBOOK_RECORD_ID),
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
-					"ADDUSR_RECORD_ID": userId
+					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -1555,8 +1669,8 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			GETVALSDV = Sql.GetFirst("SELECT * from PRGBVL where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and  GREENBOOK = '"+str(TreeParam)+"'")
 			# Trace.Write("drivervalueSELECT * from PRBDVL where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and  BUSINESSUNIT_ID = '"+str(TreeParam)+"'")
 			if GETVALSDV is not None:
-				GETDRISVD = Sql.GetFirst("SELECT * FROM SAQFED where QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID ='"+(GETEQP.EQUIPMENT_ID)+"'and VALUEDRIVER_ID = '"+str(getdescription)+"' ")
-				QTQSDVUPD = Sql.GetFirst("Select QUOTE_FAB_LOC_EQUIP_DRV_VAL_RECORD_ID,CpqTableEntryId FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID='"+str(GETEQP.EQUIPMENT_ID)+"' AND VALUEDRIVER_ID = '"+str(getdescription)+"' ")
+				GETDRISVD = Sql.GetFirst("SELECT * FROM SAQFED where QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID ='"+(GETEQP.EQUIPMENT_ID)+"'and VALUEDRIVER_ID = '"+str(getdescription)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
+				QTQSDVUPD = Sql.GetFirst("Select QUOTE_FAB_LOC_EQUIP_DRV_VAL_RECORD_ID,CpqTableEntryId FROM SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+ "' AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID='"+str(GETEQP.EQUIPMENT_ID)+"' AND VALUEDRIVER_ID = '"+str(getdescription)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQEDV")
 				if QTQSDVUPD:
@@ -1581,20 +1695,22 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"GREENBOOK": str(GETDRISVD.GREENBOOK),
 						"GREENBOOK_RECORD_ID":str(GETDRISVD.GREENBOOK_RECORD_ID),
 						"VALUEDRIVER_COEFFICIENT": str(GETVALSDV.VALUEDRIVER_COEFFICIENT),
-						"VALUEDRIVER_COEFFICIENT_RECORD_ID": str(GETVALSDV.GBLVDRVAL_RECORD_ID),
+						"VALUEDRIVER_COEFFICIENT_RECORD_ID": str(GETVALSDV.GBKVDRVAL_RECORD_ID),
 						"FABLOCATION_ID": str(GETDRISVD.FABLOCATION_ID),
 						"FABLOCATION_RECORD_ID": str(GETDRISVD.FABLOCATION_RECORD_ID),
 						"FABLOCATION_NAME": str(GETDRISVD.FABLOCATION_NAME),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
 				tableInfos.AddRow(tablerow)
 				Sql.Upsert(tableInfos)
 			#FABCOEFF = Sql.GetList("SELECT VALUEDRIVER_COEFFICIENT=SUM(VALUEDRIVER_COEFFICIENT) from SAQEDV WHERE EQUIPMENT_ID = '"+str(GETEQP.EQUIPMENT_ID)+"' and QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' ")
-			QueryStatement = "UPDATE A  SET FAB_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND FABLOCATION_ID ='"+str(TreeParentParam)+"'AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID = '"+str(GETEQP.EQUIPMENT_ID)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID"
+			QueryStatement = "UPDATE A  SET FAB_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQEDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "' AND FABLOCATION_ID ='"+str(TreeParentParam)+"'AND GREENBOOK = '"+str(TreeParam)+"' AND EQUIPMENT_ID = '"+str(GETEQP.EQUIPMENT_ID)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID"
 			Sql.RunQuery(QueryStatement)
 	return 'data'
 
@@ -1606,11 +1722,13 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	userId = str(User.Id)
 	userName = str(User.UserName)
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+	Log.Info("COSTSAVE")
 	#getQuoteId = SqlHelper.GetFirst("SELECT QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
 	#DELETE_SYELOG = """DELETE FROM SYELOG WHERE ERRORMESSAGE_RECORD_ID = 'EBDD1157-CD03-409E-8257-57A36753360E' AND OBJECT_VALUE_REC_ID = '{}'""".format(getQuoteId.QUOTE_ID)
 	#Sql.RunQuery(DELETE_SYELOG)
 	if str(TreeParentParam) == 'Comprehensive Services':
-		GETSEVC = Sql.GetFirst ("SELECT * from SAQTSV where QUOTE_RECORD_ID = '" + str(Qt_rec_id)+ "' AND SERVICE_ID ='"+ str(TreeParam)+ "'") #SAQSFB
+		GETSEVC = Sql.GetFirst ("SELECT * from SAQTSV where QUOTE_RECORD_ID = '" + str(Qt_rec_id)+ "' AND SERVICE_ID ='"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'") #SAQSFB
 		for val in SerLocateDT:			
 			getval = str(val).replace("('","").replace("',)","")
 			getdescription =getval.split('=')[0]			
@@ -1621,8 +1739,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					getdescription = "Customer''s ability to self-service"
 			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
-				"Select QUOTE_SERVICE_TOOL_VALUE_DRIVER_RECORD_ID FROM SAQSVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND QTESRV_RECORD_ID ='{}'".format(
-					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.QUOTE_SERVICE_RECORD_ID)
+				"Select QUOTE_SERVICE_TOOL_VALUE_DRIVER_RECORD_ID FROM SAQSVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND QTESRV_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.QUOTE_SERVICE_RECORD_ID),quote_revision_record_id
 				)
 			)
 			# Trace.Write("bSelect QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' ".format(str(GETFABLOC.QUOTE_RECORD_ID),str(GETFBVD.VALUE_DRIVER_RECORD_ID)))
@@ -1646,6 +1764,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				
 				#Trace.Write(str(tablerow))
@@ -1676,7 +1796,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(Qt_rec_id)
 					+ "' AND QTESRV_RECORD_ID ='"
 					+ str(GETSEVC.QUOTE_SERVICE_RECORD_ID)
-					+ "'"
+					+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 				)
 				QTQSDVUPD = Sql.GetFirst(
 					"Select QUOTE_SERVICE_TOOL_VALUE_DRIVER_VALUES_RECORD_ID,CpqTableEntryId FROM SAQSDV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"
@@ -1685,7 +1805,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(Qt_rec_id)
 					+ "'AND QTESRV_RECORD_ID ='"
 					+ str(GETSEVC.QUOTE_SERVICE_RECORD_ID)
-					+ "' "
+					+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 				)
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQSDV") #QTQSFV
@@ -1716,6 +1836,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1731,8 +1853,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----SERVICE COST AND VALUE DRIVER LEVEL IFLOW")
 
@@ -1749,7 +1871,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 		#""" Trace.Write(""
 		#+ str(Parameter.QUERY_CRITERIA_1)
 		#+ " SAQSFB (FABLOCATION_ID,FABLOCATION_NAME, FABLOCATION_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_SERVICE_FAB_LOCATION_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.SERVICE_ID,A.SERVICE_DESCRIPTION,A.SERVICE_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQSCO A left join SAQSFB b on a.QUOTE_RECORD_ID = ''"+str(Qt_rec_id)+"'' and a.QUOTE_ID =b.QUOTE_ID and a.SERVICE_RECORD_ID =b.SERVICE_RECORD_ID AND A.FABLOCATION_ID = B.FABLOCATION_ID WHERE b.QUOTE_ID IS NULL )A ' ") """
-		GETSEVC = Sql.GetFirst ("SELECT * from SAQSFB where QUOTE_RECORD_ID = '" + str(Qt_rec_id)+ "' AND FABLOCATION_ID ='"+ str(TreeParam)+ "' AND SERVICE_ID ='" + str(TreeParentParam)+ "'") #SAQSFB
+		GETSEVC = Sql.GetFirst ("SELECT * from SAQSFB where QUOTE_RECORD_ID = '" + str(Qt_rec_id)+ "' AND FABLOCATION_ID ='"+ str(TreeParam)+ "' AND SERVICE_ID ='" + str(TreeParentParam)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'") #SAQSFB
 		for val in SerLocateDT:			
 			getval = str(val).replace("('","").replace("',)","")
 			getdescription =getval.split('=')[0]			
@@ -1760,8 +1882,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					getdescription = "Customer''s ability to self-service"
 			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
-				"Select QUOTE_SERVICE_FBL_TOOL_VAL_DRV_RECORD_ID FROM SAQSFD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND FABLOCATION_ID ='{}' AND SERVICE_ID = '{}'".format(
-					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(TreeParam),str(TreeParentParam)
+				"Select QUOTE_SERVICE_FBL_TOOL_VAL_DRV_RECORD_ID FROM SAQSFD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND FABLOCATION_ID ='{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(TreeParam),str(TreeParentParam),quote_revision_record_id
 				)
 			)
 			# Trace.Write("bSelect QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' ".format(str(GETFABLOC.QUOTE_RECORD_ID),str(GETFBVD.VALUE_DRIVER_RECORD_ID)))
@@ -1788,6 +1910,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				
 				#Trace.Write(str(tablerow))
@@ -1820,7 +1944,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(TreeParentParam)
 					+ "' AND FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "'"
+					+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 				)
 				QTQSDVUPD = Sql.GetFirst(
 					"Select QUOTE_SERVICE_FAB_LOC_DRV_VAL_RECORD_ID,CpqTableEntryId FROM SAQSFV(NOLOCK) WHERE VALUEDRIVER_ID ='"
@@ -1831,7 +1955,7 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(TreeParentParam)
 					+ "' AND FABLOCATION_ID ='"
 					+ str(TreeParam)
-					+ "'"
+					+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 				)
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQSFV") #SAQSFV
@@ -1865,6 +1989,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1881,8 +2007,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----FAB COST AND VALUE DRIVER LEVEL IFLOW")
 				
@@ -1894,18 +2020,18 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			
 			if str(getdescription) == "Customer's ability to self-service":
 					getdescription = "Customer''s ability to self-service"
-			QueryStatement = "DELETE FROM SAQSGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'"
+			QueryStatement = "DELETE FROM SAQSGB WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 			Sql.RunQuery(QueryStatement)
 			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			primaryQueryItems = SqlHelper.GetFirst(
 			""
 			+ str(Parameter.QUERY_CRITERIA_1)
-			+ " SAQSGB (SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_SERVICE_GREENBOOK_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.SERVICE_ID,A.SERVICE_DESCRIPTION,A.SERVICE_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQSCO A left join SAQSGB b on a.QUOTE_RECORD_ID = ''2CA6A7C0-6526-4829-AFEB-767DC9A72CF8'' and a.QUOTE_ID = b.QUOTE_ID and a.SERVICE_RECORD_ID =b.SERVICE_RECORD_ID AND a.FABLOCATION_ID = b.FABLOCATION_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.SERVICE_ID = ''{treeSuperParentParam}''AND a.FABLOCATION_ID =''{treeparentparam}'' AND a.GREENBOOK = ''{treeparam}'')A ' ".format(treeparentparam=TreeParentParam,treeparam=TreeParam,treeSuperParentParam=TreeSuperParentParam))
-			GETSEVC = Sql.GetFirst ("SELECT * from SAQSGB where QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "'")
+			+ " SAQSGB (SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CpqTableEntryDateModified,QUOTE_SERVICE_GREENBOOK_RECORD_ID) SELECT A. *,getdate(),CONVERT(VARCHAR(4000),NEWID()) FROM (SELECT DISTINCT A.SERVICE_ID,A.SERVICE_DESCRIPTION,A.SERVICE_RECORD_ID,A.GREENBOOK,A.GREENBOOK_RECORD_ID,A.FABLOCATION_ID,A.FABLOCATION_NAME,A.FABLOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID FROM SAQSCO A left join SAQSGB b on a.QUOTE_RECORD_ID = ''2CA6A7C0-6526-4829-AFEB-767DC9A72CF8'' AND a.QTEREV_RECORD_ID = ''{quote_revision_record_id}'' and a.QUOTE_ID = b.QUOTE_ID and a.SERVICE_RECORD_ID =b.SERVICE_RECORD_ID AND a.FABLOCATION_ID = b.FABLOCATION_ID AND a.GREENBOOK = b.GREENBOOK WHERE b.QUOTE_ID IS NULL AND a.SERVICE_ID = ''{treeSuperParentParam}''AND a.FABLOCATION_ID =''{treeparentparam}'' AND a.GREENBOOK = ''{treeparam}'')A ' ".format(treeparentparam=TreeParentParam,treeparam=TreeParam,treeSuperParentParam=TreeSuperParentParam,quote_revision_record_id=quote_revision_record_id))
+			GETSEVC = Sql.GetFirst ("SELECT * from SAQSGB where QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND VALUEDRIVER_ID ='"+ str(getdescription)+ "' ")
 			SAQFVDENTRY = Sql.GetFirst(
-				"Select QUOTE_SERVICE_GREENBOOK_VAL_DRV_RECORD_ID FROM SAQSGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND SERVICE_RECORD_ID ='{}' and FABLOCATION_ID ='{}' and GREENBOOK = '{}'".format(
-					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.SERVICE_RECORD_ID),str(TreeParentParam),str(TreeParam)
+				"Select QUOTE_SERVICE_GREENBOOK_VAL_DRV_RECORD_ID FROM SAQSGD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND TOOL_VALUEDRIVER_RECORD_ID='{}' AND SERVICE_RECORD_ID ='{}' and FABLOCATION_ID ='{}' and GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.SERVICE_RECORD_ID),str(TreeParentParam),str(TreeParam),quote_revision_record_id
 				)
 			)
 			primarykey = str(Guid.NewGuid()).upper()
@@ -1933,7 +2059,9 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"QTESRVGBK_RECORD_ID":str(GETSEVC.QUOTE_SERVICE_GREENBOOK_RECORD_ID),
 					"FABLOCATION_RECORD_ID":str(GETSEVC.FABLOCATION_RECORD_ID),
 					"FABLOCATION_ID":str(GETSEVC.FABLOCATION_ID),
-					"FABLOCATION_NAME":str(GETSEVC.FABLOCATION_NAME)
+					"FABLOCATION_NAME":str(GETSEVC.FABLOCATION_NAME),
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 					#"QUOTE_SERVICE_GREENBOOK_RECORD_ID":str(GETSEVC.QTESRVGBK_RECORD_ID)
 				}
 				
@@ -1943,8 +2071,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 				#Trace.Write("serVD ADDED" + str(tablerow))
 			GETVALSDV = Sql.GetFirst("SELECT * from PRSDVL(NOLOCK) where VALUEDRIVER_ID ='"+ str(getdescription)+ "' and VALUEDRIVER_VALUE_DESCRIPTION = '"+ str(getvaluedriv)+ "' and SERVICE_ID = '"+ str(TreeSuperParentParam)+"'")
 			if GETVALSDV is not None:
-				GETDRISVD = Sql.GetFirst("SELECT * from SAQSGD where TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+ str(TreeParam)+"'")
-				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_GBK_VAL_DRV_VAL_RECORD_ID,CpqTableEntryId FROM SAQSGV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "'AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+"'")
+				GETDRISVD = Sql.GetFirst("SELECT * from SAQSGD where TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+ str(TreeParam)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
+				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_GBK_VAL_DRV_VAL_RECORD_ID,CpqTableEntryId FROM SAQSGV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "'AND SERVICE_ID ='"+ str(TreeSuperParentParam)+ "' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '"+str(TreeParam)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQSGV")
 				if QTQSDVUPD:
@@ -1980,7 +2108,9 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						#"QUOTE_SERVICE_GREENBOOK_RECORD_ID":str(GETDRISVD.QTESRVGBK_RECORD_ID),
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
-						"ADDUSR_RECORD_ID": userId
+						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				#Trace.Write(str(tablerow))
@@ -1996,8 +2126,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName,quote_revision_record_id)
 		except:
 			Trace.Write("EXCEPT----GREENBOOK COST AND VALUE DRIVER LEVEL IFLOW")
 	elif str(TreeTopSuperParentParam) == 'Comprehensive Services' and subtab == 'Equipment Cost and Value Drivers':
@@ -2019,12 +2149,12 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						+ str(TreeParam)
 						+ "' AND QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"
 						+ str(CurrentRecordId)
-						+ "'"
+						+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 					)
-			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription).replace("_", " ")+ "' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+			GETSVD = Sql.GetFirst("SELECT * FROM PRSVDR (NOLOCK) WHERE VALUEDRIVER_ID ='"+ str(getdescription).replace("_", " ")+ "' AND SERVICE_ID = '"+str(TreeSuperParentParam)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 			SAQSCDENTRY = Sql.GetFirst(
-				"Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID FROM SAQSCD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTESRVCOB_RECORD_ID ='{}'".format(
-					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)
+				"Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID FROM SAQSCD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' AND QTESRVCOB_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(
+					str(GETSEVC.QUOTE_RECORD_ID), str(GETSVD.VALUEDRIVER_RECORD_ID),str(GETSEVC.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID),quote_revision_record_id
 				)
 			)
 			# Trace.Write("bSelect QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID FROM SAQFVD(NOLOCK) WHERE QUOTE_RECORD_ID='{}' AND VALUEDRIVER_RECORD_ID='{}' ".format(str(GETFABLOC.QUOTE_RECORD_ID),str(GETFBVD.VALUE_DRIVER_RECORD_ID)))
@@ -2054,6 +2184,8 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
 					"ADDUSR_RECORD_ID": userId,
+					"QTEREV_RECORD_ID":quote_revision_record_id,
+					"QTEREV_ID":quote_revision_id
 				}
 				#Trace.Write(str(tablerow))
 				tableInfo.AddRow(tablerow)
@@ -2089,9 +2221,9 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 					+ str(TreeParentParam)
 					+ "'AND EQUIPMENT_ID = '"
 					+str(GETSEVC.EQUIPMENT_ID)
-					+"'"
+					+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 				)
-				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,CpqTableEntryId FROM SAQSCV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID = '"+ str(TreeSuperParentParam)+ "' AND GREENBOOK = '"+ str(TreeParam)+ "' AND FABLOCATION_ID = '"+ str(TreeParentParam)+ "' AND EQUIPMENT_ID = '"+str(GETSEVC.EQUIPMENT_ID)+"'")
+				QTQSDVUPD = Sql.GetFirst("Select QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID,CpqTableEntryId FROM SAQSCV(NOLOCK) WHERE TOOL_VALUEDRIVER_ID ='"+ str(getdescription)+ "' AND QUOTE_RECORD_ID = '"+ str(Qt_rec_id)+ "' AND SERVICE_ID = '"+ str(TreeSuperParentParam)+ "' AND GREENBOOK = '"+ str(TreeParam)+ "' AND FABLOCATION_ID = '"+ str(TreeParentParam)+ "' AND EQUIPMENT_ID = '"+str(GETSEVC.EQUIPMENT_ID)+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'")
 				tablerow = {}
 				tableInfos = SqlHelper.GetTable("SAQSCV")
 				if QTQSDVUPD:
@@ -2129,13 +2261,15 @@ def costsave(ACTION,CurrentRecordId,SerLocateDT,getfabid,subtab):
 						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 						"CPQTABLEENTRYADDEDBY": userName,
 						"ADDUSR_RECORD_ID": userId,
+						"QTEREV_RECORD_ID":quote_revision_record_id,
+						"QTEREV_ID":quote_revision_id
 					}
 				)
 				Trace.Write(str(tablerow))
 				tableInfos.AddRow(tablerow)
 				Sql.Upsert(tableInfos)
 		# COEFFICIENTS SUM at Level 3
-		QueryStatement = "UPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND EQUIPMENT_ID = '"+str(GETDRISVD.EQUIPMENT_ID)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID"
+		QueryStatement = "UPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) +"' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND EQUIPMENT_ID = '"+str(GETDRISVD.EQUIPMENT_ID)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID"
 		Sql.RunQuery(QueryStatement)
 		# Trace.Write("CoeffUPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(Qt_rec_id)+"' AND SERVICE_ID ='"+str(TreeSuperParentParam)+"' AND FABLOCATION_ID = '" + str(TreeParentParam) + "' AND GREENBOOK = '" + str(TreeParam) + "' AND EQUIPMENT_ID = '"+str(GETDRISVD.EQUIPMENT_ID)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID")
 	return 'data'
@@ -2161,6 +2295,12 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 		TreeSuperParentParam = str(TreeSuperParentParam.split('-')[1]).strip()
 	#GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED' AND SERVICE_ID = '"+str(TreeParam)+"'")
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>''')
+	if str(TreeTopSuperParentParam) != "Quote Items":
+		sec_str += ('''<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div>''')
+	sec_str += (''' PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -2206,7 +2346,7 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 			+str(TreeParam)
 			+"' AND FABLOCATION_ID ='"
 			+ str(TreeParentParam)
-			+ "'"
+			+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 		)
 		
 		userselecteddrive = []
@@ -2255,9 +2395,9 @@ def Offergreencost(ACTION,CurrentRecordId,subtab):
 			
 		date_field.append(new_value_dict)
 	
-	dbl_clk_function += (
-		"try {var fablocatedict = [];$('#csserviceGreencostvaldrives').on('click-row.bs.table', function (e, row, $element) {console.log('tset---');$('#csserviceGreencostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#csserviceGreencostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#csserviceGreencostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#csserviceGreencostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
-	)
+	# dbl_clk_function += (
+	# 	"try {var fablocatedict = [];$('#csserviceGreencostvaldrives').on('click-row.bs.table', function (e, row, $element) {console.log('tset---');$('#csserviceGreencostvaldrives').find(':input(:disabled)').prop('disabled', false);$('#csserviceGreencostvaldrives tbody  tr td select option').css('background-color','lightYellow');$('#csserviceGreencostvaldrives').parent().addClass('header_section_div header_section_div_pad_bt10 padtop10');$('#csserviceGreencostvaldrives  tbody tr td select').addClass('light_yellow');$('.disabled_edit_drivers ').prop('disabled', true).removeClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');$('select').on('change', function() { console.log( this.value );var valuedrivchage = this.value;var valuedesc = $(this).closest('tr').find('td:nth-child(1)').text();console.log('valuedesc-----',valuedesc);var concate_data = valuedesc+'='+valuedrivchage;if(!fablocatedict.includes(concate_data)){fablocatedict.push(concate_data)};console.log('fablocatedict---',fablocatedict);getfablocatedict = JSON.stringify(fablocatedict);localStorage.setItem('getfablocatedict', getfablocatedict);});});}catch {console.log('error---')}"
+	# )
 	
 	#Trace.Write('date_field---'+str(date_field))
 	if len(date_field) == 0 and len(GetSAQSVD) == 0:
@@ -2294,6 +2434,9 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 		TP1 = TP.split('-')
 		TreeSuperParentParam = TP1[1].strip()
 	GetSAQSVD = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID,EDITABLE FROM PRSVDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'TOOL BASED SURVEY' AND SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+	sec_str += ('<div id = "fabnotify">')
+	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="customer_value_driver_info" class="dropdown-item" href="#" onclick="product_value_EDIT(this)">EDIT</a></li></ul></div></div> PRODUCT VALUE DRIVERS INFORMATION</div></label></label></div>''')
+	sec_str += ('<div class = "fabvaldrives collapse in">')
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	for key, invs in enumerate(list(desc_list)):
 		invs = str(invs).strip()
@@ -2341,14 +2484,14 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 			+ str(TreeParam)
 			+ "' AND EQUIPMENT_ID = '"
 			+ str(CurrentRecordId)
-			+ "'"
+			+ "' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
 		)
 		
 		userselecteddrive = []
 		if selecter:
 			userselecteddrive.append(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)
-			userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
-
+			if selecter.VALUEDRIVER_COEFFICIENT:
+				userselectedeffi.append(str(float(selecter.VALUEDRIVER_COEFFICIENT)*float(100))+" %")
 		
 		for qstns in GetDRIVNAME:
 			if qstn.EDITABLE:
@@ -2373,14 +2516,22 @@ def Offerequipcost(ACTION,CurrentRecordId,subtab):
 					+ str(qstns.VALUEDRIVER_VALUE_DESCRIPTION)
 					+ "</option>"
 				)
-			
-		sec_str1 += (
-			'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
-			+ str(field_name).replace(" ", "_")
-			+ '" disabled><option value="Select">..Select</option>'
-			+ str(VAR1)
-			+ "</select>"
-		)
+		try:
+			sec_str1 += (
+				'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
+				+ str(field_name).replace(" ", "_")
+				+ '" disabled><option value="Select">'+str(selecter.TOOL_VALUEDRIVER_VALUE_DESCRIPTION)+'</option>'
+				+ str(VAR1)
+				+ "</select>"
+			)
+		except:
+			sec_str1 += (
+				'<select class="form-control '+str(disabled_edit_drivers)+'" id = "'
+				+ str(field_name).replace(" ", "_")
+				+ '" disabled><option value="Select">..Select</option>'
+				+ str(VAR1)
+				+ "</select>"
+			)
 		for data in qstn:
 			new_value_dict["VALUE DRIVER DESCRIPTION"] = str(qstn.VALUEDRIVER_ID)
 			new_value_dict["VALUE DRIVER COEFFICIENT"]  = userselectedeffi
@@ -2409,6 +2560,7 @@ TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 TreeSuperTopParentParam = Product.GetGlobal("TreeParentLevel3")
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 userId = str(User.Id)
 userName = str(User.UserName)
 if hasattr(Param, "CurrentRecordId"):
@@ -2421,6 +2573,7 @@ if hasattr(Param, "SerLocateDT"):
 else:
 	SerLocateDT =""
 Trace.Write('SerLocateDT--------------------'+str(SerLocateDT))
+Trace.Write("ACTION_CHK-----> "+str(ACTION))
 try:
 	FabLocateDT = Param.FabLocateDT
 	#SerLocateDT = Param.SerLocateDT

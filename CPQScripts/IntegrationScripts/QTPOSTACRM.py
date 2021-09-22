@@ -11,11 +11,9 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import sys
 
-#result=ScriptExecutor.ExecuteGlobal('QTPOSTQCRM',{'QUOTE_ID':'MAQ000001-RW000-06012020','Fun_type':'cpq_to_crm'})
-
 try:	
 
-	def cpq_to_crm(Qt_id):
+	def cpq_to_crm(Qt_id,Rev_id):
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
@@ -30,16 +28,16 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
-			result = '{\"CPQ_Columns\":\r\n{\r\n\"QUOTE_ID\" : \"'+str(Qt_id)+'\"\r\n}\r\n}\r\n'
+			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
 			
-			Log.Info("28-10-2020 result ---->"+str(result))	
 
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_CRM_QUOTE_ASYNC'")
 			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 			#ApiResponse = ApiResponseFactory.JsonResponse({"Response":[{'Status':'200','Message':"Data Completely Uploaded"}]})
 			
 			
-	def cpq_to_sscm(Qt_id):
+	def cpq_to_sscm(Qt_id,Rev_id):
 		LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
 		if LOGIN_CREDENTIALS is not None:
 			Login_Username = str(LOGIN_CREDENTIALS.Username)
@@ -54,26 +52,24 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 			
-			#result = '{\"CPQ_Columns\":\r\n{\r\n\"QUOTE_ID\" : \"'+str(Qt_id)+'\"\r\n}\r\n}\r\n'
-			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
-  				<QUOTE_ID>{Qt_Id}</QUOTE_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id)
 			
-			Log.Info("28-10-2020 result ---->"+str(result))	
-
+			result= '''<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">	<soapenv:Body><CPQ_Columns>
+  				<QUOTE_ID>{Qt_Id}</QUOTE_ID><REVISION_ID>{Rev_Id}</REVISION_ID></CPQ_Columns></soapenv:Body></soapenv:Envelope>'''.format( Qt_Id= Qt_id,Rev_Id = Rev_id)
+			
+			Log.Info("cpq_to_sscm ===>  "+str(result))
 			LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_QUOTE_ASYNC'")
 			response_MAMSOP = webclient.UploadString(str(LOGIN_CRE.URL), str(result))
 			#ApiResponse = ApiResponseFactory.JsonResponse({"Response":[{'Status':'200','Message':"Data Completely Uploaded"}]})
 			
 	
-	input_data = Param.QUOTE_ID
-	Log.Info("20202020 input_data ---->"+str(input_data))
+	Quote_Id = Param.QUOTE_ID
+	Revision_Id = Param.REVISION_ID
 	Fun_type = Param.Fun_type
-	Log.Info("20202020 Fun_type ---->"+str(Fun_type))
 	if len(Fun_type) > 0:
 		if str(Fun_type).upper() == 'CPQ_TO_CRM':
-			Funtion_call = cpq_to_crm(input_data)
+			Funtion_call = cpq_to_crm(Quote_Id,Revision_Id)
 		elif str(Fun_type).upper() == 'CPQ_TO_SSCM':
-			Funtion_call = cpq_to_sscm(input_data)
+			Funtion_call = cpq_to_sscm(Quote_Id,Revision_Id)
 	
 			
 except:

@@ -31,7 +31,7 @@ def BULKSAVE(CUS_ANN,SCH_MODE,GETQTID,GET_PARTNUM):
 	sqlforupdatePT = getep = EP = ""
 	for SMO,CQ,PN in zip(SCH_MODE,CUS_ANN,GET_PARTNUM):
 		
-		sqlforupdatePT += "UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '{AQ}' where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'".format(SM= str(SMO),AQ =CQ ,CT = str(ContractRecordId),PN=str(PN))
+		sqlforupdatePT += "UPDATE SAQSPT SET CUSTOMER_ANNUAL_QUANTITY = '{AQ}' where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}' AND QTEREV_RECORD_ID = '{REV}'".format(SM= str(SMO),AQ =CQ ,CT = str(ContractRecordId),PN=str(PN),REV=quote_revision_record_id)
 		Sql.RunQuery(sqlforupdatePT)
 		
 	
@@ -41,7 +41,7 @@ def BULKSAVE(CUS_ANN,SCH_MODE,GETQTID,GET_PARTNUM):
 		getpartNum = Sql.GetFirst("select CpqTableEntryId from  SAQIFP where QUOTE_RECORD_ID ='"+str(ContractRecordId)+"' and  PART_NUMBER ='"+str(PN)+"'")
 		if getpartNum:
 			#tableINfopQ = {'CpqTableEntryId':str(getpartNum.CpqTableEntryId),'SCHEDULE_MODE':str(SM),'ANNUAL_QUANTITY':str(CQ)}
-			sqlforupdateHP += "UPDATE SAQIFP SET  ANNUAL_QUANTITY = '{AQ}', EXTENDED_PRICE = (UNIT_PRICE*'{AQ}') where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN))
+			sqlforupdateHP += "UPDATE SAQIFP SET  ANNUAL_QUANTITY = '{AQ}', EXTENDED_PRICE = (UNIT_PRICE*'{AQ}') where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'  AND QTEREV_RECORD_ID = '{REV}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN),REV=quote_revision_record_id)
 			Sql.RunQuery(sqlforupdateHP)
 			
 			sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ}, EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER ='{PN}'".format(AQ =CQ ,CT = str(ContractRecordId),PN=str(PN))
@@ -53,4 +53,5 @@ CUS_ANN = list(Param.CUS_ANN)
 SCH_MODE =list(Param.SCH_MODE)
 GETQTID = list(Param.GETQTID)
 GET_PARTNUM =list(Param.GET_PARTNUM)
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 ApiResponse = ApiResponseFactory.JsonResponse(BULKSAVE(CUS_ANN,SCH_MODE,GETQTID,GET_PARTNUM,))

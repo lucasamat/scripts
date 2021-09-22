@@ -70,6 +70,10 @@ def POPUPLISTVALUEADDNEW(
 		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 	except:
 		contract_quote_record_id = ''
+	try:
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+	except:
+		quote_revision_record_id = ''
 	#page = ''
 	pagedata = ''  
 	QryCount = ""  
@@ -536,14 +540,14 @@ def POPUPLISTVALUEADDNEW(
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				#fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
 				Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND {}FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and RELOCATION_FAB_TYPE in ('SENDING FAB','RECEIVING FAB'))".format(
-					ObjectName, account_id, where_string,contract_quote_record_id
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE MAFBLC.ACCOUNT_ID = '{}' AND {}FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and RELOCATION_FAB_TYPE in ('SENDING FAB','RECEIVING FAB'))".format(
+					ObjectName, account_id, where_string,contract_quote_record_id,quote_revision_record_id
 					)
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  )".format(
-					ObjectName, contract_quote_record_id,where_string, contract_quote_record_id
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAQTMT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAQTMT.ACCOUNT_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'AND QTEREV_RECORD_ID = '{}' AND {} FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' )".format(
+					ObjectName, contract_quote_record_id,quote_revision_record_id,where_string, contract_quote_record_id,quote_revision_record_id
 				)
 			)
 
@@ -567,8 +571,8 @@ def POPUPLISTVALUEADDNEW(
 			
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				#fab_type = 'SENDING FAB' if "Sending Account -" in TreeParam else 'RECEIVING FAB' if "Receiving Account -" in TreeParam else ""
-				where_string += """  MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and RELOCATION_FAB_TYPE in ('SENDING FAB','RECEIVING FAB'))""".format(account_id,
-					contract_quote_record_id
+				where_string += """  MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' and RELOCATION_FAB_TYPE in ('SENDING FAB','RECEIVING FAB'))""".format(account_id,
+					contract_quote_record_id,quote_revision_record_id
 				)
 				table_data = Sql.GetList(
 					"select  {} from {} (NOLOCK) {} {} {}".format(", ".join(ordered_keys),
@@ -586,8 +590,8 @@ def POPUPLISTVALUEADDNEW(
 					)
 
 			else:
-				where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
-					contract_quote_record_id, contract_quote_record_id
+				where_string += """ SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT FABLOCATION_ID FROM SAQFBL (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(
+					contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
 				)
 
 				table_data = Sql.GetList(
@@ -969,8 +973,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 			stp_account_id = Product.GetGlobal("stp_account_id")
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID WHERE MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )".format(
-					ObjectName,stp_account_id, contract_quote_record_id, contract_quote_record_id
+				"SELECT COUNT(MAFBLC.CpqTableEntryId) as count FROM {} (NOLOCK) JOIN SAACNT (NOLOCK) ON MAFBLC.ACCOUNT_RECORD_ID = SAACNT.ACCOUNT_RECORD_ID WHERE MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )".format(
+					ObjectName,stp_account_id, contract_quote_record_id,quote_revision_record_id
 				)
 			)
 
@@ -994,8 +998,8 @@ def POPUPLISTVALUEADDNEW(
 
 			if where_string:
 				where_string += " AND"
-			where_string += """ MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
-				stp_account_id, contract_quote_record_id, contract_quote_record_id
+			where_string += """ MAFBLC.ACCOUNT_ID = '{}' AND FAB_LOCATION_ID NOT IN (SELECT SRCFBL_ID FROM SAQSCF (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' )""".format(
+				stp_account_id, contract_quote_record_id, quote_revision_record_id 
 			)
 
 			table_data = Sql.GetList(
@@ -1349,8 +1353,8 @@ def POPUPLISTVALUEADDNEW(
 			sales_org_record_id = None
 			account_record_id = None
 			quote_obj = Sql.GetFirst(
-				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTSO.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(
-					contract_quote_record_id
+				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTRV.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(
+					contract_quote_record_id,quote_revision_record_id
 				)
 			)
 			if quote_obj:
@@ -1361,8 +1365,8 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 			Pagination_M = Sql.GetFirst(
-				"select count(MAEQUP.CpqTableEntryId) as count from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' WHERE MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')".format(
-				contract_quote_record_id, contract_quote_record_id
+				"select count(MAEQUP.CpqTableEntryId) as count from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' WHERE MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(
+				contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
 				)
 			)
 
@@ -1389,7 +1393,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 				Trace.Write("soureceequipments "+str(where_string))
 			if TreeParam == "Quote Information":
-				where_string += """ MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) where QUOTE_RECORD_ID = '{}')""".format(contract_quote_record_id)
+				where_string += """ MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
 			
 			
 			# table_data = Sql.GetList(
@@ -1719,7 +1723,7 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 
-			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeParentParam)+"' AND 	ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"') ")
+			Pagination_M = Sql.GetFirst("select count(MAADPR.CpqTableEntryId) as count from MAADPR WHERE PRDOFR_ID = '"+str(TreeParentParam)+"' AND 	ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID ='"+str(quote_revision_record_id)+"') ")
 
 			order_by = "order by MAADPR.ADNPRDOFR_NAME ASC"
 
@@ -1744,7 +1748,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 				
 			if TreeParam == "Add-On Products":
-				where_string += """ PRDOFR_ID = '{}'  AND ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}')""".format(str(TreeParentParam),contract_quote_record_id)
+				where_string += """ PRDOFR_ID = '{}'  AND ADNPRDOFR_ID NOT IN (SELECT ADNPRD_ID FROM SAQSAO where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}')""".format(str(TreeParentParam),contract_quote_record_id,quote_revision_record_id)
 
 			table_data = Sql.GetList(
 				"select {} from MAADPR (NOLOCK) {} {} {}".format(
@@ -2083,20 +2087,20 @@ def POPUPLISTVALUEADDNEW(
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
 			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
-				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTSO WHERE QUOTE_RECORD_ID = '{}' ".format(contract_quote_record_id) )
+				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id) )
 				if get_sales_org :
 					inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID "
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
-						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,additional_where
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ) {} ".format(
-						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "", Product.GetGlobal("TreeParam"),ObjectName, contract_quote_record_id,additional_where
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE ='{}' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "", Product.GetGlobal("TreeParam"),ObjectName, contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
 			
@@ -2127,12 +2131,12 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			if TreeParam == "Product Offerings":
-				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' )""".format(
-					contract_quote_record_id
+				where_string += """ PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' )""".format(
+					contract_quote_record_id,quote_revision_record_id
 				)
 			else:
-				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}')""".format(
-					Product.GetGlobal("TreeParam"), contract_quote_record_id
+				where_string += """ PRODUCT_TYPE ='{}' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(
+					Product.GetGlobal("TreeParam"), contract_quote_record_id,quote_revision_record_id
 				)
 				
 			#Trace.Write("order_by"+str(order_by)+str(additional_where))
@@ -2368,6 +2372,7 @@ def POPUPLISTVALUEADDNEW(
 				"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID": "KEY",
 				"EQUIPMENT_ID": "EQUIPMENT ID",
 				"EQUIPMENT_DESCRIPTION":"EQUIPMENT_DESCRIPTION",
+				"EQUIPMENTCATEGORY_DESCRIPTION":"EQUIPMENT CATEGORY DESCRIPTION",
 				"SERIAL_NUMBER": "SERIAL NUMBER",
 				"GREENBOOK": "GREENBOOK",
 				"PLATFORM": "PLATFORM",
@@ -2378,6 +2383,7 @@ def POPUPLISTVALUEADDNEW(
 				"QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID",
 				"EQUIPMENT_ID",
 				"EQUIPMENT_DESCRIPTION",
+				"EQUIPMENTCATEGORY_DESCRIPTION",
 				"SERIAL_NUMBER",
 				"GREENBOOK",
 				"PLATFORM",
@@ -2505,16 +2511,16 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParentParam == "Add-On Products" and TreeParam !="":
 				#getparentservice =Sql.GetFirst("Select SERVICE_ID from SAQSAO(NOLOCK) WHERE QUOTE_RECORD_ID ='{quo_rec_id}' and ADNPRD_ID = '{TreeParam}' AND ACTIVE ='TRUE' ".format(quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam))
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(SAQFEQ.CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_ID = SAQFEQ.QUOTE_ID  AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND SAQSCO.SERVICE_ID ='{parent}' AND SAQFEQ.EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}')".format(
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,parent = TreeSuperParentParam
+					"SELECT COUNT(SAQFEQ.CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_ID = SAQFEQ.QUOTE_ID  AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND SAQSCO.SERVICE_ID ='{parent}' AND SAQFEQ.EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,parent = TreeSuperParentParam,qurev_rec_id = quote_revision_record_id
 					)
 				)
 			else: 
 				if TreeParam == 'Sending Equipment' or TreeParam == "Receiving Equipment":
 					
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParentParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParentParam}'AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParentParam = TreeParentParam,qurev_rec_id = quote_revision_record_id
 					)
 					)
 					""" elif TreeParam == 'Receiving Equipment':
@@ -2526,8 +2532,8 @@ def POPUPLISTVALUEADDNEW(
 					
 				else:
 					Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}')".format(where_string=str(where_string)+" AND " if where_string else "",
-						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
+					"SELECT COUNT(CpqTableEntryId) as count FROM SAQFEQ (NOLOCK) WHERE {where_string} QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}')".format(where_string=str(where_string)+" AND " if where_string else "",
+						quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id
 					)
 					)
 				
@@ -2555,16 +2561,17 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			
 			if TreeParam == 'Sending Equipment':
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
-				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
+				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam,qurev_rec_id = quote_revision_record_id
 			)
 			elif TreeParam == 'Receiving Equipment':
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
-				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'SENDING EQUIPMENT' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND RELOCATION_EQUIPMENT_TYPE = 'RECEIVING EQUIPMENT')".format(
+				quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParentParam,qurev_rec_id = quote_revision_record_id
 			)
 			else:
-				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}')".format(
-					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam
+				Trace.Write('2572--POPUPPPPPPPPPPP----')
+				where_string += " QUOTE_RECORD_ID = '{quo_rec_id}' AND QTEREV_RECORD_ID = '{qurev_rec_id}' AND EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID = '{TreeParam}' AND QTEREV_RECORD_ID  = '{qurev_rec_id}')".format(
+					quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,qurev_rec_id = quote_revision_record_id
 				)
 			if TreeParentParam == "Add-On Products" and TreeParam !="":
 				#A055S000P01-3251--start pagination issue on addfromlist popup in addonproducts
@@ -2573,7 +2580,7 @@ def POPUPLISTVALUEADDNEW(
 				else:
 					offset_val=offset_skip_count
 				
-				table_data =Sql.GetList("select SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQFEQ.EQUIPMENT_ID, SAQFEQ.EQUIPMENT_DESCRIPTION,SAQFEQ.SERIAL_NUMBER, SAQFEQ.PBG, SAQFEQ.PLATFORM, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME from  SAQFEQ(NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID  AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID  WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND SAQSCO.SERVICE_ID ='{parent}' AND SAQFEQ.EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID ='{TreeParam}' ) order by EQUIPMENT_ID ASC offset {offset_skip_count} rows fetch next {per_page} rows only".format(per_page=PerPage,offset_skip_count=offset_val,quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,parent = TreeSuperParentParam))#A055S000P01-3251--end
+				table_data =Sql.GetList("select SAQFEQ.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, SAQFEQ.EQUIPMENT_ID, SAQFEQ.EQUIPMENT_DESCRIPTION,SAQFEQ.SERIAL_NUMBER, SAQFEQ.PBG, SAQFEQ.PLATFORM, SAQFEQ.FABLOCATION_ID, SAQFEQ.FABLOCATION_NAME from  SAQFEQ(NOLOCK) JOIN SAQSCO ON SAQSCO.QUOTE_RECORD_ID = SAQFEQ.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQFEQ.QTEREV_RECORD_ID AND SAQSCO.EQUIPMENT_ID = SAQFEQ.EQUIPMENT_ID  WHERE SAQFEQ.QUOTE_RECORD_ID = '{quo_rec_id}' AND SAQSCO.SERVICE_ID ='{parent}' AND SAQSCO.QTEREV_RECORD_ID ='{qurev_rec_id}' AND SAQFEQ.EQUIPMENT_ID NOT IN(SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_RECORD_ID = '{quo_rec_id}' and SERVICE_ID ='{TreeParam}' AND QTEREV_RECORD_ID ='{qurev_rec_id}' ) order by EQUIPMENT_ID ASC offset {offset_skip_count} rows fetch next {per_page} rows only".format(per_page=PerPage,offset_skip_count=offset_val,quo_rec_id=Quote.GetGlobal("contract_quote_record_id"),TreeParam = TreeParam,parent = TreeSuperParentParam,qurev_rec_id = quote_revision_record_id))#A055S000P01-3251--end
 			else:    
 				table_data = Sql.GetList(
 					"select {} from {} (NOLOCK) {} {} {} ".format(
@@ -2822,9 +2829,15 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+			query_shp_values = Sql.GetFirst(" SELECT SALESORG_ID FROM SAQFBL (NOLOCK) WHERE FABLOCATION_ID = '{}' AND QUOTE_RECORD_ID = '{}' ".format(Product.GetGlobal("TreeParam"),contract_quote_record_id,))
+			if	query_shp_values:
+				sales_org = query_shp_values.SALESORG_ID
+			else:
+				Trace.Write("EXCEPT: sales_org ")
+				sales_org = ""
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
-			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="AMC">AMC</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="2044">2044</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-unmapped_equipment" class="btnconfig" onclick="addUnmappedEquipments()" data-dismiss="modal">ADD</button></div></div>'.format(
-				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam")
+			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="AMC">AMC</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{sales_org}">{sales_org}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-unmapped_equipment" class="btnconfig" onclick="addUnmappedEquipments()" data-dismiss="modal">ADD</button></div></div>'.format(
+				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam"),sales_org = sales_org,
 			)
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec header_section_div">'
@@ -2843,7 +2856,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="fablocationListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="UnmappedListKeyHyperLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
@@ -2898,8 +2911,8 @@ def POPUPLISTVALUEADDNEW(
 			sales_org_record_id = None
 			account_record_id = None
 			quote_obj = Sql.GetFirst(
-				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTSO.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(
-					contract_quote_record_id
+				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTRV.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID ='{}' ".format(
+					contract_quote_record_id,quote_revision_record_id
 				)
 			)
 			if quote_obj:
@@ -2910,7 +2923,7 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
-			get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(contract_quote_record_id,account_id) )
+			get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,account_id,quote_revision_record_id) )
 			if get_fab_query:
 				get_fab = tuple([fab.FABLOCATION_ID for fab in get_fab_query])
 			else:
@@ -2919,30 +2932,31 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID = 'UNMAPPED')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID = 'UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = 'UNMAPPED')".format(
 						ObjectName = ObjectName,
 						account_id = account_id,
-						contract_quote_record_id = contract_quote_record_id,
+						contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id
 					)
 				)   
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 						ObjectName,
 						account_record_id,
 						Product.GetGlobal("TreeParam"),
 						where_string,
 						contract_quote_record_id,
 						Product.GetGlobal("TreeParam"),
+						quote_revision_record_id,
 					)
 				)   	
 			order_by = "order by FABLOCATION_NAME ASC"
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = 'UNMAPPED')""".format(
+				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='UNMAPPED' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND FABLOCATION_ID = 'UNMAPPED')""".format(
 					account_id,
-					contract_quote_record_id,
+					contract_quote_record_id,quote_revision_record_id=quote_revision_record_id,
 				)
 				table_data = Sql.GetList(
 					"select {} from {} (NOLOCK) {} {} {}".format(
@@ -2954,12 +2968,12 @@ def POPUPLISTVALUEADDNEW(
 					)
 				)	
 			else:
-				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
 					Product.GetGlobal("TreeParam"),
 					where_string,
 					contract_quote_record_id,
-					Product.GetGlobal("TreeParam"),
+					Product.GetGlobal("TreeParam"),quote_revision_record_id,
 				)
 				table_data = Sql.GetList(
 					"select {} from {} (NOLOCK) {} {} {}".format(
@@ -3195,9 +3209,12 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+			query_shp_values = Sql.GetFirst(" SELECT SALESORG_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+			if	query_shp_values:
+				sales_org = query_shp_values.SALESORG_ID	
 			sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
-			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="AMC">AMC</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="2044">2044</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="addEquipments()" data-dismiss="modal">ADD</button></div></div>'.format(
-				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam")
+			sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Customer Region</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="AMC">AMC</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Sales Org</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{sales_org}">{sales_org}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Key">Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="addEquipments()" data-dismiss="modal">ADD</button></div></div>'.format(
+				Product.GetGlobal("TreeParam"), Product.GetGlobal("TreeParam"),sales_org = sales_org
 			)
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec header_section_div">'
@@ -3271,8 +3288,8 @@ def POPUPLISTVALUEADDNEW(
 			sales_org_record_id = None
 			account_record_id = None
 			quote_obj = Sql.GetFirst(
-				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTSO.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTSO (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTSO.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(
-					contract_quote_record_id
+				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTRV.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(
+					contract_quote_record_id,quote_revision_record_id
 				)
 			)
 			if quote_obj:
@@ -3283,7 +3300,7 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
-			get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}'".format(contract_quote_record_id,account_id) )
+			get_fab_query = Sql.GetList("SELECT FABLOCATION_ID FROM SAQFBL WHERE QUOTE_RECORD_ID = '{}' and ACCOUNT_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,account_id,quote_revision_record_id) )
 			if get_fab_query:
 				get_fab = tuple([fab.FABLOCATION_ID for fab in get_fab_query])
 			else:
@@ -3292,31 +3309,33 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {ObjectName} (NOLOCK) WHERE ACCOUNT_ID = '{account_id}' AND FABLOCATION_ID in {get_fab} AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND FABLOCATION_ID in {get_fab}  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 						ObjectName = ObjectName,
 						account_id = account_id,
 						get_fab = get_fab,
 						contract_quote_record_id = contract_quote_record_id,
+						quote_revision_record_id = quote_revision_record_id,
 					)
 				)   
 			else:
 				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
+					"SELECT COUNT(CpqTableEntryId) as count FROM {} (NOLOCK) WHERE ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')".format(
 						ObjectName,
 						account_record_id,
 						Product.GetGlobal("TreeParam"),
 						where_string,
 						contract_quote_record_id,
 						Product.GetGlobal("TreeParam"),
+						quote_revision_record_id,
 					)
 				)   	
 			order_by = "order by FABLOCATION_NAME ASC"
 			pop_val = {}
 
 			if (("Sending Account -" in TreeParam) or ("Receiving Account -" in TreeParam)) and TreeParentParam == 'Fab Locations':
-				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_ID = '{}' AND FABLOCATION_ID ='' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_id,
-					contract_quote_record_id,
+					contract_quote_record_id,quote_revision_record_id
 				)
 				table_data = Sql.GetList(
 					"select {} from {} (NOLOCK) {} {} {}".format(
@@ -3328,12 +3347,13 @@ def POPUPLISTVALUEADDNEW(
 					)
 				)	
 			else:
-				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
+				where_string += """ ACCOUNT_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND ISNULL(SERIAL_NO, '') <> '' AND ISNULL(GREENBOOK, '') <> '' AND {} EQUIPMENT_RECORD_ID NOT IN (SELECT EQUIPMENT_RECORD_ID FROM SAQFEQ (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ISNULL(SERIAL_NUMBER,'') <> '')""".format(
 					account_record_id,
 					Product.GetGlobal("TreeParam"),
 					where_string,
 					contract_quote_record_id,
 					Product.GetGlobal("TreeParam"),
+					quote_revision_record_id,
 				)
 				table_data = Sql.GetList(
 					"select {} from {} (NOLOCK) {} {} {}".format(
@@ -3533,7 +3553,8 @@ def POPUPLISTVALUEADDNEW(
 			if ObjectName == "ACACST":
 				lookup_val.append("APROBJ_LABEL")
 			lookup_list = {ins.LOOKUP_API_NAME: ins.LOOKUP_OBJECT for ins in Sqq_obj}			
-			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}			
+			lookup_list1 = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Sqq_obj}
+			Trace.Write('###Lookup List--->'+str(lookup_list))		
 			new_value_dict = {}
 			new_value_dict1 = {}
 			val_list = []
@@ -4079,7 +4100,7 @@ def POPUPLISTVALUEADDNEW(
 						sec_str += (
 							'<tr class="iconhvr borbot1" style="display: none;"><td class="width350"><label class="fltltpadlt15">'
 							+ str(current_obj_field_lable)
-							+ '</label></td><td class="width40"><a class="color_align_width" href="#" data-placement="top" data-toggle="popover" data-content="'
+							+ '</label></td><td class="width40"><a class="color_align_width" href="#" data-placement="top" data-toggle="popover" title="'+ str(current_obj_field_lable)+'" data-content="'
 							+ str(current_obj_field_lable)
 							+ '" ><i class="fa fa-info-circle flt_lt"></i>'
 						)                        
@@ -4104,7 +4125,7 @@ def POPUPLISTVALUEADDNEW(
 							+ str(add_style)
 							+ '"><td class="width350"><label class="fltltpadlt">'
 							+ str(current_obj_field_lable)
-							+ '</label></td><td class="width40"><a class="bgcccwth10" href="#" data-placement="top" data-toggle="popover" data-content="'
+							+ '</label></td><td class="width40"><a class="bgcccwth10" href="#" data-placement="top" title="'+ str(current_obj_field_lable)+'" data-toggle="popover" data-content="'
 							+ str(current_obj_field_lable)
 							+ '"><i class="fa fa-info-circle flt_lt"></i>'
 						)
@@ -4483,9 +4504,9 @@ def POPUPLISTVALUEADDNEW(
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
 							Trace.Write('4063--Tier_List1-----'+str(TabName))
-							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id))
+							getlist = Sql.GetList("SELECT CpqTableEntryId FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PARTY_ROLE != 'RECEIVING ACCOUNT'".format(contract_quote_record_id,quote_revision_record_id))
 							if str(TabName) == "Quote":
-								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+								send_n_receive_acnt = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 								list_of_role = []
 								if send_n_receive_acnt:
 									for acnt in send_n_receive_acnt:

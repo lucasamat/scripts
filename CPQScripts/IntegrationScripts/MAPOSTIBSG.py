@@ -100,6 +100,8 @@ try :
 	if Trigger_flag == 1:
 		resp = ScriptExecutor.ExecuteGlobal("MAPOSTEQBK")              
 		ApiResponse = ApiResponseFactory.JsonResponse(resp)		
+	else:
+		ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "NO DATA AVAILABLE FOR SYNCHRONIZATION"}]}) 
 except:
 	Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")			
 	primaryItems = SqlHelper.GetFirst(  ""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL set STATUS = ''ERROR'' from SYINPL  (NOLOCK) WHERE CpqTableEntryId  = ''"+str(cpqentry_id)+ "'' AND ISNULL(STATUS ,'''')= '''' ' "    )

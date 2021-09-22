@@ -17,7 +17,13 @@ Sql = SQL()
 
 c_total = 0
 g_total = 0
-
+try:
+	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+except:
+	Trace.Write("EXCEPT: GetActiveRevision")
+	GetActiveRevision = ""
+if GetActiveRevision:
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 
 class TreeView:
 	def __init__(self):
@@ -416,12 +422,13 @@ class TreeView:
 			current_prod = Product.Name
 		except Exception:
 			current_prod = "Sales"
+		Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
 		CurrentModuleObj = Sql.GetFirst("select APP_ID from SYAPPS where APP_LABEL = '" + str(current_prod) + "'")
 		try:
 			TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 			tab_name = TestProduct.CurrentTab
 			TabName = str(TestProduct.CurrentTab)
-			#Trace.Write("==================>>>>"+str(TabName))
+			Trace.Write("========TreeParentParam==========>>>>"+str(TreeParentParam))
 			#if tab_name == "Contract":
 			#  crnt_prd_val = "CT"
 			#else:
@@ -448,8 +455,25 @@ class TreeView:
 		quote_record_id = quote_no = ""
 		if tab_name == "Quote" and current_prod == "Sales":
 			#Trace.Write("SET GLOBAL----")
-			getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID LIKE 'SQ{}_%'".format(Quote.CompositeNumber))
-			Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
+			try:
+				GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+			except:
+				Trace.Write("EXCEPT: GetActiveRevision")
+				GetActiveRevision = ""
+			#if GetActiveRevision:
+			# 	Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+			# 	Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+			# 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+			try:
+				getQuote = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.CompositeNumber,GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+				Quote.SetGlobal("contract_quote_record_id",getQuote.MASTER_TABLE_QUOTE_RECORD_ID)
+			except:
+				Trace.Write("EXCEPT: getQuote")
+				getQuote = ""
+			#GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID LIKE '%{}%' AND ACTIVE = 1".format(Quote.CompositeNumber))
+			#quote_revision_record_id = Quote.GetCustomField('QUOTE_REVISION_ID').Content
+			#Trace.Write("@454---------->"+str(quote_revision_record_id))
+			
 		returnList = []
 		nodeId = 0
 		objrList = []
@@ -479,7 +503,7 @@ class TreeView:
 					Trace.Write("RecAttValue"+str(RecAttValue))
 				else:
 					RecAttValue = ""
-			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 			'''if getAccounts is not None:
 				
 				# INSERT NEW RECORD
@@ -563,7 +587,7 @@ class TreeView:
 								)
 						# Billing Matrix Dynamic Tabs - Start
 						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing':
-							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id")))
+							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 								years = quotient + (1 if remainder > 0 else 0)
@@ -1362,7 +1386,7 @@ class TreeView:
 		# Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-		#Trace.Write('RecId-----1069-----'+str(RecId))
+		Trace.Write('RecId-----TreeParentParam--'+str(TreeParentParam))
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
@@ -1443,7 +1467,8 @@ class TreeView:
 				except:
 					CurrentTabName = "Quotes"
 				if CurrentTabName in ('Quotes', 'Quote'):
-					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+					
+					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if quote_obj:
 						quote_id = quote_obj.QUOTE_ID
 				if objd_where_obj is not None:
@@ -1451,9 +1476,9 @@ class TreeView:
 						Wh_API_NAME = ""
 						where_string = where_string
 					elif str(ObjName).strip() == 'SAQSSF' and str(NodeName).strip() == 'SNDFBL_ID':
-						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
+						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID':
-						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != ''".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"))
+						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != '' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
 						where_string = where_string                        
 					elif str(ObjName).strip() == 'SAQIFL' and str(NodeName).strip() == 'FABLOCATION_ID':
@@ -1475,7 +1500,7 @@ class TreeView:
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")                        
-						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"))
+						where_string += """ AND QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == "SYPRTB":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00125").GetValue()
 						where_string = '1=1 AND'
@@ -1547,19 +1572,19 @@ class TreeView:
 					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
 					 		 
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
-						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%') ".format(Quote.GetGlobal("contract_quote_record_id"))
+						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					# elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 					# 	where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
 					elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
 						send_receive_node_text = Product.GetGlobal("setnodetextname")
 						if send_receive_node_text.startswith("Sending"):
 							#Trace.Write('SENDING ACCOUNT========')
-							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'SENDING FAB'".format(Quote.GetGlobal("contract_quote_record_id"))
+							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'SENDING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 						elif send_receive_node_text.startswith("Receiving"):
 							#Trace.Write('RECEIVING ACCOUNT========')
-							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'".format(Quote.GetGlobal("contract_quote_record_id"))							 
+							where_string = " QUOTE_RECORD_ID ='{}' AND RELOCATION_FAB_TYPE = 'RECEIVING FAB' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)							 
 						else:
-							where_string = " QUOTE_RECORD_ID ='{}' ".format(Quote.GetGlobal("contract_quote_record_id"))
+							where_string = " QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 
 					else:
 						Wh_API_NAME = objd_where_obj.API_NAME
@@ -1569,13 +1594,15 @@ class TreeView:
 						else:
 							Trace.Write('where_string----'+str(where_string))
 							where_string = where_string
-					
+
 					childRecName = Sql.GetFirst(
 						"select * from SYOBJD (nolock) where OBJECT_NAME = '"
 						+ str(ObjName)
 						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
 					)                    
-					
+					if 'QTEREV_RECORD_ID' not in where_string:
+						
+						where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
 							DynamicQuery.replace("{", "")
@@ -1877,6 +1904,7 @@ class TreeView:
 									NodeName2 = Nodesplit[1]
 									NodeText1 = str(eval("childdata." + str(NodeName2))).title()
 									NodeText = NodeName1 + "-" + NodeText1									
+									Trace.Write('childQueryObj1--'+str(where_string)) 
 									childQueryObj = Sql.GetFirst(
 										"select * from "
 										+ str(ObjName)
@@ -1890,7 +1918,8 @@ class TreeView:
 									)
 							
 							if childQueryObj is not None:
-								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))                               
+								NodeRecId = str(eval("childQueryObj." + str(childRecName.API_NAME)))   
+								Trace.Write('child id1--'+str(NodeRecId))                            
 								ChildDict["id"] = str(NodeRecId)
 								if str(NodeName) == "SECTION_NAME" and TabName == "App":
 									Product.SetGlobal("NodeRecIdS",NodeRecId)
@@ -1935,11 +1964,35 @@ class TreeView:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME
-									Trace.Write("SUBTAB_NAMEsss"+str(subTabName))		
+									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss"+str(subTabName)+'--1947---'+str(NodeText))
+										
 									if subTabName:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
+									if str(ObjRecId) == "01C264E8-9B64-4F99-B05C-D61ECD2C4D27":
+										Trace.Write(str(ObjRecId)+"---1949---"+str(subTabName)+'--1947---'+str(NodeText))
+										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
+										if item_billing_plan_obj is not None:
+											quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+											years = quotient + (1 if remainder > 0 else 0)
+											if not years:
+												years = 1
+											ObjRecId = RelatedId = None
+											related_obj = Sql.GetFirst("""SELECT SYOBJR.OBJ_REC_ID, SYOBJR.SAPCPQ_ATTRIBUTE_NAME, SYOBJR.NAME FROM SYOBJH (NOLOCK)
+															JOIN SYOBJR (NOLOCK) ON SYOBJR.OBJ_REC_ID = SYOBJH.RECORD_ID
+															WHERE SYOBJH.OBJECT_NAME = 'SAQIBP'""")
+											if related_obj:              
+												ObjRecId = related_obj.OBJ_REC_ID
+												RelatedId = related_obj.SAPCPQ_ATTRIBUTE_NAME
+												RelatedName = related_obj.NAME
+											for index in range(1, years+1):
+												type = "OBJECT RELATED LAYOUT"
+												subTabName = "Year {}".format(index)
+												if ObjRecId and RelatedId:
+													SubTabList.append(
+														self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
+													)
 									#Trace.Write("SUBTAB_LIST_J "+str(SubTabList))
 								''' ## Approvals Dynamic Subtab Code starts..##Dynamic chain subtabs in round node...
 								if "Round" in ChildDict.get("text"):
@@ -1976,7 +2029,7 @@ class TreeView:
 										self.getPageRelatedDetails(subTabName, pageType, objRecId, ObjectRecId, querystr)
 									)
 							ChildDict["SubTabs"] = SubTabList
-							#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+							#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 							if getAccounts is None:
 								findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2098,10 +2151,10 @@ class TreeView:
 										#Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
 										addon_obj = None
 										if NodeText.startswith('Z'):
-											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText))
+											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
 										
 										if NodeText in ('Z0091','Z0092','Z0035','Z0016','Z0007','Z0016_AG','Z0007_AG'):                                      
-											Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)
+											Subwhere_string += " AND SERVICE_ID = '{}' ".format(NodeText)
 											Quote.SetGlobal("SERVICE",NodeText)
 											#service_id_1 = str(NodeText)
 										elif addon_obj:											
@@ -2115,9 +2168,9 @@ class TreeView:
 											if "-" in  NodeText:
 												temp_node = NodeText.split("-")
 												if str(len(temp_node)) == "4":
-													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(temp_node[-2].strip())
+													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[-2].strip())
 												else:
-													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND SERVICE_ID = '{}'".format(temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
+													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'  AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
 										if parObjName == "ACACST" and str(ProductName).upper() == "APPROVAL CENTER":
 											Chain_step = Sql.GetFirst("SELECT APRCHNSTP_NUMBER FROM ACACST (NOLOCK) WHERE APRCHNSTP_NAME = '"+str(NodeText)+"' AND APRCHN_RECORD_ID = '"+Product.Attributes.GetByName('QSTN_SYSEFL_AC_00001').GetValue()+"'")
 											Subwhere_string += " AND APRCHNSTP = '"+str(Chain_step.APRCHNSTP_NUMBER)+"'"
@@ -2125,7 +2178,7 @@ class TreeView:
 											Subwhere_string += " AND  PAGE_NAME = '"+str(NodeText)+"'"                                            
 										elif NodeName == 'Actions' and CurrentTabName == 'Tab':                                            
 											Subwhere_string = Subwhere_string
-										Trace.Write('2121')
+										Trace.Write('2121'+str(Subwhere_string)+str(SubNodeName))
 										if ACTION != 'ADDNEW':
 											SubChildData = self.getChildOne(
 												SubNodeType,
@@ -2154,7 +2207,7 @@ class TreeView:
 								#Trace.Write("ChildList"+str(ChildList))
 								
 		else:
-			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+			#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 			if getAccounts is None:
 				findChildOneObj = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NODE_RECORD_ID = '"
@@ -2245,7 +2298,7 @@ class TreeView:
 							if RelatedObj is not None:
 								ChildDict["id"] = RelatedObj.SAPCPQ_ATTRIBUTE_NAME
 					ChildDict["SubTabs"] = SubTabList
-					#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+					#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 					if getAccounts is None:
 						findSubChildAvailable = Sql.GetList(
 									"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2312,7 +2365,7 @@ class TreeView:
 									CurrentTabName = TestProduct.CurrentTab 
 								except:
 									CurrentTabName = "Quotes"                          
-								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Complementary Products','Other Products'):									
+								if NodeText in ('Actions','Tabs','Add-On Products','Comprehensive Services', 'Bridge Products', 'On Demand Products', 'Complementary Products','Other Products','Billing'):									
 									if Currenttab == "Contracts":
 										Subwhere_string += " AND PRODUCT_TYPE = '{}'".format(NodeText)
 									elif NodeText == "Add-On Products":
@@ -2323,7 +2376,8 @@ class TreeView:
 										Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
 									else:
 										#Trace.Write('Subwhere_string-----'+str(NodeText))
-										Subwhere_string += " AND SERVICE_TYPE = '{}'".format(NodeText)
+										
+										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046'".format(NodeText,quote_revision_record_id)
 								elif NodeText in  ("Pages"):
 									#Trace.Write("NodeText"+str(NodeText)+"---")
 									if NodeText == "Pages":
@@ -2437,18 +2491,21 @@ class TreeView:
 						.replace("NodeText", str(NodeText))
 						.replace("where_string", where_string)
 					)
-					childQuery = Sql.GetList("" + str(DynamicQuery) + "")				
-				else:                    
+					childQuery = Sql.GetList("" + str(DynamicQuery) + "")		
+					Trace.Write("@2449----------->" + str(DynamicQuery) + "")		
+				else:   
+					Trace.Write("@2442---")                 
 					if (str(ObjName).strip() != 'SAQSGB' and str(NodeApiName) != 'FABLOCATION_ID') or (str(ObjName).strip() != 'SAQFGB' and str(NodeApiName) != 'GREENBOOK'):
-						
+						Trace.Write("@2444---") 
 						childQuery = Sql.GetList("select * from " + str(ObjName) + " (nolock) where " + str(where_string) + "")
 					if (str(ObjName).strip() != 'CTCSGB' and str(NodeApiName) != 'FABLOCATION_ID'):
-    						
+						Trace.Write("@2447")
 						childQuery = Sql.GetList("select * from " + str(ObjName) + " (nolock) where " + str(where_string) + "")
-					else:						
+					else:
+						Trace.Write("@2450---")  					
 						if str(ObjName).strip() == 'SAQFGB':
 							childQuery = Sql.GetList("select  GREENBOOK from " + str(ObjName) + " (nolock) where " + str(where_string) + " GROUP BY GREENBOOK")
-				#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+				#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 				if getAccounts is None:
 					findSubChildAvailable = Sql.GetList(
 								"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2567,7 +2624,7 @@ class TreeView:
 								)
 
 						ChildDict["SubTabs"] = SubTabList
-						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+						#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 						if getAccounts is None:
 							findSubChildAvailable = Sql.GetList(
 										"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2595,7 +2652,7 @@ class TreeView:
 						if findSubChildAvailable is not None:
 							for findSubChildOne in findSubChildAvailable:
 								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 								if getAccounts is None:
 									findSubChildAvailable1 = Sql.GetList(
 												"SELECT TOP 1000 * FROM SYTRND (nolock) WHERE PARENT_NODE_RECORD_ID='"
@@ -2776,10 +2833,47 @@ class TreeView:
 				SubTabDict.update({subTabName: DetailDict})
 		#Trace.Write("=====================> SubTabDict"+str(SubTabDict))
 		return SubTabDict
-
-
+	#A055S000P01-4578 starts
+	def pricing_picklist(self):
+		if ACTION == 'VIEW':
+			try:
+				picklist = Quote.GetCustomField('PRICING_PICKLIST').Content
+			except:
+				picklist = ""
+			return picklist
+		elif ACTION == 'ONCHANGE':
+			try:
+				picklist_value = Param.picklist_value
+			except:
+				picklist_value = ''
+			Quote.GetCustomField('PRICING_PICKLIST').Content = picklist_value
+			return True
+	#A055S000P01-4578 ends
+			
 tree = TreeView()
-
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	try:
+		GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+		if GetActiveRevision:
+			Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+			Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+	except Exception as e:
+		Trace.Write("error--"+str(e))
+		quote_revision_record_id = ""
+if not quote_revision_record_id and quote_revision_record_id!="":
+	try:
+		GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+	except:
+		Trace.Write("EXCEPT: GetActiveRevision")
+		GetActiveRevision = ""
+	if GetActiveRevision:
+		Quote.SetGlobal("quote_revision_record_id",GetActiveRevision.QUOTE_REVISION_RECORD_ID)
+		Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+		
 LOAD = Param.LOAD
 Trace.Write(str(LOAD))
 try:
@@ -2887,6 +2981,11 @@ elif LOAD == "GlobalSet":
 	Product.SetGlobal("CommonTreeTopSuperParentParam", str(TreeTopSuperParentParam))
 	Product.SetGlobal("CommonTopTreeSuperParentParam", str(TreeSuperTopParentParam))
 	Product.SetGlobal("CommonTreeFirstSuperTopParentParam", str(TreeFirstSuperTopParentParam))
+
+#A055S000P01-4578 starts
+elif LOAD == 'PRICING PICKLIST':
+    ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
+##A055S000P01-4578 ends
 #else:
 #Trace.Write("elsee")
 #ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonLeftTreeView())

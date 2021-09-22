@@ -435,7 +435,10 @@ for tab in Product.Tabs:
                                             + TABLE_NAME
                                             + "' and IS_KEY='True' "
                                         )
-                                        Trace.Write("99999888"+str(flag))                                   
+                                           
+                                        if TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
+                                            flag = 'False'
+                                        Trace.Write("99999888"+str(flag)) 
                                         if iskey is not None and flag == "True": 
                                             Trace.Write("99999")                                           
                                             col_name = (iskey.API_NAME).strip()                                                                                                                                    
@@ -576,7 +579,6 @@ for tab in Product.Tabs:
                                                         ##CPQ Attribute name ends
                                                         tableInfo = Sql.GetTable(TABLE_NAME)                                                        
                                                         tableInfo.AddRow(row)
-                                                        
                                                         Sql.Upsert(tableInfo)
                                                         
                                                         
@@ -691,12 +693,17 @@ for tab in Product.Tabs:
                                                             sectalert
                                                         )    
                                                 if len(Field_Labels) <= 1:
-                                                    Trace.Write('Field_Labels2222======')                                                    
-                                                    Product.Attributes.GetByName(
-                                                        "SEC_N_TAB_PAGE_ALERT"
-                                                    ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
-                                                        sectalert
-                                                    )                                            
+                                                    Trace.Write('Field_Labels2222======'+str(sectalert))                                                     
+                                                    if sectalert:  
+                                                        Product.Attributes.GetByName(
+                                                            "SEC_N_TAB_PAGE_ALERT"
+                                                        ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' is a required field</label></div></div></div>".format(
+                                                            sectalert
+                                                        )      
+                                                    else:
+                                                        Product.Attributes.GetByName(
+                                                            "SEC_N_TAB_PAGE_ALERT"
+                                                        ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : Approval Chain Id should be 8 Characters</label></div></div></div>"
                                             elif (
                                                 Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT") is not None
                                                 and flag == "null"
@@ -711,6 +718,8 @@ for tab in Product.Tabs:
                                                     ).HintFormula = "<div class='col-md-12' id='PageAlert'  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : '{}' are required fields </label></div></div></div>".format(
                                                         sectalert
                                                     )
+                                                elif "Approval Chain ID" in str(Field_Labels):
+                                                    Trace.Write("Comming inside length check")
 
                                                 else:
                                                     Product.Attributes.GetByName(
@@ -1013,6 +1022,7 @@ for tab in Product.Tabs:
                                         if str(tab_name) not in ("Tab","Page","Object","Variable","Script","Email Template","Role","Currency"):
                                             row[col_name] = str(col_name)
                                         unique_val = row[col_name]
+
                                         if (
                                                 unique_val is not None
                                                 and unique_val != ""

@@ -26,8 +26,12 @@ userName = str(User.UserName)
 
 tableInfo = SqlHelper.GetTable("SAQDOC")
 recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = ""
 
-quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"'")
+quoteid = SqlHelper.GetFirst("SELECT QUOTE_ID, QUOTE_NAME,C4C_QUOTE_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 
 
 audit_fields = SqlHelper.GetFirst("SELECT USERS.USERNAME,SAQDOC.CpqTableEntryDateModified,SAQDOC.CPQTABLEENTRYDATEADDED,SAQDOC.CPQTABLEENTRYADDEDBY,SAQDOC.CpqTableEntryModifiedBy from USERS inner join SAQDOC(NOLOCK)  on SAQDOC.CpqTableEntryModifiedBy = USERS.ID  ")
@@ -56,7 +60,7 @@ for i in QuoteproductTotalsTM.Rows:
 	Quote.SetGlobal('SubitemextTools', str(extd_pr))
 Quote.GetCustomField('SubtotalTools').Content = str(extitm_price)
 #Log.Info('64--vextitm_price-----'+str(extitm_price))'''
-getdynamicrcords = SqlHelper.GetList("Select EXTENDED_UNIT_PRICE,TAX from QT__SAQITM where QUOTE_RECORD_ID = '"+str(recid)+"'")
+getdynamicrcords = SqlHelper.GetList("Select EXTENDED_UNIT_PRICE,TAX from QT__SAQITM where QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 for i in getdynamicrcords:
 	Log.Info('16---spare quote-SAQITM----UNIT_PRICE entry--')
 	extd_pr += float(i.EXTENDED_UNIT_PRICE)
@@ -86,7 +90,7 @@ fptotal =  0
 Log.Info('50------QuoteproductTotalsfp----'+str(QuoteproductTotalsfp.Rows.Count))
 
 for i in QuoteproductTotalsfp.Rows:'''
-getdynamicrcords = SqlHelper.GetList("Select * from QT__SAQIFP where QUOTE_RECORD_ID = '"+str(recid)+"'")
+getdynamicrcords = SqlHelper.GetList("Select * from QT__SAQIFP where QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 for val in getdynamicrcords:
 	Log.Info('16---spare quote--UNIT_PRICE entry--')
 	extt_price += float(val.UNIT_PRICE)
@@ -144,7 +148,7 @@ def english_doc():
 		Log.Info('unChecked')'''
 	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()    
 	getyears = ""
-	Getyear = SqlHelper.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(recid)+"'")
+	Getyear = SqlHelper.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	if Getyear:
 		start_date = datetime(Getyear.CONTRACT_VALID_FROM)
 		end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -164,7 +168,7 @@ def english_doc():
 	try:
 		quote = recid
 		language = "ENGLISH DOC,"+str(userId)+","+str(userName)
-		CQDOCIFLOW.docgeneration(quote,language)
+		CQDOCIFLOW.docgeneration(quote,language,quote_revision_record_id)
 		
 	except:
 		
@@ -195,7 +199,7 @@ def chinese_doc():
 	
 	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
 	getyears = ""
-	Getyear = SqlHelper.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(recid)+"'")
+	Getyear = SqlHelper.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 	if Getyear:
 		start_date = datetime(Getyear.CONTRACT_VALID_FROM)
 		end_date = datetime(Getyear.CONTRACT_VALID_TO)
@@ -213,7 +217,7 @@ def chinese_doc():
 	try:
 		quote = recid
 		language = "CHINESE DOC,"+str(userId)+","+str(userName)
-		CQDOCIFLOW.docgeneration(quote,language)
+		CQDOCIFLOW.docgeneration(quote,language,quote_revision_record_id)
 		
 	except:
 		
@@ -251,16 +255,20 @@ def fpm_doc():
 	try:
 		quote = recid
 		language = "FPM DOC,"+str(userId)+","+str(userName)
-		CQDOCIFLOW.docgeneration(quote,language)
+		CQDOCIFLOW.docgeneration(quote,language,quote_revision_record_id)
 		
 	except:
 		
 		Log.Info("EXCEPT english doc")
 	
 Language = Param.Language_selection
+try:
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	quote_revision_record_id = ""
 recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
 
-quoteid = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"'")
+quoteid = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 
 
 

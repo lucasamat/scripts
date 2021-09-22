@@ -19,13 +19,15 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def docgeneration(quote,language):
+def docgeneration(quote,language,quote_revision_record_id):
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><Quote>'
         + str(quote)
         + "</Quote><Language>"
         +str(language)
-        +"</Language></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+        +"</Language><QuoteRevision>"
+        + str(quote_revision_record_id)
+        +"</QuoteRevision></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
     Log.Info("2222222222222222      " + str(requestdata))
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQDOC'")

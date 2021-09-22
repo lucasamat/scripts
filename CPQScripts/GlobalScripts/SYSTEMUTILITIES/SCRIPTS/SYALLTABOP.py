@@ -44,7 +44,7 @@ def load_attr_with_anchor_tag(record_obj, column_name, get_record_val, app_attr_
         if contract_obj:
             parent_rec_id = contract_obj.CONTRACT_RECORD_ID
     elif column_name == 'APRTRXOBJ_ID':
-        quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}'".format(parent_rec_id))
+        quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(parent_rec_id,quote_revision_record_id))
         if quote_obj:
             parent_rec_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
             
@@ -762,6 +762,10 @@ def do_process(record_id, tab_name, action, product_name):
 
 
 record_id = str(Param.Primary_Data).strip()
+try:
+    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+    quote_revision_record_id = ""
 Trace.Write("record_name-------------" + str(record_id))
 tab_name = str(Param.TabNAME).strip()
 Trace.Write("tab_name-------------" + str(tab_name))
