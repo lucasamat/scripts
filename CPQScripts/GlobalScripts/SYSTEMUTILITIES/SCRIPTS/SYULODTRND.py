@@ -3230,7 +3230,7 @@ def EntitlementTreeViewHTMLDetail(
 									
 									if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId): 
 										VAR1 = sec_str1 = ""
-										selected_option = "Select"
+										selected_option = ""
 										if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() != "":
 											default = ''
 										else:
