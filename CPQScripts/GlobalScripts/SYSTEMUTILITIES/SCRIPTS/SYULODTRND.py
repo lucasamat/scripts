@@ -3243,8 +3243,11 @@ def EntitlementTreeViewHTMLDetail(
 											default = ''
 										else:
 											default = 'selected'
-										
-										
+										# if str(attrName) == "Fab Location":
+										# 	if getquote_sales_val in get_il_sales_list:
+										# 		VAR1 += '<option value="select" ' +str(default)+'> </option>'
+										# 	else:
+										# else:
 										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 										for value in STDVALUES:
 											if value.SYSTEM_ID in dropdowndisallowlist:
@@ -3256,6 +3259,7 @@ def EntitlementTreeViewHTMLDetail(
 												
 												if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
 													#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+													
 													selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
 													VAR1 += (
 														'<option  id="'+str(value.SYSTEM_ID)+'" value = "'
@@ -3305,13 +3309,14 @@ def EntitlementTreeViewHTMLDetail(
 													+ "</select>"
 													)
 												else:
+													VAROp = '<option id="AGS_Z0091_CVR_FABLCY_001" value="Row">ROW</option>'
 													sec_str1 += (
 													'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  data-content ="'
 													+ str(attrSysId)
 													+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-													+ str(VAR1)
+													+ str(VAROp)
 													+ "</select>"
 													)
 											else:
