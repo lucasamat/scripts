@@ -233,7 +233,14 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
                     
             #AttributeID = 'AGS_QUO_QUO_TYP'
             #NewValue = 'Chamber based'
-            STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
+            #STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
+            product_obj = Sql.GetFirst("""SELECT 
+				MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+				FROM PRODUCTS PDS 
+				INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+				WHERE SYSTEM_ID ='{SystemId}' 
+				GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(service_id)))
+            STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_obj.PRD_ID ))
             for val in STANDARD_ATTRIBUTE_VALUES:
                 if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
                     requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
@@ -355,7 +362,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
                 Sql.RunQuery(Updatecps)
             
             return True
-        except Exception,e:
+        except Exception as e:
             Trace.Write("except---"+str(e))
 
 def rolldown(where_cond):
@@ -395,7 +402,7 @@ except:
 try:
     unselected_values= eval(Param.unselected_list)
     #Trace.Write('unselected_list-----'+str(unselected_values))
-except Exception,e:
+except Exception as e:
     #Trace.Write('unselected_values--error-'+str(e))
     unselected_values =[]
 try:
