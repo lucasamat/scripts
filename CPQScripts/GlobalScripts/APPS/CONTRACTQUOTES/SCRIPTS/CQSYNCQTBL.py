@@ -177,6 +177,7 @@ class SyncQuoteAndCustomTables:
 			#overallattributeslist = list(set(overallattributeslist))
 			Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 			HasDefaultvalue=False
+			AttributeID_Pass = NewValue = ''
 			ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 			if ProductVersionObj is not None:
 				tbrow={}
@@ -250,6 +251,23 @@ class SyncQuoteAndCustomTables:
 						DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						#Trace.Write(str(attrs)+'--------'+str(HasDefaultvalue)+'----ent_disp_val----ent_disp_val-HasDefaultvalue=True--'+str(ent_disp_val))
 						#Trace.Write("ent_name--"+str(attrs))
+						#9226 starts
+						getquote_sales_val = ''
+						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(OfferingRow_detail.QUOTE_RECORD_ID)+"'")
+						if getslaes_value:
+							getquote_sales_val = getslaes_value.SALESORG_ID
+						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location"
+							AttributeID_Pass = attrs
+							if getquote_sales_val in get_il_sales_list:
+								NewValue = 'Israel'
+							else:
+								NewValue = 'ROW'
+						else:
+							AttributeID_Pass =''
+							NewValue = ''
+						#9226 end
 						insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -289,6 +307,18 @@ class SyncQuoteAndCustomTables:
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 				Trace.Write('269-addednew trace---')
+				#9226 starts
+				try:
+					Trace.Write('312---NewValue--'+str(NewValue))
+					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					add_where =''
+					ServiceId = OfferingRow_detail.SERVICE_ID
+					whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId)
+					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+				except:
+					Trace.Write('error--296')
+				#9226 ends
 				try:
 					Trace.Write('269--')
 					if 'Z0016' in OfferingRow_detail.SERVICE_ID:
