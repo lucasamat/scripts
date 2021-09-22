@@ -3293,15 +3293,27 @@ def EntitlementTreeViewHTMLDetail(
 										try:
 											if str(attrName) == "Fab Location":
 												Trace.Write(str(getquote_sales_val)+'----3295---'+str(get_il_sales_list))
-												sec_str1 += (
-												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-												+ str(attrSysId)
-												+ '" type="text"  data-content ="'
-												+ str(attrSysId)
-												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-												+ str(VAR1)
-												+ "</select>"
-												)
+												if getquote_sales_val in get_il_sales_list:
+													VAROp = '<option id="AGS_Z0091_CVR_FABLCY_002" value="Israel">Israel</option>'
+													sec_str1 += (
+													'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+													+ str(attrSysId)
+													+ '" type="text"  data-content ="'
+													+ str(attrSysId)
+													+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+													+ str(VAROp)
+													+ "</select>"
+													)
+												else:
+													sec_str1 += (
+													'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+													+ str(attrSysId)
+													+ '" type="text"  data-content ="'
+													+ str(attrSysId)
+													+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+													+ str(VAR1)
+													+ "</select>"
+													)
 											else:
 											
 												sec_str1 += (
