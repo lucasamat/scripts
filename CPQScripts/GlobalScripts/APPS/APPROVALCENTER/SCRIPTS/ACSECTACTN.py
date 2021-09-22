@@ -1506,6 +1506,7 @@ class approvalCenter:
 			
 			##approval image based on chain step ends
 			Trace.Write("CurrentTabName_J "+str(CurrentTabName))
+			Trace.Write("From Seg "+str(FromSeg))
 			if str(FromSeg) == "True":
 				ApiName = "APRTRXOBJ_RECORD_ID"
 			else:
