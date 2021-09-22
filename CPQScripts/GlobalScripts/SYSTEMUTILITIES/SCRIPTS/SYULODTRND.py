@@ -3295,42 +3295,15 @@ def EntitlementTreeViewHTMLDetail(
 													)
 
 										try:
-											if str(attrName) == "Fab Location":
-												Trace.Write(str(getquote_sales_val)+'----3295---'+str(get_il_sales_list))
-												disable_edit =''
-												if getquote_sales_val in get_il_sales_list:
-													VAROp = '<option selected id="AGS_Z0091_CVR_FABLCY_002" value="Israel">Israel</option>'
-													sec_str1 += (
-													'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-													+ str(attrSysId)
-													+ '" type="text"  data-content ="'
-													+ str(attrSysId)
-													+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-													+ str(VAROp)
-													+ "</select>"
-													)
-												else:
-													VAROp = '<option id="AGS_Z0091_CVR_FABLCY_001" value="Row" selected>ROW</option>'
-													sec_str1 += (
-													'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-													+ str(attrSysId)
-													+ '" type="text"  data-content ="'
-													+ str(attrSysId)
-													+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-													+ str(VAROp)
-													+ "</select>"
-													)
-											else:
-											
-												sec_str1 += (
-												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-												+ str(attrSysId)
-												+ '" type="text"  data-content ="'
-												+ str(attrSysId)
-												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-												+ str(VAR1)
-												+ "</select>"
-												)
+											sec_str1 += (
+											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+											+ str(attrSysId)
+											+ '" type="text"  data-content ="'
+											+ str(attrSysId)
+											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+											+ str(VAR1)
+											+ "</select>"
+											)
 										except:
 											sec_str1 += (
 											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
