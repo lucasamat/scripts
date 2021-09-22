@@ -3297,6 +3297,7 @@ def EntitlementTreeViewHTMLDetail(
 										try:
 											if str(attrName) == "Fab Location":
 												Trace.Write(str(getquote_sales_val)+'----3295---'+str(get_il_sales_list))
+												disable_edit =''
 												if getquote_sales_val in get_il_sales_list:
 													VAROp = '<option selected id="AGS_Z0091_CVR_FABLCY_002" value="Israel">Israel</option>'
 													sec_str1 += (
