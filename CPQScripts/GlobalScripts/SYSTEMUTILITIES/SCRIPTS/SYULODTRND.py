@@ -2420,6 +2420,9 @@ def EntitlementTreeViewHTMLDetail(
 	if getslaes_value:
 		getquote_sales_val = getslaes_value.SALESORG_ID
 	Trace.Write('getquote_sales_val---2421----'+str(getquote_sales_val))
+	get_il_sales = SqlHelper.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+	get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+	Trace.Write('get_il_sales_list---2421----'+str(get_il_sales_list))
 	#A055S000P01-9226 end
 	if EntitlementType == "EQUIPMENT":
 		### add on product entitilement starts		
