@@ -81,7 +81,7 @@ def update_assembly_level(Values):
                 add_where = "and INCLUDED = 'TOOL'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Tool based' 
-                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
+                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
@@ -97,7 +97,7 @@ def update_assembly_level(Values):
                 add_where = "and INCLUDED = 'CHAMBER'"
                 AttributeID = 'AGS_QUO_QUO_TYP'
                 NewValue = 'Chamber based'
-                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam)
+                update_flag = entitlement_update(whereReq,add_where,AttributeID,NewValue,TreeParentParam,'SAQSCE')
                 if update_flag:
                     ##Assembly level roll down
                     userId = User.Id
@@ -205,16 +205,16 @@ def child_ent_request(tableName,where,serviceId):
 
 
 
-def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None):
+def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=None,service_id=None,table_name=None):
     #whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}'".format('50243B0C-C53B-4BE5-8923-939BB9DCEB73','Z0007','100000181')
     #add_where = "and INCLUDED = 'CHAMBER'""
     #AttributeID = 'AGS_QUO_QUO_TYP'
     #NewValue = 'Chamber based'
-    get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM SAQSCE where {}".format(whereReq))
+    get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
     get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
     if get_equp_xml and get_query:
         #Trace.Write('inside')
-        cpsConfigID,cpsmatchID = child_ent_request('SAQSCE',whereReq,service_id)
+        cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
         # cpsmatchID = get_equp_xml.CPS_MATCH_ID
         # cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
         try:       
@@ -350,7 +350,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
                     </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
                     cpsmatc_incr = int(cpsmatchID) + 10
                     #Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
-                Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE() WHERE {} ".format('SAQSCE', cpsmatc_incr,cpsConfigID,insertservice,User.Id,whereReq)
+                Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE() WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,whereReq)
                 Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
                 Sql.RunQuery(Updatecps)
             
@@ -412,14 +412,15 @@ elif ACTION == 'EDIT_ASSEMBLY':
     #Trace.Write('values----'+str(selected_values))
     ApiResponse = ApiResponseFactory.JsonResponse(edit_assembly_level(selected_values))
 
-elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 5:
+elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 6:
     Trace.Write('inside update')
     ent_where = ent_params_list[0]
     ent_add_where = ent_params_list[1]
     ent_attr_id = ent_params_list[2]
     ent_newval = ent_params_list[3]
     ent_serviceid = ent_params_list[4]
-    ApiResponse = entitlement_update(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid )
+    table_name = ent_params_list[5]
+    ApiResponse = entitlement_update(ent_where, ent_add_where, ent_attr_id, ent_newval,ent_serviceid,table_name )
 
 elif ACTION == 'ENT_ROLLDOWN' and ent_params_list and len(ent_params_list) == 1:
     ent_where = ent_params_list[0]  

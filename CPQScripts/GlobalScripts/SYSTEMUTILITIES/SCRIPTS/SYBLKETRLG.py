@@ -945,7 +945,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					add_where = " and INCLUDED = 'CHAMBER'"
 					AttributeID = 'AGS_QUO_QUO_TYP'
 					NewValue = 'Chamber based'
-					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(ServiceId)
+					table_name = 'SAQSCE'
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(ServiceId)+'||'+str(table_name)
 					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					if result:
 						Trace.Write('rolldown-'+str(result))
