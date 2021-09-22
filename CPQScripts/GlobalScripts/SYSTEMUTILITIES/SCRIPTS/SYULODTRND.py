@@ -2342,7 +2342,7 @@ def EntitlementTreeViewHTMLDetail(
 	TreeSuperParentParam = AllTreeParam["TreeParentLevel1"]
 	cpsConfigID = get_last_secid = ''
 	msg_txt = insertservice  = costlabimp = pricelabimp = costlabimt0t1 = pricelabimptot1 =  costlabimt0t1t = pricelabimptot1t = costlabimt2lt = pricelabimpt2lt = costlabimt2l = pricelabimpt2l = costlabimt3l = pricelabimpt3l = costlabimt3lab = pricelabimpt3lab = ""
-	sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getregionval =""
+	sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getregionval = getquote_sales_val = ""
 	tablistnew =  []
 	TableObj = ""
 	attributes_count = 0
@@ -2415,7 +2415,12 @@ def EntitlementTreeViewHTMLDetail(
 	elif (TreeSuperParentParam in ('Receiving Equipment', 'Sending Equipment') and TreeSuperTopParentParam == 'Complementary Products'):
 		TreeSuperParentParam = ProductPartnumber = TreeTopSuperParentParam
 		Trace.Write('comes1'+str(ProductPartnumber))
-	#GetQuoteType = Sql.GetFirst("SELECT * FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quoteid)+"'")	
+	#A055S000P01-9226 start
+	getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(quoteid)+"'")
+	if getslaes_value:
+		getquote_sales_val = getslaes_value.SALESORG_ID
+	Trace.Write('getquote_sales_val---2421----'+str(getquote_sales_val))
+	#A055S000P01-9226 end
 	if EntitlementType == "EQUIPMENT":
 		### add on product entitilement starts		
 		if str(TreeParentParam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
@@ -3524,7 +3529,7 @@ def EntitlementTreeViewHTMLDetail(
 								attributesdisallowedlst.append(attrSysId)
 							add_style = "display:none"							
 							if DType == "Drop Down":
-								#Trace.Write('attrSysId--2324--drop down---3491-'+str(attrSysId))
+								Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
 								#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 								STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
