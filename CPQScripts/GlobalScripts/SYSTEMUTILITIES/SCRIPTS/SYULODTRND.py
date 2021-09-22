@@ -3216,7 +3216,7 @@ def EntitlementTreeViewHTMLDetail(
 								
 								if DType == "Drop Down" :
 									
-									Trace.Write(str(attrName)+'---3152------'+str(val.ENTITLEMENT_NAME))
+									#Trace.Write(str(attrName)+'---3152------'+str(val.ENTITLEMENT_NAME))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -3248,7 +3248,7 @@ def EntitlementTreeViewHTMLDetail(
 										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 										for value in STDVALUES:
 											if value.SYSTEM_ID in dropdowndisallowlist:
-												Trace.Write('3179-----'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
+												#Trace.Write('3179-----'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
 												disallow_style = "style = 'display:none'"
 											else:	
 												disallow_style = ""
