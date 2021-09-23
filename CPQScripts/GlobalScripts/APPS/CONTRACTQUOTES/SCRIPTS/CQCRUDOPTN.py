@@ -1067,7 +1067,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							for attribute in prdvalue['values']:								
 								attributevalues[str(prdvalue['id'])]=attribute['value']
 								if attribute["author"] in ('Default','System'):
-									Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
+									#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
 									attributedefaultvalue.append(prdvalue["id"])
 		attributesallowedlst = list(set(attributesallowedlst))
 		#overallattributeslist = list(set(overallattributeslist))		
