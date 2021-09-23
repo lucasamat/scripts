@@ -1183,16 +1183,17 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
-			try:
-				Trace.Write('312---NewValue--'+str(NewValue))
-				Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
-				add_where =''
-				ServiceId = OfferingRow_detail.get("SERVICE_ID")
-				whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id)
-				ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
-				result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
-			except:
-				Trace.Write('error--296')
+			if AttributeID_Pass:
+				try:
+					Trace.Write('312---NewValue--'+str(NewValue))
+					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					add_where =''
+					ServiceId = OfferingRow_detail.get("SERVICE_ID")
+					whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id)
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+				except:
+					Trace.Write('error--296')
 			try:
 				if OfferingRow_detail.get("SERVICE_ID") == 'Z0016':
 					try:
