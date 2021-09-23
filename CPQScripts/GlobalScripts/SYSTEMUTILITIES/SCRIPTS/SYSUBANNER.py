@@ -2244,14 +2244,14 @@ def Related_Sub_Banner(
                     #     sec_rel_sub_bnr += str(add_button)
                     # else:
                     #     sec_rel_sub_bnr += ""
-					elif TreeParam == "Fab Locations":
-						ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
-						send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
-						sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-						if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
-							for btn in multi_buttons:
-								if "ADD FAB" in btn:
-									sec_rel_sub_bnr += (str(btn))
+                    elif TreeParam == "Fab Locations":
+                        ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+                        send_and_receive = Sql.GetList("SELECT PARTY_ROLE FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE IN ('SENDING ACCOUNT','RECEIVING ACCOUNT') AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(str(ContractRecordId),quote_revision_record_id))
+                        sale_type = Sql.GetFirst("SELECT SALE_TYPE FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                        if len(send_and_receive) == 0 and TreeParam == "Fab Locations":
+                            for btn in multi_buttons:
+                                if "ADD FAB" in btn:
+                                    sec_rel_sub_bnr += (str(btn))
                     else:
                         Trace.Write("CHK_3")
                         if CurrentRecordId == "SYOBJR-98789" and TreeParam == "Fab Locations":
