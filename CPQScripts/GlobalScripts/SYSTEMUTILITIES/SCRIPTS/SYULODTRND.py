@@ -3295,15 +3295,28 @@ def EntitlementTreeViewHTMLDetail(
 													)
 
 										try:
-											sec_str1 += (
-											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-											+ str(attrSysId)
-											+ '" type="text"  data-content ="'
-											+ str(attrSysId)
-											+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-											+ str(VAR1)
-											+ "</select>"
-											)
+											if str(attrName) == "Fab Location":
+												disable_edit =''
+												sec_str1 += (
+												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+												+ str(VAR1)
+												+ "</select>"
+												)
+											else:
+												sec_str1 += (
+												'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+												+ str(attrSysId)
+												+ '" type="text"  data-content ="'
+												+ str(attrSysId)
+												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+												+ str(VAR1)
+												+ "</select>"
+												)
+
 										except:
 											sec_str1 += (
 											'<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
