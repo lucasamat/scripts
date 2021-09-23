@@ -430,6 +430,7 @@ class Entitlements:
 		attributeReadonlylst = []
 		attributeEditonlylst = []
 		attributevalues = {}
+		multi_select_attr_list = {}
 		attributevalues_textbox = []
 		attributedefaultvalue = []
 		dropdownallowlist_selected = []
@@ -984,8 +985,10 @@ class Entitlements:
 							Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
 							if STANDARD_ATTRIBUTE_VALUES:
 								attr_code = [code.STANDARD_ATTRIBUTE_VALUE for code in STANDARD_ATTRIBUTE_VALUES]
+								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 								Trace.Write('attr_code--if'+str(attr_code))
 								ent_val_code =  str(attr_code).replace("'", '"')
+								multi_select_attr_list[str(key)] = display_value_arr
 						else:
 							attr_code = ""
 					elif str((val).split("||")[2]) == "DropDown":
