@@ -1263,10 +1263,11 @@ def Related_Sub_Banner(
                             status_image = 'config_status_icon.png'
                         else:
                             status_image = 'config_pend_status_icon.png'
-                        FourthLable = "Configuration Status"
-                        FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+                        
                     except:
-                        pass
+                        status_image = 'config_pend_status_icon.png'
+                    FourthLable = "Configuration Status"
+                    FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
                     FifthLable = ""
                     FifthValue = ""
                     if getService is not None:
@@ -1282,18 +1283,21 @@ def Related_Sub_Banner(
                         FifthLable = "Equipment"
                         FifthValue = "All"
                         ##adding configuration status in offering subtab
-                        contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                        where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
-                        try:
-                            get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
-                            if get_status == 'true':
-                                status_image = 'config_status_icon.png'
-                            else:
-                                status_image = 'config_pend_status_icon.png'
-                            SixthLable = "Configuration Status"
-                            SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
-                        except:
-                            pass
+                        Trace.Write('status_image--'+str(status_image))
+                        SixthLable = "Configuration Status"
+                        SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+                        # contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+                        # where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
+                        # try:
+                        #     get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
+                        #     if get_status == 'true':
+                        #         status_image = 'config_status_icon.png'
+                        #     else:
+                        #         status_image = 'config_pend_status_icon.png'
+                        #     SixthLable = "Configuration Status"
+                        #     SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+                        # except:
+                        #     pass
 
                         
                     elif covered_obj is not None and (subTabName == "Sending Equipment" or subTabName == 'Entitlements' or subTabName == 'Service Fab Value Drivers' or subTabName == 'Service Cost and Value Drivers' or subTabName == 'Customer Value Drivers' or subTabName == 'Product Value Drivers'):
