@@ -2155,6 +2155,7 @@ class TreeView:
 										ObjectName = parObjName
 										Subwhere_string = "" + str(where_string) + ""
 										#Trace.Write('Subwhere_string---'+str(Subwhere_string)) 
+										Trace.Write('SubNodeName---'+str(SubNodeName))
 										addon_obj = None
 										if NodeText.startswith('Z'):
 											addon_obj = Sql.GetFirst("SELECT * FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"), NodeText,quote_revision_record_id))
