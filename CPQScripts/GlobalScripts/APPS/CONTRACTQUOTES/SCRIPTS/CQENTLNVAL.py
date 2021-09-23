@@ -78,4 +78,4 @@ except:
     ent_level_table = ""
 
 if action == 'GET_STATUS':
-    get_entitlement_response(partnumber,where_cond,ent_level_table)
+    Result = get_entitlement_response(partnumber,where_cond,ent_level_table)
