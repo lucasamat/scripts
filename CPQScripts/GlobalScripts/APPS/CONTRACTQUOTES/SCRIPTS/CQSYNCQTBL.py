@@ -464,6 +464,7 @@ class SyncQuoteAndCustomTables:
 			if self.quote:
 				quote_table_info = Sql.GetTable("SAQTMT")
 				quote_involved_party_table_info = Sql.GetTable("SAQTIP")
+				quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 				quote_opportunity_table_info = Sql.GetTable("SAOPQT")
 				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
@@ -1002,6 +1003,20 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
+						primary_contact_update = {
+							"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
+							"EMAIL": "",
+							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+							"CONTACT_ID": "",
+							"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+							"PRIMARY": "PRIMARY CONTACT",
+							"PHONE": "",
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
+						}
+						quote_involved_party_contact_table_info.AddRow(primary_contact_update)
 					# A055S000P01-6618 - Ends
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
