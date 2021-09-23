@@ -1004,7 +1004,7 @@ class SyncQuoteAndCustomTables:
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
-						primary_contact_update = {
+						contact_info_update = {
 							"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
 							"EMAIL": "",
 							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
@@ -1017,7 +1017,7 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
 						}
-						quote_involved_party_contact_table_info.AddRow(primary_contact_update)
+						quote_involved_party_contact_table_info.AddRow(contact_info_update)
 						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
 					if self.quote.BillToCustomer:
@@ -1223,6 +1223,7 @@ class SyncQuoteAndCustomTables:
 								quote_fab_table_info.AddRow(fab_quote_data) """
 					Log.Info("contract_quote_data===> " + str(contract_quote_data))
 					Log.Info("quote_involved_party_table_info===> " + str(quote_involved_party_table_info))
+					Log.Info("contact_Info_update "+str(contact_info_update))
 					quote_table_info.AddRow(contract_quote_data)
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
