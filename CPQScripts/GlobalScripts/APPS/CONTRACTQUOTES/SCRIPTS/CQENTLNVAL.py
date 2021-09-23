@@ -29,7 +29,7 @@ def Request_access_token():
         return eval(response)
 
 
-def entitlement_request(partnumber):
+def entitlement_request(partnumber,cpsConfigID):
     #gettodaydate = datetime.now().strftime("%Y-%m-%d")
     partnumber = partnumber.strip()
     webclient = System.Net.WebClient()
@@ -51,14 +51,28 @@ def entitlement_request(partnumber):
     return eval(response1)
 
 
-def get_entitlement_response(partnumber):
-    fullresponse = entitlement_request(partnumber)
+def get_entitlement_response(partnumber,where_cond,ent_level):
+    get_cps = Sql.GetFirst("SELECT * FROM {} {}".format() )
+    fullresponse = entitlement_request(partnumber,get_cps.CPS_CONFIGURATION_ID)
     status = fullresponse['complete']
     Trace.Write('status--'+str(status))
     return status
 
 try:
+    action= Param.action
+except:
+    action = ""
+try:
     partnumber= Param.partnumber
 except:
     partnumber = ""
-get_entitlement_response(partnumber)
+try:
+    where_cond= Param.where_cond
+except:
+    where_cond = ""
+try:
+    ent_level_table= Param.ent_level_table
+except:
+    ent_level_table = ""
+
+get_entitlement_response(partnumber,where_cond,ent_level_table)
