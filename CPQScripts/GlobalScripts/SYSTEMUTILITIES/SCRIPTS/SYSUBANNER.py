@@ -310,7 +310,7 @@ def Related_Sub_Banner(
                 PrimaryValue = "All"                                    
             elif TabName == "Quotes"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "SAQTSV" :                
                 PrimaryLable = "Product Offerings"
-                PrimaryValue = "All"
+                PrimaryValue = "The Following Offerings Have been added to your quote..."
                 if TabName == "Quotes":
                     SecondLable = "Product Offering Type"
                 elif TabName == "Contract":
