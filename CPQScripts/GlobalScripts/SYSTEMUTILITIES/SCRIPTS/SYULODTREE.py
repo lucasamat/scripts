@@ -1941,7 +1941,12 @@ class TreeView:
 								NodeRecId = ""                                    
 								if str(ObjectName).strip() == 'ACAPCH' and str(NodeName) == 'APRCHNSTP_NAME' and str(ProductName).upper() == "APPROVAL CENTER":
 									NodeText = "Step "+str(childdata.APRCHNSTP_NUMBER)+ " : " +str(NodeText)
-								Trace.Write('NodeText--child-'+str(NodeText))
+								##showing config status along with offering	
+								if str(ObjectName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
+									Trace.Write('NodeText--child-'+str(NodeText))
+									image_url = 'config_status_icon.png'
+									image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
+									NodeText = image_url+NodeText
 								ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
