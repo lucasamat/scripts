@@ -1016,7 +1016,8 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
 						}
-						quote_involved_party_contact_table_info.AddRow(primary_contact_update)
+						x=quote_involved_party_contact_table_info.AddRow(primary_contact_update)
+						Log.Info(x)
 					# A055S000P01-6618 - Ends
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
