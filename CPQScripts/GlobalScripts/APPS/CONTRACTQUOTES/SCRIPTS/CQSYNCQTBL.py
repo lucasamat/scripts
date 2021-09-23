@@ -121,6 +121,7 @@ class SyncQuoteAndCustomTables:
 			strday = "0" + str(day)
 		date_str = date_format.format(Date=strday, Month=strmonth, Year=stryear, Separator=separator)
 		return date_str
+
 	def CreateEntitlements(self,quote_record_id):
 		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
 		#Log.Info("quote_record_id---123------"+str(quote_record_id))
@@ -464,7 +465,7 @@ class SyncQuoteAndCustomTables:
 				quote_table_info = Sql.GetTable("SAQTMT")
 				quote_involved_party_table_info = Sql.GetTable("SAQTIP")
 				quote_opportunity_table_info = Sql.GetTable("SAOPQT")
-				quote_fab_table_info = Sql.GetTable("SAQFBL")
+				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
 				Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
 				start_date = self.get_formatted_date(
@@ -481,15 +482,15 @@ class SyncQuoteAndCustomTables:
 					"{Month}{Separator}{Date}{Separator}{Year}",
 					"/",
 				)
-				pricing_date = ''
-				if custom_fields_detail.get("PricingDate"):
-					pricing_date = self.get_formatted_date(
-						custom_fields_detail.get("PricingDate").year,
-						custom_fields_detail.get("PricingDate").month,
-						custom_fields_detail.get("PricingDate").day,
-						"{Month}{Separator}{Date}{Separator}{Year}",
-						"/",
-					)
+				#pricing_date = ''
+				# if custom_fields_detail.get("PricingDate"):
+				# 	pricing_date = self.get_formatted_date(
+				# 		custom_fields_detail.get("PricingDate").year,
+				# 		custom_fields_detail.get("PricingDate").month,
+				# 		custom_fields_detail.get("PricingDate").day,
+				# 		"{Month}{Separator}{Date}{Separator}{Year}",
+				# 		"/",
+				# 	)
 						
 				# quote_id = "SQ{}RV00-RW00AM00-{}".format(
 				# 	self.quote.CompositeNumber,
@@ -531,10 +532,7 @@ class SyncQuoteAndCustomTables:
 									"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 								}
 							) """
-					if custom_fields_detail.get("PaymentTerms"):
-						payid =""
-						paydesc = ""
-						payrec = ""
+					if custom_fields_detail.get("PaymentTerms"):						
 						payterm_obj = Sql.GetFirst(
 							"SELECT PAYMENT_TERM_ID, PAYMENT_TERM_NAME,NUMBER_OF_DAYS,PAYMENT_TERM_RECORD_ID,DESCRIPTION FROM PRPTRM (NOLOCK) WHERE PAYMENT_TERM_ID = '{}'".format(
 								custom_fields_detail.get("PaymentTerms")
@@ -554,11 +552,6 @@ class SyncQuoteAndCustomTables:
 							# 		"PAYMENTTERM_RECORD_ID": payterm_obj.PAYMENT_TERM_RECORD_ID,
 							# 	}
 							# )
-					else:
-						payid =""
-						paydesc = ""
-						payrec = ""
-						pay_days =""
 					# self.quote.OrderStatus.Name
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
@@ -566,7 +559,7 @@ class SyncQuoteAndCustomTables:
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
-					opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
+					#opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
 					contract_quote_data.update(
 						{
 							"QUOTE_ID": quote_id,
@@ -606,7 +599,7 @@ class SyncQuoteAndCustomTables:
 						}
 					)
 					#insert in revision table while creating quote start
-					quote_revision_table_info = Sql.GetTable("SAQTRV")
+					#quote_revision_table_info = Sql.GetTable("SAQTRV")
 					quote_revision_id = str(Guid.NewGuid()).upper()
 					get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1000 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID as REVISION_ID,CART_REVISIONS.DESCRIPTION as DESCRIPTION, CART.ACTIVE_REV as ACTIVE_REV, CART_REVISIONS.CART_ID as CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}' and CART.USERID = '{}'".format(Quote.CompositeNumber,Quote.UserId))
 					Quote.SetGlobal("contract_quote_record_id",str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID")))
@@ -773,11 +766,11 @@ class SyncQuoteAndCustomTables:
 							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								##A055S000P01-4418 exchange rate details starts..
 								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
-								Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								#Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								
 								if exchange_obj:
 									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
-									ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
+									#ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
 								
 									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 									if createddate > ex_rate_begin:										
@@ -988,10 +981,8 @@ class SyncQuoteAndCustomTables:
 									"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 									"ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
 									"ACCOUNT_NAME": custom_fields_detail.get("STPAccountName"),
-									"ACCOUNT_TYPE": account_obj.ACCOUNT_TYPE,								
-									
+									"ACCOUNT_TYPE": account_obj.ACCOUNT_TYPE,
 								}
-
 								quote_opportunity_table_info.AddRow(opportunity_quote_data)
 					# A055S000P01-6618 - Starts
 					if custom_fields_detail.get("PrimaryContactName"):
@@ -1447,11 +1438,7 @@ class SyncQuoteAndCustomTables:
 								SAQFBL_end = time.time()
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
-							
-							
-
-							if service_ids:			
-								
+							if service_ids:
 								SAQTSV_start = time.time()								
 								service_insert = Sql.RunQuery("""
 																INSERT
@@ -1473,12 +1460,8 @@ class SyncQuoteAndCustomTables:
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
 								#Log.Info(""""EQUIPMENTS INSERT""")
-								count = 0
-								for fab_location_id, value in equipment_data.items():
-									if count == 0:
-										Log.Info("""Equipment_INSERT_2""")
-									
-									count += 1
+								
+								for fab_location_id, value in equipment_data.items():									
 									SAQFEQ_start = time.time()
 									Log.Info("""
 												INSERT SAQFEQ
@@ -1512,7 +1495,7 @@ class SyncQuoteAndCustomTables:
 										) A
 									""".format(UserId=User.Id,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME, QuoteRecordId=quote_record_id, AccountRecordId=contract_quote_obj.ACCOUNT_RECORD_ID))'''
 								fab_equip_assem_start_time = time.time()
-								Log.Info("fab_equip_assem_start_time start ==> "+str(fab_equip_assem_start_time))
+								#Log.Info("fab_equip_assem_start_time start ==> "+str(fab_equip_assem_start_time))
 
 
 								# for fab_location_id in equipment_data.items():
