@@ -664,6 +664,9 @@ class TreeView:
 						)			
 					if findChildOneObj is not None:
 						for findChildOne in findChildOneObj:
+							if str(findChildOne.TREEIMAGE_URL):
+								image_url = str(findChildOne.TREEIMAGE_URL)
+								Trace.Write('image_url--'+str(image_url)+'--'+str(findChildOne.NODE_NAME))
 							parobj = str(findChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findChildOne.NODE_TYPE)
 							NodeApiName = str(findChildOne.NODE_DISPLAY_NAME)
@@ -1208,6 +1211,9 @@ class TreeView:
 			
 			if findChildOneObj is not None and len(findChildOneObj) > 0:
 				for findChildOne in findChildOneObj:
+					if str(findChildOne.TREEIMAGE_URL):
+						image_url = str(findChildOne.TREEIMAGE_URL)
+						Trace.Write('image_url2--'+str(image_url)+'--'+str(findChildOne.NODE_NAME))
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
 							DynamicQuery.replace("{", "")
@@ -2241,6 +2247,9 @@ class TreeView:
 			) """
 			if findChildOneObj is not None and len(findChildOneObj) > 0:
 				for findChildOne in findChildOneObj:
+					if str(findChildOne.TREEIMAGE_URL):
+						image_url = str(findChildOne.TREEIMAGE_URL)
+						Trace.Write('image_url3--'+str(image_url)+'--'+str(findChildOne.NODE_NAME))
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
 							DynamicQuery.replace("{", "")
