@@ -45,43 +45,7 @@ def popups(params):
 				</div>"""  
 	return sec_str
 
-def popupser(params):
-	sec_str = ""
-	sec_str += """<div class="drop-boxess" style="display: none;">
-				<div class="col-md-3 pl-0 rolling_popup">
-				<div class="col-md-2 p-0">
-					<img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info_icon.svg" class="img-responsive center-block">
-				</div>
-				<div class="col-md-10 p-0">
-					<h3>"""+str(params)+""" Cost and Value Driver Roll Down <button type="button"
-					class="close"
-					aria-label="Close" onclick="close_popup()"> 
-				<span aria-hidden="true">×</span> 
-			</button></h3>
-				<p>The <q>"""+str(params)+""" Cost and Value Driver</q> settings are being applied to the Equipment in this quote. You will be notified by email when this background job completes.</p>
-				</div>
-				</div>
-				</div>"""  
-	return sec_str
 
-def popupuser():
-	sec_str = ""
-	sec_str += """<div class="drop-boxess" style="display: none;">
-				<div class="col-md-3 pl-0 rolling_popup">
-				<div class="col-md-2 p-0">
-					<img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info_icon.svg" class="img-responsive center-block">
-				</div>
-				<div class="col-md-10 p-0">
-					<h3>Price Calculation <button type="button"
-					class="close"
-					aria-label="Close" onclick="close_popup()"> 
-				<span aria-hidden="true">×</span> 
-			</button></h3>
-				<p>Price calculation is currently in progress. You will be notified by email notification when this background job completes.</p>
-				</div>
-				</div>
-				</div>"""  
-	return sec_str
 # commented the code(Approvals node functionality in Quotes explorer) -start
 # def submitapproval():
 #     sec_str = ""
@@ -948,11 +912,8 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
-if ACTION == 'POPUPS':
-	ApiResponse = ApiResponseFactory.JsonResponse(popups(params))
-elif ACTION == 'POPUPSER':
-	ApiResponse = ApiResponseFactory.JsonResponse(popupser(params))
-elif ACTION == 'QIPOPUPSER':
+
+if ACTION == 'QIPOPUPSER':
 	ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
 
 # commented the code(Approvals node functionality in Quotes explorer) -start    
