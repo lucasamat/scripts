@@ -3608,7 +3608,7 @@ def EntitlementTreeViewHTMLDetail(
 												+ str(attrSysId)
 												+ '" type="text"  data-content ="'
 												+ str(attrSysId)
-												+ ' onchange="editent_bt(this)" '+str(selected_option)+'  >'
+												+ '" onchange="editent_bt(this)" '+str(selected_option)+'  >'
 												+ str(VAR1)
 												+ "</select>"
 											)
@@ -3618,7 +3618,7 @@ def EntitlementTreeViewHTMLDetail(
 											+ str(attrSysId)
 											+ '" type="text"  data-content ="'
 											+ str(attrSysId)
-											+ 'onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
+											+ '" onchange="editent_bt(this)" '+str(selected_option)+'  >{} </select>'.format(VAR1)
 										)
 
 								
