@@ -576,7 +576,7 @@ def Related_Sub_Banner(
             # 	PrimaryValue = "All"
             # 	SecondLable = "Product Offering Type"
             # 	SecondValue = TreeParam
-            if TreeParam == "Customer Information" or TreeParam == "Quote Preview":			
+            if TreeParam == "Customer Information" or TreeParam == "Quote Preview":	
                 if ObjName == 'SAQTIP':
                     ObjName = "SAQTIP"
                     PrimaryLable = "Source Account ID"
@@ -1012,6 +1012,7 @@ def Related_Sub_Banner(
                 except Exception as e:
                     Trace.Write("error1"+str(e))
                     Trace.Write("SecondLable"+str(SecondLable))
+
                 try:                    
                     if str(ObjName) == "SYPROH":
                         ThirdLable = ListKey[2]
@@ -1104,6 +1105,9 @@ def Related_Sub_Banner(
                         SixthValue = ListVal[5]
                 except:
                     Trace.Write("error5")
+                if(treeparam =="Customer Information"):
+                    PrimaryLable ="Customer Information"
+                    PrimaryValue ="Use the Customer Information functionality to manage your Quote Accounts and Contacts..."
                 if str(ObjName) == 'SYPGAC' and TabName == 'Tab':
                     PrimaryLable = "Key"
                     PrimaryValue = PrimaryValue
