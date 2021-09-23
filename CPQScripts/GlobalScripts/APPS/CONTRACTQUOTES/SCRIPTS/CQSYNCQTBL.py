@@ -1227,6 +1227,7 @@ class SyncQuoteAndCustomTables:
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
 					Sql.Upsert(quote_involved_party_table_info)
+					Sql.Upsert(quote_involved_party_contact_table_info)
 					#Sql.Upsert(quote_fab_table_info)
 
 					cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
