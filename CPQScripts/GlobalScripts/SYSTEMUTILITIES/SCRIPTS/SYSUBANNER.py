@@ -2491,7 +2491,7 @@ def Related_Sub_Banner(
                 if get_quote_details:
                     get_quote = Quote.GetGlobal("contract_quote_record_id")
                     Trace.Write('button process--')
-                    GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
+                    GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
                     get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
                     get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 
@@ -2556,7 +2556,7 @@ def Related_Sub_Banner(
                                     if get_quote_details:
                                         get_quote = Quote.GetGlobal("contract_quote_record_id")
                                         Trace.Write('button process--')
-                                        GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
+                                        GetPRVLDR = Sql.GetFirst("SELECT COUNT(DISTINCT VALUE_DRIVER_ID) as VALUE_DRIVER_ID  FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY' and EDITABLE  = 'True'")
                                         get_SAQVDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQVDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
                                         get_SAQFDV = Sql.GetFirst("SELECT COUNT(DISTINCT VALUEDRIVER_ID) as VALUEDRIVER_ID  FROM SAQFDV(NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(get_quote)+"' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "'")
 

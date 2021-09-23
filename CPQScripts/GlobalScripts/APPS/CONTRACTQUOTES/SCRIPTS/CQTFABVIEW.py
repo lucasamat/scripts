@@ -47,7 +47,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 	Trace.Write("Tree_Parent_sending_2"+str(TreeParentParam))
 	Trace.Write("Tree_Super_Parent_sending"+str(TreeSuperParentParam))
 	if TreeParentParam == "Sending Account":
-		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
+		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	elif (str(TreeSuperParentParam).upper() == "FAB LOCATIONS" or str(TreeTopSuperParentParam) == 'Quote Items') :
 		#GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUEDRIVER_ID,VALUEDRIVER_RECORD_ID FROM PRBUVD(NOLOCK) WHERE BUSINESSUNIT_ID ='"+str(TreeParam)+"' AND BUSINESSUNIT_VALUEDRIVER_RECORD_ID != '' ")
 		###NEW GREEN BOOK TABLE#
@@ -55,7 +55,7 @@ def fabview(ACTION,CurrentRecordId,subtab):
 		#table_id = 'fabvaldrives'
 	else:
 		#table_id = 'fabvaluedrives'
-		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
+		GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID,EDITABLE FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>''')
 	if str(TreeSuperParentParam) != "Quote Items" and str(TreeTopSuperParentParam) != "Quote Items":
@@ -460,7 +460,7 @@ def servicefabview(ACTION,CurrentRecordId):
 				}
 	date_field = []
 	
-	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE LIKE '%QUOTE BASED%'")
+	GetPRVLDR = Sql.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE LIKE '%QUOTE BASED%'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
 	sec_str += ('<div class = "fabvaldrives collapse in">')
@@ -713,7 +713,7 @@ def Comp_fabview(ACTION,CurrentRecordId):
 				}
 	date_field = []
 	
-	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY'")
+	GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY'")
 	sec_str += ('<div id = "fabnotify">')
 	sec_str += ('''<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down fabvaldrives-toggle" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".fabvaldrives" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>  CUSTOMER VALUE DRIVERS INFORMATION</div></label></label></div>''')
 	sec_str += ('<div class = "fabvaldrives collapse in">')
@@ -859,7 +859,7 @@ def item_gb_fabview(ACTION,CurrentRecordId):
 		
 	else:
 		#table_id = 'fabvaluedrives'
-		GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED'")
+		GetPRVLDR = SqlHelper.GetList("SELECT DISTINCT VALUE_DRIVER_ID,VALUE_DRIVER_RECORD_ID FROM PRVLDR(NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED'")
 	sec_str += ('<table id="' + str(table_id)+ '" data-escape="true" data-html="true"    data-show-header="true" > <thead><tr>')
 	
 	for key, invs in enumerate(list(desc_list)):
@@ -1312,7 +1312,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 			if str(getdescription) == "Quality required by the clients' customers":
 				getdescription = "Quality required by the clients'' customers"
 			Getchildtable = Sql.GetFirst(
-				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
+				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
 				+ "' "
 			)
@@ -1336,7 +1336,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"VALUEDRIVER_NAME": str(Getchildtable.VALUE_DRIVER_NAME),
 					"VALUEDRIVER_RECORD_ID": str(Getchildtable.VALUE_DRIVER_RECORD_ID),
 					"QUOTE_VALUEDRIVER_RECORD_ID": SEConDARYkey,
-					"VALUEDRIVER_TYPE": str(Getchildtable.VALUE_DRIVER_TYPE),
+					"VALUEDRIVER_TYPE": str(Getchildtable.VALUEDRIVER_TYPE),
 					"SALESORG_ID":str(GetSalesOrg.SALESORG_ID),
 					"SALESORG_NAME":str(GetSalesOrg.SALESORG_NAME),
 					"SALESORG_RECORD_ID":str(GetSalesOrg.SALESORG_RECORD_ID),
@@ -1382,7 +1382,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 						"VALUEDRIVER_VALUE_DESCRIPTION": getvaluedriv,
 						"VALUEDRIVER_VALUE_RECORD_ID": str(Getchildtable2.VALUE_DRIVER_VALUE_RECORD_ID),
 						"VALUEDRIVER_COEFFICIENT":Getchildtable2.VALUEDRIVER_COEFFICIENT,
-						"VALUEDRIVER_TYPE": str(Getchildtable.VALUE_DRIVER_TYPE),
+						"VALUEDRIVER_TYPE": str(Getchildtable.VALUEDRIVER_TYPE),
 						"VALUEDRIVER_VALUE_CODE":str(Getchildtable2.VALUEDRIVER_VALUE_CODE),
 						"SALESORG_ID":str(GetSalesOrg.SALESORG_ID),
 						"SALESORG_NAME":str(GetSalesOrg.SALESORG_NAME),
@@ -1412,7 +1412,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 		elif str(TreeParentParam).upper() == "FAB LOCATIONS":
 			GETFBVD = Sql.GetFirst(
-				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUE_DRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
+				"SELECT * FROM PRVLDR (NOLOCK) WHERE VALUEDRIVER_TYPE = 'QUOTE BASED SURVEY' AND VALUE_DRIVER_ID ='"
 				+ str(getdescription)
 				+ "' "
 			)
@@ -1436,7 +1436,7 @@ def fabsave(ACTION,CurrentRecordId,FabLocateDT,getfabid,subtab):
 					"VALUEDRIVER_ID": str(GETFBVD.VALUE_DRIVER_ID),
 					"VALUEDRIVER_NAME": str(GETFBVD.VALUE_DRIVER_NAME),
 					"VALUEDRIVER_RECORD_ID": str(GETFBVD.VALUE_DRIVER_RECORD_ID),
-					"VALUEDRIVER_TYPE": str(GETFBVD.VALUE_DRIVER_TYPE),
+					"VALUEDRIVER_TYPE": str(GETFBVD.VALUEDRIVER_TYPE),
 					"QTEFBL_RECORD_ID": str(GETFABLOC.QUOTE_FABLOCATION_RECORD_ID),
 					"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 					"CPQTABLEENTRYADDEDBY": userName,
