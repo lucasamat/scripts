@@ -1052,7 +1052,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		attributedefaultvalue = []
 		#overallattributeslist =[]
 		attributevalues={}
-		getquote_sales_val = AttributeID_Pass = ''
+		#getquote_sales_val = AttributeID_Pass = ''
 		for rootattribute, rootvalue in Fullresponse.items():
 			if rootattribute=="rootItem":
 				for Productattribute, Productvalue in rootvalue.items():
