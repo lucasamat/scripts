@@ -51,8 +51,8 @@ def entitlement_request(partnumber,cpsConfigID):
     return eval(response1)
 
 
-def get_entitlement_response(partnumber,where_cond,ent_level):
-    get_cps = Sql.GetFirst("SELECT * FROM {} {}".format() )
+def get_entitlement_response(partnumber,where_cond,ent_level_table):
+    get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
     fullresponse = entitlement_request(partnumber,get_cps.CPS_CONFIGURATION_ID)
     status = fullresponse['complete']
     Trace.Write('status--'+str(status))
