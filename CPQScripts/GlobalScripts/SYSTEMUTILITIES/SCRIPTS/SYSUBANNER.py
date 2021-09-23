@@ -310,12 +310,15 @@ def Related_Sub_Banner(
                 PrimaryValue = "All"                                    
             elif TabName == "Quotes"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "SAQTSV" :                
                 PrimaryLable = "Product Offerings"
-                PrimaryValue = "The Following Offerings Have been added to your quote..."
+                PrimaryValue = "All"
                 if TabName == "Quotes":
                     SecondLable = "Product Offering Type"
                 elif TabName == "Contract":
                     SecondLable = "Product Type"
-                SecondValue = str(TreeParam) 
+                SecondValue = str(TreeParam)
+            elif TabName == "Quotes"  and str(TreeParam) == "Product Offerings" and str(ObjName) == "SAQTSV":             
+                PrimaryLable = "Product Offerings"
+                PrimaryValue = "The Following Offerings Have been added to your quote..."
             elif TabName == "Contracts"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "CTCTSV" : 
                 Trace.Write('999---')               
                 PrimaryLable = "Offerings"
