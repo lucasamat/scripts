@@ -29,15 +29,13 @@ def Request_access_token():
         return eval(response)
 
 
-def entitlement_request(partnumber,request_type):
-    gettodaydate = datetime.now().strftime("%Y-%m-%d")
+def entitlement_request(partnumber):
+    #gettodaydate = datetime.now().strftime("%Y-%m-%d")
     partnumber = partnumber.strip()
     webclient = System.Net.WebClient()
-    #requestdata = ""
     response = Request_access_token()
     #response = eval(response)
-    Trace.Write("response_JJ"+str(response)+" request_type "+str(request_type))
-    Trace.Write("request_url"+str(request_url))
+    Trace.Write(response["access_token"])
     try:		
         Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
         request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
@@ -53,6 +51,14 @@ def entitlement_request(partnumber,request_type):
     return eval(response1)
 
 
-def get_entitlement_response():
-    fullresponse = entitlement_request(partnumber, )
+def get_entitlement_response(partnumber):
+    fullresponse = entitlement_request(partnumber)
+    status = fullresponse['complete']
+    Trace.Write('status--'+str(status))
+    return status
 
+try:
+    partnumber= Param.partnumber
+except:
+    partnumber = ""
+get_entitlement_response(partnumber)
