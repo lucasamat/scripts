@@ -1945,7 +1945,18 @@ class TreeView:
 								Trace.Write('NodeText--child-'+str(ObjName))
 								if str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
 									Trace.Write('NodeText--inside-'+str(NodeText))
-									image_url = 'config_status_icon.png'
+									##adding configuration status in offering subtab
+									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+									where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText )
+									try:
+										get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':NodeText,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
+										if get_status == 'true':
+											image_url = 'config_status_icon.png'
+										else:
+											image_url = 'config_pend_status_icon.png'
+										
+									except:
+										image_url = 'config_pend_status_icon.png'
 									image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 									NodeText = image_url+NodeText
 								ChildDict["text"] = NodeText
