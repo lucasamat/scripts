@@ -1003,6 +1003,7 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
+						Log.Info("CONTACT_INFO INSERT STARTS----> ")
 						primary_contact_update = {
 							"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
 							"EMAIL": "",
@@ -1016,8 +1017,8 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
 						}
-						x=quote_involved_party_contact_table_info.AddRow(primary_contact_update)
-						Log.Info(str(x))
+						quote_involved_party_contact_table_info.AddRow(primary_contact_update)
+						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
