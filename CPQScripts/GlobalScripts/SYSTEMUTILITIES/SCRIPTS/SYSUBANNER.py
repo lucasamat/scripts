@@ -1817,7 +1817,7 @@ def Related_Sub_Banner(
         ThirdValue = str(TreeParam)
         FourthLable = "Equipment"
         FourthValue = "All"
-    elif (TreeParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Details' or subTabName == 'Fab Value Drivers')) and ("Sending" not in TreeParam and "Receiving" not in TreeParam):
+    elif (TreeParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Details' or subTabName == 'Customer Value Drivers')) and ("Sending" not in TreeParam and "Receiving" not in TreeParam):
         getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")        
         PrimaryLable = "Fab Location ID"
         PrimaryValue = str(TreeParam)
