@@ -578,7 +578,6 @@ def Related_Sub_Banner(
             # 	SecondValue = TreeParam
             if TreeParam == "Customer Information" or TreeParam == "Quote Preview":			
                 if ObjName == 'SAQTIP':
-                    Trace.write('all----')
                     ObjName = "SAQTIP"
                     PrimaryLable = "Source Account ID"
                     PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
