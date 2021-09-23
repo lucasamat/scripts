@@ -2000,7 +2000,7 @@ class TreeView:
 														self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 													)
 									#Trace.Write("SUBTAB_LIST_J "+str(SubTabList))
-								''' ## Approvals Dynamic Subtab Code starts..##Dynamic chain subtabs in round node...
+								## Approvals Dynamic Subtab Code starts..##Dynamic chain subtabs in round node...
 								if "Round" in ChildDict.get("text"):
 									Trace.Write("inside the ROUND dynamic tab---"+str(aprchn_id))
 									quote_approval_chains_obj = Sql.GetList("select DISTINCT TOP 10 ACACST.APRCHNSTP_NAME,ACAPCH.APRCHN_ID,ACACST.APRCHNSTP_NUMBER,ACAPMA.APRCHN_RECORD_ID FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACACST(nolock) on ACACST.APRCHN_ID = ACAPCH.APRCHN_ID and ACACST.APRCHN_RECORD_ID = ACAPCH.APPROVAL_CHAIN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{}' {} ORDER BY ACACST.APRCHNSTP_NUMBER,ACACST.APRCHNSTP_NAME,ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ".format(Quote.GetGlobal("contract_quote_record_id"),aprchn_id))
@@ -2024,7 +2024,7 @@ class TreeView:
 													SubTabList.append(
 														self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 													)
-								## Approvals Dynamic Subtab Code starts.. Dynamic chain subtabs in round node...    '''    
+								## Approvals Dynamic Subtab Code starts.. Dynamic chain subtabs in round node...   
 							else:                                
 								if pageDetails is not None:
 									pageType = pageDetails.PAGE_TYPE
