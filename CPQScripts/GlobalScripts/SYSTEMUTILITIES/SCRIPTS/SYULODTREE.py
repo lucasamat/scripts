@@ -1130,7 +1130,10 @@ class TreeView:
 								Product.SetGlobal("object_name",tab_obj_dict[NodeText])						
 
 							if findSubChildAvailable is not None:								
-								for findSubChildOne in findSubChildAvailable:									
+								for findSubChildOne in findSubChildAvailable:
+									if str(findSubChildOne.TREEIMAGE_URL):
+										image_url = str(findSubChildOne.TREEIMAGE_URL)
+										Trace.Write('image_url4--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME))										
 									parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 									NodeType = str(findSubChildOne.NODE_TYPE)
 									NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
@@ -1279,6 +1282,9 @@ class TreeView:
 											
 					if findSubChildAvailable is not None:
 						for findSubChildOne in findSubChildAvailable:
+							if str(findSubChildOne.TREEIMAGE_URL):
+								image_url = str(findSubChildOne.TREEIMAGE_URL)
+								Trace.Write('image_url5--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME))
 							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findSubChildOne.NODE_TYPE)
 							NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
@@ -2111,7 +2117,10 @@ class TreeView:
 							
 
 							if findSubChildAvailable is not None:								
-								for findSubChildOne in findSubChildAvailable:									
+								for findSubChildOne in findSubChildAvailable:
+									if str(findSubChildOne.TREEIMAGE_URL):
+										image_url = str(findSubChildOne.TREEIMAGE_URL)
+										Trace.Write('image_url--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME))									
 									parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 									NodeType = str(findSubChildOne.NODE_TYPE)
 									NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
@@ -2332,6 +2341,9 @@ class TreeView:
 					)  """                                  
 					if findSubChildAvailable is not None:
 						for findSubChildOne in findSubChildAvailable:
+							if str(findSubChildOne.TREEIMAGE_URL):
+								image_url = str(findSubChildOne.TREEIMAGE_URL)
+								Trace.Write('image_url2--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME))	
 							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findSubChildOne.NODE_TYPE)
 							NodeApiName = str(findSubChildOne.NODE_DISPLAY_NAME)
@@ -2658,6 +2670,9 @@ class TreeView:
 						) """
 						if findSubChildAvailable is not None:
 							for findSubChildOne in findSubChildAvailable:
+								if str(findSubChildOne.TREEIMAGE_URL):
+									image_url = str(findSubChildOne.TREEIMAGE_URL)
+									Trace.Write('image_url3--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME))	
 								ParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
 								#getAccounts = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTIP WHERE PARTY_ROLE = 'RECEIVING ACCOUNT' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 								if getAccounts is None:
