@@ -38,7 +38,7 @@ def entitlement_request(partnumber,cpsConfigID):
     Trace.Write(response["access_token"])
     try:		
         Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
-        request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
+        request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
         response1 = webclient.DownloadString(request_url)
     except Exception as e:
@@ -54,9 +54,10 @@ def entitlement_request(partnumber,cpsConfigID):
 def get_entitlement_response(partnumber,where_cond,ent_level_table):
     get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
     fullresponse = entitlement_request(partnumber,get_cps.CPS_CONFIGURATION_ID)
-    status = fullresponse['complete']
-    Trace.Write('status--'+str(status))
-    return status
+    if fullresponse:
+        status = fullresponse['complete']
+        Trace.Write('status--'+str(status))
+        return status
 
 try:
     action= Param.action
