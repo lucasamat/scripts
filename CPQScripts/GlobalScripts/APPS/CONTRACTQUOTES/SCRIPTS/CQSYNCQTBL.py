@@ -105,7 +105,7 @@ class SyncQuoteAndCustomTables:
 			'SourceAccountEmail':self.quote.GetCustomField('SourceAccountEmail').Content,
 			'SourceAccountName':self.quote.GetCustomField('SourceAccountName').Content,
 			'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
-			
+			'POES':self.quote.GetCustomField('POES').Content,
 		}
 
 	@staticmethod
@@ -583,6 +583,9 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_LEVEL": custom_fields_detail.get("QuoteLevel")
 							if custom_fields_detail.get("QuoteLevel")
 							else "SALES ORG LEVEL",
+							"POES":custom_fields_detail.get("POES")
+							if custom_fields_detail.get("POES")
+							else 'FALSE',
 							"CONTRACT_VALID_FROM": start_date,
 							"CONTRACT_VALID_TO": end_date,
 							"QUOTE_CREATED_DATE": str(created_date),                            
