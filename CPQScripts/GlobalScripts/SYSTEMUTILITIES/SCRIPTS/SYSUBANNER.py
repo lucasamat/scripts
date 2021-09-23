@@ -2742,11 +2742,11 @@ def Related_Sub_Banner(
         elif str(TreeParam) == "Quote Information" and TabName == "Quotes":
             Trace.Write("@@@2473")
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>') 
-        elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes":     
+        elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Parts List":     
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )    
-            if str(subTabName)=="Parts List":
-                sec_rel_sub_bnr =''
-                sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">DELETE</button><button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD PARTS</button><button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">BULK ADD PARTS</button>')                              
+            # if str(subTabName)=="Parts List":
+            #     sec_rel_sub_bnr =''
+            #     sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">DELETE</button><button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD PARTS</button><button id="ADDNEW__SYOBJR_98870_SYOBJ_00272" onclick="cont_openaddnew(this,\'\')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">BULK ADD PARTS</button>')                              
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
