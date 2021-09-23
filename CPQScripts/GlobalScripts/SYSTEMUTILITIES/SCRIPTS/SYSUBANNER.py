@@ -2725,9 +2725,10 @@ def Related_Sub_Banner(
             sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal">UPDATE PRICING</button>')
         else:
             Trace.Write('in else for dynamic button')
-            for btn in multi_buttons:
-                if quote_status.QUOTE_STATUS != 'APPROVED':
-                    sec_rel_sub_bnr += (btn)
+            if str(multi_buttons)!="":
+                for btn in multi_buttons:
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        sec_rel_sub_bnr += (btn)
         Trace.Write('sec_rel_sub_bnr----'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility
 try:
