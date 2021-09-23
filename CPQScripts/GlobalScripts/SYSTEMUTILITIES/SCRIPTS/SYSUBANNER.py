@@ -1252,7 +1252,7 @@ def Related_Sub_Banner(
                     ThirdLable = "Product Offering Type"
                     ThirdValue = TreeParentParam
                     ##adding configuration status in offering subtab
-                    where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(Quote.GetGlobal(contract_quote_record_id, quote_revision_record_id, TreeParam) )
+                    where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(Quote.GetGlobal(contract_quote_record_id), quote_revision_record_id, TreeParam )
                     get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
                     if get_status == 'true':
                         status_image = 'config_status_icon.png'
