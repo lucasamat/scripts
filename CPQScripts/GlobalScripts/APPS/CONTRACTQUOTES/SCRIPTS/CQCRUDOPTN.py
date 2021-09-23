@@ -2589,12 +2589,14 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 		#	CQVLDRIFLW.iflow_valuedriver_rolldown(quote,level)
 		#except:
 		#	Trace.Write("EXCEPT----FAB LEVEL IFLOW")
-		try:
-			quote = self.contract_quote_record_id
-			level = "FAB VALUE DRIVER"			
-			CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name)
-		except:
-			Trace.Write("EXCEPT----QUOTE FAB VALUE DRIVER LEVEL IFLOW")
+		##A055S000P01-9645 STARTS
+		# try:
+		# 	quote = self.contract_quote_record_id
+		# 	level = "FAB VALUE DRIVER"			
+		# 	CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name)
+		# except:
+		# 	Trace.Write("EXCEPT----QUOTE FAB VALUE DRIVER LEVEL IFLOW")
+		##A055S000P01-9645 ENDS
 		#try:
 		#	quote = self.contract_quote_record_id
 		#	level = "EQUIP FROM CPQ,"+str(TreeParam)+","+str(TreeParentParam)
@@ -4702,12 +4704,13 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
 				except:
 					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
+				##A055S000P01-9645 STARTS
 				#COVERED OBJ DRIVER ROLL DOWN
-				try:						
-					CQTVLDRIFW.iflow_valuedriver_rolldown(self.contract_quote_record_id,"SERVICE COST AND VALUE DRIVERS",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
-				except:
-					Trace.Write("EXCEPT----SERVICE COST AND VALUE DRIVER LEVEL IFLOW")
-				
+				# try:						
+				# 	CQTVLDRIFW.iflow_valuedriver_rolldown(self.contract_quote_record_id,"SERVICE COST AND VALUE DRIVERS",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
+				# except:
+				# 	Trace.Write("EXCEPT----SERVICE COST AND VALUE DRIVER LEVEL IFLOW")
+				##A055S000P01-9645 ENDS
 				# Billing Matrix - Detail Insert - Start                    
 				# self._insert_billing_matrix()				
 				# Billing Matrix - Detail Insert - End
