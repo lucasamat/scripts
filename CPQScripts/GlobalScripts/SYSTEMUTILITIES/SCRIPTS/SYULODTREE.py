@@ -537,17 +537,17 @@ class TreeView:
 			if getParentObjQuery is not None:
 				##adding image along with tree params
 				if str(getParentObjQuery.TREEIMAGE_URL):
-					ImageUrl = str(getParentObjQuery.TREEIMAGE_URL)
-					ImageURL = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{ImageUrl}"/>'.format(ImageUrl = ImageUrl)
+					image_url = str(getParentObjQuery.TREEIMAGE_URL)
+					image_url = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 				else:
-					ImageURL = ''
+					image_url = ''
 				for getParentObj in getParentObjQuery:
 					ProductDict = {}
 					ChildListData = []
 					SubTabList = []
 					NewList = []
 					RecId = str(getParentObj.TREE_NODE_RECORD_ID)
-					NodeText = ImageURL+ str(getParentObj.NODE_NAME)
+					NodeText = image_url+ str(getParentObj.NODE_NAME)
 					ProductDict["text"] = NodeText
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
