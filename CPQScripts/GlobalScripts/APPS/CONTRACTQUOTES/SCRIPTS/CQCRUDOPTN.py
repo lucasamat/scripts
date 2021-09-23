@@ -1084,7 +1084,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
 					ent_disp_val = attributevalues[attrs]
 					ent_val_code = attributevalues[attrs]
-					Trace.Write("ent_disp_val----"+str(ent_disp_val))
+					#Trace.Write("ent_disp_val----"+str(ent_disp_val))
 				else:					
 					HasDefaultvalue=False
 					ent_disp_val = ""
