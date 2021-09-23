@@ -535,8 +535,9 @@ class TreeView:
 			#    + str(TabName)
 			#    + "' AND NODE_TYPE = 'STATIC' AND PARENT_NODE_RECORD_ID ='' ORDER BY abs(DISPLAY_ORDER)")
 			if getParentObjQuery is not None:
-				if str(getParentObj.TREEIMAGE_URL):
-					ImageUrl = str(getParentObj.TREEIMAGE_URL)
+				##adding image along with tree params
+				if str(getParentObjQuery.TREEIMAGE_URL):
+					ImageUrl = str(getParentObjQuery.TREEIMAGE_URL)
 					ImageURL = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{ImageUrl}"/>'.format(ImageUrl = ImageUrl)
 				else:
 					ImageURL = ''
