@@ -1117,6 +1117,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					ent_val_code = ent_val_code
 				if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location":
 					Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
+					Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
 					AttributeID_Pass = attrs
 					if getquote_sales_val in get_il_sales_list:
 						NewValue = 'Israel'
