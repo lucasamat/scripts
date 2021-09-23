@@ -246,7 +246,7 @@ def Related_Sub_Banner(
                 rev_quote = Sql.GetFirst(" SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND ACTIVE = 'TRUE' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")))
                 if rev_quote: 
                     if TreeParam == 'Revisions':
-                        PrimaryLable = 'Active Revision'
+                        PrimaryLable = 'Quote Revision'
                         PrimaryValue = rev_quote.QTEREV_ID
                         SecondLable = 'Revision Creation Date'
                         rev_create_date = rev_quote.REV_CREATE_DATE
