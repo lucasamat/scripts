@@ -3659,7 +3659,7 @@ def EntitlementTreeViewHTMLDetail(
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
-									+ ' onchange="editent_bt(this)" >'
+									+ '" onchange="editent_bt(this)" >'
 									+ str(VAR1)
 									+ "</select>"
 								)
