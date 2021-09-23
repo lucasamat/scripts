@@ -1389,7 +1389,7 @@ class TreeView:
 		except:
 			getAccounts = ""
 		#Trace.Write("=================>> ParRecId "+str(ParRecId))
-		Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
+		#Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		Trace.Write('RecId-----TreeParentParam--'+str(TreeParentParam))
@@ -1771,7 +1771,7 @@ class TreeView:
 						for childdata in childQuery:							
 							ChildDict = {}
 							SubChildData = []  
-							#Trace.Write("child 111"+str(eval("childdata." + str(NodeName))))                          
+							Trace.Write("child 111"+str(eval("childdata." + str(NodeName))))                          
 							if  str(ObjName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst(
@@ -2364,7 +2364,7 @@ class TreeView:
 							else:
 								SubNodeName = str(findSubChildOne.NODE_DISPLAY_NAME)
 								SubParRecId = str(findSubChildOne.TREE_NODE_RECORD_ID)
-								Trace.Write("elseeee")
+								#Trace.Write("elseeee")
 								subDynamicQuery = str(findSubChildOne.DYNAMIC_NODEDATA_QUERY)
 								SubNodeType = str(findSubChildOne.NODE_TYPE)
 								nodeId = str(findSubChildOne.NODE_ID)
