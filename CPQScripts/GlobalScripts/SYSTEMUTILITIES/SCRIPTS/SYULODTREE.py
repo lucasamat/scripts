@@ -535,14 +535,18 @@ class TreeView:
 			#    + str(TabName)
 			#    + "' AND NODE_TYPE = 'STATIC' AND PARENT_NODE_RECORD_ID ='' ORDER BY abs(DISPLAY_ORDER)")
 			if getParentObjQuery is not None:
-				
+				if str(getParentObj.TREEIMAGE_URL):
+					ImageUrl = str(getParentObj.TREEIMAGE_URL)
+					ImageURL = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{ImageUrl}"/>'.format(ImageUrl = ImageUrl)
+				else:
+					ImageURL = ''
 				for getParentObj in getParentObjQuery:
 					ProductDict = {}
 					ChildListData = []
 					SubTabList = []
 					NewList = []
 					RecId = str(getParentObj.TREE_NODE_RECORD_ID)
-					NodeText = str(getParentObj.NODE_NAME)
+					NodeText = ImageURL+ str(getParentObj.NODE_NAME)
 					ProductDict["text"] = NodeText
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
