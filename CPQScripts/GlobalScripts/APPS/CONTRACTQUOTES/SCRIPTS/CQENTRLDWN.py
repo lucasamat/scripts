@@ -433,7 +433,7 @@ def sendEmail(level):
 datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 obj_list = []
-is_changed = False
+
 def Request_access_token():
 	webclient = System.Net.WebClient()
 	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
@@ -511,6 +511,7 @@ Log.Info("level1---"+str(level))
 
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where):
+	is_changed = False
 	if 'Z0007' in get_serviceid:
 		objectName = 'SAQSCE'
 	if objectName == 'SAQTSE':
