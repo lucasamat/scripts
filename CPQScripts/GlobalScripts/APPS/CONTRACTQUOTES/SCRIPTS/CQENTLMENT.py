@@ -652,7 +652,7 @@ class Entitlements:
 								
 								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 								
-								multi_select_attr_list[str(key)] = display_value_arr
+								multi_select_attr_list[str(attrSysId)] = display_value_arr
 						if attributevalues.get(attrSysId) is None:
 							ent_disp_val = ''
 						else:
