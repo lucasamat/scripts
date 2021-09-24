@@ -591,7 +591,7 @@ two_weeks = datetime.timedelta(days=14)
 mail_trigger_date = today_date + two_weeks
 mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 date_list.append(mail_trigger_date)
-if str(today_date_string) == str(mail_trigger_date):
+if str(today_date_string) == str(today_date_string):
 	if mail_trigger_date not in date_list:
 		configobj.mail_trigger()
 
