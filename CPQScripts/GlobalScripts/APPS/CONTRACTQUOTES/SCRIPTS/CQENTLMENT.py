@@ -530,7 +530,7 @@ class Entitlements:
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
-								#dropdownallowlist = []
+								#dropdownallowlist = [] 
 								#Trace.Write('attr_chk----'+str(prdvalue))
 								if prdvalue["visible"] == "false":							
 									attributesdisallowedlst.append(prdvalue["id"])
