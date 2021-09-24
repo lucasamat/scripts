@@ -137,9 +137,10 @@ def get_config_id():
 	
 def ChildEntRequest(config_id,tableName,where):	
 	#attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault	
+	ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 	try:
 		if tableName != "":
-			ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+			#ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 			ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
 			where_cond = where.replace("'","''")
 			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_child_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
@@ -185,7 +186,7 @@ def ChildEntRequest(config_id,tableName,where):
 							cpsmatchID = cpsmatchID
 
 
-		ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
+		
 		
 		
 		
@@ -216,7 +217,7 @@ def ChildEntRequest(config_id,tableName,where):
 			
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
-	
+	ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
 	return cpsmatchID
 
 ##Pricing rollup
@@ -306,11 +307,11 @@ def entitlement_price_rollup(objectname,ent_temp):
 				UpdateEntitlement = " UPDATE SAQTSE SET ENTITLEMENT_XML= '{}', {} {} ".format(updateentXML,update_fields,where_condition)
 			
 				Sql.RunQuery(UpdateEntitlement)
-			if flag == True:
-				newConfigurationid	= get_config_id()
-				cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
-				Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
-				Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+				if flag == True:
+					newConfigurationid	= get_config_id()
+					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
+					Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			where_condition = SAQITMWhere.replace('A.','')
@@ -324,7 +325,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 
 				updateentXML = get_ser_xml.ENTITLEMENT_XML
 				get_val_list =re.findall(r'AGS_LAB_OPT[\w\W]*?<',updateentXML)
-				
+				flag = False
 				for value in GetXMLsec:
 					where_condtn = SAQITMWhere.replace('A.','')
 					where_condtn += " AND {} AND ENTITLEMENT_NAME = '{}'".format(fab_val[len(fab_val)-1],value.ENTITLEMENT_NAME) 
@@ -379,6 +380,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
+						flag = True
 						
 
 					
@@ -386,6 +388,11 @@ def entitlement_price_rollup(objectname,ent_temp):
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
 				Sql.RunQuery(UpdateEntitlement)
+				if flag == True:
+					newConfigurationid	= get_config_id()
+					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
+					Log.Info('cpsconfig---fab-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 		elif obj == 'SAQSGE' and GetXMLsecField:
 			where_condition = SAQITMWhere.replace('A.','')
@@ -397,6 +404,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_NAME like '%AGS_LAB_OPT%'".format(ent_temp,where_condition))
 			get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM {obj} (NOLOCK) {where_condition}""".format(obj=obj,where_condition = where_condition))
 			if GetXMLsec:
+				flag = False
 				#foo = [i.ENTITLEMENT_NAME for i in GetXMLsec]
 				updateentXML = get_ser_xml.ENTITLEMENT_XML
 				get_val_list =re.findall(r'AGS_LAB_OPT[\w\W]*?<',updateentXML)
@@ -456,11 +464,17 @@ def entitlement_price_rollup(objectname,ent_temp):
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
+						flag = False
 
 			if updateentXML:
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
 				Sql.RunQuery(UpdateEntitlement)
+				if flag == True:
+					newConfigurationid	= get_config_id()
+					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
+					Log.Info('cpsconfig---grn-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 			
 
 ## Entitlement rolldown fn
