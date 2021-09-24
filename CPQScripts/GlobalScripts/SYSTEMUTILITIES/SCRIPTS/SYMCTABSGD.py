@@ -1264,7 +1264,7 @@ class CONTAINER:
                                             + PRIMARY_OBJECT_NAMes
                                             + " (nolock) where 1=1 and permission_type = '0'"
                                         )
-                                    elif str(x_tabs) == 'Quotes' and flag == 3:
+                                    #elif str(x_tabs) == 'Quotes' and flag == 3:
                                         
                                         #where +=  "WHERE ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and ACAPTX.APPROVALSTATUS = 'REQUESTED' AND ACAPTX.ARCHIVED = 0 "
                                         
@@ -1276,7 +1276,7 @@ class CONTAINER:
                                             + str(where)
                                         )'''
                                         #where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName)
-                                        QueryCountOBJ = Sql.GetFirst("select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName))
+                                        #QueryCountOBJ = Sql.GetFirst("select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName))
                                     # elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                     #     Trace.Write("flag22====")
                                     #     #where += " AND QT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
