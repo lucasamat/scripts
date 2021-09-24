@@ -10,6 +10,8 @@
 from SYDATABASE import SQL
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
+from datetime import *
+import datetime
 Sql = SQL()
 Param = Param
 
