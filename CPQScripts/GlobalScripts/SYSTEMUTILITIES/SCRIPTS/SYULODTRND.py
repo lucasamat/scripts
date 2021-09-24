@@ -617,7 +617,8 @@ def CommonTreeViewHTMLDetail(
 		if str(ObjectName) != "SYSECT":
 			if "DEFAULT" in str(API_NAMES):
 				API_NAMES = str(API_NAMES).replace("DEFAULT", "[DEFAULT]")	
-
+		if "PRIMARY" in str(API_NAMES):
+			API_NAMES = str(API_NAMES).replace("PRIMARY", "[PRIMARY]")
 		if str(ObjectName) == "SAQITM":
 			autoNumber = "LINE_ITEM_ID"
 		if str(ObjectName) == "SYPROH":
