@@ -538,6 +538,9 @@ def Related_Sub_Banner(
             elif str(CurrentRecordId) == 'SYOBJR-98871'and TreeParam =="Customer Information" and Subtab =='Accounts'
                 PrimaryLable = "Customer Information"
                 PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."    
+            elif TreeParam =="Sales Team":
+                PrimaryLable = "Sales Team"
+                PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."  
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
