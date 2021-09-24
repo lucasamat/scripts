@@ -1004,22 +1004,26 @@ class SyncQuoteAndCustomTables:
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
-						getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+						employee_obj = SqlHelper.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+
+						# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 						contact_info_update = {
 							"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
-							"EMAIL": "",
+							"EMAIL": employee_obj.EMAIL,
 							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"CONTACT_ID": "",
 							"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
 							"PRIMARY": "",
-							"PHONE": "",
+							"PHONE": employee_obj.PHONE,
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id,
 							"COUNTRY":salesorg_country.COUNTRY,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-							"STATE": custom_fields_detail.get("PayerState"),
-							"STATE_RECORD_ID": getState.STATE_RECORD_ID
+							"STATE": employee_obj.STATE,
+							"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+							"CITY":employee_obj.CITY,
+							"POSTAL_CODE":employee_obj.POSTAL_CODE
 						}
 						quote_involved_party_contact_table_info.AddRow(contact_info_update)
 						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
