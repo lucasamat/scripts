@@ -1108,7 +1108,7 @@ def Related_Sub_Banner(
                         SixthValue = ListVal[5]
                 except:
                     Trace.Write("error5")
-                if(TreeParam =="Customer Information" and subTabName == "Accounts"and subTabName == "Contacts"):
+                if(TreeParam =="Customer Information") and (subTabName == "Accounts"and subTabName == "Contacts"):
                     Trace.Write("Mockup")
                     PrimaryLable ="Customer Information"
                     PrimaryValue ="Use the Customer Information functionality to manage your Quote Accounts and Contacts..."
