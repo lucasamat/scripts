@@ -3560,7 +3560,7 @@ def POPUPLISTVALUEADDNEW(
 				"MATERIAL_RECORD_ID",
 				"SAP_PART_NUMBER",
 				"SAP_DESCRIPTION",
-				"PRODUCT_TYPE",
+				"PRODUCT_TYPE"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3698,13 +3698,13 @@ def POPUPLISTVALUEADDNEW(
 			if where_string:
 				where_string += " AND"
 			ordered_keys = [
-				"MAMTRL.MATERIAL_RECORD_ID",
-				"MAMTRL.SAP_PART_NUMBER",
+				"MATERIAL_RECORD_ID",
+				"SAP_PART_NUMBER",
 				"SAP_DESCRIPTION",
 				"PRODUCT_TYPE",
 				]
 			
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
+			where_string += """IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
 			)
 				
 			table_data = Sql.GetList(
@@ -3735,7 +3735,7 @@ def POPUPLISTVALUEADDNEW(
 					new_value_dict = {}
 					for data in row_data:
 						if str(data.Key) == "MATERIAL_RECORD_ID":
-							pop_val = str(data.Value) + "|Offerings"
+							pop_val = str(data.Value) + "|Parts"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
 						else:
