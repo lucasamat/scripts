@@ -742,7 +742,7 @@ class Entitlements:
 					##A055S000P01-9646 code starts..
 					if (key == "AGS_Z0091_TSC_NONCNS" or key == "AGS_Z0004_TSC_NONCNS" or key == "AGS_Z0007_TSC_NONCNS" or key == "AGS_Z0006_TSC_NONCNS" or key == "AGS_Z0092_TSC_NONCNS" or key == "AGS_Z0091_TSC_CONSUM" or key == "AGS_Z0004_TSC_CONSUM" or key == "AGS_Z0007_TSC_CONSUM" or key == "AGS_Z0006_TSC_CONSUM") and str((val).split("||")[0]).strip() == "Some Exclusions":
 						service_id = key.split('_')[1].strip()
-						ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(service_id,self.ContractRecordId,self.revision_recordid))
+						ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
 						material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0101'")
 						if ancillary_object is None:
 							if material_obj:
