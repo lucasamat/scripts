@@ -570,10 +570,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE = IQ.NET_PRICE,
 											YEAR_1 = IQ.YEAR_1,
 											YEAR_2 = IQ.YEAR_2,
+											YEAR_3 = IQ.YEAR_3,
+											YEAR_4 = IQ.YEAR_4,
+											YEAR_5 = IQ.YEAR_5,
 											NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+											YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+											YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+											YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
 											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
@@ -581,10 +587,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
-														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
 														FROM SAQITM (NOLOCK) 
 														JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
 														WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.GREENBOOK = '{TreeParam}' AND SAQICO.FABLOCATION_ID = '{TreeParentParam}'
@@ -596,15 +608,18 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
-						total_year_2 = 0.00        
+						total_year_2 = 0.00
+						total_year_3 = 0.00
+						total_year_4 = 0.00
+						total_year_5 = 0.00
 						total_net_value = 0.00
 						items_data = {}
 
-						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4,ISNULL(YEAR_5, 0) as YEAR_5, ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
 						
 						if items_obj:
 							for item_obj in items_obj:
-								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2,'YEAR_3':item_obj.YEAR_3,'YEAR_4':item_obj.YEAR_4,'YEAR_5':item_obj.YEAR_5, 'NET_PRICE':item_obj.NET_PRICE}
 						
 						for item in Quote.MainItems:
 							item_number = int(item.RolledUpQuoteItem)
@@ -618,7 +633,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									item.YEAR_1.Value = item_data.get('YEAR_1')
 									total_year_1 += item.YEAR_1.Value
 									item.YEAR_2.Value = item_data.get('YEAR_2')
-									total_year_2 += item.YEAR_2.Value        
+									total_year_2 += item.YEAR_2.Value
+									item.YEAR_3.Value = item_data.get('YEAR_3')
+									total_year_3 += item.YEAR_2.Value
+									item.YEAR_4.Value = item_data.get('YEAR_4')
+									total_year_4 += item.YEAR_4.Value
+									item.YEAR_5.Value = item_data.get('YEAR_5')
+									total_year_5 += item.YEAR_5.Value
 									item.DISCOUNT.Value = str(VALUE)
 						##Added the percentage symbol for discount custom field...
 						Percentage = '%'
@@ -627,7 +648,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						#Trace.Write("discount"+str(discount_value))
 						Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
 						Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency      
+						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+						Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
 						Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 						Quote.Save()
 					elif TableName == "SAQIFL":
@@ -700,10 +722,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE = IQ.NET_PRICE,
 											YEAR_1 = IQ.YEAR_1,
 											YEAR_2 = IQ.YEAR_2,
+											YEAR_3 = IQ.YEAR_3,
+											YEAR_4 = IQ.YEAR_4,
+											YEAR_5 = IQ.YEAR_5,
 											NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+											YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+											YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+											YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
 											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
@@ -711,10 +739,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
-														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
 														FROM SAQITM (NOLOCK) 
 														JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
 														WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'
@@ -725,11 +759,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
-						total_year_2 = 0.00        
+						total_year_2 = 0.00
+						total_year_3 = 0.00
+						total_year_4 = 0.00
+						total_year_5 = 0.00
 						total_net_value = 0.00
 						items_data = {}
 
-						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
 						if items_obj:
 							for item_obj in items_obj:
 								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
@@ -745,7 +782,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									item.YEAR_1.Value = item_data.get('YEAR_1')
 									total_year_1 += item.YEAR_1.Value
 									item.YEAR_2.Value = item_data.get('YEAR_2')
-									total_year_2 += item.YEAR_2.Value        
+									total_year_2 += item.YEAR_2.Value
+									item.YEAR_3.Value = item_data.get('YEAR_3')
+									total_year_3 += item.YEAR_3.Value
+									item.YEAR_4.Value = item_data.get('YEAR_4')
+									total_year_4 += item.YEAR_4.Value
+									item.YEAR_5.Value = item_data.get('YEAR_5')
+									total_year_5 += item.YEAR_5.Value
 									item.DISCOUNT.Value = "+"+str(VALUE)
 						##Added the percentage symbol for discount custom field...
 						Percentage = '%'
@@ -754,7 +797,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						#Trace.Write("discount"+str(discount_value))
 						Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
 						Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency      
+						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+						Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
 						Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 						Quote.Save()
 
