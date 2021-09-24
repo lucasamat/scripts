@@ -585,12 +585,14 @@ date_list=[]
 now = datetime.datetime.now()
 current_date_obj = str(now).split(" ")[0].strip()
 today_date = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
+today_date_string = str(today_date).split(" ")[0].strip()
 two_weeks = datetime.timedelta(days=14)
 mail_trigger_date = today_date + two_weeks
+mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 date_list.append(mail_trigger_date)
-
-if mail_trigger_date not in date_list:
-	configobj.mail_trigger()
+if str(today_date_string) == str(mail_trigger_date):
+	if mail_trigger_date not in date_list:
+		configobj.mail_trigger()
 
 if hasattr(Param, "keyData_val"):
 	keyData_val = Param.keyData_val
