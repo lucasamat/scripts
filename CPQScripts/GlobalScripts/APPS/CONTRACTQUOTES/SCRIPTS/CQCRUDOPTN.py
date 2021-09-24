@@ -14,7 +14,6 @@ import System.Net
 import SYCNGEGUID as CPQID
 import CQPARTIFLW
 import CQVLDRIFLW
-import CQTVLDRIFW
 from SYDATABASE import SQL
 #from datetime import datetime
 #from datetime import datetime
@@ -2580,29 +2579,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 								)
 							)
 
-		#Trace.Write("ADDEQUIPMENT"+str(EquipList))
-		#Trace.Write("ADDfabtrace"+str(row_detail.get("FABLOCATION_ID")))
-		#try:
-		#	quote = self.contract_quote_record_id
-		#	#level = "FAB LEVEL,"+str(row_detail.get("FABLOCATION_ID"))+","+str(row_detail.get("EQUIPMENT_ID"))+","+str(self.user_id)+","+str(self.user_name)
-		#	level = "FAB LEVEL,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)+","+str(self.user_name)
-		#	CQVLDRIFLW.iflow_valuedriver_rolldown(quote,level)
-		#except:
-		#	Trace.Write("EXCEPT----FAB LEVEL IFLOW")
-		##A055S000P01-9645 STARTS
-		# try:
-		# 	quote = self.contract_quote_record_id
-		# 	level = "FAB VALUE DRIVER"			
-		# 	CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name)
-		# except:
-		# 	Trace.Write("EXCEPT----QUOTE FAB VALUE DRIVER LEVEL IFLOW")
-		##A055S000P01-9645 ENDS
-		#try:
-		#	quote = self.contract_quote_record_id
-		#	level = "EQUIP FROM CPQ,"+str(TreeParam)+","+str(TreeParentParam)
-		#	CQVLDRIFLW.iflow_valuedriver_rolldown(quote,level)
-		#except:
-		#	Trace.Write("EXCEPT----FAB LEVEL IFLOW")
+		
 		return True
 
 	def _update(self):
@@ -4698,22 +4675,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				self._insert_quote_service_greenbook(batch_group_record_id=batch_group_record_id)
 				#SAQSGB_end_time = time.time()				
 				self._insert_quote_service_preventive_maintenance_kit_parts(batch_group_record_id=batch_group_record_id)
-				#COVERED OBJ PRE DEFINED LOGIC
-				try:	
-					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")					
-					CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
-				except:
-					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
-				##A055S000P01-9645 STARTS
-				#COVERED OBJ DRIVER ROLL DOWN
-				# try:						
-				# 	CQTVLDRIFW.iflow_valuedriver_rolldown(self.contract_quote_record_id,"SERVICE COST AND VALUE DRIVERS",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
-				# except:
-				# 	Trace.Write("EXCEPT----SERVICE COST AND VALUE DRIVER LEVEL IFLOW")
-				##A055S000P01-9645 ENDS
-				# Billing Matrix - Detail Insert - Start                    
-				# self._insert_billing_matrix()				
-				# Billing Matrix - Detail Insert - End
 				#ENTITLEMENT SV TO CE
 				Entitlement_start_time = time.time()
 				if self.trigger_from == 'PythonScript':
