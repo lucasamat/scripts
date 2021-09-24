@@ -514,8 +514,7 @@ def Related_Sub_Banner(
                 ThirdLable = "Source Fab Location ID"
                 ThirdValue = "All"
                 FourthLable = "Equipment ID"
-                FourthValue = "ALL"
-                
+                FourthValue = "ALL"    
             elif str(CurrentRecordId) == 'SYOBJR-00028':
                 PrimaryLable = "Source Account ID"
                 PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
@@ -525,9 +524,7 @@ def Related_Sub_Banner(
                 ThirdLable = "Source Fab Location ID"
                 ThirdValue = "All" 
                 FourthLable = "Equipment ID"
-                FourthValue = "ALL"           
-                
-    
+                FourthValue = "ALL"
             elif str(CurrentRecordId) == 'SYOBJR-98859' and str(ObjName) == "SAQSAO":
                 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
                 getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParentParam)+"'")
@@ -538,6 +535,9 @@ def Related_Sub_Banner(
                         SecondValue = getService.SERVICE_DESCRIPTION
                 ThirdLable = "Add-On Products"
                 ThirdValue = "All"
+            elif str(CurrentRecordId) == 'SYOBJR-98871'and TreeParam =="Customer Information" and Subtab =='Accounts'
+                PrimaryLable = "Customer Information"
+                PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."    
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
