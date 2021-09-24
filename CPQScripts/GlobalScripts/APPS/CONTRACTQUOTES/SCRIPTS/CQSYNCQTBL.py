@@ -1795,6 +1795,8 @@ sync_obj.create_custom_table_record()
 ##A055S000P01-8740 code starts..
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
+if getRevision is None:
+	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
 ##A055S000P01-8740 code ends..
 
