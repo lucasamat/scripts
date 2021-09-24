@@ -181,10 +181,10 @@ def entitlement_price_rollup(objectname,ent_temp):
 	elif objectname == 'SAQSCE':
 		obj_list = ['SAQSGE','SAQSFE','SAQTSE']
 	for obj in obj_list:
+		##Z0016 ROLLUP
 		if obj == 'SAQTSE' and GetXMLsecField:
-			##Z0016 ROLLUP
 			#newConfigurationid	= get_config_id()
-			
+			where_condition = SAQITMWhere.replace('A.','')
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_NAME like '%AGS_LAB_OPT%'".format(ent_temp,where_condition))
 			get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE (NOLOCK) {where_condition}""".format(where_condition = where_condition))
 
@@ -397,7 +397,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_currency ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
 					if value.ENTITLEMENT_NAME+'<' in get_val_list:
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
-					elif value.ENTITLEMENT_NAME in new_list:
+					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
 
 			if updateentXML:
