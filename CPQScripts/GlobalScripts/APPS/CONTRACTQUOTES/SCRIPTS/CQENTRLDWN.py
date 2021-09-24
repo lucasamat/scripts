@@ -448,19 +448,15 @@ def get_config_id():
 	newConfigurationid  =""
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
-	#Log.Info(response["access_token"])
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
-	#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
-	#Log.Info("Request_URL--"+Request_URL)
+
 	ProductPartnumber = get_serviceid
 	try:        
 		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
-		#Log.Info("requestdata" + str(requestdata))
 		response1 = webclient.UploadString(Request_URL, str(requestdata))        
 		response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse = eval(response1)
-		#Log.Info("response.."+str(eval(response1)))
 		newConfigurationid = Fullresponse["id"]	
 	except:
 		pass
@@ -528,13 +524,9 @@ elif objectName == 'SAQSGE':
 elif objectName == 'SAQSCE':
 	obj_list = ['SAQTSE','SAQSFE','SAQSGE','SAQIEN','SAQSAE']
 	is_changed = True
-# Log.Info('459----objectName------'+str(objectName))
-# Log.Info('459----wherecon------'+str(wherecon))
 datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
 where_cond = where.replace('SRC.','')
-#Log.Info('where_cond----'+str(where_cond))
 getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")
-#Log.Info('getinnercon-----'+str(("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")))
 
 ##get c4c quote id
 get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID,getinnercon.QTEREV_RECORD_ID))
@@ -542,7 +534,7 @@ get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_R
 ent_temp =""
 if 'Z0007' in get_serviceid or ('Z0016' in get_serviceid and objectName == 'SAQSCE'):
 	where_condition = SAQITMWhere.replace('A.','').replace("'","''")
-	#get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
+
 	ent_temp = "SAQSCE_ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 	Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><FABLOCATION_ID>''+FABLOCATION_ID+''</FABLOCATION_ID><GREENBOOK>''+GREENBOOK+''</GREENBOOK><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from SAQSCE(nolock) "+str(where_condition)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',FABLOCATION_ID VARCHAR(100) ''FABLOCATION_ID'',GREENBOOK VARCHAR(100) ''GREENBOOK'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
@@ -550,7 +542,6 @@ if 'Z0007' in get_serviceid or ('Z0016' in get_serviceid and objectName == 'SAQS
 
 
 where_conditn = where_cond.replace("'","''")
-#get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
 ent_roll_temp = "ENT_ROLL_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")
 Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select distinct ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(objectName)+"(nolock) "+str(where_conditn)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_PRICE_IMPACT,IS_DEFAULT,ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CALCULATION_FACTOR INTO "+str(ent_roll_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_DESCRIPTION VARCHAR(100) ''ENTITLEMENT_DESCRIPTION'',PRICE_METHOD VARCHAR(100) ''PRICE_METHOD'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'') ; exec sys.sp_xml_removedocument @H; '")
@@ -587,7 +578,7 @@ try:
 			if 'Z0016' in get_serviceid:
 				cpsmatc_incr = 11
 				newConfigurationid	= get_config_id()
-				#get_value_query = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE {} ".format(where_condition) )
+			
 				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {}".format(ent_temp,where_condition))
 				
 				updateentXML = ""
@@ -611,7 +602,6 @@ try:
 							get_calc_factor = GetXML.CALCULATION_FACTOR 
 							get_price_impact = GetXML.ENTITLEMENT_PRICE_IMPACT
 							get_code = GetXML.ENTITLEMENT_VALUE_CODE
-						#try:
 						
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME:
 
@@ -629,7 +619,6 @@ try:
 							getvalue = []
 							getcode = []
 							for val in get_value_qry:
-								#Log.Info('ENTITLEMENT_NAME----'+str(i.ENTITLEMENT_NAME)+'--'+str(i.ENTITLEMENT_DISPLAY_VALUE))
 								if val.ENTITLEMENT_VALUE_CODE and val.ENTITLEMENT_VALUE_CODE != 'undefined':
 									getcode.extend(eval(val.ENTITLEMENT_VALUE_CODE) )
 									
@@ -712,15 +701,13 @@ try:
 						get_calc_factor = value.CALCULATION_FACTOR 
 						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
 							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
-								#get_calc_factor = get_value = int(round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt)) )
+							
 								get_calc_factor = get_value = round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt),2)
 								if value.ENTITLEMENT_COST_IMPACT and get_value:
 									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 								else:
 									get_price_impact = 0.00
-								#get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 							
-							#Log.Info('get_cost_impact---'+str(value.ENTITLEMENT_NAME)+'---'+str(get_cost_impact))
 						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
@@ -741,9 +728,7 @@ try:
 			else: 				
 				if 'Z0007' in get_serviceid and objectName == 'SAQSCE': 
 					where_condition = SAQITMWhere.replace('A.','')
-					#fab_val = where_cond.split('AND ')
-					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
-					#Log.Info('where_condition-----1307--'+str(where_condition))	
+				
 					get_value_query = Sql.GetList("select QUOTE_RECORD_ID,QTEREV_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
 					
 					for fab in get_value_query:
@@ -793,7 +778,6 @@ try:
 						for value in GetXMLsec:
 							where_condtn = SAQITMWhere.replace('A.','')
 							where_condtn += " AND {} AND ENTITLEMENT_NAME = '{}'".format(fab_val[len(fab_val)-1],value.ENTITLEMENT_NAME) 
-							#get_value_query = Sql.GetFirst("select * from {} {} ".format(ent_temp,where_condition) )
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_currency = value.PRICE_METHOD
 							GetXML = Sql.GetFirst("SELECT * from {} where ENTITLEMENT_NAME = '{}' ".format(ent_roll_temp,value.ENTITLEMENT_NAME))
