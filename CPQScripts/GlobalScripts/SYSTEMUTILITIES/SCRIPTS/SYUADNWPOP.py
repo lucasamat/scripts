@@ -3704,7 +3704,7 @@ def POPUPLISTVALUEADDNEW(
 				"PRODUCT_TYPE",
 				]
 			
-			where_string += """IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
+			where_string += """ IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
 			)
 				
 			table_data = Sql.GetList(
