@@ -3549,7 +3549,7 @@ def POPUPLISTVALUEADDNEW(
 			DIVNAME = "VIEW_DIV_ID"
 			new_value_dict = {}
 			ObjectName = "MAMTRL"
-			table_id = "offerings-addnew-model"
+			table_id = "parts-addnew-model"
 			Header_details = {
 				"MATERIAL_RECORD_ID": "KEY",
 				"SAP_PART_NUMBER": "SERVICE ID",
@@ -3642,17 +3642,17 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  );$("#noRecDisp").remove(); if (document.getElementById("RecordsStartAndEnd")){document.getElementById("RecordsStartAndEnd").innerHTML = data15;}; if (document.getElementById("TotalRecordsCount")) {document.getElementById("TotalRecordsCount").innerHTML = data16;} } else{ $("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  );$("#offerings-addnew-model").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ '").bootstrapTable("load", date_field  );$("#parts-addnew-model").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); } else{ $("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); document.getElementById("add-offerings-model-footer").style.border = "1px solid #ccc"; document.getElementById("add-offerings-model-footer").style.padding = "5.5px"; document.getElementById("add-offerings-model-footer").innerHTML = "No Records to Display"; } } ; });  });'
+					+ '").bootstrapTable("load", date_field  ); document.getElementById("add-parts-model-footer").style.border = "1px solid #ccc"; document.getElementById("add-parts-model-footer").style.padding = "5.5px"; document.getElementById("add-parts-model-footer").innerHTML = "No Records to Display"; } } ; });  });'
 				)
 
 				dbl_clk_function = (
 					'$("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); var count = 0; var selectAll = false; $("#add-offerings").css("display","none"); $("#offerings-addnew-model").find(\'[type="checkbox"]:checked\').map(function () {var sel_val = $(this).closest("tr").find("td:nth-child(2)").text(); count = 1; console.log("popu_upid3333 ============>"+$(this).attr("name")); if ($(this).attr("name") == "btSelectAll"){console.log("popu_up1111 ============>"); var selectAll = true; $("#add-offerings").css("display","block");} else if (sel_val != "") {console.log("popu_up222 ============>"); $("#add-offerings").css("display","block");} else{$("#add-offerings").css("display","none");}});if(count == 0){$("#add-offerings").css("display","none");}}); $(".bs-checkbox input").addClass("custom"); $("'
+					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); var count = 0; var selectAll = false; $("#add-offerings").css("display","none"); $("#parts-addnew-model").find(\'[type="checkbox"]:checked\').map(function () {var sel_val = $(this).closest("tr").find("td:nth-child(2)").text(); count = 1; console.log("popu_upid3333 ============>"+$(this).attr("name")); if ($(this).attr("name") == "btSelectAll"){console.log("popu_up1111 ============>"); var selectAll = true; $("#add-offerings").css("display","block");} else if (sel_val != "") {console.log("popu_up222 ============>"); $("#add-offerings").css("display","block");} else{$("#add-offerings").css("display","none");}});if(count == 0){$("#add-offerings").css("display","none");}}); $(".bs-checkbox input").addClass("custom"); $("'
 					+ str(table_ids)
 					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 					+ str(table_id)
