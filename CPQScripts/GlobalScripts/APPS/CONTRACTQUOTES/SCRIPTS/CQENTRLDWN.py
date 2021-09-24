@@ -135,32 +135,84 @@ def get_config_id():
 		pass
 	return newConfigurationid
 	
-def ChildEntRequest(attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault):		
-	try:        
-		if attribute_id !="":
-			response = Request_access_token()	
-			Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
-			webclient = System.Net.WebClient()
-			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-			if value_code and value_code not in ('undefined','None') and attribute_id !='undefined' and display_name !='select' and isdefault =='0':	
-				webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
-				try:
-					requestdata = '{"characteristics":['
-					requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
-					if attr_type in ('Check Box','CheckBox'):
-						for code in eval(value_code):
-							requestdata += '{"value":"' + code + '","selected":true}'
-							requestdata +=','
-						requestdata +=']},'	
-					else:
-						requestdata+= '{"value":"' +str(value_code) + '","selected":true}]},'
-					requestdata += ']}'
-					requestdata = requestdata.replace('},]','}]')
-					#Log.Info("requestdata--child-- " + str(requestdata))
-					response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-					cpsmatchID +=10
-				except Exception:
-					Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
+def ChildEntRequest(config_id,tableName,where):	
+	#attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault	
+	try:
+		if tableName != "":
+			ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+			ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
+			where_cond = where.replace("'","''")
+			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_child_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+
+			Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_child_temp))
+			Trace.Write("where------ "+str(where))
+			if Parentgetdata:					
+				response = self.Request_access_token()					
+				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
+				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+				cpsmatchID=11
+				
+				for row in Parentgetdata:
+					webclient = System.Net.WebClient()
+					
+					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+						
+					#webclient.Headers.Add("If-Match", "111")
+					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+						
+					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
+						Trace.Write('row--'+str(row.ENTITLEMENT_NAME))
+						try:
+							requestdata = '{"characteristics":['
+							
+							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
+								Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								for code in eval(row.ENTITLEMENT_VALUE_CODE):
+									requestdata += '{"value":"' + str(code) + '","selected":true}'
+									requestdata +=','
+								requestdata +=']},'	
+							else:
+								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
+							requestdata += ']}'
+							requestdata = requestdata.replace('},]','}]')
+							Trace.Write("requestdata--child-- " + str(requestdata))
+							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+							cpsmatchID = cpsmatchID + 10			
+							
+						except Exception:
+							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
+							cpsmatchID = cpsmatchID
+
+
+		ent_child_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_child_temp)+"'' ) BEGIN DROP TABLE "+str(ent_child_temp)+" END  ' ")
+		
+		
+		
+		# if attribute_id !="":
+		# 	response = Request_access_token()	
+		# 	Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
+		# 	webclient = System.Net.WebClient()
+		# 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+		# 	if value_code and value_code not in ('undefined','None') and attribute_id !='undefined' and display_name !='select' and isdefault =='0':	
+		# 		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+		# 		try:
+		# 			requestdata = '{"characteristics":['
+		# 			requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
+		# 			if attr_type in ('Check Box','CheckBox'):
+		# 				for code in eval(value_code):
+		# 					requestdata += '{"value":"' + code + '","selected":true}'
+		# 					requestdata +=','
+		# 				requestdata +=']},'	
+		# 			else:
+		# 				requestdata+= '{"value":"' +str(value_code) + '","selected":true}]},'
+		# 			requestdata += ']}'
+		# 			requestdata = requestdata.replace('},]','}]')
+		# 			#Log.Info("requestdata--child-- " + str(requestdata))
+		# 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+		# 			cpsmatchID +=10
+		# 		except Exception:
+		# 			Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
 			
 	except Exception:
 		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
@@ -187,7 +239,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 			where_condition = SAQITMWhere.replace('A.','')
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_NAME like '%AGS_LAB_OPT%'".format(ent_temp,where_condition))
 			get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE (NOLOCK) {where_condition}""".format(where_condition = where_condition))
-
+			flag = False
 			if GetXMLsec:
 				
 				updateentXML = get_ser_xml.ENTITLEMENT_XML
@@ -245,16 +297,20 @@ def entitlement_price_rollup(objectname,ent_temp):
 					if value.ENTITLEMENT_NAME+'<' in get_val_list:
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
+						flag = True
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
+						
 			if updateentXML:
 				Log.Info('updateentXML--ser-'+str(updateentXML))
 				where_condition = SAQITMWhere.replace('A.','')
 				UpdateEntitlement = " UPDATE SAQTSE SET ENTITLEMENT_XML= '{}', {} {} ".format(updateentXML,update_fields,where_condition)
 			
 				Sql.RunQuery(UpdateEntitlement)
-			# if 'Z0016' in get_serviceid:
-			#     Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
-			#     Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
+			if flag == True:
+				newConfigurationid	= get_config_id()
+				cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
+				Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+				Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
 			where_condition = SAQITMWhere.replace('A.','')
@@ -265,7 +321,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 			updateentXML = ""
 			GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_NAME,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_NAME like '%AGS_LAB_OPT%'".format(ent_temp,where_condition))
 			if GetXMLsec:
-				
+
 				updateentXML = get_ser_xml.ENTITLEMENT_XML
 				get_val_list =re.findall(r'AGS_LAB_OPT[\w\W]*?<',updateentXML)
 				
@@ -323,6 +379,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
+						
 
 					
 			if updateentXML:
