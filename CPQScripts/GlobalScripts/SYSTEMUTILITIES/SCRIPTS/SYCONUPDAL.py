@@ -589,7 +589,7 @@ now = datetime.datetime.now()
 current_date_obj = str(now).split(" ")[0].strip()
 today_date = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
 today_date_string = str(today_date).split(" ")[0].strip()
-trace.Write("Today_date "+str(today_date_string))
+Trace.Write("Today_date "+str(today_date_string))
 today_date_string = "2023-03-07"
 quote_expiration_date = Quote.GetCustomField('QuoteExpirationDate').Content
 quote_expiration_date_obj = datetime.datetime.strptime(str(quote_expiration_date),"%Y-%m-%d")
