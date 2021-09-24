@@ -242,6 +242,7 @@ def create_new_revision(Opertion,cartrev):
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
 		Quote.GetCustomField('YEAR_1').Content = '' 
 		Quote.GetCustomField('YEAR_2').Content = '' 
+		Quote.GetCustomField('YEAR_3').Content = '' 
 		Quote.GetCustomField('TAX').Content = '' 
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
 		Quote.GetCustomField('MODEL_PRICE').Content = '' 

@@ -5492,6 +5492,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 							TARGET_PRICE = IQ.TARGET_PRICE,
 							YEAR_1 = IQ.YEAR_1,
 							YEAR_2 = IQ.YEAR_2,
+							YEAR_3 = IQ.YEAR_3,
+							YEAR_4 = IQ.YEAR_4,
+							YEAR_5 = IQ.YEAR_5,
 							PRICING_STATUS = 'ACQUIRED',
 							OBJECT_QUANTITY = IQ.EQUIPMENT_ID_COUNT
 							FROM SAQITM (NOLOCK)
@@ -5499,6 +5502,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.TARGET_PRICE, 0)), 0), 0) as decimal(18,2)) as TARGET_PRICE,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
 										ISNULL(COUNT(SAQICO.EQUIPMENT_ID),0) as EQUIPMENT_ID_COUNT
 										FROM SAQITM (NOLOCK) 
 										JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID AND SAQICO.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID
@@ -5531,18 +5537,21 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_yoy = 0.00
 		total_year_1 = 0.00
 		total_year_2 = 0.00
+		total_year_3 = 0.00
+		total_year_4 = 0.00
+		total_year_5 = 0.00
 		total_tax = 0.00
 		total_extended_price = 0.00
 		total_model_price = 0.00
-		total_discount =0.00
+		#total_discount =0.00
 		#getdecimalplacecurr =decimal_val = ''
 		items_data = {}
 		get_billing_matrix_year =[]
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		if items_obj:
 			for item_obj in items_obj:
 				#getdecimalplacecurr = item_obj.CURRENCY
-				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST_WOSEEDSTOCK, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST_WOSEEDSTOCK, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
 		#curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
 		#decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 		#formatting_string = "{0:." + str(decimal_val) + "f}"
@@ -5570,6 +5579,12 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_year_1 += item.YEAR_1.Value
 					item.YEAR_2.Value = item_data.get('YEAR_2')
 					total_year_2 += item.YEAR_2.Value
+					item.YEAR_3.Value = item_data.get('YEAR_3')
+					total_year_3 += item.YEAR_3.Value
+					item.YEAR_4.Value = item_data.get('YEAR_4')
+					total_year_4 += item.YEAR_4.Value
+					item.YEAR_5.Value = item_data.get('YEAR_5')
+					total_year_5 += item.YEAR_5.Value
 					total_tax += item.TAX.Value
 					item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.NET_VALUE.Value	
@@ -5584,6 +5599,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
 		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
 		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
 		Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
@@ -6015,14 +6031,18 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		total_yoy = 0.00
 		total_year_1 = 0.00
 		total_year_2 = 0.00
+		total_year_3 = 0.00
+		total_year_4 = 0.00
+		total_year_5 = 0.00
 		total_tax = 0.00
 		total_extended_price = 0.00
+		total_model_price = 0.00
 		items_data = {}
 		get_billing_matrix_year =[]
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(TOTAL_COST, 0) as TOTAL_COST, ISNULL(TARGET_PRICE, 0) as TARGET_PRICE , ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(TOTAL_COST, 0) as TOTAL_COST, ISNULL(TARGET_PRICE, 0) as TARGET_PRICE , ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3, ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		if items_obj:
 			for item_obj in items_obj:
-				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
 		for item in Quote.MainItems:
 			item_number = int(item.RolledUpQuoteItem)
 			if item_number in items_data.keys():
@@ -6043,6 +6063,12 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 					total_year_1 += item.YEAR_1.Value
 					item.YEAR_2.Value = item_data.get('YEAR_2')
 					total_year_2 += item.YEAR_2.Value
+					item.YEAR_3.Value = item_data.get('YEAR_3')
+					total_year_3 += item.YEAR_3.Value
+					item.YEAR_4.Value = item_data.get('YEAR_4')
+					total_year_4 += item.YEAR_4.Value
+					item.YEAR_5.Value = item_data.get('YEAR_5')
+					total_year_5 += item.YEAR_5.Value
 					total_tax += item.TAX.Value
 					item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.NET_VALUE.Value	
@@ -6061,6 +6087,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				total_sales_price =formatting_string.format(total_sales_price)
 				total_year_1 =formatting_string.format(total_year_1)
 				total_year_2 =formatting_string.format(total_year_2)
+				total_year_3 =formatting_string.format(total_year_3)
+				total_year_4 =formatting_string.format(total_year_4)
+				total_year_5 =formatting_string.format(total_year_5)
 				total_tax =formatting_string.format(total_tax)
 				total_extended_price =formatting_string.format(total_extended_price)
 				total_model_price =formatting_string.format(total_model_price)
@@ -6076,6 +6105,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
 		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
 		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
 		Quote.Save()
