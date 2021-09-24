@@ -147,7 +147,7 @@ def ChildEntRequest(config_id,tableName,where):
 			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_child_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
 
 			Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_child_temp))
-			Trace.Write("where------ "+str(where))
+			Log.Info("where------ "+str(where))
 			if Parentgetdata:					
 				response = Request_access_token()					
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
@@ -163,13 +163,12 @@ def ChildEntRequest(config_id,tableName,where):
 					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 						
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-						Trace.Write('row--'+str(row.ENTITLEMENT_NAME))
 						try:
 							requestdata = '{"characteristics":['
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
@@ -178,12 +177,12 @@ def ChildEntRequest(config_id,tableName,where):
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							Trace.Write("requestdata--child-- " + str(requestdata))
+							Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							cpsmatchID = cpsmatchID + 10			
 							
 						except Exception:
-							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
+							Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
 
 
