@@ -1012,11 +1012,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						UserId=self.user_id
 					)
 				)
-				self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-					)
-				)
+				# self._process_query(
+				# 	"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+				# 		BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+				# 	)
+				# )
 		return True
 
 	def _update(self):
