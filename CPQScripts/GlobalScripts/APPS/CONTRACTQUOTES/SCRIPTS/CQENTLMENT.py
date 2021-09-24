@@ -652,7 +652,7 @@ class Entitlements:
 							
 							if ent_val_code:
 								display_value_arr =[]
-								ent_chkbox_code = str(tuple(eval(ent_chkbox_code))).replace(',)',')')
+								ent_chkbox_code = str(tuple(eval(ent_val_code))).replace(',)',')')
 								STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}' AND V.STANDARD_ATTRIBUTE_VALUE in {ent_chkbox_code}".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID), ent_chkbox_code= ent_chkbox_code)
 								if STANDARD_ATTRIBUTE_VALUES :
 									
