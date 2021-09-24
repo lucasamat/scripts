@@ -1122,7 +1122,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					if getquote_sales_val in get_il_sales_list:
 						NewValue = 'Israel'
 					else:
-						NewValue = 'Row'
+						NewValue = 'ROW'
 				#else:
 					#AttributeID_Pass =''
 					#NewValue = ''
