@@ -1109,6 +1109,8 @@ def Related_Sub_Banner(
                 except:
                     Trace.Write("error5")
                 if(TreeParam =="Customer Information" and TabName =='Accounts' or'Contracts'):
+                    if objName =='SAQTIP':
+                    Trace.Write("Mockup")
                     PrimaryLable ="Customer Information"
                     PrimaryValue ="Use the Customer Information functionality to manage your Quote Accounts and Contacts..."
                 if str(ObjName) == 'SYPGAC' and TabName == 'Tab':
