@@ -893,10 +893,10 @@ class CONTAINER:
                                         Trace.Write("flag__J "+str(flag) + " x_tabs"+str(x_tabs))
                                         # if flag == 0 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                         #     where += " AND CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.ACTIVE = 'True' ".format(User.UserName)
-                                        if flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'): 
-                                            where += "AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0"  
-                                            tot_names +=  ',APPROVAL_TRANSACTION_RECORD_ID'
-                                        elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
+                                        # if flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'): 
+                                        #     where += "AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0"  
+                                        #     tot_names +=  ',APPROVAL_TRANSACTION_RECORD_ID'
+                                        if flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
                                             where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                             
                                         elif flag == 2 and (str(x_tabs) == 'My Approvals Queue'):
@@ -1306,7 +1306,7 @@ class CONTAINER:
                                         )
                                     elif flag == 3 and x_tabs == 'Quotes':
                                         Trace.Write("x_tabs flag0 =>"+str(x_tabs)) 
-                                        where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL' ".format(User.UserName)
+                                        #where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL' ".format(User.UserName)
                                         QueryCountOBJ = Sql.GetFirst(
                                             "select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' " + str(where)
                                         )    
