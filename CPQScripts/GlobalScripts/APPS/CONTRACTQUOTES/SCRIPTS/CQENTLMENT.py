@@ -22,7 +22,7 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
-import CQTVLDRIFW
+#import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
 Sql = SQL()
@@ -1873,10 +1873,11 @@ class Entitlements:
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
-			try:			
-				CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,User.Id,User.UserName,self.revision_recordid)
-			except Exception as e:
-				Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
+			#A055S000P01-9645 VD code commented
+			# try:			
+			# 	CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,User.Id,User.UserName,self.revision_recordid)
+			# except Exception as e:
+			# 	Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
 		return True
 
 	def popup(self):
