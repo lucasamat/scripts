@@ -149,7 +149,7 @@ def ChildEntRequest(config_id,tableName,where):
 			Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_child_temp))
 			Trace.Write("where------ "+str(where))
 			if Parentgetdata:					
-				response = self.Request_access_token()					
+				response = Request_access_token()					
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
 				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 				cpsmatchID=11
