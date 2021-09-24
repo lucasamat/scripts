@@ -646,13 +646,10 @@ class Entitlements:
 							ent_disp_val = 	attrValue
 							ent_val_code = attrValue
 						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(ent_disp_val)+'--631---'+str(attrLabel))
+						
 						if str(DType) == "Check Box":
 							STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}'".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID))
-							if STANDARD_ATTRIBUTE_VALUES:
-								
-								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
-								
-								multi_select_attr_list[str(attrSysId)] = display_value_arr
+							
 							if ent_val_code:
 								display_value_arr =[]
 								ent_chkbox_code = str(tuple(eval(ent_chkbox_code))).replace(',)',')')
@@ -661,7 +658,7 @@ class Entitlements:
 									
 									display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 									
-							multi_select_attr_list[str(key)] = display_value_arr
+							multi_select_attr_list[str(attrSysId)] = display_value_arr
 						if attributevalues.get(attrSysId) is None:
 							ent_disp_val = ''
 						else:
