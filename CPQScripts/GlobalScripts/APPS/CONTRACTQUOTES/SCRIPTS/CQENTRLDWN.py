@@ -833,4 +833,4 @@ def entitlement_rolldown(objectName,get_serviceid,where):
 		ent_temp_drop1 = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_roll_temp)+"'' ) BEGIN DROP TABLE "+str(ent_roll_temp)+" END  ' ")
 
 #calling rolldown
-entitlement_rolldown()
+entitlement_rolldown(objectName,get_serviceid,where)
