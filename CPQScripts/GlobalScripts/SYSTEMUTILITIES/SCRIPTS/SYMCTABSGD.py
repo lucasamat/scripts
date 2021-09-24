@@ -1275,8 +1275,8 @@ class CONTAINER:
                                             + " JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID "
                                             + str(where)
                                         )'''
-                                        where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName)
-                                        QueryCountOBJ = Sql.GetFirst("select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' " + str(where))
+                                        #where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName)
+                                        QueryCountOBJ = Sql.GetFirst("select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName))
                                     # elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                     #     Trace.Write("flag22====")
                                     #     #where += " AND QT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
