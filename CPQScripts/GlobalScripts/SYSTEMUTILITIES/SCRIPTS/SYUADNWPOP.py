@@ -3533,6 +3533,375 @@ def POPUPLISTVALUEADDNEW(
 				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
 			)
 
+		elif str(ObjectName) == "SAQSPT" and str(CurrentTab) == "Quotes":
+			Trace.Write('In SAQSPT')
+			where_string = ""
+			if A_Keys != "" and A_Values != "":
+				A_Keys = list(A_Keys)
+				A_Values = list(A_Values)
+				for key, value in zip(A_Keys, A_Values):
+					if value.strip():
+						if where_string:
+							where_string += " AND "
+						if key=="MATERIAL_RECORD_ID":
+							key="MAMTRL.CpqTableEntryId"
+						where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+			DIVNAME = "VIEW_DIV_ID"
+			new_value_dict = {}
+			ObjectName = "MAMTRL"
+			table_id = "offerings-addnew-model"
+			Header_details = {
+				"MATERIAL_RECORD_ID": "KEY",
+				"SAP_PART_NUMBER": "SERVICE ID",
+				"SAP_DESCRIPTION": "SERVICE NAME",
+				"PRODUCT_TYPE": "SERVICE TYPE",
+			}
+			ordered_keys = [
+				"MATERIAL_RECORD_ID",
+				"SAP_PART_NUMBER",
+				"SAP_DESCRIPTION",
+				"PRODUCT_TYPE",
+			]
+			Objd_Obj = Sql.GetList(
+				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+				+ str(ObjectName)
+				+ "'"
+			)
+			lookup_disply_list = []
+			if Objd_Obj is not None:
+				attr_list = {}
+				api_names = [inn.API_NAME for inn in Objd_Obj]
+				for attr in Objd_Obj:
+					attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+					if str(attr.LOOKUP_API_NAME) != "" and str(attr.LOOKUP_API_NAME) is not None:
+						lookup_disply_list.append(str(attr.API_NAME))
+				checkbox_list = [
+					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
+				]
+				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+			sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD PARTS<button type="button" class="close flt_rt" onclick="closepopup_scrl()" data-dismiss="modal">X</button></div>'
+			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">PRODUCT OFFERING</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-offerings" class="btnconfig" onclick="addPartsList()" data-dismiss="modal">ADD</button></div></div>'
+
+			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+			sec_str += (
+				'<table id="'
+				+ str(table_id)
+				+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
+			)
+			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+
+			for key, invs in enumerate(list(ordered_keys)):
+
+				invs = str(invs).strip()
+				qstring = Header_details.get(str(invs)) or ""
+				if key == 0:
+					sec_str += (
+						'<th data-field="'
+						+ str(invs)
+						+ '" data-formatter="offeringsModelListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+				else:
+					sec_str += (
+						'<th data-field="'
+						+ invs
+						+ '" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-sortable="true" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
+			sec_str += '<div id="add-parts-model-footer"></div>'
+			values_list = ""
+			values_lists = ""
+			a_test = []
+			for invsk in list(Header_details):
+				table_ids = "#" + str(table_id)
+				filter_class = table_ids + " .bootstrap-table-filter-control-" + str(invsk)
+				values_lists += "var " + str(invsk) + ' = $("' + str(filter_class) + '").val(); '
+				values_lists += " ATTRIBUTE_VALUEList.push(" + str(invsk) + "); "
+				a_test.append(invsk)
+				filter_control_function += (
+					'$("'
+					+ filter_class
+					+ '").change( function(){ var table_id = $(this).closest("table").attr("id"); var a_list = '
+					+ str(a_test)
+					+ "; ATTRIBUTE_VALUEList = []; "
+					+ str(values_lists)
+					+ ' SortColumn = localStorage.getItem("SortColumn"); SortColumnOrder = localStorage.getItem("SortColumnOrder"); PerPage = $("#PageCountValue").val(); PageInform = "1___" + PerPage + "___" + PerPage; cpq.server.executeScript("SYUADNWPOP", {\'TABLEID\': "'
+					+ str(TABLEID)
+					+ "\", 'OPER': 'NO', 'RECORDID': \""
+					+ str(RECORDID)
+					+ "\", 'RECORDFEILD':  \""
+					+ str(RECORDFEILD)
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; data15 = data[15]; data16 = data[16]; try { if(date_field.length > 0) { $(\""
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  );$("#noRecDisp").remove(); if (document.getElementById("RecordsStartAndEnd")){document.getElementById("RecordsStartAndEnd").innerHTML = data15;}; if (document.getElementById("TotalRecordsCount")) {document.getElementById("TotalRecordsCount").innerHTML = data16;} } else{ $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  );$("#offerings-addnew-model").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); } else{ $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); document.getElementById("add-offerings-model-footer").style.border = "1px solid #ccc"; document.getElementById("add-offerings-model-footer").style.padding = "5.5px"; document.getElementById("add-offerings-model-footer").innerHTML = "No Records to Display"; } } ; });  });'
+				)
+
+				dbl_clk_function = (
+					'$("'
+					+ str(table_ids)
+					+ '").on("all.bs.table", function (e, name, args) { console.log("popu_upid ============>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); var count = 0; var selectAll = false; $("#add-offerings").css("display","none"); $("#offerings-addnew-model").find(\'[type="checkbox"]:checked\').map(function () {var sel_val = $(this).closest("tr").find("td:nth-child(2)").text(); count = 1; console.log("popu_upid3333 ============>"+$(this).attr("name")); if ($(this).attr("name") == "btSelectAll"){console.log("popu_up1111 ============>"); var selectAll = true; $("#add-offerings").css("display","block");} else if (sel_val != "") {console.log("popu_up222 ============>"); $("#add-offerings").css("display","block");} else{$("#add-offerings").css("display","none");}});if(count == 0){$("#add-offerings").css("display","none");}}); $(".bs-checkbox input").addClass("custom"); $("'
+					+ str(table_ids)
+					+ "\").on('sort.bs.table', function (e, name, order) { console.log('sort.bs.table ============>', e); e.stopPropagation(); currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumn', name); localStorage.setItem('"
+					+ str(table_id)
+					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_lists)+" AddNewContainerSorting(name, order, '"
+					+ str(table_id)
+					+ "',"+str(a_test)+",ATTRIBUTE_VALUEList,'"+str(TABLEID)+"','"+str(RECORDID)+"','"+str(RECORDFEILD)+"'); }); "
+					)
+				
+
+			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
+				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
+			)
+			TreeParam = Product.GetGlobal("TreeParam")
+			inner_join = ""
+			additional_where = ""
+			if where_string and 'SAP_PART_NUMBER' in where_string:
+				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
+			Pagination_M = Sql.GetFirst(
+				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND {}.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
+					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName, ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
+				)
+			)
+			if str(PerPage) == "" and str(PageInform) == "":
+				Page_start = 1
+				Page_End = fetch_count
+				PerPage = fetch_count
+				PageInform = "1___"+str(fetch_count)+"___"+str(fetch_count)
+			else:
+				Page_start = int(PageInform.split("___")[0])
+				Page_End = int(PageInform.split("___")[1])
+				PerPage = PerPage
+
+			order_by = ""
+			if SortColumn != '' and SortColumnOrder !='':
+				order_by = "order by "+SortColumn + " " + SortColumnOrder
+			else:
+				order_by = "order by MAMTRL.SAP_PART_NUMBER ASC"
+
+			pop_val = {}
+
+			if where_string:
+				where_string += " AND"
+			ordered_keys = [
+				"MAMTRL.MATERIAL_RECORD_ID",
+				"MAMTRL.SAP_PART_NUMBER",
+				"SAP_DESCRIPTION",
+				"PRODUCT_TYPE",
+				]
+			
+			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
+			)
+				
+			table_data = Sql.GetList(
+				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
+					", ".join(ordered_keys),
+					ObjectName
+					,inner_join if inner_join else "",
+					"WHERE " + where_string if where_string else "" ,
+					additional_where,
+					order_by,pagination_condition
+				)
+			)
+			
+			QueryCountObj = Sql.GetFirst(
+					"select count(*) as cnt from {} (NOLOCK) {} {} {} ".format(
+					ObjectName,
+					inner_join if inner_join else "",
+					"WHERE " + where_string if where_string else "",
+					additional_where
+				)
+				)
+			if QueryCountObj is not None:
+				QryCount = QueryCountObj.cnt
+
+			if table_data is not None:
+				for row_data in table_data:
+					data_id = str(ObjectName)
+					new_value_dict = {}
+					for data in row_data:
+						if str(data.Key) == "MATERIAL_RECORD_ID":
+							pop_val = str(data.Value) + "|Offerings"
+							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
+							new_value_dict[data.Key] = cpqidval
+						else:
+							new_value_dict[data.Key] = data.Value
+						new_value_dict["pop_val"] = pop_val
+					date_field.append(new_value_dict)
+			QueryCount = len(date_field)
+
+			pagination_total_count = 0
+			if Pagination_M is not None:
+				pagination_total_count = QryCount
+			if offset_skip_count == 0:
+				offset_skip_count = 1
+				records_end = fetch_count
+				disable_previous_and_first = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			Trace.Write('offset cnt-->'+str(offset_skip_count))
+			if offset_skip_count%10==0:
+				offset_skip_count+=1
+			records_end = offset_skip_count + fetch_count - 1
+			records_end = pagination_total_count if pagination_total_count < records_end else records_end
+			if pagination_total_count==0:
+				offset_skip_count=0
+			records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
+			disable_next_and_last = ""
+			disable_previous_and_first = ""
+			if records_end == pagination_total_count:
+				disable_next_and_last = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			current_page = int(math.ceil(offset_skip_count / fetch_count)) + 1
+
+			Product.SetGlobal("QueryCount", str(QueryCount))
+			pagination_table_id = "pagination_{}".format(table_id)
+			Trace.Write('rec start end-->'+str(records_start_and_end))
+			var_str = """<div id="{Parent_Div_Id}" class="col-md-12 brdr listContStyle padbthgt30">
+								<div class="col-md-4 pager-numberofitem  clear-padding">
+									<span class="pager-number-of-items-item flt_lt_pad2_mar2022" id="RecordsStartAndEnd">{Records_Start_And_End}</span>
+									<span class="pager-number-of-items-item flt_lt_pad2_mar" id="TotalRecordsCount">{Pagination_Total_Count}</span>
+									<div class="clear-padding fltltmrgtp3">
+										<div class="pull-right vralign">
+											<select onchange="ShowResultCountFunc(this, '{ShowResultCountFuncTb}', 'addParts', '{TableId}')" id="ShowResultCount" class="form-control selcwdt">
+												<option value="10" {Selected_10}>10</option>
+												<option value="20" {Selected_20}>20</option>
+												<option value="50" {Selected_50}>50</option>
+												<option value="100" {Selected_100}>100</option>
+												<option value="200" {Selected_200}>200</option>
+											</select> 
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-8 col-md-4  clear-padding inpadtex" data-bind="visible: totalItemCount">
+									<div class="clear-padding col-xs-12 col-sm-6 col-md-12 brd0">
+										<ul class="pagination pagination">
+											<li class="disabled">
+												<a onclick="GetFirstResultFunc('{GetFirstResultFuncTb}', 'addParts', '{TableId}')" {Disable_First}><i class="fa fa-caret-left fnt14bold"></i><i class="fa fa-caret-left fnt14"></i></a>
+											</li>
+											<li class="disabled"><a onclick="GetPreviuosResultFunc('{GetPreviuosResultFuncTb}', 'addParts', '{TableId}')" {Disable_Previous}><i class="fa fa-caret-left fnt14"></i>PREVIOUS</a></li>
+											<li class="disabled"><a onclick="GetNextResultFunc('{GetNextResultFuncTb}', 'addParts', '{TableId}')" {Disable_Next}>NEXT<i class="fa fa-caret-right fnt14"></i></a></li>
+											<li class="disabled"><a onclick="GetLastResultFunc('{GetLastResultFuncTb}', 'addParts', '{TableId}')" {Disable_Last}><i class="fa fa-caret-right fnt14"></i><i class="fa fa-caret-right fnt14bold"></i></a></li>
+										</ul>
+									</div> 
+								</div> 
+								<div class="col-md-4 pad3"> 
+									<span id="page_count" class="currentPage page_right_content">{Current_Page}</span>
+									<span class="page_right_content padrt2">Page </span>
+								</div>
+							</div>""".format(
+				Parent_Div_Id=pagination_table_id,
+				Records_Start_And_End=records_start_and_end,
+				Pagination_Total_Count=pagination_total_count,
+				ShowResultCountFuncTb=pagination_table_id,
+				Selected_10="selected" if fetch_count == 10 else "",
+				Selected_20="selected" if fetch_count == 20 else "",
+				Selected_50="selected" if fetch_count == 50 else "",
+				Selected_100="selected" if fetch_count == 100 else "",
+				Selected_200="selected" if fetch_count == 200 else "",
+				GetFirstResultFuncTb=pagination_table_id,
+				Disable_First=disable_previous_and_first,
+				GetPreviuosResultFuncTb=pagination_table_id,
+				Disable_Previous=disable_previous_and_first,
+				GetNextResultFuncTb=pagination_table_id,
+				Disable_Next=disable_next_and_last,
+				GetLastResultFuncTb=pagination_table_id,
+				Disable_Last=disable_next_and_last,
+				Current_Page=current_page,
+				TableId=TABLEID,
+			)
+
+			table_ids = "#" + str(table_id)
+			# Filter based on table MultiSelect Dropdown column - Start
+
+			for index, col_name in enumerate(ordered_keys):
+				table, api_name = ObjectName, col_name
+				obj_data = Sql.GetFirst(
+					"SELECT API_NAME, DATA_TYPE, PICKLIST FROM  SYOBJD WHERE OBJECT_NAME='"
+					+ str(table)
+					+ "' and API_NAME = '"
+					+ str(api_name)
+					+ "'"
+				)
+				if obj_data is not None:
+					if str(obj_data.PICKLIST).upper() == "TRUE":
+						filter_tag = (
+							'<div id = "'
+							+ str(table_id)
+							+ "_RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ '" class="form-control bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ " RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ ' "></div>'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("select")
+						if obj_data.DATA_TYPE == "CHECKBOX":
+							filter_values.append(["True", "False"])
+						else:
+							data_obj = Sql.GetList(
+								"SELECT DISTINCT {Column} FROM {Table} ".format(Column=api_name, Table=table)
+							)
+							if data_obj is not None:
+								filter_values.append([row_data.Value for data in data_obj for row_data in data])
+					else:
+						filter_tag = (
+							'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ '">'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("input")
+						filter_values.append("")
+
+			filter_drop_down = (
+				"try { if( document.getElementById('"
+				+ str(table_id)
+				+ "') ) { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter}); }else{$('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,autoDropDownHeight: true});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data9[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data11[j]); $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
+			)
+			dbl_clk_function += (
+				'$("'
+				+ str(table_ids)
+				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				+ str(table_ids)
+				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+			) 
+
+			pagedata = ""
+			if QryCount==0:
+				pagedata = str(QryCount) + " - " + str(QryCount) + " of "
+			elif QryCount < int(PerPage):
+				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
+			else:
+				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
+
 		else:
 			#Trace.Write("===============> Else")
 			overflow_val = ""
