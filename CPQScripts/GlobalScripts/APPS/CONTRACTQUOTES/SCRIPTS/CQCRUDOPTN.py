@@ -625,11 +625,11 @@ class ContractQuoteCrudOpertion:
 					if condition_obj['conditionType'] == 'ZWSC' and condition_obj['conditionTypeDescription'] == 'VAT Asia':
 						tax_percentage = condition_obj['conditionRate']
 						break
-				update_data.append((str(Guid.NewGuid()).upper(), equipment_id, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id, tax_percentage))
+				update_data.append((str(Guid.NewGuid()).upper(), equipment_id, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id,self.quote_revision_record_id, batch_group_record_id, tax_percentage))
 			
 			update_data_joined = ', '.join(map(str, update_data))
-			self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE) 
-									SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE)""".format(update_data_joined))											
+			self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE) 
+									SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE)""".format(update_data_joined))											
 			self._process_query("""UPDATE SAQICO
 					SET
 					SAQICO.TAX_PERCENTAGE = IQ.TAX_PERCENTAGE
@@ -917,11 +917,11 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				batch_group_record_id = str(Guid.NewGuid()).upper()
 				#spare_parts_obj = re.finditer(r'([a-zA-Z0-9_\-.\(\)]*\s?[a-zA-Z0-9\-]?)\t+(\d*)', self.values[0])                         
 				#spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part_obj.group(1), spare_part_obj.group(2), 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id) for spare_part_obj in spare_parts_obj]
-				spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id) for spare_part in self.values[0].splitlines()]
+				spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id,self.quote_revision_record_id) for spare_part in self.values[0].splitlines()]
 				
 				spare_parts_details_joined = ', '.join(map(str, spare_parts_details))
-				self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID) 
-										SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID)""".format(spare_parts_details_joined))											
+				self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) 
+										SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID)""".format(spare_parts_details_joined))											
 				self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
