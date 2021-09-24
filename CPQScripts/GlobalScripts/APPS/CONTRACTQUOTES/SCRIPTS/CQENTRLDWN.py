@@ -180,9 +180,8 @@ def entitlement_price_rollup(objectname,ent_temp):
 		obj_list = ['SAQSFE','SAQSFE']
 	elif objectname == 'SAQSCE':
 		obj_list = ['SAQSGE','SAQSFE','SAQSFE']
-	for obj in obj_list:
-		if obj == 'SAQTSE' and GetXMLsecField:
-
+	for rec in obj_list:
+		if rec == 'SAQTSE' and GetXMLsecField:
 			##Z0016 ROLLUP
 			#newConfigurationid	= get_config_id()
 			
@@ -192,11 +191,9 @@ def entitlement_price_rollup(objectname,ent_temp):
 			if GetXMLsec:
 				foo = [i.ENTITLEMENT_NAME for i in GetXMLsec]
 				updateentXML = get_ser_xml.ENTITLEMENT_XML
-				get_val_list = re.findall(r'<QUOTE_ITEM_ENTITLEMENT><ENTITLEMENT_NAME>AGS_LAB_OPT[\w\W]*?</CALCULATION_FACTOR></QUOTE_ITEM_ENTITLEMENT>',get_val)
-				Trace.Write('len-'+str(len(get_val_list))+'--'+str(len(foo)) )
+				get_val_list =re.findall(r'AGS_LAB_OPT[\w\W]*?<',updateentXML)
 				#if len(get_val_list) == len(GetXMLsec):
 				new_list = list(set(foo).difference(get_val_list))
-				Trace.Write('diff--' +str(new_list))
 				for value in GetXMLsec:
 					where_condtn = SAQITMWhere.replace('A.','')
 					where_condtn += " AND ENTITLEMENT_NAME = '{}'".format(value.ENTITLEMENT_NAME) 
@@ -249,18 +246,16 @@ def entitlement_price_rollup(objectname,ent_temp):
 						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					elif value.ENTITLEMENT_NAME in new_list:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
-
-			Log.Info('updateentXML--ser-'+str(updateentXML))
-			where_condition = SAQITMWhere.replace('A.','')
-			UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-			#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
-			if updateentXML:               
+			if updateentXML:
+				Log.Info('updateentXML--ser-'+str(updateentXML))
+				where_condition = SAQITMWhere.replace('A.','')
+				UpdateEntitlement = " UPDATE SAQTSE SET ENTITLEMENT_XML= '{}', {} {} ".format(updateentXML,update_fields,where_condition)
+			
 				Sql.RunQuery(UpdateEntitlement)
 			# if 'Z0016' in get_serviceid:
 			#     Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
 			#     Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
-			
-
+	
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where):
 	is_changed = False
