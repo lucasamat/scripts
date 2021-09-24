@@ -754,7 +754,7 @@ class Entitlements:
 							SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UNIT_OF_MEASURE, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0101' AS SERVICE_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '', CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
 							WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
-							) A""".format(description=description,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
+							) A""".format(description=description,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id)
 					##A055S000P01-9646  code ends..
 					if key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "Yes":
 						
