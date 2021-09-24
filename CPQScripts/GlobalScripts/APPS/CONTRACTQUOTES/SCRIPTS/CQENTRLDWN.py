@@ -784,9 +784,9 @@ def entitlement_rolldown(objectName,get_serviceid,where):
 				# Is Changed Information Notification - End
 
 			
-			if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
-				where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID').replace('SRC.QTEREV_RECORD_ID','SAQICO.QTEREV_RECORD_ID')
-				update_entitlement_price_impact(where_condition)
+			# if obj == 'SAQIEN' and attribute == 'ADDL_PERF_GUARANTEE_91_1':
+			# 	where_condition = where.replace('SRC.ENTITLEMENT_NAME','SAQIEN.ENTITLEMENT_NAME').replace('SRC.QUOTE_RECORD_ID','SAQICO.QUOTE_RECORD_ID').replace('SRC.SERVICE_ID','SAQICO.SERVICE_ID').replace('SRC.FABLOCATION_ID','SAQICO.FABLOCATION_ID').replace('SRC.GREENBOOK','SAQICO.GREENBOOK').replace('SRC.EQUIPMENT_ID','SAQICO.EQUIPMENT_ID').replace('SRC.QTEREV_RECORD_ID','SAQICO.QTEREV_RECORD_ID')
+			# 	update_entitlement_price_impact(where_condition)
 		##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start		
 		try:
 			if (get_serviceid == 'Z0091'):
