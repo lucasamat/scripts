@@ -1025,7 +1025,7 @@ class Entitlements:
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
+					#Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
 					Trace.Write('key---958---'+str(key))
 					ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
 					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
