@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO GET SSCM DATA FROM THE QTQCAS TABLE AND RETURN IN JSON FORMAT RESULT
 #   __primary_author__ : SURESH MUNIYANDI, Baji
 #   __create_date :
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import clr
@@ -203,6 +203,7 @@ try:
 					Log.Info("789 crm_response --->"+str(crm_response))
 			
 			else:
+				#crm_response = ''
 				Check_flag1=0
 
 		if "Status: 200" in crm_response:
@@ -368,6 +369,10 @@ try:
 			
 			# Send the message
 			mailClient.Send(msg)
+		
+		if crm_response == '':
+			ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "NO DATA AVAILABLE FOR SYNCHRONIZATION"}]})
+
 		if Flag == "True":
 			ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": str(crm_response)}]})
 		else:
