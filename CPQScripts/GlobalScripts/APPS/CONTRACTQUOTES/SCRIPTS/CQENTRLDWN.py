@@ -177,9 +177,9 @@ def entitlement_price_rollup(objectname,ent_temp):
 	if objectname == 'SAQSFE':
 		obj_list = ['SAQTSE']
 	elif objectname == 'SAQSGE':
-		obj_list = ['SAQSFE','SAQSFE']
+		obj_list = ['SAQSFE','SAQTSE']
 	elif objectname == 'SAQSCE':
-		obj_list = ['SAQSGE','SAQSFE','SAQSFE']
+		obj_list = ['SAQSGE','SAQSFE','SAQTSE']
 	for obj in obj_list:
 		if obj == 'SAQTSE' and GetXMLsecField:
 			##Z0016 ROLLUP
