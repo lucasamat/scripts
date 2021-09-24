@@ -1004,6 +1004,7 @@ class SyncQuoteAndCustomTables:
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
+						getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 						contact_info_update = {
 							"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
 							"EMAIL": "",
@@ -1014,7 +1015,11 @@ class SyncQuoteAndCustomTables:
 							"PRIMARY": "",
 							"PHONE": "",
 							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
+							"QTEREV_ID":quote_rev_id,
+							"COUNTRY":salesorg_country.COUNTRY,
+							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+							"STATE": custom_fields_detail.get("PayerState"),
+							"STATE_RECORD_ID": getState.STATE_RECORD_ID
 						}
 						quote_involved_party_contact_table_info.AddRow(contact_info_update)
 						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
