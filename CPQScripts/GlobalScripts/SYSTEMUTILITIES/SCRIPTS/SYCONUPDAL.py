@@ -602,11 +602,12 @@ if str(today_date_string) == str(mail_trigger_date):
 	Trace.Write("CHKZ_1")
 	try:
 		if date_list:
-			date_list=date_list
+			date_list=Product.GetGlobal("mail_trigger_date")
 	except:
-		date_list=[]
-	if mail_trigger_date not in date_list:
-		date_list.append(mail_trigger_date)
+		date_list=""
+	if mail_trigger_date != date_list:
+		# date_list.append(mail_trigger_date)
+		Product.SetGlobal("mail_trigger_date",mail_trigger_date)
 		Trace.Write("CHKZ_1")
 		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mailtrigger())
 
