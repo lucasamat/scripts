@@ -575,6 +575,7 @@ class ConfigUpdateScript:
 			#copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
 			#msg.CC.Add(copyEmail5)    
 			mailClient.Send(msg)
+			Trace.Write("Mail Sent Successfully")
 		except Exception, e:
 			self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
 			Trace.Write(self.exceptMessage)
