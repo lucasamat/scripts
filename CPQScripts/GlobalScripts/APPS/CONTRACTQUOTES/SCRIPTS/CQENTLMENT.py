@@ -741,7 +741,8 @@ class Entitlements:
 					getvalue = str((val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
 					if (key == "AGS_Z0091_TSC_NONCNS" or key == "AGS_Z0004_TSC_NONCNS" or key == "AGS_Z0007_TSC_NONCNS" or key == "AGS_Z0006_TSC_NONCNS" or key == "AGS_Z0092_TSC_NONCNS" or key == "AGS_Z0091_TSC_CONSUM" or key == "AGS_Z0004_TSC_CONSUM" or key == "AGS_Z0007_TSC_CONSUM" or key == "AGS_Z0006_TSC_CONSUM") and str((val).split("||")[0]).strip() == "Some Exclusions":
-						ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
+						service_id = key.split('_')[1].strip()
+						ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(service_id,self.ContractRecordId,self.revision_recordid))
 						material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0101'")
 						if ancillary_object is None:
 							if material_obj:
@@ -750,11 +751,11 @@ class Entitlements:
 							else:
 								description = material_record_id = ''
 
-							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 							SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UNIT_OF_MEASURE, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0101' AS SERVICE_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '', CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
-							WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
-							) A""".format(description=description,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id)
+							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0101' AS SERVICE_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '' AS SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
+							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
+							) A""".format(description=description,service_id = service_id,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id)
 					##A055S000P01-9646  code ends..
 					if key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "Yes":
 						
