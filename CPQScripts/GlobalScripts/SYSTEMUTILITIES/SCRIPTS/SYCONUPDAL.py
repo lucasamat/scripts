@@ -601,7 +601,7 @@ if str(today_date_string) == str(mail_trigger_date):
 	if mail_trigger_date not in date_list:
 		date_list.append(mail_trigger_date)
 		Trace.Write("CHKZ_1")
-		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mail_trigger())
+		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mailtrigger())
 
 if hasattr(Param, "keyData_val"):
 	keyData_val = Param.keyData_val
