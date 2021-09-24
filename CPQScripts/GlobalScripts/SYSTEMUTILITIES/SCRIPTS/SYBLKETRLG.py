@@ -564,6 +564,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
+				Quote.GetCustomField('YEAR_3').Content =str(getServiceSum.YEAR3) + " " + get_curr
 				Quote.GetCustomField('DISCOUNT').Content =str(TotalServiceDiscount)
 				for item in Quote.MainItems:
 					if item.PartNumber == a.SERVICE_ID:
@@ -673,6 +674,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
+				Quote.GetCustomField('YEAR_3').Content =str(getServiceSum.YEAR3) + " " + get_curr
 				Quote.GetCustomField('DISCOUNT').Content =str(TotalServiceDiscount) + "%"
 				for item in Quote.MainItems:
 					if item.PartNumber == a.SERVICE_ID:
