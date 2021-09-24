@@ -12,6 +12,8 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
 from datetime import *
 import datetime
+from System.Net import CookieContainer, NetworkCredential, Mail
+from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 Sql = SQL()
 Param = Param
 
