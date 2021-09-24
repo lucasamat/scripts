@@ -544,8 +544,54 @@ class ConfigUpdateScript:
 
 		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit
 
+	def mailtrigger(self):
+		Subject = "TEST"
+		mailBody = "HI This Is TeST MAIl"
+		recepient = "joe.ebenezer@bostonharborconsulting.com"
+		try:
+			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+			mailClient = SmtpClient()
+			mailClient.Host = "smtp.gmail.com"
+			mailClient.Port = 587
+			mailClient.EnableSsl = "true"
+			mailCred = NetworkCredential()
+			mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+			mailCred.Password = str(LOGIN_CRE.PASSWORD)
+			mailClient.Credentials = mailCred
+			toEmail = MailAddress(str(recepient))
+			fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+			msg = MailMessage(fromEmail, toEmail)
+			msg.Subject = Subject
+			msg.IsBodyHtml = True
+			msg.Body = mailBody
+			# copyEmail1 = MailAddress("mayura.priya@bostonharborconsulting.com")
+			# msg.CC.Add(copyEmail1)
+			#copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
+			#msg.CC.Add(copyEmail2)
+			# copyEmail2 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			# msg.CC.Add(copyEmail2)
+			#copyEmail4 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
+			#msg.CC.Add(copyEmail4)
+			#copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
+			#msg.CC.Add(copyEmail5)    
+			mailClient.Send(msg)
+		except Exception, e:
+			self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+			Trace.Write(self.exceptMessage)
+		return True
 
 configobj = ConfigUpdateScript()
+date_list=[]
+now = datetime.datetime.now()
+current_date_obj = str(now).split(" ")[0].strip()
+today_date = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
+two_weeks = datetime.timedelta(days=14)
+mail_trigger_date = today_date + two_weeks
+date_list.append(mail_trigger_date)
+
+if mail_trigger_date not in date_list:
+	configobj.mail_trigger()
+
 if hasattr(Param, "keyData_val"):
 	keyData_val = Param.keyData_val
 	# Changes for sales app primary banner load - start
@@ -558,3 +604,5 @@ if hasattr(Param, "keyData_val"):
 			pass
 	# Changes for sales app primary banner load - End
 	ApiResponse = ApiResponseFactory.JsonResponse(configobj.ConfiguratorCall(keyData_val))
+
+
