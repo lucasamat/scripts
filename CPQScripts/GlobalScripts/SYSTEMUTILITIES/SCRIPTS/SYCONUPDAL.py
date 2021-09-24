@@ -595,10 +595,11 @@ quote_expiration_date = Quote.GetCustomField('QuoteExpirationDate').Content
 quote_expiration_date_obj = datetime.datetime.strptime(str(quote_expiration_date),"%Y-%m-%d")
 mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
 mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
-date_list.append(mail_trigger_date)
+
 if str(today_date_string) == str(mail_trigger_date):
 	Trace.Write("CHKZ_1")
 	if mail_trigger_date not in date_list:
+		date_list.append(mail_trigger_date)
 		Trace.Write("CHKZ_1")
 		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mail_trigger())
 
