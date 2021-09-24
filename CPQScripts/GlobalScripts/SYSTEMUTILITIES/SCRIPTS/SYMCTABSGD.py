@@ -1094,7 +1094,7 @@ class CONTAINER:
                                             )
                                                 Trace.Write("QueryStr---->"+str(QueryStr))
                                             elif flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
-                                                where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
+                                                where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL' ".format(User.UserName)
                                                 QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'"
                                                 + str(where)
@@ -1268,13 +1268,15 @@ class CONTAINER:
                                         
                                         #where +=  "WHERE ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and ACAPTX.APPROVALSTATUS = 'REQUESTED' AND ACAPTX.ARCHIVED = 0 "
                                         
-                                        QueryCountOBJ = Sql.GetFirst("select count(DISTINCT SAQTMT.QUOTE_ID) as rowcnt from SAQTMT (NOLOCK) JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID WHERE ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0")
+                                        #QueryCountOBJ = Sql.GetFirst("select count(DISTINCT SAQTMT.QUOTE_ID) as rowcnt from SAQTMT (NOLOCK) JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID WHERE ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0")
                                         '''QueryCountOBJ = Sql.GetFirst(
                                             "select  rowcnt= count(*) from "
                                             + PRIMARY_OBJECT_NAMes
                                             + " JOIN ACAPTX (NOLOCK) ON SAQTMT.QUOTE_ID = ACAPTX.APRTRXOBJ_ID "
                                             + str(where)
                                         )'''
+                                        where += " AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR MY APPROVAL'".format(User.UserName)
+                                        QueryCountOBJ = Sql.GetFirst("select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True' " + str(where))
                                     # elif flag == 1 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
                                     #     Trace.Write("flag22====")
                                     #     #where += " AND QT.CPQTABLEENTRYADDEDBY = '{}' ".format(User.UserName)
