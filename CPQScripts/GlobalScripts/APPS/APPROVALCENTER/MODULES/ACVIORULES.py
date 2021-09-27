@@ -455,6 +455,7 @@ class ViolationConditions:
         """Param: ObjectName -> Refere Curresponding object Name."""
         """Param: method -> Refere Only for Recall Option."""
         rec_name = ""
+        Log.Info("Entered Insert Action")
         try:
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
