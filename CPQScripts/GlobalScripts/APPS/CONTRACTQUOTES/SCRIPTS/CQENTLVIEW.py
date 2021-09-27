@@ -15,8 +15,9 @@ try:
 except:
     action = ""
 try:
-    alltreeparam =Param.AllTreeParam
+    alltreeparam =Param.alltreeparam
 except:
     alltreeparam =""
+
 Trace.Write("action--"+str(action))
 Trace.Write("AllTreeParam--"+str(alltreeparam))
