@@ -4565,7 +4565,7 @@ if SectionList is not None and (
 
 	sectionId = tuple(SectionList)
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
-	result = ScriptExecutor.ExecuteGlobal("CQENTLVIEW", {"action": 'ENT_VIEW','alltreeparam':AllTreeParam})
+	#result = ScriptExecutor.ExecuteGlobal("CQENTLVIEW", {"action": 'ENT_VIEW','alltreeparam':AllTreeParam})
 	if sectObj is not None:
 		SectionObjectName = sectObj.PRIMARY_OBJECT_NAME		
 		if SectionObjectName in ("SAQTSE"):
