@@ -71,7 +71,7 @@ mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 # 	Trace.Write("EXCEPT: quote_expiration_mail")
 # 	quote_expiration_mail = "FALSE"
 try:
-    if quote_expiration_mail != "":
+    if Quote.GetCustomField("quote_expiration_mail").Content != "":
         quote_expiration_mail = Quote.GetCustomField("quote_expiration_mail").Content
     else:
         quote_expiration_mail = "TRUE"
