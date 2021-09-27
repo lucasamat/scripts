@@ -580,6 +580,7 @@ class ConfigUpdateScript:
 			#msg.CC.Add(copyEmail5)    
 			mailClient.Send(msg)
 			Trace.Write("Mail Sent Successfully")
+			Quote.GetCustomField("quote_expiration_mail").Content = "FALSE"
 		except Exception, e:
 			self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
 			Trace.Write(self.exceptMessage)
@@ -599,7 +600,8 @@ mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
 mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 
 if str(today_date_string) == str(mail_trigger_date):
-	ApiResponse = ApiResponseFactory.JsonResponse(configobj.mailtrigger())
+	if Quote.GetCustomField("quote_expiration_mail").Content != "FALSE":
+		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mailtrigger())
 
 if hasattr(Param, "keyData_val"):
 	keyData_val = Param.keyData_val
