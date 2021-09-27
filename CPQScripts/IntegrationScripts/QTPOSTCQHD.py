@@ -28,7 +28,7 @@ try:
 
 	Jsonquery = SqlHelper.GetFirst("select getdate() as date,DATEADD(HOUR,-2,getdate()) as filter  ")
 
-	Quoteinfoquery = SqlHelper.GetList("SELECT  Quote_id,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' union select  Quote_id,QTEREV_ID from SAQTMT where isnull(hadoop_flag,'False') = 'False' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTIP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQDOC(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQITM(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQICO(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQICA(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQIFP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQIBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQSCV(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQIEN(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"'")
+	Quoteinfoquery = SqlHelper.GetList("SELECT  Quote_id,QTEREV_ID FROM SAQTMT(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' union select  Quote_id,QTEREV_ID from SAQTMT where isnull(hadoop_flag,'False') = 'False' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTIP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQTBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQDOC(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQITM(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQICO(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQICA(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQIFP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"' UNION SELECT  Quote_id,QTEREV_ID FROM SAQIBP(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"'  UNION SELECT  Quote_id,QTEREV_ID FROM SAQIEN(NOLOCK) WHERE CPQTABLEENTRYDATEADDED >'"+str(Jsonquery.filter)+"' OR CpqTableEntryDateModified > '"+str(Jsonquery.filter)+"'")
 
 	Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 	Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
@@ -92,7 +92,7 @@ try:
 				"SELECT replace ('\"SAQIBP\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ANNUAL_BILLING_AMOUNT\" : \"'+ANNUAL_BILLING_AMOUNT+'\",\"BILLING_AMOUNT\" : \"'+BILLING_AMOUNT+'\",\"BILLING_CURRENCY\" : \"'+BILLING_CURRENCY+'\",\"BILLING_DATE\" : \"'+BILLING_DATE+'\",\"BILLING_DAY\" : \"'+BILLING_DAY+'\",\"BILLING_END_DATE\" : \"'+BILLING_END_DATE+'\",\"BILLING_INTERVAL\" : \"'+BILLING_INTERVAL+'\",\"BILLING_START_DATE\" : \"'+BILLING_START_DATE+'\",\"BILLING_TYPE\" : \"'+BILLING_TYPE+'\",\"BILLING_YEAR\" : \"'+BILLING_YEAR+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"EQUIPMENT_LINE_ID\" : \"'+EQUIPMENT_LINE_ID+'\",\"EQUIPMENT_QUANTITY\" : \"'+EQUIPMENT_QUANTITY+'\",\"GREENBOOK\" : \"'+GREENBOOK+'\",\"LINE_ITEM_ID\" : \"'+LINE_ITEM_ID+'\",\"PO_ITEM\" : \"'+PO_ITEM+'\",\"PO_NUMBER\" : \"'+PO_NUMBER+'\" ,\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"QUOTE_NAME\" : \"'+QUOTE_NAME+'\",\"SALESORG_ID\" : \"'+SALESORG_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"SPLIT_BILLING\" : \"'+SPLIT_BILLING+'\",\"WARRANTY_END_DATE\" : \"'+WARRANTY_END_DATE+'\",\"WARRANTY_START_DATE\" : \"'+WARRANTY_START_DATE+'\",\"QTEREV_ID\" : \"'+QTEREV_ID+'\"}' AS JSON from (SELECT DISTINCT  ISNULL(CONVERT(VARCHAR,ANNUAL_BILLING_AMOUNT),'') AS ANNUAL_BILLING_AMOUNT,ISNULL(CONVERT(VARCHAR,BILLING_AMOUNT),'') AS	BILLING_AMOUNT,ISNULL(BILLING_CURRENCY,'')	AS	BILLING_CURRENCY,ISNULL(CONVERT(VARCHAR(11),BILLING_DATE,101),'') AS BILLING_DATE,ISNULL(CONVERT(VARCHAR,BILLING_DAY),'') AS	BILLING_DAY,ISNULL(CONVERT(VARCHAR(11),BILLING_END_DATE,101),'')	AS	BILLING_END_DATE,ISNULL(BILLING_INTERVAL,'') AS	BILLING_INTERVAL,ISNULL(CONVERT(VARCHAR(11),BILLING_START_DATE,101),'') AS	BILLING_START_DATE,ISNULL(BILLING_TYPE,'')  AS BILLING_TYPE,ISNULL(CONVERT(VARCHAR,BILLING_YEAR),'') AS BILLING_YEAR,ISNULL(EQUIPMENT_ID,'')	AS	EQUIPMENT_ID,ISNULL(CONVERT(VARCHAR,EQUIPMENT_LINE_ID),'') AS EQUIPMENT_LINE_ID,ISNULL(CONVERT(VARCHAR,EQUIPMENT_QUANTITY),'') AS	EQUIPMENT_QUANTITY,ISNULL(GREENBOOK,'') AS GREENBOOK,ISNULL(LINE_ITEM_ID,'')	AS	LINE_ITEM_ID,ISNULL(PO_ITEM,'') AS PO_ITEM,ISNULL(PO_NUMBER,'')	AS PO_NUMBER,ISNULL(QUOTE_ID,'')  AS QUOTE_ID,ISNULL(QUOTE_NAME,'') AS QUOTE_NAME,ISNULL(SALESORG_ID,'')	AS	SALESORG_ID,ISNULL(SERVICE_ID,'') AS SERVICE_ID,ISNULL(CONVERT(VARCHAR,SPLIT_BILLING),'') AS SPLIT_BILLING,ISNULL(CONVERT(VARCHAR(11),WARRANTY_END_DATE,101),'') AS WARRANTY_END_DATE,ISNULL(CONVERT(VARCHAR(11),WARRANTY_START_DATE,101),'')	AS	WARRANTY_START_DATE,ISNULL(QTEREV_ID,'') AS	QTEREV_ID FROM SAQIBP(NOLOCK)  WHERE SAQIBP.QUOTE_ID = '"+str(Qt_ID)+"' AND SAQIBP.QTEREV_ID = '"+str(Revision_ID)+"') t 	) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT "
 			)
 
-			
+		"""
 		#SAQSCV
 		SAQSCV_QUERY = SqlHelper.GetFirst(
 				"SELECT replace ('\"SAQSCV\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"TOOLVALUEDRIVER_DISPLAY_VALUE\" : \"'+TOOLVALUEDRIVER_DISPLAY_VALUE+'\",\"TOOLVALUEDRIVER_VALUE_CODE\" : \"'+TOOL_VALUEDRIVER_VALUE_CODE+'\",\"TOOLVALUEDRIVER_NAME\" : \"'+TOOLVALUEDRIVER_NAME+'\",\"TOOLVALUEDRIVER_ID\" : \"'+TOOL_VALUEDRIVER_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"EQUIPMENT_LINE_ID\" : \"'+EQUIPMENT_LINE_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"TOOLVALUEDRIVER_COEFFICIENT\" : \"'+VALUEDRIVER_COEFFICIENT+'\",\"LINE_ITEM_ID\" : \"'+LINE_ITEM_ID+'\",\"QTEREV_ID\" : \"'+QTEREV_ID+'\" }' AS JSON from (SELECT DISTINCT  '' AS TOOLVALUEDRIVER_DISPLAY_VALUE,ISNULL(TOOL_VALUEDRIVER_VALUE_CODE,'') AS	TOOL_VALUEDRIVER_VALUE_CODE,ISNULL(TOOL_VALUEDRIVER_ID,'')	AS	TOOLVALUEDRIVER_NAME,ISNULL(TOOL_VALUEDRIVER_ID,'') AS TOOL_VALUEDRIVER_ID,ISNULL(SAQSCV.EQUIPMENT_ID,'') AS	EQUIPMENT_ID,CONVERT(VARCHAR,EQUIPMENT_LINE_ID) AS	EQUIPMENT_LINE_ID,ISNULL(SAQSCV.QUOTE_ID,'') AS QUOTE_ID,ISNULL(SAQSCV.SERVICE_ID,'') AS	SERVICE_ID,ISNULL(CONVERT(VARCHAR,VALUEDRIVER_COEFFICIENT),'')  AS VALUEDRIVER_COEFFICIENT,LINE_ITEM_ID AS LINE_ITEM_ID,ISNULL(SAQSCV.QTEREV_ID,'') AS	QTEREV_ID FROM SAQSCV(NOLOCK)  JOIN SAQICO (NOLOCK) B ON SAQSCV.QUOTE_ID = B.QUOTE_ID AND SAQSCV.QTEREV_ID = B.QTEREV_ID AND SAQSCV.SERVICE_ID = B.SERVICE_ID AND SAQSCV.EQUIPMENT_ID = B.EQUIPMENT_ID WHERE SAQSCV.QUOTE_ID = '"+str(Qt_ID)+"' AND SAQSCV.QTEREV_ID = '"+str(Revision_ID)+"' ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT "
@@ -102,6 +102,7 @@ try:
 		SAQTFV_QUERY = SqlHelper.GetFirst(
 				"SELECT replace ('\"SAQTFV\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"FABVALUEDRIVER_DISPLAY_VALUE\" : \"'+FABVALUEDRIVER_DISPLAY_VALUE+'\",\"FABVALUEDRIVER_VALUE_CODE\" : \"'+FABVALUEDRIVER_VALUE_CODE+'\",\"FABVALUEDRIVER_NAME\" : \"'+FABVALUEDRIVER_NAME+'\",\"FABVALUEDRIVER_ID\" : \"'+FABVALUEDRIVER_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"EQUIPMENT_LINE_ID\" : \"'+EQUIPMENT_LINE_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"FABVALUEDRIVER_COEFFICIENT\" : \"'+FABVALUEDRIVER_COEFFICIENT+'\",\"LINE_ITEM_ID\" : \"'+LINE_ITEM_ID+'\",\"QTEREV_ID\" : \"'+QTEREV_ID+'\" }' AS JSON from (SELECT DISTINCT  VALUEDRIVER_VALUE_DESCRIPTION  AS FABVALUEDRIVER_DISPLAY_VALUE,ISNULL(VALUEDRIVER_VALUE_CODE,'') AS	FABVALUEDRIVER_VALUE_CODE,ISNULL(VALUEDRIVER_NAME,'')	AS	FABVALUEDRIVER_NAME,ISNULL(VALUEDRIVER_ID,'') AS FABVALUEDRIVER_ID,ISNULL(SAQEDV.EQUIPMENT_ID,'') AS	EQUIPMENT_ID,CONVERT(VARCHAR,EQUIPMENT_LINE_ID) AS	EQUIPMENT_LINE_ID,ISNULL(SAQEDV.QUOTE_ID,'') AS QUOTE_ID,ISNULL(B.SERVICE_ID,'') AS	SERVICE_ID,ISNULL(CONVERT(VARCHAR,VALUEDRIVER_COEFFICIENT),'')  AS FABVALUEDRIVER_COEFFICIENT,LINE_ITEM_ID AS LINE_ITEM_ID,ISNULL(SAQEDV.QTEREV_ID,'') AS	QTEREV_ID FROM SAQEDV(NOLOCK) JOIN SAQICO (NOLOCK) B ON SAQEDV.QUOTE_ID = B.QUOTE_ID AND SAQEDV.QTEREV_ID = B.QTEREV_ID AND SAQEDV.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE SAQEDV.QUOTE_ID = '"+str(Qt_ID)+"' AND SAQEDV.QTEREV_ID = '"+str(Revision_ID)+"' ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT "
 			)
+			"""
 			
 		#Entitlement Query 
 		start = 1
@@ -142,37 +143,38 @@ try:
 		TempTable = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(Table_Name)+"'' ) BEGIN DROP TABLE "+str(Table_Name)+" END'")
 
 		final_json = ''
-		if str(SAQTMT_QUERY.RESULT) != '':
-			final_json = str(SAQTMT_QUERY.RESULT)+','
-		if str(SAQTRV_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQTRV_QUERY.RESULT)+','
-		if str(SAQTIP_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQTIP_QUERY.RESULT)+','
-		if str(SAQTBP_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQTBP_QUERY.RESULT)+','
-		if str(SAQDOC_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQDOC_QUERY.RESULT)+','
-		if str(SAQITM_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQITM_QUERY.RESULT)+','
-		if str(SAQICO_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQICO_QUERY.RESULT)+','
-		if str(SAQICA_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQICA_QUERY.RESULT)+','
-		if str(SAQAPP_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQAPP_QUERY.RESULT)+','
-		if str(SAQIFP_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQIFP_QUERY.RESULT)+','
-		if str(SAQIBP_QUERY.RESULT) != '':
-			final_json = final_json+str(SAQIBP_QUERY.RESULT)+','
-		if str(SAQSCV_QUERY.RESULT) != '':
+		if SAQTMT_QUERY.RESULT != '':
+			final_json = SAQTMT_QUERY.RESULT+','
+		if SAQTRV_QUERY.RESULT != '':
+			final_json = final_json+SAQTRV_QUERY.RESULT+','
+		if SAQTIP_QUERY.RESULT != '':
+			final_json = final_json+SAQTIP_QUERY.RESULT+','
+		if SAQTBP_QUERY.RESULT != '':
+			final_json = final_json+SAQTBP_QUERY.RESULT+','
+		if SAQDOC_QUERY.RESULT != '':
+			final_json = final_json+SAQDOC_QUERY.RESULT+','
+		if SAQITM_QUERY.RESULT != '':
+			final_json = final_json+SAQITM_QUERY.RESULT+','
+		if SAQICO_QUERY.RESULT != '':
+			final_json = final_json+SAQICO_QUERY.RESULT+','
+		if SAQICA_QUERY.RESULT != '':
+			final_json = final_json+SAQICA_QUERY.RESULT+','
+		if SAQAPP_QUERY.RESULT != '':
+			final_json = final_json+SAQAPP_QUERY.RESULT+','
+		if SAQIFP_QUERY.RESULT != '':
+			final_json = final_json+SAQIFP_QUERY.RESULT+','
+		if SAQIBP_QUERY.RESULT != '':
+			final_json = final_json+SAQIBP_QUERY.RESULT+','
+		"""if str(SAQSCV_QUERY.RESULT) != '':
 			final_json = final_json+str(SAQSCV_QUERY.RESULT)+','
 		if str(SAQTFV_QUERY.RESULT) != '':
 			final_json = final_json+str(SAQTFV_QUERY.RESULT)+','
+		"""
 		if tbl_flag == 1:
-			if str(SAQIEN_QUERY.RESULT) != '':
-				final_json = final_json+str(SAQIEN_QUERY.RESULT)+','
+			if SAQIEN_QUERY.RESULT != '':
+				final_json = final_json+SAQIEN_QUERY.RESULT+','
 			
-		Final_json = '{"CPQ_Columns": {'+str(final_json)[:-1]+'}}'
+		Final_json = '{"CPQ_Columns": {'+final_json[:-1]+'}}'
 		Log.Info("45678 Qt_ID------>"+str(Qt_ID))
 		Final_json = Final_json.replace("'",'&&&&')
 		if len(Final_json)>0:
@@ -193,9 +195,9 @@ try:
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;
 
 
-			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME )  select ''"+str(Final_json)+ "'',''Hadoop_test2'' ' ")	
+			#primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,INTEGRATION_NAME )  select ''"+Final_json+ "'',''Hadoop_test2'' ' ")	
 
-			Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),str(Final_json))	
+			Hadoop_response = webclient.UploadString(str(LOGIN_CRE.URL),Final_json)	
 			#Log.Info("789 Hadoop_response --->"+str(Hadoop_response))
 			
 			if "True" in Hadoop_response: 
