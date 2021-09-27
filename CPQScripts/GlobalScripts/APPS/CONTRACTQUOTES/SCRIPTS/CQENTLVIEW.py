@@ -5,7 +5,6 @@
 #   __create_date : 21/09/2021
 #   ï¿½ BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQENTLMENT import Param
 
 
 Trace.Write('load ent')
