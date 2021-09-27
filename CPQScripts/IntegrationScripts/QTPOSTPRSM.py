@@ -269,7 +269,7 @@ try:
 			msg = MailMessage(fromEmail, toEmail)
 
 			# Set message subject and body
-			msg.Subject = "Quote Successfully Sent to SSCM"
+			msg.Subject = "Quote Successfully Sent to SSCM(X-Tenant)"
 			msg.IsBodyHtml = True
 			msg.Body = Error_Info
 
@@ -339,7 +339,7 @@ try:
 			msg = MailMessage(fromEmail, toEmail)
 
 			# Set message subject and body
-			msg.Subject = "CPQ to SSCM - Triggering Error Notification"
+			msg.Subject = "CPQ to SSCM - Triggering Error Notification(X-Tenant)"
 			msg.IsBodyHtml = True
 			msg.Body = Error_Info
 

@@ -136,7 +136,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Pricing Initiated - AMAT CPQ DEV"
+					msg.Subject = "Pricing Initiated - AMAT CPQ DEV(X-Tenant)"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 
@@ -609,7 +609,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Pricing Completed - AMAT CPQ DEV"
+					msg.Subject = "Pricing Completed - AMAT CPQ DEV(X-Tenant)"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 
@@ -695,7 +695,7 @@ try:
 							msg = MailMessage(fromEmail, toEmail)							
 
 							# Set message subject and body
-							sub = "On Hold - Costing Quote("+str(Gbk.GREENBOOK)+")- AMAT CPQ DEV"
+							sub = "On Hold - Costing Quote("+str(Gbk.GREENBOOK)+")- AMAT CPQ DEV(X-Tenant)"
 							msg.Subject = sub
 							msg.IsBodyHtml = True
 							msg.Body = Error_Info
@@ -826,7 +826,7 @@ try:
 						msg = MailMessage(fromEmail, toEmail)
 
 						# Set message subject and body
-						msg.Subject = "SSCM to CPQ - SAQICO Error Notification"
+						msg.Subject = "SSCM to CPQ - SAQICO Error Notification(X-Tenant)"
 						msg.IsBodyHtml = True
 						msg.Body = Error_Info
 
@@ -904,7 +904,7 @@ except:
 	msg = MailMessage(fromEmail, toEmail)
 
 	# Set message subject and body
-	msg.Subject = "SSCM to CPQ - Pricing Error Notification"
+	msg.Subject = "SSCM to CPQ - Pricing Error Notification(X-Tenant)"
 	msg.IsBodyHtml = True
 	msg.Body = Error_Info
 
