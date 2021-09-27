@@ -429,6 +429,8 @@ class Entitlements:
 		attributesallowedlst = []
 		attributeReadonlylst = []
 		attributeEditonlylst = []
+		attr_tab_list_allow = []
+		attr_tab_list_disallow = []
 		attributevalues = {}
 		multi_select_attr_list = {}
 		attributevalues_textbox = []
@@ -528,10 +530,17 @@ class Entitlements:
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
+						if Productattribute == "characteristicGroups":
+						for prdvalue in Productvalue:
+							if prdvalue["visible"] == "true":							
+								attr_tab_list_allow.append(prdvalue["id"])
+							if prdvalue["visible"] == "false":
+								attr_tab_list_disallow.append(prdvalue["id"])
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
 								#dropdownallowlist = [] 
 								#Trace.Write('attr_chk----'+str(prdvalue))
+								
 								if prdvalue["visible"] == "false":							
 									attributesdisallowedlst.append(prdvalue["id"])
 								if prdvalue["visible"] == "true":							
@@ -1564,7 +1573,7 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
 		Trace.Write('multi_select_attr_list---'+str(multi_select_attr_list))
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
