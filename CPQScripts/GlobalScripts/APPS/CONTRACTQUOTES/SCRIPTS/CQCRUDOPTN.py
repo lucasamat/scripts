@@ -5815,6 +5815,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		##User story 4432 ends..
 
 	def _create(self):
+		Trace.Write("QT ->> {}".format(str(self.quote_type)))
 		if self.action_type == "INSERT_LINE_ITEMS":
 			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..
 				get_billing_matrix_year = ""
