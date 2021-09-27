@@ -11,8 +11,14 @@ Sql = SQL()
 
 
 def mailtrigger():
+
     Subject = "TEST"
-    mailBody = "HI This Is TeST MAIl"
+    mailBody = """
+                Dear Quote Owner,
+                    This is to notify that the Quote Number ******** will be expired on mm/dd/yyyy
+
+                Thank You 
+                """
     recepient = "joe.ebenezer@bostonharborconsulting.com"
     try:
         LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
