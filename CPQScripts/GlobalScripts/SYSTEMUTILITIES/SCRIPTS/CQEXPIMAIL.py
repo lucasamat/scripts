@@ -14,7 +14,7 @@ class qt_expiration_mail_trigger:
 		self.quote = Quote
 
     def mailtrigger(self):
-        Trace.Write(self.quote.GetCustomField('quote_expiration_mail').Content)
+        Log.Info("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
         Subject = "TEST"
         mailBody = """
                     Dear Quote Owner,
