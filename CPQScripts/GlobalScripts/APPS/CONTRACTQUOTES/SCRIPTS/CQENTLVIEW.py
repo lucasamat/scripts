@@ -7,17 +7,83 @@
 # ==========================================================================================================================================
 
 
-Trace.Write('load ent')
+
+class EntitlementView():
+    def __init__(self):
+        self.treeparam = TreeParam
+        self.treeparentparam = TreeParentParam
+        self.treesuperparentparam = TreeSuperParentParam
+        self.treetopsuperparentparam = TreeTopSuperParentParam
+        self.treesupertopparentparam = TreeSuperTopParentParam
+        ##TreeParentLevel4 added for addon product
+        self.treetopsupertopparentparam = TreeTopSuperTopParentParam
+        self.ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+        self.revision_recordid = Quote.GetGlobal("quote_revision_record_id")
+    def test(self):
+        return 'test','value'
+
+
+
+
+
+
+
 
 
 try:
     action = Param.action
 except:
     action = ""
+
 try:
-    alltreeparam =Param.alltreeparam
+    alltreeparam =eval(Param.alltreeparam)
+    
+    TreeParam = alltreeparam["TreeParam"]
+    
+
+    try:
+        TreeParentParam = alltreeparam["TreeParentLevel0"]
+    except:
+        TreeParentParam = ""
+    try:
+        TreeSuperParentParam = alltreeparam["TreeParentLevel1"]
+    except:
+        TreeSuperParentParam = ""
+    try:
+        TreeTopSuperParentParam = alltreeparam["TreeParentLevel2"]
+    except:
+        TreeTopSuperParentParam = ""
+    try:
+        TreeSuperTopParentParam = alltreeparam["TreeParentLevel3"]
+    except:
+        TreeSuperTopParentParam = ""
+    try:
+        TreeTopSuperTopParentParam = alltreeparam["TreeParentLevel4"]
+    except:
+        TreeTopSuperTopParentParam = ""
+
 except:
-    alltreeparam =""
+    Trace.Write("inside except")
+    try:
+        TreeParam = Param.TreeParam
+    except:
+        TreeParam = ""
+    try:
+        TreeParentParam = Param.TreeParentParam
+    except:
+        TreeParentParam = ""
+    try:
+        TreeSuperParentParam = Param.TreeSuperParentParam
+    except:
+        TreeSuperParentParam = ""
+    try:
+        TreeTopSuperParentParam = Param.TreeTopSuperParentParam
+    except:
+        TreeTopSuperParentParam = ""
+
+
+
 
 Trace.Write("action--"+str(action))
-Trace.Write("AllTreeParam--"+str(alltreeparam))
+entview = EntitlementView()
+Result = entview.test()
