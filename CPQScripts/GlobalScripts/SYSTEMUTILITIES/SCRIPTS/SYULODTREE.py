@@ -1605,10 +1605,11 @@ class TreeView:
 						"select * from SYOBJD (nolock) where OBJECT_NAME = '"
 						+ str(ObjName)
 						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
-					)                    
-					if 'QTEREV_RECORD_ID' not in where_string:
-						
-						where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
+					) 
+					if CurrentTabName != 'Approval Chain':                   
+						if 'QTEREV_RECORD_ID' not in where_string:
+							
+							where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
 						DynamicQuery = (
 							DynamicQuery.replace("{", "")
