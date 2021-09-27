@@ -1771,7 +1771,7 @@ class TreeView:
 						for childdata in childQuery:							
 							ChildDict = {}
 							SubChildData = []  
-							Trace.Write("child 111"+str(eval("childdata." + str(NodeName))))                          
+							#Trace.Write("child 111"+str(eval("childdata." + str(NodeName))))                          
 							if  str(ObjName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst(
