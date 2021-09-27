@@ -1627,11 +1627,11 @@ class SyncQuoteAndCustomTables:
 								''' # Approval Trigger - Start								
 								import ACVIORULES
 								violationruleInsert = ACVIORULES.ViolationConditions()
-								header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
+								header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 								if header_obj:
 									Log.Info("Starting Approval Trigger--")									
 									violationruleInsert.InsertAction(
-																	header_obj.RECORD_ID, quote_record_id, "SAQTMT"
+																	header_obj.RECORD_ID, quote_revision_id, "SAQTRV"
 																	)
 									Log.Info("Ending Approval Trigger--")
 								# Approval Trigger - End '''

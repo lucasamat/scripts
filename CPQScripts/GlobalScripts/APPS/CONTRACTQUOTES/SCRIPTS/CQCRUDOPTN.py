@@ -5857,10 +5857,10 @@ class QuoteItemsCalculation(ContractQuoteCrudOpertion):
 		# Approval Trigger - Start		
 		#import ACVIORULES
 		#violationruleInsert = ACVIORULES.ViolationConditions()
-		#header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTMT'")
+		#header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
 		#if header_obj:			
 		''' violationruleInsert.InsertAction(
-											header_obj.RECORD_ID, self.contract_quote_record_id, "SAQTMT"
+											header_obj.RECORD_ID, self.quote_revision_record_id, "SAQTRV"
 											) '''
 		# Approval Trigger - End
 		return None
