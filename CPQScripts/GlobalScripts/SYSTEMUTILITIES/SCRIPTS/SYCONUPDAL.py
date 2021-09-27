@@ -606,10 +606,11 @@ try:
 	else:
 		quote_expiration_mail = "TRUE"
 except:
+	Trace.Write("EXCEPT: quote_expiration_mail")
 	quote_expiration_mail = "FALSE"
 
 if str(today_date_string) == str(mail_trigger_date):
-	if Quote.GetCustomField("quote_expiration_mail").Content != "FALSE":
+	if quote_expiration_mail == "TRUE":
 		ApiResponse = ApiResponseFactory.JsonResponse(configobj.mailtrigger())
 
 if hasattr(Param, "keyData_val"):
