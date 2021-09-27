@@ -36,6 +36,43 @@ class EntitlementView():
         self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
     
+    def EntitlementRequest(self,ProductPartnumber,RequestURL,RequestType):
+        ProductPartnumber = ProductPartnumber.strip()
+        webclient = System.Net.WebClient()
+        requestdata = ""
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+        response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
+        response = eval(response)
+        Trace.Write("response_JJ"+str(response)+" RequestType "+str(RequestType))
+        Trace.Write("RequestURL"+str(RequestURL))
+        if RequestType == 'New':
+            Request_URL = RequestURL
+            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+            requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
+            # if TreeSuperParentParam=="Offerings":
+            # requestdata= '{"productKey":"'+TreeParam+'","date":"2020-10-14","context":[{"name":"VBAP-MATNR","value":"'+TreeParam+'"}]}'
+            # ProductPartnumber=TreeParam
+            # elif TreeTopSuperParentParam=="Offerings":
+            # requestdata= '{"productKey":"'+TreeParentParam+'","date":"2020-09-01","context":[{"name":"VBAP-MATNR","value":"'+TreeParentParam+'"}]}'
+            # ProductPartnumber=TreeParentParam
+            Trace.Write("requestdata-1888---" + str(requestdata))
+            response1 = webclient.UploadString(Request_URL, str(requestdata))
+        else:
+            try:		
+                Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
+                Request_URL = RequestURL
+                webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
+                response1 = webclient.DownloadString(Request_URL)
+            except Exception as e:
+                Trace.Write('1897-----'+str(e))
+                response1 = {}
+                
+        response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
+        Trace.Write("response1_J "+str(response1))
+        return eval(response1)
+
+
     def entitlement_view(
         self,
         RECORD_ID,
@@ -222,12 +259,12 @@ class EntitlementView():
         if EntitlementType != "SENDING_LEVEL":
             if TableObj is None and (EntitlementType == "EQUIPMENT"):
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-                Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
+                Fullresponse = EntitlementRequest(self,ProductPartnumber,Request_URL,"New")
             else:		
                 if TableObj:
                     cpsConfigID = TableObj.CPS_CONFIGURATION_ID
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-                Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
+                Fullresponse = EntitlementRequest(self,ProductPartnumber,Request_URL,"Existing")
 
             attributesdisallowedlst = []
             attributeReadonlylst = attributes_disallowed_list = []
@@ -235,7 +272,6 @@ class EntitlementView():
             attributevalues = {}
             attributedefaultvalue = []
             dropdowndisallowlist = []
-            dropdownallowlist = []
             get_lastsection_val = attrcode = disable_edit = ""
             # where = ""
             Trace.Write("Fullresponse_J "+str(Fullresponse))
@@ -688,35 +724,36 @@ class EntitlementView():
                     values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
                     insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
                 Sql.RunQuery(insert_qtqtse_query)
-                if objname_ent == "SAQSAO":
-                    QueryStatement ="""
-                    MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                    TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
-                    WHEN MATCHED
-                    THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                    WHEN NOT MATCHED BY TARGET
-                    THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
-                            CpqTableEntryDateModified)
-                    VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id )
+                # if objname_ent == "SAQSAO":
+                #     QueryStatement ="""
+                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
+                #     WHEN MATCHED
+                #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+                #     WHEN NOT MATCHED BY TARGET
+                #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+                #             CpqTableEntryDateModified)
+                #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id )
                 
-                else:
-                    QueryStatement ="""
-                    MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                    TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
-                    WHEN MATCHED
-                    THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                    WHEN NOT MATCHED BY TARGET
-                    THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
-                            CpqTableEntryDateModified)
-                    VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
+                # else:
+                #     QueryStatement ="""
+                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
+                #     WHEN MATCHED
+                #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+                #     WHEN NOT MATCHED BY TARGET
+                #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+                #             CpqTableEntryDateModified)
+                #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
                     
-                    Sql.RunQuery(QueryStatement)
-                    QueryStatement ="""
-                    MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                    TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
-                    WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                    WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
-                    Sql.RunQuery(QueryStatement)
+                #     Sql.RunQuery(QueryStatement)
+                #     QueryStatement ="""
+                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
+                #     WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+                #     WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
+                #     Sql.RunQuery(QueryStatement)
+                
                 Trace.Write("getnameentallowed"+str(getnameentallowed))
                 getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
                 totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
