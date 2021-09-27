@@ -16,10 +16,10 @@ class qt_expiration_mail_trigger:
     def mailtrigger(self):
         try:
             if self.quote:
-                Log.Info("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
+                Trace.Write("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
         except:
-			Log.Info("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
-			Log.Info("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
+			Trace.Write("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
+			Trace.Write("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
         Subject = "TEST"
         mailBody = """
                     Dear Quote Owner,
