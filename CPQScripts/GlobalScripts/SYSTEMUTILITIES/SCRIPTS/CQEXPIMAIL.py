@@ -17,7 +17,8 @@ class qt_expiration_mail_trigger:
 
     def _get_custom_fields_detail(self):
         return {
-            'QuoteExpirationDate':self.quote.GetCustomField('QuoteExpirationDate').Content
+            'QuoteExpirationDate':self.quote.GetCustomField('QuoteExpirationDate').Content,
+            'quote_expiration_mail':self.quote.GetCustomField('quote_expiration_mail').Content
         }
 
     def mailtrigger(self):
