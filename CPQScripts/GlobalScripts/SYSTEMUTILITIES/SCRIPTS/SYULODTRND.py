@@ -1900,11 +1900,11 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 									+ str(autoNumber)
 									+ " = '"
 									+ str(RECORD_ID)
-									+ "'  AND QUOTE_RECORD_ID = "
+									+ "'  AND QUOTE_RECORD_ID = '"
 									+ str(quote_record_id)
-									+ "' AND QTEREV_RECORD_ID = "
+									+ "' AND QTEREV_RECORD_ID = '"
 									+ str(quote_revision_record_id)
-									+ "'   "
+									+ "'  ) "
 									)
 
 								# Trace.Write(
