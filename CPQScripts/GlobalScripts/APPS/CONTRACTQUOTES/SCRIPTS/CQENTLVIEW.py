@@ -259,12 +259,12 @@ class EntitlementView():
         if EntitlementType != "SENDING_LEVEL":
             if TableObj is None and (EntitlementType == "EQUIPMENT"):
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-                Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"New")
+                Fullresponse = self.EntitlementRequest(ProductPartnumber,Request_URL,"New")
             else:		
                 if TableObj:
                     cpsConfigID = TableObj.CPS_CONFIGURATION_ID
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-                Fullresponse = EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
+                Fullresponse = self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
             attributesdisallowedlst = []
             attributeReadonlylst = attributes_disallowed_list = []
