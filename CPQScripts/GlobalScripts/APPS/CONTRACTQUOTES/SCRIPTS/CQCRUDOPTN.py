@@ -1109,6 +1109,23 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			except:
 				cpsmatc_incr = ''	
 
+class PartsListModel(ContractQuoteCrudOpertion):
+	Trace.Write('-----Parts List CRUD-----')
+	def __init__(self, **kwargs):
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
+											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+		self.opertion = kwargs.get('opertion')
+		self.action_type = kwargs.get('action_type')
+		self.values = kwargs.get('values')
+		self.table_name = kwargs.get('table_name')
+		self.all_values = kwargs.get('all_values')		
+		self.node_id = ""
+	
+	def _create(self):		
+		row_values = {}
+		if self.action_type == "ADD_PART":
+			Trace.Write('SAQSPT---- Insert')
+		return True
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
@@ -1992,6 +2009,8 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			record_ids = str(str(record_ids)[1:-1].replace("'",""))
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
+			
+			Trace.Write("Batch insert check---->"+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAEQUP.EQUIPMENT_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAEQUP (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAEQUP.EQUIPMENT_RECORD_ID'")
 
 			self._process_query(
 							"""
@@ -6116,6 +6135,7 @@ def Factory(node=None):
 		"QUOTE APPROVAL LEVEL NOTIFICATION":ContractQuoteNoficationApprovalModel,
 		"QUOTE APPROVAL MODEL":ContractQuoteApprovalModel,
 		"QUOTE ITEMS MODEL":ContractQuoteItemsModel,
+		"PARTS MODEL": PartsListModel
 	}
 	return models[node]
 
