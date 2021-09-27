@@ -2682,6 +2682,7 @@ def EntitlementTreeViewHTMLDetail(
 					Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
 				else:
 					get_last_secid = SqlHelper.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
+					Trace.Write("product_tab_obj--2683---"+str(product_section))
 					if get_last_secid:
 						get_last_secid = get_last_secid.saprec_id.split('-')[2]
 						get_last_secid = int(int(get_last_secid)) + 1
