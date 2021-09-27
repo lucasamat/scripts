@@ -13,9 +13,18 @@ class qt_expiration_mail_trigger:
     def __init__(self, Quote):
         self.quote = Quote
 
+    
+
+    def _get_custom_fields_detail(self):
+        return {
+            'QuoteExpirationDate':self.quote.GetCustomField('QuoteExpirationDate').Content
+        }
+
     def mailtrigger(self):
         try:
             if self.quote:
+                custom_fields_detail = self._get_custom_fields_detail()
+                Trace.Write("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))
                 Trace.Write("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
         except:
             Trace.Write("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
@@ -62,6 +71,7 @@ class qt_expiration_mail_trigger:
             self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
             Trace.Write(self.exceptMessage)
         return True
+
 
 expiration_obj = qt_expiration_mail_trigger(Quote)
 
