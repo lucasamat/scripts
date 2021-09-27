@@ -10,7 +10,7 @@ Sql = SQL()
 
 
 
-def mailtrigger(self):
+def mailtrigger():
     Subject = "TEST"
     mailBody = "HI This Is TeST MAIl"
     recepient = "joe.ebenezer@bostonharborconsulting.com"
