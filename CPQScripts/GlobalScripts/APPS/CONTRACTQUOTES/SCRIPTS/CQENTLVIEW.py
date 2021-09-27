@@ -2186,8 +2186,10 @@ except:
     RECORD_ID = ""
 try:
     ObjectName = Param.ObjectName
-except:
+    Trace.Write("ObjectName--"+str(ObjectName))
+except Exception as e:
     ObjectName = ""
+    Trace.Write("ObjectName-err--"+str(e))
 try:
     SectionList = Param.DetailList
 except:
@@ -2287,7 +2289,6 @@ if SectionList is not None and (
             EntitlementType = "ITEMGREENBOOK"				
             
 elif ((SubtabName in ('Entitlements','Equipment Entitlements','Assembly Entitlements') ) and (TreeParam.upper() == "SENDING EQUIPMENT" or TreeSuperParentParam.upper() =="SENDING EQUIPMENT" or TreeParentParam.upper() =="SENDING EQUIPMENT")):
-    mode = "Contracts"
     Trace.Write("Entitlements"+str(TreeParam))
     EntitlementType = "SENDING_LEVEL"
     SectionObjectName = "SAQSRA"
@@ -2300,6 +2301,8 @@ elif ObjectName == "SAQTSE":
 elif ObjectName == "CTCTSE":	
     SectionObjectName = ObjectName
     EntitlementType = "TOOLS"
+else:
+    Trace.Write("ObjectName-else--"+str(ObjectName))
 
 Trace.Write("mode--"+str(mode))
 ##calling class
