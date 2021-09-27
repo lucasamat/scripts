@@ -165,6 +165,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		
 		VISIBLEval = RECORD.get("VISIBLE")
 		sect_name = RECORD.get("SECTION_ID")
+		Trace.Write("section name = "+str(sect_name))
 		sect_rec_id = RECORD.get("PROFILE_SECTION_RECORD_ID")
 		tableInfosf = Sql.GetTable("SYPRSF")
 		newdictSF = {}
