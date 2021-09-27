@@ -6,7 +6,7 @@ import datetime
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 Sql = SQL()
-Param = Param
+# Param = Param
 
 
 
