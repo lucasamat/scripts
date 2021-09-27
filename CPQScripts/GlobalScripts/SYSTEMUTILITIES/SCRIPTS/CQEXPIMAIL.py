@@ -9,53 +9,56 @@ Sql = SQL()
 # Param = Param
 
 
+class qt_expiration_mail_trigger:
+	def __init__(self, Quote):
+		self.quote = Quote
 
-def mailtrigger():
+    def mailtrigger(self):
+        Trace.Write(self.quote.GetCustomField('quote_expiration_mail').Content)
+        Subject = "TEST"
+        mailBody = """
+                    Dear Quote Owner,
+                        This is to notify that the Quote Number ******** will be expired on mm/dd/yyyy
 
-    Subject = "TEST"
-    mailBody = """
-                Dear Quote Owner,
-                    This is to notify that the Quote Number ******** will be expired on mm/dd/yyyy
+                    Thank You 
+                    """
+        recepient = "joe.ebenezer@bostonharborconsulting.com"
+        try:
+            LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+            mailClient = SmtpClient()
+            mailClient.Host = "smtp.gmail.com"
+            mailClient.Port = 587
+            mailClient.EnableSsl = "true"
+            mailCred = NetworkCredential()
+            mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+            mailCred.Password = str(LOGIN_CRE.PASSWORD)
+            mailClient.Credentials = mailCred
+            toEmail = MailAddress(str(recepient))
+            fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+            msg = MailMessage(fromEmail, toEmail)
+            msg.Subject = Subject
+            msg.IsBodyHtml = True
+            msg.Body = mailBody
+            # copyEmail1 = MailAddress("mayura.priya@bostonharborconsulting.com")
+            # msg.CC.Add(copyEmail1)
+            #copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
+            #msg.CC.Add(copyEmail2)
+            # copyEmail2 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+            # msg.CC.Add(copyEmail2)
+            #copyEmail4 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
+            #msg.CC.Add(copyEmail4)
+            #copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
+            #msg.CC.Add(copyEmail5)    
+            mailClient.Send(msg)
+            Trace.Write("Mail Sent Successfully")
+            Quote.GetCustomField("quote_expiration_mail").Content = "FALSE"
+            # quote_expiration_mail = "FALSE"
+        except Exception, e:
+            self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+            Trace.Write(self.exceptMessage)
+        return True
 
-                Thank You 
-                """
-    recepient = "joe.ebenezer@bostonharborconsulting.com"
-    try:
-        LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
-        mailClient = SmtpClient()
-        mailClient.Host = "smtp.gmail.com"
-        mailClient.Port = 587
-        mailClient.EnableSsl = "true"
-        mailCred = NetworkCredential()
-        mailCred.UserName = str(LOGIN_CRE.USER_NAME)
-        mailCred.Password = str(LOGIN_CRE.PASSWORD)
-        mailClient.Credentials = mailCred
-        toEmail = MailAddress(str(recepient))
-        fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
-        msg = MailMessage(fromEmail, toEmail)
-        msg.Subject = Subject
-        msg.IsBodyHtml = True
-        msg.Body = mailBody
-        # copyEmail1 = MailAddress("mayura.priya@bostonharborconsulting.com")
-        # msg.CC.Add(copyEmail1)
-        #copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
-        #msg.CC.Add(copyEmail2)
-        # copyEmail2 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
-        # msg.CC.Add(copyEmail2)
-        #copyEmail4 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
-        #msg.CC.Add(copyEmail4)
-        #copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
-        #msg.CC.Add(copyEmail5)    
-        mailClient.Send(msg)
-        Trace.Write("Mail Sent Successfully")
-        Quote.GetCustomField("quote_expiration_mail").Content = "FALSE"
-        # quote_expiration_mail = "FALSE"
-    except Exception, e:
-        self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
-        Trace.Write(self.exceptMessage)
-    return True
-
-
+expiration_obj = qt_expiration_mail_trigger(Quote)
 
 now = datetime.datetime.now()
 current_date_obj = str(now).split(" ")[0].strip()
@@ -86,4 +89,4 @@ except:
 Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
 if str(today_date_string) == str(mail_trigger_date):
 	if quote_expiration_mail == "TRUE":
-		mailtrigger()
+		expiration_obj.mailtrigger()
