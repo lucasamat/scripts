@@ -5,6 +5,7 @@
 #   __create_date : 21/09/2021
 #   ï¿½ BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
+from CPQScripts.GlobalScripts.APPS.CONTRACTQUOTES.SCRIPTS.CQENTLMENT import Trace
 import Webcom.Configurator.Scripting.Test.TestProduct
 
 
@@ -2292,6 +2293,7 @@ elif ((SubtabName in ('Entitlements','Equipment Entitlements','Assembly Entitlem
     SectionObjectName = "SAQSRA"
 
 elif ObjectName == "SAQTSE":	
+    Trace.Write("TOOLS")
     SectionObjectName = ObjectName
     EntitlementType = "TOOLS"
     
