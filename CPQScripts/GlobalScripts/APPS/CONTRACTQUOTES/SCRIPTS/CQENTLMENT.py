@@ -705,6 +705,12 @@ class Entitlements:
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
+							if Productattribute == "characteristicGroups":
+								for prdvalue in Productvalue:
+									if prdvalue["visible"] == "true":							
+										attr_tab_list_allow.append(prdvalue["id"])
+									if prdvalue["visible"] == "false":
+										attr_tab_list_disallow.append(prdvalue["id"])
 							if Productattribute == "characteristics":
 								for prdvalue in Productvalue:
 									for attribute in prdvalue["values"]:									
