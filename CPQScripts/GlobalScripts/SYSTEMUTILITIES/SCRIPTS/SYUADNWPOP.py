@@ -3599,7 +3599,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="offeringsModelListKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="partsModelListKeyHyperLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
