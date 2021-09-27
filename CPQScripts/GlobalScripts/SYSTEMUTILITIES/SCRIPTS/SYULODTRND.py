@@ -4562,8 +4562,10 @@ if SectionList is not None and (
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
 ):
 	Trace.Write("SectionList111")
+
 	sectionId = tuple(SectionList)
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
+	result = ScriptExecutor.ExecuteGlobal("CQENTLVIEW", {"action": 'ENT_VIEW','alltreeparam':AllTreeParam})
 	if sectObj is not None:
 		SectionObjectName = sectObj.PRIMARY_OBJECT_NAME		
 		if SectionObjectName in ("SAQTSE"):
