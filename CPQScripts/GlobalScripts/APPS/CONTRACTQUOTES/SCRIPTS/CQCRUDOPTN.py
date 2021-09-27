@@ -5204,9 +5204,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 											SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1		
 										""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	 
 
-		###Value Driver coefficient Sum up  A055S000P01-8778 starts
-		self._process_query("UPDATE A  SET TOOL_VALUEDRIVER_COEFFICIENT = VALUEDRIVER_COEFFICIENT FROM SAQICO A(NOLOCK) JOIN (SELECT QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID,SUM(VALUEDRIVER_COEFFICIENT) AS VALUEDRIVER_COEFFICIENT from SAQSCV(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' GROUP BY QUOTE_RECORD_ID,EQUIPMENT_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID AND A.SERVICE_ID = B.SERVICE_ID")
-		##A055S000P01-8778 ends
+		
 
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
