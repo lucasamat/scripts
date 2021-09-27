@@ -121,8 +121,9 @@ class ViolationConditions:
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         QuoteId = CurrentId
         if(ObjectName == 'SAQTMT'):
-            GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
+            GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
             QuoteId = str(GetQuoteId.QUOTE_ID)
+            RevisionId = str(GetQuoteId.QTEREV_ID)
         ApprovalCombinationID = str(CurrentId)
         ApprovalCombo = str(ApprovalCombinationID) + "-" + str(chainid)
         Getlatestauto = Sql.GetFirst(
@@ -152,7 +153,7 @@ class ViolationConditions:
 				,ACAPCH.APRCHN_ID AS APRCHN_ID
 				,ACAPCH.APPROVAL_CHAIN_RECORD_ID AS APRCHN_RECORD_ID
 				,ACACST.APPROVAL_CHAIN_STEP_RECORD_ID AS APRCHNSTP_RECORD_ID
-				,CONVERT(VARCHAR(4000), SYOBJH.OBJECT_NAME + '-' + '{QuoteId}'
+				,CONVERT(VARCHAR(4000), SYOBJH.OBJECT_NAME + '-' + '{QuoteId}' + '-' + '{RevisionId}'
 				+ '-' + ACAPCH.APRCHN_ID + '-'+'{approval_id_auto}') AS APPROVAL_ID
 				,ACAPCH.APROBJ_LABEL AS APROBJ_LABEL
 				,ACACSS.APPROVALSTATUS AS APRSTAMAP_APPROVALSTATUS
@@ -195,7 +196,8 @@ class ViolationConditions:
             ApprovalCombinationID=ApprovalCombinationID,
             UserName=self.Get_UserNAME,
             approval_id_auto=approval_id_auto,
-            QuoteId=str(QuoteId)
+            QuoteId=str(QuoteId),
+            RevisionId=str(RevisionId)
         )
         return insertQueryStatement
 
