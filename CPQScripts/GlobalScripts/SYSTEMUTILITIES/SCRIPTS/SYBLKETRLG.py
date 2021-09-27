@@ -386,6 +386,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 		item_lines_record_ids = []
 		for rec in selected_rows:
 			row = {}
+			if TITLE == 'DISCOUNT' and '%' in VALUE:
+				VALUE = VALUE.replace('%','')
 			row = {TITLE: str(VALUE)}
 			
 			cpqid = rec.split("-")[1].lstrip("0")
@@ -585,9 +587,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				except:
 					Trace.Write("NO STATUS UPDATE")
 			elif TITLE == 'DISCOUNT':
-				
+				if '%' in VALUE:
+					VALUE = VALUE.replace('%','')
 				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE,ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
-
+				amt = 0.00
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					if "+" not in VALUE and "-" not in VALUE:
 						#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
@@ -684,8 +687,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						item.YEAR_3.Value = str(b.YEAR3)
 						item.YEAR_4.Value = str(b.YEAR4)
 						item.YEAR_5.Value = str(b.YEAR5)
-						item.EXTENDED_PRICE.Value = str(b.NET_VALUE)
-						item.DISCOUNT.Value = str(TotalDiscount)+ "%"
+						item.NET_VALUE.Value = str(b.NET_VALUE)
+						item.DISCOUNT.Value = str(TotalDiscount)
 				Quote.Save()
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 				try:
