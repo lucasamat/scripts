@@ -1121,11 +1121,144 @@ class PartsListModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 	
-	def _create(self):		
-		row_values = {}
+	def _create(self):
 		if self.action_type == "ADD_PART":
 			Trace.Write('SAQSPT---- Insert')
-		return True
+			self._add_parts_list()
+	
+	def _add_parts_list(self):
+		master_object_name = "MAMTRL"
+		if self.values:
+			record_ids = []
+			if self.all_values:
+				qury_str = ""
+				if A_Keys!="" and A_Values!="":
+					for key,val in zip(A_Keys,A_Values):
+						if(val!=""):
+							if key=="MATERIAL_RECORD_ID":
+								key="CpqTableEntryId"
+								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
+							qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
+				query_str="""SELECT MATERIAL_RECORD_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,PRODUCT_TYPE FROM MAMTRL WHERE IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE '{}' QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(qury_str,contract_quote_record_id,quote_revision_record_id)
+				query_string=SqlHelper.GetList(query_str)
+				if query_string is not None:
+					record_ids = [data.MATERIAL_RECORD_ID for data in query_string]
+
+				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
+					Query_String=query_string
+				)
+				table_count_data = Sql.GetFirst(query_string_for_count)
+				if table_count_data is not None:
+					table_total_rows = table_count_data.count
+			else:                    
+				record_ids = [
+					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+					if value.strip() != "" and master_object_name in value
+					else value
+					for value in self.values
+				]
+			Trace.Write('Record-ids-->'+str(record_ids))
+			batch_group_record_id = str(Guid.NewGuid()).upper()
+			record_ids = str(str(record_ids)[1:-1].replace("'",""))
+			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")			
+			primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAMTRL.MATERIAL_RECORD_ID as BATCH_RECORD_ID, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAMTRL (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAMTRL.MATERIAL_RECORD_ID'")
+			self._process_query("""
+									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
+									SELECT DISTINCT
+										CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_PART_RECORD_ID,
+										BASEUOM_ID,
+										BASEUOM_RECORD_ID,
+										CUSTOMER_PART_NUMBER,
+										CUSTOMER_PART_NUMBER_RECORD_ID,
+										DELIVERY_MODE,
+										EXTENDED_UNIT_PRICE,
+										PART_DESCRIPTION,
+										PART_NUMBER,
+										PART_RECORD_ID,
+										PRDQTYCON_RECORD_ID,
+										QUANTITY,
+										QUOTE_ID,
+										QUOTE_NAME,
+										QUOTE_RECORD_ID,
+										QTEREV_ID,
+										QTEREV_RECORD_ID,
+										SALESORG_ID,
+										SALESORG_RECORD_ID,
+										SALESUOM_CONVERSION_FACTOR,
+										SALESUOM_ID,
+										SALESUOM_RECORD_ID, 
+										SCHEDULE_MODE,
+										SERVICE_DESCRIPTION,
+										SERVICE_ID,
+										SERVICE_RECORD_ID,
+										UNIT_PRICE,
+										MATPRIGRP_ID,
+										MATPRIGRP_RECORD_ID,
+										DELIVERY_INTERVAL,
+										VALID_FROM_DATE, 
+										VALID_TO_DATE,
+										PAR_SERVICE_DESCRIPTION,
+										PAR_SERVICE_ID,
+										PAR_SERVICE_RECORD_ID,
+										{UserId} as CPQTABLEENTRYADDEDBY, 
+										GETDATE() as CPQTABLEENTRYDATEADDED
+									FROM (
+									SELECT 
+										DISTINCT
+										MAMTRL.UNIT_OF_MEASURE as BASEUOM_ID,
+										MAMTRL.UOM_RECORD_ID as BASEUOM_RECORD_ID,
+										MAMTRL.SAP_PART_NUMBER as CUSTOMER_PART_NUMBER,
+										MAMTRL.MATERIAL_RECORD_ID as CUSTOMER_PART_NUMBER_RECORD_ID,
+										'ONSITE' as DELIVERY_MODE,
+										0.00 as EXTENDED_UNIT_PRICE,
+										MAMTRL.SAP_DESCRIPTION as PART_DESCRIPTION,
+										MAMTRL.SAP_PART_NUMBER as PART_NUMBER,
+										MAMTRL.MATERIAL_RECORD_ID as PART_RECORD_ID,
+										'' as PRDQTYCON_RECORD_ID,
+										1 as QUANTITY,
+										SAQTMT.QUOTE_ID as QUOTE_ID,
+										SAQTMT.QUOTE_NAME as QUOTE_NAME,
+										SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID as QUOTE_RECORD_ID,
+										SAQTMT.QTEREV_ID as QTEREV_ID,
+										SAQTMT.QTEREV_RECORD_ID as QTEREV_RECORD_ID,
+										SAQTSV.SALESORG_ID as SALESORG_ID,
+										SAQTSV.SALESORG_RECORD_ID as SALESORG_RECORD_ID,
+										0.00 as SALESUOM_CONVERSION_FACTOR,
+										MAMTRL.UNIT_OF_MEASURE as SALESUOM_ID,
+										MAMTRL.UOM_RECORD_ID as SALESUOM_RECORD_ID, 
+										'SCHEDULED' as SCHEDULE_MODE,
+										SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+										SAQTSV.SERVICE_ID as SERVICE_ID,
+										SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
+										0.00 as UNIT_PRICE,
+										MAMSOP.MATPRIGRP_ID as MATPRIGRP_ID,
+										MAMSOP.MATPRIGRP_RECORD_ID as MATPRIGRP_RECORD_ID,
+										'MONTHLY' as DELIVERY_INTERVAL,
+										SAQTMT.CONTRACT_VALID_FROM as VALID_FROM_DATE, 
+										SAQTMT.CONTRACT_VALID_TO as VALID_TO_DATE,
+										SAQTSV.PAR_SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
+										SAQTSV.PAR_SERVICE_ID as PAR_SERVICE_ID,
+										SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID
+									FROM SYSPBT (NOLOCK)
+									JOIN MAMTRL (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = SYSPBT.MATERIAL_RECORD_ID
+									JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
+									JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.SERVICE_ID = '{ServiceId}'
+									JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
+									WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 ) IQ
+									""".format(
+						ServiceId=self.tree_param,
+						BatchGroupRecordId=batch_group_record_id,
+						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
+						UserId=self.user_id
+					)
+				)
+
+			self._process_query(
+						"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+						)
+					)
+
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
