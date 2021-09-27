@@ -120,8 +120,7 @@ class ContractQuoteCrudOpertion:
 			table_name="SAQTRV",
 			where_condition="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id),
 			single_record=True,
-		)
-		
+		)		
 		
 		if contract_quote_record_obj:
 			self.contract_quote_id = contract_quote_record_obj.QUOTE_ID
@@ -187,13 +186,12 @@ class ContractQuoteCrudOpertion:
 
 	def _add_record(
 		self, master_object_name=None, columns=[], table_name=None, condition_column=None, values=[], where_condition=""
-	):		
-		TreeParam=Product.GetGlobal("TreeParam")
+	):
 		if self.action_type == "ADD_OFFERING" and self.all_values:
-			if TreeParam=="Product Offerings":
+			if self.tree_param=="Product Offerings":
 				product_type=" PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND PRODUCT_TYPE != 'Add-On Products' "
-			elif TreeParam!="Product Offerings" and TreeParam!="Add-On Products":
-				product_type=" PRODUCT_TYPE = '{TreeParam}' ".format(TreeParam=TreeParam)
+			elif self.tree_param!="Product Offerings" and self.tree_param!="Add-On Products":
+				product_type=" PRODUCT_TYPE = '{TreeParam}' ".format(TreeParam=self.tree_param)
 			qury_str=""
 			if A_Keys!="" and A_Values!="":
 				for key,val in zip(A_Keys,A_Values):
@@ -202,12 +200,11 @@ class ContractQuoteCrudOpertion:
 							key="CpqTableEntryId"
 							val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 						qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
-				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 				sales_org=""
 				if get_sales_org :
 					sales_org=get_sales_org.SALESORG_ID
 				query_string="select MAMTRL.MATERIAL_RECORD_ID, MAMTRL.SAP_PART_NUMBER, SAP_DESCRIPTION, PRODUCT_TYPE from MAMTRL (NOLOCK)  INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID  WHERE  ISNULL(IS_SPARE_PART,0) = 0 AND {product_type} AND {Qury_Str} MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )  AND SALESORG_ID='{sales_org}'  ".format(product_type=product_type,Qury_Str=qury_str,contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,sales_org=sales_org)
-				Trace.Write('query_string---'+str(query_string))
 				result=SqlHelper.GetList(query_string)
 				if result is not None:
 					record_ids = [data.MATERIAL_RECORD_ID for data in result]
@@ -265,7 +262,7 @@ class ContractQuoteCrudOpertion:
 			delete_query = "DELETE FROM {ObjectName} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
 				ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id,WhereCondition=where_condition,
 			)
-			Trace.Write("===========> 11111 delete"+str(delete_query))
+			#Trace.Write("===========> 11111 delete"+str(delete_query))
 			Log.Info("User Id" + str(self.user_id) + "Script Name:CQCRUDOPTN.PY Query Statement:" + str(delete_query))
 			self._process_query(delete_query)
 		return True
@@ -281,7 +278,7 @@ class ContractQuoteCrudOpertion:
 		#s=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
 		if remaining_months < 0:
 			divide_by = 12 + remaining_months
-		Trace.Write('272-----272-----'+str(service_id))
+		#Trace.Write('272-----272-----'+str(service_id))
 		
 		Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
@@ -337,71 +334,11 @@ class ContractQuoteCrudOpertion:
 						BillingDate=billing_date,
 						AmountColumn=amount_column,
 						DivideBy=divide_by,
-						service_id = service_id))
-					
-		'''Sql.RunQuery("""INSERT SAQIBP (
-						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
-						LINE_ITEM_ID, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, 
-						QUOTE_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,
-						BILLING_AMOUNT, BILLING_DATE, BILLING_INTERVAL, BILLING_YEAR,
-						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_LINE_ID, EQUIPMENT_RECORD_ID, PO_ITEM, PO_NUMBER, QTEITMCOB_RECORD_ID, 
-						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_BILLING_AMOUNT, GREENBOOK, GREENBOOK_RECORD_ID,
-						BILLING_CURRENCY, BILLING_CURRENCY_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE, EQUIPMENT_QUANTITY, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
-					) 
-					SELECT 
-						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-						SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
-						SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
-						'Variable Billing' as BILLING_TYPE,
-						SAQICO.LINE_ITEM_ID AS LINE_ITEM_ID,	
-						SAQICO.QUOTE_ID,
-						SAQICO.QTEITM_RECORD_ID,
-						SAQICO.QUOTE_NAME,
-						SAQICO.QUOTE_RECORD_ID,
-						SAQICO.SALESORG_ID,
-						SAQICO.SALESORG_NAME,
-						SAQICO.SALESORG_RECORD_ID,
-						ISNULL({AmountColumn}, 0) / 12 as BILLING_AMOUNT,	
-						{BillingDate} as BILLING_DATE,				
-						'MONTHLY' as BILLING_INTERVAL,
-						0 as BILLING_YEAR,
-						SAQICO.EQUIPMENT_DESCRIPTION,
-						SAQICO.EQUIPMENT_ID,
-						SAQICO.EQUIPMENT_LINE_ID,
-						SAQICO.EQUIPMENT_RECORD_ID,
-						'' as PO_ITEM,
-						'' as PO_NUMBER,
-						SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,
-						SAQICO.SERVICE_DESCRIPTION,
-						SAQICO.SERVICE_ID,
-						SAQICO.SERVICE_RECORD_ID,     
-						(ISNULL(SAQICO.{AmountColumn}, 0) / 12) * {DivideBy} AS ANNUAL_BILLING_AMOUNT,
-						SAQICO.GREENBOOK,
-						SAQICO.GREENBOOK_RECORD_ID,
-						SAQICO.QUOTE_CURRENCY AS BILLING_CURRENCY,
-						'' AS BILLING_CURRENCY_RECORD_ID,
-						SAQICO.SERIAL_NO AS SERIAL_NUMBER,
-						SAQICO.WARRANTY_START_DATE,
-						SAQICO.WARRANTY_END_DATE,              
-						SAQICO.EQUIPMENT_QUANTITY,    
-						{UserId} as CPQTABLEENTRYADDEDBY, 
-						GETDATE() as CPQTABLEENTRYDATEADDED
-					FROM SAQICO (NOLOCK)     
-					JOIN (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE, SERVICE_ID FROM (select '{quote}' as QUOTE_RECORD_ID,convert(xml,'{xml}') as ENTITLEMENT_XML, '{serid}' as SERVICE_ID  ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as JQ ON
-											JQ.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND JQ.ENTITLEMENT_NAME IN ('AGS_BIL_BIL_TYP') 
-								AND JQ.ENTITLEMENT_DISPLAY_VALUE = 'Variable Billing'
-											AND JQ.SERVICE_ID = SAQICO.SERVICE_ID                
-					WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
-						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						Months=total_months,
-						BillingDate=billing_date,
-						AmountColumn=amount_column,
-						DivideBy=divide_by,quote=str(entitlement_obj.QUOTE_RECORD_ID),xml=str(entitlement_obj.ENTITLEMENT_XML),serid=str(entitlement_obj.SERVICE_ID)
-						))'''
+						service_id = service_id))		
 		return True
 	
 	def insert_quote_billing_plan(self,cart_id,cart_user_id):
-		Trace.Write('insert data in insert_quote_billing_plan--start') 
+		#Trace.Write('insert data in insert_quote_billing_plan--start') 
 		# Sql.RunQuery("""DELETE FROM QT__Billing_Matrix_Header WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		# Sql.RunQuery("""DELETE FROM QT__BM_YEAR_1 WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
@@ -522,132 +459,9 @@ class ContractQuoteCrudOpertion:
 												DateColumn=date_columns, SumSelectDateColoumn=sum_select_date_columns,CartId=cart_id, UserId=cart_user_id,)								
 										)
 							# Total based on service - end
-	
-	def getting_cps_tax(self, item_obj=None, quote_type=None, item_lines_obj=None):		
-		webclient = System.Net.WebClient()
-		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
-		response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-		response = eval(response)
+		return True
 		
-		Request_URL="https://cpservices-pricing.cfapps.us10.hana.ondemand.com/api/v1/statelesspricing"
-		webclient.Headers[System.Net.HttpRequestHeader.Authorization] ="Bearer "+str(response['access_token'])
-
-		x = datetime.datetime.today()
-		x= str(x)
-		y = x.split(" ")
-		GetPricingProcedure = Sql.GetFirst("SELECT ISNULL(DIVISION_ID, '') as DIVISION_ID,ISNULL(COUNTRY, '') as COUNTRY, ISNULL(DISTRIBUTIONCHANNEL_ID, '') as DISTRIBUTIONCHANNEL_ID, ISNULL(SALESORG_ID, '') as SALESORG_ID, ISNULL(DOC_CURRENCY,'') as DOC_CURRENCY, ISNULL(PRICINGPROCEDURE_ID,'') as PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(self.contract_quote_id))
-		if GetPricingProcedure is not None:			
-			PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
-			curr = GetPricingProcedure.DOC_CURRENCY
-			dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
-			salesorg = GetPricingProcedure.SALESORG_ID
-			div = GetPricingProcedure.DIVISION_ID
-			#exch = GetPricingProcedure.EXCHANGE_RATE_TYPE
-			#taxk1 = GetPricingProcedure.CUSTAXCLA_ID
-			country = GetPricingProcedure.COUNTRY
-		#update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=self.contract_quote_id)
-		#Sql.RunQuery(update_SAQITM)		
-		
-		STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=self.contract_quote_id))		
-		stp_account_id = ""
-		if STPObj:
-			stp_account_id = str(STPObj.ACCOUNT_ID)		
-		
-		if item_obj:			
-			item_string = '{"itemId":"1","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(self.tree_param)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["'+country+'"]},{"name":"KOMK-ALAND","values":["'+country+'"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_obj.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(self.tree_param)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
-			requestdata = '{"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(item_string)+']}'
-			response1 = webclient.UploadString(Request_URL,str(requestdata))			
-			response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
-			response1 = eval(response1)
-			
-			price = []
-			for root, value in response1.items():
-				if root == "items":
-					price = value[:]
-					break
-			tax_percentage = 0
-			for data in price[0]['conditions']:
-				if data['conditionType'] == 'ZWSC' and data['conditionTypeDescription'] == 'VAT Asia':
-					tax_percentage = data['conditionRate']
-					break
-			
-			update_tax = "UPDATE SAQITM SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQITM.QUOTE_ITEM_RECORD_ID = '{ItemRecordId}'".format(
-			TaxPercentage=tax_percentage,			
-			ItemRecordId=item_obj.QUOTE_ITEM_RECORD_ID
-			)
-			Sql.RunQuery(update_tax)
-						
-			update_tax_quote_itm = "UPDATE QT__SAQITM SET TAX_PERCENTAGE = {TaxPercentage} WHERE QT__SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(
-			TaxPercentage=tax_percentage,			
-			QuoteRecordId=self.contract_quote_record_id,
-			RevisionRecordId=self.quote_revision_record_id
-			)
-			Sql.RunQuery(update_tax_quote_itm)
-			update_tax_quote_ico = "UPDATE QT__SAQIFP SET TAX_PERCENTAGE = {TaxPercentage} WHERE QT__SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(
-			TaxPercentage=tax_percentage,			
-			QuoteRecordId=self.contract_quote_record_id,
-			RevisionRecordId=self.quote_revision_record_id
-			)
-			Sql.RunQuery(update_tax_quote_ico)
-			if quote_type == 'tool':
-				update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(
-				TaxPercentage=tax_percentage,			
-				ServiceId=self.tree_param,
-				QuoteRecordId=self.contract_quote_record_id,
-				RevisionRecordId=self.quote_revision_record_id
-				)
-				Sql.RunQuery(update_tax_item_covered_obj)
-		if item_lines_obj:			
-			items_data = []
-			for item_line_obj in item_lines_obj:
-				itemid = str(item_line_obj.EQUIPMENT_ID)+";"+str(self.contract_quote_id)+";"+str(1)
-				#item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(item_line_obj.EQUIPMENT_QUANTITY)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(item_line_obj.EQUIPMENT_ID)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_line_obj.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(item_line_obj.EQUIPMENT_ID)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
-				item_string = '{"itemId":"'+str(itemid)+'","externalId":null,"quantity":{"value":'+str(1)+',"unit":"EA"},"exchRateType":"'+str(exch)+'","exchRateDate":"'+str(y[0])+'","productDetails":{"productId":"'+str(item_line_obj.EQUIPMENT_ID)+'","baseUnit":"EA","alternateProductUnits":null},"attributes":[{"name":"KOMK-LAND1","values":["CN"]},{"name":"KOMK-ALAND","values":["CN"]},{"name":"KOMK-REGIO","values":["TX"]},{"name":"KOMK-KUNNR","values":["'+stp_account_id+'"]},{"name":"KOMK-KUNWE","values":["'+stp_account_id+'"]},{"name":"KOMP-TAXM1","values":["'+str(item_line_obj.SRVTAXCLA_ID)+'"]},{"name":"KOMK-TAXK1","values":["'+str(taxk1)+'"]},{"name":"KOMK-SPART","values":["'+str(div)+'"]},{"name":"KOMP-SPART","values":["'+str(div)+'"]},{"name":"KOMP-PMATN","values":["'+str(item_line_obj.EQUIPMENT_ID)+'"]},{"name":"KOMK-WAERK","values":["'+str(curr)+'"]},{"name":"KOMK-HWAER","values":["'+str(curr)+'"]},{"name":"KOMP-PRSFD","values":["X"]},{"name":"KOMK-VTWEG","values":["'+str(dis)+'"]},{"name":"KOMK-VKORG","values":["'+str(salesorg)+'"]},{"name":"KOMP-KPOSN","values":["0"]},{"name":"KOMP-KZNEP","values":[""]},{"name":"KOMP-ZZEXE","values":["true"]}],"accessDateList":[{"name":"KOMK-PRSDT","value":"'+str(y[0])+'"},{"name":"KOMK-FBUDA","value":"'+str(y[0])+'"}],"variantConditions":[],"statistical":true,"subItems":[]}'
-				items_data.append(item_string)
-			items_string = ','.join(items_data)
-			requestdata = '{"docCurrency":"'+curr+'","locCurrency":"'+curr+'","pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(items_string)+']}'
-			response1 = webclient.UploadString(Request_URL,str(requestdata))			
-			response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
-			response1 = eval(response1)
-			price = []
-			for root, value in response1.items():
-				if root == "items":
-					price = value[:]
-					break
-			update_data = []
-			batch_group_record_id = str(Guid.NewGuid()).upper()
-			for data in price:
-				equipment_id = str(data["itemId"]).split(";")[0]
-				tax_percentage = 0
-				for condition_obj in data['conditions']:
-					if condition_obj['conditionType'] == 'ZWSC' and condition_obj['conditionTypeDescription'] == 'VAT Asia':
-						tax_percentage = condition_obj['conditionRate']
-						break
-				update_data.append((str(Guid.NewGuid()).upper(), equipment_id, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id,self.quote_revision_record_id, batch_group_record_id, tax_percentage))
-			
-			update_data_joined = ', '.join(map(str, update_data))
-			self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE) 
-									SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID, BATCH_GROUP_RECORD_ID, TAX_PERCENTAGE)""".format(update_data_joined))											
-			self._process_query("""UPDATE SAQICO
-					SET
-					SAQICO.TAX_PERCENTAGE = IQ.TAX_PERCENTAGE
-					FROM SAQICO
-					INNER JOIN (
-						SELECT SAQICO.CpqTableEntryId, SYSPBT.TAX_PERCENTAGE
-						FROM SYSPBT (NOLOCK) 
-						JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SYSPBT.QTEREV_RECORD_ID AND SAQICO.EQUIPMENT_ID = SYSPBT.SAP_PART_NUMBER						
-						WHERE SYSPBT.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.BATCH_STATUS = 'IN PROGRESS'								
-					)AS IQ
-					ON SAQICO.CpqTableEntryId = IQ.CpqTableEntryId""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-
-			self._process_query(
-					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-					)
-				)
-
-
+					
 class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
@@ -2457,6 +2271,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 			if table_data is not None:
 				for row_data in table_data:
 					yield row_data.EQUIPMENT_RECORD_ID
+
 
 class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
@@ -4787,6 +4602,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 		self._create()
 		#BM_line_item_end_time = time.time()		
 		return True
+
 
 class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
