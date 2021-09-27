@@ -1893,21 +1893,51 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							# 	+ "' and (DATA_TYPE = 'CURRENCY' or FORMULA_DATA_TYPE= 'CURRENCY')"
 							# )
 							if cur_api_name is not None:
-								curr_symbol_obj = Sql.GetFirst(
-									"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
-									+ cur_api_name.CURRENCY_INDEX
-									+ " from "
-									+ str(ObjectName)
-									+ " where "
-									+ str(autoNumber)
-									+ " = '"
-									+ str(RECORD_ID)
-									+ "'  AND QUOTE_RECORD_ID = '"
-									+ str(quote_record_id)
-									+ "' AND QTEREV_RECORD_ID = '"
-									+ str(quote_revision_record_id)
-									+ "'  ) "
-									)
+								if current_prod == "Sales":
+									if str(ObjectName) != "SAQTMT":
+										curr_symbol_obj = Sql.GetFirst(
+											"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
+											+ cur_api_name.CURRENCY_INDEX
+											+ " from "
+											+ str(ObjectName)
+											+ " where "
+											+ str(autoNumber)
+											+ " = '"
+											+ str(RECORD_ID)
+											+ "'  AND QUOTE_RECORD_ID = '"
+											+ str(quote_record_id)
+											+ "' AND QTEREV_RECORD_ID = '"
+											+ str(quote_revision_record_id)
+											+ "'  ) "
+											)
+									elif str(ObjectName) == "SAQTMT":
+										curr_symbol_obj = Sql.GetFirst(
+											"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
+											+ cur_api_name.CURRENCY_INDEX
+											+ " from "
+											+ str(ObjectName)
+											+ " where "
+											+ str(autoNumber)
+											+ " = '"
+											+ str(RECORD_ID)
+											+ "'  AND MASTER_TABLE_QUOTE_RECORD_ID = '"
+											+ str(quote_record_id)
+											+ "' AND QTEREV_RECORD_ID = '"
+											+ str(quote_revision_record_id)
+											+ "'  ) "
+											)
+								else:
+									curr_symbol_obj = Sql.GetFirst(
+										"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
+										+ cur_api_name.CURRENCY_INDEX
+										+ " from "
+										+ str(ObjectName)
+										+ " where "
+										+ str(autoNumber)
+										+ " = '"
+										+ str(RECORD_ID)
+										+ "' ) "
+										)
 
 								# Trace.Write(
 								# 	"select SYMBOL,isnull(DISPLAY_DECIMAL_PLACES,3) DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select "
