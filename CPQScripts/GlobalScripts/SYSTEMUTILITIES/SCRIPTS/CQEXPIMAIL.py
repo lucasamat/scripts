@@ -10,16 +10,16 @@ Sql = SQL()
 
 
 class qt_expiration_mail_trigger:
-	def __init__(self, Quote):
-		self.quote = Quote
+    def __init__(self, Quote):
+        self.quote = Quote
 
     def mailtrigger(self):
         try:
             if self.quote:
                 Trace.Write("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
         except:
-			Trace.Write("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
-			Trace.Write("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
+            Trace.Write("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
+            Trace.Write("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
         Subject = "TEST"
         mailBody = """
                     Dear Quote Owner,
@@ -93,5 +93,5 @@ except:
     quote_expiration_mail = "TRUE"
 Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
 if str(today_date_string) == str(mail_trigger_date):
-	if quote_expiration_mail == "TRUE":
-		expiration_obj.mailtrigger()
+    if quote_expiration_mail == "TRUE":
+        expiration_obj.mailtrigger()
