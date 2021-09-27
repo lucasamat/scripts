@@ -45,7 +45,8 @@ def CommonTreeViewHTMLDetail(
 
 	TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 	CurrentModuleObj = Sql.GetFirst("select * from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
-	
+	quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	if CurrentModuleObj:
 		crnt_prd_val = str(CurrentModuleObj.APP_ID)
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
@@ -1899,8 +1900,13 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 									+ str(autoNumber)
 									+ " = '"
 									+ str(RECORD_ID)
-									+ "' ) "
-								)
+									+ "'  AND QUOTE_RECORD_ID = "
+									+ str(quote_record_id)
+									+ "' AND QTEREV_RECORD_ID = "
+									+ str(quote_revision_record_id)
+									+ "'   "
+									)
+
 								# Trace.Write(
 								# 	"select SYMBOL,isnull(DISPLAY_DECIMAL_PLACES,3) DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select "
 								# 	+ cur_api_name.CURRENCY_INDEX
