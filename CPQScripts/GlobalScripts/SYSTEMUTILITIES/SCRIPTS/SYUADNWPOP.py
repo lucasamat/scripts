@@ -3554,14 +3554,12 @@ def POPUPLISTVALUEADDNEW(
 			Header_details = {
 				"MATERIAL_RECORD_ID": "KEY",
 				"SAP_PART_NUMBER": "SERVICE ID",
-				"SAP_DESCRIPTION": "SERVICE NAME",
-				"PRODUCT_TYPE": "SERVICE TYPE",
+				"SAP_DESCRIPTION": "SERVICE NAME"
 			}
 			ordered_keys = [
 				"MATERIAL_RECORD_ID",
 				"SAP_PART_NUMBER",
-				"SAP_DESCRIPTION",
-				"PRODUCT_TYPE"
+				"SAP_DESCRIPTION"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3701,11 +3699,10 @@ def POPUPLISTVALUEADDNEW(
 			ordered_keys = [
 				"MATERIAL_RECORD_ID",
 				"SAP_PART_NUMBER",
-				"SAP_DESCRIPTION",
-				"PRODUCT_TYPE",
+				"SAP_DESCRIPTION"
 				]
 			
-			where_string += """ IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
+			where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id
 			)
 				
 			table_data = Sql.GetList(
