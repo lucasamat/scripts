@@ -478,7 +478,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 			
 
 ## Entitlement rolldown fn
-def entitlement_rolldown(objectName,get_serviceid,where):
+def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
 	if 'Z0007' in get_serviceid:
 		objectName = 'SAQSCE'
@@ -812,7 +812,7 @@ GetXMLsecField = Sql.GetList("SELECT * from {} ".format(ent_roll_temp))
 
 #calling rolldown
 
-entitlement_rolldown(objectName,get_serviceid,where)
+entitlement_rolldown(objectName,get_serviceid,where,ent_temp)
 
 if ent_temp:
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
