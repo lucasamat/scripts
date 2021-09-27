@@ -396,7 +396,7 @@ class DeleteConfirmPopup:
                 #getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
                 Log.Info("SYDELCNMSG - SAQSGB")
                 if quote_obj.QUOTE_TYPE == "ZTBC - TOOL BASED":
-                    TOOLDELETELIST = ["SAQTSV","SAQSCA","SAQICO","SAQSCE","SAQSCD","SAQSCV","SAQSVD","SAQSDV","SAQSGE","SAQITM","SAQICO","SAQIEN","SAQSFB","SAQSFD","SAQSFV","SAQSGB","SAQSGD","SAQSCO","SAQTSE","SAQSFE","SAQSGE"]
+                    TOOLDELETELIST = ["SAQTSV","SAQSCA","SAQICO","SAQSCE","SAQSGE","SAQITM","SAQICO","SAQIEN","SAQSFB","SAQSGB","SAQSCO","SAQTSE","SAQSFE","SAQSGE"]
                     for Table in TOOLDELETELIST:
                         QueryStatement = "DELETE FROM "+str(Table)+" WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' and SERVICE_ID = '{Service_id}' and SERVICE_DESCRIPTION = '{Service_Description}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ObjectName = Table,Service_id = Serviceobject.SERVICE_ID,Service_Description = Serviceobject.SERVICE_DESCRIPTION,quote_revision_record_id=quote_revision_record_id)
                         Sql.RunQuery(QueryStatement)
@@ -513,13 +513,13 @@ class DeleteConfirmPopup:
         if GetCount.cnt >1:
             Trace.Write("More than one equipment")
             GetEquipment = Sql.GetFirst("SELECT EQUIPMENT_ID FROM SAQSCO WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{}'".format(RecordId.split("#")[4]))
-            Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSCD","SAQSCV","SAQSCE","SAQSAE"]
+            Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSCE","SAQSAE"]
             for obj in Objects:
                 a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND EQUIPMENT_ID = '{Eq}' AND SERVICE_ID = '{ServiceId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),Eq=GetEquipment.EQUIPMENT_ID,ServiceId=ServiceId,quote_revision_record_id=quote_revision_record_id))
         else:
             if GetCount.cnt == 1:
                 Trace.Write("Only one equipment")
-                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSCD","SAQSCV","SAQSFB","SAQSGB","SAQITM","SAQIFL","SAQIGB","SAQSFV","SAQSFD","SAQSGD","SAQSGV","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN"]
+                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSFB","SAQSGB","SAQITM","SAQIFL","SAQIGB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN"]
                 for obj in Objects:
                     a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND SERVICE_ID LIKE '%{ServiceId}%' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),ServiceId=ServiceId,quote_revision_record_id=quote_revision_record_id))
 
