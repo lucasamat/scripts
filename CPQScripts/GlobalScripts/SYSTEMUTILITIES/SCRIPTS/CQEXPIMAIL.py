@@ -80,4 +80,4 @@ except:
 Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
 if str(today_date_string) == str(mail_trigger_date):
 	if quote_expiration_mail == "TRUE":
-		ApiResponse = ApiResponseFactory.JsonResponse(mailtrigger())
+		mailtrigger()
