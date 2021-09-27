@@ -70,7 +70,11 @@ mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 # except:
 # 	Trace.Write("EXCEPT: quote_expiration_mail")
 # 	quote_expiration_mail = "FALSE"
-Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content))
+try:
+    quote_expiration_mail = Quote.GetCustomField("quote_expiration_mail").Content
+except:
+    quote_expiration_mail = "TRUE"
+Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
 if str(today_date_string) == str(mail_trigger_date):
-	if Quote.GetCustomField("quote_expiration_mail").Content == "TRUE":
+	if quote_expiration_mail == "TRUE":
 		ApiResponse = ApiResponseFactory.JsonResponse(mailtrigger())
