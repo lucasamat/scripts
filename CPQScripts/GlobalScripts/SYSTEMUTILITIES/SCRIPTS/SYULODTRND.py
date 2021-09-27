@@ -45,6 +45,7 @@ def CommonTreeViewHTMLDetail(
 
 	TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 	CurrentModuleObj = Sql.GetFirst("select * from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
+	quote_revision_record_id = ""
 	if current_prod != 'APPROVAL CENTER':
 		quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
