@@ -1803,74 +1803,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				mylist.append(row_detail)				
 				fab_table_info.AddRow(row_detail)
 			Sql.Upsert(fab_table_info)
-			# ADD QUOTA VD AND VDV FOR THE FAB LOCATION
-			for dictvalue in mylist:				
-				QTRECID = str(dictvalue["QUOTE_ID"])
-				FABRECID = str(dictvalue["QUOTE_SOURCE_FAB_LOCATION_RECORD_ID"])
-				GETSAQFBLD = Sql.GetList(
-					"SELECT A.SRCFBL_ID,B.VALUEDRIVER_ID,A.SRCFBL_NAME,A.SRCFBL_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_TYPE,A.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID FROM SAQSCF(NOLOCK) A JOIN SAQTVD (NOLOCK) B ON A.QUOTE_ID  = '"
-					+ str(QTRECID)
-					+ "' AND B.QUOTE_ID  = '"
-					+ str(QTRECID)
-					+ "' WHERE A.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID ='"
-					+ str(FABRECID)
-					+ "' "
-				)
-				#tableSAQFVD = {}
-				tableInfo = SqlHelper.GetTable("SAQFVD")
-				for data1 in GETSAQFBLD:					
-					tableSAQFVD = {
-						"QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID": str(Guid.NewGuid()).upper(),
-						"FABLOCATION_ID": str(data1.SRCFBL_ID),
-						"VALUEDRIVER_ID": str(data1.VALUEDRIVER_ID),
-						"FABLOCATION_NAME": str(data1.SRCFBL_NAME),
-						"FABLOCATION_RECORD_ID": str(data1.SRCFBL_RECORD_ID),
-						"QUOTE_ID": str(data1.QUOTE_ID),
-						"QUOTE_NAME": str(data1.QUOTE_NAME),
-						"QUOTE_RECORD_ID": str(data1.QUOTE_RECORD_ID),
-						"VALUEDRIVER_NAME": str(data1.VALUEDRIVER_NAME),
-						"VALUEDRIVER_RECORD_ID": str(data1.VALUEDRIVER_RECORD_ID),
-						"VALUEDRIVER_TYPE": str(data1.VALUEDRIVER_TYPE),
-						"QTEFBL_RECORD_ID": str(data1.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID),
-						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
-						"CPQTABLEENTRYADDEDBY": self.user_name,
-						"ADDUSR_RECORD_ID": self.user_id,
-					}					
-					tableInfo.AddRow(tableSAQFVD)
-					# upsertResult = SqlHelper.Upsert(tableInfo)
-				Sql.Upsert(tableInfo)
-				GETSAQFBLDV = Sql.GetList(
-					"SELECT A.SRCFBL_ID,A.SRCFBL_NAME,A.SRCFBL_RECORD_ID,A.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID,A.QUOTE_ID,A.QUOTE_NAME,A.QUOTE_RECORD_ID,B.VALUEDRIVER_NAME,B.VALUEDRIVER_ID,B.VALUEDRIVER_RECORD_ID,B.VALUEDRIVER_VALUE_DESCRIPTION,B.VALUEDRIVER_VALUE_RECORD_ID FROM SAQSCF(NOLOCK) A JOIN SAQVDV (NOLOCK) B ON A.QUOTE_ID  = '"
-					+ str(QTRECID)
-					+ "' AND B.QUOTE_ID  = '"
-					+ str(QTRECID)
-					+ "' WHERE A.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID ='"
-					+ str(FABRECID)
-					+ "'"
-				)
-				#tableSAQFDV = {}
-				tableInfo2 = SqlHelper.GetTable("SAQFDV")
-				for data2 in GETSAQFBLDV:					
-					tableSAQFDV = {
-						"QUOTE_FAB_VALDRIVER_VALUE_RECORD_ID": str(Guid.NewGuid()).upper(),
-						"FABLOCATION_ID": str(data2.SRCFBL_ID),
-						"VALUEDRIVER_ID": str(data2.VALUEDRIVER_ID),
-						"FABLOCATION_NAME": str(data2.SRCFBL_NAME),
-						"FABLOCATION_RECORD_ID": str(data2.SRCFBL_RECORD_ID),
-						"QUOTE_ID": str(data2.QUOTE_ID),
-						"QUOTE_NAME": str(data2.QUOTE_NAME),
-						"QUOTE_RECORD_ID": str(data2.QUOTE_RECORD_ID),
-						"VALUEDRIVER_NAME": str(data2.VALUEDRIVER_NAME),
-						"VALUEDRIVER_RECORD_ID": str(data2.VALUEDRIVER_RECORD_ID),
-						"VALUEDRIVER_VALUEDESC": str(data2.VALUEDRIVER_VALUE_DESCRIPTION),
-						"QUOTE_FABLOCATION_RECORD_ID": str(data2.QUOTE_SOURCE_FAB_LOCATION_RECORD_ID),
-						"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
-						"CPQTABLEENTRYADDEDBY": self.user_name,
-						"ADDUSR_RECORD_ID": self.user_id,
-					}					
-					tableInfo2.AddRow(tableSAQFDV)
-					# upsertResult = SqlHelper.Upsert(tableInfo2)
-				Sql.Upsert(tableInfo2)
+			
 		elif self.action_type == "ADD_EQUIPMENTS":
 			self._add_equipment()
 		
