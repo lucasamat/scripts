@@ -1577,8 +1577,8 @@ class Entitlements:
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
-		Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
-		Trace.Write('multi_select_attr_list---'+str(multi_select_attr_list))
+		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
+		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
