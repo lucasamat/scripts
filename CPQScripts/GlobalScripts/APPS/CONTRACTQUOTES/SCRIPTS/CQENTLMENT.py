@@ -542,9 +542,10 @@ class Entitlements:
 								if prdvalue["visible"] == "false":
 									try:
 										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										attr_tab_list_disallow.append(getrec.RECORD_ID)
 									except:
 										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
-									attr_tab_list_disallow.append(getrec.RECORD_ID)
+									
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
 								#dropdownallowlist = [] 
