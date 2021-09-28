@@ -513,7 +513,7 @@ class EntitlementView():
                                 attr_value = attrValue
                                 ent_val_code = attrValueSysId
                             # Inserting Rows:
-                            Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
+                            #Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
                             insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                 <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
                                 <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -527,7 +527,7 @@ class EntitlementView():
                                 <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
                                 </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default =  '1' if str(attrSysId) in attributedefaultvalue else '0',pm = '',cf = '')
                             if DType == "Drop Down":
-                                Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+                                #Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
                                 #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
                                 STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
                                 A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
