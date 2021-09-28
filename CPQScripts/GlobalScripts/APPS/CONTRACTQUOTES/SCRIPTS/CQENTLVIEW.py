@@ -867,7 +867,7 @@ class EntitlementView():
                     for key, invs in enumerate(list(desc_list)):
                         invs = str(invs).strip()
                         qstring = attr_dict.get(str(invs)) or ""
-                        if qstring == 'REQUIRED':
+                        if invs == 'REQUIRED':
                             required_symbol_class = 'class ="required_symbol"'
                         else:
                             required_symbol_class = ""
