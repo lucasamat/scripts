@@ -400,7 +400,7 @@ class EntitlementView():
                 for product_tab_obj in product_tabs_obj:
                     # section=========================product_tab_obj.TAB_NAME,
                     product_section =  str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
-                    Trace.Write("product_tab_obj"+str(product_section))
+                    Trace.Write("product_tab_obj---"+str(product_section))
                     list_of_tabs.append(product_section)
                     Trace.Write("list_of_tabs---"+str(list_of_tabs))
                     sysectObj = Sql.GetFirst(
