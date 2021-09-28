@@ -119,13 +119,17 @@ class ViolationConditions:
         """Approval violations."""
         ApprovalCombinationID = approval_id_auto = ""
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
+        Log.Info("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         QuoteId = CurrentId
         
         GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
+        Log.Info("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
+        
         QuoteId = str(GetQuoteId.QUOTE_ID)
         RevisionId = str(GetQuoteId.QTEREV_ID)
         ApprovalCombinationID = str(CurrentId)
         ApprovalCombo = str(ApprovalCombinationID) + "-" + str(chainid)
+        Log.Info("Approval Combo----->"+str(ApprovalCombo))
         Getlatestauto = Sql.GetFirst(
             "SELECT APPROVAL_ID FROM ACAPMA (NOLOCK) WHERE APPROVAL_ID LIKE '%"
             + str(ApprovalCombo)
@@ -199,6 +203,7 @@ class ViolationConditions:
             QuoteId=str(QuoteId),
             RevisionId=str(RevisionId)
         )
+        Log.Info("query statement acapma ---"+str(insertQueryStatement))
         return insertQueryStatement
 
     def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None):
