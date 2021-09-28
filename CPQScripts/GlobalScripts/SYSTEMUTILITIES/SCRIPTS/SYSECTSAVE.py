@@ -478,8 +478,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							newdict.update(dictc)
 							tableInfo = Sql.GetTable(str(TableName))
 							tablerow = newdict
-							tableInfo.AddRow(tablerow)
-							Sql.Upsert(tableInfo)
+							#tableInfo.AddRow(tablerow)
+							#Sql.Upsert(tableInfo)
 							VALUE = float(newdict.get("DISCOUNT"))
 							Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
