@@ -533,10 +533,16 @@ class Entitlements:
 						if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
 								if prdvalue["visible"] == "true":
-									getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
+									try:
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+									except:
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
 									attr_tab_list_allow.append(getrec.RECORD_ID)
 								if prdvalue["visible"] == "false":
-									getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+									try:
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+									except:
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
 									attr_tab_list_disallow.append(getrec.RECORD_ID)
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
@@ -710,10 +716,16 @@ class Entitlements:
 							if Productattribute == "characteristicGroups":
 								for prdvalue in Productvalue:
 									if prdvalue["visible"] == "true":
-										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
 										attr_tab_list_allow.append(getrec.RECORD_ID)
 									if prdvalue["visible"] == "false":
-										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
 										attr_tab_list_disallow.append(prdvalue["id"])
 							if Productattribute == "characteristics":
 								for prdvalue in Productvalue:
