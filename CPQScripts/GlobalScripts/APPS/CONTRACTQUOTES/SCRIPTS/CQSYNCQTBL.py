@@ -557,7 +557,6 @@ class SyncQuoteAndCustomTables:
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					expired_date = date.today()+ timedelta(days=365)
-					Quote.GetCustomField('QuoteExpirationDate').Content = expired_date
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
