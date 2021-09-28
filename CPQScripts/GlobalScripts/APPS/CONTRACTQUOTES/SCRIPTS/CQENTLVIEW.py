@@ -1286,6 +1286,10 @@ class EntitlementView():
                                     else:
                                         imgstr  = ""
                                     Trace.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
+                                    if attrSysId in attriburesrequired_list:
+                                        required_symbol_class = 'class ="required_symbol"'
+                                    else:
+                                        required_symbol_class = ""
                                     new_value_dicta["APPROVAL"] = imgstr
                                     new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
                                     new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
@@ -1434,6 +1438,12 @@ class EntitlementView():
                                         + "</input>"
                                     )
                                 Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
+                                if attrSysId in attriburesrequired_list:
+                                    required_symbol_class = 'class ="required_symbol"'
+                                    get_required_icon = ""
+                                else:
+                                    required_symbol_class = ""
+                                    get_required_icon = ""
                                 new_value_dicta["APPROVAL"] = ""	
                                 new_value_dicta["ENTITLEMENT"] = str(attrName)
                                 new_value_dicta["DESCRIPTION"] = str(get_tooltip)
