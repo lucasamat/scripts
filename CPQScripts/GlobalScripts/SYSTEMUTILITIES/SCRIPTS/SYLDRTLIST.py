@@ -2060,6 +2060,8 @@ class SYLDRTLIST:
                             Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
                         elif str(RECORD_ID) == "SYOBJR-98868":
                             Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
+                        elif str(RECORD_ID) == "SYOBJR-98870":
+                            Qustr += " AND SERVICE_ID = '"+str(TreeParam)+"'"
                         Trace.Write('In 1958---'+str(Qustr))
                         if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013"):
                         	Qustr += "AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
