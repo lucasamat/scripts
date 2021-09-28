@@ -920,10 +920,10 @@ class EntitlementView():
                                 get_tooltip = STDVALUES.ATTRDESC
                             else:
                                 attrValue = get_tooltip = ''
-                            Trace.Write('get_tooltip---'+str(get_tooltip))
+                            #Trace.Write('get_tooltip---'+str(get_tooltip))
                             attribute_Name_list.append(attrSysId)
                             DType = attribute['attribute_dtype']
-                            Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+                            #Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
                             if attrSysId in attributesdisallowedlst:
                                 if attrSysId in attributedefaultvalue:
                                     add_style = "display:none;color:#1B78D2"
@@ -931,10 +931,10 @@ class EntitlementView():
                                     add_style = ""
                                 attributes_disallowed_list.append(attrSysId)
                             else:
-                                Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
+                                #Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
                                 add_style = ""
                             if attrSysId in attributedefaultvalue:
-                                Trace.Write("add_style----3077----- "+str(attrSysId))
+                                #Trace.Write("add_style----3077----- "+str(attrSysId))
                                 add_style = "color:#1B78D2"
                             #Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
                             if attrSysId in attributeEditlst :
@@ -1032,7 +1032,7 @@ class EntitlementView():
                                                             + "</option>"
                                                         )
                                                 except:
-                                                    Trace.Write('except dropdown {} {}'.format(value.SYSTEM_ID, value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+                                                    #Trace.Write('except dropdown {} {}'.format(value.SYSTEM_ID, value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
                                                     VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
                                                     if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
                                                         selected_option = val.ENTITLEMENT_DISPLAY_VALUE
