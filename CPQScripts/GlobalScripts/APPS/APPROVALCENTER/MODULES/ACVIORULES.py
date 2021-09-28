@@ -538,7 +538,7 @@ class ViolationConditions:
                         where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
                         rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
                         Rulebodywithcondition = rulebody + where_conditon
-                        Trace.Write("=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
+                        Log.Info("=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
                         a = Sql.RunQuery(Rulebodywithcondition)
                         CheckViolaionRule2 = Sql.GetList(
                             "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
@@ -550,6 +550,14 @@ class ViolationConditions:
                             + str(val.APPROVAL_CHAIN_RECORD_ID)
                             + "' "
                         )
+                        Log.Info("CheckviolationRule2-----SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
+                            + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
+                            + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
+                            + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
+                            + str(Objh_Id)
+                            + "' AND WHERE_CONDITION_01 <> '' AND ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
+                            + str(val.APPROVAL_CHAIN_RECORD_ID)
+                            + "' ")
                         if CheckViolaionRule2:
                             for result in CheckViolaionRule2:
                                 GetObjName = Sql.GetFirst(
