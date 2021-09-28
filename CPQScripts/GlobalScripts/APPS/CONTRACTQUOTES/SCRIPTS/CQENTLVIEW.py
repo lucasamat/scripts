@@ -271,7 +271,7 @@ class EntitlementView():
             attributeEditlst = list_of_tabs = []
             attributevalues = {}
             attributedefaultvalue = []
-            dropdowndisallowlist = []
+            dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = []
             get_lastsection_val = attrcode = disable_edit = ""
             # where = ""
             Trace.Write("Fullresponse_J "+str(Fullresponse))
@@ -280,6 +280,12 @@ class EntitlementView():
             for rootattribute, rootvalue in Fullresponse.items():
                 if rootattribute == "rootItem":
                     for Productattribute, Productvalue in rootvalue.items():
+                        if Productattribute == "characteristicGroups":
+							for prdvalue in Productvalue:
+								if prdvalue["visible"] == "true":							
+									attr_tab_list_allow.append(prdvalue["id"])
+								if prdvalue["visible"] == "false":
+									attr_tab_list_disallow.append(prdvalue["id"])
                         if Productattribute == "characteristics":
                             for prdvalue in Productvalue:
                                 if prdvalue["visible"] == "false":
