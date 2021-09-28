@@ -1129,7 +1129,7 @@ class EntitlementView():
                                                     display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
                                             
                                             multi_select_attr_list[attrSysId] = display_value_arr
-                                            Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
+                                            #Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
                                             VAR1 = sec_str1 = selected_option = ""
                                             for value in STDVALUES:
                                                 if value.SYSTEM_ID in dropdowndisallowlist:
