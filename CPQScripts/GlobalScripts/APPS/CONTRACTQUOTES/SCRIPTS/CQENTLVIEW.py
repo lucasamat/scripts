@@ -497,7 +497,7 @@ class EntitlementView():
                                 disable_edit = ''
                                 edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
                             attrValueSysId = attributevalues.get(attrSysId)
-                            Trace.Write('attrValueSysId'+str(attrValueSysId))
+                            #Trace.Write('attrValueSysId'+str(attrValueSysId))
                             if DType == 'Check Box' and attrValueSysId is None:
                                 attr_value =''
                                 ent_val_code = ''
