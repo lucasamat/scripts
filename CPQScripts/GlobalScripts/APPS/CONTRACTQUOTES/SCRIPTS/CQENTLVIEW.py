@@ -834,6 +834,7 @@ class EntitlementView():
                             tbrowsect['SECTION_DESC'] =  str(product_section) 
                             tbrowsect['SECTION_NAME'] =  str(product_section)
                             tbrowsect['SECTION_PARTNUMBER'] =  self.treeparam.upper()
+                            tbrowsect['PARENT_SECTION_TEXT'] = product_tab_obj.SYSTEM_ID
                             getsect_tab.AddRow(tbrowsect)
                             Sql.Upsert(getsect_tab)
                             Section_desc = product_section.split('_')
