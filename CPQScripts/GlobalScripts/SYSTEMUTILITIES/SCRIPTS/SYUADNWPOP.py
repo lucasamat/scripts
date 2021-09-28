@@ -3553,8 +3553,8 @@ def POPUPLISTVALUEADDNEW(
 			table_id = "parts-addnew-model"
 			Header_details = {
 				"MATERIAL_RECORD_ID": "KEY",
-				"SAP_PART_NUMBER": "SERVICE ID",
-				"SAP_DESCRIPTION": "SERVICE NAME"
+				"SAP_PART_NUMBER": "PART NUMBER",
+				"SAP_DESCRIPTION": "PARTS NAME"
 			}
 			ordered_keys = [
 				"MATERIAL_RECORD_ID",
