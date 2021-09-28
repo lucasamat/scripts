@@ -591,7 +591,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(contract_quote_record_id,quote_revision_record_id,ServiceId))
 							if items_obj:
 								for item_obj in items_obj:
+									Trace.Write("1---SERVICE ID -->"+str(item_obj.SERVICE_ID))
 									items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+									Trace.Write("2---SERVICE ID -->"+str(item_obj.SERVICE_ID))
 							for item in Quote.MainItems:
 								item_number = int(item.RolledUpQuoteItem)
 								if item_number in items_data.keys():
