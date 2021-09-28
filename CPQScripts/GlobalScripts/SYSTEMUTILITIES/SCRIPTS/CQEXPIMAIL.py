@@ -15,21 +15,16 @@ class qt_expiration_mail_trigger:
 
     
 
-    def _get_custom_fields_detail(self):
-        return {
-            'QuoteExpirationDate':self.quote.GetCustomField('QuoteExpirationDate').Content,
-            'quote_expiration_mail':self.quote.GetCustomField('quote_expiration_mail').Content
-        }
+    # def _get_custom_fields_detail(self):
+    #     return {
+    #         'QuoteExpirationDate':self.quote.GetCustomField('QuoteExpirationDate').Content,
+    #         'quote_expiration_mail':self.quote.GetCustomField('quote_expiration_mail').Content
+    #     }
 
     def mailtrigger(self):
-        try:
-            if self.quote:
-                custom_fields_detail = self._get_custom_fields_detail()
-                Trace.Write("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))
-                Trace.Write("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
-        except:
-            Trace.Write("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
-            Trace.Write("SYPOSTINSG ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno)) 
+        # custom_fields_detail = self._get_custom_fields_detail()
+        # Trace.Write("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))
+        Trace.Write("Chkng_log "+str(self.quote.GetCustomField('quote_expiration_mail').Content))
         Subject = "TEST"
         mailBody = """
                     Dear Quote Owner,
