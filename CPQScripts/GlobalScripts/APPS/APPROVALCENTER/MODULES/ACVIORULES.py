@@ -504,10 +504,10 @@ class ViolationConditions:
                         if str(ObjectName) == 'SAQTMT':
                             rec_name = 'QUOTE_ID' """
                     Select_Query += " AND " + str(TargeobjRelation.API_NAME) + " ='" + str(RecordId) + "' "
-                    Trace.Write("===============222222222222222" + str(Select_Query))
+                    Log.Info("ACVIORULES ===============222222222222222" + str(Select_Query))
                     SqlQuery = Sql.GetFirst(Select_Query)
                     if SqlQuery:
-                        Trace.Write("Inside the approval heaeder "+str(method)+" -index- "+str(index))
+                        Log.Info("Inside the approval heaeder "+str(method)+" -index- "+str(index))
                         '"+str(Objh_Id)+"'
                         where_conditon = (
                             " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
@@ -518,7 +518,7 @@ class ViolationConditions:
                         )
                         if method is None:
                             if index == 0:
-                                Trace.Write("Inside the delete cal")
+                                Log.Info(" ACVIORULES Inside the delete cal")
                                 Rundelete = self.DeleteforApprovalHeaderTable(
                                     str(RecordId),
                                     str(val.APPROVAL_CHAIN_RECORD_ID),
