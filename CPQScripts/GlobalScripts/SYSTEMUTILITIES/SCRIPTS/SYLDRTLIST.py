@@ -2150,7 +2150,7 @@ class SYLDRTLIST:
                 elif RECORD_ID == 'SYOBJR-00010':
                     imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                     acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
-                    cps_pricing_img ='<a href="#" onclick=""><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png"></a>'
+                    cps_pricing_img ='<a href=\"#\" onclick=\"\"><img src=\"/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png\"  style=\"height: 15px; width: 15px; background-size: 20px 20px;\"></a>'
                     Qury_str = (
                         "SELECT DISTINCT TOP "
                         + str(PerPage)
