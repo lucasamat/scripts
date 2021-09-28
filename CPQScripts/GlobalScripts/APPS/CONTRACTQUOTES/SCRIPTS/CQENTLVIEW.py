@@ -581,7 +581,7 @@ class EntitlementView():
                                 #sec_str += "</select></td>"
                             elif DType == "Check Box":
                                 multi_select_attr_list[attrSysId] = ""
-                                Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId)+'---'+str(multi_select_attr_list))
+                                #Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId)+'---'+str(multi_select_attr_list))
                                 #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
                                 STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
                                 A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -657,7 +657,7 @@ class EntitlementView():
                                     )
                             else:
                                 getinval = ''
-                                Trace.Write('attrSysId--input-----'+str(attrSysId))
+                                #Trace.Write('attrSysId--input-----'+str(attrSysId))
                                 STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )
                                 if STDVALUES:
                                     getinval = STDVALUES.STANDARD_ATTRIBUTE_VALUE
@@ -676,7 +676,7 @@ class EntitlementView():
                             #totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
                             new_value_dicta["APPROVAL"] = ""	
                             new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
-                            Trace.Write('sec_str1---2372---'+str(sec_str1))
+                            #Trace.Write('sec_str1---2372---'+str(sec_str1))
                             if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
                                 new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
                             else:
@@ -705,7 +705,7 @@ class EntitlementView():
                     dbl_clk_function += (
                         "try { console.log('2944 start----');var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value-2944---222-----',this.value);localStorage.setItem('EDITENT_SEC','EDIT'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('.sec_edit_sty_btn').css('display','block');$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(getdivid)+"').css('display','block');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow ').addClass('light_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('"+str(table_ids)+" .MultiCheckBox').css('pointer-events','auto');var getmanualip = $('#ADDL_PERF_GUARANTEE_91_1').find(':selected').text();if(getmanualip.toUpperCase() == 'MANUAL INPUT'){ $('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('remove_yellow ').addClass('light_yellow');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeClass('remove_yellow ').addClass('light_yellow');}$('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
                     )
-                    Trace.Write('dbl_clk_function--2946-'+str(dbl_clk_function))
+                    #Trace.Write('dbl_clk_function--2946-'+str(dbl_clk_function))
                     '''dbl_clk_function += (
                         "try {var getentedict = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+" tbody  tr td input').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('"+str(table_ids)+" .disable_edit').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');});}catch {console.log('error---')}"
                     )'''
@@ -766,10 +766,10 @@ class EntitlementView():
                 #     WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
                 #     Sql.RunQuery(QueryStatement)
                 
-                Trace.Write("getnameentallowed"+str(getnameentallowed))
+                #Trace.Write("getnameentallowed"+str(getnameentallowed))
                 getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
                 totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
-                Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
+                #Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
         elif EntitlementType == "SENDING_LEVEL":
             sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
             multi_select_attr_list = {}
