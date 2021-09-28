@@ -450,7 +450,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						notification = 'Billing Start Date should be less than Billing End Date'
 				else:
 					if TableName == "SAQITM":
-						if newdict.has_key("TAX_PERCENTAGE") or newdict.has_key("BD_PRICE_MARGIN") or newdict.has_key("TARGET_PRICE_MARGIN") :
+						if (newdict.has_key("TAX_PERCENTAGE") or newdict.has_key("BD_PRICE_MARGIN") or newdict.has_key("TARGET_PRICE_MARGIN")) and (newdict.get("DISCOUNT") is None or newdict.get("DISCOUNT") == ''):
 							newdict["TAX_PERCENTAGE"] = (newdict.get("TAX_PERCENTAGE").replace("%", "").strip())
 							newdict["BD_PRICE_MARGIN"] = (newdict.get("BD_PRICE_MARGIN").replace("%", "").strip())
 							newdict["TARGET_PRICE_MARGIN"] = (newdict.get("BD_PRICE_MARGIN").replace("%", "").strip())
@@ -459,7 +459,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							tableInfo = Sql.GetTable(str(TableName))
 							tablerow = newdict
 							tableInfo.AddRow(tablerow)
-							Sql.Upsert(tableInfo)
+							#Sql.Upsert(tableInfo)
 							item_obj = Sql.GetFirst("select SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID from SAQITM where SERVICE_ID = '{Service_id}' and QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}'".format(Service_id = '-'.join(TreeParam.split('-')[1:]).strip(),contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = quote_revision_record_id))
 							quote_item_covered_obj = """UPDATE SAQICO SET SRVTAXCAT_ID = '{}',SRVTAXCAT_DESCRIPTION = '{}',SRVTAXCAT_RECORD_ID = '{}',SRVTAXCLA_ID = '{}',SRVTAXCLA_DESCRIPTION = '{}',SRVTAXCLA_RECORD_ID = '{}' where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(item_obj.SRVTAXCAT_ID,item_obj.SRVTAXCAT_DESCRIPTION,item_obj.SRVTAXCAT_RECORD_ID,item_obj.SRVTAXCLA_ID,item_obj.SRVTAXCLA_DESCRIPTION,item_obj.SRVTAXCLA_RECORD_ID,'-'.join(TreeParam.split('-')[1:]).strip(),Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id )
 							Sql.RunQuery(quote_item_covered_obj)
