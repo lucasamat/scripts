@@ -471,8 +471,8 @@ class EntitlementView():
                             
                             attribute_Name_list.append(attrSysId)
                             DType = attribute['attribute_dtype']
-                            Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
-                            Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
+                            #Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
+                            #Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
                             if attrSysId in attributesdisallowedlst:
                                 if attrSysId in attributedefaultvalue:
                                     add_style = "display:none;color:#1B78D2"
