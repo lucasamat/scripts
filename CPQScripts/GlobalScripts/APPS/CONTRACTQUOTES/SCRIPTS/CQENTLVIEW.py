@@ -1433,7 +1433,7 @@ class EntitlementView():
                                         + '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onchange="editent_bt(this)" >'
                                         + "</input>"
                                     )
-                                Trace.Write(str(attrName)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
+                                Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
                                 new_value_dicta["APPROVAL"] = ""	
                                 new_value_dicta["ENTITLEMENT"] = str(attrName)
                                 new_value_dicta["DESCRIPTION"] = str(get_tooltip)
