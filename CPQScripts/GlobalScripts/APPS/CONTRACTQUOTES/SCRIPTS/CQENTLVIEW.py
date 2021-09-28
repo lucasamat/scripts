@@ -501,7 +501,7 @@ class EntitlementView():
                             if DType == 'Check Box' and attrValueSysId is None:
                                 attr_value =''
                                 ent_val_code = ''
-                                Trace.Write("attrValueSysId---inside"+str(attrValueSysId))
+                                #Trace.Write("attrValueSysId---inside"+str(attrValueSysId))
                             elif  DType == 'Free Input, no Matching':
                                 if attributevalues.get(attrSysId) is None:
                                     attr_value = ''
