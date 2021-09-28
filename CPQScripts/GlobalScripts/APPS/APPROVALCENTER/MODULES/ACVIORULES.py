@@ -120,10 +120,10 @@ class ViolationConditions:
         ApprovalCombinationID = approval_id_auto = ""
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         QuoteId = CurrentId
-        if(ObjectName == 'SAQTMT'):
-            GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
-            QuoteId = str(GetQuoteId.QUOTE_ID)
-            RevisionId = str(GetQuoteId.QTEREV_ID)
+        
+        GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
+        QuoteId = str(GetQuoteId.QUOTE_ID)
+        RevisionId = str(GetQuoteId.QTEREV_ID)
         ApprovalCombinationID = str(CurrentId)
         ApprovalCombo = str(ApprovalCombinationID) + "-" + str(chainid)
         Getlatestauto = Sql.GetFirst(
