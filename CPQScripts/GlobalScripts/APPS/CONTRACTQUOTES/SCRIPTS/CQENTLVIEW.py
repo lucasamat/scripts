@@ -1259,7 +1259,7 @@ class EntitlementView():
                                                 # 	sec_str_imt += 
                                                     
                                             except Exception as e:
-                                                Trace.Write(str(e)+'error1111'+str(attrSysId))
+                                                #Trace.Write(str(e)+'error1111'+str(attrSysId))
                                                 sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)
                                             #price_impact = val.ENTITLEMENT_PRICE_IMPACT
                                             try:
@@ -1276,7 +1276,7 @@ class EntitlementView():
                                                 
                                             #calc_factor = val.CALCULATION_FACTOR
                                             sec_str_cf +=str(val.CALCULATION_FACTOR)
-                                            Trace.Write('sec_str_cf chk ## '+str(sec_str_cf))
+                                            #Trace.Write('sec_str_cf chk ## '+str(sec_str_cf))
                                             ##FACTOR CURRENCY
                                             sec_str_faccur += str(val.PRICE_METHOD)
                                         
@@ -1308,7 +1308,7 @@ class EntitlementView():
                                     attributesdisallowedlst.append(attrSysId)
                                 add_style = "display:none"							
                                 if DType == "Drop Down":
-                                    Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
+                                    #Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
                                     #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
                                     STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
                                         A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
