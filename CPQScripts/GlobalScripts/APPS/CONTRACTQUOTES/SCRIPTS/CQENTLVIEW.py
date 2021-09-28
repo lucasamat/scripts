@@ -310,7 +310,7 @@ class EntitlementView():
             #Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
             Trace.Write('total_tablist--'+str(total_tablist))
             Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-            Trace.Write('attr_tab_list_allow----'+str(attr_tab_list_allow))
+            Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
 
 
             product_obj = Sql.GetFirst("""SELECT 
@@ -1285,7 +1285,7 @@ class EntitlementView():
                                         imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
                                     else:
                                         imgstr  = ""
-                                    Trace.Write(str(attrName)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
+                                    Trace.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
                                     new_value_dicta["APPROVAL"] = imgstr
                                     new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
                                     new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
@@ -1433,7 +1433,7 @@ class EntitlementView():
                                         + '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onchange="editent_bt(this)" >'
                                         + "</input>"
                                     )
-                                Trace.Write(str(attrName)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
+                                Trace.Write(str(attrName)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
                                 new_value_dicta["APPROVAL"] = ""	
                                 new_value_dicta["ENTITLEMENT"] = str(attrName)
                                 new_value_dicta["DESCRIPTION"] = str(get_tooltip)
