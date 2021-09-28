@@ -1036,37 +1036,37 @@ class EntitlementView():
                                                             + ' id="'+str(value.SYSTEM_ID)+'" value = "{value}">{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
                                                         )
 
-                                            try:
-                                                if str(attrName) == "Fab Location":
-                                                    disable_edit =''
-                                                    sec_str1 += (
-                                                    '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-                                                    + str(attrSysId)
-                                                    + '" type="text"  data-content ="'
-                                                    + str(attrSysId)
-                                                    + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-                                                    + str(VAR1)
-                                                    + "</select>"
-                                                    )
-                                                else:
-                                                    sec_str1 += (
-                                                    '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-                                                    + str(attrSysId)
-                                                    + '" type="text"  data-content ="'
-                                                    + str(attrSysId)
-                                                    + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
-                                                    + str(VAR1)
-                                                    + "</select>"
-                                                    )
-
-                                            except:
+                                            #try:
+                                            if str(attrName) == "Fab Location":
+                                                disable_edit =''
                                                 sec_str1 += (
                                                 '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
                                                 + str(attrSysId)
                                                 + '" type="text"  data-content ="'
                                                 + str(attrSysId)
-                                                + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
+                                                + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+                                                + str(VAR1)
+                                                + "</select>"
                                                 )
+                                            else:
+                                                sec_str1 += (
+                                                '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+                                                + str(attrSysId)
+                                                + '" type="text"  data-content ="'
+                                                + str(attrSysId)
+                                                + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>'
+                                                + str(VAR1)
+                                                + "</select>"
+                                                )
+
+                                            # except:
+                                            #     sec_str1 += (
+                                            #     '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+                                            #     + str(attrSysId)
+                                            #     + '" type="text"  data-content ="'
+                                            #     + str(attrSysId)
+                                            #     + '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
+                                            #     )
                                             
                                             if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
                                                 sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
@@ -1499,10 +1499,10 @@ class EntitlementView():
                         current_obj_value = str(eval("col_name." + str(sefl_api)))
                         Trace.Write('current_obj_value---'+str(current_obj_value)+'--'+str(sefl_api))
                         if sefl_api in ("CPQTABLEENTRYDATEADDED","CpqTableEntryDateModified") and current_obj_value:
-                            try:
-                                current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
-                            except:
-                                pass
+                            #try:
+                            current_obj_value = datetime.strptime(str(current_obj_value), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
+                            # except:
+                            #     pass
                         elif sefl_api in ("CpqTableEntryModifiedBy","CPQTABLEENTRYADDEDBY") and current_obj_value:
                             current_user = Sql.GetFirst(
                                 "SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + "")
@@ -1549,38 +1549,37 @@ class EntitlementView():
 
 
 ##Getting Tree params
+alltreeparam =eval(Param.alltreeparam)
+TreeParam = alltreeparam["TreeParam"]  
 try:
-    alltreeparam =eval(Param.alltreeparam)
-    TreeParam = alltreeparam["TreeParam"]  
-    try:
-        TreeParentParam = alltreeparam["TreeParentLevel0"]
-    except:
-        TreeParentParam = ""
-    try:
-        TreeSuperParentParam = alltreeparam["TreeParentLevel1"]
-    except:
-        TreeSuperParentParam = ""
-    try:
-        TreeTopSuperParentParam = alltreeparam["TreeParentLevel2"]
-    except:
-        TreeTopSuperParentParam = ""
-    try:
-        TreeSuperTopParentParam = alltreeparam["TreeParentLevel3"]
-    except:
-        TreeSuperTopParentParam = ""
-    try:
-        TreeTopSuperTopParentParam = alltreeparam["TreeParentLevel4"]
-    except:
-        TreeTopSuperTopParentParam = ""
-
+    TreeParentParam = alltreeparam["TreeParentLevel0"]
 except:
-    Trace.Write("inside except")
-    TreeParam = Product.GetGlobal("TreeParam")
-    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-    TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-    TreeSuperTopParentParam = Product.GetGlobal("TreeParentLevel3")
-    TreeTopSuperTopParentParam = Product.GetGlobal("TreeParentLevel4")
+    TreeParentParam = ""
+try:
+    TreeSuperParentParam = alltreeparam["TreeParentLevel1"]
+except:
+    TreeSuperParentParam = ""
+try:
+    TreeTopSuperParentParam = alltreeparam["TreeParentLevel2"]
+except:
+    TreeTopSuperParentParam = ""
+try:
+    TreeSuperTopParentParam = alltreeparam["TreeParentLevel3"]
+except:
+    TreeSuperTopParentParam = ""
+try:
+    TreeTopSuperTopParentParam = alltreeparam["TreeParentLevel4"]
+except:
+    TreeTopSuperTopParentParam = ""
+
+# except:
+#     Trace.Write("inside except")
+#     TreeParam = Product.GetGlobal("TreeParam")
+#     TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+#     TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+#     TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
+#     TreeSuperTopParentParam = Product.GetGlobal("TreeParentLevel3")
+#     TreeTopSuperTopParentParam = Product.GetGlobal("TreeParentLevel4")
     
 ##getting params
 try:
@@ -1597,11 +1596,11 @@ try:
     SectionList = Param.DetailList
 except:
     SectionList = ""
-try:
-    SubtabName = Param.SubtabName
-    Trace.Write("SubtabName==="+str(SubtabName))
-except:
-    SubtabName = ""
+#try:
+SubtabName = Param.SubtabName
+Trace.Write("SubtabName==="+str(SubtabName))
+# except:
+#     SubtabName = ""
 try:
     EquipmentId = Param.EquipmentId
 except:
@@ -1610,15 +1609,9 @@ try:
     AssemblyId = Param.AssemblyId
 except:
     AssemblyId = ""
-try:
-    action = Param.action
-except:
-    action = ""
-try:
-    SubtabName = Param.SubtabName
-    Trace.Write("SubtabName==="+str(SubtabName))
-except:
-    SubtabName = ""
+#try:
+action = Param.action
+
 
 EntitlementType = ""
 SectionObjectName = ""
