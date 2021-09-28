@@ -295,6 +295,8 @@ class EntitlementView():
                                     attributeReadonlylst.append(prdvalue["id"])
                                 if prdvalue["readOnly"] == "false":
                                     attributeEditlst.append(prdvalue["id"])
+                                if prdvalue["required"] == "true":
+                                    attriburesrequired_list.append(prdvalue["id"])
                                 if prdvalue["possibleValues"]:
                                     for i in prdvalue["possibleValues"]:
                                         if i['selectable'] == 'false' and 'valueLow' in i.keys():
