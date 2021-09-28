@@ -485,6 +485,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							ServiceId = TreeParam.split("-")[1].strip()
+							Trace.Writ
 							decimal_discount = VALUE / 100.0
 							Sql.RunQuery("""UPDATE SAQICO SET 
 															NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
@@ -554,7 +555,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 												YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
 												YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
 												YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
-												DISCOUNT = '{Discount}'					
+												DISCOUNT = '{Discount}'			
 												FROM SAQITM (NOLOCK)
 												INNER JOIN (SELECT SAQITM.CpqTableEntryId,
 															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
@@ -762,7 +763,93 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
 											WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
 											Discount=VALUE,plus="+",TreeParam=TreeParam,TreeParentParam=TreeParentParam))
-						
+						Sql.RunQuery("""UPDATE SAQIFL
+							SET 
+							NET_VALUE = IQ.NET_VALUE,
+							NET_PRICE = IQ.NET_PRICE,
+							YEAR_1 = IQ.YEAR_1,
+							YEAR_2 = IQ.YEAR_2,
+							YEAR_3 = IQ.YEAR_3,
+							YEAR_4 = IQ.YEAR_4,
+							YEAR_5 = IQ.YEAR_5,
+							NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+							YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+							YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+							YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+							YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+							YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
+							DISCOUNT = '{Discount}'					
+							FROM  SAQIFL SAQICO (NOLOCK)
+							INNER JOIN (SELECT FABLOCATION_ID, SERVICE_ID,QTEREV_RECORD_ID,QUOTE_RECORD_ID,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+										FROM SAQICO (NOLOCK) 
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+										GROUP BY FABLOCATION_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,LINE_ITEM_ID,SERVICE_ID)IQ
+							ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.FABLOCATION_ID = IQ.FABLOCATION_ID 
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
+							Discount=VALUE))
+						Sql.RunQuery("""UPDATE SAQIGB
+							SET
+							NET_VALUE = IQ.NET_VALUE,
+							NET_PRICE = IQ.NET_PRICE,
+							YEAR_1 = IQ.YEAR_1,
+							YEAR_2 = IQ.YEAR_2,
+							YEAR_3 = IQ.YEAR_3,
+							YEAR_4 = IQ.YEAR_4,
+							YEAR_5 = IQ.YEAR_5,
+							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
+							NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+							YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+							YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+							YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+							YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+							YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+							DISCOUNT = '{Discount}'
+							FROM SAQIGB (NOLOCK)
+							INNER JOIN (SELECT 
+							GREENBOOK_RECORD_ID,
+							QUOTE_RECORD_ID,
+							SERVICE_ID,
+							FABLOCATION_RECORD_ID,
+							QTEREV_RECORD_ID,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+							FROM SAQICO (NOLOCK)
+							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+							GROUP BY LINE_ITEM_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,GREENBOOK_RECORD_ID,SERVICE_ID,FABLOCATION_RECORD_ID)IQ
+							ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID  AND SAQIGB.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGB.SERVICE_ID = IQ.SERVICE_ID AND SAQIGB.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
+							WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIGB.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,Discount=VALUE))
+
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
