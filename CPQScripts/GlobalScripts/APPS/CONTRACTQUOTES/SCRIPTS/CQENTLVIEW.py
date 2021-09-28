@@ -308,8 +308,8 @@ class EntitlementView():
                                     if attribute["author"] in ('Default','System'):
                                         attributedefaultvalue.append(prdvalue["id"])
             #Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-            Trace.Write('total_tablist--'+str(total_tablist))
-            Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
+            #Trace.Write('total_tablist--'+str(total_tablist))
+            #Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
             Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
 
 
@@ -355,7 +355,7 @@ class EntitlementView():
                         tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
                     else:
                         tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-            Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
+            #Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
         
             #Trace.Write('overall_attribute_list'+str(overall_attribute_list))
 
