@@ -1281,7 +1281,7 @@ class EntitlementView():
                                         imgstr  = ""
                                     new_value_dicta["APPROVAL"] = imgstr
                                     new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
-                                    new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
+                                    new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
                                     new_value_dicta["REQUIRED"] = str("<abbr title=''>"+str('')+"</abbr>")
                                     if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
                                         new_value_dicta["VALUE"] = sec_str1 									
@@ -1429,7 +1429,7 @@ class EntitlementView():
                                 
                                 new_value_dicta["APPROVAL"] = ""	
                                 new_value_dicta["ENTITLEMENT"] = str(attrName)
-                                new_value_dicta["DESCRIPTION"] = str(attrName)
+                                new_value_dicta["DESCRIPTION"] = str(get_tooltip)
                                 new_value_dicta["REQUIRED"] = ""
                                 if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
                                     new_value_dicta["VALUE"] =sec_str1
