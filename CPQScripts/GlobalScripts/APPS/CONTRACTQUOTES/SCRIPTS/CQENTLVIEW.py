@@ -384,10 +384,11 @@ class EntitlementView():
                 Trace.Write("GETCPS VERSION EMPTY!")	
             
            
-            desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+            desc_list = ["APPROVAL","ENTITLEMENT","DESCRIPTION","REQUIRED","VALUE","VALIDATION","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT"]
 
             #attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
-            attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
+            
+            attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT":"ENTITLEMENT","DESCRIPTION": "DESCRIPTION","REQUIRED":"*","VALUE": "VALUE","VALIDATION":"VALIDATION","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT"}
             date_field = []
             
             insertservice = ""
@@ -434,6 +435,7 @@ class EntitlementView():
                                 Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
                     add_style =  add_style_color = ""
                     sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
+                     
                     for key, invs in enumerate(list(desc_list)):
                         invs = str(invs).strip()
                         qstring = attr_dict.get(str(invs)) or ""
@@ -883,12 +885,13 @@ class EntitlementView():
                     if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
                         #Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
                         for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-                            info_column = get_tooltip = ""
+                            get_tooltip = ""
                             new_value_dicta = {}
                             attrName = attribute['attribute_name']
                             attrLabel = attribute['attribute_label']
                             attrSysId = attribute['attribute_system_id']
                             attribute_code = attribute['attribute_code']
+
                             #Trace.Write('attrSysId---looping0507--'+str(attrSysId))
                             STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
                             A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -937,7 +940,7 @@ class EntitlementView():
                                 edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
                             attrValueSysId = attributevalues.get(attrSysId)
                             ##info tooltip adding in entitlement grid starts..
-                            info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= get_tooltip)
+                            # info_column = '''<a   data-placement="auto top" data-trigger="focus"  class="bgcccwth10"><i title="{value}" class="fa fa-info-circle fltlt"></i></a>'''.format(value= get_tooltip)
                             ##info tooltip adding in entitlement grid ends..
                             disp_val = ""
                             userselectedvalue = []
@@ -1276,14 +1279,16 @@ class EntitlementView():
                                         imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
                                     else:
                                         imgstr  = ""
-                                    new_value_dicta["APPROVAL"] = imgstr	
-                                    new_value_dicta["ENTITLEMENT DESCRIPTION"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
-                                    
+                                    new_value_dicta["APPROVAL"] = imgstr
+                                    new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
+                                    new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
+                                    new_value_dicta["REQUIRED"] = str("<abbr title=''>"+str('')+"</abbr>")
                                     if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
-                                        new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1 									
+                                        new_value_dicta["VALUE"] = sec_str1 									
                                     else:
-                                        new_value_dicta["ENTITLEMENT VALUE"] = str(info_column) + str(sec_str_ipp)
-                                        Trace.Write("@3323-----"+str(attrSysId))
+                                        new_value_dicta["VALUE"] = str(sec_str_ipp)
+                                        #Trace.Write("@3323-----"+str(attrSysId))
+                                    new_value_dicta["VALIDATION"]= str("<abbr title=''>""</abbr>")
                                     new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>")
                                     new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title='"+str(sec_str_primp)+"'>"+str(sec_str_primp)+"</abbr>")+str(edit_pencil_icon)
                                     new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
@@ -1423,16 +1428,18 @@ class EntitlementView():
                                     )
                                 
                                 new_value_dicta["APPROVAL"] = ""	
-                                new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
+                                new_value_dicta["ENTITLEMENT"] = str(attrName)
+                                new_value_dicta["DESCRIPTION"] = str(attrName)
+                                new_value_dicta["REQUIRED"] = ""
                                 if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
-                                    new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ sec_str1
+                                    new_value_dicta["VALUE"] =sec_str1
                                     #Trace.Write("attrSysIdDType---3623-- "+str(attrSysId)+str(DType))
                                 else:
-                                    new_value_dicta["ENTITLEMENT VALUE"] = str(info_column)+ attrValue
+                                    new_value_dicta["VALUE"] = attrValue
                                 #new_value_dicta["FACTOR CURRENCY"] = ""
                                 new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
                                 new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
-                                #new_value_dicta["DATA TYPE"] = ""
+                                new_value_dicta["VALIDATION"] = ""
                                 new_value_dicta["CALCULATION FACTOR"] = ""	
                             Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
                             totaldisallowlist = [item for item in attributesdisallowedlst]
