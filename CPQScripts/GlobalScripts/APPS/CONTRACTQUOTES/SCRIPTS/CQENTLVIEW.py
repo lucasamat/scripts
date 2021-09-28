@@ -394,9 +394,9 @@ class EntitlementView():
             date_field = []
             
             insertservice = ""
-            Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
+            #Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
         if TableObj is None and (EntitlementType == "EQUIPMENT"): 
-            Trace.Write('not inserted')
+            #Trace.Write('not inserted')
             getnameentallowed = []
             if product_tabs_obj:
                 for product_tab_obj in product_tabs_obj:
