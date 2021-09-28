@@ -474,6 +474,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							getting_cps_tax(check_itm_obj,'tool')
 						elif newdict.has_key("DISCOUNT") and (newdict.get("DISCOUNT") is not None or newdict.get("DISCOUNT") != ''):
 							dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
+							newdict["SERVICE_ID"] = TreeParam
 							newdict.update(dictc)
 							tableInfo = Sql.GetTable(str(TableName))
 							tablerow = newdict
