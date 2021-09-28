@@ -2608,7 +2608,7 @@ class SYLDRTLIST:
                 + str(ObjectName)
                 + "' and SE.SECTION_NAME ='BASIC INFORMATION'"
             )
-            
+            Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
             if Query_Obj is not None:
                 for ik in Query_Obj:					                  
                     new_dict = {}
