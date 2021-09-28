@@ -532,10 +532,12 @@ class Entitlements:
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
-								if prdvalue["visible"] == "true":							
-									attr_tab_list_allow.append(prdvalue["id"])
+								if prdvalue["visible"] == "true":
+									getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
+									attr_tab_list_allow.append(getrec.RECORD_ID)
 								if prdvalue["visible"] == "false":
-									attr_tab_list_disallow.append(prdvalue["id"])
+									getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+									attr_tab_list_disallow.append(getrec.RECORD_ID)
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
 								#dropdownallowlist = [] 
@@ -707,9 +709,11 @@ class Entitlements:
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute == "characteristicGroups":
 								for prdvalue in Productvalue:
-									if prdvalue["visible"] == "true":							
-										attr_tab_list_allow.append(prdvalue["id"])
+									if prdvalue["visible"] == "true":
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
+										attr_tab_list_allow.append(getrec.RECORD_ID)
 									if prdvalue["visible"] == "false":
+										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
 										attr_tab_list_disallow.append(prdvalue["id"])
 							if Productattribute == "characteristics":
 								for prdvalue in Productvalue:
@@ -1579,6 +1583,8 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
 		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
+		for val in attr_tab_list_allow:
+			getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str()+"'")
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
