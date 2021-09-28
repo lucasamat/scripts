@@ -271,7 +271,7 @@ class EntitlementView():
             attributeEditlst = list_of_tabs = []
             attributevalues = {}
             attributedefaultvalue = []
-            dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = []
+            dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
             get_lastsection_val = attrcode = disable_edit = ""
             # where = ""
             Trace.Write("Fullresponse_J "+str(Fullresponse))
@@ -282,6 +282,8 @@ class EntitlementView():
                     for Productattribute, Productvalue in rootvalue.items():
                         if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
+                                if prdvalue["visible"]:
+                                    total_tablist.append(prdvalue["id"])
 								if prdvalue["visible"] == "true":							
 									attr_tab_list_allow.append(prdvalue["id"])
 								if prdvalue["visible"] == "false":
@@ -305,9 +307,9 @@ class EntitlementView():
                                     if attribute["author"] in ('Default','System'):
                                         attributedefaultvalue.append(prdvalue["id"])
             #Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
-            Trace.Write('attributeReadonlylst--'+str(attributeReadonlylst))
-            Trace.Write('attributevalues'+str(attributevalues))
-            Trace.Write('attributedefaultvalue----'+str(attributedefaultvalue))
+            Trace.Write('total_tablist--'+str(total_tablist))
+            Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
+            Trace.Write('attr_tab_list_allow----'+str(attr_tab_list_allow))
 
 
             product_obj = Sql.GetFirst("""SELECT 
