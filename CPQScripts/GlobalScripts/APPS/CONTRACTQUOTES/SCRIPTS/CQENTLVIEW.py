@@ -383,7 +383,7 @@ class EntitlementView():
             else:
                 Trace.Write("GETCPS VERSION EMPTY!")	
             
-            #desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","DATA TYPE","FACTOR CURRENCY","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
+           
             desc_list = ["APPROVAL","ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE","CALCULATION FACTOR","ENTITLEMENT COST IMPACT","ENTITLEMENT PRICE IMPACT",]
 
             #attr_dict = {"APPROVAL":"APPROVAL","ENTITLEMENT DESCRIPTION": "ENTITLEMENT DESCRIPTION","ENTITLEMENT VALUE": "ENTITLEMENT VALUE","DATA TYPE":"DATA TYPE","FACTOR CURRENCY": "FACTOR CURRENCY","CALCULATION FACTOR": "CALCULATION FACTOR","ENTITLEMENT PRICE IMPACT":"ENTITLEMENT PRICE IMPACT","ENTITLEMENT COST IMPACT":"ENTITLEMENT COST IMPACT",}
@@ -865,7 +865,7 @@ class EntitlementView():
                         invs = str(invs).strip()
                         qstring = attr_dict.get(str(invs)) or ""
                         sec_str_boot += (
-                            '<th data-field="'
+                            '<th id ='+qstring.replace(' ',"_")+' data-field="'
                             + invs
                             + '" data-title-tooltip="'
                             + str(qstring)
