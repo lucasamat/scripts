@@ -180,7 +180,7 @@ class EntitlementView():
                 ##add on product entitilement ends
             ###receiving equp entitilement starts
             elif str(self.treeparam).upper() == "RECEIVING EQUIPMENT" and objname_ent == 'SAQSCO':
-                Trace.Write('receiving----'+str(quoteid)+'---'+str(ProductPartnumber))
+                #Trace.Write('receiving----'+str(quoteid)+'---'+str(ProductPartnumber))
                 TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,self.quote_revision_record_id,ProductPartnumber))
                 ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(quoteid,self.quote_revision_record_id,ProductPartnumber))
                 if ParentObj:
