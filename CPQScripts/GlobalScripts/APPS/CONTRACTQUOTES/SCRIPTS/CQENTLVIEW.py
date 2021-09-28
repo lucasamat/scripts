@@ -507,7 +507,7 @@ class EntitlementView():
                                     attr_value = ''
                                 else:
                                     attr_value = attributevalues.get(attrSysId)	
-                                Trace.Write('attr_value'+str(attr_value)+'---'+str(attrSysId))
+                                #Trace.Write('attr_value'+str(attr_value)+'---'+str(attrSysId))
                                 ent_val_code = attrValueSysId
                             else:
                                 attr_value = attrValue
