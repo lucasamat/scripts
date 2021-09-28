@@ -271,7 +271,7 @@ class EntitlementView():
             attributevalues = {}
             attributedefaultvalue = []
             dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
-            get_lastsection_val = attrcode = disable_edit = ""
+            get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
             # where = ""
             Trace.Write("Fullresponse_J "+str(Fullresponse))
             Product.SetGlobal('Fullresponse_load',str(Fullresponse))
@@ -1287,13 +1287,14 @@ class EntitlementView():
                                         imgstr  = ""
                                     Trace.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
                                     if attrSysId in attriburesrequired_list:
-                                        required_symbol_class = 'class ="required_symbol"'
+                                        required_symbol_class = 'required_symbol'
+                                        get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
                                     else:
-                                        required_symbol_class = ""
+                                        required_symbol_class = get_requiredicon = ""
                                     new_value_dicta["APPROVAL"] = imgstr
                                     new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
                                     new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
-                                    new_value_dicta["REQUIRED"] = str("<abbr title=''>"+str('')+"</abbr>")
+                                    new_value_dicta["REQUIRED"] = get_requiredicon
                                     if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
                                         new_value_dicta["VALUE"] = sec_str1 									
                                     else:
@@ -1439,8 +1440,8 @@ class EntitlementView():
                                     )
                                 Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
                                 if attrSysId in attriburesrequired_list:
-                                    required_symbol_class = 'class ="required_symbol"'
-                                    get_required_icon = ""
+                                    required_symbol_class = 'required_symbol'
+                                    get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
                                 else:
                                     required_symbol_class = ""
                                     get_required_icon = ""
