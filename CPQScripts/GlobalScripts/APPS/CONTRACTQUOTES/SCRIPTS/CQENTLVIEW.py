@@ -782,7 +782,7 @@ class EntitlementView():
             multi_select_attr_list = {}
             attributedefaultvalue = []
 
-            Trace.Write('after inserting in table-----')
+            #Trace.Write('after inserting in table-----')
             getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
             GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
             inserted_value_list = [val.ENTITLEMENT_NAME for val in GetXMLsecField if GetXMLsecField]
@@ -791,7 +791,7 @@ class EntitlementView():
                 if val.IS_DEFAULT == '1':
                     #Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
                     attributedefaultvalue.append(val.ENTITLEMENT_NAME)
-            Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
+            #Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
             sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
             ## set entitlement_xml for cancel fn A055S000P01-3157 starts
             previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
@@ -802,13 +802,13 @@ class EntitlementView():
             getprevdicts +=   ("var dict_new = {};var list_new = [];")	
             if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
                 self.treesuperparentparam = ""
-            Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
+            #Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
             if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber:	
-                Trace.Write("@2756------->"+str(self.treeparentparam))
+                #Trace.Write("@2756------->"+str(self.treeparentparam))
                 
                 for product_tab_obj in product_tabs_obj:
                     product_section =   str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
-                    Trace.Write("product_tab_obj"+str(product_section))
+                    #Trace.Write("product_tab_obj"+str(product_section))
                     tablistdict = {}
                     date_boot_field = []
                     list_of_tabs.append(product_section)
