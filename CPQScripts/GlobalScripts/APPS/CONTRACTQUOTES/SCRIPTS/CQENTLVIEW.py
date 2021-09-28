@@ -319,7 +319,7 @@ class EntitlementView():
                                     GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(ProductPartnumber),kb_version = Fullresponse['kbKey']['version'] ))
             
             product_tabs_obj = Sql.GetList("""SELECT 
-                                                    TOP 1000 TAB_NAME, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
+                                                    TOP 1000 TAB_NAME,TAB_DEFN.SYSTEM_ID, TAB_RANK, TAB_PROD_ID, TAB_PRODUCTS.TAB_CODE
                                                 FROM TAB_PRODUCTS
                                                 JOIN TAB_DEFN ON TAB_DEFN.TAB_CODE = TAB_PRODUCTS.TAB_CODE
                                                 WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} and TAB_NAME not like '$%'
@@ -424,7 +424,7 @@ class EntitlementView():
                             tbrowsect['SECTION_DESC'] =  str(product_section)
                             tbrowsect['SECTION_NAME'] =  str(product_section)
                             tbrowsect['SECTION_PARTNUMBER'] =  self.treeparam.upper()
-                            tbrowsect['PARENT_SECTION_TEXT'] = ''
+                            tbrowsect['PARENT_SECTION_TEXT'] = product_tab_obj.SYSTEM_ID
                             getsect_tab.AddRow(tbrowsect)
                             Sql.Upsert(getsect_tab)
                             sysectObj = Sql.GetFirst("SELECT RECORD_ID,SECTION_DESC,PARENT_SECTION_TEXT FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(product_section) + "'")
