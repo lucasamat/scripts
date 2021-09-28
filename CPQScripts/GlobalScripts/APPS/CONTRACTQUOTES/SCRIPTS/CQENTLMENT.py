@@ -1583,8 +1583,7 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
 		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
-		for val in attr_tab_list_allow:
-			getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str()+"'")
+		
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
