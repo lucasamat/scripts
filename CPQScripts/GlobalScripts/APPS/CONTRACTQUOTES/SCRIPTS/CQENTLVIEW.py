@@ -402,7 +402,7 @@ class EntitlementView():
                     product_section =  str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
                     Trace.Write("product_tab_obj"+str(product_section))
                     list_of_tabs.append(product_section)
-                    Trace.Write("list_of_tabs"+str(list_of_tabs))
+                    Trace.Write("list_of_tabs---"+str(list_of_tabs))
                     sysectObj = Sql.GetFirst(
                         "SELECT RECORD_ID,SECTION_DESC,SECTION_NAME FROM SYSECT (NOLOCK) WHERE SECTION_NAME='"+str(product_section)+"'"
                     )
@@ -425,9 +425,10 @@ class EntitlementView():
                             tbrowsect['SECTION_DESC'] =  str(product_section)
                             tbrowsect['SECTION_NAME'] =  str(product_section)
                             tbrowsect['SECTION_PARTNUMBER'] =  self.treeparam.upper()
+                            tbrowsect['PARENT_SECTION_TEXT'] = ''
                             getsect_tab.AddRow(tbrowsect)
                             Sql.Upsert(getsect_tab)
-                            sysectObj = Sql.GetFirst("SELECT RECORD_ID,SECTION_DESC FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(product_section) + "'")
+                            sysectObj = Sql.GetFirst("SELECT RECORD_ID,SECTION_DESC,PARENT_SECTION_TEXT FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(product_section) + "'")
                             if sysectObj:
                                 Section_id = sysectObj.RECORD_ID
                                 Section_desc = sysectObj.SECTION_DESC.split('_')
