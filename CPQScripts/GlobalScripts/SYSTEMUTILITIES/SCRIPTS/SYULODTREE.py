@@ -1492,7 +1492,7 @@ class TreeView:
 					elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID':
 						where_string = where_string                        
 					elif str(ObjName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
-						where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"))
+						where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"))
 					#elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
 					#where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"))    
 					#elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
@@ -2198,6 +2198,7 @@ class TreeView:
 												Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)									
 										if NodeName == 'APRCHN_ID' and str(ProductName).upper() == "SALES":                                            
 											Subwhere_string += " AND ACACHR.APRCHN_ID = '{}'".format(NodeText)
+											Trace.Write("@2201 subwhere string------>"+str(Subwhere_string))
 										if (' - ' ) in NodeText :                                            
 											temp_node =[]
 											if "-" in  NodeText:
