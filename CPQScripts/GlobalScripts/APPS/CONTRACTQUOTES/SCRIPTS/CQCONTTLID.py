@@ -103,6 +103,7 @@ class tool_idle:
             edit_warn_icon = ""
             left_float = ""
             edit_pencil_icon = ""
+            MODE = ""
             current_obj_api_name = tool.API_NAME
             readonly_val = tool.PERMISSION
             if (readonly_val == "" or readonly_val.upper() == "EDITABLE"):				
