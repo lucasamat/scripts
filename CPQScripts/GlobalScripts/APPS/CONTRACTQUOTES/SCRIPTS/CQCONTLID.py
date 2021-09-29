@@ -18,14 +18,14 @@ class tool_idle:
         where_string = ""
         TreeParam = Product.GetGlobal("TreeParam")
 
-        if A_Keys != "" and A_Values != "":
-            A_Keys = list(A_Keys)
-            A_Values = list(A_Values)
-            for key, value in zip(A_Keys, A_Values):
-                if value.strip():
-                    if where_string:
-                        where_string += " AND "
-                    where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+        # if A_Keys != "" and A_Values != "":
+        #     A_Keys = list(A_Keys)
+        #     A_Values = list(A_Values)
+        #     for key, value in zip(A_Keys, A_Values):
+        #         if value.strip():
+        #             if where_string:
+        #                 where_string += " AND "
+        #             where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
         DIVNAME = "VIEW_DIV_ID"
         new_value_dict = {}
         ObjectName = "CART"
@@ -79,8 +79,8 @@ class tool_idle:
                 + str(qstring)
                 + "</th>"
             )
-        sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
-        sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
+        sec_str += '</tr></thead><tbody class ="tool_idle" ></tbody></table>'
+        #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
         values_list = ""
         values_lists = ""
         a_test = []
@@ -91,7 +91,10 @@ class tool_idle:
             values_lists += " ATTRIBUTE_VALUEList.push(" + str(invsk) + "); "
             a_test.append(invsk)
                             
-        return sec_str
+        return (
+            sec_str,
+            new_value_dict                       
+            )
 objtool_idle = tool_idle()
 ACTION = Param.ACTION
 if ACTION == "CONT_TOOL_IDLE":               
