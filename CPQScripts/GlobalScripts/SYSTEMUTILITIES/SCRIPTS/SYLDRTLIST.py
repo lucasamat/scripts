@@ -6531,6 +6531,8 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-98785":
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                    elif str(RECORD_ID) == "SYOBJR-98870":
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TreeParam)+"' "
                     else:    
                         Trace.Write('Record Id -->'+str(RECORD_ID))
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
@@ -7699,6 +7701,8 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-98785":
                             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                        elif str(RECORD_ID) == "SYOBJR-98870":
+                            Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND SERVICE_ID = '"+str(TreeParam)+"' "
                         else:
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                             Trace.Write("7100"+str(Qustr))
