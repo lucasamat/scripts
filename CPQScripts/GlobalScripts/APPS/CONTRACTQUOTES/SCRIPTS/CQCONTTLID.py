@@ -97,7 +97,35 @@ class tool_idle:
             + "'"
         )
         for tool in Objd_Obj:
-            sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td><td>'+tool.PICKLIST_VALUES+'</td></tr>'
+            onchange = ""
+            current_obj_value = ""
+            disable = ""
+            current_obj_api_name = tool.API_NAME
+            sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
+            if tool.DATA_TYPE == "PICKLIST":
+                sec_str += '<td>'
+                sec_str += (
+                    '<select id="'
+                    + str(current_obj_api_name)
+                    + '" '
+                    + str(onchange)
+                    + ' value="'
+                    + current_obj_value
+                    + '" type="text" title="'
+                    + str(current_obj_value)
+                    + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+                    + disable
+                    + " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
+                )
+                Sql_Quality_Tier = Sql.GetFirst(
+                    "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+                    + str(ObjectName)
+                    + "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+                    + str(current_obj_api_name)
+                    + "' "
+                )
+                sec_str += '</td>'
+            sec_str += '</tr>'   
         sec_str += '</tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
         values_list = ""
