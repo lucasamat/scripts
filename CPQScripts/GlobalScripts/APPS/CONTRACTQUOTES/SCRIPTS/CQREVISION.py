@@ -292,6 +292,7 @@ def save_desc_revision(Opertion,cartrev,cartrev_id,):
 	recid =''
 	cpqid = cartrev_id.split('-')[1].strip()
 	get_rev_quote_info_details = Sql.GetFirst("select * from SAQTRV where QUOTE_ID = '{}' and QTEREV_ID = {}".format(ObjectName,cpqid))
+	cartrev = re.sub(r"'","''",cartrev)
 	if get_rev_quote_info_details:
 		recid = get_rev_quote_info_details.QUOTE_REVISION_RECORD_ID
 	#recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
