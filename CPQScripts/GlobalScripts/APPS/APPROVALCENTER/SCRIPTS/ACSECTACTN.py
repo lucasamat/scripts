@@ -1668,8 +1668,8 @@ class approvalCenter:
 						"""select ACAPTX.APRCHNSTP_ID, ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND as appround
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-							where ACAPMA.{ApiName} = '{QuoteNumber}' AND ACAPTX.APPROVAL_ROUND = '{round}' AND ACAPTX.APRCHN_ID = '{approval_chain}'""".format(
-							QuoteNumber=Quote.GetGlobal("contract_quote_record_id"), ApiName="APRTRXOBJ_RECORD_ID",round=str(max_round),approval_chain= str(approval_chain)
+							where ACAPMA.{ApiName} = '{revision_rec_id}' AND ACAPTX.APPROVAL_ROUND = '{round}' AND ACAPTX.APRCHN_ID = '{approval_chain}'""".format(
+							revision_rec_id=  self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=str(max_round),approval_chain= str(approval_chain)
 						)
 						)
 						requestor_comments = GetMinQuery.REQUESTOR_COMMENTS  
