@@ -150,7 +150,7 @@ class tool_idle:
 								sec_str += "<option>" + str(req1) + "</option>"
                 else:						
                     sec_str += "<option selected>" + str(current_obj_value) + "</option>"
-                sec_str += '</td>'
+                sec_str += '</select></td>'
             elif tool.DATA_TYPE == "TEXT":
                 sec_str += (
                         '<td><input id="'
