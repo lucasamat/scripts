@@ -88,11 +88,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
         
     lookup_str = ",".join(list(lookup_disply_list))
-    orderby = ""
-    if SortColumn != '' and SortColumnOrder !='':
-        orderby = SortColumn + " " + SortColumnOrder
-    else:
-        orderby = "QUOTE_ITEM_FORECAST_PART_RECORD_ID"
+    orderby = "QUOTE_ITEM_FORECAST_PART_RECORD_ID"
     where_string = ""
     if A_Keys != "" and A_Values != "":
         A_Keys = list(A_Keys)
