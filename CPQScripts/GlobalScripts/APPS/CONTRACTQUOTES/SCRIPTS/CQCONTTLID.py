@@ -30,7 +30,7 @@ class tool_idle:
         #DIVNAME = "VIEW_DIV_ID"
         new_value_dict = {}
         ObjectName = "CART"
-        table_id = "contract_cust_fields_div"
+        #table_id = "contract_cust_fields_div"
         Header_details = {
             "TOOL IDLING": "TOOL IDLING",
             "DESCRIPTION":"DESCRIPTION",
@@ -66,7 +66,7 @@ class tool_idle:
 
         #sec_str = '<div id="contract_cust_fields_div">'     
 
-        sec_str = '<div id="container contract_cust_fields_div" class="g4 pad-10 brdr except_sec">'
+        sec_str = '<div id="container" class="g4 pad-10 brdr except_sec">'
         sec_str += (
             '<table id="'
             + str(table_id)
