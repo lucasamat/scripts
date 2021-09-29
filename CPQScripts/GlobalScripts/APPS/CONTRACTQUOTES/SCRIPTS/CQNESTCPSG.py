@@ -12,7 +12,6 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
 import SYCNGEGUID as CPQID
-import CQCPSPRICE as CPS
 import System.Net
     
 def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
