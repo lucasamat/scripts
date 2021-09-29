@@ -23,7 +23,7 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 def remove_list(t):
 	return t[3:]
 
-def BILLEDIT_SAVE(GET_DICT,totalyear):
+def BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,):
 	Trace.Write(str(totalyear)+'---BULK EDIT SAVE BILLING MATRIX--inside function---GET_DICT----'+str(GET_DICT))
 	for val in GET_DICT:
 		value = val.split('-')
@@ -34,7 +34,7 @@ def BILLEDIT_SAVE(GET_DICT,totalyear):
 		getannual_amt = value[3]
 		Trace.Write('gettotalamount-----'+str(getannual_amt))
 		getfinalmonth = 'MONTH_'+str(int(valuedate)).strip()
-		if float(getannual_amt.replace(',','')) > float(value[2].replace(',','')):
+		if float(getannual_amt.replace(',','')) > float(getedited_amt):
 			sqlforupdatePT = "UPDATE SAQIBP SET BILLING_AMOUNT = {BT} where QUOTE_RECORD_ID ='{CT}' AND QTEREV_RECORD_ID ='{revision_rec_id}' and  EQUIPMENT_ID ='{EID}' and BILLING_DATE = '{BD}'".format(BT= value[2].replace(",",""),CT = str(ContractRecordId),EID=value[0],BD = value[1], revision_rec_id = quote_revision_record_id)
 			getmonthvalue = Sql.GetFirst("select * from QT__Billing_Matrix_Header where QUOTE_RECORD_ID ='{CT}' and YEAR  = {BL}".format(BL =int(SubTab),CT = str(ContractRecordId)))
 			if getmonthvalue:
@@ -98,5 +98,6 @@ def BILLEDIT_SAVE(GET_DICT,totalyear):
 #Headerlist = list(Param.gethedaer)
 GET_DICT =list(Param.billdict)
 totalyear = Param.totalyear
+getedited_amt = Param.getedited_amt
 #Trace.Write(str(totalyear)+"--GET_DICT--------------"+str(GET_DICT))
-ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,))
+ApiResponse = ApiResponseFactory.JsonResponse(BILLEDIT_SAVE(GET_DICT,totalyear,getedited_amt,))
