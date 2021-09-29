@@ -734,6 +734,7 @@ class TreeView:
 												NodeName,
 												RecAttValue,
 												nodeId,
+												NodeText,
 												ParRecId,
 												DynamicQuery,
 												ObjectName,
@@ -1371,6 +1372,7 @@ class TreeView:
 		NodeName,
 		RecAttValue,
 		nodeId,
+		NodeText,
 		ParRecId,
 		DynamicQuery,
 		ObjectName,
@@ -1390,6 +1392,7 @@ class TreeView:
 			getAccounts = ""
 		#Trace.Write("=================>> ParRecId "+str(ParRecId))
 		Trace.Write("nodeId_ADD_ON_nodeId"+str(nodeId)+" %X% "+str(NodeName)+" %X% "+str(RecAttValue)+" %X% "+str(RecId)+" %X% "+str(ParRecId)+" %X% "+str(where_string))
+		Trace.Write("NodeText ---->"+str(NodeText))
 		TreeParam = Product.GetGlobal("TreeParam")		
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		Trace.Write('RecId-----TreeParentParam--'+str(TreeParentParam))
@@ -2225,6 +2228,7 @@ class TreeView:
 												SubNodeName,
 												RecAttValue,
 												nodeId,
+												NodeText,
 												SubParRecId,
 												SubChildDynamicQuery,
 												ObjectName,
@@ -2469,6 +2473,7 @@ class TreeView:
 											SubNodeName,
 											RecAttValue,
 											nodeId,
+											NodeText,
 											SubParRecId,
 											subDynamicQuery,
 											ObjectName,
@@ -2787,6 +2792,7 @@ class TreeView:
 													SubNodeName,
 													RecAttValue,
 													nodeId,
+													NodeText,
 													SubParRecId,
 													subDynamicQuery,
 													ObjectName,
