@@ -132,23 +132,13 @@ class SyncQuoteAndCustomTables:
 		ent_disp_val = ent_val_code = ''
 		for OfferingRow_detail in SAQTSVObj:
 			#Log.Info("SERVICE_ID--130----"+str(OfferingRow_detail.SERVICE_ID))
-			webclient = System.Net.WebClient()
-			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
-			response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-			response = eval(response)
+			
 			Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-			webclient.Headers[System.Net.HttpRequestHeader.Authorization] ="Bearer "+str(response['access_token'])
-			requestdata= '{"productKey":"'+OfferingRow_detail.SERVICE_ID+'","date":"'+str(y[0])+'","context":[{"name":"VBAP-MATNR","value":"'+OfferingRow_detail.SERVICE_ID+'"}]}'
-			#if TreeSuperParentParam=="Offerings":
-				#requestdata= '{"productKey":"'+TreeParam+'","date":"2020-10-14","context":[{"name":"VBAP-MATNR","value":"'+TreeParam+'"}]}'
-				#ProductPartnumber=TreeParam
-			#elif TreeTopSuperParentParam=="Offerings":
-				#requestdata= '{"productKey":"'+TreeParentParam+'","date":"2020-09-01","context":[{"name":"VBAP-MATNR","value":"'+TreeParentParam+'"}]}'
-				#ProductPartnumber=TreeParentParam
-			response1 = webclient.UploadString(Request_URL,str(requestdata))
-			response1=str(response1).replace(": true",": \"true\"").replace(": false",": \"false\"")
-			Fullresponse= eval(response1)
+			
+			Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
+			Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
+			Fullresponse= eval(Fullresponse)
+
 			attributesdisallowedlst=[]
 			attributeReadonlylst=[]
 			attributesallowedlst=[]
@@ -362,15 +352,13 @@ class SyncQuoteAndCustomTables:
 
 							#Log.Info(str(Request_URL)+"---requestdata--166---" + str(response2))
 
-
-							#Log.Info("patch response1---170---" + str(response2))
 							Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+							#Log.Info("patch response1---170---" + str(response2))
+							Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'','request_url':Request_URL,'request_type':"Existing"})
+							Fullresponse=str(Fullresponse).replace(": true", ': "true"').replace(": false", ': "false"')
+							Fullresponse= eval(Fullresponse)
 							#Log.Info("requestdata---180--265----" + str(requestdata))
-							response2 = webclient.DownloadString(Request_URL)
-							Trace.Write('response2--182----267-----'+str(response2))
-							response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-							Fullresponse= eval(response2)
+							
 							attributesdisallowedlst=[]
 							attributeReadonlylst=[]
 							attributesallowedlst=[]
