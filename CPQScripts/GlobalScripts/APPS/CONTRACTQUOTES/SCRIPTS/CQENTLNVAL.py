@@ -29,45 +29,49 @@ def Request_access_token():
         return eval(response)
 
 
-def entitlement_request(partnumber,cpsConfigID):
-    #gettodaydate = datetime.now().strftime("%Y-%m-%d")
+def entitlement_request(partnumber,request_url,request_type):
+    gettodaydate = datetime.now().strftime("%Y-%m-%d")
     partnumber = partnumber.strip()
     webclient = System.Net.WebClient()
     response = Request_access_token()
     #response = eval(response)
     Trace.Write(response["access_token"])
-    try:		
-        Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
-        request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
-        response1 = webclient.DownloadString(request_url)
-    except Exception as e:
-        Trace.Write('1897-----'+str(e))
-        response1 = {}
-            
-            
+    if request_type.upper() == 'NEW':
+        request_url = request_url 
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
+        requestdata = '{"productKey":"'+ partnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ partnumber+ '"}]}'
+
+        Trace.Write("requestdata-1888---" + str(requestdata))
+        response1 = webclient.UploadString(request_url, str(requestdata))
+
+    else:
+        try:		
+            Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
+            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
+            response1 = webclient.DownloadString(request_url)
+        except Exception as e:
+            Trace.Write('1897-----'+str(e))
+            response1 = {}
+                       
     response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
     Trace.Write("response1_J "+str(response1))
     return eval(response1)
 
 
-def get_entitlement_response(partnumber,where_cond,ent_level_table):
+def get_entitlement_status(partnumber,where_cond,ent_level_table):
     get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
     if get_cps:
-        fullresponse = entitlement_request(partnumber,get_cps.CPS_CONFIGURATION_ID)
+        request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(get_cps.CPS_CONFIGURATION_ID)
+        fullresponse = entitlement_request(partnumber,request_url,'EXISTING')
         if fullresponse:
             status = fullresponse['complete']
             Trace.Write('status--'+str(status))
             return status
 
-try:
-    action= Param.action
-except:
-    action = ""
-try:
-    partnumber= Param.partnumber
-except:
-    partnumber = ""
+partnumber= Param.partnumber
+action= Param.action
+
+#to get the product status
 try:
     where_cond= Param.where_cond
 except:
@@ -76,6 +80,20 @@ try:
     ent_level_table= Param.ent_level_table
 except:
     ent_level_table = ""
+    
+##to get the response
+try:
+    request_url = Param.request_url
+except:
+    request_url = ""
+try:
+    request_type = Param.request_type
+except:
+    request_type = ""
 
 if action == 'GET_STATUS':
-    Result = get_entitlement_response(partnumber,where_cond,ent_level_table)
+    Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
+elif action == 'GET_RESPONSE':
+    Result = entitlement_request(partnumber,request_url,request_type)
+
+
