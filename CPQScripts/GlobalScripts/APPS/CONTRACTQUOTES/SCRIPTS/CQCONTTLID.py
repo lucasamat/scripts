@@ -150,7 +150,7 @@ class tool_idle:
 								sec_str += "<option>" + str(req1) + "</option>"
                 else:						
                     sec_str += "<option selected>" + str(current_obj_value) + "</option>"
-                sec_str += '</select><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)"     class="editclick">'+ str(edit_pencil_icon)+ '</a></div></td>'
+                sec_str += '</select></td>'
             elif tool.DATA_TYPE == "TEXT":
                 sec_str += (
                         '<td><input id="'
@@ -163,9 +163,7 @@ class tool_idle:
                         + str(left_float)
                         + ' ">'
                         + str(edit_warn_icon)
-                        + "<div class="'col-md-12 editiconright'"><a href="'#'" onclick="'editclick_row(this)'" class="'editclick'">"'
-                        + str(edit_pencil_icon)
-                        + '"</a></div></td>'
+                        + "</td>"
 					)
             elif tool.DATA_TYPE == "LONG TEXT AREA":
                 if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
@@ -178,9 +176,7 @@ class tool_idle:
                         + disable
                         + ">"
                         + current_obj_value
-                        + "</textarea><div class="'col-md-12 editiconright'"><a href="'#'" onclick="'editclick_row(this)'" class="'editclick'">"'
-                        + str(edit_pencil_icon)
-                        + '"</a></div></td>'
+                        + "</textarea></td>"
                     )
                 else:																	
                     sec_str += (
@@ -192,9 +188,7 @@ class tool_idle:
                         + disable							
                         + ">"
                         + current_obj_value
-                        + "</textarea><div class="'col-md-12 editiconright'"><a href="'#'" onclick="'editclick_row(this)'" class="'editclick'">"'
-                        + str(edit_pencil_icon)
-                        + '"</a></div></td>'
+                        + "</textarea></td>"
                     )         
             # sec_str += (
 			# 		'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
