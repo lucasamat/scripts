@@ -61,6 +61,7 @@ class tool_idle:
 
             current_obj_value = ""
             onchange = ""
+            disable = ""            
             current_obj_api_name = attr.API_NAME
 
         #sec_str = '<div id="contract_cust_fields_div">'     
