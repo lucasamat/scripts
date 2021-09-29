@@ -115,7 +115,7 @@ class tool_idle:
                     + str(current_obj_value)
                     + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
                     + disable
-                    + " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
+                    + " style=\'margin-left: -1px\'><option value='Select'></option>"
                 )
                 Sql_Quality_Tier = Sql.GetFirst(
                     "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
