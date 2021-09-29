@@ -114,7 +114,7 @@ class tool_idle:
             else:						
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
-            sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
+            sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
             if tool.DATA_TYPE == "PICKLIST":
                 sec_str += '<td>'
                 sec_str += (
