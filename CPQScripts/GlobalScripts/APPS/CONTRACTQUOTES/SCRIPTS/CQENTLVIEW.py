@@ -271,6 +271,7 @@ class EntitlementView():
             attributevalues = {}
             attributedefaultvalue = []
             dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
+            validation_dict = {}
             get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
             # where = ""
             Trace.Write("Fullresponse_J "+str(Fullresponse))
@@ -301,6 +302,8 @@ class EntitlementView():
                                     for i in prdvalue["possibleValues"]:
                                         if i['selectable'] == 'false' and 'valueLow' in i.keys():
                                             dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+                                        if i['selectable'] == 'true' and 'valueHigh' in i.keys():
+                                            validation_dict[prdvalue["id"] ] = i['valueLow']
                                         # else:
                                         # 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
                                 for attribute in prdvalue["values"]:
@@ -311,7 +314,7 @@ class EntitlementView():
             #Trace.Write('total_tablist--'+str(total_tablist))
             #Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
             Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
-
+            Trace.Write("validation_dict---"+str(validation_dict))
 
             product_obj = Sql.GetFirst("""SELECT 
                                         MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
@@ -892,6 +895,7 @@ class EntitlementView():
                         #Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
                         for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
                             get_tooltip = ""
+                            sec_validation = ""
                             new_value_dicta = {}
                             attrName = attribute['attribute_name']
                             attrLabel = attribute['attribute_label']
@@ -933,6 +937,10 @@ class EntitlementView():
                             else:
                                 #Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
                                 add_style = ""
+                            ##validation msg
+                            if attrSysId in validation_dict.keys():
+                                sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+"-0"
+
                             if attrSysId in attributedefaultvalue:
                                 #Trace.Write("add_style----3077----- "+str(attrSysId))
                                 add_style = "color:#1B78D2"
@@ -1300,7 +1308,7 @@ class EntitlementView():
                                     else:
                                         new_value_dicta["VALUE"] = str(sec_str_ipp)
                                         #Trace.Write("@3323-----"+str(attrSysId))
-                                    new_value_dicta["VALIDATION"]=str("<abbr class = 'wid90_per' title='"+str('')+"'>"+str('')+"</abbr>")+str(edit_pencil_icon)
+                                    new_value_dicta["VALIDATION"]=str("<abbr class = 'wid90_per' title='"+str(sec_validation)+"'>"+str(sec_validation)+"</abbr>")+str(edit_pencil_icon)
                                     new_value_dicta["ENTITLEMENT COST IMPACT"]= str("<abbr title='"+str(sec_str_imt)+"'>"+str(sec_str_imt)+"</abbr>") 
                                     new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
                                     new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
