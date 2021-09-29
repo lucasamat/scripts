@@ -863,6 +863,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		attributeReadonlylst=[]
 		attributesallowedlst=[]
 		attributedefaultvalue = []
+		overall_att_list_sub =[]
 		#overallattributeslist =[]
 		attributevalues={}
 		#getquote_sales_val = AttributeID_Pass = ''
@@ -872,6 +873,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					if Productattribute=="characteristics":
 						for prdvalue in Productvalue:
 							#overallattributeslist.append(prdvalue['id'])
+							if prdvalue['id'].startswith('AGS_Z0046_'):
+								overall_att_list_sub.append(prdvalue['id'])
 							if prdvalue['visible'] =='false':
 								attributesdisallowedlst.append(prdvalue['id'])
 							else:								
