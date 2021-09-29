@@ -1308,7 +1308,7 @@ class CONTAINER:
                                         Trace.Write("x_tabs flag0 =>"+str(x_tabs))
                                         
                                         QueryCountOBJ = Sql.GetFirst(
-                                            "select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID]  AND SAQTRV.ACTIVE = 'True' " + str(where)
+                                            "select rowcnt= count(*)  from " + PRIMARY_OBJECT_NAMes + " INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN ACAPTX ON ACAPTX.APRTRXOBJ_ID = SAQTRV.[QUOTE_ID] AND SAQTRV.ACTIVE = 'True' " + str(where)
                                         )    
                                     else:
                                         QueryCountOBJ = Sql.GetFirst(
