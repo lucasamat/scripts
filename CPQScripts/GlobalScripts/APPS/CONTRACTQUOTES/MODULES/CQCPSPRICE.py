@@ -49,4 +49,4 @@ def fetch_cps_price():
     return response
 
 
-ApiResponse = ApiResponseFactory.JsonResponse(fetch_cps_price())
+#ApiResponse = ApiResponseFactory.JsonResponse(fetch_cps_price())
