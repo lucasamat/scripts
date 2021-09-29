@@ -1230,8 +1230,8 @@ class SyncQuoteAndCustomTables:
 								Log.Info("fab_quote_data===> " + str(fab_quote_data))
 								quote_fab_table_info.AddRow(fab_quote_data) """
 					Log.Info("contract_quote_data===> " + str(contract_quote_data))
-					Log.Info("quote_involved_party_table_info===> " + str(quote_involved_party_table_info))
-					Log.Info("contact_Info_update "+str(contact_info_update))
+					#Log.Info("quote_involved_party_table_info===> " + str(quote_involved_party_table_info))
+					#Log.Info("contact_Info_update "+str(contact_info_update))
 					quote_table_info.AddRow(contract_quote_data)
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
