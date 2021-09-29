@@ -41,23 +41,23 @@ class tool_idle:
             "DESCRIPTION",
             "VALUES",    
         ]
-        Objd_Obj = Sql.GetList(
-            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
-            + str(ObjectName)
-            + "'"
-        )
-        lookup_disply_list = []
-        if Objd_Obj is not None:
-            attr_list = {}
-            api_names = [inn.API_NAME for inn in Objd_Obj]
-            for attr in Objd_Obj:
-                attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
-                if str(attr.LOOKUP_API_NAME) != "" and str(attr.LOOKUP_API_NAME) is not None:
-                    lookup_disply_list.append(str(attr.API_NAME))
-            checkbox_list = [
-                inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
-            ]
-            lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+        # Objd_Obj = Sql.GetList(
+        #     "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+        #     + str(ObjectName)
+        #     + "'"
+        # )
+        # lookup_disply_list = []
+        # if Objd_Obj is not None:
+        #     attr_list = {}
+        #     api_names = [inn.API_NAME for inn in Objd_Obj]
+        #     for attr in Objd_Obj:
+        #         attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+        #         if str(attr.LOOKUP_API_NAME) != "" and str(attr.LOOKUP_API_NAME) is not None:
+        #             lookup_disply_list.append(str(attr.API_NAME))
+        #     checkbox_list = [
+        #         inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
+        #     ]
+        #     lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 
             # current_obj_value = ""
             # onchange = ""
@@ -88,7 +88,15 @@ class tool_idle:
                 + "</th>"
             )
             
-        sec_str += '</tr></thead><tbody class ="tool_idle" ></tbody></table>'
+        sec_str += '</tr></thead><tbody class ="tool_idle" >'
+        Objd_Obj = Sql.GetList(
+            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+            + str(ObjectName)
+            + "'"
+        )
+        for tool in Objd_Obj:
+            sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td><td>'+tool.PICKLIST_VALUES+'</td></tr>'
+        sec_str += '</tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
         values_list = ""
         values_lists = ""
