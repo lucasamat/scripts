@@ -105,6 +105,7 @@ class tool_idle:
             edit_pencil_icon = ""
             MODE = ""
             current_obj_api_name = tool.API_NAME
+            Trace.Write("iii"+str(current_obj_api_name))
             readonly_val = tool.PERMISSION
             if (readonly_val == "" or readonly_val.upper() == "EDITABLE"):				
                 edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
