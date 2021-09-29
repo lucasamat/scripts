@@ -12,9 +12,8 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
 import SYCNGEGUID as CPQID
+import CQCPSPRICE as CPS
 import System.Net
-
-
     
 def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
     if str(PerPage) == "" and str(PageInform) == "":
@@ -427,6 +426,28 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         page
     )
 
+def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
+    if str(PerPage) == "" and str(PageInform) == "":
+        Page_start = 1
+        Page_End = 10
+        PerPage = 10
+        PageInform = "1___10___10"
+    else:
+        Page_start = int(PageInform.split("___")[0])
+        Page_End = int(PageInform.split("___")[1])
+        PerPage = PerPage
+    TreeParam = Product.GetGlobal("TreeParam")
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+    data_list = []
+    rec_id = "SYOBJR-00010"
+    obj_id = "SYOBJR-00010"
+    return CPS.fetch_cps_price()
+
+
 if Param.ACTION == "LOAD":
     PerPage = "10"
     PageInform = "1___10___10"
@@ -434,3 +455,6 @@ if Param.ACTION == "LOAD":
     A_Values = []
     if Param.TABNAME == "Spare Parts Parent":
         ApiResponse = ApiResponseFactory.JsonResponse(getsparepartslist(PerPage, PageInform, A_Keys, A_Values))
+    elif Param.TABNAME == "Spare Parts Child":
+        ApiResponse = ApiResponseFactory.JsonResponse(getsparepartssublist(PerPage, PageInform, A_Keys, A_Values))
+    
