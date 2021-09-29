@@ -171,7 +171,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         data_dict["TAX"] = ('<abbr id ="" title="' + str(par.TAX) + '">' + str(par.TAX) + "</abbr>")
         data_dict["EXTENDED_PRICE"] = ('<abbr id ="" title="' + str(par.EXTENDED_PRICE) + '">' + str(par.EXTENDED_PRICE) + "</abbr>")
         data_list.append(data_dict)
-    hyper_link = ["PART_NUMBER"]
+    hyper_link = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID"]
     table_header += "<tr>"
     table_header += (
         '<th data-field="ACTIONS"><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
@@ -198,7 +198,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
             table_header += (
                 '<th data-field="'
                 + str(invs)
-                + '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="SparePartsHyperLink" data-sortable="true"'+ str(qstring)+'"><abbr title="'
+                + '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="EquipHyperLinkTreeLink" data-sortable="true"'+ str(qstring)+'"><abbr title="'
                 + str(qstring)
                 + '">'
                 + str(qstring)
