@@ -34,11 +34,13 @@ class tool_idle:
         Header_details = {
             "TOOL IDLING": "TOOL IDLING",
             "DESCRIPTION":"DESCRIPTION",
+            "REQUIRED": "*",
             "VALUES": "VALUES",    
         }
         ordered_keys = [
             "TOOL IDLING",
             "DESCRIPTION",
+            "REQUIRED",
             "VALUES",    
         ]
         # Objd_Obj = Sql.GetList(
