@@ -86,18 +86,28 @@ expiration_obj = qt_expiration_mail_trigger(Quote)
 # mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
 # mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 
+
 quote_expiration_date = Quote.GetCustomField('QuoteExpirationDate').Content
 quote_expiration_date_obj = datetime.datetime.strptime(str(quote_expiration_date),"%Y-%m-%d").strftime('%m-%d-%Y')
 quote_expiration_date = str(quote_expiration_date_obj).split(" ")[0].strip()
 quote_expiration_date = quote_expiration_date.replace("-","/")
 
+now = datetime.datetime.now()
+current_date_obj = str(now).split(" ")[0].strip()
+today_date = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
+today_date_string = str(today_date).split(" ")[0].strip()
+
+mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
+mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
+
 expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CONTRACT_VALID_TO = '"+quote_expiration_date+"' ")
 
-expired_quotes = []
-for quotes in expired_quotes_query:
-    expired_quotes.append(quotes.QUOTE_ID)
-if expired_quotes is not None:
-    expiration_obj.mailtrigger(expired_quotes)
+if today_date_string == mail_trigger_date:
+    expired_quotes = []
+    for quotes in expired_quotes_query:
+        expired_quotes.append(quotes.QUOTE_ID)
+    if expired_quotes is not None:
+        expiration_obj.mailtrigger(expired_quotes)
 
 
 
