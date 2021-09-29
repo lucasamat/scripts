@@ -196,11 +196,11 @@ class tool_idle:
                         + str(edit_pencil_icon)
                         + '"</a></div></td>'
                     )         
-            sec_str += (
-					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
-					+ str(edit_pencil_icon)
-					+ "</a></div></td>"
-				)           
+            # sec_str += (
+			# 		'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
+			# 		+ str(edit_pencil_icon)
+			# 		+ "</a></div></td>"
+			# 	)           
             sec_str += '</tr>'
 
         sec_str += '</tbody></table>'
