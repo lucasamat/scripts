@@ -136,7 +136,7 @@ class tool_idle:
                     + "' "
                 )
                 sec_str += '</td>'
-            if tool.DATA_TYPE == "TEXT":
+            elif tool.DATA_TYPE == "TEXT":
                 sec_str += (
                         '<td><input id="'
                         + str(current_obj_api_name)
@@ -149,7 +149,32 @@ class tool_idle:
                         + ' ">'
                         + str(edit_warn_icon)
                         + "</td>"
-					) 
+					)
+            elif tool.DATA_TYPE == "LONG TEXT AREA":
+                if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
+                    sec_str += (
+                        '<td><textarea title="'
+                        + str(current_obj_value)
+                        + '" class="form-control related_popup_css txtArea" id="'
+                        + str(current_obj_api_name)
+                        + '" rows="1" cols="100" '
+                        + disable
+                        + ">"
+                        + current_obj_value
+                        + "</textarea></td>"
+                    )
+                else:																	
+                    sec_str += (
+                        '<td><textarea title="'
+                        + str(current_obj_value)
+                        + '" class="form-control related_popup_css txtArea " id="'
+                        + str(current_obj_api_name)
+                        + '" rows="1" cols="100" '
+                        + disable							
+                        + ">"
+                        + current_obj_value
+                        + "</textarea></td>"
+                    )         
             sec_str += (
 					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
 					+ str(edit_pencil_icon)
