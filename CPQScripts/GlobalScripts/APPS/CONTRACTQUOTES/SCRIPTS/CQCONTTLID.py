@@ -90,7 +90,7 @@ class tool_idle:
             
         sec_str += '</tr></thead><tbody class ="tool_idle" >'
         Objd_Obj = Sql.GetList(
-            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE,PICKLIST_VALUES from SYOBJD (NOLOCK)where OBJECT_NAME = '"
             + str(ObjectName)
             + "'"
         )
