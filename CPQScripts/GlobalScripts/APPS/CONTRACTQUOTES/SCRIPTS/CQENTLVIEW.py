@@ -24,19 +24,19 @@ userName = str(User.UserName)
 gettodaydate = datetime.now().strftime("%Y-%m-%d")
 
 
-#class EntitlementView():
-    # def __init__(self):
-    #     self.treeparam = TreeParam
-    #     self.treeparentparam = TreeParentParam
-    #     self.treesuperparentparam = TreeSuperParentParam
-    #     self.treetopsuperparentparam = TreeTopSuperParentParam
-    #     self.treesupertopparentparam = TreeSuperTopParentParam
-    #     ##TreeParentLevel4 added for addon product
-    #     self.treetopsupertopparentparam = TreeTopSuperTopParentParam
-    #     self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-    #     self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+class EntitlementView():
+    def __init__(self):
+        self.treeparam = TreeParam
+        self.treeparentparam = TreeParentParam
+        self.treesuperparentparam = TreeSuperParentParam
+        self.treetopsuperparentparam = TreeTopSuperParentParam
+        self.treesupertopparentparam = TreeSuperTopParentParam
+        ##TreeParentLevel4 added for addon product
+        self.treetopsupertopparentparam = TreeTopSuperTopParentParam
+        self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+        self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
     
-def entitlement_view(
+    def entitlement_view(
         self,
         RECORD_ID,
         ObjectName,
@@ -1701,7 +1701,10 @@ else:
 
 Trace.Write("mode--"+str(mode))
 ##calling class
-#entview_class = EntitlementView()
+entview_class = EntitlementView()
 if action == "VIEW":
-    ApiResponse = ApiResponseFactory.JsonResponse(entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
+    if mode == 'Contracts':
+        ApiResponse = ApiResponseFactory.JsonResponse(entview_class.contract_entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
+    else:
+        ApiResponse = ApiResponseFactory.JsonResponse(entview_class.entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
     
