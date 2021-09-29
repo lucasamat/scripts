@@ -1493,6 +1493,7 @@ class TreeView:
 						where_string = where_string                        
 					elif str(CurrentTabName).strip() == 'Quotes' and str(NodeName).strip() == 'APRCHN_ID':
 						where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"))
+						Product.SetGlobal("aprchn_id","yes")
 					#elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
 					#where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"))    
 					#elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
@@ -1595,7 +1596,7 @@ class TreeView:
 					else:
 						Wh_API_NAME = objd_where_obj.API_NAME
 						Trace.Write('Wh_API_NAME----'+str(ObjName)+'Wh_API_NAME111--'+str(Wh_API_NAME))
-						if RecAttValue: 
+						if RecAttValue and str(NodeName).strip() != 'APRCHN_ID' and str(ObjName).strip() != 'ACAPMA':
 							where_string = " " + str(where_string) + " AND " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						else:
 							Trace.Write('where_string----'+str(where_string))
