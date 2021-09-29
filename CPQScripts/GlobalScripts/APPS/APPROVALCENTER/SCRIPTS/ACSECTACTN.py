@@ -1727,7 +1727,7 @@ class approvalCenter:
 					for GetMaxStep in GetMaxStepsQuery:
 						if CurrentTabName == "Quotes":
 							##Max_Round is added to get max round for particular chain
-							Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_RECORD_ID = '{chain_rec_id}'".format(quote_record = quote_record.QUOTE_ID, chain_rec_id = GetMaxStep.APRCHN_RECORD_ID))
+							Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{revision_rec_id}' AND ACAPTX.APRCHN_RECORD_ID = '{chain_rec_id}'".format(revision_rec_id=  self.quote_revision_record_id, chain_rec_id = GetMaxStep.APRCHN_RECORD_ID))
 							if Max_Round is not None:
 								if str(TreeParam) == 'Approvals':
 									##approval image based on chain step starts
