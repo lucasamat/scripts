@@ -59,6 +59,9 @@ class tool_idle:
             ]
             lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 
+            current_obj_value = ""
+            current_obj_api_name = attr.API_NAME
+
         #sec_str = '<div id="contract_cust_fields_div">'     
 
         sec_str = '<div id="container contract_cust_fields_div" class="g4 pad-10 brdr except_sec">'
@@ -81,6 +84,20 @@ class tool_idle:
                 + '" data-sortable="true" data-filter-control="input">'
                 + str(qstring)
                 + "</th>"
+            )
+            sec_str += "<td>"
+            sec_str += (
+                '<select id="'
+                + str(current_obj_api_name)
+                + '" '
+                + str(onchange)
+                + ' value="'
+                + current_obj_value
+                + '" type="text" title="'
+                + str(current_obj_value)
+                + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+                + disable
+                + " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
             )
         sec_str += '</tr></thead><tbody class ="tool_idle" ></tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
