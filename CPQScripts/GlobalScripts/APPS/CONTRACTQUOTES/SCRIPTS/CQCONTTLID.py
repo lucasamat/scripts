@@ -98,7 +98,7 @@ class tool_idle:
         )
         for tool in Objd_Obj:
             onchange = ""
-            current_obj_value = ""
+            current_obj_value = tool.PICKLIST_VALUES
             disable = ""
             edit_warn_icon = ""
             left_float = ""
@@ -127,7 +127,7 @@ class tool_idle:
                     + str(current_obj_value)
                     + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
                     + disable
-                    + " style=\'margin-left: -1px\'><option value='Select'></option>"
+                    + " style=\'margin-left: -1px\'><option value='Select'>"+str(current_obj_value)+"</option>"
                 )
                 Sql_Quality_Tier = Sql.GetFirst(
                     "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
