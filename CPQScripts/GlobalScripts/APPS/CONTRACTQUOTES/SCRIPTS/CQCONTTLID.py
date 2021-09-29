@@ -30,7 +30,7 @@ class tool_idle:
         #DIVNAME = "VIEW_DIV_ID"
         new_value_dict = {}
         ObjectName = "CART"
-        #table_id = "contract_cust_fields_div"
+        table_id = "contract_sec_tool"
         Header_details = {
             "TOOL IDLING": "TOOL IDLING",
             "DESCRIPTION":"DESCRIPTION",
