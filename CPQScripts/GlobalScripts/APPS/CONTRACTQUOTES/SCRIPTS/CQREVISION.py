@@ -297,7 +297,7 @@ def save_desc_revision(Opertion,cartrev,cartrev_id,):
 		recid = get_rev_quote_info_details.QUOTE_REVISION_RECORD_ID
 	#recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET REVISION_DESCRIPTION = '{rev_desc}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND  QUOTE_REVISION_RECORD_ID = '{recid}' """.format(QuoteRecordId=quote_contract_recordId,recid =recid,rev_desc= cartrev))
-	productdesc = Sql.RunQuery("""UPDATE  CART_REVISIONS SET = '{rev_desc}' WHERE CART_ID = '{QuoteRecordId}' AND  VISITOR_ID = '{recid}' """.format(QuoteRecordId=Quote.QuoteId,recid =Quote.UserId,rev_desc= cartrev))
+	productdesc = Sql.RunQuery("""UPDATE  CART_REVISIONS SET DESCRIPTION = '{rev_desc}' WHERE CART_ID = '{quote_idnative}' AND  VISITOR_ID = '{recid}' """.format(quote_idnative=Quote.QuoteId,recid =Quote.UserId,rev_desc= cartrev))
 	#productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(cartrev)+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 	return True
 #edit quote description field end
