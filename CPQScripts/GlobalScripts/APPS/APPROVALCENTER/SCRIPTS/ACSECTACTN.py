@@ -1551,8 +1551,8 @@ class approvalCenter:
 					"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, ACAPTX.REQUESTOR_COMMENTS,max(ACAPTX.APPROVAL_ROUND) as appround 
 						from ACAPTX (nolock)
 						inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-						where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' GROUP BY ACAPTX.REQUESTOR_COMMENTS""".format(
-						quote_record_id=quote_record_id
+						where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' GROUP BY ACAPTX.REQUESTOR_COMMENTS""".format(
+						revision_rec_id=  self.quote_revision_record_id
 					)
 				)
 			else:
