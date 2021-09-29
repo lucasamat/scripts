@@ -1438,7 +1438,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 					and formula_data_type != "CURRENCY"
 				):	
 					Trace.Write(str(readonly)+'current_obj_api_name--1440---'+str(current_obj_api_name))				
-					if current_obj_api_name in lookup_val and str(readonly) != "readonly":	
+					if current_obj_api_name in lookup_val and str(readonly) != "readonly":
+						Trace.Write(str(readonly)+'current_obj_api_name--1443---'+str(current_obj_api_name))	
 						sec_str += (
 							'<td><input id="'
 							+ str(current_obj_api_name)
