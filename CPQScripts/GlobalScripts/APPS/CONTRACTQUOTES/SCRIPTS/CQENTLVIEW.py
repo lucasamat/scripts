@@ -36,43 +36,6 @@ class EntitlementView():
         self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
     
-    def EntitlementRequest(self,ProductPartnumber,RequestURL,RequestType):
-        ProductPartnumber = ProductPartnumber.strip()
-        webclient = System.Net.WebClient()
-        requestdata = ""
-        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-        response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-        response = eval(response)
-        Trace.Write("response_JJ"+str(response)+" RequestType "+str(RequestType))
-        Trace.Write("RequestURL"+str(RequestURL))
-        if RequestType == 'New':
-            Request_URL = RequestURL
-            webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-            requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
-            # if TreeSuperParentParam=="Offerings":
-            # requestdata= '{"productKey":"'+TreeParam+'","date":"2020-10-14","context":[{"name":"VBAP-MATNR","value":"'+TreeParam+'"}]}'
-            # ProductPartnumber=TreeParam
-            # elif TreeTopSuperParentParam=="Offerings":
-            # requestdata= '{"productKey":"'+TreeParentParam+'","date":"2020-09-01","context":[{"name":"VBAP-MATNR","value":"'+TreeParentParam+'"}]}'
-            # ProductPartnumber=TreeParentParam
-            Trace.Write("requestdata-1888---" + str(requestdata))
-            response1 = webclient.UploadString(Request_URL, str(requestdata))
-        else:
-            try:		
-                Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
-                Request_URL = RequestURL
-                webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
-                response1 = webclient.DownloadString(Request_URL)
-            except Exception as e:
-                Trace.Write('1897-----'+str(e))
-                response1 = {}
-                
-        response1 = str(response1).replace(": true", ': "true"').replace(": false", ': "false"')
-        Trace.Write("response1_J "+str(response1))
-        return eval(response1)
-
-
     def entitlement_view(
         self,
         RECORD_ID,
@@ -258,12 +221,14 @@ class EntitlementView():
         if EntitlementType != "SENDING_LEVEL":
             if TableObj is None and (EntitlementType == "EQUIPMENT"):
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-                Fullresponse = self.EntitlementRequest(ProductPartnumber,Request_URL,"New")
+                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
+                #self.EntitlementRequest(ProductPartnumber,Request_URL,)
             else:		
                 if TableObj:
                     cpsConfigID = TableObj.CPS_CONFIGURATION_ID
                 Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-                Fullresponse = self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
+                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"Existing"})
+                #self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
             attributesdisallowedlst = []
             attributeReadonlylst = attributes_disallowed_list = attriburesrequired_list = []
