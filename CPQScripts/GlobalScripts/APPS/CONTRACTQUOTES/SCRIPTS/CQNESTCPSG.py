@@ -445,7 +445,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     data_list = []
     rec_id = "SYOBJR-00010"
     obj_id = "SYOBJR-00010"
-    return CPS.fetch_cps_price()
+    return CPS.CPSPRICECALL.fetch_cps_price()
 
 
 if Param.ACTION == "LOAD":
