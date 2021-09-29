@@ -136,7 +136,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
             + '" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
             '<li><a class="dropdown-item" id="deletebtn" data-target="#cont_CommonModalDelete" data-toggle="modal" onclick="CommonDelete(this, \'SAQIFP#'+ data_id +'\', \'WARNING\')" href="#">DELETE</a></li>'
         )
-"""        
+        """        
         if can_edit.upper() == "TRUE":
             Action_str += (
                 '<li style="display:none" ><a class="dropdown-item cur_sty" href="#" id="'
@@ -146,7 +146,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         if can_delete.upper() == "TRUE":
             Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
         Action_str += "</ul></div></div>"
-"""
+        """
         # Data formation in dictonary format.
         ## hyperlink
         data_dict = {}
