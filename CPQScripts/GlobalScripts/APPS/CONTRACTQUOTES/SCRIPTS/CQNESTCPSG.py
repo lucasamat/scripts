@@ -12,7 +12,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
 import SYCNGEGUID as CPQID
-from CQCPSPRICE import CPSPRICECALL 
+import CQCPSPRICE as CPS
 import System.Net
     
 def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
@@ -445,7 +445,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     data_list = []
     rec_id = "SYOBJR-00010"
     obj_id = "SYOBJR-00010"
-    return CPS.CPSPRICECALL.fetch_cps_price()
+    return CPS.fetch_cps_price()
 
 
 if Param.ACTION == "LOAD":
