@@ -100,6 +100,8 @@ class tool_idle:
             onchange = ""
             current_obj_value = ""
             disable = ""
+            edit_warn_icon = ""
+            left_float = ""
             current_obj_api_name = tool.API_NAME
             sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
             if tool.DATA_TYPE == "PICKLIST":
@@ -125,6 +127,20 @@ class tool_idle:
                     + "' "
                 )
                 sec_str += '</td>'
+            if tool.DATA_TYPE == "TEXT":
+                sec_str += (
+                        '<td><input id="'
+                        + str(current_obj_api_name)
+                        + '" type="text" value="'
+                        + current_obj_value
+                        + '" title="'
+                        + current_obj_value
+                        + '" class="form-control related_popup_css fltlt" style="'
+                        + str(left_float)
+                        + ' ">'
+                        + str(edit_warn_icon)
+                        + "</td>"
+					)    
             sec_str += '</tr>'   
         sec_str += '</tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
