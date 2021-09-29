@@ -1472,7 +1472,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 								+ str(edit_warn_icon)
 								+ "</td>"
 							)
-						elif current_obj_api_name == "CONTRACT_VALID_FROM" and ObjectName == "SAQSCO":
+						elif current_obj_api_name in ["CONTRACT_VALID_FROM","CONTRACT_VALID_TO"] and ObjectName == "SAQSCO":
 							sec_str += (
 								'<td><input id="'
 								+ str(current_obj_api_name)
