@@ -119,11 +119,11 @@ class ViolationConditions:
         """Approval violations."""
         ApprovalCombinationID = approval_id_auto = ""
         GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
-        Log.Info("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
+        #Log.Info("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         QuoteId = CurrentId
         
         GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
-        Log.Info("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
+        #Log.Info("SELECT QUOTE_ID,QTEREV_ID FROM {ObjectName} WHERE {primarykey} = '{CurrentId}'".format(ObjectName = ObjectName,primarykey = str(GetObjHPromaryKey.RECORD_NAME),CurrentId = CurrentId))
         
         QuoteId = str(GetQuoteId.QUOTE_ID)
         RevisionId = str(GetQuoteId.QTEREV_ID)
@@ -206,9 +206,9 @@ class ViolationConditions:
         Log.Info("query statement acapma ---"+str(insertQueryStatement))
         return insertQueryStatement
 
-    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None):
+    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None):
         """ACAPTX date insert script."""
-        InsertQueryStatement = """INSERT ACAPTX ( APRCHN_ID ,APPROVAL_TRANSACTION_RECORD_ID ,APRCHN_RECORD_ID ,
+        InsertQueryStatement = """INSERT ACAPTX ( APRTRXOBJ_ID,APRCHN_ID ,APPROVAL_TRANSACTION_RECORD_ID ,APRCHN_RECORD_ID ,
 		APRCHNSTP_APPROVER_ID ,APRCHNSTP_APPROVER_RECORD_ID ,APRCHNSTP_ID ,APRCHNSTP_NAME,APRCHNSTP_RECORD_ID ,
 		APRCHNSTP_STATUS_RECORD_ID ,APRCHNSTPTRX_ID ,APPROVAL_ID ,APPROVAL_RECIPIENT ,
 		APPROVAL_RECIPIENT_RECORD_ID ,APPROVAL_RECORD_ID ,APPROVALSTATUS ,APPROVE_TEMPLATE_ID ,
@@ -218,7 +218,7 @@ class ViolationConditions:
 		REQUEST_TEMPLATE_ID ,REQUEST_TEMPLATE_RECORD_ID ,REQUIRE_EXPLICIT_APPROVAL ,
 		UNANIMOUS_CONSENT ,REQUESTOR_COMMENTS,ADDUSR_RECORD_ID,CPQTABLEENTRYADDEDBY,
 		CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified )
-		SELECT DISTINCT ACAPCH.APRCHN_ID AS APRCHN_ID
+		SELECT DISTINCT '{QuoteId}' AS APRTRXOBJ_ID,ACAPCH.APRCHN_ID AS APRCHN_ID
 			,CONVERT(VARCHAR(4000), NEWID()) AS APPROVAL_TRANSACTION_RECORD_ID
 			,ACAPCH.APPROVAL_CHAIN_RECORD_ID AS APRCHN_RECORD_ID
 			,APPRO.APRCHNSTP_APPROVER_ID AS APRCHNSTP_APPROVER_ID
@@ -299,7 +299,7 @@ class ViolationConditions:
 				) AS usr ON usr.APRCHNSTP_APPROVER_ID = ACACSA.APRCHNSTP_APPROVER_ID
 			) AS APPRO ON APPRO.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID
 			INNER JOIN ACAPMA (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID """.format(
-            Get_UserID=self.Get_UserID, datetime_value=self.datetime_value, UserName=self.Get_UserNAME, ApprovalChainRecordId=ApprovalChainRecordId
+            Get_UserID=self.Get_UserID, datetime_value=self.datetime_value, UserName=self.Get_UserNAME, ApprovalChainRecordId=ApprovalChainRecordId,QuoteId=QuoteId
         )
         return InsertQueryStatement
 
@@ -632,7 +632,11 @@ class ViolationConditions:
                                     ACACST.REJECT_TEMPLATE_ID,ACACST.REJECT_TEMPLATE_RECORD_ID,ACACST.REQUEST_TEMPLATE_ID,
                                     ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
                                     APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
-                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID)
+                                    QuoteId = ""
+                                    if str(ObjectName).strip() == "SAQTRV":
+                                        GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
+                                        QuoteId = GetQuoteId.QUOTE_ID
+                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId)
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
                                     Trace.Write("Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
