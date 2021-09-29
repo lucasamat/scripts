@@ -11,7 +11,7 @@ from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
 import time
 Sql = SQL()
-import CQCPSPRICE
+import CQCPSPRICE as CPS
 import SYCNGEGUID as CPQID
 import System.Net
     
