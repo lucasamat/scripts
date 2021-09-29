@@ -87,20 +87,7 @@ class tool_idle:
                 + str(qstring)
                 + "</th>"
             )
-            sec_str += "<td>"
-            sec_str += (
-                '<select id="'
-                + str(current_obj_api_name)
-                + '" '
-                + str(onchange)
-                + ' value="'
-                + current_obj_value
-                + '" type="text" title="'
-                + str(current_obj_value)
-                + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
-                + disable
-                + " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
-            )
+            
         sec_str += '</tr></thead><tbody class ="tool_idle" ></tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
         values_list = ""
