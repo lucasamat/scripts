@@ -35,13 +35,15 @@ class tool_idle:
             "TOOL IDLING": "TOOL IDLING",
             "DESCRIPTION":"DESCRIPTION",
             "REQUIRED": "*",
-            "VALUES": "VALUES",    
+            "VALUES": "VALUES",
+            "": "",    
         }
         ordered_keys = [
             "TOOL IDLING",
             "DESCRIPTION",
             "REQUIRED",
-            "VALUES",    
+            "VALUES",
+            "",    
         ]
         # Objd_Obj = Sql.GetList(
         #     "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
