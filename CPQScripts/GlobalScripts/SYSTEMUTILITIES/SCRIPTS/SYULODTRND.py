@@ -1476,15 +1476,13 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 							sec_str += (
 								'<td><input id="'
 								+ str(current_obj_api_name)
-								+ '" type="text" value="'
+								+ '" value="'
 								+ current_obj_value
-								+ '" title="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css fltlt" style="'
-								+ str(left_float)
-								+ ' ">'
-								+ str(edit_warn_icon)
-								+ "</td>"
+								+ '" type="text"  onclick="'
+								+ str(datepicker)
+								+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
+								+ disable
+								+ " ></td>"
 							)
 						elif (
 							str(current_obj_api_name) == "MESSAGE_HEADERVALUE"
