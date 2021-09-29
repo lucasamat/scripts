@@ -27,7 +27,7 @@ class tool_idle:
         #             if where_string:
         #                 where_string += " AND "
         #             where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
-        DIVNAME = "VIEW_DIV_ID"
+        #DIVNAME = "VIEW_DIV_ID"
         new_value_dict = {}
         ObjectName = "CART"
         table_id = "contract_cust_fields_div"
