@@ -16,6 +16,7 @@ class tool_idle:
     def Contract_Tool_Idling(self):
         Trace.Write("tp inside function")    
         where_string = ""
+        sec_str = ""
         TreeParam = Product.GetGlobal("TreeParam")
 
         # if A_Keys != "" and A_Values != "":
@@ -58,7 +59,7 @@ class tool_idle:
             ]
             lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}    
 
-        sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+        sec_str = '<div id="container" class="g4 pad-10 brdr except_sec">'
         sec_str += (
             '<table id="'
             + str(table_id)
