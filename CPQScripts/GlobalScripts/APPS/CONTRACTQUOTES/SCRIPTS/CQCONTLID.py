@@ -59,10 +59,10 @@ class tool_idle:
             ]
             lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 
-            current_obj_value = ""
-            onchange = ""
-            disable = ""            
-            current_obj_api_name = attr.API_NAME
+            # current_obj_value = ""
+            # onchange = ""
+            # disable = ""            
+            # current_obj_api_name = attr.API_NAME
 
         #sec_str = '<div id="contract_cust_fields_div">'     
 
