@@ -100,12 +100,10 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
                 where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
     if str(where_string)!="":
         where_string = " AND "+str(where_string)
-    imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
-    acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
     Qstr = (
         "SELECT DISTINCT TOP "
         + str(PerPage)
-        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(orderby) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(ContractRecordId)
+        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(orderby) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(ContractRecordId)
         +"' AND QTEREV_RECORD_ID = '"
         +str(RevisionRecordId)
         +"') m where m.ROW BETWEEN "
@@ -153,7 +151,13 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         data_dict["QUOTE_ITEM_FORECAST_PART_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
             "SAQIFP", str(par.QUOTE_ITEM_FORECAST_PART_RECORD_ID)
         )
-        data_dict["PRICING_STATUS"] = ('<abbr id ="" title="' + str(par.PRICING_STATUS) + '">' + str(par.PRICING_STATUS) + "</abbr>") 
+        if par.PRICING_STATUS == 'ACQUIRED':
+            imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
+            data_dict["PRICING_STATUS"] = ('<abbr id ="" title="' + str(par.PRICING_STATUS) + '">' + str(imgstr) +  "</abbr>") 
+        else:
+            acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+            data_dict["PRICING_STATUS"] = ('<abbr id ="" title="' + str(par.PRICING_STATUS) + '">' + str(acquiring_img_str) +  "</abbr>")
+            
         data_dict["SERVICE_ID"] = ('<abbr id ="" title="' + str(par.SERVICE_ID) + '">' + str(par.SERVICE_ID) + "</abbr>")
         data_dict["PART_LINE_ID"] = ('<abbr id ="" title="' + str(par.PART_LINE_ID) + '">' + str(par.PART_LINE_ID) + "</abbr>")
         data_dict["PART_NUMBER"] = ('<abbr id ="" title="' + str(par.PART_NUMBER) + '">' + str(par.PART_NUMBER) + "</abbr>")
