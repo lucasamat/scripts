@@ -92,7 +92,7 @@ class tool_idle:
             
         sec_str += '</tr></thead><tbody class ="tool_idle" >'
         Objd_Obj = Sql.GetList(
-            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE,PICKLIST_VALUES from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE,PICKLIST_VALUES,PERMISSION from SYOBJD (NOLOCK)where OBJECT_NAME = '"
             + str(ObjectName)
             + "'"
         )
@@ -102,7 +102,16 @@ class tool_idle:
             disable = ""
             edit_warn_icon = ""
             left_float = ""
+            edit_pencil_icon = ""
             current_obj_api_name = tool.API_NAME
+            readonly_val = tool.PERMISSION
+            if (readonly_val == "" or readonly_val.upper() == "EDITABLE"):				
+                edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
+            elif readonly_val == "EDITABLE":						
+                edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
+            else:						
+                edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
+                disable = "disabled"
             sec_str += '<tr><td>'+tool.API_NAME+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
             if tool.DATA_TYPE == "PICKLIST":
                 sec_str += '<td>'
@@ -140,8 +149,14 @@ class tool_idle:
                         + ' ">'
                         + str(edit_warn_icon)
                         + "</td>"
-					)    
-            sec_str += '</tr>'   
+					) 
+            sec_str += (
+					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
+					+ str(edit_pencil_icon)
+					+ "</a></div></td>"
+				)           
+            sec_str += '</tr>'
+
         sec_str += '</tbody></table>'
         #sec_str += '<div id="involved_parties_equipment_addnew_footer"></div>'
         values_list = ""
