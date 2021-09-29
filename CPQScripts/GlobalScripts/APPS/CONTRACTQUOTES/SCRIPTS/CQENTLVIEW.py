@@ -303,7 +303,7 @@ class EntitlementView():
                                         if i['selectable'] == 'false' and 'valueLow' in i.keys():
                                             dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
                                         if i['selectable'] == 'true' and 'valueHigh' in i.keys():
-                                            validation_dict[prdvalue["id"] ] = i['valueLow']
+                                            validation_dict[prdvalue["id"] ] = i['valueHigh']
                                         # else:
                                         # 	dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
                                 for attribute in prdvalue["values"]:
@@ -1586,25 +1586,25 @@ class EntitlementView():
 try:
     alltreeparam =eval(Param.alltreeparam)
     TreeParam = alltreeparam["TreeParam"]  
-    try:
+    if 'TreeParentLevel0' in  alltreeparam.keys():
         TreeParentParam = alltreeparam["TreeParentLevel0"]
-    except:
+    else:
         TreeParentParam = ""
-    try:
+    if 'TreeParentLevel1' in  alltreeparam.keys():
         TreeSuperParentParam = alltreeparam["TreeParentLevel1"]
-    except:
+    else:
         TreeSuperParentParam = ""
-    try:
+    if 'TreeParentLevel2' in  alltreeparam.keys():
         TreeTopSuperParentParam = alltreeparam["TreeParentLevel2"]
-    except:
+    else:
         TreeTopSuperParentParam = ""
-    try:
+    if 'TreeParentLevel3' in  alltreeparam.keys():
         TreeSuperTopParentParam = alltreeparam["TreeParentLevel3"]
-    except:
+    else:
         TreeSuperTopParentParam = ""
-    try:
+    if 'TreeParentLevel4' in  alltreeparam.keys():
         TreeTopSuperTopParentParam = alltreeparam["TreeParentLevel4"]
-    except:
+    else:
         TreeTopSuperTopParentParam = ""
 
 except:
@@ -1617,6 +1617,9 @@ except:
     TreeTopSuperTopParentParam = Product.GetGlobal("TreeParentLevel4")
     
 ##getting params
+SubtabName = Param.SubtabName
+action = Param.action
+Trace.Write("SubtabName==="+str(SubtabName))
 try:
     RECORD_ID = Param.RECORD_ID
 except:
@@ -1632,11 +1635,6 @@ try:
 except:
     SectionList = ""
 try:
-    SubtabName = Param.SubtabName
-    Trace.Write("SubtabName==="+str(SubtabName))
-except:
-    SubtabName = ""
-try:
     EquipmentId = Param.EquipmentId
 except:
     EquipmentId = ""
@@ -1644,15 +1642,10 @@ try:
     AssemblyId = Param.AssemblyId
 except:
     AssemblyId = ""
-try:
-    action = Param.action
-except:
-    action = ""
-try:
-    SubtabName = Param.SubtabName
-    Trace.Write("SubtabName==="+str(SubtabName))
-except:
-    SubtabName = ""
+
+
+
+
 
 EntitlementType = ""
 SectionObjectName = ""
