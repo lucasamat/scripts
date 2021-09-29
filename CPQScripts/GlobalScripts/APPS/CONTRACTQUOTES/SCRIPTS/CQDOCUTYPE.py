@@ -16,7 +16,7 @@ Sql = SQL()
 def update_document_type(QuoteRecordId,RevisionRecordId):
     document_type_list = []
     service_obj  = Sql.GetList("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
-    Quote_obj = Sql.GetFirst("SELECT POES FROM  SAQTMT(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+    Quote_obj = Sql.GetFirst("SELECT POES FROM  SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
     for service in service_obj:
         #Log.Info("service_obj--------------->"+str(service.SERVICE_ID))
         document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service.SERVICE_ID,Quote_obj.POES))
