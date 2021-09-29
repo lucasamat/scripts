@@ -136,6 +136,19 @@ class tool_idle:
                     + str(current_obj_api_name)
                     + "' "
                 )
+                if (
+						str(Sql_Quality_Tier.PICKLIST_VALUES).strip() is not None
+						and str(Sql_Quality_Tier.PICKLIST_VALUES).strip() != ""
+					):						
+						Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")		
+						for req1 in Tier_List:
+							req1 = req1.strip()							
+							if current_obj_value == req1:								
+								sec_str += "<option selected>" + str(req1) + "</option>"
+							else:								
+								sec_str += "<option>" + str(req1) + "</option>"
+                else:						
+                    sec_str += "<option selected>" + str(current_obj_value) + "</option>"
                 sec_str += '</td>'
             elif tool.DATA_TYPE == "TEXT":
                 sec_str += (
