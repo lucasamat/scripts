@@ -363,382 +363,383 @@ class EntitlementView():
             
             insertservice = ""
             #Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
-        if TableObj is None and (EntitlementType == "EQUIPMENT"): 
-            #Trace.Write('not inserted')
-            getnameentallowed = []
-            if product_tabs_obj:
-                for product_tab_obj in product_tabs_obj:
-                    # section=========================product_tab_obj.TAB_NAME,
-                    product_section =  str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
-                    #Trace.Write("product_tab_obj---"+str(product_section))
-                    list_of_tabs.append(product_section)
-                    #Trace.Write("list_of_tabs---"+str(list_of_tabs))
-                    sysectObj = Sql.GetFirst(
-                        "SELECT RECORD_ID,SECTION_DESC,SECTION_NAME FROM SYSECT (NOLOCK) WHERE SECTION_NAME='"+str(product_section)+"'"
-                    )
-                    date_boot_field=[]
-                    tablistdict = {}
-                    if sysectObj and str(sysectObj.SECTION_NAME) == str(product_section):
-                        Section_id = sysectObj.RECORD_ID
-                        Section_desc = sysectObj.SECTION_DESC.split('_')
-                        Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
-                    else:
-                        get_last_secid = SqlHelper.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
-                        if get_last_secid:
-                            get_last_secid = get_last_secid.saprec_id.split('-')[2]
-                            get_last_secid = int(int(get_last_secid)) + 1
-                            get_lastsection_val = 'SYSECT-SA-'+ str(get_last_secid)
-                            getsect_tab = SqlHelper.GetTable("SYSECT")
-                            tbrowsect = {}
-                            tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
-                            tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
-                            tbrowsect['SECTION_DESC'] =  str(product_section)
-                            tbrowsect['SECTION_NAME'] =  str(product_section)
-                            tbrowsect['SECTION_PARTNUMBER'] =  self.treeparam.upper()
-                            tbrowsect['PARENT_SECTION_TEXT'] = product_tab_obj.SYSTEM_ID
-                            getsect_tab.AddRow(tbrowsect)
-                            Sql.Upsert(getsect_tab)
-                            sysectObj = Sql.GetFirst("SELECT RECORD_ID,SECTION_DESC,PARENT_SECTION_TEXT FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(product_section) + "'")
-                            if sysectObj:
-                                Section_id = sysectObj.RECORD_ID
-                                Section_desc = sysectObj.SECTION_DESC.split('_')
-                                Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
-                    add_style =  add_style_color = ""
-                    sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
+        # if TableObj is None and (EntitlementType == "EQUIPMENT"): 
+        #     #Trace.Write('not inserted')
+        #     getnameentallowed = []
+        #     if product_tabs_obj:
+        #         for product_tab_obj in product_tabs_obj:
+        #             # section=========================product_tab_obj.TAB_NAME,
+        #             product_section =  str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
+        #             #Trace.Write("product_tab_obj---"+str(product_section))
+        #             list_of_tabs.append(product_section)
+        #             #Trace.Write("list_of_tabs---"+str(list_of_tabs))
+        #             sysectObj = Sql.GetFirst(
+        #                 "SELECT RECORD_ID,SECTION_DESC,SECTION_NAME FROM SYSECT (NOLOCK) WHERE SECTION_NAME='"+str(product_section)+"'"
+        #             )
+        #             date_boot_field=[]
+        #             tablistdict = {}
+        #             if sysectObj and str(sysectObj.SECTION_NAME) == str(product_section):
+        #                 Section_id = sysectObj.RECORD_ID
+        #                 Section_desc = sysectObj.SECTION_DESC.split('_')
+        #                 Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
+        #             else:
+        #                 get_last_secid = SqlHelper.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
+        #                 if get_last_secid:
+        #                     get_last_secid = get_last_secid.saprec_id.split('-')[2]
+        #                     get_last_secid = int(int(get_last_secid)) + 1
+        #                     get_lastsection_val = 'SYSECT-SA-'+ str(get_last_secid)
+        #                     getsect_tab = SqlHelper.GetTable("SYSECT")
+        #                     tbrowsect = {}
+        #                     tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
+        #                     tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
+        #                     tbrowsect['SECTION_DESC'] =  str(product_section)
+        #                     tbrowsect['SECTION_NAME'] =  str(product_section)
+        #                     tbrowsect['SECTION_PARTNUMBER'] =  self.treeparam.upper()
+        #                     tbrowsect['PARENT_SECTION_TEXT'] = product_tab_obj.SYSTEM_ID
+        #                     getsect_tab.AddRow(tbrowsect)
+        #                     Sql.Upsert(getsect_tab)
+        #                     sysectObj = Sql.GetFirst("SELECT RECORD_ID,SECTION_DESC,PARENT_SECTION_TEXT FROM SYSECT (NOLOCK) WHERE SECTION_NAME='" + str(product_section) + "'")
+        #                     if sysectObj:
+        #                         Section_id = sysectObj.RECORD_ID
+        #                         Section_desc = sysectObj.SECTION_DESC.split('_')
+        #                         Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
+        #             add_style =  add_style_color = ""
+        #             sec_str_boot += ('<div id="sec_'+str(Section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down margtop10" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(Section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(Section_desc).upper()+ '</div></label></div><div id="sc_'+str(Section_id)+ '" class="collapse in "><table id="' + str(Section_id)+ '" class= "getentdata" data-filter-control="true" data-maintain-selected="true" data-locale = "en-US" data-escape="true" data-html="true"  data-show-header="true" > <thead><tr class="hovergrey">')
                      
-                    for key, invs in enumerate(list(desc_list)):
-                        invs = str(invs).strip()
-                        qstring = attr_dict.get(str(invs)) or ""
-                        sec_str_boot += (
-                            '<th data-field="'
-                            + invs
-                            + '" data-title-tooltip="'
-                            + str(qstring)
-                            + '" >'
-                            + str(qstring)
-                            + "</th>"
-                        )
-                    sec_str_boot += '</tr></thead><tbody onclick="Table_Onclick_Scroll(this)" ></tbody></table>'
-                    sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
-                    attribute_Name_list = []
-                    #Trace.Write(" tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
-                    if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-                        for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-                            new_value_dicta = {}
-                            attrName = attribute['attribute_name']
-                            attrLabel = attribute['attribute_label']	
-                            attrSysId = attribute['attribute_system_id']
-                            attribute_code = attribute['attribute_code']					
-                            STDVALUES =  Sql.GetFirst("SELECT * FROM STANDARD_ATTRIBUTE_VALUES WHERE SYSTEM_ID like '%{sys_id}%' ".format(sys_id = attrSysId)  )
-                            if STDVALUES:
-                                attrValue = STDVALUES.STANDARD_ATTRIBUTE_VALUE
-                                if attrValue == "DefaultValue":
-                                    attrValue = ''
-                            else:
-                                attrValue = ''
+        #             for key, invs in enumerate(list(desc_list)):
+        #                 invs = str(invs).strip()
+        #                 qstring = attr_dict.get(str(invs)) or ""
+        #                 sec_str_boot += (
+        #                     '<th data-field="'
+        #                     + invs
+        #                     + '" data-title-tooltip="'
+        #                     + str(qstring)
+        #                     + '" >'
+        #                     + str(qstring)
+        #                     + "</th>"
+        #                 )
+        #             sec_str_boot += '</tr></thead><tbody onclick="Table_Onclick_Scroll(this)" ></tbody></table>'
+        #             sec_str_boot += ('<div id = "btn_ent" class="g4  except_sec removeHorLine iconhvr sec_edit_sty" style="display: none;"><button id="entcancel" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button><button id="entsave" class="btnconfig btnMainBanner sec_edit_sty_btn"  onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button></div>')
+        #             attribute_Name_list = []
+        #             #Trace.Write(" tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
+        #             if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
+        #                 for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
+        #                     new_value_dicta = {}
+        #                     attrName = attribute['attribute_name']
+        #                     attrLabel = attribute['attribute_label']	
+        #                     attrSysId = attribute['attribute_system_id']
+        #                     attribute_code = attribute['attribute_code']					
+        #                     STDVALUES =  Sql.GetFirst("SELECT * FROM STANDARD_ATTRIBUTE_VALUES WHERE SYSTEM_ID like '%{sys_id}%' ".format(sys_id = attrSysId)  )
+        #                     if STDVALUES:
+        #                         attrValue = STDVALUES.STANDARD_ATTRIBUTE_VALUE
+        #                         if attrValue == "DefaultValue":
+        #                             attrValue = ''
+        #                     else:
+        #                         attrValue = ''
                             
-                            attribute_Name_list.append(attrSysId)
-                            DType = attribute['attribute_dtype']
-                            #Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
-                            #Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
-                            if attrSysId in attributesdisallowedlst:
-                                if attrSysId in attributedefaultvalue:
-                                    add_style = "display:none;color:#1B78D2"
-                                else:
-                                    add_style = "display:none;"
-                                attributes_disallowed_list.append(attrSysId)
-                            else:
-                                add_style = ""
-                            #Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
-                            if attrSysId in attributedefaultvalue:
-                                #Trace.Write("add_style----3077----- "+str(attrSysId))
-                                add_style = "color:#1B78D2"
-                            # if attrSysId in attributedefaultvalue:
-                            # 	add_style_color = ";color: red"
-                            # else:
-                            # 	add_style_color = ""
-                            if attrSysId in attributeEditlst :
-                                disable_edit = 'disable_edit'
-                                edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
+        #                     attribute_Name_list.append(attrSysId)
+        #                     DType = attribute['attribute_dtype']
+        #                     #Trace.Write(str(DType)+'----'+str(attrName)+'--attrName---attrSysId--'+str(attrSysId))
+        #                     #Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
+        #                     if attrSysId in attributesdisallowedlst:
+        #                         if attrSysId in attributedefaultvalue:
+        #                             add_style = "display:none;color:#1B78D2"
+        #                         else:
+        #                             add_style = "display:none;"
+        #                         attributes_disallowed_list.append(attrSysId)
+        #                     else:
+        #                         add_style = ""
+        #                     #Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
+        #                     if attrSysId in attributedefaultvalue:
+        #                         #Trace.Write("add_style----3077----- "+str(attrSysId))
+        #                         add_style = "color:#1B78D2"
+        #                     # if attrSysId in attributedefaultvalue:
+        #                     # 	add_style_color = ";color: red"
+        #                     # else:
+        #                     # 	add_style_color = ""
+        #                     if attrSysId in attributeEditlst :
+        #                         disable_edit = 'disable_edit'
+        #                         edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
                                 
-                            else:
-                                disable_edit = ''
-                                edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
-                            attrValueSysId = attributevalues.get(attrSysId)
-                            #Trace.Write('attrValueSysId'+str(attrValueSysId))
-                            if DType == 'Check Box' and attrValueSysId is None:
-                                attr_value =''
-                                ent_val_code = ''
-                                #Trace.Write("attrValueSysId---inside"+str(attrValueSysId))
-                            elif  DType == 'Free Input, no Matching':
-                                if attributevalues.get(attrSysId) is None:
-                                    attr_value = ''
-                                else:
-                                    attr_value = attributevalues.get(attrSysId)	
-                                #Trace.Write('attr_value'+str(attr_value)+'---'+str(attrSysId))
-                                ent_val_code = attrValueSysId
-                            else:
-                                attr_value = attrValue
-                                ent_val_code = attrValueSysId
-                            # Inserting Rows:
-                            #Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
-                            insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-                                <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-                                <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-                                <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
-                                <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-                                <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-                                <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-                                <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-                                <IS_DEFAULT>{is_default}</IS_DEFAULT>
-                                <PRICE_METHOD>{pm}</PRICE_METHOD>
-                                <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-                                </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default =  '1' if str(attrSysId) in attributedefaultvalue else '0',pm = '',cf = '')
-                            if DType == "Drop Down":
-                                #Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
-                                #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-                                STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-                                A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+        #                     else:
+        #                         disable_edit = ''
+        #                         edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-lock"  aria-hidden="true"></i></a>'
+        #                     attrValueSysId = attributevalues.get(attrSysId)
+        #                     #Trace.Write('attrValueSysId'+str(attrValueSysId))
+        #                     if DType == 'Check Box' and attrValueSysId is None:
+        #                         attr_value =''
+        #                         ent_val_code = ''
+        #                         #Trace.Write("attrValueSysId---inside"+str(attrValueSysId))
+        #                     elif  DType == 'Free Input, no Matching':
+        #                         if attributevalues.get(attrSysId) is None:
+        #                             attr_value = ''
+        #                         else:
+        #                             attr_value = attributevalues.get(attrSysId)	
+        #                         #Trace.Write('attr_value'+str(attr_value)+'---'+str(attrSysId))
+        #                         ent_val_code = attrValueSysId
+        #                     else:
+        #                         attr_value = attrValue
+        #                         ent_val_code = attrValueSysId
+        #                     # Inserting Rows:
+        #                     #Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
+        #                     insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+        #                         <ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+        #                         <ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+        #                         <ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
+        #                         <ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+        #                         <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+        #                         <ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+        #                         <ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+        #                         <IS_DEFAULT>{is_default}</IS_DEFAULT>
+        #                         <PRICE_METHOD>{pm}</PRICE_METHOD>
+        #                         <CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+        #                         </QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default =  '1' if str(attrSysId) in attributedefaultvalue else '0',pm = '',cf = '')
+        #                     if DType == "Drop Down":
+        #                         #Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
+        #                         #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
+        #                         STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+        #                         A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-                                , COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+        #                         , COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-                                , PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-                                , PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-                                , COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
-                                FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-                                INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-                                LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-                                LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-                                LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-                                LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-                                WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
-                                VAR1 = sec_str1 = selected_option = ""
-                                if STDVALUES:
-                                    if attributevalues.get(attrSysId) is not None:
-                                        select_option = 'selected'
-                                        default = ''
-                                    else:
-                                        select_option = ""
-                                        default = 'selected'
-                                        selected_option = ' title="Select" '
-                                    VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
-                                    for value in STDVALUES:
-                                        if value.SYSTEM_ID in dropdowndisallowlist:
-                                            disallow_style = "style = 'display:none'"
-                                        else:	
-                                            disallow_style = ""
-                                        if str(selected_option)=='selected':
-                                            selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
-                                        VAR1 += (
-                                            '<option '+disallow_style+' id="'+value.SYSTEM_ID+'"  value = "'
-                                            + value.STANDARD_ATTRIBUTE_DISPLAY_VAL
-                                            + '"'+select_option+'>'
-                                            + value.STANDARD_ATTRIBUTE_DISPLAY_VAL
-                                            + "</option>"
-                                        )
-                                sec_str1 += (
-                                    '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
-                                    + str(attrSysId)
-                                    + '" type="text"  data-content ="'
-                                    + str(attrSysId)
-                                    + '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  disabled>'
-                                    + VAR1
-                                    + "</select>"
-                                )
-                                    #sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
-                                #sec_str += "</select></td>"
-                            elif DType == "Check Box":
-                                multi_select_attr_list[attrSysId] = ""
-                                #Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId)+'---'+str(multi_select_attr_list))
-                                #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-                                STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-                                A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
+        #                         , PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+        #                         , PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+        #                         , COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+        #                         FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+        #                         INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+        #                         LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+        #                         LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+        #                         LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+        #                         LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+        #                         WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+        #                         VAR1 = sec_str1 = selected_option = ""
+        #                         if STDVALUES:
+        #                             if attributevalues.get(attrSysId) is not None:
+        #                                 select_option = 'selected'
+        #                                 default = ''
+        #                             else:
+        #                                 select_option = ""
+        #                                 default = 'selected'
+        #                                 selected_option = ' title="Select" '
+        #                             VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
+        #                             for value in STDVALUES:
+        #                                 if value.SYSTEM_ID in dropdowndisallowlist:
+        #                                     disallow_style = "style = 'display:none'"
+        #                                 else:	
+        #                                     disallow_style = ""
+        #                                 if str(selected_option)=='selected':
+        #                                     selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
+        #                                 VAR1 += (
+        #                                     '<option '+disallow_style+' id="'+value.SYSTEM_ID+'"  value = "'
+        #                                     + value.STANDARD_ATTRIBUTE_DISPLAY_VAL
+        #                                     + '"'+select_option+'>'
+        #                                     + value.STANDARD_ATTRIBUTE_DISPLAY_VAL
+        #                                     + "</option>"
+        #                                 )
+        #                         sec_str1 += (
+        #                             '<select class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'" id = "'
+        #                             + str(attrSysId)
+        #                             + '" type="text"  data-content ="'
+        #                             + str(attrSysId)
+        #                             + '" class="form-control '+str(disable_edit)+'" onchange="editent_bt(this)" '+str(selected_option)+'  disabled>'
+        #                             + VAR1
+        #                             + "</select>"
+        #                         )
+        #                             #sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
+        #                         #sec_str += "</select></td>"
+        #                     elif DType == "Check Box":
+        #                         multi_select_attr_list[attrSysId] = ""
+        #                         #Trace.Write('attrSysId--2324--checkbox---2624------'+str(attrSysId)+'---'+str(multi_select_attr_list))
+        #                         #STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
+        #                         STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+        #                         A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
-                                , COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
+        #                         , COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
 
-                                , PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-                                , PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-                                , COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
-                                FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-                                INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-                                LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-                                LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-                                LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-                                LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-                                WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
-                                VAR1 = sec_str1 = ""
-                                if STDVALUES:
-                                    for value in STDVALUES:
-                                        if value.SYSTEM_ID in dropdowndisallowlist:
-                                            disallow_style = "style = 'display:none'"
-                                        else:	
-                                            disallow_style = ""
-                                        #if attrValue == value.STANDARD_ATTRIBUTE_VALUE:
-                                            #Trace.Write("SYSTEM_ID"+str(value.SYSTEM_ID))
-                                            #get_code = Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '{sys_id}' ".format(sys_id = str(value.SYSTEM_ID) )  )
-                                            #get_id = [ attr[str(get_code.STANDARD_ATTRIBUTE_CODE)] for attr in overall_attribute_list]
-                                            #getnameentallowed.append(value.SYSTEM_ID)
-                                            #Trace.Write('valueeeee----'+str(getnameentallowed))
-                                        VAR1 += (
-                                            '<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
-                                            + str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-                                            + '">'
-                                            + str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
-                                            + "</option>"
-                                        )
-                                sec_str1 += (
-                                    '<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+'" id = "'
-                                    + str(attrSysId)
-                                    + '" type="text"  data-content ="'
-                                    + str(attrSysId)
-                                    + '" class="form-control" onchange="editent_bt(this)" disabled>'
-                                    + str(VAR1)
-                                    + "</select>"
-                                )
-                                    #sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
-                                #sec_str += "</select></td>"
-                            elif DType == "Free Input, no Matching":
-                                if str(attrSysId) == "AGS_REL_STDATE":
-                                    datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
-                                    datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
+        #                         , PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
+        #                         , PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
+        #                         , COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
+        #                         FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
+        #                         INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
+        #                         LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
+        #                         LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
+        #                         LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
+        #                         LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
+        #                         WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+        #                         VAR1 = sec_str1 = ""
+        #                         if STDVALUES:
+        #                             for value in STDVALUES:
+        #                                 if value.SYSTEM_ID in dropdowndisallowlist:
+        #                                     disallow_style = "style = 'display:none'"
+        #                                 else:	
+        #                                     disallow_style = ""
+        #                                 #if attrValue == value.STANDARD_ATTRIBUTE_VALUE:
+        #                                     #Trace.Write("SYSTEM_ID"+str(value.SYSTEM_ID))
+        #                                     #get_code = Sql.GetFirst("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '{sys_id}' ".format(sys_id = str(value.SYSTEM_ID) )  )
+        #                                     #get_id = [ attr[str(get_code.STANDARD_ATTRIBUTE_CODE)] for attr in overall_attribute_list]
+        #                                     #getnameentallowed.append(value.SYSTEM_ID)
+        #                                     #Trace.Write('valueeeee----'+str(getnameentallowed))
+        #                                 VAR1 += (
+        #                                     '<option '+str(disallow_style)+'  id="'+str(value.SYSTEM_ID)+'" value = "'
+        #                                     + str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+        #                                     + '">'
+        #                                     + str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+        #                                     + "</option>"
+        #                                 )
+        #                         sec_str1 += (
+        #                             '<select class="form-control remove_yellow div_multi_checkbox" style ="'+str(add_style)+'" id = "'
+        #                             + str(attrSysId)
+        #                             + '" type="text"  data-content ="'
+        #                             + str(attrSysId)
+        #                             + '" class="form-control" onchange="editent_bt(this)" disabled>'
+        #                             + str(VAR1)
+        #                             + "</select>"
+        #                         )
+        #                             #sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
+        #                         #sec_str += "</select></td>"
+        #                     elif DType == "Free Input, no Matching":
+        #                         if str(attrSysId) == "AGS_REL_STDATE":
+        #                             datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
+        #                             datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
-                                    sec_str1 += (
-                                        '<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
-                                        + str(attrSysId)
-                                        + '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
-                                        + str(attr_value)
-                                        + '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
-                                        + "</input> "
-                                    )
-                                else:
-                                    STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
-                                    sec_str1 = ""
-                                    if attr_value == "DefaultValue":
-                                        attr_value = ''
-                                    sec_str1 += (
-                                        '<input class="form-control '+str(disable_edit)+'" id = "'
-                                        + str(attrSysId)
-                                        + '" type="text"  data-content ="'
-                                        + str(attrSysId)
-                                        + '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
-                                        + "</input>"
-                                    )
-                            else:
-                                getinval = ''
-                                #Trace.Write('attrSysId--input-----'+str(attrSysId))
-                                STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )
-                                if STDVALUES:
-                                    getinval = STDVALUES.STANDARD_ATTRIBUTE_VALUE
-                                else:
-                                    getinval = ''
+        #                             sec_str1 += (
+        #                                 '<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+        #                                 + str(attrSysId)
+        #                                 + '" type="text"  style ="'+str(add_style)+'"  onclick="'+ str(datepicker)+ '"  data-content ="'
+        #                                 + str(attr_value)
+        #                                 + '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'"  disabled>'
+        #                                 + "</input> "
+        #                             )
+        #                         else:
+        #                             STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+        #                             sec_str1 = ""
+        #                             if attr_value == "DefaultValue":
+        #                                 attr_value = ''
+        #                             sec_str1 += (
+        #                                 '<input class="form-control '+str(disable_edit)+'" id = "'
+        #                                 + str(attrSysId)
+        #                                 + '" type="text"  data-content ="'
+        #                                 + str(attrSysId)
+        #                                 + '" value = "'+str(attr_value)+'" title = "'+str(attr_value)+'" onchange="editent_bt(this)" disabled>'
+        #                                 + "</input>"
+        #                             )
+        #                     else:
+        #                         getinval = ''
+        #                         #Trace.Write('attrSysId--input-----'+str(attrSysId))
+        #                         STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )
+        #                         if STDVALUES:
+        #                             getinval = STDVALUES.STANDARD_ATTRIBUTE_VALUE
+        #                         else:
+        #                             getinval = ''
 
-                                sec_str1 += (
-                                    '<input class="form-control '+str(disable_edit)+'" id = "'
-                                    + str(attrSysId)
-                                    + '" type="text"  data-content ="'
-                                    + str(attrSysId)
-                                    + '"  disabled>'
-                                    + "</input>"
-                                )
-                            #getnameentallowed.append(attrName)
-                            #totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
-                            new_value_dicta["APPROVAL"] = ""	
-                            new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
-                            #Trace.Write('sec_str1---2372---'+str(sec_str1))
-                            if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
-                                new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
-                            else:
-                                new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
-                            #new_value_dicta["FACTOR CURRENCY"] = ""
-                            new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
-                            new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
-                            #new_value_dicta["DATA TYPE"] = ""
-                            new_value_dicta["CALCULATION FACTOR"] = ""
-                            if new_value_dicta:
-                                date_boot_field.append(new_value_dicta)
-                        sec_str_boot += ('</div>')
-                    if len(date_boot_field) > 0:
-                        tablistdict[Section_id] = date_boot_field
+        #                         sec_str1 += (
+        #                             '<input class="form-control '+str(disable_edit)+'" id = "'
+        #                             + str(attrSysId)
+        #                             + '" type="text"  data-content ="'
+        #                             + str(attrSysId)
+        #                             + '"  disabled>'
+        #                             + "</input>"
+        #                         )
+        #                     #getnameentallowed.append(attrName)
+        #                     #totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
+        #                     new_value_dicta["APPROVAL"] = ""	
+        #                     new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
+        #                     #Trace.Write('sec_str1---2372---'+str(sec_str1))
+        #                     if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
+        #                         new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+        #                     else:
+        #                         new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
+        #                     #new_value_dicta["FACTOR CURRENCY"] = ""
+        #                     new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
+        #                     new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
+        #                     #new_value_dicta["DATA TYPE"] = ""
+        #                     new_value_dicta["CALCULATION FACTOR"] = ""
+        #                     if new_value_dicta:
+        #                         date_boot_field.append(new_value_dicta)
+        #                 sec_str_boot += ('</div>')
+        #             if len(date_boot_field) > 0:
+        #                 tablistdict[Section_id] = date_boot_field
                         
-                    if len(tablistdict) > 0:
-                        tablistnew.append(tablistdict)
-                    table_ids = '#'+Section_id
-                    getdivid = '#sc_'+Section_id+' .sec_edit_sty'
-                    getdividbtn = '#sc_'+Section_id+' #btn_ent .sec_edit_sty_btn'
-                    getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dict_new-2190-2938----',dict_new);}catch{console.log('')}")
-                    #dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val() ;});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dblclk_dict_new-28001--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch{console.log('')}")
-                    #dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dblclk_dict_new-2800--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch{console.log('')}")
-                    dbl_clk_function +=   ("try{var dict_new = {};localStorage.setItem('editfirst','true');$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { localStorage.setItem('AddNew','false');$('"+str(table_ids)+" tbody tr:visible').each(function () {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val()+'||'+getcostimpact+'||'+getpriceimpact;});var arr = [];$('"+str(table_ids)+" tbody tr:visible').each(function () {if ($(this).find('td:nth-child(3) input') && !($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') ){var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val()+'||'+getcostimpact+'||'+getpriceimpact;}else if ($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();$(this).find('.mulinput:checked').each(function () {arr.push($(this).val());console.log('arr',arr) });dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  arr+'||'+getcostimpact+'||'+getpriceimpact;};});console.log('dblclk_dict_new-28002--',dict_new,'--',"+str(dropdowndisallowlist)+");localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch(e){console.log('error---12',e)}")
+        #             if len(tablistdict) > 0:
+        #                 tablistnew.append(tablistdict)
+        #             table_ids = '#'+Section_id
+        #             getdivid = '#sc_'+Section_id+' .sec_edit_sty'
+        #             getdividbtn = '#sc_'+Section_id+' #btn_ent .sec_edit_sty_btn'
+        #             getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dict_new-2190-2938----',dict_new);}catch{console.log('')}")
+        #             #dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val() ;});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dblclk_dict_new-28001--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch{console.log('')}")
+        #             #dbl_clk_function +=   ("try{var dict_new = {};$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { $('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {dict_new[$(this).attr('id')] = $(this).val();});console.log('dblclk_dict_new-2800--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch{console.log('')}")
+        #             dbl_clk_function +=   ("try{var dict_new = {};localStorage.setItem('editfirst','true');$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) { localStorage.setItem('AddNew','false');$('"+str(table_ids)+" tbody tr:visible').each(function () {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) select').attr('id')] =$(this).find('td:nth-child(3) select').children(':selected').val()+'||'+getcostimpact+'||'+getpriceimpact;});var arr = [];$('"+str(table_ids)+" tbody tr:visible').each(function () {if ($(this).find('td:nth-child(3) input') && !($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') ){var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val()+'||'+getcostimpact+'||'+getpriceimpact;}else if ($(this).find('td:nth-child(3) input').attr('type') == 'checkbox') {var getcostimpact =  $(this).find('td:nth-child(7) ').text();var getpriceimpact =  $(this).find('td:nth-child(8) ').text();$(this).find('.mulinput:checked').each(function () {arr.push($(this).val());console.log('arr',arr) });dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  arr+'||'+getcostimpact+'||'+getpriceimpact;};});console.log('dblclk_dict_new-28002--',dict_new,'--',"+str(dropdowndisallowlist)+");localStorage.setItem('prventdict', JSON.stringify(dict_new))})}catch(e){console.log('error---12',e)}")
                     
-                    dbl_clk_function += (
-                        "try { console.log('2944 start----');var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value-2944---222-----',this.value);localStorage.setItem('EDITENT_SEC','EDIT'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('.sec_edit_sty_btn').css('display','block');$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(getdivid)+"').css('display','block');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow ').addClass('light_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('"+str(table_ids)+" .MultiCheckBox').css('pointer-events','auto');var getmanualip = $('#ADDL_PERF_GUARANTEE_91_1').find(':selected').text();if(getmanualip.toUpperCase() == 'MANUAL INPUT'){ $('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('remove_yellow ').addClass('light_yellow');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeClass('remove_yellow ').addClass('light_yellow');}$('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
-                    )
-                    #Trace.Write('dbl_clk_function--2946-'+str(dbl_clk_function))
-                    '''dbl_clk_function += (
-                        "try {var getentedict = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+" tbody  tr td input').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('"+str(table_ids)+" .disable_edit').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');});}catch {console.log('error---')}"
-                    )'''
+        #             dbl_clk_function += (
+        #                 "try { console.log('2944 start----');var newentdict =[]; var newentValues =[]; var getentedictip = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {if(localStorage.getItem('EDITENT_SEC') != 'EDIT'){console.log('tset--prev value-2944---222-----',this.value);localStorage.setItem('EDITENT_SEC','EDIT'); $('"+str(table_ids)+" .disable_edit').prop('disabled', false);$('.sec_edit_sty_btn').css('display','block');$('#sc_'+'"+str(Section_id)+"').addClass('header_section_div header_section_div_pad_bt10');$('"+str(getdivid)+"').css('display','block');$('"+str(table_ids)+" .disable_edit').removeClass('remove_yellow ').addClass('light_yellow');$('#AGS_CON_DAY').removeClass('light_yellow').addClass('remove_yellow');$('#AGS_CON_DAY').prop('disabled', true);$('"+str(getdividbtn)+"').css('display','block');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('"+str(table_ids)+" .MultiCheckBox').css('pointer-events','auto');var getmanualip = $('#ADDL_PERF_GUARANTEE_91_1').find(':selected').text();if(getmanualip.toUpperCase() == 'MANUAL INPUT'){ $('#ADDL_PERF_GUARANTEE_91_1_imt').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_imt').removeClass('remove_yellow ').addClass('light_yellow');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeAttr('disabled');$('#ADDL_PERF_GUARANTEE_91_1_primp').removeClass('remove_yellow ').addClass('light_yellow');}$('#ADDL_PERF_GUARANTEE_91_1_imt').attr('disabled', 'disabled');$('"+str(table_ids)+" tbody tr td:nth-child(6) input').removeClass('light_yellow').addClass('remove_yellow');$('"+str(table_ids)+" tbody tr td:nth-child(4) input').removeClass('light_yellow').addClass('remove_yellow');$('#entsave').css('display','block');$('#entcancel').css('display','block');$('input').on('focus', function () {var previnp = $(this).data('val', $(this).val());var getprevid = this.id;var prev_concate_data = getprevid +'='+previnp;}).change(function() {var prev = $(this).data('val');var current = $(this).val();var getseltabledesc = this.id;var getinputtbleid =  $(this).closest('table').attr('id');var concated_data = getinputtbleid+'|'+current+'|'+getseltabledesc;if(!getentedictip.includes(concated_data)){getentedictip.push(concated_data)};getentedictip1 = JSON.stringify(getentedictip);localStorage.setItem('getdictentdata', getentedictip1);});}})}catch {console.log('error---')}"
+        #             )
+        #             #Trace.Write('dbl_clk_function--2946-'+str(dbl_clk_function))
+        #             '''dbl_clk_function += (
+        #                 "try {var getentedict = [];$('"+str(table_ids)+"').on('dbl-click-cell.bs.table', function (e, row, $element) {console.log('tset--prev value---',this.value);$('"+str(table_ids)+"').find(':input(:disabled)').prop('disabled', false);$('"+str(table_ids)+" tbody  tr td select option').css('background-color','lightYellow');$('"+str(table_ids)+" tbody  tr td input').css('background-color','lightYellow');$('"+str(table_ids)+"  tbody tr td select').addClass('light_yellow');$('"+str(table_ids)+" .disable_edit').addClass('light_yellow');$('#fabcostlocate_save').css('display','block');$('#fabcostlocate_cancel').css('display','block');});}catch {console.log('error---')}"
+        #             )'''
                 
-                    tbrow = {}
-                    tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"] = str(Guid.NewGuid()).upper()
-                    tbrow["QUOTE_ID"] = QUOTE_ID
-                    tbrow["QUOTE_NAME"] = QUOTE_NAME
-                    tbrow["QUOTE_RECORD_ID"] = QUOTE_RECORD_ID
-                    tbrow["QTEREV_RECORD_ID"] = QTEREV_RECORD_ID
-                    tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-                    tbrow["QTESRV_RECORD_ID"] = QUOTE_SERVICE_RECORD_ID
-                    tbrow["SERVICE_RECORD_ID"] = SERVICE_RECORD_ID
-                    tbrow["SERVICE_ID"] = SERVICE_ID
-                    tbrow["SERVICE_DESCRIPTION"] = SERVICE_DESCRIPTION
-                    tbrow["ENTITLEMENT_XML"]=insertservice
-                    tbrow["CPS_CONFIGURATION_ID"] = Fullresponse["id"]
-                    tbrow["SALESORG_RECORD_ID"] = SALESORG_RECORD_ID
-                    tbrow["SALESORG_ID"] = SALESORG_ID
-                    tbrow["SALESORG_NAME"] = SALESORG_NAME
-                    tbrow["CPS_MATCH_ID"] = 11
+        #             tbrow = {}
+        #             tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"] = str(Guid.NewGuid()).upper()
+        #             tbrow["QUOTE_ID"] = QUOTE_ID
+        #             tbrow["QUOTE_NAME"] = QUOTE_NAME
+        #             tbrow["QUOTE_RECORD_ID"] = QUOTE_RECORD_ID
+        #             tbrow["QTEREV_RECORD_ID"] = QTEREV_RECORD_ID
+        #             tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+        #             tbrow["QTESRV_RECORD_ID"] = QUOTE_SERVICE_RECORD_ID
+        #             tbrow["SERVICE_RECORD_ID"] = SERVICE_RECORD_ID
+        #             tbrow["SERVICE_ID"] = SERVICE_ID
+        #             tbrow["SERVICE_DESCRIPTION"] = SERVICE_DESCRIPTION
+        #             tbrow["ENTITLEMENT_XML"]=insertservice
+        #             tbrow["CPS_CONFIGURATION_ID"] = Fullresponse["id"]
+        #             tbrow["SALESORG_RECORD_ID"] = SALESORG_RECORD_ID
+        #             tbrow["SALESORG_ID"] = SALESORG_ID
+        #             tbrow["SALESORG_NAME"] = SALESORG_NAME
+        #             tbrow["CPS_MATCH_ID"] = 11
                     
-                    tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
-                    tbrow["CPQTABLEENTRYADDEDBY"] = userId
-                    tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+        #             tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
+        #             tbrow["CPQTABLEENTRYADDEDBY"] = userId
+        #             tbrow["CPQTABLEENTRYDATEADDED"] = datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 
-                    columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-                    values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-                    insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
-                Sql.RunQuery(insert_qtqtse_query)
-                # if objname_ent == "SAQSAO":
-                #     QueryStatement ="""
-                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
-                #     WHEN MATCHED
-                #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                #     WHEN NOT MATCHED BY TARGET
-                #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
-                #             CpqTableEntryDateModified)
-                #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id )
+        #             columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
+        #             values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+        #             insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)				
+        #         Sql.RunQuery(insert_qtqtse_query)
+        #         # if objname_ent == "SAQSAO":
+        #         #     QueryStatement ="""
+        #         #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}' AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+        #         #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.EQUIPMENT_ID)
+        #         #     WHEN MATCHED
+        #         #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+        #         #     WHEN NOT MATCHED BY TARGET
+        #         #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+        #         #             CpqTableEntryDateModified)
+        #         #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id )
                 
-                # else:
-                #     QueryStatement ="""
-                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
-                #     WHEN MATCHED
-                #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                #     WHEN NOT MATCHED BY TARGET
-                #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
-                #             CpqTableEntryDateModified)
-                #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
+        #         # else:
+        #         #     QueryStatement ="""
+        #         #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.EQUIPMENT_ID,B.EQUIPMENT_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,B.SERIAL_NO,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.EQUIPMENT_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQICO (NOLOCK) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+        #         #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID)
+        #         #     WHEN MATCHED
+        #         #     THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+        #         #     WHEN NOT MATCHED BY TARGET
+        #         #     THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITMCOB_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,
+        #         #             CpqTableEntryDateModified)
+        #         #     VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
                     
-                #     Sql.RunQuery(QueryStatement)
-                #     QueryStatement ="""
-                #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
-                #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
-                #     WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
-                #     WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
-                #     Sql.RunQuery(QueryStatement)
+        #         #     Sql.RunQuery(QueryStatement)
+        #         #     QueryStatement ="""
+        #         #     MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
+        #         #     TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
+        #         #     WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
+        #         #     WHEN NOT MATCHED BY TARGET THEN INSERT(QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY, ADDUSR_RECORD_ID, CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES (NEWID(),ENTITLEMENT_XML,PART_NUMBER,PART_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,PART_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = self.quote_revision_record_id)
+        #         #     Sql.RunQuery(QueryStatement)
                 
-                #Trace.Write("getnameentallowed"+str(getnameentallowed))
-                getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
-                totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
-                #Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
-        elif EntitlementType == "SENDING_LEVEL":
+        #         #Trace.Write("getnameentallowed"+str(getnameentallowed))
+        #         getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
+        #         totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
+        #         #Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
+        
+        if EntitlementType == "SENDING_LEVEL":
             sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
             multi_select_attr_list = {}
             getnameentallowed = []
