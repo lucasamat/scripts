@@ -59,9 +59,9 @@ class tool_idle:
             ]
             lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 
-        sec_str = '<div id="contract_cust_fields_div">'     
+        #sec_str = '<div id="contract_cust_fields_div">'     
 
-        sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+        sec_str = '<div id="container contract_cust_fields_div" class="g4 pad-10 brdr except_sec">'
         sec_str += (
             '<table id="'
             + str(table_id)
