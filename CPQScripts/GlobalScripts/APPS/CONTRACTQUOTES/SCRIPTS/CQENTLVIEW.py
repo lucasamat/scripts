@@ -220,14 +220,14 @@ class EntitlementView():
                     
         if EntitlementType != "SENDING_LEVEL":
             if TableObj is None and (EntitlementType == "EQUIPMENT"):
-                Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
+                
+                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_type':"New"})
                 #self.EntitlementRequest(ProductPartnumber,Request_URL,)
             else:		
                 if TableObj:
                     cpsConfigID = TableObj.CPS_CONFIGURATION_ID
-                Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"Existing"})
+                
+                Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_type':"Existing"})
                 #self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
             attributesdisallowedlst = []
