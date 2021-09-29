@@ -55,7 +55,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
         + '"  data-pagination="false" data-sortable="true" data-search-on-enter-key="true" data-filter-control="true" data-pagination-loop = "false" data-locale = "en-US" ><thead>'
     )
     Columns = [
-        "PRICING_STATUS"
+        "PRICING_STATUS",
         "QUOTE_ITEM_FORECAST_PART_RECORD_ID",
         "SERVICE_ID",
         "PART_LINE_ID",
