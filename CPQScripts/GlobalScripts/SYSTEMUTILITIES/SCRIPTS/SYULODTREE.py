@@ -1607,7 +1607,7 @@ class TreeView:
 						+ "' AND DATA_TYPE = 'AUTO NUMBER'"
 					) 
 					if CurrentTabName != 'Approval Chain':                   
-						if 'QTEREV_RECORD_ID' not in where_string:
+						if 'QTEREV_RECORD_ID' not in where_string and 'ACAPMA' not in where_string:
 							
 							where_string += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' " 
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
