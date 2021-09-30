@@ -100,8 +100,7 @@ class tool_idle:
         )
         for tool in Objd_Obj:
             onchange = ""
-            current_obj_value = tool.PICKLIST_VALUES
-            disable = ""
+            current_obj_value = tool.PICKLIST_VALUES            
             edit_warn_icon = ""
             left_float = ""
             edit_pencil_icon = ""
