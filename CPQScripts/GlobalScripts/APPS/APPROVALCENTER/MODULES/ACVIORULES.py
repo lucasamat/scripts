@@ -551,12 +551,12 @@ class ViolationConditions:
                         
                         # Approval Rounding - Start
                         primarykey = str(Guid.NewGuid()).upper()	
-                        round = 1
+                        roundd = 1
                         if QuoteId!= '':
                             round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
                             if round_obj:
-                                round = int(round_obj.APPROVAL_ROUND) + 1
-                        QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=round,datetime_value=self.datetime_value, Name=self.Get_NAME)
+                                roundd = int(round_obj.APPROVAL_ROUND) + 1
+                        QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=roundd,datetime_value=self.datetime_value, Name=self.Get_NAME)
                         Log.Info("INSERT ACACHR---"+str(QueryStatement))  
                         Sql.RunQuery(QueryStatement)
                         # Approval Rounding - End
@@ -623,7 +623,7 @@ class ViolationConditions:
                                 Trace.Write("===============" + str(Select_Query))
                                 SqlQuery = Sql.GetFirst(Select_Query)
                                 if SqlQuery:
-                                    Trace.Write("Inside the approval Transcation")
+                                    Log.Info("@626Inside the approval Transcation")
 
                                     where_conditon = (
                                         " WHERE ACAPCH.APPROVAL_CHAIN_RECORD_ID = '"
