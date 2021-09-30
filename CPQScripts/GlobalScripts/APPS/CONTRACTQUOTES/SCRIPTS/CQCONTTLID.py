@@ -141,6 +141,7 @@ class tool_idle:
                         + "' "
                     )
                 else:
+                    Trace.Write("pick"+str(MODE))
                     sec_str += '<td>'
                     sec_str += (
                         '<select id="'
