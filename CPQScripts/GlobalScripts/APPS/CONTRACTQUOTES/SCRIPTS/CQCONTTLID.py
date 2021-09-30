@@ -229,7 +229,7 @@ class tool_idle:
                         + "</td>"
                     )        
             elif tool.DATA_TYPE == "LONG TEXT AREA":
-                if str(MODE)=="VIEW" or str(MODE)=="CANCEL":
+                if str(MODE)=="VIEW" or str(MODE)=="CANCEL" or str(MODE) == "SAVE":
                     Trace.Write("mode222"+str(MODE))							
                     sec_str += (
                         '<td><textarea title="'
