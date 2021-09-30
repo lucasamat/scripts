@@ -918,7 +918,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				else:
 					ent_disp_val = ent_disp_val
 					ent_val_code = ent_val_code
-				if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME == "Fab Location":
+				if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "FAB LOCATION":
 					Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
 					Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
 					AttributeID_Pass = attrs
