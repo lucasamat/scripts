@@ -683,7 +683,11 @@ class Entitlements:
 							# 	if STANDARD_ATTRIBUTE_VALUES :
 									
 							# 		display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
-							get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+							if STANDARD_ATTRIBUTE_VALUES:
+								if STANDARD_ATTRIBUTE_VALUES.ATTRDESC is not None:
+									get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+								else:
+									get_tool_desc = ''
 							multi_select_attr_list[str(attrSysId)] = display_value_arr
 						if attributevalues.get(attrSysId) is None:
 							ent_disp_val = ''
