@@ -129,7 +129,7 @@ class SyncQuoteAndCustomTables:
 		x = datetime.datetime.today()
 		x= str(x)
 		y = x.split(" ")
-		ent_disp_val = ent_val_code = ''
+		ent_disp_val = ent_val_code = get_tooltip_desc = ''
 		for OfferingRow_detail in SAQTSVObj:
 			#Log.Info("SERVICE_ID--130----"+str(OfferingRow_detail.SERVICE_ID))
 			
