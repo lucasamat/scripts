@@ -366,7 +366,8 @@ def entitlement_price_rollup(objectname,ent_temp):
 						get_value = str(get_val).replace("'", '"')
 						get_code = str(get_cod).replace("'", '"')
 					assign_xml = """
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
