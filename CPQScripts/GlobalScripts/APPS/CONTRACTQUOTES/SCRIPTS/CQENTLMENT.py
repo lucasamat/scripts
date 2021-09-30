@@ -514,7 +514,7 @@ class Entitlements:
 			Trace.Write("Fullresponse--"+str(Fullresponse))
 			Product.SetGlobal('Fullresponse',str(Fullresponse))
 			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
-			if get_tool_desc:
+			if get_datatype:
 				get_tool_desc= get_datatype.ATTRDESC
 			'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 			if GetDefault.PRICE_METHOD:
@@ -1739,8 +1739,10 @@ class Entitlements:
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 				if get_datatype:
 					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+					get_tool_desc= get_datatype.ATTRDESC
 				else:
 					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
+					get_tool_desc =''
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
 				attributesdisallowedlst = []
 				attributesallowedlst = []
