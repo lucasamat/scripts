@@ -435,6 +435,7 @@ class Entitlements:
 		multi_select_attr_list = {}
 		attributevalues_textbox = []
 		attributedefaultvalue = []
+		attribute_non_defaultvalue = []
 		dropdownallowlist_selected = []
 		where = pricemethodupdate = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
@@ -578,7 +579,10 @@ class Entitlements:
 									if attribute["author"] in ("Default","System"):
 										#Trace.Write('524------'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
-								
+									elif attribute["author"] == "User":
+										attribute_non_defaultvalue.append(prdvalue["id"])
+
+
 									# if prdvalue["id"] in characteristics_attr_values:
 									# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
 									# else:
@@ -737,6 +741,8 @@ class Entitlements:
 										if attribute["author"] in ("Default","System"):
 											Trace.Write('524---658---'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
+										elif attribute["author"] == "User":
+											attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
@@ -744,6 +750,8 @@ class Entitlements:
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
+										elif attribute["author"] == "User":
+											attribute_non_defaultvalue.append(prdvalue["id"])
 			
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
@@ -1600,7 +1608,7 @@ class Entitlements:
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
 		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
 		
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
+		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
@@ -1744,6 +1752,7 @@ class Entitlements:
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										if attribute["author"] in ("Default","System"):
 											attributedefaultvalue.append(prdvalue["id"])
+										
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
 				# for row in ServiceContainer.Rows:
