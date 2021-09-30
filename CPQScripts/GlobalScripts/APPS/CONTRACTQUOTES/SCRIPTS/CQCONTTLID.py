@@ -102,7 +102,7 @@ class tool_idle:
         for tool in Objd_Obj:         
                 
             onchange = ""
-            Trace.Write("obi----"+str(current_obj_value))
+            Trace.Write("obi----"+str(tool.API_NAME))
             current_obj_value = Quote.GetCustomField(tool.API_NAME).Content            
             edit_warn_icon = ""
             left_float = ""
