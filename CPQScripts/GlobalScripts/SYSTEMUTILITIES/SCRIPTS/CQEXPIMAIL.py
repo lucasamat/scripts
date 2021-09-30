@@ -30,9 +30,9 @@ class qt_expiration_mail_trigger:
                 employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_NAME = '"+str(quote.OWNER_NAME)+"'")
                 Subject = "TEST"
                 mailBody = """
-                            Dear """+str(quote.OWNER_NAME)+""",
+                            Dear """+str(quote.OWNER_NAME)+""",<br>
                                 This is to notify that the Quote Number """+str(quote.QUOTE_ID)+""" will be expired on """+str(quote.CONTRACT_VALID_TO)+"""
-
+                            <br>
                             Thank You 
                             """
                 recepient = "joe.ebenezer@bostonharborconsulting.com"
