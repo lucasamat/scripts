@@ -2206,7 +2206,7 @@ class TreeView:
 												Subwhere_string = Subwhere_string.replace('SERVICE_ID','PAR_SERVICE_ID')
 												Subwhere_string += " AND SERVICE_ID = '{}'".format(NodeText)									
 										if NodeName == 'APRCHN_ID' and str(ProductName).upper() == "SALES":                                            
-											Subwhere_string += " AND ACACHR.APRCHN_ID = '{}'".format(NodeText)
+											Subwhere_string = " AND ACACHR.APRCHN_ID = '{}'".format(NodeText)
 											Trace.Write("@2201 subwhere string------>"+str(Subwhere_string))
 										if (' - ' ) in NodeText :                                            
 											temp_node =[]
