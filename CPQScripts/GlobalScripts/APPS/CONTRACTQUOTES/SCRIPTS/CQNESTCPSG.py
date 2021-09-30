@@ -445,7 +445,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     )
     Columns = [
         "STEP_NO",
-        "QUOTE_ITEM_CONDITION_TYPE_RECORD_ID",
+        #"QUOTE_ITEM_CONDITION_TYPE_RECORD_ID",
         "CONDITION_COUNTER",
         "CONDITION_TYPE",
         "CONDITION_TYPE_DESCRIPTION",
