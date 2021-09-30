@@ -1211,7 +1211,7 @@ class Entitlements:
 						eq = str(e.EQUIPMENT_ID)
 						for value in GetXMLsecField:
 							
-							get_name = value.ENTITLEMENT_NAME
+							get_name = value.ENTITLEMENT_ID
 							Trace.Write("VALUE IN XML--------->"+str(get_name))
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
