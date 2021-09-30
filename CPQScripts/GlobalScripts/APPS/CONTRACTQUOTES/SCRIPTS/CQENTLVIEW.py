@@ -934,7 +934,7 @@ class EntitlementView():
 								# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
-									userselectedvalue.append(val.ENTITLEMENT_DESCRIPTION)
+									userselectedvalue.append(val.ENTITLEMENT_NAME)
 									#getnameentallowed.append(val.ENTITLEMENT_NAME)
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
