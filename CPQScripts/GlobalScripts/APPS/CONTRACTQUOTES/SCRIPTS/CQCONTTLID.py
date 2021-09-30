@@ -101,6 +101,7 @@ class tool_idle:
         for tool in Objd_Obj:         
                 
             onchange = ""
+            Trace.Write("obi----"+str(current_obj_value))
             current_obj_value = Quote.GetCustomField(tool.API_NAME).Content            
             edit_warn_icon = ""
             left_float = ""
@@ -311,9 +312,8 @@ objtool_idle = tool_idle()
 MODE = Param.MODE
 Trace.Write("Mode---"+str(MODE))
 ACTION = Param.ACTION
-
+DICT = Param.DICT
 if ACTION == "CONT_TOOL_IDLE":               
     ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling(MODE))
-if ACTION == "CONT_TOOL_IDLE_SAVE":
-    DICT = Param.DICT               
+if ACTION == "CONT_TOOL_IDLE_SAVE":               
     ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Tool_Idle_Save(MODE))    
