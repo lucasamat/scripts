@@ -1186,7 +1186,7 @@ class SyncQuoteAndCustomTables:
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
 						if payload_json.get('SERVICE_IDS'):	
 							service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
-							#Log.Info("SERVICE IDS-------->"+str(service_ids))
+							Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):       
 								Log.Info(str(payload_json.get('SAQFEQ'))+" ======== equipment_json_data-------->"+str(equipment_json_data))                 
@@ -1355,6 +1355,7 @@ class SyncQuoteAndCustomTables:
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 
 							if service_ids:
+								
 								SAQTSV_start = time.time()								
 								service_insert = Sql.RunQuery("""
 																INSERT
@@ -1681,11 +1682,11 @@ class SyncQuoteAndCustomTables:
 	##A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
-##A055S000P01-8740 code starts..
-quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
-if getRevision is None:
-	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
-##A055S000P01-8740 code ends..
+# ##A055S000P01-8740 code starts..
+# quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+# quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+# getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
+# if getRevision is None:
+# 	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+# ##A055S000P01-8740 code ends..
 
