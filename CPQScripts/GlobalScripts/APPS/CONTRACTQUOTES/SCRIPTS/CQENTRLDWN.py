@@ -462,9 +462,9 @@ def entitlement_price_rollup(objectname,ent_temp):
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_currency ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
-					if value.ENTITLEMENT_NAME+'<' in get_val_list:
-						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
+						""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_currency ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
+					if value.ENTITLEMENT_ID+'<' in get_val_list:
+						updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
 						flag = False
