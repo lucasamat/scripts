@@ -941,7 +941,7 @@ elif objectName == "SAQSAE":
 	level = "Assembly Entitlement "
 Log.Info("level1---"+str(level))
 where_cond = where.replace('SRC.','')
-getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID,CONFIGURATION_STATUS from "+str(objectName)+" (nolock) "+str(where_cond)+"")
+getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,CPS_MATCH_ID,CPS_CONFIGURATION_ID,CONFIGURATION_STATUS from "+str(objectName)+" (nolock) "+str(where_cond)+"")
 
 ##get c4c quote id
 get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID,getinnercon.QTEREV_RECORD_ID))
