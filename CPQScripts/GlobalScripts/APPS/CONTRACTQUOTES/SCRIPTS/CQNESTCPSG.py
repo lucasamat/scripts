@@ -189,9 +189,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
                 + str(qstring)
                 + "</abbr></th>"
             )
-        elif hyper_link is not None and invs in hyper_link:
-            Trace.Write(str(invs))
-            Trace.Write(str(qstring))            
+        elif hyper_link is not None and invs in hyper_link:            
             table_header += (
                 '<th data-field="'
                 + str(invs)
