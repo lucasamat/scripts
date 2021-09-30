@@ -522,6 +522,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     for key, invs in enumerate(list(Columns)):
         invs = str(invs).strip()
         #qstring = attr_list.get(str(invs)) or ""
+        qstring = ''
         if qstring == "":
             qstring = invs.replace("_", " ")
         #if checkbox_list is not None and invs in checkbox_list:
