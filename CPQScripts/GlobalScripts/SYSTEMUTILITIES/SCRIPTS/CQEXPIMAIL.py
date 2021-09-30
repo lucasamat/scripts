@@ -100,6 +100,7 @@ target_mail_date_obj = today_date_obj + timedelta(days=14)
 target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
+target_mail_date = "12/4/2022"
 
 
 # mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
