@@ -104,6 +104,7 @@ class tool_idle:
             edit_warn_icon = ""
             left_float = ""
             edit_pencil_icon = ""
+            disable = "disabled"
             current_obj_api_name = tool.API_NAME
             Trace.Write("iii"+str(current_obj_api_name))
             readonly_val = tool.PERMISSION
@@ -150,7 +151,8 @@ class tool_idle:
                         + current_obj_value
                         + '" type="text" title="'
                         + str(current_obj_value)
-                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '                                                
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+                        + disable                                                
                         + " style=\'margin-left: -1px\'><option value='Select'></option>"
                     )
                     Sql_Quality_Tier = Sql.GetFirst(
