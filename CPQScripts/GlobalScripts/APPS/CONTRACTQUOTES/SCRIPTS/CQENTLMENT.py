@@ -497,6 +497,7 @@ class Entitlements:
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
+		attributes_service_sublist = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -533,6 +534,7 @@ class Entitlements:
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
+								
 								if prdvalue["visible"] == "true":
 									try:
 										getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
@@ -551,7 +553,8 @@ class Entitlements:
 							for prdvalue in Productvalue:
 								#dropdownallowlist = [] 
 								#Trace.Write('attr_chk----'+str(prdvalue))
-								
+								if prdvalue['id'].startswith('AGS_Z0046_'):
+									attributes_service_sublist.append(prdvalue['id'])
 								if prdvalue["visible"] == "false":							
 									attributesdisallowedlst.append(prdvalue["id"])
 								if prdvalue["visible"] == "true":							
@@ -591,7 +594,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			Trace.Write("dropdownallowlist--532------"+str(dropdownallowlist))
+			Trace.Write("attributes_service_sublist--532------"+str(attributes_service_sublist))
 			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
@@ -737,6 +740,8 @@ class Entitlements:
 										#attr_tab_list_disallow.append(prdvalue["id"])
 							if Productattribute == "characteristics":
 								for prdvalue in Productvalue:
+									if prdvalue['id'].startswith('AGS_Z0046_'):
+										attributes_service_sublist.append(prdvalue['id'])
 									for attribute in prdvalue["values"]:									
 										if attribute["author"] in ("Default","System"):
 											Trace.Write('524---658---'+str(prdvalue["id"]))
