@@ -465,6 +465,10 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
         "INACTIVE_FLAG"
     ]
     response = CPS.fetch_cps_response()
+    Trace.Write(response)
+    response = str(response).replace(": true", ': "true"').replace(": false", ': "false"').replace(": null",': " None"')
+    response = eval(response)
+    Trace.Write(response)
     price = []
     for key, value in response.items():
         if key == "items":
