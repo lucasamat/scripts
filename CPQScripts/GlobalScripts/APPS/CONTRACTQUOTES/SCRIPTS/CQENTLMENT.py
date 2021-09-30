@@ -1722,7 +1722,7 @@ class Entitlements:
 			Trace.Write(str(valcode)+'170-------'+str(AttributeID))
 			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc','LABOR_TYPE_primp','T2_LABOR_TYPE_imt']:
 				valdisplaycode.append(str(valcode))
-				attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)
+				attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)
 				#Trace.Write("tableName--"+str(tableName)+'---'+str(serviceId)+'---'+str(whereReq))	
 				cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 				get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
