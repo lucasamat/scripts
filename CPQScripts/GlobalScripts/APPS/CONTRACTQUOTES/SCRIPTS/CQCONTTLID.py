@@ -302,7 +302,7 @@ class tool_idle:
             )
     def Tool_Idle_Save(self, MODE):
         Trace.Write('cm to save===')
-        new_dict = DICT
+        new_dict = eval(DICT)
         for key,val in new_dict.items():
             Quote.GetCustomField(key).Content = str(val)
         Quote.Save() 
