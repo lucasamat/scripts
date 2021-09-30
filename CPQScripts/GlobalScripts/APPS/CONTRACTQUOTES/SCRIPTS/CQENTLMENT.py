@@ -694,7 +694,8 @@ class Entitlements:
 
 						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
@@ -1110,7 +1111,8 @@ class Entitlements:
 					# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
 					# Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
