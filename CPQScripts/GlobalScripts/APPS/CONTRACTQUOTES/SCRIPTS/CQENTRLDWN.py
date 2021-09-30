@@ -543,7 +543,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 							
 						get_code = value.ENTITLEMENT_VALUE_CODE
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
