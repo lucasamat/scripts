@@ -1151,7 +1151,7 @@ class Entitlements:
 						
 					else:
 						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
-					Trace.Write('ent_val_code--'+str(key)+'--'+str(ent_val_code))
+					#'+str(key)+'--'+str(ent_val_code))
 					##ends
 
 					##------ commented and assign the default currency ---++
