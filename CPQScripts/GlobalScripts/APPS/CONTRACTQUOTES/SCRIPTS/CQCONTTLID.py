@@ -259,8 +259,7 @@ class tool_idle:
                             
         return (
             sec_str,
-            new_value_dict,
-            dbl_clk_function                       
+            new_value_dict                                   
             )
     def Tool_Idle_Save(self, MODE):
         Trace.Write('cm to save===')
