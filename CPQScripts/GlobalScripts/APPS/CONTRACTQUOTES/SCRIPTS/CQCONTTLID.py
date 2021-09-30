@@ -117,11 +117,11 @@ class tool_idle:
             elif readonly_val == "READONLY" and (MODE == "EDIT" or MODE == "CANCEL" or MODE == "SAVE" or MODE == "VIEW"):						
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
-            sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td>'
-            if tool.REQUIRED == "True":
-                sec_str += '<td>*</td>'
-            if tool.REQUIRED == "False":
-                sec_str += '<td></td>'    
+            sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
+            # if tool.REQUIRED == "True":
+            #     sec_str += '<td>*</td>'
+            # if tool.REQUIRED == "False":
+            #     sec_str += '<td></td>'    
             if tool.DATA_TYPE == "PICKLIST":
                 if MODE == "EDIT" and readonly_val == "EDITABLE":
                     sec_str += '<td>'
