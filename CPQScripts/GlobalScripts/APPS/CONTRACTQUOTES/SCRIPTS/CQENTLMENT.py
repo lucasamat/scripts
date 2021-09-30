@@ -754,14 +754,14 @@ class Entitlements:
 										attributes_service_sublist.append(prdvalue['id'])
 									for attribute in prdvalue["values"]:									
 										if attribute["author"] in ("Default","System"):
-											Trace.Write('524---658---'+str(prdvalue["id"]))
+											#Trace.Write('524---658---'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
-										Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
+										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
@@ -793,8 +793,8 @@ class Entitlements:
 					getpriceimpact = ""
 					calculation_factor =""
 					pricemethodupdate = ""
-					Trace.Write("val---"+str(val))
-					Trace.Write("key---"+str(key))
+					#Trace.Write("val---"+str(val))
+					#Trace.Write("key---"+str(key))
 					#getregionvalq = "AMT"
 					getvalue = str((val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
