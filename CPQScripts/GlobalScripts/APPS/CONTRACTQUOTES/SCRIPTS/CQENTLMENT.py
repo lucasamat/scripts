@@ -187,7 +187,7 @@ class Entitlements:
 			
 			
 			if field_type != 'input':
-				if AttributeID != "AGS_KPI_BNS_PNL":
+				if AttributeID != "AGS_Z0091_KPI_BPTKPI":
 					#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
 
 					STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_id ))
@@ -792,7 +792,7 @@ class Entitlements:
 							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 							) A""".format(description=description,service_id = service_id,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
 					##A055S000P01-9646  code ends..
-					if key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "Yes":
+					if key == "AGS_Z0091_KPI_BPTKPI" and str((val).split("||")[0]).strip() == "Yes":
 						
 						Trace.Write("YES to Bonus & Penalty Tied to KPI")
 						Quote.SetGlobal("KPI","YES")
