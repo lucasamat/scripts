@@ -206,7 +206,7 @@ class ViolationConditions:
         Log.Info("query statement acapma ---"+str(insertQueryStatement))
         return insertQueryStatement
 
-    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None):
+    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None,RoundKey=None,Round=1):
         """ACAPTX date insert script."""
         InsertQueryStatement = """INSERT ACAPTX ( APRTRXOBJ_ID,APRCHN_ID ,APPROVAL_TRANSACTION_RECORD_ID ,APRCHN_RECORD_ID ,
 		APRCHNSTP_APPROVER_ID ,APRCHNSTP_APPROVER_RECORD_ID ,APRCHNSTP_ID ,APRCHNSTP_NAME,APRCHNSTP_RECORD_ID ,
@@ -462,6 +462,10 @@ class ViolationConditions:
         rec_name = ""
         Log.Info("Entered Insert Action")
         try:
+            QuoteId = ""
+            if str(ObjectName).strip() == "SAQTRV":
+                GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
+                QuoteId = GetQuoteId.QUOTE_ID
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
@@ -540,6 +544,19 @@ class ViolationConditions:
                         Rulebodywithcondition = rulebody + where_conditon
                         Log.Info("=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
                         a = Sql.RunQuery(Rulebodywithcondition)
+                        
+                        # Approval Rounding - Start
+                        primarykey = str(Guid.NewGuid()).upper()	
+                        round = 1
+                        if QuoteId!= '':
+                            round_obj = Sql.GetFirst("SELECT TOP 1 APPROVAL_ROUND FROM ACACHR WHERE APPROVAL_ID LIKE '%{}%' ORDER BY CpqTableEntryId DESC".format(QuoteId))
+                            if round_obj:
+                                round = int(round_obj.APPROVAL_ROUND) + 1
+                        QueryStatement = """INSERT INTO ACACHR (APPROVAL_CHAIN_ROUND_RECORD_ID,TOTAL_CHNSTP,TOTAL_APRTRX,COMPLETED_DATE,COMPLETEDBY_RECORD_ID,COMPLETED_BY,APPROVAL_ROUND,APPROVAL_RECORD_ID,APPROVAL_ID,APRCHN_RECORD_ID,APRCHN_NAME,APRCHN_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) VALUES ('{primarykey}',0,0,null,'','',{Round},'','','','','','{UserName}','{datetime_value}','{UserId}','{datetime_value}')""".format(primarykey = primarykey,UserId=self.Get_UserID, UserName=self.Get_UserNAME,Round=round,datetime_value=self.datetime_value, Name=self.Get_NAME)
+                        Log.Info("INSERT ACACHR---"+str(QueryStatement))  
+                        Sql.RunQuery(QueryStatement)
+                        # Approval Rounding - End
+
                         CheckViolaionRule2 = Sql.GetList(
                             "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
                             + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
@@ -632,11 +649,8 @@ class ViolationConditions:
                                     ACACST.REJECT_TEMPLATE_ID,ACACST.REJECT_TEMPLATE_RECORD_ID,ACACST.REQUEST_TEMPLATE_ID,
                                     ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
                                     APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
-                                    QuoteId = ""
-                                    if str(ObjectName).strip() == "SAQTRV":
-                                        GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
-                                        QuoteId = GetQuoteId.QUOTE_ID
-                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId)
+                                    
+                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=RoundKey,Round=1)
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
                                     Trace.Write("Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
