@@ -118,27 +118,50 @@ class tool_idle:
                 disable = "disabled"
             sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
             if tool.DATA_TYPE == "PICKLIST":
-                sec_str += '<td>'
-                sec_str += (
-                    '<select id="'
-                    + str(current_obj_api_name)
-                    + '" '
-                    + str(onchange)
-                    + ' value="'
-                    + current_obj_value
-                    + '" type="text" title="'
-                    + str(current_obj_value)
-                    + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '
-                    + disable
-                    + " style=\'margin-left: -1px\'><option value='Select'></option>"
-                )
-                Sql_Quality_Tier = Sql.GetFirst(
-                    "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
-                    + str(ObjectName)
-                    + "' and DATA_TYPE='PICKLIST' and API_NAME = '"
-                    + str(current_obj_api_name)
-                    + "' "
-                )
+                if MODE == "EDIT":
+                    sec_str += '<td>'
+                    sec_str += (
+                        '<select id="'
+                        + str(current_obj_api_name)
+                        + '" '
+                        + str(onchange)
+                        + ' value="'
+                        + current_obj_value
+                        + '" type="text" title="'
+                        + str(current_obj_value)
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '
+                        + disable
+                        + " style=\'margin-left: -1px\'><option value='Select'></option>"
+                    )
+                    Sql_Quality_Tier = Sql.GetFirst(
+                        "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+                        + str(ObjectName)
+                        + "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+                        + str(current_obj_api_name)
+                        + "' "
+                    )
+                else:
+                    sec_str += '<td>'
+                    sec_str += (
+                        '<select id="'
+                        + str(current_obj_api_name)
+                        + '" '
+                        + str(onchange)
+                        + ' value="'
+                        + current_obj_value
+                        + '" type="text" title="'
+                        + str(current_obj_value)
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+                        + disable
+                        + " style=\'margin-left: -1px\'><option value='Select'></option>"
+                    )
+                    Sql_Quality_Tier = Sql.GetFirst(
+                        "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+                        + str(ObjectName)
+                        + "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+                        + str(current_obj_api_name)
+                        + "' "
+                    )    
                 if (
 						str(Sql_Quality_Tier.PICKLIST_VALUES).strip() is not None
 						and str(Sql_Quality_Tier.PICKLIST_VALUES).strip() != ""
@@ -154,19 +177,34 @@ class tool_idle:
                     sec_str += "<option selected>" + str(current_obj_value) + "</option>"
                 sec_str += '</select></td>'
             elif tool.DATA_TYPE == "TEXT":
-                sec_str += (
+                if MODE == "EDIT":
+                    sec_str += (
+                            '<td><input id="'
+                            + str(current_obj_api_name)
+                            + '" type="text" value="'
+                            + current_obj_value
+                            + '" title="'
+                            + current_obj_value
+                            + '" class="form-control related_popup_css fltlt light_yellow" style="'
+                            + str(left_float)
+                            + ' ">'
+                            + str(edit_warn_icon)
+                            + "</td>"
+                        )
+                else:
+                    sec_str += (
                         '<td><input id="'
                         + str(current_obj_api_name)
                         + '" type="text" value="'
                         + current_obj_value
                         + '" title="'
                         + current_obj_value
-                        + '" class="form-control related_popup_css fltlt light_yellow" style="'
+                        + '" class="form-control related_popup_css fltlt" style="'
                         + str(left_float)
                         + ' ">'
                         + str(edit_warn_icon)
                         + "</td>"
-					)
+                    )        
             elif tool.DATA_TYPE == "LONG TEXT AREA":
                 if str(MODE)=="VIEW" or str(MODE)=="CANCEL":
                     Trace.Write("mode222"+str(MODE))							
