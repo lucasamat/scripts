@@ -126,12 +126,12 @@ class Entitlements:
 						#webclient.Headers.Add("If-Match", "111")
 						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 							
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-							Trace.Write('row--'+str(row.ENTITLEMENT_NAME))
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
+							Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 							try:
 								requestdata = '{"characteristics":['
 								
-								requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+								requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 								if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
 									Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 									for code in eval(row.ENTITLEMENT_VALUE_CODE):
