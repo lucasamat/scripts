@@ -742,7 +742,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				Log.Info('where-where--'+str(where_condition))
 				getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
 				getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
-				getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+				getconditionentitlement=re.sub(r'<ENTITLEMENT_ID>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
 				getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
 				##Greenbook level
 				QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))

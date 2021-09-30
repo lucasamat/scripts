@@ -115,7 +115,7 @@ def CoveredObjEntitlement():
 	if (TreeParam == 'Z0091'):
 		getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) WHERE QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID ='{revision_rec_id}' AND SERVICE_ID ='{serviceId}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=TreeParam))
 		getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
-		getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+		getconditionentitlement=re.sub(r'<ENTITLEMENT_ID>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
 		getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
 		##Greenbook level
 		QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' WHERE QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' and SERVICE_ID = '{serviceId}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=TreeParam)
