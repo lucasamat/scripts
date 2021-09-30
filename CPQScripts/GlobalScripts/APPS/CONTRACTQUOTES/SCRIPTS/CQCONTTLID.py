@@ -107,10 +107,12 @@ class tool_idle:
             current_obj_api_name = tool.API_NAME
             Trace.Write("iii"+str(current_obj_api_name))
             readonly_val = tool.PERMISSION
-            if (readonly_val == "" or readonly_val.upper() == "EDITABLE"):				
+            if (readonly_val == "" or readonly_val.upper() == "EDITABLE") and (MODE == "VIEW" or MODE == "CANCEL" or MODE == "SAVE"):				
                 edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
-            elif readonly_val == "EDITABLE":						
+                disable = "disabled"
+            elif readonly_val == "EDITABLE" and MODE == "EDIT":						
                 edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
+                disable = ""
             else:						
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
@@ -127,8 +129,7 @@ class tool_idle:
                         + current_obj_value
                         + '" type="text" title="'
                         + str(current_obj_value)
-                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '
-                        + disable
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '                        
                         + " style=\'margin-left: -1px\'><option value='Select'></option>"
                     )
                     Sql_Quality_Tier = Sql.GetFirst(
@@ -202,6 +203,7 @@ class tool_idle:
                         + str(left_float)
                         + ' ">'
                         + str(edit_warn_icon)
+                        + disable
                         + "</td>"
                     )        
             elif tool.DATA_TYPE == "LONG TEXT AREA":
@@ -225,8 +227,7 @@ class tool_idle:
                         + str(current_obj_value)
                         + '" class="form-control related_popup_css txtArea light_yellow" id="'
                         + str(current_obj_api_name)
-                        + '" rows="1" cols="100" '
-                        + disable							
+                        + '" rows="1" cols="100" '                        							
                         + ">"
                         + current_obj_value
                         + "</textarea></td>"
