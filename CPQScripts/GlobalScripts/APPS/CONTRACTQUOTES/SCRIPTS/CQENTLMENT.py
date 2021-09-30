@@ -440,7 +440,7 @@ class Entitlements:
 		where = pricemethodupdate = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
-			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
+			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 		else:
 			GetDefault = ''	
 		product_obj = Sql.GetFirst("""SELECT 
@@ -651,7 +651,7 @@ class Entitlements:
 						attrSysId = attribute['attribute_system_id']
 						DType = attribute['attribute_dtype']
 						attrValueSysId = attributevalues.get(attrSysId)	
-						GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
+						GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 						## replace fn &apos; added for A055S000P01-3158
 						Trace.Write("attrValue---612---"+str(attrValue))
 						Trace.Write("DType---612---"+str(DType))
