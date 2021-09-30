@@ -233,6 +233,7 @@ class tool_idle:
             )
 objtool_idle = tool_idle()
 MODE = Param.MODE
+Trace.Write("Mode---"+str(MODE))
 ACTION = Param.ACTION
 if ACTION == "CONT_TOOL_IDLE":               
     ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling())
