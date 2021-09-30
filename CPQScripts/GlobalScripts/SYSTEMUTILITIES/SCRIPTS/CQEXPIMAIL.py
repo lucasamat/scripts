@@ -87,22 +87,25 @@ expiration_obj = qt_expiration_mail_trigger(Quote)
 # mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 
 
-quote_expiration_date = Quote.GetCustomField('QuoteExpirationDate').Content
-quote_expiration_date_obj = datetime.datetime.strptime(str(quote_expiration_date),"%Y-%m-%d").strftime('%m-%d-%Y')
-quote_expiration_date = str(quote_expiration_date_obj).split(" ")[0].strip()
-quote_expiration_date = quote_expiration_date.replace("-","/")
+# quote_expiration_date = Quote.GetCustomField('QuoteExpirationDate').Content
+# quote_expiration_date_obj = datetime.datetime.strptime(str(quote_expiration_date),"%Y-%m-%d").strftime('%m-%d-%Y')
+# quote_expiration_date = str(quote_expiration_date_obj).split(" ")[0].strip()
+# quote_expiration_date = quote_expiration_date.replace("-","/")
 
 now = datetime.datetime.now()
 current_date_obj = str(now).split(" ")[0].strip()
-today_date = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d").strftime('%m-%d-%Y')
-today_date_string = str(today_date).split(" ")[0].strip()
-target_mail_date_obj = today_date + timedelta(days=14)
+today_date_obj = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
+today_date_string = str(today_date_obj).split(" ")[0].strip()
+target_mail_date_obj = today_date_obj + timedelta(days=14)
+target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
+target_mail_date = target_mail_date.replace("-","/")
 
-mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
-mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
 
-expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CONTRACT_VALID_TO = '"+target_mail_date+"' ")
+# mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
+# mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
+
+expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CONTRACT_VALID_TO = '"+str(target_mail_date)+"' ")
 
 # if today_date_string == mail_trigger_date:
 expired_quotes = []
