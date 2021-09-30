@@ -1053,13 +1053,13 @@ class EntitlementView():
 												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
 												)
 											
-											if val.ENTITLEMENT_NAME == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											if val.ENTITLEMENT_ID == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 												sec_str_faccur += str(val.PRICE_METHOD)
-											elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 												sec_str_faccur += str(val.PRICE_METHOD)
-											elif (val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_NAME == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
 												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
 												sec_str_faccur += str(val.PRICE_METHOD)
 											else:
@@ -1089,7 +1089,7 @@ class EntitlementView():
 										LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
 										WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
-										if STDVALUES and val.ENTITLEMENT_NAME == str(attrSysId):
+										if STDVALUES and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
 												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
 											except Exception as e:
