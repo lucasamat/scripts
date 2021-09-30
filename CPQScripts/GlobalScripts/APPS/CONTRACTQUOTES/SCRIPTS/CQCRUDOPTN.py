@@ -876,7 +876,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		#overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-		is_default = ent_val_code = ''			
+		is_default = ent_val_code = ''
+		AttributeID_Pass =""			
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
