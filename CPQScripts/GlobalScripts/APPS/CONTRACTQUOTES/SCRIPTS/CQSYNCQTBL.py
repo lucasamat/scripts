@@ -1195,7 +1195,7 @@ class SyncQuoteAndCustomTables:
 							for ins_service in range(len(serv_ids)):
 								Trace.Write(serv_ids[ins_service])
 								if ins_service ==0 or ins_service ==1:
-								continue
+									continue
 								Quote_obj = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM MAADPR (NOLOCK) WHERE POES = '"+str(poes_cond)+"' and PRDOFR_ID = '"+serv_ids[1]+"' and COMP_PRDOFR_ID = '"+serv_ids[ins_service]+"'")	
 								if Quote_obj.cnt == 1:
 									service_ids += serv_ids[ins_service]
