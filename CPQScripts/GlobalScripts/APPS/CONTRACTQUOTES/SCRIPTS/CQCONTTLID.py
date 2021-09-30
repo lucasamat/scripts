@@ -232,6 +232,7 @@ class tool_idle:
             dbl_clk_function                       
             )
 objtool_idle = tool_idle()
+MODE = Param.MODE
 ACTION = Param.ACTION
 if ACTION == "CONT_TOOL_IDLE":               
     ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling())
