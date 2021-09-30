@@ -113,12 +113,12 @@ class tool_idle:
             elif readonly_val == "EDITABLE" and MODE == "EDIT":						
                 edit_pencil_icon = '<i class="fa fa-pencil" aria-hidden="true"></i>'
                 disable = ""
-            else:						
+            elif readonly_val == "READONLY" and (MODE == "EDIT" or MODE == "CANCEL" or MODE == "SAVE" or MODE == "VIEW"):						
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
             sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
             if tool.DATA_TYPE == "PICKLIST":
-                if MODE == "EDIT":
+                if MODE == "EDIT" and readonly_val == "EDITABLE":
                     sec_str += '<td>'
                     sec_str += (
                         '<select id="'
@@ -129,7 +129,7 @@ class tool_idle:
                         + current_obj_value
                         + '" type="text" title="'
                         + str(current_obj_value)
-                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '                        
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '                                                
                         + " style=\'margin-left: -1px\'><option value='Select'></option>"
                     )
                     Sql_Quality_Tier = Sql.GetFirst(
@@ -139,6 +139,27 @@ class tool_idle:
                         + str(current_obj_api_name)
                         + "' "
                     )
+                elif MODE == "EDIT" and readonly_val == "READONLY":
+                    sec_str += '<td>'
+                    sec_str += (
+                        '<select id="'
+                        + str(current_obj_api_name)
+                        + '" '
+                        + str(onchange)
+                        + ' value="'
+                        + current_obj_value
+                        + '" type="text" title="'
+                        + str(current_obj_value)
+                        + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '                                                
+                        + " style=\'margin-left: -1px\'><option value='Select'></option>"
+                    )
+                    Sql_Quality_Tier = Sql.GetFirst(
+                        "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+                        + str(ObjectName)
+                        + "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+                        + str(current_obj_api_name)
+                        + "' "
+                    )    
                 else:
                     Trace.Write("pick"+str(MODE))
                     sec_str += '<td>'
