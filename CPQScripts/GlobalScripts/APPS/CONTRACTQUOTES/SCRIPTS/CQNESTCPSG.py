@@ -492,8 +492,8 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
         data_dict["QUOTE_ITEM_CONDITION_TYPE_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
             "SAQICD", str(data_id)
         )
-        data_dict["STEP_NO"] = ('<abbr id ="" title="' + str(par.stepNo) + '">' + str(stepNo) +  "</abbr>")
-        data_dict["CONDITION_COUNTER"] = ('<abbr id ="" title="' + str(par.conditionCounter) + '">' + str(conditionCounter) +  "</abbr>")
+        data_dict["STEP_NO"] = ('<abbr id ="" title="' + str(par.stepNo) + '">' + str(par.stepNo) +  "</abbr>")
+        data_dict["CONDITION_COUNTER"] = ('<abbr id ="" title="' + str(par.conditionCounter) + '">' + str(par.conditionCounter) +  "</abbr>")
         data_dict["CONDITION_TYPE"] = ('<abbr id ="" title="' + str(par.conditionType) + '">' + str(par.conditionType) + "</abbr>")
         data_dict["CONDITION_TYPE_DESCRIPTION"] = ('<abbr id ="" title="' + str(par.conditionTypeDescription) + '">' + str(par.conditionTypeDescription) + "</abbr>")
         data_dict["PURPOSE"] = ('<abbr id ="" title="' + str(par.purpose) + '">' + str(par.purpose) + "</abbr>")
