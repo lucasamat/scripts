@@ -477,7 +477,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     #QueryCount = price[0]['conditions'].len()
     QueryCount = 20
     for par in price[0]['conditions']:
-        data_id = ''
+        data_id = '803B32A3-F417-4F6A-BC67-5D194D89'
         Action_str = (
             '<div class="btn-group dropdown"><div class="dropdown" id="ctr_drop"><i data-toggle="dropdown" id="dropdownMenuButton" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li><a class="dropdown-item cur_sty" href="#" id="'
             + str(data_id)
@@ -490,7 +490,7 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
         data_dict["ids"] = str(data_id)
         data_dict["ACTIONS"] = str(Action_str)
         data_dict["QUOTE_ITEM_CONDITION_TYPE_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
-            "SAQICD", str(par.QUOTE_ITEM_FORECAST_PART_RECORD_ID)
+            "SAQICD", str(data_id)
         )
         data_dict["STEP_NO"] = ('<abbr id ="" title="' + str(par.stepNo) + '">' + str(stepNo) +  "</abbr>")
         data_dict["CONDITION_COUNTER"] = ('<abbr id ="" title="' + str(par.conditionCounter) + '">' + str(conditionCounter) +  "</abbr>")
