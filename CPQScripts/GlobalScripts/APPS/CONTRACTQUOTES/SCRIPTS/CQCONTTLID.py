@@ -13,7 +13,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 
 class tool_idle:
-    def Contract_Tool_Idling(self):
+    def Contract_Tool_Idling(self, MODE):
         Trace.Write("tp inside function")    
         where_string = ""
         sec_str = ""
@@ -105,7 +105,6 @@ class tool_idle:
             edit_warn_icon = ""
             left_float = ""
             edit_pencil_icon = ""
-            MODE = ""
             current_obj_api_name = tool.API_NAME
             Trace.Write("iii"+str(current_obj_api_name))
             readonly_val = tool.PERMISSION
@@ -277,4 +276,4 @@ MODE = Param.MODE
 Trace.Write("Mode---"+str(MODE))
 ACTION = Param.ACTION
 if ACTION == "CONT_TOOL_IDLE":               
-    ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling())
+    ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling(MODE))
