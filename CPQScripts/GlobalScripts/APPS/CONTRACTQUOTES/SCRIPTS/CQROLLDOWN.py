@@ -308,7 +308,7 @@ def covobjrenewal():
 				<PRICE_METHOD>{pm}</PRICE_METHOD>
 				<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 				<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-				</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '',tool_desc =get_tooltip_desc)
+				</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc)
 			SAQSFE_query="""
 				INSERT SAQSFE (ENTITLEMENT_XML,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,	
 				CPS_CONFIGURATION_ID, CPS_MATCH_ID,QTESRVENT_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,QTESRVFBL_RECORD_ID,QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID,CPQTABLEENTRYDATEADDED, CPQTABLEENTRYADDEDBY)
