@@ -723,6 +723,12 @@ class ViolationConditions:
 										Transcationrulebody = self.ApprovalTranscationDataInsert()
 										Rulebodywithcondition = Transcationrulebody +where_conditon
 										b= Sql.RunQuery(Rulebodywithcondition)"""
+                        if QuoteId != "":
+                            transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
+                            chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
+                            UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
+                            Log.Info(UPDATE_ACACHR)
+                            Sql.RunQuery(UPDATE_ACACHR)               
         except Exception as e:
             Trace.Write(str(e))
         return True
