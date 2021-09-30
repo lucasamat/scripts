@@ -13,10 +13,10 @@ import sys
 from SYDATABASE import SQL
 Sql = SQL()
 
-def update_document_type(QuoteRecordId,RevisionRecordId):
-    service_obj  = Sql.GetFirst("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+def update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId):
+    service_obj  = Sql.GetFirst("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServicerecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),ServicerecordId = ServicerecordId))
     
-    Quote_obj = Sql.GetFirst("SELECT POES FROM  SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+    Quote_obj = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
     
     if service_obj:
         document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service.SERVICE_ID,Quote_obj.POES))
@@ -32,7 +32,9 @@ def update_document_type(QuoteRecordId,RevisionRecordId):
 try:
     QuoteRecordId = Param.QUOTE_RECORD_ID
     RevisionRecordId = Param.QTEREV_RECORD_ID
+    ServicerecordId = Param.SERVICE_ID
 except:
     QuoteRecordId = ""
-    RevisionRecordId = ""    
-update_document_type(QuoteRecordId,RevisionRecordId)
+    RevisionRecordId = "" 
+    ServicerecordId = ""   
+update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId)

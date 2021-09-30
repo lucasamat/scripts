@@ -1188,6 +1188,7 @@ class SyncQuoteAndCustomTables:
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
 						if payload_json.get('SERVICE_IDS'):	
 							service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
+							serviceid_1 = payload_json.get('SERVICE_IDS').split(',')[1]
 							Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):       
@@ -1687,8 +1688,9 @@ sync_obj.create_custom_table_record()
 # ##A055S000P01-8740 code starts..
 # quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 # quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
+# ServicerecordId = 
 # getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 # if getRevision is None:
-# 	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id})
+# 	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})
 # ##A055S000P01-8740 code ends..
 
