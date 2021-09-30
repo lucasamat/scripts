@@ -35,7 +35,8 @@ class qt_expiration_mail_trigger:
                             <br><br>
                             Thank You 
                             """
-                recepient = "joe.ebenezer@bostonharborconsulting.com"
+                recepient = str(employee_table.EMAIL)
+                #joe.ebenezer@bostonharborconsulting.com
                 # str(employee_table.EMAIL)
                 try:
                     LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
