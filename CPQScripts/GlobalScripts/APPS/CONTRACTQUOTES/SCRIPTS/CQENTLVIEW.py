@@ -645,17 +645,22 @@ class EntitlementView():
 							#getnameentallowed.append(attrName)
 							#totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
 							new_value_dicta["APPROVAL"] = ""	
-							new_value_dicta["ENTITLEMENT DESCRIPTION"] = str(attrName)
+							new_value_dicta["ENTITLEMENT"] = str(attrName)
+							new_value_dicta["DESCRIPTION"] = ""
+							new_value_dicta["REQUIRED"] = ""
 							#Trace.Write('sec_str1---2372---'+str(sec_str1))
 							if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
-								new_value_dicta["ENTITLEMENT VALUE"] =  sec_str1
+								new_value_dicta["VALUE"] =  sec_str1
 							else:
-								new_value_dicta["ENTITLEMENT VALUE"] =  attrValue
+								new_value_dicta["VALUE"] =  attrValue
 							#new_value_dicta["FACTOR CURRENCY"] = ""
 							new_value_dicta["ENTITLEMENT COST IMPACT"]= ""
 							new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str("<abbr class = 'wid90_per' title=''></abbr>")+str(edit_pencil_icon)
 							#new_value_dicta["DATA TYPE"] = ""
 							new_value_dicta["CALCULATION FACTOR"] = ""
+							new_value_dicta["VALIDATION"]= ""
+							
+
 							if new_value_dicta:
 								date_boot_field.append(new_value_dicta)
 						sec_str_boot += ('</div>')
