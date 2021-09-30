@@ -485,16 +485,16 @@ class EntitlementView():
 							#Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
 							insertservice += """<QUOTE_ITEM_ENTITLEMENT>
                                 <ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+                                <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 								<IS_DEFAULT>{is_default}</IS_DEFAULT>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code =ent_val_code,ent_type = DType,ent_desc = attrName,ent_disp_val = attr_value,ct = '',pi = '',is_default =  '1' if str(attrSysId) in attributedefaultvalue else '0',pm = '',cf = '')
 							if DType == "Drop Down":
 								#Trace.Write('attrSysId--2324--drop down----'+str(attrSysId))
