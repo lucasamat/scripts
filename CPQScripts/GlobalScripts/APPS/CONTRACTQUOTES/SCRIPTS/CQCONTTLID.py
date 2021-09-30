@@ -298,7 +298,7 @@ class tool_idle:
             new_value_dict,
             dbl_clk_function                       
             )
-    def Tool_Idle_Save(self):
+    def Tool_Idle_Save(self, MODE):
         Trace.Write('cm to save===')
         new_dict = DICT
         for key,val in new_dict.items():
