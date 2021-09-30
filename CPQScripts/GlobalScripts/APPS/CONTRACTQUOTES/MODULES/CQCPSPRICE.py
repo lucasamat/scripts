@@ -12,7 +12,7 @@ import System.Net
 import sys
 import datetime
 
-def fetch_cps_price():
+def fetch_cps_response():
     webclient = System.Net.WebClient()
     webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0=";
