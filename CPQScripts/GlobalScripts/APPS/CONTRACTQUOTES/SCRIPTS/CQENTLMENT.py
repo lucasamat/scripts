@@ -768,6 +768,7 @@ class Entitlements:
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
 			Trace.Write('524---658-attributes_service_sublist--'+str(attributes_service_sublist))
+			
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
@@ -838,6 +839,39 @@ class Entitlements:
 											) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
 						#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
 						#Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
+						if attributes_service_sublist:
+							ProductVersionObj = SqlHelper.GetFirst("""SELECT 
+												MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+											FROM PRODUCTS PDS 
+											INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+											WHERE SYSTEM_ID ='{SystemId}'
+											GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
+							HasDefaultvalue=False
+							for attrs in att_list_sub:
+								if attrs in attributevalues:
+									HasDefaultvalue=True					
+									STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
+									ent_disp_val = attributevalues[attrs]
+									ent_val_code = attributevalues[attrs]
+									#Trace.Write("ent_disp_val----"+str(ent_disp_val))
+								else:					
+									HasDefaultvalue=False
+									ent_disp_val = ""
+									ent_val_code = ""
+									STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
+								ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
+								PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+								if PRODUCT_ATTRIBUTES:
+									if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+										get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+										ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+										
+										getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
+										if getslaes_value:
+											getquote_sales_val = getslaes_value.SALESORG_ID
+										get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+										get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+								DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 						if self.treeparam == "Z0091":
 							where = ""
 						elif self.treeparentparam == "Z0091":
