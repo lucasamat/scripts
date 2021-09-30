@@ -193,7 +193,7 @@ class tool_idle:
                         )
                 else:
                     sec_str += (
-                        '<td><input id="'
+                        '<td><input disabled id="'
                         + str(current_obj_api_name)
                         + '" type="text" value="'
                         + current_obj_value
@@ -202,8 +202,7 @@ class tool_idle:
                         + '" class="form-control related_popup_css fltlt" style="'
                         + str(left_float)
                         + ' ">'
-                        + str(edit_warn_icon)
-                        + disable
+                        + str(edit_warn_icon)                        
                         + "</td>"
                     )        
             elif tool.DATA_TYPE == "LONG TEXT AREA":
