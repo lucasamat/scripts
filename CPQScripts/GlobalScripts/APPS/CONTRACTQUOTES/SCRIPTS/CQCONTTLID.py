@@ -128,7 +128,7 @@ class tool_idle:
                     + current_obj_value
                     + '" type="text" title="'
                     + str(current_obj_value)
-                    + '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+                    + '" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow"  '
                     + disable
                     + " style=\'margin-left: -1px\'><option value='Select'></option>"
                 )
@@ -161,7 +161,7 @@ class tool_idle:
                         + current_obj_value
                         + '" title="'
                         + current_obj_value
-                        + '" class="form-control related_popup_css fltlt" style="'
+                        + '" class="form-control related_popup_css fltlt light_yellow" style="'
                         + str(left_float)
                         + ' ">'
                         + str(edit_warn_icon)
@@ -184,7 +184,7 @@ class tool_idle:
                     sec_str += (
                         '<td><textarea title="'
                         + str(current_obj_value)
-                        + '" class="form-control related_popup_css txtArea " id="'
+                        + '" class="form-control related_popup_css txtArea light_yellow" id="'
                         + str(current_obj_api_name)
                         + '" rows="1" cols="100" '
                         + disable							
