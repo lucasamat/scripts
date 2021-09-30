@@ -521,20 +521,20 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
     table_header += '<th data-field="SELECT" class="wid45" data-checkbox="true"></th>'
     for key, invs in enumerate(list(Columns)):
         invs = str(invs).strip()
-        qstring = attr_list.get(str(invs)) or ""
+        #qstring = attr_list.get(str(invs)) or ""
         if qstring == "":
             qstring = invs.replace("_", " ")
-        if checkbox_list is not None and invs in checkbox_list:
-            table_header += (
-                '<th  data-field="'
-                + str(invs)
-                + '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
-                + str(qstring)
-                + '">'
-                + str(qstring)
-                + "</abbr></th>"
-            )
-        elif hyper_link is not None and invs in hyper_link:            
+        #if checkbox_list is not None and invs in checkbox_list:
+        #    table_header += (
+        #        '<th  data-field="'
+        #        + str(invs)
+        #        + '" data-filter-control="input" data-align="center" data-formatter="CheckboxFieldRelatedList" data-sortable="true"><abbr title="'
+        #        + str(qstring)
+        #        + '">'
+        #        + str(qstring)
+        #        + "</abbr></th>"
+        #    )
+        if hyper_link is not None and invs in hyper_link:            
             table_header += (
                 '<th data-field="'
                 + str(invs)
