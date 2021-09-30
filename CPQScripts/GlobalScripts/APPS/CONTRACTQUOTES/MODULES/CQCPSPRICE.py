@@ -44,7 +44,6 @@ def fetch_cps_price():
         s = ','.join(li)
 
     requestdata = '{"docCurrency":"USD","locCurrency":null,"pricingProcedure":"'+PricingProcedure+'","groupCondition":false,"itemConditionsRequired":true,"items": ['+str(s)+']}'
-    Trace.Write("requestdata"+str(requestdata))
     response = webclient.UploadString(Request_URL,str(requestdata))
     return response
 
