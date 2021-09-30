@@ -470,6 +470,7 @@ class ViolationConditions:
             if str(ObjectName).strip() == "SAQTRV":
                 GetQuoteId = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(RecordId))
                 QuoteId = GetQuoteId.QUOTE_ID
+            Log.Info("Quote ID = "+str(QuoteId))
             Vio_Select_Query = Vio_where_conditon = ""
             CHSqlObjs = Sql.GetList(
                 "SELECT APPROVAL_CHAIN_RECORD_ID,APRCHN_ID FROM ACAPCH (NOLOCK) WHERE APROBJ_RECORD_ID = '"
