@@ -700,7 +700,7 @@ class TreeView:
 									PageRecId = str(findChildOne.NODE_PAGE_RECORD_ID)
 									nodeId = str(findChildOne.NODE_ID)						
 									where_string = " 1 = 1 "
-									       
+										
 									# Trace.Write("====>111"+str(NodeType)+"===="+str(NodeName)+"===="+str(RecAttValue)+"===="+str(nodeId)+"===="+
 									# 	str(ParRecId)+"===="+
 									# 	str(DynamicQuery)+"===="+
@@ -1458,7 +1458,7 @@ class TreeView:
 				elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'") 
 				elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-    					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")     
+						objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")     
 				elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "SALES":
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'") 
 				elif str(ObjName).strip() == 'ACAPTF' and str(ProductName).upper() == "APPROVAL CENTER" and (str(NodeName).strip() == 'TRKOBJ_NAME' or str(NodeName).strip() == 'TRKOBJ_TRACKEDFIELD_LABEL'):
@@ -1501,11 +1501,11 @@ class TreeView:
 					#where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"))    
 					#elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
 					#where_string = " ACAPMA.APRTRXOBJ_RECORD_ID = '{contract_quote_record_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{quote_id}%' ".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_id = quote_id)
-					#elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-					#quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-					#temp = ""
-					#temp = where_string.split("AND")[1]
-					#where_string = temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
+					elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
+						quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+						temp = ""
+						temp = where_string.split("AND")[1]
+						where_string = temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
 					if str(ObjName).strip() == "SAQSAO":
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
@@ -1580,7 +1580,7 @@ class TreeView:
 					# 	for tree in getpagename:                 
 					# 	 	#where_string =  where_string 
 					# 	 	where_string += " AND TREE_RECORD_ID = '"+str(tree.TREE_RECORD_ID)+"'"  
-					 		 
+							
 					elif str(ObjName).strip() == 'SAQTIP' and str(NodeName).strip() == 'PARTY_ID': 
 						where_string += " AND QUOTE_RECORD_ID ='{}' AND (PARTY_ROLE LIKE '%SENDING%' OR PARTY_ROLE LIKE '%RECEIVING%')  AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id)
 					# elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID': 
@@ -1787,6 +1787,24 @@ class TreeView:
 									+ str(NodeText)
 									+ "' ORDER BY ACAPCH.APRCHN_ID,ACAPMA.APRCHN_RECORD_ID"
 								)
+							elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' 	and str(ProductName).upper() == "SALES":
+								NodeText = "Round "+str(eval("childdata." + str(NodeName))).title()
+								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID,ACACHR.APPROVAL_ROUND, ACACHR.APPROVAL_ID,ACACHR.CpqTableEntryId FROM ACACHR (nolock) inner join ACAPTX (nolock) on ACAPTX.APRCHN_ID = ACACHR.APRCHN_ID where ACACHR.APPROVAL_ROUND = '{approval_round}' AND ".format(approval_round = NodeText.split(' ')[1])
+								+ str(where_string)) 
+								##for showing relevent subtab for approval in quote starts
+								try:
+									#Trace.Write("try"+str(where_string))
+									if "APRCHN_ID" in str(where_string).strip().split(" ")[0]:
+										#Trace.Write("if"+str(where_string).strip().split(" ")[0])
+										aprchn_id = "AND ACAPCH.APRCHN_ID = {}".format(str(where_string).strip().split(" ")[2])
+									else:
+										#Trace.Write("else"+str(where_string))
+										aprchn_id = ""
+								except:
+									#Trace.Write("except")
+									aprchn_id = ""
+								#Trace.Write("aprchn_id"+str(aprchn_id))
+								##for showing relevent subtab for approval in quote ends
 							elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst( "select TOP 10 ACACSA.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID, ACACSA.APRCHN_ID,ACACSA.APRCHNSTP_RECORD_ID FROM ACACSA (nolock) inner join ACACST (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACACSA.APRCHNSTP_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )
@@ -2434,7 +2452,7 @@ class TreeView:
 										page_tab = Product.GetGlobal("page_tab")
 										#Trace.Write("page_tab"+str(page_tab)+"---")
 										Subwhere_string += " AND TAB_LABEL = '{}'".format(page_tab) 
-										                                   
+																		
 								elif NodeText in ("Tree Node"):
 									RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_01110").GetValue() 
 									getpagename = Sql.GetList("select TREE_RECORD_ID from SYTREE where PAGE_RECORD_ID = '"+str(RecAttValue) +"' and TREE_NAME = '"+str(Product.GetGlobal('TreeName'))+"'") 
@@ -3036,7 +3054,7 @@ elif LOAD == "GlobalSet":
 
 #A055S000P01-4578 starts
 elif LOAD == 'PRICING PICKLIST':
-    ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
+	ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
 ##A055S000P01-4578 ends
 #else:
 #Trace.Write("elsee")
