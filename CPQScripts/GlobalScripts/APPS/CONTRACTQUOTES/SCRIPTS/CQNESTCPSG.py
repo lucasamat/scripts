@@ -193,9 +193,7 @@ def getsparepartslist(PerPage, PageInform, A_Keys, A_Values):
             table_header += (
                 '<th data-field="'
                 + str(invs)
-                + '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="SparePartsLineItemHyperLink" data-sortable="true"'+ str(qstring)+'"><abbr title="'
-                + str(qstring)
-                + '">'
+                + '" data-filter-control="input" data-title-tooltip="'+str(qstring)+'" data-formatter="SparePartsLineItemHyperLink" data-sortable="true"'+ str(qstring)+'">'
                 + str(qstring)
                 + "</abbr></th>"
             )
