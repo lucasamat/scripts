@@ -1833,13 +1833,13 @@ class Entitlements:
 				##to update match id at all level while cancelling ends
 
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
-				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
+				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
 				if GetDefault:
 					if GetDefault.IS_DEFAULT == 0:
 						defaultval = 0
 					else:
 						defaultval = 1
-					UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
+					UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_ID = '{}' AND {}  ".format(
 					tableName,defaultval,AttributeID, whereReq
 					)
 					Sql.RunQuery(UpdateIsdefault)
