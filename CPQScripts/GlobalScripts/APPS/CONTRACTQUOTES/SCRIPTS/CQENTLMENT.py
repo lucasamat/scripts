@@ -932,7 +932,7 @@ class Entitlements:
 							)
 							)
 				
-					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No":
+					elif key == "AGS_Z0091_KPI_BPTKPI" and str((val).split("||")[0]).strip() == "No":
 						Quote.SetGlobal("KPI","NO")
 						Trace.Write("NO to Bonus & Penalty Tied to KPI")
 						if self.treeparam == 'Z0091':
