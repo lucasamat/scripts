@@ -506,7 +506,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	try:
 		for obj in obj_list:
 			join =""
-			update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userid,datetimenow)
+			update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}',CONFIGURATION_STATUS = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userid,datetimenow,getinnercon.CONFIGURATION_STATUS)
 			if objectName == 'SAQSGE' and obj == 'SAQIEN':
 				join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
 			
@@ -787,17 +787,31 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			else:
 				Log.Info('else part roll down'+str(objectName)+'--'+str(obj)+'--'+str(join)+'--'+str(where))
 				update_field_str = ""
-				update_query = """ UPDATE TGT 
-				SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
-				TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
-				TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
-				TGT.CpqTableEntryModifiedBy = {},
-				TGT.CpqTableEntryDateModified = '{}'
-				{}
-				FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
-				ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,update_field_str,objectName,obj,join,where)
-				Sql.RunQuery(update_query)
-				
+				if obj == 'SAQSAE':
+					update_query = """ UPDATE TGT 
+					SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+					TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+					TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+					TGT.CpqTableEntryModifiedBy = {},
+					TGT.CpqTableEntryDateModified = '{}',
+					TGT.CONFIGURATION_STATUS = '{}',
+					{}
+					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,getinnercon.CONFIGURATION_STATUS,objectName,obj,join,where)
+					Sql.RunQuery(update_query)
+				else:
+					update_query = """ UPDATE TGT 
+					SET TGT.ENTITLEMENT_XML = SRC.ENTITLEMENT_XML,
+					TGT.CPS_MATCH_ID = SRC.CPS_MATCH_ID,
+					TGT.CPS_CONFIGURATION_ID = SRC.CPS_CONFIGURATION_ID,
+					TGT.CpqTableEntryModifiedBy = {},
+					TGT.CpqTableEntryDateModified = '{}'
+					{}
+					FROM {} (NOLOCK) SRC JOIN {} (NOLOCK) TGT 
+					ON  TGT.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND TGT.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND TGT.SERVICE_ID = SRC.SERVICE_ID {} {} """.format(userid,datetimenow,update_field_str,objectName,obj,join,where)
+					Sql.RunQuery(update_query)
+
+					
 
 			##roll down and up for all levels ends
 
@@ -927,7 +941,7 @@ elif objectName == "SAQSAE":
 	level = "Assembly Entitlement "
 Log.Info("level1---"+str(level))
 where_cond = where.replace('SRC.','')
-getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID from "+str(objectName)+" (nolock) "+str(where_cond)+"")
+getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,CPS_MATCH_ID,CPS_CONFIGURATION_ID,CONFIGURATION_STATUS from "+str(objectName)+" (nolock) "+str(where_cond)+"")
 
 ##get c4c quote id
 get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID,getinnercon.QTEREV_RECORD_ID))
