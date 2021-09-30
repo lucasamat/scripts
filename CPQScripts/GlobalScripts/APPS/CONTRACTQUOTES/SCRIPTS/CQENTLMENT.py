@@ -437,7 +437,7 @@ class Entitlements:
 		attributedefaultvalue = []
 		attribute_non_defaultvalue = []
 		dropdownallowlist_selected = []
-		where = pricemethodupdate = ""
+		where = pricemethodupdate = get_tool_desc = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
 			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
