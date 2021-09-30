@@ -94,7 +94,7 @@ class tool_idle:
             
         sec_str += '</tr></thead><tbody class ="tool_idle" >'
         Objd_Obj = Sql.GetList(
-            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE,PICKLIST_VALUES,PERMISSION from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+            "select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE,PICKLIST_VALUES,PERMISSION,REQUIRED from SYOBJD (NOLOCK)where OBJECT_NAME = '"
             + str(ObjectName)
             + "'"
         )
@@ -117,7 +117,11 @@ class tool_idle:
             elif readonly_val == "READONLY" and (MODE == "EDIT" or MODE == "CANCEL" or MODE == "SAVE" or MODE == "VIEW"):						
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
-            sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td><td>*</td>'
+            sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td>'
+            if tool.REQUIRED.upper() == "TRUE":
+                sec_str += '<td>*</td>'
+            if tool.REQUIRED.upper() == "FALSE":
+                sec_str += '<td></td>'    
             if tool.DATA_TYPE == "PICKLIST":
                 if MODE == "EDIT" and readonly_val == "EDITABLE":
                     sec_str += '<td>'
