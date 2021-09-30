@@ -23,6 +23,7 @@ class ViolationConditions:
         """Violation condition initializer."""
         self.Get_UserID = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
         self.Get_UserNAME = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERNAME")
+        self.Get_NAME = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "NAME")
         now = datetime.now()
         self.datetime_value = now.strftime("%m/%d/%Y %H:%M:%S")
 
