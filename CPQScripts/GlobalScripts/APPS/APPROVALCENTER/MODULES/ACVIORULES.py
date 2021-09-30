@@ -118,7 +118,7 @@ class ViolationConditions:
         Log.Info("Entered ViolationRuleForApprovals---insert ACAPMA")
         """Approval violations."""
         ApprovalCombinationID = approval_id_auto = ""
-        GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
+        GetObjHPromaryKey = Sql.GetFirst("SELECT RECORD_NAME,RECORD_ID FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         #Log.Info("SELECT RECORD_NAME FROM SYOBJH WHERE OBJECT_NAME ='{ObjectName}' ".format(ObjectName = ObjectName))
         QuoteId = CurrentId
         
@@ -142,7 +142,7 @@ class ViolationConditions:
             approval_id_auto = str(getsplit).rjust(3, "0")
         else:
             approval_id_auto = "001"
-        insertQueryStatement = """INSERT ACAPMA (APPROVAL_RECORD_ID,APRTRXOBJ_RECORD_ID,APRSTAMAP_RECORD_ID,APRCHN_ID,
+        insertQueryStatement = """INSERT ACAPMA (APPROVAL_RECORD_ID,APROBJ_ID,APRTRXOBJ_ID,APRTRXOBJ_RECORD_ID,APRSTAMAP_RECORD_ID,APRCHN_ID,
 			APRCHN_RECORD_ID,APRCHNSTP_RECORD_ID,APPROVAL_ID,APROBJ_LABEL,APRSTAMAP_APPROVALSTATUS,
 			APPROVE_TEMPLATE_RECORD_ID,TOTALDAYS_IN_APPROVAL,TOTALDAYS_IN_APRCHNSTP,CUR_APRCHNSTP,
 			FIN_APPROVE_USER_ID,FIN_APPROVE_USER_RECORD_ID,FIN_REJECT_USER_ID,FIN_REJECT_USER_RECORD_ID,
@@ -152,6 +152,8 @@ class ViolationConditions:
 			APPROVE_TEMPLATE_ID,APROBJ_STATUSFIELD_VALUE,REJECT_TEMPLATE_ID,REQUEST_TEMPLATE_ID,
 			ADDUSR_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 			SELECT TOP 1 CONVERT(VARCHAR(4000), NEWID()) AS APPROVAL_RECORD_ID
+                ,'{recid}' AS APROBJ_ID
+                ,'{QuoteId}' AS APRTRXOBJ_ID
 				,'{ApprovalCombinationID}' AS APRTRXOBJ_RECORD_ID
 				,ACACSS.APPROVAL_CHAIN_STATUS_MAPPING_RECORD_ID AS APRSTAMAP_RECORD_ID
 				,ACAPCH.APRCHN_ID AS APRCHN_ID
@@ -201,7 +203,8 @@ class ViolationConditions:
             UserName=self.Get_UserNAME,
             approval_id_auto=approval_id_auto,
             QuoteId=str(QuoteId),
-            RevisionId=str(RevisionId)
+            RevisionId=str(RevisionId),
+            recid=GetObjHPromaryKey.RECORD_ID
         )
         Log.Info("query statement acapma ---"+str(insertQueryStatement))
         return insertQueryStatement
