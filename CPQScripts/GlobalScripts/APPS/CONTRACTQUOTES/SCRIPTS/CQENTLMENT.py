@@ -798,6 +798,7 @@ class Entitlements:
 					#getregionvalq = "AMT"
 					getvalue = str((val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
+					Trace.Write('**At line 791'+str(self.treeparam))
 					if str(self.treeparam) == "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
 						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key) and str((val).split("||")[0]).strip() == "Some Exclusions":
 							service_id = key.split('_')[1].strip()
