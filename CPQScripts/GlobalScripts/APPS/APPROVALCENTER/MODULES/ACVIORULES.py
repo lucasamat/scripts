@@ -548,7 +548,7 @@ class ViolationConditions:
                         Rulebodywithcondition = rulebody + where_conditon
                         Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
                         a = Sql.RunQuery(Rulebodywithcondition)
-                        
+
                         # Approval Rounding - Start
                         primarykey = str(Guid.NewGuid()).upper()	
                         roundd = 1
