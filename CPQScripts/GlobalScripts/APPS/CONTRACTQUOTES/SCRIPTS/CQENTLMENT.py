@@ -514,6 +514,8 @@ class Entitlements:
 			Trace.Write("Fullresponse--"+str(Fullresponse))
 			Product.SetGlobal('Fullresponse',str(Fullresponse))
 			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
+			if get_tool_desc:
+				get_tool_desc= get_datatype.ATTRDESC
 			'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 			if GetDefault.PRICE_METHOD:
 				pricemethodupdate = GetDefault.PRICE_METHOD
