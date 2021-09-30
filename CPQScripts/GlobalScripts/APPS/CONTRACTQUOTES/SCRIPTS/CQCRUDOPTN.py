@@ -844,6 +844,13 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.get("SERVICE_ID"),'request_url':Request_URL,'request_type':"New"})
 		Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 		Fullresponse= eval(Fullresponse)
+		##getting configuration_status status
+		if Fullresponse['complete'] == 'true':
+			configuration_status = 'COMPLETE'
+		elif Fullresponse['complete'] == 'false':
+			configuration_status = 'INCOMPLETE'
+		else:
+			configuration_status = 'ERROR'
 		attributesdisallowedlst=[]
 		attributeReadonlylst=[]
 		attributesallowedlst=[]
@@ -982,6 +989,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 			tbrow["QTEREV_RECORD_ID"] = self.quote_revision_record_id
 			tbrow["QTEREV_ID"] = self.quote_revision_id
+			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
 
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
