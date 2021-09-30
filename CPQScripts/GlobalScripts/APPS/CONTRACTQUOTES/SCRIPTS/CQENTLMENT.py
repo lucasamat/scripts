@@ -422,7 +422,7 @@ class Entitlements:
 		
 		
 		Trace.Write('tableName'+str(tableName))
-		attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)		
+		attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)		
 		cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 		
 		attributesdisallowedlst = []
