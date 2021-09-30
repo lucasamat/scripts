@@ -918,7 +918,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
-				if current_prod == "Sales":
+				if current_prod == "Sales" and ObjectName != "ACAPMA" and ObjectName != "ACAPTX" and ObjectName != "ACACHR":
 					script = (
 						"SELECT "
 						+ str(API_NAMES)
