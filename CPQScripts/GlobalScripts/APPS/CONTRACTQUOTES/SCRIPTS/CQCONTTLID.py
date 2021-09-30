@@ -118,9 +118,9 @@ class tool_idle:
                 edit_pencil_icon = '<i class="fa fa-lock" aria-hidden="true"></i>'
                 disable = "disabled"
             sec_str += '<tr><td>'+tool.FIELD_LABEL+'</td><td>'+tool.FIELD_LABEL+'</td>'
-            if tool.REQUIRED.upper() == "TRUE":
+            if tool.REQUIRED == "True":
                 sec_str += '<td>*</td>'
-            if tool.REQUIRED.upper() == "FALSE":
+            if tool.REQUIRED == "False":
                 sec_str += '<td></td>'    
             if tool.DATA_TYPE == "PICKLIST":
                 if MODE == "EDIT" and readonly_val == "EDITABLE":
