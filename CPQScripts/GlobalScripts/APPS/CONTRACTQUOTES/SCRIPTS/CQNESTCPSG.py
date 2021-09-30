@@ -474,7 +474,8 @@ def getsparepartssublist(PerPage, PageInform, A_Keys, A_Values):
         if key == "items":
             price = value[:]
             break
-    QueryCount = price[0]['conditions'].len()
+    #QueryCount = price[0]['conditions'].len()
+    QueryCount = 20
     for par in price[0]['conditions']:
         data_id = ''
         Action_str = (
