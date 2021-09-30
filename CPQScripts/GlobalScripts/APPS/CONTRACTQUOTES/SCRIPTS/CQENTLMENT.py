@@ -767,7 +767,7 @@ class Entitlements:
 											attributedefaultvalue.append(prdvalue["id"])
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
-			
+			Trace.Write('524---658-attributes_service_sublist--'+str(attributes_service_sublist))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
