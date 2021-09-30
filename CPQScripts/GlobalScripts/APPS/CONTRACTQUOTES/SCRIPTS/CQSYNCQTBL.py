@@ -1193,22 +1193,25 @@ class SyncQuoteAndCustomTables:
 							Log.Info("""SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'""".format(contract_quote_data.get('C4C_QUOTE_ID')))
 						if payload_json.get('FAB_LOCATION_IDS'):
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
-						if payload_json.get('SERVICE_IDS'):
-							service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
-							Trace.Write(str(payload_json.get('SERVICE_IDS').split(',')))
-							serv_ids = payload_json.get('SERVICE_IDS').split(',')
-							poes_cond = payload_json.get('POES')
-							service_ids = serv_ids[1]+"','"
-							for ins_service in range(len(serv_ids)):
-								Trace.Write(serv_ids[ins_service])
-								if ins_service ==0 or ins_service ==1:
-									continue
-								Quote_obj = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM MAADPR (NOLOCK) WHERE POES = '"+str(poes_cond)+"' and PRDOFR_ID = '"+serv_ids[1]+"' and COMP_PRDOFR_ID = '"+serv_ids[ins_service]+"'")	
-								if Quote_obj.cnt == 1:
-									service_ids += serv_ids[ins_service]
-							
-							service_ids = service_ids
-							Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
+						try:
+							if payload_json.get('SERVICE_IDS'):
+								service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
+								Trace.Write(str(payload_json.get('SERVICE_IDS').split(',')))
+								serv_ids = payload_json.get('SERVICE_IDS').split(',')
+								poes_cond = payload_json.get('POES')
+								service_ids = serv_ids[1]+"','"
+								for ins_service in range(len(serv_ids)):
+									Trace.Write(serv_ids[ins_service])
+									if ins_service ==0 or ins_service ==1:
+										continue
+									Quote_obj = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM MAADPR (NOLOCK) WHERE POES = '"+str(poes_cond)+"' and PRDOFR_ID = '"+serv_ids[1]+"' and COMP_PRDOFR_ID = '"+serv_ids[ins_service]+"'")	
+									if Quote_obj.cnt == 1:
+										service_ids += serv_ids[ins_service]
+								
+								service_ids = service_ids
+								Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
+						except:
+							pass
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):       
 								Log.Info(str(payload_json.get('SAQFEQ'))+" ======== equipment_json_data-------->"+str(equipment_json_data))                 
