@@ -443,20 +443,21 @@ class EntitlementView():
 							#Trace.Write(str(attrLabel)+'--attrLabel----attrValue--'+str(attrValue))
 							if attrSysId in attributesdisallowedlst:
 								if attrSysId in attributedefaultvalue:
-									add_style = "display:none;color:#1B78D2"
-								else:
 									add_style = "display:none;"
+								else:
+									add_style = "display:none;color:#1B78D2"
 								attributes_disallowed_list.append(attrSysId)
 							else:
 								add_style = ""
 							#Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
-							if attrSysId in attributedefaultvalue:
+							if attrSysId not in attributedefaultvalue:
 								#Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							# if attrSysId in attributedefaultvalue:
 							# 	add_style_color = ";color: red"
 							# else:
 							# 	add_style_color = ""
+							
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
 								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
@@ -895,9 +896,9 @@ class EntitlementView():
 							#Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 							if attrSysId in attributesdisallowedlst:
 								if attrSysId in attributedefaultvalue:
-									add_style = "display:none;color:#1B78D2"
+									add_style = "display:none;"
 								else:
-									add_style = ""
+									add_style = "color:#1B78D2"
 								attributes_disallowed_list.append(attrSysId)
 							else:
 								#Trace.Write("attrValue_else_j 2860---attrName_else_j "+str(attrName))
@@ -906,7 +907,7 @@ class EntitlementView():
 							if attrSysId in validation_dict.keys():
 								sec_validation = "Only enter the values in the following range: "+str(validation_dict[attrSysId])+"-0"
 
-							if attrSysId in attributedefaultvalue:
+							if attrSysId not in attributedefaultvalue:
 								#Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
 							#Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
