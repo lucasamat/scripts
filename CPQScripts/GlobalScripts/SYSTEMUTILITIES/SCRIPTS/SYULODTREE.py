@@ -1494,7 +1494,7 @@ class TreeView:
 						where_string = where_string
 					elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID':
 						where_string = where_string                        
-					elif str(CurrentTabName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
+					elif str(CurrentTabName).strip() == 'ACAPCH' and str(NodeName).strip() == 'APRCHN_ID':
 						where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"))
 						Product.SetGlobal("aprchn_id","yes")
 					#elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
