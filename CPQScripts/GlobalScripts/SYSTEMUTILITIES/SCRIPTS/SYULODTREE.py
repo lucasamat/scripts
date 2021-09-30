@@ -1601,6 +1601,7 @@ class TreeView:
 						Trace.Write('Wh_API_NAME----'+str(ObjName)+'Wh_API_NAME111--'+str(Wh_API_NAME))
 						if RecAttValue and str(NodeName).strip() != 'APRCHN_ID' and str(ObjName).strip() != 'ACAPMA':
 							where_string = " " + str(where_string) + " AND " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+							Trace.Write("Whapiname---"+str(Wh_API_NAME))
 						else:
 							Trace.Write('where_string----'+str(where_string))
 							where_string = where_string
