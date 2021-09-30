@@ -674,7 +674,7 @@ class Entitlements:
 						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(ent_disp_val)+'--631---'+str(attrLabel)+'-'+str(ent_val_code))
 						
 						if str(DType) == "Check Box":
-							STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}'".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID))
+							STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}'".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID))
 							display_value_arr =[]
 							# if ent_val_code:
 							# 	display_value_arr =[]
@@ -683,7 +683,7 @@ class Entitlements:
 							# 	if STANDARD_ATTRIBUTE_VALUES :
 									
 							# 		display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
-									
+							get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
 							multi_select_attr_list[str(attrSysId)] = display_value_arr
 						if attributevalues.get(attrSysId) is None:
 							ent_disp_val = ''
@@ -695,17 +695,18 @@ class Entitlements:
 						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
 						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 						<IS_DEFAULT>{is_default}</IS_DEFAULT>
 						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+						<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '',tool_desc =get_tool_desc )
 
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
 						#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
@@ -1061,13 +1062,14 @@ class Entitlements:
 							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
 							#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
 							
-							STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
+							STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
 							#Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
 							if STANDARD_ATTRIBUTE_VALUES:
 								attr_code = [code.STANDARD_ATTRIBUTE_VALUE for code in STANDARD_ATTRIBUTE_VALUES]
 								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 								#Trace.Write('attr_code--if'+str(attr_code))
 								ent_val_code =  str(attr_code).replace("'", '"')
+								get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
 								#multi_select_attr_list[str(key)] = display_value_arr
 						else:
 							attr_code = ""
@@ -1112,17 +1114,18 @@ class Entitlements:
 					# Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 						<IS_DEFAULT>{is_default}</IS_DEFAULT>
 						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+						
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc )
 					Trace.Write("updateentXML-970------"+str(updateentXML))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE() WHERE  {} ".format(tableName, updateentXML,userId,whereReq)
 				###to update match id at all level while saving starts
@@ -1245,17 +1248,17 @@ class Entitlements:
 							
 							updatexml  = """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 								<IS_DEFAULT>{is_default}</IS_DEFAULT>
 								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE)
+								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE,tool_desc = )
 							updateentXML  += updatexml
 							if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
 						
