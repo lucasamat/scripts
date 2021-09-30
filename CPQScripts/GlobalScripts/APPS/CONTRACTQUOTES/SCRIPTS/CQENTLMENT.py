@@ -640,7 +640,7 @@ class Entitlements:
 					
 			Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
 			ServiceContainer = Product.GetContainerByName("Services")
-			sec_name = updateentXML = ""
+			sec_name = updateentXML = get_tool_desc = ""
 			for tab in product_tabs_obj:
 				if tabwise_product_attributes.get(tab.TAB_PROD_ID):
 					for attribute in tabwise_product_attributes.get(tab.TAB_PROD_ID):
