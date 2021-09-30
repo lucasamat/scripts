@@ -542,7 +542,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						if GetXMLfab:
 							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 						#Log.Info("get_calc_factor---"+str(get_calc_factor))
-
+					get_desc = value.ENTITLEMENT_DESCRIPTION
 					get_code = value.ENTITLEMENT_VALUE_CODE
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -556,7 +556,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION) 
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc) 
 					
 				#Log.Info('updateentXML--ser-'+str(updateentXML))
 				where_condition = SAQITMWhere.replace('A.','')
@@ -585,6 +585,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_ID = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_ID))
 								if GetXMLfab:
 									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+							get_desc = value.ENTITLEMENT_DESCRIPTION
 							get_code = value.ENTITLEMENT_VALUE_CODE
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -598,7 +599,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION) 
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc) 
 						
 					
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
@@ -624,7 +625,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
 									else:
 										get_price_impact = 0.00
-								
+							get_desc = value.ENTITLEMENT_DESCRIPTION	
 							get_code = value.ENTITLEMENT_VALUE_CODE
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -638,7 +639,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 									<PRICE_METHOD>{pm}</PRICE_METHOD>
 									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 									<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION)  
+									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc)  
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 						
 						
@@ -669,6 +670,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								if GetXMLfab:
 									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
 								#Log.Info("get_calc_factor---"+str(get_calc_factor))
+							get_desc = value.ENTITLEMENT_DESCRIPTION
 							get_code = value.ENTITLEMENT_VALUE_CODE
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -682,7 +684,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION) 
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc) 
 						
 						#Log.Info('updateentXML--fab2-'+str(updateentXML))
 					
@@ -710,6 +712,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 									else:
 										get_price_impact = 0.00
 									get_calc_factor = get_value = round(get_val,2)
+							get_desc = value.ENTITLEMENT_DESCRIPTION
 							get_code = value.ENTITLEMENT_VALUE_CODE
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -723,7 +726,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION)  
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc)  
 						
 						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 							
@@ -751,6 +754,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 							else:
 								get_price_impact = 0.00
 							get_calc_factor = get_value = round(get_val,2)
+					get_desc = value.ENTITLEMENT_DESCRIPTION
 					get_code = value.ENTITLEMENT_VALUE_CODE
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -764,7 +768,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= value.ENTITLEMENT_DESCRIPTION) 
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE,tool_desc= get_desc.replace("'","''") if "'" in get_desc else get_desc) 
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 				Sql.RunQuery(UpdateEntitlement)
 
