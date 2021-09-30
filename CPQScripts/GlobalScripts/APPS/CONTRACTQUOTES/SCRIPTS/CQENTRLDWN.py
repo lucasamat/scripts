@@ -284,8 +284,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						get_code = str(get_cod).replace("'", '"')
 
 					assign_xml = """
-						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
@@ -451,8 +450,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						get_value = str(get_val).replace("'", '"')
 						get_code = str(get_cod).replace("'", '"')
 					assign_xml = """
-						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
@@ -462,9 +460,9 @@ def entitlement_price_rollup(objectname,ent_temp):
 						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						""".format(ent_name = value.ENTITLEMENT_ID,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_currency ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
-					if value.ENTITLEMENT_ID+'<' in get_val_list:
-						updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
+						""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_currency ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
+					if value.ENTITLEMENT_NAME+'<' in get_val_list:
+						updateentXML = re.sub(r'<ENTITLEMENT_NAME>'+str(value.ENTITLEMENT_NAME)+'<[\w\W]*?</CALCULATION_FACTOR>', assign_xml, updateentXML )
 					else:
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
 						flag = False
@@ -485,6 +483,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
 	if 'Z0007' in get_serviceid:
 		objectName = 'SAQSCE'
+		obj_list = ['SAQTSE','SAQSFE','SAQSGE','SAQIEN','SAQSAE']
 	if objectName == 'SAQTSE':
 		obj_list = ['SAQSCE','SAQSFE','SAQSGE','SAQIEN','SAQSAE']
 	elif objectName == 'SAQSFE':
@@ -493,7 +492,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQIEN','SAQSAE']
 		is_changed = True
-	elif objectName == 'SAQSCE':
+	elif objectName == 'SAQSCE' and 'Z0007' not in get_serviceid:
 		obj_list = ['SAQIEN','SAQSAE']
 		is_changed = True
 	datetimenow = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p") 
@@ -520,32 +519,194 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			
 			###roll down for all levels starts
 			
+			if obj == 'SAQTSE'  and GetXMLsecField and 'Z0007' in get_serviceid:
+				where_condition = SAQITMWhere.replace('A.','')
+				updateentXML = ""
+				for value in GetXMLsecField:
+					get_value = value.ENTITLEMENT_DISPLAY_VALUE
+					get_calc_factor = value.CALCULATION_FACTOR 
+					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+					#try:
+					get_currency = value.PRICE_METHOD
+					#except:
+					#get_currency = ""
+					#Log.Info('ENTITLEMENT_COST_IMPACT-----'+str(value.ENTITLEMENT_COST_IMPACT))
+								
+					if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and value.ENTITLEMENT_COST_IMPACT):
+						
+						GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
 
-			if obj == 'SAQSFE' and GetXMLsecField:
-				get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
-				for fab in get_value_query:
-					where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
-					get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
-					updateentXML = ""
-					for value in GetXMLsecField:
-						get_value = value.ENTITLEMENT_DISPLAY_VALUE
-						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-						get_currency = value.PRICE_METHOD
-						get_calc_factor = value.CALCULATION_FACTOR 
-						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
+						if GetXMLfab:
+							get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+						#Log.Info("get_calc_factor---"+str(get_calc_factor))
+
+					get_code = value.ENTITLEMENT_VALUE_CODE
+					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+						<IS_DEFAULT>{is_default}</IS_DEFAULT>
+						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+						<PRICE_METHOD>{pm}</PRICE_METHOD>
+						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor, ent_type = value.ENTITLEMENT_TYPE) 
+					
+				#Log.Info('updateentXML--ser-'+str(updateentXML))
+				where_condition = SAQITMWhere.replace('A.','')
+				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+				#Log.Info('UpdateEntitlement--'+str(" UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj, update_fields,where_condition)))
+					
+
+			elif obj == 'SAQSFE' and GetXMLsecField:
+				if 'Z0007' in get_serviceid and objectName == 'SAQSCE': 
+					where_condition = SAQITMWhere.replace('A.','')
+					
+					get_value_query = Sql.GetList("select QUOTE_RECORD_ID,QTEREV_RECORD_ID ,FABLOCATION_RECORD_ID, FABLOCATION_ID from SAQSFB {} ".format(where_condition) )
+					
+					for fab in get_value_query:
+						where_condition = SAQITMWhere.replace('A.','')
+						updateentXML = ""
+						where_condition += " AND FABLOCATION_ID = '{}'".format(fab.FABLOCATION_ID )
+						for value in GetXMLsecField:
+							get_value = value.ENTITLEMENT_DISPLAY_VALUE
+							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+							get_calc_factor = value.CALCULATION_FACTOR 
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							
-								get_calc_factor = get_value = round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt),2)
-								if value.ENTITLEMENT_COST_IMPACT and get_value:
-									get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
-								else:
-									get_price_impact = 0.00
+							if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown')  and value.ENTITLEMENT_COST_IMPACT):
+								
+								GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+								if GetXMLfab:
+									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+							get_code = value.ENTITLEMENT_VALUE_CODE
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+								<IS_DEFAULT>{is_default}</IS_DEFAULT>
+								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<PRICE_METHOD>{pm}</PRICE_METHOD>
+								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+						
+					
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+									
+						Sql.RunQuery(UpdateEntitlement)
+				else:
+					get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
+					for fab in get_value_query:
+						where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
+						get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
+						updateentXML = ""
+						for value in GetXMLsecField:
+							get_value = value.ENTITLEMENT_DISPLAY_VALUE
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+							get_currency = value.PRICE_METHOD
+							get_calc_factor = value.CALCULATION_FACTOR 
+							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+								if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
+								
+									get_calc_factor = get_value = round(float(grnbk_dict[value.ENTITLEMENT_NAME]) *	float(get_equipment_count.cnt),2)
+									if value.ENTITLEMENT_COST_IMPACT and get_value:
+										get_price_impact = get_value * float(value.ENTITLEMENT_COST_IMPACT)
+									else:
+										get_price_impact = 0.00
+								
+							get_code = value.ENTITLEMENT_VALUE_CODE
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+									<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+									<IS_DEFAULT>{is_default}</IS_DEFAULT>
+									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+									<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+									<PRICE_METHOD>{pm}</PRICE_METHOD>
+									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+						
+						
+						Sql.RunQuery(UpdateEntitlement)
+				
+				
+			elif obj == 'SAQSGE' and GetXMLsecField:
+				if 'Z0007' in get_serviceid and objectName == 'SAQSCE':
+					where_condition = SAQITMWhere.replace('A.','')
+					#fab_val = where_cond.split('AND ')
+					#where_condition += ' AND {}'.format( fab_val[len(fab_val)-1] )
+					#Log.Info('where_condition-----1307--'+str(where_condition))	
+					
+					get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))
+					for fab in get_value_query:
+						updateentXML = ""
+						where_condition = SAQITMWhere.replace('A.','')
+						where_condition += " AND FABLOCATION_ID = '{}' and GREENBOOK = '{}'".format(fab.FABLOCATION_ID,fab.GREENBOOK )
+						for value in GetXMLsecField:
+							get_value = value.ENTITLEMENT_DISPLAY_VALUE
+							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+							get_calc_factor = value.CALCULATION_FACTOR 
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							
-						get_code = value.ENTITLEMENT_VALUE_CODE
-						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+							if (value.ENTITLEMENT_TYPE in ('Drop Down','DropDown') and value.ENTITLEMENT_COST_IMPACT):
+								#GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT,FABLOCATION_ID,GREENBOOK from (SELECT distinct e.QUOTE_RECORD_ID, e.FABLOCATION_RECORD_ID, e.FABLOCATION_ID,e.GREENBOOK,e.EQUIPMENT_ID ,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select SAQSCE.EQUIPMENT_ID,SAQSCE.QUOTE_RECORD_ID as QUOTE_RECORD_ID, SAQSCE.FABLOCATION_RECORD_ID, SAQSCE.FABLOCATION_ID,SAQSCE.GREENBOOK, CONVERT(xml, replace(cast(SAQSCE.ENTITLEMENT_XML as varchar(max)),'&','&amp;'), 2) as ENTITLEMENT_XML FROM SAQSCE (NOLOCK) {}) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) IQ where ENTITLEMENT_NAME =  '{}' GROUP BY QUOTE_RECORD_ID, FABLOCATION_ID, FABLOCATION_RECORD_ID, GREENBOOK ".format(where_condition,value.ENTITLEMENT_NAME))
+								GetXMLfab = Sql.GetFirst("select SUM(CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE 0 END) AS ENTITLEMENT_COST_IMPACT from (SELECT * FROM {pricetemp} {where_condition} AND ENTITLEMENT_NAME = '{ent_name}') IQ ".format(pricetemp = ent_temp,where_condition = where_condition,ent_name = value.ENTITLEMENT_NAME))
+								if GetXMLfab:
+									get_cost_impact = GetXMLfab.ENTITLEMENT_COST_IMPACT
+								#Log.Info("get_calc_factor---"+str(get_calc_factor))
+							get_code = value.ENTITLEMENT_VALUE_CODE
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+								<IS_DEFAULT>{is_default}</IS_DEFAULT>
+								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<PRICE_METHOD>{pm}</PRICE_METHOD>
+								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE) 
+						
+						#Log.Info('updateentXML--fab2-'+str(updateentXML))
+					
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+									
+						Sql.RunQuery(UpdateEntitlement)
+					
+				else:
+					get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
+					for grnbk in get_value_query:
+						where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
+						updateentXML = ""
+						for value in GetXMLsecField:
+							get_value = value.ENTITLEMENT_DISPLAY_VALUE
+							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
+							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
+							get_calc_factor = value.CALCULATION_FACTOR
+							get_currency = value.PRICE_METHOD
+							if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
+								
+								if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
+									get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
+									if value.ENTITLEMENT_COST_IMPACT and get_val:
+										get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
+									else:
+										get_price_impact = 0.00
+									get_calc_factor = get_value = round(get_val,2)
+							get_code = value.ENTITLEMENT_VALUE_CODE
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
@@ -556,51 +717,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
-					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
-					
-					
-					Sql.RunQuery(UpdateEntitlement)
-			
-				
-			elif obj == 'SAQSGE' and GetXMLsecField:
-				
-				get_value_query = Sql.GetList("select FABLOCATION_ID,GREENBOOK,count(*) as cnt from SAQSCO {} group by FABLOCATION_ID,GREENBOOK ".format(where_cond ))			
-				for grnbk in get_value_query:
-					where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
-					updateentXML = ""
-					for value in GetXMLsecField:
-						get_value = value.ENTITLEMENT_DISPLAY_VALUE
-						get_cost_impact = value.ENTITLEMENT_COST_IMPACT
-						get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
-						get_calc_factor = value.CALCULATION_FACTOR
-						get_currency = value.PRICE_METHOD
-						if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_NAME and 'Z0016' in get_serviceid:
-							
-							if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_NAME in grnbk_dict.keys() :
-								get_val = float(grnbk_dict[value.ENTITLEMENT_NAME]) * float(grnbk.cnt)
-								if value.ENTITLEMENT_COST_IMPACT and get_val:
-									get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
-								else:
-									get_price_impact = 0.00
-								get_calc_factor = get_value = round(get_val,2)
-						get_code = value.ENTITLEMENT_VALUE_CODE
-						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-							<IS_DEFAULT>{is_default}</IS_DEFAULT>
-							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-							<PRICE_METHOD>{pm}</PRICE_METHOD>
-							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = value.ENTITLEMENT_NAME,ent_val_code = get_code.replace("'","''") if  "'" in str(get_code) and value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' else get_code, ent_disp_val = get_value.replace("'","''") if  "'" in str(get_value) else get_value ,ct = get_cost_impact ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = value.PRICE_METHOD ,cf= get_calc_factor , ent_type = value.ENTITLEMENT_TYPE)  
-					
-					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
 						
-					Sql.RunQuery(UpdateEntitlement)
+						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}', {} {} ".format(obj, updateentXML,update_fields,where_condition)
+							
+						Sql.RunQuery(UpdateEntitlement)
 
 			elif obj == 'SAQSCE' and GetXMLsecField:
 			
@@ -626,8 +746,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 							get_calc_factor = get_value = round(get_val,2)
 					get_code = value.ENTITLEMENT_VALUE_CODE
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
@@ -742,7 +861,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				Log.Info('where-where--'+str(where_condition))
 				getmasterentitlement=Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE(NOLOCK) '{where_condition}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.','')))
 				getconditionentitlement=getmasterentitlement.ENTITLEMENT_XML
-				getconditionentitlement=re.sub(r'<ENTITLEMENT_ID>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
+				getconditionentitlement=re.sub(r'<ENTITLEMENT_NAME>AGS_LAB_PRE_MAI[\w\W]*?</CALCULATION_FACTOR>','',getconditionentitlement)
 				getconditionentitlement=re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*</QUOTE_ITEM_ENTITLEMENT>','',getconditionentitlement)
 				##Greenbook level
 				QueryStatement = "UPDATE SAQSGE SET ENTITLEMENT_XML = '{entitlement}' '{where_condition}' AND GREENBOOK IN ('PDC','MPS')".format(entitlement=getconditionentitlement,ContractId=Qt_rec_id,revision_rec_id = rev_rec_id,serviceId=get_serviceid,where_condition=SAQITMWhere.replace('A.',''))
