@@ -479,12 +479,12 @@ def covobjrenewal():
 			qtqscelist =[]
 			#qtqsce = SqlHelper.GetList("SELECT distinct replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME FROM SAQSCE (NOLOCK) WHERE SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(ServiceId=ProductPartnumber, QuoteRecordId=ContractRecordId, EquipmentId = str(eqp.EQUIPMENT_ID)))
 			qtqsce = SqlHelper.GetList("SELECT ENTITLEMENT_NAME FROM SAQSCE (NOLOCK) WHERE SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(ServiceId=ProductPartnumber, QuoteRecordId=ContractRecordId, EquipmentId = str(eqp.EQUIPMENT_ID)))
-			qtqscedetail = SqlHelper.GetFirst("SELECT ENTITLEMENT_NAME FROM SAQSCE (NOLOCK) WHERE SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(ServiceId=ProductPartnumber, QuoteRecordId=ContractRecordId, EquipmentId = str(eqp.EQUIPMENT_ID)))
+			qtqscedetail = SqlHelper.GetFirst("SELECT ENTITLEMENT_ID FROM SAQSCE (NOLOCK) WHERE SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(ServiceId=ProductPartnumber, QuoteRecordId=ContractRecordId, EquipmentId = str(eqp.EQUIPMENT_ID)))
 			for val in qtqsce:
-				ENTITLEMENTNAME = val.ENTITLEMENT_NAME     
+				ENTITLEMENTNAME = val.ENTITLEMENT_ID     
 				qtqscelist.append(ENTITLEMENTNAME)
 				if ENTITLEMENTNAME not in attributeList:                    
-					deletequery = Sql.RunQuery("DELETE FROM SAQSCE where WHERE ENTITLEMENT_NAME = '{EntName}' and SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(EntName = str(val.ENTITLEMENT_NAME), ServiceId=ProductPartnumber,QuoteRecordId=ContractRecordId,EquipmentId = str(eqp.EQUIPMENT_ID)))
+					deletequery = Sql.RunQuery("DELETE FROM SAQSCE where WHERE ENTITLEMENT_ID = '{EntName}' and SERVICE_ID = '{ServiceId}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' and EQUIPMENT_ID = '{EquipmentId}'".format(EntName = str(val.ENTITLEMENT_ID), ServiceId=ProductPartnumber,QuoteRecordId=ContractRecordId,EquipmentId = str(eqp.EQUIPMENT_ID)))
 			for key,value in zip(attributeList,attributevalueList):
 				if key not in qtqscelist:
 					Log.Info(key)                    
