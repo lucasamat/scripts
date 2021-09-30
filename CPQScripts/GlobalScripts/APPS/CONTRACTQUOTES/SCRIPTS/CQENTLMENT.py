@@ -515,7 +515,7 @@ class Entitlements:
 			Product.SetGlobal('Fullresponse',str(Fullresponse))
 			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
 			if get_datatype:
-				get_tool_desc= get_datatype.ATTRDESC
+				get_tool_desc = get_datatype.ATTRDESC
 			'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 			if GetDefault.PRICE_METHOD:
 				pricemethodupdate = GetDefault.PRICE_METHOD
@@ -686,9 +686,12 @@ class Entitlements:
 									
 							# 		display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 							if STANDARD_ATTRIBUTE_VALUES:
-								if STANDARD_ATTRIBUTE_VALUES.ATTRDESC:
-									get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
-								else:
+								try:
+									if STANDARD_ATTRIBUTE_VALUES.ATTRDESC:
+										get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+									else:
+										get_tool_desc = ''
+								except:
 									get_tool_desc = ''
 							multi_select_attr_list[str(attrSysId)] = display_value_arr
 						if attributevalues.get(attrSysId) is None:
