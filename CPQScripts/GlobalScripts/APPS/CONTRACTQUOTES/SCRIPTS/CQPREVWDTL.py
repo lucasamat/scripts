@@ -116,13 +116,13 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 				elif sefl_api=="POES":
 					act_status = (eval("col_name." + str(sefl_api)))
 					sec_str += (
-						'<td><input id="'
+						'<div class="col-md-3 padtop5 padleft10"><input id="'
 						+ str(sefl_api)
 						+ '" type="CHECKBOX" value="'
 						+ str(act_status)
 						+ '" class="custom" '
-						+ 'disable checked><span class="lbl"></span></td>'
-					)			
+						+ 'disabled checked><span class="lbl"></span></div>'
+					)		
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
