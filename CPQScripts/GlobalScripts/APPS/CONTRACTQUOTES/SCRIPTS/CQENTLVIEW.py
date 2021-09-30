@@ -1181,7 +1181,7 @@ class EntitlementView():
 									
 									elif DType == "Free Input, no Matching" :
 										#Trace.Write('val.ENTITLEMENT_NAME--'+str(val.ENTITLEMENT_NAME))
-										if val.ENTITLEMENT_NAME == str(attrSysId):
+										if val.ENTITLEMENT_ID == str(attrSysId):
 											sec_str1 = ""
 											sec_str_imt = ""
 											sec_str_primp =""
