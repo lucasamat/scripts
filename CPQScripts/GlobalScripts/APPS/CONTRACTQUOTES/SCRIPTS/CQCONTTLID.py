@@ -98,9 +98,10 @@ class tool_idle:
             + str(ObjectName)
             + "'"
         )
-        for tool in Objd_Obj:
+        for tool in Objd_Obj:         
+                
             onchange = ""
-            current_obj_value = tool.PICKLIST_VALUES            
+            current_obj_value = Quote.GetCustomField(tool.API_NAME).Content            
             edit_warn_icon = ""
             left_float = ""
             edit_pencil_icon = ""
@@ -297,9 +298,21 @@ class tool_idle:
             new_value_dict,
             dbl_clk_function                       
             )
+    def Tool_Idle_Save(self):
+        Trace.Write('cm to save===')
+        new_dict = DICT
+        for key,val in new_dict.items():
+            Quote.GetCustomField(key).Content = str(val)
+        Quote.Save() 
+        return True               
+            
+
 objtool_idle = tool_idle()
 MODE = Param.MODE
 Trace.Write("Mode---"+str(MODE))
 ACTION = Param.ACTION
+DICT = Param.DICT
 if ACTION == "CONT_TOOL_IDLE":               
     ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Contract_Tool_Idling(MODE))
+if ACTION == "CONT_TOOL_IDLE_SAVE":               
+    ApiResponse = ApiResponseFactory.JsonResponse(objtool_idle.Tool_Idle_Save(MODE))    
