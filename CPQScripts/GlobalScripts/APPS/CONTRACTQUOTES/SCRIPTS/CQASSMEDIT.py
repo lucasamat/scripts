@@ -248,6 +248,13 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			Trace.Write('response2--182----267-----'+str(response2))
 			response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 			Fullresponse= eval(response2)
+			##getting configuration_status status
+			if Fullresponse['complete'] == 'true':
+				configuration_status = 'COMPLETE'
+			elif Fullresponse['complete'] == 'false':
+				configuration_status = 'INCOMPLETE'
+			else:
+				configuration_status = 'ERROR'
 			attributesdisallowedlst=[]
 			attributesallowedlst=[]
 			attributedefaultvalue = []
@@ -346,7 +353,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc)
 					cpsmatc_incr = int(cpsmatchID) + 10
 					#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
-				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE() WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,whereReq)
+				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE(),CONFIGURATION_STATUS = '{}' WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,configuration_status,whereReq)
 				Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
 				Sql.RunQuery(Updatecps)
 			
