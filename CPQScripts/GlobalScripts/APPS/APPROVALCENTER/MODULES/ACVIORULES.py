@@ -546,7 +546,7 @@ class ViolationConditions:
                         where_conditon += " ORDER BY ACACST.APRCHNSTP_NUMBER"
                         rulebody = self.ViolationRuleForApprovals(str(RecordId), str(ObjectName), str(val.APRCHN_ID))
                         Rulebodywithcondition = rulebody + where_conditon
-                        Log.Info("=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
+                        Log.Info("ACAPMA=====>>>>>>>>Rulebodywithcondition "+str(Rulebodywithcondition))
                         a = Sql.RunQuery(Rulebodywithcondition)
                         
                         # Approval Rounding - Start
@@ -654,9 +654,9 @@ class ViolationConditions:
                                     ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
                                     APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
                                     
-                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=RoundKey,Round=1)
+                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=1)
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
-                                    Trace.Write("Rulebodywithcondition ===> "+str(Rulebodywithcondition))
+                                    Log.Info("ACAPTX Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
 
                                     GetTrackedFields = Sql.GetList(
@@ -728,6 +728,7 @@ class ViolationConditions:
 										Rulebodywithcondition = Transcationrulebody +where_conditon
 										b= Sql.RunQuery(Rulebodywithcondition)"""
                         if QuoteId != "":
+                            Log.Info("Entering Round")
                             transaction_count_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             chnstp_count_obj = Sql.GetFirst("SELECT count(distinct APRCHNSTP_ID) as cnt from ACAPTX where APRTRXOBJ_ID='{}' and APRCHNRND_RECORD_ID ='{}' ".format(QuoteId,primarykey))
                             UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.TOTAL_APRTRX = {total},ACACHR.TOTAL_CHNSTP={totalchnstp},ACACHR.APRCHN_NAME=ACAPCH.APRCHN_NAME,ACACHR.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID,ACACHR.APPROVAL_ID = ACAPTX.APPROVAL_ID,ACACHR.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID,ACACHR.APRCHN_ID = ACAPTX.APRCHN_ID FROM ACAPTX INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID INNER JOIN ACACHR ON ACAPTX.APRCHNRND_RECORD_ID = ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID ='{quoteId}' AND ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID='{primarykey}'""".format(quoteId=QuoteId,primarykey=primarykey,total=transaction_count_obj.cnt,totalchnstp=chnstp_count_obj.cnt)
