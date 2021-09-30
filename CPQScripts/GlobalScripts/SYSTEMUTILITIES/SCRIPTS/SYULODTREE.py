@@ -1504,8 +1504,9 @@ class TreeView:
 					elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						temp = ""
-						temp = where_string.split("AND")[1]
-						where_string = temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
+						Trace.Write("where_string"+str(where_string))
+						# temp = where_string.split("AND")[1]
+						# where_string = temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
 					if str(ObjName).strip() == "SAQSAO":
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
