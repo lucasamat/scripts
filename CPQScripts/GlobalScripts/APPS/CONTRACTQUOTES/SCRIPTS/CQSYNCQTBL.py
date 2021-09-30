@@ -324,15 +324,17 @@ class SyncQuoteAndCustomTables:
 						cpsmatchID = tbrow["CPS_MATCH_ID"]
 						cpsConfigID = Fullresponse['id']
 						if int(ent_disp_val) > 364:
-							
-							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-							AttributeID = 'AGS_CON_DAY'
-							NewValue = ent_disp_val
-							add_where =''
-							ServiceId = OfferingRow_detail.SERVICE_ID
-							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"+ " AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
-							ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
-							result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+							try:
+								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+								AttributeID = 'AGS_CON_DAY'
+								NewValue = ent_disp_val
+								add_where =''
+								ServiceId = OfferingRow_detail.SERVICE_ID
+								whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID LIKE '%Z0016%'"+ " AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id) + "'"
+								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+							except:
+								pass
 
 							
 				except:

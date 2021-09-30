@@ -1004,98 +1004,21 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						ent_disp_val = 	str(contract_days)
 					except:						
 						ent_disp_val = ent_disp_val					
-					cpsmatchID = tbrow["CPS_MATCH_ID"]
-					cpsConfigID = Fullresponse['id']					
-					webclient = System.Net.WebClient()
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-					response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-					response = eval(response)
-					webclient = System.Net.WebClient()
-					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-					#webclient.Headers.Add("If-Match", "111")
 
-					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
-					RevisionRecordId=self.quote_revision_record_id		
-					AttributeID = 'AGS_CON_DAY'
-					NewValue = ent_disp_val
-					whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' and SERVICE_ID like '%Z0016%' and QTEREV_RECORD_ID = '"+str(RevisionRecordId)+"' "
+					try:
+						AttributeID = 'AGS_CON_DAY'
+						NewValue = ent_disp_val
+						add_where =''
+						ServiceId = OfferingRow_detail.SERVICE_ID
+						whereReq = "QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get('QUOTE_RECORD_ID'))+"' and SERVICE_ID like '%Z0016%' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' "
 
-					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-					#Log.Info("---eqruestdata---requestdata----"+str(requestdata))
-					response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-										
-					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-					
-					Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'','request_url':Request_URL,'request_type':"Existing"})
-					Fullresponse=str(Fullresponse).replace(": true", ': "true"').replace(": false", ': "false"')
-					Fullresponse= eval(Fullresponse)
-					#Log.Info('response2--182----267-----'+str(response2))
-				
-					attributesdisallowedlst=[]
-					attributeReadonlylst=[]
-					attributesallowedlst=[]
-					#overallattributeslist =[]
-					attributevalues={}
-					for rootattribute, rootvalue in Fullresponse.items():
-						if rootattribute=="rootItem":
-							for Productattribute, Productvalue in rootvalue.items():
-								if Productattribute=="characteristics":
-									for prdvalue in Productvalue:
-										#overallattributeslist.append(prdvalue['id'])
-										if prdvalue['visible'] =='false':
-											attributesdisallowedlst.append(prdvalue['id'])
-										else:
-											#Trace.Write(prdvalue['id']+" set here")
-											attributesallowedlst.append(prdvalue['id'])
-										if prdvalue['readOnly'] =='true':
-											attributeReadonlylst.append(prdvalue['id'])
-										for attribute in prdvalue['values']:
-											attributevalues[str(prdvalue['id'])]=attribute['value']
-					
-					attributesallowedlst = list(set(attributesallowedlst))
-					#overallattributeslist = list(set(overallattributeslist))
-					HasDefaultvalue=False
-					ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-					if ProductVersionObj is not None:
-						tbrow={}
-						insertservice = ""						
-						for attrs in attributesallowedlst:							
-							if attrs in attributevalues:
-								HasDefaultvalue=True
-								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
-								ent_disp_val = attributevalues[attrs]
-							else:
-								HasDefaultvalue=False
-								ent_disp_val = ""
-								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
-							ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
-							PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
-							
-							if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
-								get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-								ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 							
-							
-							DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}							
-							insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-							<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
-							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-							<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-							<IS_DEFAULT>{is_default}</IS_DEFAULT>
-							<PRICE_METHOD>{pm}</PRICE_METHOD>
-							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = attributevalues[attrs] if HasDefaultvalue==True else '',ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1',pm = '',cf = '')
-							cpsmatc_incr = int(cpsmatchID) + 10
-							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE() WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID, User.Id, whereReq)
-							Sql.RunQuery(Updatecps)
-
+						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+					except:
+						pass
+		
 			except:
-				cpsmatc_incr = ''	
+				pass
 
 class PartsListModel(ContractQuoteCrudOpertion):
 	Trace.Write('-----Parts List CRUD-----')
