@@ -32,7 +32,7 @@ class qt_expiration_mail_trigger:
                 Subject = "Your Quote is going to Expire in 2 Weeks"
                 mailBody = """
                             Dear """+str(quote.OWNER_NAME)+""",<br><br>
-                                This is to notify that the Quote Number """+str(quote.QUOTE_ID)+""" will be expired on """+str(quote.CONTRACT_VALID_TO)+"""
+                                This is to notify that the Quote Number """+str(quote.QUOTE_ID)+""" will be expired on """+str(expiration_date)+"""
                             <br><br>
                             Thank You 
                             """
