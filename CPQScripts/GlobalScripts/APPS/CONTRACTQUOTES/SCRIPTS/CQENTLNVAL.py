@@ -66,7 +66,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
 	get_attr_leve_based_list =[]
-	for val in inserted_lis:
+	for val in inserted_value_list:
 		Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
 		if get_visible_fields:
