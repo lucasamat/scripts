@@ -787,7 +787,7 @@ class EntitlementView():
 				self.treesuperparentparam = ""
 			#Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
 			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber:	
-				Trace.Write("@2756------->"+str(self.treeparentparam))
+				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
 					product_section =   str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
