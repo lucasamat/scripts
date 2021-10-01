@@ -777,7 +777,7 @@ class EntitlementView():
 			#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
-			previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
+			previous_entitlement_xml  = SqlHelper.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
 			#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
 			Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
