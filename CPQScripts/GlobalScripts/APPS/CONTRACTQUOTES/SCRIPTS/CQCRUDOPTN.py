@@ -858,7 +858,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		attributesallowedlst=[]
 		attributedefaultvalue = []
 		overall_att_list_sub =[]
-		#overallattributeslist =[]
+		overallattributeslist =[]
 		attributevalues={}
 		get_toolptip= ''
 		#getquote_sales_val = AttributeID_Pass = ''
@@ -867,7 +867,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				for Productattribute, Productvalue in rootvalue.items():
 					if Productattribute=="characteristics":
 						for prdvalue in Productvalue:
-							#overallattributeslist.append(prdvalue['id'])
+							overallattributeslist.append(prdvalue['id'])
 							if prdvalue['id'].startswith('AGS_Z0046_'):
 								overall_att_list_sub.append(prdvalue['id'])
 							if prdvalue['visible'] =='false':
@@ -882,7 +882,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 									#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
 									attributedefaultvalue.append(prdvalue["id"])
 		attributesallowedlst = list(set(attributesallowedlst))
-		#overallattributeslist = list(set(overallattributeslist))		
+		overallattributeslist = list(set(overallattributeslist))		
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 		is_default = ent_val_code = ''
@@ -890,7 +890,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
-			for attrs in attributesallowedlst:
+			for attrs in overallattributeslist:
 				
 				if attrs in attributevalues:					
 					HasDefaultvalue=True					
@@ -1528,11 +1528,13 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 				attributesallowedlst=[]
 				attributevalues={}
 				attributedefaultvalue = []
+				overallattributeslist =[]
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute=="rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
 							if Productattribute=="characteristics":
 								for prdvalue in Productvalue:
+									overallattributeslist.append(prdvalue['id'])
 									if prdvalue['visible'] =='false':
 										attributesdisallowedlst.append(prdvalue['id'])
 									else:
@@ -1548,6 +1550,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 											attributedefaultvalue.append(prdvalue["id"])
 				
 				attributesallowedlst = list(set(attributesallowedlst))
+				overallattributeslist = list(set(overallattributeslist))
 				Trace.Write('2172')
 				HasDefaultvalue=False
 				ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
@@ -1555,7 +1558,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					tbrow={}
 					insertservice = ""
 					
-					for attrs in attributesallowedlst:
+					for attrs in overallattributeslist:
 						#tbrow1 = {}
 						if attrs in attributevalues:
 							HasDefaultvalue=True

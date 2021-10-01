@@ -148,14 +148,14 @@ class SyncQuoteAndCustomTables:
 			attributeReadonlylst=[]
 			attributesallowedlst=[]
 			attributedefaultvalue = []
-			#overallattributeslist =[]
+			overallattributeslist =[]
 			attributevalues={}
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute=="rootItem":
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute=="characteristics":
 							for prdvalue in Productvalue:
-								#overallattributeslist.append(prdvalue['id'])
+								overallattributeslist.append(prdvalue['id'])
 								if prdvalue['visible'] =='false':
 									attributesdisallowedlst.append(prdvalue['id'])
 								else:
@@ -170,7 +170,7 @@ class SyncQuoteAndCustomTables:
 										attributedefaultvalue.append(prdvalue["id"])
 			
 			attributesallowedlst = list(set(attributesallowedlst))
-			#overallattributeslist = list(set(overallattributeslist))
+			overallattributeslist = list(set(overallattributeslist))
 			Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 			HasDefaultvalue=False
 			ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
@@ -179,7 +179,7 @@ class SyncQuoteAndCustomTables:
 				insertservice =ent_disp_valdate =  ""
 				tblist = []
 				#Log.Info("178----")
-				for attrs in attributesallowedlst:
+				for attrs in overallattributeslist:
 					#tbrow1 = {}
 					#Log.Info("191----")
 					if attrs in attributevalues:
