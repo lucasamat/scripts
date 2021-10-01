@@ -116,7 +116,7 @@ class EntitlementView():
 		getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(quoteid)+"'")
 		if getslaes_value:
 			getquote_sales_val = getslaes_value.SALESORG_ID
-		Trace.Write('getquote_sales_val---2421----'+str(getquote_sales_val))
+		Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
 		get_il_sales = SqlHelper.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 		#A055S000P01-9226 end
@@ -1421,7 +1421,7 @@ class EntitlementView():
 										+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onchange="editent_bt(this)" >'
 										+ "</input>"
 									)
-								Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
+								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
 								if attrSysId in attriburesrequired_list:
 									required_symbol_class = 'required_symbol'
 									get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
