@@ -58,15 +58,15 @@ def entitlement_request(partnumber,request_url,request_type):
 	return eval(response1)
 
 
-def get_entitlement_status(partnumber,where_cond,ent_level_table):
-	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
-	if get_cps:
-		request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(get_cps.CPS_CONFIGURATION_ID)
-		fullresponse = entitlement_request(partnumber,request_url,'EXISTING')
-		if fullresponse:
-			status = fullresponse['complete']
-			Trace.Write('status--'+str(status))
-			return status
+# def get_entitlement_status(partnumber,where_cond,ent_level_table):
+# 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
+# 	if get_cps:
+# 		request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(get_cps.CPS_CONFIGURATION_ID)
+# 		fullresponse = entitlement_request(partnumber,request_url,'EXISTING')
+# 		if fullresponse:
+# 			status = fullresponse['complete']
+# 			Trace.Write('status--'+str(status))
+# 			return status
 
 partnumber= Param.partnumber
 action= Param.action
@@ -92,8 +92,8 @@ try:
 except:
 	request_type = ""
 
-if action == 'GET_STATUS':
-	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
+# if action == 'GET_STATUS':
+# 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
 elif action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
 
