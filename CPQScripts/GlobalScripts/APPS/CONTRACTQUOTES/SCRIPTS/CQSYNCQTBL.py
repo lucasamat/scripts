@@ -1534,17 +1534,7 @@ class SyncQuoteAndCustomTables:
 										end_time = time.time()
 										Log.Info("CQCRUDOPTN end==> "+str(end_time - start_time)) """
 
-								# Approval Trigger - Start								
-								import ACVIORULES
-								violationruleInsert = ACVIORULES.ViolationConditions()
-								header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
-								if header_obj:
-									Log.Info("Starting Approval Trigger--")									
-									violationruleInsert.InsertAction(
-																	header_obj.RECORD_ID, quote_revision_id, "SAQTRV"
-																	)
-									Log.Info("Ending Approval Trigger--")
-								# Approval Trigger - End
+								
 								if "Z0007" in service_ids:
 									#GetAccount = Sql.GetFirst("SELECT DISTINCT ACCOUNT_ID, ACCOUNT_NAME,ACCOUNT_RECORD_ID FROM MAEQUP (NOLOCK) JOIN (SELECT NAME FROM SPLITSTRING('{EquipmentIds}'))B ON MAEQUP.EQUIPMENT_ID = NAME".format(EquipmentIds=equipment_ids))
 									account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
@@ -1586,6 +1576,17 @@ class SyncQuoteAndCustomTables:
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
 						Sql.Upsert(payload_table_info)
+					# Approval Trigger - Start								
+					import ACVIORULES
+					violationruleInsert = ACVIORULES.ViolationConditions()
+					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
+					if header_obj:
+						Log.Info("Starting Approval Trigger--")									
+						violationruleInsert.InsertAction(
+														header_obj.RECORD_ID, quote_revision_id, "SAQTRV"
+														)
+						Log.Info("Ending Approval Trigger--")
+					# Approval Trigger - End
 
 		except Exception:   
 			Log.Info("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
