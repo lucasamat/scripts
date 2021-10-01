@@ -220,7 +220,7 @@ class EntitlementView():
 					
 		if EntitlementType != "SENDING_LEVEL":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
-                Trace.Write('223----durga---')
+				Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,)
