@@ -166,7 +166,6 @@ class EntitlementView():
 			else:
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_SERVICE_RECORD_ID = '" + str(RECORD_ID) + "'")
-                Trace.Write('169---durga')
 				if ParentObj:
 					QUOTE_ID = ParentObj.QUOTE_ID
 					QUOTE_NAME = ParentObj.QUOTE_NAME
