@@ -780,7 +780,7 @@ class EntitlementView():
 				self.treesuperparentparam = ""
 			#Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
 			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber:	
-				#Trace.Write("@2756------->"+str(self.treeparentparam))
+				Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
 					product_section =   str(product_tab_obj.TAB_CODE)+'_'+ str(product_tab_obj.TAB_NAME)
@@ -821,7 +821,7 @@ class EntitlementView():
 							Section_desc =product_section.split('_')[len(Section_desc) - 1]
 
 					if EntitlementType in ("EQUIPMENT","BUSINESSUNIT","TOOLS"):
-						#Trace.Write("@@2794")
+						Trace.Write("@@2794")
 						sec_bnr += (
 							'<div class="dyn_main_head master_manufac glyphicon pointer  glyphicon-chevron-down " id="'
 							+ str(Section_id)+ '" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sec_'
