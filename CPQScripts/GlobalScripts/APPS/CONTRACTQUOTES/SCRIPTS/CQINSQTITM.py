@@ -11,3 +11,11 @@ import System.Net
 from SYDATABASE import SQL
 
 Sql = SQL()
+
+
+class ContractQuoteItem:
+	def __init__(self, **kwargs):		
+		self.user_id = str(User.Id)
+		self.user_name = str(User.UserName)		
+		self.datetime_value = datetime.datetime.now()
+		self.where_condition_string = ''
