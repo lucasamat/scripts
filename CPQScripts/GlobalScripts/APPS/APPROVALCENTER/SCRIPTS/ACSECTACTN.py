@@ -2510,7 +2510,7 @@ class approvalCenter:
 				else:   
 					
 					Htmlstr += "<div class='noRecDisp'>No Records to Display</div>"
-			#Trace.Write("Htmlstr"+str(Htmlstr))
+			Trace.Write("Htmlstr"+str(Htmlstr))
 			return Htmlstr,data_list
 		
 
