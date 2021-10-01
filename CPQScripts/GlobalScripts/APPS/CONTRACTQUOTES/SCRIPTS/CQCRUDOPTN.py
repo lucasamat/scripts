@@ -720,7 +720,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				Trace.Write("row_detail-719-"+str(row_detail))
 				self.CreateEntitlements(row_detail)
 			##A055S000P01-8740 code starts...
-			ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
+			#ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
 			##A055S000P01-8740 code ends...
 			# ADD VD TO THE OFFERINGS
 			#QTSID = str(row_detail["SERVICE_ID"])
