@@ -71,10 +71,14 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK LEVEL'
-	else:
+	elif ent_level_table == "SAQSCE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
+	else:
+		get_clicked_greenbook = Product.GetGlobal('TreeParam')
+		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
+		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
