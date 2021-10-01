@@ -1266,14 +1266,15 @@ def Related_Sub_Banner(
 								status_image = 'config_status_icon.png'
 							elif get_status.CONFIGURATION_STATUS == 'INCOMPLETE':
 								status_image = 'config_pend_status_icon.png'
-							else:
+							elif get_status.CONFIGURATION_STATUS == 'ERROR':
 								status_image = 'config_incomp_status_icon.png'
 
 					except:
 						status_image = ''
 
 					FourthLable = "Configuration Status"
-					FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+					if status_image:
+						FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 					FifthLable = ""
 					FifthValue = ""
 					if getService is not None:
