@@ -768,7 +768,8 @@ class EntitlementView():
 			
 			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
-			Trace.Write('766---get_attr_leve_based_list-----'+str(type(get_attr_leve_based_list)))
+			get_attr_leve_based_list = eval(get_attr_leve_based_list)
+			Trace.Write(str(get_attr_leve_based_list)+'---766---get_attr_leve_based_list-----'+str(type(get_attr_leve_based_list)))
 			for val in GetXMLsecField:
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
 				if val.IS_DEFAULT == '1':
