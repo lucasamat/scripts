@@ -131,6 +131,7 @@ if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
 if action == 'get_from_prenli':
 	Result_PRENVLI = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
+	Trace.Write('Result_PRENVLI---'+str(type(Result_PRENVLI)))
 	return Result_PRENVLI
 
 
