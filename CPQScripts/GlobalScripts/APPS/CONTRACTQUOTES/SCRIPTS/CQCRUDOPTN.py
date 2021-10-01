@@ -202,6 +202,7 @@ class ContractQuoteCrudOpertion:
 						qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
 				get_sales_org = SqlHelper.GetFirst("SELECT * FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 				sales_org=""
+				Trace.Write("qury_str=========="+str(qury_str))
 				if get_sales_org :
 					sales_org=get_sales_org.SALESORG_ID
 				query_string="select MAMTRL.MATERIAL_RECORD_ID, MAMTRL.SAP_PART_NUMBER, SAP_DESCRIPTION, PRODUCT_TYPE from MAMTRL (NOLOCK)  INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID  WHERE  ISNULL(IS_SPARE_PART,0) = 0 AND {product_type} AND {Qury_Str} MAMTRL.SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' )  AND SALESORG_ID='{sales_org}'  ".format(product_type=product_type,Qury_Str=qury_str,contract_quote_record_id = self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,sales_org=sales_org)
