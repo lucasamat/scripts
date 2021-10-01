@@ -20,6 +20,8 @@ from SYDATABASE import SQL
 #import time
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
+import CQTVLDRIFW
+
 
 try:
 	current_prod = Product.Name
