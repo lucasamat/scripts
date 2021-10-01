@@ -711,6 +711,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						existing_offering_ids.append(row_detail.get("SERVICE_ID"))
 				Trace.Write("row_detail-1111111111111111111-"+str(row_detail))
 				row_detail.update(row_values)
+				Trace.Write("row_detail-1122222222-"+str(row_detail))				
 				offering_table_info.AddRow(row_detail)
 				Sql.Upsert(offering_table_info)
 				#service_obj  = Sql.GetFirst("select COUNT(SERVICE_ID) as count,SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
