@@ -826,13 +826,13 @@ def Related_Sub_Banner(
 				# 	SecondLable = str(ThirdQuery.FIELD_LABEL)
 				# 	SecondValue = "ALL"
 					
-			Tab_Obj_Name = Sql.GetFirst(
-				"SELECT REPLACE(REPLACE(SYOBJS.COLUMNS,'[',''),']','') as COLUMNS, OBJ_REC_ID from SYOBJS (nolock) where CONTAINER_NAME = '"
-				+ str(ObjName)
-				+ "' and NAME = 'Secondary Header list' "
-			)     
+				Tab_Obj_Name = Sql.GetFirst(
+					"SELECT REPLACE(REPLACE(SYOBJS.COLUMNS,'[',''),']','') as COLUMNS, OBJ_REC_ID from SYOBJS (nolock) where CONTAINER_NAME = '"
+					+ str(ObjName)
+					+ "' and NAME = 'Secondary Header list' "
+				)     
 
-			if TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
+			elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
 				if ObjName == 'CTCTIP' and subTabName == 'Detail':
 					ObjName = "CTCTIP"
 					PrimaryLable = "Source Account ID"
