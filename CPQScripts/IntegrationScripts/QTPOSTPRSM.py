@@ -153,59 +153,37 @@ try:
 
 		SAQSAP_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,PM_FREQUENCY, PM_NAME INTO "+str(SAQSAP)+" from SAQSAP(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND PM_NAME = ''Wet Clean'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE''  )' ")
 		
-		start1 = 1
-		end1 = 100
+		table = SqlHelper.GetFirst(
+			"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"SALESORG_ID\" : \"'+SALESORG_ID+'\",\"REGION\" : \"'+REGION+'\",\"ASSEMBLY_ID\" : \"'+ASSEMBLY_ID+'\",\"LABOR_COVERAGE\" : \"'+LABOR_COVERAGE+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"PERFORMANCE_GUARANTEE\" : \"'+PERFORMANCE_GUARANTEE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\",\"PM_NAME\" : \"'+PM_NAME+'\",\"PM_PER_YEAR\" : \"'+PM_PER_YEAR+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid1)+" as SESSION_ID, B.QUOTE_ID+' - '+ CONVERT(VARCHAR,B.QTEREV_ID) AS QUOTE_ID,ISNULL(SALESORG_ID,'') AS SALESORG_ID,ISNULL(REGION,'') AS REGION, ISNULL(B.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(B.SERVICE_ID,'') AS SERVICE_ID,ISNULL(A.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL( COVERAGE,'' ) AS LABOR_COVERAGE,ISNULL(PMLABOR,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLABOR,'') AS CORRECTIVE_MAINTENANCE,ISNULL(PERFGUARANTEE,'') AS PERFORMANCE_GUARANTEE,ISNULL(WETCLEAN,'') AS WET_CLEAN, ISNULL(PM_NAME,'') AS PM_NAME,ISNULL(CONVERT(VARCHAR(50),PM_FREQUENCY),'') AS PM_PER_YEAR FROM "+str(SAQSCO)+" B(NOLOCK) JOIN "+str(SAQSCA)+"(NOLOCK) A ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID= B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID LEFT JOIN "+str(SAQSAP)+" C(NOLOCK) ON A.QUOTE_ID = C.QUOTE_ID AND A.SERVICE_ID = C.SERVICE_ID AND A.EQUIPMENT_ID = C.EQUIPMENT_ID AND A.ASSEMBLY_ID=C.ASSEMBLY_ID WHERE B.QUOTE_ID = '"+str(Qt_id)+"' ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT "
+		)
+			
+		if str(table).upper() != "NONE" and str(type(table.RESULT)) == "<type 'str'>":
+			Flag = "True"
 
-		Check_flag1 = 1
-		while Check_flag1 == 1:
+			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+
+			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME)  select ''"+str(table.RESULT)+ "'','"+ str(timestamp_sessionid)+ "',''CPQ_TO_SSCM_LOAD'' ' ")
+			
+			#F5 AUTHENTICATION				
+			LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_QUOTE'")
+			Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
+			
+			requestdata =Oauth_info.DOMAIN
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+			response = webclient.UploadString(Oauth_info.URL,str(requestdata))
+
+			response = eval(response)
+			access_token = response['access_token']
+			
+			authorization = "Bearer " + access_token
+			webclient = System.Net.WebClient()
+			webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
+
+			crm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(table.RESULT))	
+			Log.Info("789 crm_response --->"+str(crm_response))
 		
-			sessionid1 = SqlHelper.GetFirst("SELECT NEWID() AS A")
-			timestamp_sessionid1 = "'" + str(sessionid1.A) + "'"
-
-			table = SqlHelper.GetFirst(
-				"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"SALESORG_ID\" : \"'+SALESORG_ID+'\",\"REGION\" : \"'+REGION+'\",\"ASSEMBLY_ID\" : \"'+ASSEMBLY_ID+'\",\"LABOR_COVERAGE\" : \"'+LABOR_COVERAGE+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"PERFORMANCE_GUARANTEE\" : \"'+PERFORMANCE_GUARANTEE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\",\"PM_NAME\" : \"'+PM_NAME+'\",\"PM_PER_YEAR\" : \"'+PM_PER_YEAR+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid1)+" as SESSION_ID, B.QUOTE_ID+' - '+ CONVERT(VARCHAR,B.QTEREV_ID) AS QUOTE_ID,ISNULL(SALESORG_ID,'') AS SALESORG_ID,ISNULL(REGION,'') AS REGION, ISNULL(B.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(B.SERVICE_ID,'') AS SERVICE_ID,ISNULL(A.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL( COVERAGE,'' ) AS LABOR_COVERAGE,ISNULL(PMLABOR,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLABOR,'') AS CORRECTIVE_MAINTENANCE,ISNULL(PERFGUARANTEE,'') AS PERFORMANCE_GUARANTEE,ISNULL(WETCLEAN,'') AS WET_CLEAN, ISNULL(PM_NAME,'') AS PM_NAME,ISNULL(CONVERT(VARCHAR(50),PM_FREQUENCY),'') AS PM_PER_YEAR FROM "+str(SAQSCO)+" B(NOLOCK) JOIN "+str(SAQSCA)+"(NOLOCK) A ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID= B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID LEFT JOIN "+str(SAQSAP)+" C(NOLOCK) ON A.QUOTE_ID = C.QUOTE_ID AND A.SERVICE_ID = C.SERVICE_ID AND A.EQUIPMENT_ID = C.EQUIPMENT_ID AND A.ASSEMBLY_ID=C.ASSEMBLY_ID WHERE B.QUOTE_ID = '"+str(Qt_id)+"' AND B.EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id='"+str(Qt_id)+"' ) A WHERE SNO>= "+str(start1)+" AND SNO<="+str(end1)+") ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT "
-			)
-			
-			table1 = SqlHelper.GetFirst(
-				"SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id='"+str(Qt_id)+"' ) A WHERE SNO>= "+str(start1)+" AND SNO<="+str(end1)+""
-			)
-			
-			start1 = start1 + 100
-			end1 = end1 + 100
-			
-			if str(table1) != "None":
-					
-				if str(table).upper() != "NONE" and str(type(table.RESULT)) == "<type 'str'>":
-					Flag = "True"
-
-					Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
-
-					primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME)  select ''"+str(table.RESULT)+ "'','"+ str(timestamp_sessionid)+ "',''CPQ_TO_SSCM_LOAD'' ' ")
-					
-					#F5 AUTHENTICATION				
-					LOGIN_CRE = SqlHelper.GetFirst("SELECT  URL FROM SYCONF where EXTERNAL_TABLE_NAME ='CPQ_TO_SSCM_QUOTE'")
-					Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
-					
-					requestdata =Oauth_info.DOMAIN
-					webclient = System.Net.WebClient()
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
-					response = webclient.UploadString(Oauth_info.URL,str(requestdata))
-
-					response = eval(response)
-					access_token = response['access_token']
-					
-					authorization = "Bearer " + access_token
-					webclient = System.Net.WebClient()
-					webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization;	
-
-					crm_response = webclient.UploadString(str(LOGIN_CRE.URL),str(table.RESULT))	
-					Log.Info("789 crm_response --->"+str(crm_response))
-			
-			else:
-				#crm_response = ''
-				Check_flag1=0
-
 		if "Status: 200" in crm_response:
 
 			StatusUpdate = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE SAQICO SET STATUS=''ACQUIRING'' FROM SAQICO (NOLOCK) JOIN "+str(SAQSCA)+"  SAQSCA(NOLOCK) ON SAQSCA.QUOTE_ID = SAQICO.QUOTE_ID AND SAQSCA.EQUIPMENT_ID = SAQICO.EQUIPMENT_ID AND SAQSCA.SERVICE_ID = SAQICO.SERVICE_ID WHERE SAQSCA.QUOTE_ID = ''"+str(Qt_id)+"'' AND SAQICO.QTEREV_ID= ''"+str(REVISION_ID) +"'' '")
