@@ -1268,7 +1268,7 @@ class EntitlementView():
 										imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
 									else:
 										imgstr  = ""
-									Trace.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
+									#race.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
 									if attrSysId in attriburesrequired_list:
 										required_symbol_class = 'required_symbol'
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
