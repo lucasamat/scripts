@@ -2533,9 +2533,9 @@ def Related_Sub_Banner(
                 else:
                     Trace.Write('No button-2454-')
                     buttonvisibility = "Hide_button"
-			elif TreeParam == "Approvals":
-				Trace.Write("SUBMIT FOR APP Button")
-				buttonvisibility = "Show_button" 
+            elif TreeParam == "Approvals":
+                Trace.Write("SUBMIT FOR APP Button")
+                buttonvisibility = "Show_button" 
             else:
                 Trace.Write('No button--1')
                 buttonvisibility = "Hide_button"
