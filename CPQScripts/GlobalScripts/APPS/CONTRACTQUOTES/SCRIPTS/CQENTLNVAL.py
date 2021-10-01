@@ -62,7 +62,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	Trace.Write('ent_level_table---61---'+str(ent_level_table))
 	Trace.Write('where_cond---61---'+str(where_cond))
 	Trace.Write('inserted_value_list---61---'+str(list(inserted_value_list)))
-	level_name = ''
+	level_name = get_clicked_greenbook = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
 	elif ent_level_table == "SAQSFE":
@@ -76,7 +76,10 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	get_attr_leve_based_list =[]
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
-		get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
+		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
+			get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
+		else:
+			get_visible_fields= SqlHelper.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"'")
 		if get_visible_fields:
 			get_attr_leve_based_list.append(str(val))
 	Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
