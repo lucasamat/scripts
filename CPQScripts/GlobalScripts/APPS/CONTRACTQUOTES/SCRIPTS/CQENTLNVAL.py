@@ -81,10 +81,7 @@ try:
 	ent_level_table= Param.ent_level_table
 except:
 	ent_level_table = ""
-try:
-	partnumber= Param.partnumber
-except:
-	partnumber = ""	
+
 ##to get the response
 try:
 	request_url = Param.request_url
@@ -94,7 +91,8 @@ try:
 	request_type = Param.request_type
 except:
 	request_type = ""
-
+Trace.Write('ent_level_table------'+str(ent_level_table))
+Trace.Write('partnumber------'+str(partnumber))
 # if action == 'GET_STATUS':
 # 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
 if action == 'GET_RESPONSE':
