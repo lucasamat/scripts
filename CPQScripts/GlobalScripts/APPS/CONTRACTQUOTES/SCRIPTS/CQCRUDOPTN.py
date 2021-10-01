@@ -888,7 +888,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		HasDefaultvalue=False
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 		is_default = ent_val_code = ''
-		AttributeID_Pass =""			
+		AttributeID_Pass =""
+		get_toolptip = ""
 		if ProductVersionObj:
 			insertservice = ""
 			tbrow={}	
@@ -909,7 +910,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
 				PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC,P.ATTRDESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
 				if PRODUCT_ATTRIBUTES:
-					get_toolptip = PRODUCT_ATTRIBUTES.ATTRDESC
+					if PRODUCT_ATTRIBUTES.ATTRDESC:
+						get_toolptip = PRODUCT_ATTRIBUTES.ATTRDESC
 				if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 					get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 					ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
