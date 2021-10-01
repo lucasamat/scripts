@@ -83,7 +83,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 # 			Trace.Write('status--'+str(status))
 # 			return status
 
-partnumber= Param.partnumber
+
 action= Param.action
 
 #to get the product status
