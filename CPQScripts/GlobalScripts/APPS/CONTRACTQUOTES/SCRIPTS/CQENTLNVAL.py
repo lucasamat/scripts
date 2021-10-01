@@ -79,14 +79,12 @@ try:
 	where_cond= Param.where_cond
 	Trace.Write('where_cond-----try--'+str(where_cond))
 except:
-	
 	where_cond = ""
 	Trace.Write('where_cond----except--'+str(where_cond))
 try:
 	ent_level_table= Param.ent_level_table
 	Trace.Write('ent_level_table---try---'+str(ent_level_table))
 except:
-	
 	ent_level_table = ""
 	Trace.Write('ent_level_table---except---'+str(ent_level_table))
 try:
