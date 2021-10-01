@@ -17,22 +17,22 @@ from SYDATABASE import SQL
 Sql = SQL()
 
 
-def wafernode_predefinedlogic(entitlement_string):
-    getwafernode_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='48371471-1E48-4EEE-82F0-235EB1F07A10' """)
+def wafernode_predefinedlogic(entitlement_string, equipment_record_id):
+    getwafernode_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(equipment_record_id)))
     entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(getwafernode_logicdetails.VALDRV_WAFERNODE)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
     entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(getwafernode_logicdetails.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
     return entitlement_string
 
-def devicetype_predefinedlogic(entitlement_string):
-    getdevicetype_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE, P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='48371471-1E48-4EEE-82F0-235EB1F07A10' """)
+def devicetype_predefinedlogic(entitlement_string, equipment_record_id):
+    getdevicetype_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE, P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(equipment_record_id)))
     entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(getdevicetype_logicdetails.VALDRV_DEVICETYPE)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
     entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(getdevicetype_logicdetails.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
     return entitlement_string
 
 
-getallequiprecid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID FROM SAQSCE WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' """.format(str(quote_record_id), str(quote_revision_record_id)))
+getallequip_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID FROM SAQSCE WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' """.format(str(quote_record_id), str(quote_revision_record_id)))
 
-for equip_id in getallequiprecid:
+for equip_id in getallequip_recid:
     getxml_equip_recid = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM SAQSCE WHERE EQUIPMENT_RECORD_ID='{}' QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' """ .format(str(equip_id.EQUIPMENT_RECORD_ID), str(quote_record_id), str(quote_revision_record_id)))
     
     input_xml = getxml_equip_recid.ENTITLEMENT_XML
@@ -51,7 +51,7 @@ for equip_id in getallequiprecid:
 
     for key in ref_dict:
         if entxmldict[key]:
-            entxmldict[key] = ref_dict[key](entxmldict[key])
+            entxmldict[key] = ref_dict[key](entxmldict[key],equip_id.EQUIPMENT_RECORD_ID)
             final_xml += entxmldict[key]
         else:
             final_xml += entxmldict[key]
