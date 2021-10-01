@@ -1649,7 +1649,7 @@ class approvalCenter:
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 							where ACAPMA.{ApiName} = '{QuoteNumber}' AND ACAPTX.APPROVAL_ROUND = {round} AND ACAPTX.APRCHN_ID = '{chain}' AND ACAPTX.REQUESTOR_COMMENTS != '' GROUP BY ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND""".format(
-							QuoteNumber=Quote.GetGlobal("contract_quote_record_id"), ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
+							QuoteNumber=self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
 						)
 						)
 						if GetComments:
