@@ -1257,11 +1257,20 @@ def Related_Sub_Banner(
 					##adding configuration status in offering subtab
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 					where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
+					status_image =''
 					try:
-						get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
-						
+						#get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
+						get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam ) )
+						if get_status.CONFIGURATION_STATUS == 'COMPLETE':
+							status_image = 'config_status_icon.png'
+						elif get_status.CONFIGURATION_STATUS == 'INCOMPLETE':
+							status_image = 'config_pend_status_icon.png'
+						else:
+							status_image = 'config_incomp_status_icon.png'
+
 					except:
 						status_image = 'config_pend_status_icon.png'
+
 					FourthLable = "Configuration Status"
 					FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 					FifthLable = ""
