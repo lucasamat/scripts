@@ -123,6 +123,7 @@ class EntitlementView():
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
+                Trace.Write('126----126----')
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQSAO (NOLOCK) where QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID = '" + str(RECORD_ID) + "'")
 				if ParentObj:
@@ -163,6 +164,7 @@ class EntitlementView():
 					
 			###receiving equp entitilement ends
 			else:
+                Trace.Write('126----126---167-----')
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_SERVICE_RECORD_ID = '" + str(RECORD_ID) + "'")
 				if ParentObj:
