@@ -2535,7 +2535,7 @@ def Related_Sub_Banner(
                     buttonvisibility = "Hide_button"
             elif TreeParam == "Approvals":
                 Trace.Write("SUBMIT FOR APP Button")
-                buttonvisibility = "Show_button" 
+                sec_rel_sub_bnr = add_button
             else:
                 Trace.Write('No button--1')
                 buttonvisibility = "Hide_button"
