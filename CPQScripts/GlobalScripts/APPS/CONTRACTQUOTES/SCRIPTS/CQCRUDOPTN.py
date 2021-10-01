@@ -936,8 +936,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 							NewValue = 'Israel'
 						else:
 							NewValue = 'ROW'
-				#else:
-					#AttributeID_Pass =''
+				else:
+					AttributeID_Pass =''
 					#NewValue = ''
 				if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.get("SERVICE_ID"): 
 					try:						
