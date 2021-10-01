@@ -728,6 +728,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					service_maadpr = Sql.GetFirst(" SELECT COMP_PRDOFR_DOCTYP_RECORD_ID,COMP_PRDOFR_DOCTYP FROM MAADPR WHERE POES = '{}' and PRDOFR_ID = '{}' AND COMP_PRDOFR_ID ='{service_id}' ".format(get_poes.POES,get_first_service_id.SERVICE_ID,service_id = service_id))
 					if service_maadpr:
 						row_values_doctyp = {"DOCTYP_ID": service_maadpr.COMP_PRDOFR_DOCTYP,"DOCTYP_RECORD_ID": service_maadpr.COMP_PRDOFR_DOCTYP_RECORD_ID}
+						row_detail.update(row_values_doctyp)
 						offering_table_info.AddRow(row_detail)
 						Sql.Upsert(offering_table_info)
 				
