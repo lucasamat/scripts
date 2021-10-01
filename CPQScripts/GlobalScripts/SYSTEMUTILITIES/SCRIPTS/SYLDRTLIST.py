@@ -4510,7 +4510,7 @@ class SYLDRTLIST:
                     Product.GetGlobal("TreeParentLevel3"),
                     Product.GetGlobal("TreeParentLevel4"),
                 )                
-
+        Trace.Write("subtab name----->"+str(SubTab))
         if obj_obj is None:
             return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
         Action_permission = {}
@@ -6148,7 +6148,7 @@ class SYLDRTLIST:
                         quote_id = quote_obj.QUOTE_ID
                         TreeParam = Product.GetGlobal("TreeParam")
                         if TreeSuperParentParam == 'Approvals':
-                            chain_step_name = subTab.split(':')[1].strip()
+                            chain_step_name = SubTab.split(':')[1].strip()
                             step_id = chain_step_name.split(' ')[1]
                             round_value = TreeParam.split()[1]
                             TreeParam = Product.GetGlobal("TreeParam")
@@ -7567,7 +7567,7 @@ class SYLDRTLIST:
                             TreeParam = Product.GetGlobal("TreeParam")
                             dynamic_condtn = ""
                             if TreeSuperParentParam == 'Approvals':
-                                chain_step_name = subTab.split(':')[1].strip()
+                                chain_step_name = SubTab.split(':')[1].strip()
                                 step_id = chain_step_name.split(' ')[1]
                                 round_value = TreeParam.split()[1]
                                 TreeParam = Product.GetGlobal("TreeParam")
