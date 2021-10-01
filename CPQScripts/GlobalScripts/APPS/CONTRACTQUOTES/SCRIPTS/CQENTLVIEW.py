@@ -123,7 +123,7 @@ class EntitlementView():
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
-                Trace.Write('126----126----')
+				Trace.Write('126----126----')
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQSAO (NOLOCK) where QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID = '" + str(RECORD_ID) + "'")
 				if ParentObj:
@@ -178,7 +178,6 @@ class EntitlementView():
 					SALESORG_ID = ParentObj.SALESORG_ID
 					SALESORG_NAME = ParentObj.SALESORG_NAME
 					QTEREV_RECORD_ID = ParentObj.QTEREV_RECORD_ID
-
 				where = "QUOTE_RECORD_ID = '" + str(QUOTE_RECORD_ID) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'"
 						
 		elif EntitlementType == "TOOLS":
@@ -485,8 +484,8 @@ class EntitlementView():
 							# Inserting Rows:
 							#Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
 							insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-                                <ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-                                <ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
 								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
@@ -759,7 +758,7 @@ class EntitlementView():
 			attributedefaultvalue = []
 
 			Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
-            Trace.Write('after inserting in table---where-----'+str(where))
+			Trace.Write('after inserting in table---where-----'+str(where))
 			getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' )) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
 			GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'&lt;','<' ),'&gt;','>') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
