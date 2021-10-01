@@ -8355,6 +8355,6 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
         RECORD_ID = "-".join(RECORD_ID.split("_")[:2])
         ApiResponse = ApiResponseFactory.JsonResponse(
             ObjSYLDRTLIST.MDYNMICSQLOBJECTFILTER(
-                RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab
+                RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,SUBTAB
             )
         )
