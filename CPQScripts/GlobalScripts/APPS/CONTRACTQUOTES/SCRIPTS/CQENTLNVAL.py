@@ -62,7 +62,17 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	Trace.Write('ent_level_table---61---'+str(ent_level_table))
 	Trace.Write('where_cond---61---'+str(where_cond))
 	Trace.Write('inserted_value_list---61---'+str(list(inserted_value_list)))
-	return 'data'
+	level_name = ''
+	if ent_level_table == "SAQTSE":
+		level_name = 'OFFERING LEVEL'
+	get_attr_leve_based_list =[]
+	for val in inserted_lis:
+		Trace.Write(str(level_name)+'--level_name--value---'+str(val))
+		get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
+		if get_visible_fields:
+			get_attr_leve_based_list.append(str(val))
+
+	return get_attr_leve_based_list
 # def get_entitlement_status(partnumber,where_cond,ent_level_table):
 # 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
 # 	if get_cps:
