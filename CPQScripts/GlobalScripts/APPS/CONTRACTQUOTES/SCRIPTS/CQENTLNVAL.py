@@ -65,6 +65,12 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	level_name = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
+	elif ent_level_table == "SAQSFE":
+		level_name = 'OFFERING FAB LEVEL'
+	elif ent_level_table == "SAQSGE":
+		level_name = 'OFFERING FAB GREENBOOK LEVEL'
+	else:
+		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	get_attr_leve_based_list =[]
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
