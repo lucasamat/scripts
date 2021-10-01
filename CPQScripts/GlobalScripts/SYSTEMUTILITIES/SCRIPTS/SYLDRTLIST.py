@@ -3246,6 +3246,7 @@ class SYLDRTLIST:
             
             # Billing Matrix - Pivot - Start
             Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
+            Trace.Write("SubTab------>"+str(SubTab))
             Colcount = 0
             #Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
             Trace.Write('Colcount--billing_date_column-----'+str(len(billing_date_column)))
