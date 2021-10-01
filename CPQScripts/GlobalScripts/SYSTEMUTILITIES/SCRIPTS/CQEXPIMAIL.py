@@ -36,7 +36,10 @@ class qt_expiration_mail_trigger:
                             <br><br>
                             Thank You 
                             """
-                recepient = str(employee_table.EMAIL)
+                try:
+                    recepient = str(employee_table.EMAIL)
+                except:
+                    Trace.Write("Mail not sent to "+str(quote.OWNER_NAME))
                 #joe.ebenezer@bostonharborconsulting.com
                 # str(employee_table.EMAIL)
                 try:
