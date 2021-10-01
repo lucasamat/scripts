@@ -765,7 +765,6 @@ class EntitlementView():
 			
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write('766---ObjectName-----'+str(ObjectName))
-			get_attr_leve_based_list = []
 			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			

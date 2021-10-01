@@ -130,7 +130,7 @@ Trace.Write('partnumber------'+str(partnumber))
 if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
 if action == 'get_from_prenli':
-	entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
+	Result = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
 	
 
 
