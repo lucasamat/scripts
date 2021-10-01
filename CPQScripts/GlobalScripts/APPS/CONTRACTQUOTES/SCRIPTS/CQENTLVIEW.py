@@ -164,7 +164,6 @@ class EntitlementView():
 					
 			###receiving equp entitilement ends
 			else:
-                Trace.Write('126----126---167-----')
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQTSV (NOLOCK) where QUOTE_SERVICE_RECORD_ID = '" + str(RECORD_ID) + "'")
 				if ParentObj:
