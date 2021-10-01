@@ -1507,6 +1507,7 @@ class TreeView:
 						Trace.Write("where_string"+str(where_string))
 						#temp = where_string.split("AND")[1]
 						where_string += temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
+						Trace.Write("where string for Round----->"+str(where_string))
 					if str(ObjName).strip() == "SAQSAO":
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
