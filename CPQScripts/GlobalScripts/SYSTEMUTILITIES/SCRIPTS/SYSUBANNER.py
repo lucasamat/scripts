@@ -1286,7 +1286,8 @@ def Related_Sub_Banner(
 						status_image = ''
 
 					FourthLable = "Configuration Status"
-					FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+					if status_image:
+						FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 					FifthLable = ""
 					FifthValue = ""
 					if getService is not None:

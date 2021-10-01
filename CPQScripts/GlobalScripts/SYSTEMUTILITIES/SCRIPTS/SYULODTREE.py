@@ -1993,8 +1993,9 @@ class TreeView:
 										
 									except:
 										image_url = ''
-									image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
-									NodeText = image_url+NodeText
+									if image_url:
+										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
+										NodeText = image_url+NodeText
 								ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
