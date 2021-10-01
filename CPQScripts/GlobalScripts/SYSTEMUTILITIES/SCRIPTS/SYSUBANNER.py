@@ -1260,7 +1260,7 @@ def Related_Sub_Banner(
 					status_image =''
 					try:
 						#get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':TreeParam,'where_cond':where_cond,'ent_level_table':'SAQTSE'})
-						get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam ) )
+						get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam ) )
 						if get_status:
 							if get_status.CONFIGURATION_STATUS == 'COMPLETE':
 								status_image = 'config_status_icon.png'
