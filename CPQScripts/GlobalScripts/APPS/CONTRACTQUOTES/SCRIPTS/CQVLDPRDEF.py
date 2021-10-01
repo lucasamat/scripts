@@ -16,7 +16,31 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
 Sql = SQL()
 
-
+try:
+    quote_record_id = Param.CPQ_Columns['Quote'] 
+except:
+    quote_record_id = ""
+try:
+    LEVEL = Param.CPQ_Columns['Level']
+except:
+    LEVEL = ""
+try:
+    TreeParam = Param.CPQ_Columns['TreeParam']
+    TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
+    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam'].replace("$$","'")
+    TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
+    userId = Param.CPQ_Columns['Userid']
+    userName = Param.CPQ_Columns['Username']
+    quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
+except: 
+    TreeParam = ""
+    TreeParentParam = ""
+    TreeSuperParentParam = ""
+    TreeTopSuperParentParam = ""
+    userId = ""
+    userName = ""
+    quote_revision_record_id = ""
+Log.Info('predefined script started')	
 def wafernode_predefinedlogic(entitlement_string, equipment_record_id):
     getwafernode_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(equipment_record_id)))
     entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(getwafernode_logicdetails.VALDRV_WAFERNODE)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
@@ -59,28 +83,5 @@ for equip_id in getallequip_recid:
     Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = ''{}'' WHERE QUOTE_RECORD_ID = '{}' AND EQUIPMENT_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(final_xml, quote_record_id, equip_id.EQUIPMENT_RECORD_ID, quote_revision_record_id) )
 			
 
-try:
-    quote_record_id = Param.CPQ_Columns['Quote'] 
-except:
-    quote_record_id = ""
-try:
-    LEVEL = Param.CPQ_Columns['Level']
-except:
-    LEVEL = ""
-try:
-    TreeParam = Param.CPQ_Columns['TreeParam']
-    TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
-    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam'].replace("$$","'")
-    TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
-    userId = Param.CPQ_Columns['Userid']
-    userName = Param.CPQ_Columns['Username']
-    quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
-except: 
-    TreeParam = ""
-    TreeParentParam = ""
-    TreeSuperParentParam = ""
-    TreeTopSuperParentParam = ""
-    userId = ""
-    userName = ""
-    quote_revision_record_id = ""
+
 ##fn call
