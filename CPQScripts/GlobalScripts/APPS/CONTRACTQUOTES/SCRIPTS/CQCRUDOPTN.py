@@ -242,7 +242,7 @@ class ContractQuoteCrudOpertion:
 				row.update(common_row_values)				
 				yield dict(row)
 		##A055S000P01-8740 code ends...
-		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
+		#ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':self.contract_quote_record_id,'QTEREV_RECORD_ID':self.quote_revision_record_id})
 		##A055S000P01-8740 code ends...
 	def _create(self):
 		pass
