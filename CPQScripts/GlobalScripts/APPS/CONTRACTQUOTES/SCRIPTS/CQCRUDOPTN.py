@@ -708,6 +708,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						continue
 					else:
 						existing_offering_ids.append(row_detail.get("SERVICE_ID"))
+				Trace.Write("row_detail-1111111111111111111-"+str(row_detail))
 				row_detail.update(row_values)
 				offering_table_info.AddRow(row_detail)
 				Sql.Upsert(offering_table_info)
