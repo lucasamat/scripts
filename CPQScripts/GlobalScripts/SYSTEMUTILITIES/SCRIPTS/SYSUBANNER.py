@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO LOAD THE SUB BANNER FOR THE RELATED LISTS BASED ON HIERARCHY.
 #   __primary_author__ : JOE EBENEZER
 #   __create_date : 28/08/2020
-#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
 import Webcom.Configurator.Scripting.Test.TestProduct
@@ -835,7 +835,7 @@ def Related_Sub_Banner(
 			)     
 
 			if Tab_Obj_Name is not None:
-    				column = (Tab_Obj_Name.COLUMNS).replace("'", "").replace('"', "").replace(" ", "")
+				column = (Tab_Obj_Name.COLUMNS).replace("'", "").replace('"', "").replace(" ", "")
 				columns = column.split(",")				
 				table_name = ""                
 				objd_records_obj = Sql.GetList(
@@ -1270,15 +1270,14 @@ def Related_Sub_Banner(
 								status_image = 'config_status_icon.png'
 							elif get_status.CONFIGURATION_STATUS == 'INCOMPLETE':
 								status_image = 'config_pend_status_icon.png'
-							elif get_status.CONFIGURATION_STATUS == 'ERROR':
+							else:
 								status_image = 'config_incomp_status_icon.png'
 
 					except:
 						status_image = ''
 
 					FourthLable = "Configuration Status"
-					if status_image:
-						FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+					FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 					FifthLable = ""
 					FifthValue = ""
 					if getService is not None:
