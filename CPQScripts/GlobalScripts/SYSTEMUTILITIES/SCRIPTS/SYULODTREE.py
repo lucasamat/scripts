@@ -1982,7 +1982,7 @@ class TreeView:
 												image_url = 'config_status_icon.png'
 											elif get_status.CONFIGURATION_STATUS == 'INCOMPLETE':
 												image_url = 'config_pend_status_icon.png'
-											else:
+											elif get_status.CONFIGURATION_STATUS == 'ERROR':
 												image_url = 'config_incomp_status_icon.png'
 
 										# get_status = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_STATUS','partnumber':NodeText,'where_cond':where_cond,'ent_level_table':'SAQTSE'})

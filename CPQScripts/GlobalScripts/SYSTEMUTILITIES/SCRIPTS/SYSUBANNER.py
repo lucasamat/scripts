@@ -1279,7 +1279,7 @@ def Related_Sub_Banner(
 								status_image = 'config_status_icon.png'
 							elif get_status.CONFIGURATION_STATUS == 'INCOMPLETE':
 								status_image = 'config_pend_status_icon.png'
-							else:
+							elif get_status.CONFIGURATION_STATUS == 'ERROR':
 								status_image = 'config_incomp_status_icon.png'
 
 					except:
