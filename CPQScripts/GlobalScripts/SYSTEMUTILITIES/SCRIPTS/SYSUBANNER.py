@@ -2530,12 +2530,12 @@ def Related_Sub_Banner(
                     get_quote = Quote.GetGlobal("contract_quote_record_id")
                     Trace.Write('button process--')
                     buttonvisibility = "Show_button"   
-                elif TreeParam == "Approvals":
-                    Trace.Write("SUBMIT FOR APP Button")
-                    buttonvisibility = "Show_button" 
                 else:
                     Trace.Write('No button-2454-')
                     buttonvisibility = "Hide_button"
+			elif TreeParam == "Approvals":
+				Trace.Write("SUBMIT FOR APP Button")
+				buttonvisibility = "Show_button" 
             else:
                 Trace.Write('No button--1')
                 buttonvisibility = "Hide_button"
