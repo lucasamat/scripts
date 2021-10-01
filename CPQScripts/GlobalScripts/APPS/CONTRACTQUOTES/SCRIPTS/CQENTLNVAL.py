@@ -72,6 +72,7 @@ partnumber= Param.partnumber
 action= Param.action
 
 #to get the product status
+Trace.Write('where_cond------'+str(where_cond))
 try:
 	where_cond= Param.where_cond
 except:
