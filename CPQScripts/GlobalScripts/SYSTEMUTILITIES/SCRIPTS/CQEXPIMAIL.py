@@ -28,6 +28,7 @@ class qt_expiration_mail_trigger:
             getting_quotes = Sql.GetList("SELECT OWNER_NAME,QUOTE_ID,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
             for quote in getting_quotes:
                 employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_NAME = '"+str(quote.OWNER_NAME)+"'")
+                expiration_date = str(quote.CONTRACT_VALID_TO).split(" ")[0].strip()
                 Subject = "Your Quote is going to Expire in 2 Weeks"
                 mailBody = """
                             Dear """+str(quote.OWNER_NAME)+""",<br><br>
