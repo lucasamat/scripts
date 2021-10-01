@@ -1808,6 +1808,12 @@ class Entitlements:
 					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
 					get_tool_desc =''
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
+				if Fullresponse['complete'] == 'true':
+					configuration_status = 'COMPLETE'
+				elif Fullresponse['complete'] == 'false':
+					configuration_status = 'INCOMPLETE'
+				else:
+					configuration_status = 'ERROR'
 				attributesdisallowedlst = []
 				attributesallowedlst = []
 				attributeReadonlylst = []
@@ -1889,8 +1895,8 @@ class Entitlements:
 				#Sql.RunQuery(Updatecps)
 				## set entitlement_xml for cancel fn A055S000P01-3157 starts
 				if getprevent_xml:
-					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={} WHERE {}  ".format(
-							tableName,getprevent_xml,cpsmatc_incr,whereReq
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}' WHERE {}  ".format(
+							tableName,getprevent_xml,cpsmatc_incr,configuration_status,whereReq
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
