@@ -1061,6 +1061,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		
 			except:
 				pass
+			##calling pre-logic valuedriver script
+			try:
+				Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+				CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE LEVEL",self.tree_param,self.user_id,self.quote_revision_record_id)
+			except:
+				Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")
 
 class PartsListModel(ContractQuoteCrudOpertion):
 	Trace.Write('-----Parts List CRUD-----')

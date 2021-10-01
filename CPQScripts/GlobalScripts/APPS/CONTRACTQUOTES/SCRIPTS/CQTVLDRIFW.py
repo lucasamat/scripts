@@ -19,7 +19,7 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def valuedriver_predefined(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,Userid,Username,quote_revision_record_id):
+def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id):
 
     #Trace.Write("1111111111111111     " + str(username))
     requestdata = (
@@ -29,17 +29,9 @@ def valuedriver_predefined(quote,level,TreeParam, TreeParentParam, TreeSuperPare
         +str(level)
         +"</Level><TreeParam>"
         +str(TreeParam)
-        +"</TreeParam><TreeParentParam>"
-        +str(TreeParentParam)
-        +"</TreeParentParam><TreeSuperParentParam>"
-        + str(TreeSuperParentParam)
-        +"</TreeSuperParentParam><TreeTopSuperParentParam>"
-        +str(TreeTopSuperParentParam)
-        +"</TreeTopSuperParentParam><Userid>"
+        +"</TreeParam><Userid>"
         +str(Userid)
-        +"</Userid><Username>"
-        +str(Username)
-        +"</Username><quote_revision_record_id>"
+        +"</Userid><quote_revision_record_id>"
         +str(quote_revision_record_id)
         +"</quote_revision_record_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )

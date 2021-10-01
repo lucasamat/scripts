@@ -25,21 +25,14 @@ try:
 except:
     LEVEL = ""
 try:
-    TreeParam = Param.CPQ_Columns['TreeParam']
-    TreeParentParam = Param.CPQ_Columns['TreeParentParam'].replace("$$","'")
-    TreeSuperParentParam = Param.CPQ_Columns['TreeSuperParentParam'].replace("$$","'")
-    TreeTopSuperParentParam = Param.CPQ_Columns['TreeTopSuperParentParam']
+    TreeParam = Param.CPQ_Columns['TreeParam']   
     userId = Param.CPQ_Columns['Userid']
-    userName = Param.CPQ_Columns['Username']
     quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
 except: 
     TreeParam = ""
-    TreeParentParam = ""
-    TreeSuperParentParam = ""
-    TreeTopSuperParentParam = ""
     userId = ""
-    userName = ""
     quote_revision_record_id = ""
+	
 Log.Info('predefined script started')	
 def wafernode_predefinedlogic(entitlement_string, equipment_record_id):
     getwafernode_logicdetails = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(equipment_record_id)))
