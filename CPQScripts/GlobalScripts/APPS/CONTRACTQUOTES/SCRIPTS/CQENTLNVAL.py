@@ -71,7 +71,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_visible_fields= SqlHelper.GetFirst("select ENTITLEMENTLEVEL_ID from PRENLI where ENTITLEMENT_ID = '"+str(val)+"' and ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"'")
 		if get_visible_fields:
 			get_attr_leve_based_list.append(str(val))
-	Trace.Write('get_attr_leve_based_list--type return'+str(list(get_attr_leve_based_list)))
+	Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
 	return get_attr_leve_based_list
 # def get_entitlement_status(partnumber,where_cond,ent_level_table):
 # 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
