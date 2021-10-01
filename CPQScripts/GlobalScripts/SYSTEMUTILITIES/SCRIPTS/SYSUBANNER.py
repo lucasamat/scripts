@@ -72,39 +72,43 @@ def Related_Sub_Banner(
     recall_edit =""
     CurrentTabName = ""
 
-    crnt_prod_Qry = Sql.GetFirst(
-        "SELECT APP_ID, APP_LABEL FROM SYAPPS (NOLOCK) WHERE APP_LABEL = '" + str(current_prod) + "' "
-    )
-    crnt_product = str(crnt_prod_Qry.APP_LABEL)
-    try:
-        CurrentTabName = TestProduct.CurrentTab
-    except:
-        CurrentTabName = ""
-    Trace.Write("curr_tab@@"+str(CurrentTabName))
-    # Getting Dynamic buttons for secondary banner - Starts
-    try:
-        quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-    except:
-        quote_status = ''    
-    #if quote_status:
-    try:
-        if quote_status.QUOTE_STATUS == 'APPROVED':
-            add_button = ''
-            multi_buttons = ''          
-    except:
-        pass
-    #elif quote_status.QUOTE_STATUS != 'APPROVED':
-    #else:     
-    Trace.Write('status-----')
-    dynamic_Button = None
-    # Getting page details
-    multi_buttons = []
-    
-    page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' AND PAGE_TYPE = '{}'".format(str(ObjName),str(page_type)))
-    if page_details:
-        dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%'")
-        Trace.Write('dyn====')
-
+	crnt_prod_Qry = Sql.GetFirst(
+		"SELECT APP_ID, APP_LABEL FROM SYAPPS (NOLOCK) WHERE APP_LABEL = '" + str(current_prod) + "' "
+	)
+	crnt_product = str(crnt_prod_Qry.APP_LABEL)
+	try:
+		CurrentTabName = TestProduct.CurrentTab
+	except:
+		CurrentTabName = ""
+	Trace.Write("curr_tab@@"+str(CurrentTabName))
+	# Getting Dynamic buttons for secondary banner - Starts
+	try:
+		quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+	except:
+		quote_status = ''    
+	#if quote_status:
+	try:
+		if quote_status.QUOTE_STATUS == 'APPROVED':
+			add_button = ''
+			multi_buttons = ''          
+	except:
+		pass
+	#elif quote_status.QUOTE_STATUS != 'APPROVED':
+	#else:     
+	Trace.Write('status-----')
+	dynamic_Button = None
+	# Getting page details
+	multi_buttons = []
+	
+	page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' AND PAGE_TYPE = '{}'".format(str(ObjName),str(page_type)))
+	if page_details:
+		find_subtab = Sql.GetList("SELECT SUBTAB_NAME FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%'")
+		if find_subtab is not None:
+			dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%' AND SUBTAB_NAME = '"+str(subTabName)+"'")
+			Trace.Write('dynamic button with subtab====')
+		else:
+			dynamic_Button = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE PAGE_RECORD_ID = '"+str(page_details.RECORD_ID)+"' AND TAB_NAME LIKE '%"+str(CurrentTab)+"%'")
+			Trace.Write('dynamic button without subtab====')
 
 
     # if str(ObjName) == "SYOBJC":
