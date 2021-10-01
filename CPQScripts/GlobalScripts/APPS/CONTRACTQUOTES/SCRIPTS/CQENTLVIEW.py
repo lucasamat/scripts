@@ -1271,8 +1271,11 @@ class EntitlementView():
 									Trace.Write(str(attrSysId)+'Approval ICON --------->')
 									Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 									if Status:
-										
-										imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
+										if Status.APPROVAL_REQUIRED == True:
+											
+											imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
+										else:
+											imgstr  = ""
 									else:
 										imgstr  = ""
 									#race.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
