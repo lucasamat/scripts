@@ -709,12 +709,31 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						continue
 					else:
 						existing_offering_ids.append(row_detail.get("SERVICE_ID"))
-				Trace.Write("row_detail-1111111111111111111-"+str(row_detail))
+				
 				row_detail.update(row_values)
-				Trace.Write("row_detail-1122222222-"+str(row_detail))				
-				offering_table_info.AddRow(row_detail)
-				Trace.Write("row_detail-33333-"+str(offering_table_info))
-				Sql.Upsert(offering_table_info)
+				Trace.Write("row_detail-1111111111111111111-"+str(row_detail))
+				getservice_count = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QUOTE_REVISION_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				get_poes = Sql.GetFirst("Select POES FROM SAQTMT(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QUOTE_REVISION_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				if getservice_count.COUNT == 0:
+					service_id = row_detail.get("SERVICE_ID")
+					document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_id,get_poes.POES))
+					row_values_doctyp = {"DOCTYP_ID": document_type_obj.DOCTYP_ID,"DOCTYP_RECORD_ID": document_type_obj.DOCTYP_RECORD_ID}
+					row_detail.update(row_values_doctyp)
+					offering_table_info.AddRow(row_detail)
+					Sql.Upsert(offering_table_info)
+					#Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				else:
+					get_first_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QUOTE_REVISION_RECORD_ID = '{RevisionRecordId}' ORDER BY CpqTableEntryId ASC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+					service_id = row_detail.get("SERVICE_ID")
+					service_maadpr = Sql.GetFirst(" SELECT COMP_PRDOFR_DOCTYP_RECORD_ID,COMP_PRDOFR_DOCTYP FROM MAADPR WHERE POES = '{}' and PRDOFR_ID = '{}' AND COMP_PRDOFR_ID ='{service_id}' ".format(get_poes.POES,get_first_service_id.SERVICE_ID,service_id = service_id))
+					if service_maadpr:
+						row_values_doctyp = {"DOCTYP_ID": service_maadpr.COMP_PRDOFR_DOCTYP,"DOCTYP_RECORD_ID": service_maadpr.COMP_PRDOFR_DOCTYP_RECORD_ID}
+						offering_table_info.AddRow(row_detail)
+						Sql.Upsert(offering_table_info)
+				
+				
+				#offering_table_info.AddRow(row_detail)
+				#Sql.Upsert(offering_table_info)
 				#service_obj  = Sql.GetFirst("select COUNT(SERVICE_ID) as count,SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 				#if service_obj.count == 1:
 				#	document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service_obj.SERVICE_ID))
