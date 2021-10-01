@@ -90,11 +90,13 @@ except:
 	ent_level_table = ""
 	Trace.Write('ent_level_table---except---'+str(ent_level_table))
 try:
-	Trace.Write('partnumber---try---'+str(partnumber))
+	
 	partnumber= Param.partnumber
+	Trace.Write('partnumber---try---'+str(partnumber))
 except:
+	
+	partnumber = ""
 	Trace.Write('partnumber--except----'+str(partnumber))
-	partnumber = ""	
 ##to get the response
 try:
 	request_url = Param.request_url
