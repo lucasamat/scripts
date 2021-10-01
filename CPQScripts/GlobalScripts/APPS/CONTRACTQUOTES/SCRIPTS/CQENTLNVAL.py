@@ -57,7 +57,12 @@ def entitlement_request(partnumber,request_url,request_type):
 	Trace.Write("response1_J "+str(response1))
 	return eval(response1)
 
-
+def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond):
+	Trace.Write('partnumber---61---'+str(partnumber))
+	Trace.Write('ent_level_table---61---'+str(ent_level_table))
+	Trace.Write('where_cond---61---'+str(where_cond))
+	Trace.Write('inserted_value_list---61---'+str(list(inserted_value_list)))
+	return 'data'
 # def get_entitlement_status(partnumber,where_cond,ent_level_table):
 # 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
 # 	if get_cps:
@@ -114,5 +119,8 @@ Trace.Write('partnumber------'+str(partnumber))
 # 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
 if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
+if action == 'get_from_prenli':
+	Result_PRENVLI = entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond)
+
 
 
