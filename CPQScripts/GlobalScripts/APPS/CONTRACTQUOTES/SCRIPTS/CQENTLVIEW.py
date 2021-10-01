@@ -766,7 +766,7 @@ class EntitlementView():
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write('766---ObjectName-----'+str(ObjectName))
 			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
-			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list})
+			ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':''})
 			for val in GetXMLsecField:
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
 				if val.IS_DEFAULT == '1':
