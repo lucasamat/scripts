@@ -94,7 +94,7 @@ except:
 
 # if action == 'GET_STATUS':
 # 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
-elif action == 'GET_RESPONSE':
+if action == 'GET_RESPONSE':
 	Result = entitlement_request(partnumber,request_url,request_type)
 
 
