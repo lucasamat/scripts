@@ -832,205 +832,205 @@ def Related_Sub_Banner(
 				+ "' and NAME = 'Secondary Header list' "
 			)     
 
-            elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
-                if ObjName == 'CTCTIP' and subTabName == 'Detail':
-                    ObjName = "CTCTIP"
-                    PrimaryLable = "Source Account ID"
-                    PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
-                    SecondLable = "Source Account Name"
-                    SecondValue = str(Product.GetGlobal("stp_account_name"))
-                else:
-                    ObjName = "CTCNRT"
-            elif TreeSuperParentParam == "Fab Locations" and subTabName == "Equipment Fab Value Drivers":
-                PrimaryLable = ""
-                PrimaryValue = "" 
-            elif TreeParam == "Billing":
-                ObjName = "SAQTBP"
-                PrimaryLable = str(TreeParam)
-                PrimaryValue = "All"   
-            elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
-                getFab = Sql.GetFirst("select FABLOCATION_NAME from CTCFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")        
-                PrimaryLable = "Fab Location ID"
-                PrimaryValue = str(TreeParentParam)
-                SecondLable = "Fab Location Name"
-                SecondValue = getFab.FABLOCATION_NAME
-                ThirdLable = "Greenbook"
-                ThirdValue = str(TreeParam)
-                FourthLable = "Equipment"
-                FourthValue = "All"   
-            elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Customer Value Drivers"):	
-                Trace.Write('su=========')		
-                if ("Sending" in TreeParentParam or "Receiving" in TreeParentParam):	
-                    getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
-                    if subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details":
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                        FourthLable = "Equipment ID"
-                        FourthValue = str(EquipmentId)
-                        FifthLable = "Serial Number"
-                        FifthValue = str(SerialNumber)
-                        SixthLable = ""
-                        SixthValue = ""
-                    elif subTabName == "Details":
-                        Trace.Write("Fab")
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParentParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                    else:   
-                        if subTabName == "Equipment":
-                            Trace.Write('sendeqppp=========')     
-                            PrimaryLable = "Fab Location ID"
-                            PrimaryValue = str(TreeParam)
-                            SecondLable = "Fab Location Name"
-                            SecondValue = getFab.FABLOCATION_NAME
-                            ThirdLable = "Greenbook"
-                            ThirdValue = str(TreeParam)
-                            ThirdLable = "Equipment"
-                            ThirdValue = "All" 
-                        
-                elif ("Sending" in TreeSuperParentParam or "Receiving" in TreeSuperParentParam):	
-                    Trace.Write('su11=========')
-                    getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
-                    if subTabName == "Greenbook Fab Value Drivers":
-                        get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParentParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                        FourthLable = "Equipment ID"
-                        FourthValue = get_val.EQUIPMENT_ID
-                        FifthLable = "Serial Number"
-                        FifthValue = get_val.SERIAL_NO
-                        #SixthLable = ""
-                        #SixthValue = ""
-                    elif subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details":
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParentParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                        FourthLable = "Equipment ID"
-                        FourthValue = str(EquipmentId)
-                        FifthLable = "Serial Number"
-                        FifthValue = str(SerialNumber)
-                        SixthLable = ""
-                        SixthValue = ""
-                    elif subTabName == "Details":
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParentParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                    elif subTabName == "Equipment":
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParentParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                        FourthLable = "Equipment"
-                        FourthValue = "All" 		
-                    else:   
-                        Trace.Write('sendeqppp=========')     
-                        PrimaryLable = "Fab Location ID"
-                        PrimaryValue = str(TreeParam)
-                        SecondLable = "Fab Location Name"
-                        SecondValue = getFab.FABLOCATION_NAME
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
-                        FourthLable = "Equipment"
-                        FourthValue = "All" 		
-                        
-                # elif subTabName == "Details":
-                # 	PrimaryLable = "Fab Location ID"
-                # 	PrimaryValue = str(TreeParentParam)
-                # 	SecondLable = "Greenbook"
-                # 	SecondValue = str(TreeParam)
-                    Trace.Write("SLabel"+SecondLable)
-            elif TreeParam == "Approvals" and TabName == "Quotes":
-                
-                contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
-                getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                # acaptx_dat = Sql.GetFirst("SELECT * FROM ACAPCH (NOLOCK) WHERE APRCHN_ID = '{Subtab}'".format(Subtab=subTabName))
-                PrimaryLable = "Approval Chain ID"
-                if getval:
-                    PrimaryValue = getval.APRCHN_ID
-                    SecondLable = "Approval Chain Name"
-                    SecondValue = getval.APRCHN_NAME
-                    ThirdLable = "Approval Chain Method"
-                    ThirdValue = getval.APPROVAL_METHOD
-                    FourthLable = "Quote Owner"
-                else:
-                    PrimaryLable = "Approvals"
-                    PrimaryValue = "All" 
-                    SecondLable = ""
-                    SecondValue = ""
-                if getown:
-                    FourthValue = getown.OWNER_NAME                   
-            elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
-                
-                if subTabName == "Details" and TreeParam.startswith('Sending Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    PrimaryLable = "Sending Account ID"
-                    PrimaryValue = str(TreeParam).split("-")[1].strip()
-                    SecondLable = "Sending Account Name"
-                    SecondValue = account_name.PARTY_NAME
-                elif subTabName == "Details" and TreeParam.startswith('Receiving Account'):
-                    account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    PrimaryLable = "Receiving Account ID"
-                    PrimaryValue = str(TreeParam).split("-")[1].strip()
-                    SecondLable = "Receiving Account Name"
-                    SecondValue = account_name.PARTY_NAME
-                elif (subTabName == "Sending Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Sending Equipment"):
-                    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-                    PrimaryLable = "Sending Account ID"
-                    PrimaryValue = str(account_id.ACCOUNT_ID)
-                    SecondLable = str(subTabName)
-                    SecondValue = "ALL"
-                elif (subTabName == "Receiving Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Receiving Equipment"):
-                    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'  AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-                    PrimaryLable = "Receiving Account ID"
-                    PrimaryValue = str(account_id.ACCOUNT_ID)
-                    SecondLable = str(subTabName)
-                    SecondValue = "ALL"
-                # elif subTabName == "Fab Locations":
-                # 	PrimaryLable = str(TreeParam).split("-")[0].strip()
-                # 	PrimaryValue = str(TreeParam).split("-")[1].strip()
-                # 	SecondLable = "Fab Locations"
-                # 	SecondValue = "ALL"
-                
-            else:
-                ThirdQuery = Sql.GetFirst(
-                "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
-                )
-                
-                # PrimaryLable = str(TreeParam)
-                # PrimaryValue = "ALL"
-                # if (
-                # 	ThirdQuery is not None
-                # ):
-                # 	SecondLable = str(ThirdQuery.FIELD_LABEL)
-                # 	SecondValue = "ALL"
-                    
-            Tab_Obj_Name = Sql.GetFirst(
-                "SELECT REPLACE(REPLACE(SYOBJS.COLUMNS,'[',''),']','') as COLUMNS, OBJ_REC_ID from SYOBJS (nolock) where CONTAINER_NAME = '"
-                + str(ObjName)
-                + "' and NAME = 'Secondary Header list' "
-            )     
+			elif TreeParam == "Contract Information" or TreeParam == "Contract Preview":	
+				if ObjName == 'CTCTIP' and subTabName == 'Detail':
+					ObjName = "CTCTIP"
+					PrimaryLable = "Source Account ID"
+					PrimaryValue = str(Product.GetGlobal("stp_account_Id"))
+					SecondLable = "Source Account Name"
+					SecondValue = str(Product.GetGlobal("stp_account_name"))
+				else:
+					ObjName = "CTCNRT"
+			elif TreeSuperParentParam == "Fab Locations" and subTabName == "Equipment Fab Value Drivers":
+				PrimaryLable = ""
+				PrimaryValue = "" 
+			elif TreeParam == "Billing":
+				ObjName = "SAQTBP"
+				PrimaryLable = str(TreeParam)
+				PrimaryValue = "All"   
+			elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
+				getFab = Sql.GetFirst("select FABLOCATION_NAME from CTCFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")        
+				PrimaryLable = "Fab Location ID"
+				PrimaryValue = str(TreeParentParam)
+				SecondLable = "Fab Location Name"
+				SecondValue = getFab.FABLOCATION_NAME
+				ThirdLable = "Greenbook"
+				ThirdValue = str(TreeParam)
+				FourthLable = "Equipment"
+				FourthValue = "All"   
+			elif (TreeSuperParentParam == "Fab Locations" or TreeTopSuperParentParam == "Fab Locations") and (subTabName == 'Equipment' or subTabName == "Details" or subTabName == "Customer Value Drivers"):	
+				Trace.Write('su=========')		
+				if ("Sending" in TreeParentParam or "Receiving" in TreeParentParam):	
+					getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
+					if subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details":
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment ID"
+						FourthValue = str(EquipmentId)
+						FifthLable = "Serial Number"
+						FifthValue = str(SerialNumber)
+						SixthLable = ""
+						SixthValue = ""
+					elif subTabName == "Details":
+						Trace.Write("Fab")
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParentParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+					else:   
+						if subTabName == "Equipment":
+							Trace.Write('sendeqppp=========')     
+							PrimaryLable = "Fab Location ID"
+							PrimaryValue = str(TreeParam)
+							SecondLable = "Fab Location Name"
+							SecondValue = getFab.FABLOCATION_NAME
+							ThirdLable = "Greenbook"
+							ThirdValue = str(TreeParam)
+							ThirdLable = "Equipment"
+							ThirdValue = "All" 
+						
+				elif ("Sending" in TreeSuperParentParam or "Receiving" in TreeSuperParentParam):	
+					Trace.Write('su11=========')
+					getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
+					if subTabName == "Greenbook Fab Value Drivers":
+						get_val = Sql.GetFirst(" SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO WHERE GREENBOOK = '"+str(TreeParam)+"'")
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParentParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment ID"
+						FourthValue = get_val.EQUIPMENT_ID
+						FifthLable = "Serial Number"
+						FifthValue = get_val.SERIAL_NO
+						#SixthLable = ""
+						#SixthValue = ""
+					elif subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details":
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParentParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment ID"
+						FourthValue = str(EquipmentId)
+						FifthLable = "Serial Number"
+						FifthValue = str(SerialNumber)
+						SixthLable = ""
+						SixthValue = ""
+					elif subTabName == "Details":
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParentParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+					elif subTabName == "Equipment":
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParentParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment"
+						FourthValue = "All" 		
+					else:   
+						Trace.Write('sendeqppp=========')     
+						PrimaryLable = "Fab Location ID"
+						PrimaryValue = str(TreeParam)
+						SecondLable = "Fab Location Name"
+						SecondValue = getFab.FABLOCATION_NAME
+						ThirdLable = "Greenbook"
+						ThirdValue = str(TreeParam)
+						FourthLable = "Equipment"
+						FourthValue = "All" 		
+						
+				# elif subTabName == "Details":
+				# 	PrimaryLable = "Fab Location ID"
+				# 	PrimaryValue = str(TreeParentParam)
+				# 	SecondLable = "Greenbook"
+				# 	SecondValue = str(TreeParam)
+					Trace.Write("SLabel"+SecondLable)
+			elif TreeParam == "Approvals" and TabName == "Quotes":
+				
+				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
+				getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+				# acaptx_dat = Sql.GetFirst("SELECT * FROM ACAPCH (NOLOCK) WHERE APRCHN_ID = '{Subtab}'".format(Subtab=subTabName))
+				PrimaryLable = "Approval Chain ID"
+				if getval:
+					PrimaryValue = getval.APRCHN_ID
+					SecondLable = "Approval Chain Name"
+					SecondValue = getval.APRCHN_NAME
+					ThirdLable = "Approval Chain Method"
+					ThirdValue = getval.APPROVAL_METHOD
+					FourthLable = "Quote Owner"
+				else:
+					PrimaryLable = "Approvals"
+					PrimaryValue = "All" 
+					SecondLable = ""
+					SecondValue = ""
+				if getown:
+					FourthValue = getown.OWNER_NAME                   
+			elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
+				
+				if subTabName == "Details" and TreeParam.startswith('Sending Account'):
+					account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%SENDING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+					PrimaryLable = "Sending Account ID"
+					PrimaryValue = str(TreeParam).split("-")[1].strip()
+					SecondLable = "Sending Account Name"
+					SecondValue = account_name.PARTY_NAME
+				elif subTabName == "Details" and TreeParam.startswith('Receiving Account'):
+					account_name = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP(NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND PARTY_ROLE LIKE '%RECEIVING%'"+" AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+					PrimaryLable = "Receiving Account ID"
+					PrimaryValue = str(TreeParam).split("-")[1].strip()
+					SecondLable = "Receiving Account Name"
+					SecondValue = account_name.PARTY_NAME
+				elif (subTabName == "Sending Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Sending Equipment"):
+					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+					account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%SENDING%' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+					PrimaryLable = "Sending Account ID"
+					PrimaryValue = str(account_id.ACCOUNT_ID)
+					SecondLable = str(subTabName)
+					SecondValue = "ALL"
+				elif (subTabName == "Receiving Equipment" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Entitlements") and TreeParam.startswith("Receiving Equipment"):
+					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+					account_id = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQSRA (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND RELOCATION_TYPE LIKE '%RECEIVING%'  AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+					PrimaryLable = "Receiving Account ID"
+					PrimaryValue = str(account_id.ACCOUNT_ID)
+					SecondLable = str(subTabName)
+					SecondValue = "ALL"
+				# elif subTabName == "Fab Locations":
+				# 	PrimaryLable = str(TreeParam).split("-")[0].strip()
+				# 	PrimaryValue = str(TreeParam).split("-")[1].strip()
+				# 	SecondLable = "Fab Locations"
+				# 	SecondValue = "ALL"
+				
+			else:
+				ThirdQuery = Sql.GetFirst(
+				"select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
+				)
+				
+				# PrimaryLable = str(TreeParam)
+				# PrimaryValue = "ALL"
+				# if (
+				# 	ThirdQuery is not None
+				# ):
+				# 	SecondLable = str(ThirdQuery.FIELD_LABEL)
+				# 	SecondValue = "ALL"
+					
+			Tab_Obj_Name = Sql.GetFirst(
+				"SELECT REPLACE(REPLACE(SYOBJS.COLUMNS,'[',''),']','') as COLUMNS, OBJ_REC_ID from SYOBJS (nolock) where CONTAINER_NAME = '"
+				+ str(ObjName)
+				+ "' and NAME = 'Secondary Header list' "
+			)     
 
 				try:                    
 					if str(ObjName) == "SYPROH":
@@ -1749,338 +1749,338 @@ def Related_Sub_Banner(
 		#ThirdLable = ""
 		#ThirdValue = ""	
 
-                elif str(ObjName) == 'ACAPTF' and str(TreeParentParam) == 'Approval Chain Steps':					
-                    PrimaryLable = ListKey[0]
-                    PrimaryValue = PrimaryValue
-                # SecondLable = "Approvers"
-                # SecondValue = "All"
-                # elif TopSuperParentParam == "Quote Items" and ObjName == "SAQICO" and CurrentRecordId == 'SAQICOJ':
-                
-                #     TreeSuperParentParam = TreeSuperParentParam.split("-")[1]
-                #     PrimaryLable = "Product Offering ID"
-                #     PrimaryValue = str(TreeSuperParentParam)
-                #     SecondLable = "Line Item Id"
-                #     SecondValue = "ALL"
-                #     ThirdLable = "Fab Location ID" 
-                #     ThirdValue = str(TreeParentParam) 
-                    
-    Trace.Write(str(TreeSuperTopParentParam)+"CHECK"+str(CurrentRecordId))           
-    if (TreeParam == "Quote Information" and str(ObjName) == 'SAQTMT') and (str(CurrentRecordId) != 'SYOBJR-98857' and str(CurrentRecordId) != 'SYOBJR-98858' and str(CurrentRecordId) != 'SYOBJR-00028'):
-        PrimaryLable = ListKey[1]
-        PrimaryValue = ListVal[1]
-        SecondLable = ListKey[2]
-        SecondValue = ListVal[2]
-        
-        try:
-            
-            ThirdLable = ListKey[3]
-            ThirdValue = ListVal[3]
-        except:
-            ThirdLable = ''
-            ThirdValue = '' 
-        # try:
-        #     FourthLable = ListVal[4]
-        #     FourthValue = ListVal[4]
-        # except:
-        #     FourthLable = ''
-        #     FourthValue = ''
-        # try:            
-        #     FifthLable = ListKey[5]
-        #     FifthValue = ListVal[5]
-        # except:
-        #     FifthLable = ''
-        #     FifthValue = ''
-        # try:        
-        #     SixthLable = ListKey[6]
-        #     SixthValue = ListVal[6]
-        # except:
-        #     SixthLable = ''
-        #     SixthValue = ''    
-    Trace.Write("tab name--"+str(TabName)+" REC_ID "+str(CurrentRecordId))
-    Trace.Write("ObjectName changed or not:"+str(ObjName))
-    if  TreeTopSuperParentParam == "Quote Items" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
-        Trace.Write("check --1668")
-        #TreeParentParam = TreeParentParam.split('-')
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = TreeSuperParentParam.split('-')[1]
-        SecondLable = "Fab Location ID"
-        SecondValue = TreeParentParam
-        ThirdLable = "Greenbook"
-        ThirdValue = TreeParam
-        FourthLable = "Equipment"
-        FourthValue = "All"
-    elif TreeSuperParentParam == 'Quote Items':
-        TreeParentParam = TreeParentParam.split('-')
-        PrimaryLable = "Line Item ID"
-        PrimaryValue = TreeParentParam[0].strip()
-        SecondLable = "Product Offering ID"
-        SecondValue = TreeParentParam[1].strip()
-        ThirdLable = "Fab Location ID"
-        ThirdValue = TreeParam
-        FourthLable = "Greenbooks"
-        FourthValue = "All"
-        FifthLable = "Equipment"
-        FifthValue = "All"  
-    elif TreeParam == "Approvals" and CurrentTabName == "My Approvals Queue":
-        transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
-        chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
-        PrimaryLable = "Approval Chain ID"
-        if chain_information:
-            PrimaryValue = chain_information.APRCHN_ID
-            SecondLable = "Approval Chain Name"
-            SecondValue = chain_information.APRCHN_NAME
-            ThirdLable = "Approval Chain Method"
-            ThirdValue = chain_information.APPROVAL_METHOD
-        else:
-            PrimaryLable = "Approvals"
-            PrimaryValue = "All" 
-            SecondLable = ""
-            SecondValue = "" 
-    elif TreeParam == "Approvals" and CurrentTabName == "Team Approvals Queue":
-        transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
-        chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
-        PrimaryLable = "Approval Chain ID"
-        if chain_information:
-            PrimaryValue = chain_information.APRCHN_ID
-            SecondLable = "Approval Chain Name"
-            SecondValue = chain_information.APRCHN_NAME
-            ThirdLable = "Approval Chain Method"
-            ThirdValue = chain_information.APPROVAL_METHOD
-        else:
-            PrimaryLable = "Approvals"
-            PrimaryValue = "All" 
-            SecondLable = ""
-            SecondValue = ""        
-    elif TreeParam == "Quote Preview":
-        PrimaryLable = ListKey[1]
-        PrimaryValue = ListVal[1]
-        SecondLable = ListKey[2]
-        SecondValue = ListVal[2]
-        ThirdLable = ListKey[3]
-        ThirdValue = ListVal[3]
-        # FourthLable = ListKey[4]
-        # FourthValue = ListVal[4]
-        # FifthLable = ListKey[5]
-        # FifthValue = ListVal[5]
-        #SixthLable = ListKey[6]
-        #SixthValue = ListVal[6]
-        
-    # elif TreeParam == 'Approvals' and str(TabName == 'Quote'):
-    #     PrimaryLable = "Approvals"
-    #     PrimaryValue = "All"     
-    elif TreeParentParam == "Sales" and str(CurrentTabName) != "Profile":		
-        if ListVal:
-            PrimaryLable = ListKey[1]
-            PrimaryValue = ListVal[1]
-            SecondLable = ListKey[2]
-            SecondValue = ListVal[2]
-        else:
-            PrimaryLable = ListKey[1]
-            PrimaryValue = TreeParam
-            SecondLable = ListKey[2]
-            SecondValue = ""
-        ThirdLable = ""
-        ThirdValue = ""
-    # SHP Contract Document Starts
-    elif TreeParam == "Contract Documents" and  ObjName == "SAQDOC":
-        PrimaryLable = "Account ID"
-        PrimaryValue = "ALL"
-        SecondLable = "Account Name"
-        SecondValue = "ALL"	
-    # SHP Contract Document Ends
-    elif ObjName == "SAQSCA" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
-        Trace.Write(1497)		
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        SixthLable = "Assembly ID"
-        SixthValue = str(AssemblyId)     
-    elif subTabName == "Assembly Entitlements" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
-        Trace.Write(1511)		
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        SixthLable = "Assembly ID"
-        SixthValue = str(AssemblyId)     
-    elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
-        PrimaryLable = "Greenbook"
-        PrimaryValue = str(TreeParam)
-        SecondLable = "Equipment ID"
-        SecondValue = str(EquipmentId)
-        ThirdLable = "Serial Number"
-        ThirdValue = str(SerialNumber)
-        FourthLable = "Assembly ID"
-        FourthValue = str(AssemblyId)
-        PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId,quote_revision_record_id=quote_revision_record_id ))
-        if PreventiveMaintainenceobj is not None:
-            FifthLable = "PM Events"
-            FifthValue = "All"
-        PMEvents = "False"
-    elif ObjName == "SAQSCA":
-        #A055S000P01-3208 start
-        Trace.Write(1244)		
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        #A055S000P01-3208 end
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        SixthLable = "Assembly ID"
-        SixthValue = str(AssemblyId)     
-    elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Quotes':
-        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeParentParam)
-        SecondLable = "Product Offering Description"
-        SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Fab Location ID"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Greenbooks"
-        FourthValue = "ALL"
-        FifthLable = "Equipment"
-        FifthValue = "ALL"
-    elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Contracts':
-        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from CTCTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeParentParam)
-        SecondLable = "Product Offering Description"
-        SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Fab Location ID"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Greenbooks"
-        FourthValue = "ALL"
-        FifthLable = "Equipment"
-        FifthValue = "ALL"	
-        SixthLable = ""
-        SixthValue = ""
-    elif TreeParentParam == "Quote Items" and subTabName == "Entitlements" and getQuotetype == "ZWK1 - SPARES":
-        PrimaryLable = ""
-        PrimaryValue = ""
-    elif TopSuperParentParam == "Quote Items" and (subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-        #PrimaryLable = "Product Offering ID"
-        #PrimaryValue = str(TreeSuperParentParam)
-        #SecondLable = "Line Item Id"
-        #SecondValue = "ALL"		
-        if subTabName != "Equipment Details":
-            PrimaryLable = ""
-            PrimaryValue = ""
-        ThirdLable = "Fab Location ID" 
-        ThirdValue = str(TreeParentParam) 
-        FourthLable = "Greenbook"
-        FourthValue = str(TreeParam)
-        FifthLable = "Equipment Id"
-        FifthValue = str(EquipmentId)
-        SixthLable = "Serial Number"
-        SixthValue = str(SerialNumber)
-    elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quotes':
-        getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
-        PrimaryLable = 'Approval Chain ID'
-        PrimaryValue = str(TreeParentParam)
-        SecondLable = 'Approval Chain Name'
-        SecondValue = getchain.APRCHN_NAME
-        ThirdLable = 'Approval Round'
-        ThirdValue = str(TreeParam).split(' ')[1]
-        FourthLable = ''
-        FourthValue = ''
-        # FourthLable = "GreenBook" 
-        # FourthValue = str(TreeParam)
-        # FifthLable = "Equipment ID"
-        # FifthValue = "All"
-        # if SerialNumber is not None:
-        #     SixthLable = "Serial Number"
-        #     SixthValue = str(SerialNumber)
-        # else:
-        #     SixthLable = ""
-        #     SixthValue = ""
-    #elif str(TreeParentParam) == "Complementary Products" or str(TreeParentParam) == "Comprehensive Services":
-        #Trace.Write('-----------'+str(TreeParentParam)+str(TreeParam))
-    elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":	
-        try:
-            getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
-            desc = getService.SERVICE_DESCRIPTION
-        except:
-            desc = ""
-        if (subTabName == "Equipment Details" or subTabName == "Equipment Assemblies" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(TreeSuperParentParam)
-            SecondLable = "Product Offering Description"
-            SecondValue = getService.SERVICE_DESCRIPTION
-            ThirdLable = "Fab Location ID"
-            ThirdValue = str(TreeParentParam)
-            FourthLable = "Greenbook"
-            FourthValue = str(TreeParam)
-            FifthLable = "Equipment ID"
-            FifthValue = str(EquipmentId)
-            SixthLable = "Serial Number"
-            SixthValue = str(SerialNumber)
-        elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-            PrimaryLable = "Product Offering ID"
-            PrimaryValue = str(TreeSuperParentParam)
-            SecondLable = "Product Offering Description"
-            SecondValue = desc
-            ThirdLable = "Fab Location ID"
-            ThirdValue = str(TreeParentParam)
-            FourthLable = "Greenbook"
-            FourthValue = str(TreeParam)
-            if subTabName != "Details":
-                FifthLable = "Equipment"
-                FifthValue = "All"
-        elif subTabName == "Details":			
-            PrimaryLable = ListKey[0]
-            PrimaryValue = PrimaryValue
-    elif TreeSuperTopParentParam == "Product Offerings" and (subTabName == "Equipment Assemblies" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):		
-        #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        Trace.Write("1356")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
-        Trace.Write("check345"+str(FifthValue))
-        #FourthLable = "Equipment"
-        #FourthValue = "ALL"
-    elif (TreeSuperParentParam == "Sending Equipment" and TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Details")):		
-        #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        Trace.Write("1359")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-    elif TreeTopSuperParentParam == "Complementary Products"  and (subTabName == "Details"):		
-        #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
-        Trace.Write("1359===========")
-        PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeSuperParentParam)
-        SecondLable = ""
-        SecondValue = ""
-        #ThirdLable = ""
-        #ThirdValue = ""	
+				elif str(ObjName) == 'ACAPTF' and str(TreeParentParam) == 'Approval Chain Steps':					
+					PrimaryLable = ListKey[0]
+					PrimaryValue = PrimaryValue
+				# SecondLable = "Approvers"
+				# SecondValue = "All"
+				# elif TopSuperParentParam == "Quote Items" and ObjName == "SAQICO" and CurrentRecordId == 'SAQICOJ':
+				
+				#     TreeSuperParentParam = TreeSuperParentParam.split("-")[1]
+				#     PrimaryLable = "Product Offering ID"
+				#     PrimaryValue = str(TreeSuperParentParam)
+				#     SecondLable = "Line Item Id"
+				#     SecondValue = "ALL"
+				#     ThirdLable = "Fab Location ID" 
+				#     ThirdValue = str(TreeParentParam) 
+					
+	Trace.Write(str(TreeSuperTopParentParam)+"CHECK"+str(CurrentRecordId))           
+	if (TreeParam == "Quote Information" and str(ObjName) == 'SAQTMT') and (str(CurrentRecordId) != 'SYOBJR-98857' and str(CurrentRecordId) != 'SYOBJR-98858' and str(CurrentRecordId) != 'SYOBJR-00028'):
+		PrimaryLable = ListKey[1]
+		PrimaryValue = ListVal[1]
+		SecondLable = ListKey[2]
+		SecondValue = ListVal[2]
+		
+		try:
+			
+			ThirdLable = ListKey[3]
+			ThirdValue = ListVal[3]
+		except:
+			ThirdLable = ''
+			ThirdValue = '' 
+		# try:
+		#     FourthLable = ListVal[4]
+		#     FourthValue = ListVal[4]
+		# except:
+		#     FourthLable = ''
+		#     FourthValue = ''
+		# try:            
+		#     FifthLable = ListKey[5]
+		#     FifthValue = ListVal[5]
+		# except:
+		#     FifthLable = ''
+		#     FifthValue = ''
+		# try:        
+		#     SixthLable = ListKey[6]
+		#     SixthValue = ListVal[6]
+		# except:
+		#     SixthLable = ''
+		#     SixthValue = ''    
+	Trace.Write("tab name--"+str(TabName)+" REC_ID "+str(CurrentRecordId))
+	Trace.Write("ObjectName changed or not:"+str(ObjName))
+	if  TreeTopSuperParentParam == "Quote Items" and str(TreeParam) != "" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Details"):
+		Trace.Write("check --1668")
+		#TreeParentParam = TreeParentParam.split('-')
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = TreeSuperParentParam.split('-')[1]
+		SecondLable = "Fab Location ID"
+		SecondValue = TreeParentParam
+		ThirdLable = "Greenbook"
+		ThirdValue = TreeParam
+		FourthLable = "Equipment"
+		FourthValue = "All"
+	elif TreeSuperParentParam == 'Quote Items':
+		TreeParentParam = TreeParentParam.split('-')
+		PrimaryLable = "Line Item ID"
+		PrimaryValue = TreeParentParam[0].strip()
+		SecondLable = "Product Offering ID"
+		SecondValue = TreeParentParam[1].strip()
+		ThirdLable = "Fab Location ID"
+		ThirdValue = TreeParam
+		FourthLable = "Greenbooks"
+		FourthValue = "All"
+		FifthLable = "Equipment"
+		FifthValue = "All"  
+	elif TreeParam == "Approvals" and CurrentTabName == "My Approvals Queue":
+		transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
+		chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
+		PrimaryLable = "Approval Chain ID"
+		if chain_information:
+			PrimaryValue = chain_information.APRCHN_ID
+			SecondLable = "Approval Chain Name"
+			SecondValue = chain_information.APRCHN_NAME
+			ThirdLable = "Approval Chain Method"
+			ThirdValue = chain_information.APPROVAL_METHOD
+		else:
+			PrimaryLable = "Approvals"
+			PrimaryValue = "All" 
+			SecondLable = ""
+			SecondValue = "" 
+	elif TreeParam == "Approvals" and CurrentTabName == "Team Approvals Queue":
+		transaction_rec_id = Product.Attr("QSTN_SYSEFL_AC_00063").GetValue()
+		chain_information = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACAPTX(nolock) on ACAPTX.APRCHN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(transaction_rec_id)+"' ")     
+		PrimaryLable = "Approval Chain ID"
+		if chain_information:
+			PrimaryValue = chain_information.APRCHN_ID
+			SecondLable = "Approval Chain Name"
+			SecondValue = chain_information.APRCHN_NAME
+			ThirdLable = "Approval Chain Method"
+			ThirdValue = chain_information.APPROVAL_METHOD
+		else:
+			PrimaryLable = "Approvals"
+			PrimaryValue = "All" 
+			SecondLable = ""
+			SecondValue = ""        
+	elif TreeParam == "Quote Preview":
+		PrimaryLable = ListKey[1]
+		PrimaryValue = ListVal[1]
+		SecondLable = ListKey[2]
+		SecondValue = ListVal[2]
+		ThirdLable = ListKey[3]
+		ThirdValue = ListVal[3]
+		# FourthLable = ListKey[4]
+		# FourthValue = ListVal[4]
+		# FifthLable = ListKey[5]
+		# FifthValue = ListVal[5]
+		#SixthLable = ListKey[6]
+		#SixthValue = ListVal[6]
+		
+	# elif TreeParam == 'Approvals' and str(TabName == 'Quote'):
+	#     PrimaryLable = "Approvals"
+	#     PrimaryValue = "All"     
+	elif TreeParentParam == "Sales" and str(CurrentTabName) != "Profile":		
+		if ListVal:
+			PrimaryLable = ListKey[1]
+			PrimaryValue = ListVal[1]
+			SecondLable = ListKey[2]
+			SecondValue = ListVal[2]
+		else:
+			PrimaryLable = ListKey[1]
+			PrimaryValue = TreeParam
+			SecondLable = ListKey[2]
+			SecondValue = ""
+		ThirdLable = ""
+		ThirdValue = ""
+	# SHP Contract Document Starts
+	elif TreeParam == "Contract Documents" and  ObjName == "SAQDOC":
+		PrimaryLable = "Account ID"
+		PrimaryValue = "ALL"
+		SecondLable = "Account Name"
+		SecondValue = "ALL"	
+	# SHP Contract Document Ends
+	elif ObjName == "SAQSCA" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
+		Trace.Write(1497)		
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeTopSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Equipment ID"
+		FourthValue = str(EquipmentId)
+		FifthLable = "Serial Number"
+		FifthValue = str(SerialNumber)
+		SixthLable = "Assembly ID"
+		SixthValue = str(AssemblyId)     
+	elif subTabName == "Assembly Entitlements" and (TreeSuperParentParam == "Receiving Equipment" or TreeSuperParentParam == "Sending Equipment"):
+		Trace.Write(1511)		
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeTopSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Equipment ID"
+		FourthValue = str(EquipmentId)
+		FifthLable = "Serial Number"
+		FifthValue = str(SerialNumber)
+		SixthLable = "Assembly ID"
+		SixthValue = str(AssemblyId)     
+	elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
+		PrimaryLable = "Greenbook"
+		PrimaryValue = str(TreeParam)
+		SecondLable = "Equipment ID"
+		SecondValue = str(EquipmentId)
+		ThirdLable = "Serial Number"
+		ThirdValue = str(SerialNumber)
+		FourthLable = "Assembly ID"
+		FourthValue = str(AssemblyId)
+		PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId,quote_revision_record_id=quote_revision_record_id ))
+		if PreventiveMaintainenceobj is not None:
+			FifthLable = "PM Events"
+			FifthValue = "All"
+		PMEvents = "False"
+	elif ObjName == "SAQSCA":
+		#A055S000P01-3208 start
+		Trace.Write(1244)		
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		#A055S000P01-3208 end
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Equipment ID"
+		FourthValue = str(EquipmentId)
+		FifthLable = "Serial Number"
+		FifthValue = str(SerialNumber)
+		SixthLable = "Assembly ID"
+		SixthValue = str(AssemblyId)     
+	elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Quotes':
+		getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeParentParam)
+		SecondLable = "Product Offering Description"
+		SecondValue = getService.SERVICE_DESCRIPTION
+		ThirdLable = "Fab Location ID"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Greenbooks"
+		FourthValue = "ALL"
+		FifthLable = "Equipment"
+		FifthValue = "ALL"
+	elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Contracts':
+		getService = Sql.GetFirst("select SERVICE_DESCRIPTION from CTCTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeParentParam)
+		SecondLable = "Product Offering Description"
+		SecondValue = getService.SERVICE_DESCRIPTION
+		ThirdLable = "Fab Location ID"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Greenbooks"
+		FourthValue = "ALL"
+		FifthLable = "Equipment"
+		FifthValue = "ALL"	
+		SixthLable = ""
+		SixthValue = ""
+	elif TreeParentParam == "Quote Items" and subTabName == "Entitlements" and getQuotetype == "ZWK1 - SPARES":
+		PrimaryLable = ""
+		PrimaryValue = ""
+	elif TopSuperParentParam == "Quote Items" and (subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+		#PrimaryLable = "Product Offering ID"
+		#PrimaryValue = str(TreeSuperParentParam)
+		#SecondLable = "Line Item Id"
+		#SecondValue = "ALL"		
+		if subTabName != "Equipment Details":
+			PrimaryLable = ""
+			PrimaryValue = ""
+		ThirdLable = "Fab Location ID" 
+		ThirdValue = str(TreeParentParam) 
+		FourthLable = "Greenbook"
+		FourthValue = str(TreeParam)
+		FifthLable = "Equipment Id"
+		FifthValue = str(EquipmentId)
+		SixthLable = "Serial Number"
+		SixthValue = str(SerialNumber)
+	elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quotes':
+		getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
+		PrimaryLable = 'Approval Chain ID'
+		PrimaryValue = str(TreeParentParam)
+		SecondLable = 'Approval Chain Name'
+		SecondValue = getchain.APRCHN_NAME
+		ThirdLable = 'Approval Round'
+		ThirdValue = str(TreeParam).split(' ')[1]
+		FourthLable = ''
+		FourthValue = ''
+		# FourthLable = "GreenBook" 
+		# FourthValue = str(TreeParam)
+		# FifthLable = "Equipment ID"
+		# FifthValue = "All"
+		# if SerialNumber is not None:
+		#     SixthLable = "Serial Number"
+		#     SixthValue = str(SerialNumber)
+		# else:
+		#     SixthLable = ""
+		#     SixthValue = ""
+	#elif str(TreeParentParam) == "Complementary Products" or str(TreeParentParam) == "Comprehensive Services":
+		#Trace.Write('-----------'+str(TreeParentParam)+str(TreeParam))
+	elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":	
+		try:
+			getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+			desc = getService.SERVICE_DESCRIPTION
+		except:
+			desc = ""
+		if (subTabName == "Equipment Details" or subTabName == "Equipment Assemblies" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+			PrimaryLable = "Product Offering ID"
+			PrimaryValue = str(TreeSuperParentParam)
+			SecondLable = "Product Offering Description"
+			SecondValue = getService.SERVICE_DESCRIPTION
+			ThirdLable = "Fab Location ID"
+			ThirdValue = str(TreeParentParam)
+			FourthLable = "Greenbook"
+			FourthValue = str(TreeParam)
+			FifthLable = "Equipment ID"
+			FifthValue = str(EquipmentId)
+			SixthLable = "Serial Number"
+			SixthValue = str(SerialNumber)
+		elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
+			PrimaryLable = "Product Offering ID"
+			PrimaryValue = str(TreeSuperParentParam)
+			SecondLable = "Product Offering Description"
+			SecondValue = desc
+			ThirdLable = "Fab Location ID"
+			ThirdValue = str(TreeParentParam)
+			FourthLable = "Greenbook"
+			FourthValue = str(TreeParam)
+			if subTabName != "Details":
+				FifthLable = "Equipment"
+				FifthValue = "All"
+		elif subTabName == "Details":			
+			PrimaryLable = ListKey[0]
+			PrimaryValue = PrimaryValue
+	elif TreeSuperTopParentParam == "Product Offerings" and (subTabName == "Equipment Assemblies" or subTabName == "Equipment Entitlements" or subTabName == "Equipment Fab Value Drivers" or subTabName == "Equipment Cost and Value Drivers" or subTabName == "Equipment Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):		
+		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		Trace.Write("1356")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)
+		FourthLable = "Equipment ID"
+		FourthValue = str(EquipmentId)
+		FifthLable = "Serial Number"
+		FifthValue = str(SerialNumber)
+		Trace.Write("check345"+str(FifthValue))
+		#FourthLable = "Equipment"
+		#FourthValue = "ALL"
+	elif (TreeSuperParentParam == "Sending Equipment" and TreeSuperTopParentParam =="Complementary Products" and (subTabName == "Details")):		
+		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		Trace.Write("1359")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeTopSuperParentParam)
+		SecondLable = "Fab Location ID"
+		SecondValue = str(TreeParentParam)
+		ThirdLable = "Greenbook"
+		ThirdValue = str(TreeParam)
+	elif TreeTopSuperParentParam == "Complementary Products"  and (subTabName == "Details"):		
+		#getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+		Trace.Write("1359===========")
+		PrimaryLable = "Product Offering ID"
+		PrimaryValue = str(TreeSuperParentParam)
+		SecondLable = ""
+		SecondValue = ""
+		#ThirdLable = ""
+		#ThirdValue = ""	
 
 	#     PrimaryLable = ListKey[0]
 	#     PrimaryValue = PrimaryValue
