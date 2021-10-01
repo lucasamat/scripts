@@ -983,16 +983,6 @@ class EntitlementView():
 												default = ''
 											else:
 												default = 'selected'
-											
-											Trace.Write(str(attrSysId)+'Approval ICON --------->')
-									        Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
-									        if Status:
-												if Status.APPROVAL_REQUIRED == True:
-													imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
-										        else:
-											    	imgstr  = ""
-											else:
-												imgstr  = ""
 											# if str(attrName) == "Fab Location":
 											# 	if getquote_sales_val in get_il_sales_list:
 											# 		VAR1 += '<option value="select" ' +str(default)+'> </option>'
@@ -1278,11 +1268,16 @@ class EntitlementView():
 											##FACTOR CURRENCY
 											sec_str_faccur += str(val.PRICE_METHOD)
 										
-<<<<<<< Updated upstream
-									
-=======
+									Trace.Write(str(attrSysId)+'Approval ICON --------->')
+									Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
+									if Status:
+										if Status.APPROVAL_REQUIRED == True:
 											
->>>>>>> Stashed changes
+											imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
+										else:
+											imgstr  = ""
+									else:
+										imgstr  = ""
 									#race.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
 									if attrSysId in attriburesrequired_list:
 										required_symbol_class = 'required_symbol'
