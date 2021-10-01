@@ -138,7 +138,12 @@ class SyncQuoteAndCustomTables:
 			Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
 			Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 			Fullresponse= eval(Fullresponse)
-
+			if Fullresponse['complete'] == 'true':
+				configuration_status = 'COMPLETE'
+			elif Fullresponse['complete'] == 'false':
+				configuration_status = 'INCOMPLETE'
+			else:
+				configuration_status = 'ERROR'
 			attributesdisallowedlst=[]
 			attributeReadonlylst=[]
 			attributesallowedlst=[]
@@ -269,7 +274,7 @@ class SyncQuoteAndCustomTables:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc)
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc)
 				Trace.Write('238--insertservice----'+str(insertservice))   
 				tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 				tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
@@ -289,6 +294,7 @@ class SyncQuoteAndCustomTables:
 				tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 				tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
 				tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+				tbrow["CONFIGURATION_STATUS"] = configuration_status
 				#tbrow["IS_DEFAULT"] = '1'
 				#Trace.Write('254----')
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
