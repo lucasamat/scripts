@@ -95,6 +95,10 @@ except:
 	
 	partnumber = ""
 	Trace.Write('partnumber--except----'+str(partnumber))
+try:
+	inserted_value_list = list(Param.inserted_value_list)
+except:
+	inserted_value_list = []
 ##to get the response
 try:
 	request_url = Param.request_url
