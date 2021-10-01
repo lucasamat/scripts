@@ -73,6 +73,8 @@ action= Param.action
 
 #to get the product status
 Trace.Write('where_cond------'+str(where_cond))
+Trace.Write('ent_level_table------'+str(ent_level_table))
+Trace.Write('partnumber------'+str(partnumber))
 try:
 	where_cond= Param.where_cond
 except:
@@ -81,7 +83,10 @@ try:
 	ent_level_table= Param.ent_level_table
 except:
 	ent_level_table = ""
-	
+try:
+	partnumber= Param.partnumber
+except:
+	partnumber = ""	
 ##to get the response
 try:
 	request_url = Param.request_url
