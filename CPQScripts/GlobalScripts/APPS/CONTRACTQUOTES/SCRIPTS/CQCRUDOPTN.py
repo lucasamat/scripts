@@ -927,14 +927,15 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				else:
 					ent_disp_val = ent_disp_val
 					ent_val_code = ent_val_code
-				if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "FAB LOCATION":
-					Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
-					Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
-					AttributeID_Pass = attrs
-					if getquote_sales_val in get_il_sales_list:
-						NewValue = 'Israel'
-					else:
-						NewValue = 'ROW'
+				if ATTRIBUTE_DEFN:
+					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "FAB LOCATION":
+						Trace.Write(str(attrs)+'--attrs---1118----'+str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME))
+						Trace.Write(str(getquote_sales_val)+'-getquote_sales_val---'+str(get_il_sales_list))
+						AttributeID_Pass = attrs
+						if getquote_sales_val in get_il_sales_list:
+							NewValue = 'Israel'
+						else:
+							NewValue = 'ROW'
 				#else:
 					#AttributeID_Pass =''
 					#NewValue = ''
