@@ -138,12 +138,6 @@ class SyncQuoteAndCustomTables:
 			Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.SERVICE_ID,'request_url':Request_URL,'request_type':"New"})
 			Fullresponse=str(Fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
 			Fullresponse= eval(Fullresponse)
-			if Fullresponse['complete'] == 'true':
-				configuration_status = 'COMPLETE'
-			elif Fullresponse['complete'] == 'false':
-				configuration_status = 'INCOMPLETE'
-			else:
-				configuration_status = 'ERROR'
 
 			attributesdisallowedlst=[]
 			attributeReadonlylst=[]
@@ -275,7 +269,7 @@ class SyncQuoteAndCustomTables:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc)
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if  HasDefaultvalue else '' ,ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc)
 				Trace.Write('238--insertservice----'+str(insertservice))   
 				tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 				tbrow["QUOTE_ID"]=OfferingRow_detail.QUOTE_ID
@@ -295,7 +289,6 @@ class SyncQuoteAndCustomTables:
 				tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 				tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
 				tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-				tbrow["CONFIGURATION_STATUS"] = configuration_status
 				#tbrow["IS_DEFAULT"] = '1'
 				#Trace.Write('254----')
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
@@ -1193,24 +1186,10 @@ class SyncQuoteAndCustomTables:
 							Log.Info("""SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'""".format(contract_quote_data.get('C4C_QUOTE_ID')))
 						if payload_json.get('FAB_LOCATION_IDS'):
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
-						try:
-							if payload_json.get('SERVICE_IDS'):
-								service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
-								Trace.Write(str(payload_json.get('SERVICE_IDS').split(',')))
-								serv_ids = payload_json.get('SERVICE_IDS').split(',')
-								poes_cond = payload_json.get('POES')
-								service_ids = serv_ids[1]+"','"
-								for ins_service in range(len(serv_ids)):
-									Trace.Write(serv_ids[ins_service])
-									if ins_service ==0 or ins_service ==1:
-										continue
-									Quote_obj = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM MAADPR (NOLOCK) WHERE POES = '"+str(poes_cond)+"' and PRDOFR_ID = '"+serv_ids[1]+"' and COMP_PRDOFR_ID = '"+serv_ids[ins_service]+"'")	
-									if Quote_obj.cnt == 1:
-										service_ids += serv_ids[ins_service]	
-								service_ids = service_ids
-								Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
-						except:
-							pass
+						if payload_json.get('SERVICE_IDS'):
+							service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
+							service_id1 = payload_json.get('SERVICE_IDS').split(',')[1]
+							Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):       
 								Log.Info(str(payload_json.get('SAQFEQ'))+" ======== equipment_json_data-------->"+str(equipment_json_data))                 
@@ -1709,7 +1688,7 @@ sync_obj.create_custom_table_record()
 # ##A055S000P01-8740 code starts..
 # quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 # quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-# ServicerecordId = str(serviceid_1)
+# ServicerecordId = str(service_id1)
 # getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 # if getRevision is None:
 # 	ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})
