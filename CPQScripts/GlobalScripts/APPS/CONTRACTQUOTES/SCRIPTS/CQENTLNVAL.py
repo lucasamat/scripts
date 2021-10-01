@@ -72,11 +72,9 @@ partnumber= Param.partnumber
 action= Param.action
 
 #to get the product status
-Trace.Write('where_cond------'+str(where_cond))
-Trace.Write('ent_level_table------'+str(ent_level_table))
-Trace.Write('partnumber------'+str(partnumber))
 try:
 	where_cond= Param.where_cond
+	Trace.Write('where_cond------'+str(where_cond))
 except:
 	where_cond = ""
 try:
