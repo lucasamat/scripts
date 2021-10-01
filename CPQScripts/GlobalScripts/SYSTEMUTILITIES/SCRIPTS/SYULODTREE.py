@@ -1975,7 +1975,7 @@ class TreeView:
 									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 									where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText )
 									try:
-										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam ) )
+										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText ) )
 										if get_status:
 											if get_status.CONFIGURATION_STATUS == 'COMPLETE':
 												image_url = 'config_status_icon.png'
