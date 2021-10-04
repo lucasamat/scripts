@@ -102,7 +102,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 			)
 			sefl_api = sefl.API_FIELD_NAME
 			object_name = sefl.API_NAME
-			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{sefl_api}' and OBJECT_NAME ='{object_name}'".format(sefl_api = sefl_api,object_name = object_name))
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM SAOPQT WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
 			if col_name:
