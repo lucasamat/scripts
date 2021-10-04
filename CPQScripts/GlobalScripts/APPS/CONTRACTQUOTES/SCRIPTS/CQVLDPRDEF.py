@@ -210,7 +210,7 @@ def tool_uptimetimprovementdriver_update():
 				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
 			querystring = querystring + entxmldict[key]
 			Trace.Write(querystring)
-			Update_xml_uptime = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))	
+			Update_xml_uptime = ("UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))	
 	
 def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 	where =""
