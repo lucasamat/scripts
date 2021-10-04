@@ -1022,7 +1022,10 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			#tbrow["IS_DEFAULT"] = '1'
 			Trace.Write("chk asci issue-"+str(tbrow["ENTITLEMENT_XML"]))
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+			try:
+				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+			except:
+				values = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
