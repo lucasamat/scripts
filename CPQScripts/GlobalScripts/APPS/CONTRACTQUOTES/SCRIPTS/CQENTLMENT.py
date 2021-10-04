@@ -594,7 +594,7 @@ class Entitlements:
 									# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 						if Productattribute == "variantConditions":
 							characteristics_attr_values = Productvalue
-			Trace.Write("durga---s"+str(product_obj.PRD_ID)+'--tableName---'+str(tableName))
+			Trace.Write("durga---s"+str(serviceId)+'--tableName---'+str(tableName))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':product_obj.PRD_ID,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			Trace.Write("attributes_service_sublist--532------"+str(attributes_service_sublist))
