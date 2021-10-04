@@ -88,7 +88,7 @@ def service_level_predefined(updateentXML):
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
 			updateentXML = updating_xml(updateentXML,val.ENTITLEMENT_ID )
 	Product.SetGlobal("updateentXML",updateentXML)
-	#Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = ''{}'' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML, quote_record_id,TreeParam, quote_revision_record_id) )
+	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 
 
 
