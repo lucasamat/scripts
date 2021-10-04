@@ -647,7 +647,7 @@ class Entitlements:
 					# else:
 					# 	attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
 						
-				Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
+				#Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name = updateentXML = get_tool_desc = ""
 				for tab in product_tabs_obj:
