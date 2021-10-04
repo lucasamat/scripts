@@ -142,7 +142,7 @@ class Entitlements:
 									requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 								requestdata += ']}'
 								requestdata = requestdata.replace('},]','}]')
-								Trace.Write("requestdata--child-- " + str(requestdata))
+								#Trace.Write("requestdata--child-- " + str(requestdata))
 								response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 								cpsmatchID = cpsmatchID + 10			
 								
