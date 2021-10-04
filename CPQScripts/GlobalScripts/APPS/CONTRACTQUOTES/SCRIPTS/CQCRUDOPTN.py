@@ -1020,7 +1020,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["QTEREV_ID"] = self.quote_revision_id
 			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
-			Trace.Write("chk asci issue-"+str(tbrow["ENTITLEMENT_XML"]))
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 			try:
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
