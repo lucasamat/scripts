@@ -594,8 +594,9 @@ class Entitlements:
 									# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 						if Productattribute == "variantConditions":
 							characteristics_attr_values = Productvalue
-			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
+			Trace.Write("durga---s"+str(product_obj.PRD_ID)+'--tableName---'+str(tableName))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
+			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':product_obj.PRD_ID,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			Trace.Write("attributes_service_sublist--532------"+str(attributes_service_sublist))
 			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
