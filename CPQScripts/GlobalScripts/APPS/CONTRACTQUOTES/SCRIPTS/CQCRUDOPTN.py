@@ -1028,7 +1028,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
 				try:
-					Trace.Write('312---NewValue--'+str(NewValue))
+					Trace.Write('312---NewValue- -'+str(NewValue))
 					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
 					add_where =''
 					ServiceId = OfferingRow_detail.get("SERVICE_ID")
