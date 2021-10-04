@@ -1029,8 +1029,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				columns = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.keys())
 				values = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.values())
 			
-				Sql.RunQuery("INSERT INTO SAQTSE ( {} ) VALUES ( {} );".format(columns, values) )
-				#Sql.RunQuery(insert_qtqtse_query)
+				insert_qtqtse_query = "INSERT INTO SAQTSE ( {} ) VALUES ( {} );".format(columns, values)
+				Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
 				try:
 					Trace.Write('312---NewValue- -'+str(NewValue))
