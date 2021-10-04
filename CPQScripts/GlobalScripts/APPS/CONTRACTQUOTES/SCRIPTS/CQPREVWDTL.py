@@ -118,7 +118,8 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 					)
 				elif data_type =="CHECKBOX":
 					act_status = (eval("col_name." + str(sefl_api)))
-					if act_status == "True"  or act_status == "1":
+					Trace.Write("act_status---->"+str(act_status))
+					if act_status == True  or act_status == 1:
 						sec_str += (
 							'<div class="col-md-3 padtop5 padleft10"><input id="'
 							+ str(sefl_api)
