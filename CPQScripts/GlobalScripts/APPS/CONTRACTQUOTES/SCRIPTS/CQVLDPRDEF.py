@@ -173,7 +173,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 
 		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
 		updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
-	Log.Info("EID->{}, {} ".format(str(ent_id),updateentXML)
+	Log.Info("EID->{}, {} ".format(str(ent_id),updateentXML) )
 	return updateentXML
 
 def tool_uptimetimprovementdriver_update():
