@@ -1023,7 +1023,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			#tbrow["IS_DEFAULT"] = '1'
 
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+			values = ', '.join("'" + x + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
