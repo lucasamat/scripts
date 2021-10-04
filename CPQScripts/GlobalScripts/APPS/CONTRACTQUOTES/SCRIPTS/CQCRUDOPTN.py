@@ -1020,7 +1020,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["QTEREV_ID"] = self.quote_revision_id
 			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
-
+			Trace.Write("chk asci issue-"+str(tbrow["ENTITLEMENT_XML"]))
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
