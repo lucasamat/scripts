@@ -177,18 +177,20 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 	return updateentXML
 
 
-
-if LEVEL == 'SERVICE_LEVEL':
-	service_level_predefined()
-else:
-	obj_list = ["SAQSFE,SAQSGE,SAQSCE"]
-	for obj in obj_list:
-		if obj == "SAQSFE":
-			#fab_predefined()
-			pass
-		elif obj == "SAQSGE":
-			greenbook_predefined()
-		elif obj == "SAQSCE":
-			equipment_predefined()
+try:
+	if LEVEL == 'SERVICE_LEVEL':
+		service_level_predefined()
+	else:
+		obj_list = ["SAQSFE,SAQSGE,SAQSCE"]
+		for obj in obj_list:
+			if obj == "SAQSFE":
+				#fab_predefined()
+				pass
+			elif obj == "SAQSGE":
+				greenbook_predefined()
+			elif obj == "SAQSCE":
+				equipment_predefined()
+except:
+	pass
 
 #predefined_logic()
