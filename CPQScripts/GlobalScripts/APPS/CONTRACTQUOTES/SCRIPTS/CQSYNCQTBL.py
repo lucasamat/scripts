@@ -1589,7 +1589,7 @@ class SyncQuoteAndCustomTables:
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
 						Sql.Upsert(payload_table_info)
-					""" # Approval Trigger - Start								
+					# Approval Trigger - Start								
 					import ACVIORULES
 					violationruleInsert = ACVIORULES.ViolationConditions()
 					header_obj = Sql.GetFirst("SELECT RECORD_ID FROM SYOBJH (NOLOCK) WHERE OBJECT_NAME = 'SAQTRV'")
@@ -1599,7 +1599,7 @@ class SyncQuoteAndCustomTables:
 														header_obj.RECORD_ID, quote_revision_id, "SAQTRV"
 														)
 						Log.Info("Ending Approval Trigger--")
-					# Approval Trigger - End """
+					# Approval Trigger - End
 
 		except Exception:   
 			Log.Info("SYPOSTINSG ERROR---->:" + str(sys.exc_info()[1]))
