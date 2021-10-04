@@ -1456,9 +1456,11 @@ class TreeView:
 				elif str(ObjName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")
 				elif str(ObjName).strip() == 'ACACST' and str(NodeName).strip() == 'APRCHNSTP_NAME' and str(ProductName).upper() == "SALES":
-					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'") 
+					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")
+				#A055S000P01-3618 code starts..
 				elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
-						objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")     
+						objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'")
+				#A055S000P01-3618 code ends..
 				elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "SALES":
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "'") 
 				elif str(ObjName).strip() == 'ACAPTF' and str(ProductName).upper() == "APPROVAL CENTER" and (str(NodeName).strip() == 'TRKOBJ_NAME' or str(NodeName).strip() == 'TRKOBJ_TRACKEDFIELD_LABEL'):
@@ -1501,6 +1503,7 @@ class TreeView:
 					#where_string = "ACAPMA.APRTRXOBJ_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"))    
 					#elif str(ObjName).strip() == 'ACAPTX' and str(NodeName).strip() == 'APRCHNSTPTRX_ID' and str(ProductName).upper() == "SALES":
 					#where_string = " ACAPMA.APRTRXOBJ_RECORD_ID = '{contract_quote_record_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{quote_id}%' ".format(contract_quote_record_id  = Quote.GetGlobal("contract_quote_record_id"),quote_id = quote_id)
+					#A055S000P01-3618 code starts..
 					elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' and str(ProductName).upper() == "SALES":
 						quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						temp = ""
@@ -1508,6 +1511,7 @@ class TreeView:
 						#temp = where_string.split("AND")[1]
 						where_string += temp + " AND ACACHR.APPROVAL_ID LIKE '%{quote_id}%' ORDER BY ACACHR.APPROVAL_ROUND DESC,ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID, ACACHR.APPROVAL_ID""".format(quote_id  = quote_id)
 						Trace.Write("where string for Round----->"+str(where_string))
+					#A055S000P01-3618 code ends..
 					if str(ObjName).strip() == "SAQSAO":
 						Trace.Write('where_string==1221='+str(where_string))              
 						where_string = where_string
@@ -1789,7 +1793,7 @@ class TreeView:
 									+ str(NodeText)
 									+ "' ORDER BY ACAPCH.APRCHN_ID,ACAPMA.APRCHN_RECORD_ID"
 								)
-							elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' 	and str(ProductName).upper() == "SALES":
+							elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' 	and str(ProductName).upper() == "SALES":#A055S000P01-3618 code starts..
 								NodeText = "Round "+str(eval("childdata." + str(NodeName))).title()
 								childQueryObj = Sql.GetFirst("select DISTINCT TOP 10 ACACHR.APPROVAL_CHAIN_ROUND_RECORD_ID,ACACHR.APPROVAL_ROUND, ACACHR.APPROVAL_ID,ACACHR.CpqTableEntryId FROM ACACHR (nolock) inner join ACAPTX (nolock) on ACAPTX.APRCHN_ID = ACACHR.APRCHN_ID where ACACHR.APPROVAL_ROUND = '{approval_round}' AND ".format(approval_round = NodeText.split(' ')[1])
 								+ str(where_string)) 
@@ -1807,6 +1811,7 @@ class TreeView:
 									aprchn_id = ""
 								#Trace.Write("aprchn_id"+str(aprchn_id))
 								##for showing relevent subtab for approval in quote ends
+								###A055S000P01-3618 code ends..
 							elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID' and str(ProductName).upper() == "APPROVAL CENTER":
 								NodeText = str(eval("childdata." + str(NodeName)))
 								childQueryObj = Sql.GetFirst( "select TOP 10 ACACSA.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID, ACACSA.APRCHN_ID,ACACSA.APRCHNSTP_RECORD_ID FROM ACACSA (nolock) inner join ACACST (nolock) on ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACACSA.APRCHNSTP_RECORD_ID  AND " + str(NodeName) + " = '" + str(NodeText) + "'" )
@@ -2069,6 +2074,7 @@ class TreeView:
 													)
 									#Trace.Write("SUBTAB_LIST_J "+str(SubTabList))
 								## Approvals Dynamic Subtab Code starts..##Dynamic chain subtabs in round node...
+								#A055S000P01-3618 code starts..
 								if "Round" in ChildDict.get("text"):
 									Trace.Write("inside the ROUND dynamic tab---"+str(aprchn_id))
 									quote_approval_chains_obj = Sql.GetList("select DISTINCT TOP 10 ACACST.APRCHNSTP_NAME,ACAPCH.APRCHN_ID,ACACST.APRCHNSTP_NUMBER,ACAPMA.APRCHN_RECORD_ID FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID inner join ACACST(nolock) on ACACST.APRCHN_ID = ACAPCH.APRCHN_ID and ACACST.APRCHN_RECORD_ID = ACAPCH.APPROVAL_CHAIN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{}' {} ORDER BY ACACST.APRCHNSTP_NUMBER,ACACST.APRCHNSTP_NAME,ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ".format(Quote.GetGlobal("quote_revision_record_id"),aprchn_id))
@@ -2092,7 +2098,8 @@ class TreeView:
 													SubTabList.append(
 														self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 													)
-								## Approvals Dynamic Subtab Code starts.. Dynamic chain subtabs in round node...   
+								## Approvals Dynamic Subtab Code starts.. Dynamic chain subtabs in round node... 
+								#A055S000P01-3618 code ends..
 							else:                                
 								if pageDetails is not None:
 									pageType = pageDetails.PAGE_TYPE
