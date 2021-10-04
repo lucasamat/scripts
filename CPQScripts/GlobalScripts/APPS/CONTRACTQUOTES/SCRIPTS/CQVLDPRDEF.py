@@ -92,10 +92,7 @@ def greenbook_predefined():
 		##rolldown
 		for roll_obj in ['SAQSCE','SAQSAE']:
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
-			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
-
 			
-		
 
 
 def fab_predefined():
@@ -120,6 +117,11 @@ def service_level_predefined():
 			updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value )
 	#Product.SetGlobal("updateentXML",updateentXML)
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
+
+	##rolldown
+	for roll_obj in ['SAQSFE','SAQSGE','SAQSCE','SAQSAE']:
+		Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
+		
 	
 	
 def updating_xml(entxmldict, input_xml, ent_id, ent_value):
