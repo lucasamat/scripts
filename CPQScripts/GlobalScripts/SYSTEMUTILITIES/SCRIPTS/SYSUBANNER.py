@@ -115,9 +115,9 @@ def Related_Sub_Banner(
 		# Binding button Id's based on Related list Table record id
 		
 		if len(dynamic_Button) > 0:
-			Trace.Write('len------')
+			#Trace.Write('len------')
 			for btn in dynamic_Button:
-				Trace.Write('btn-----')
+				#Trace.Write('btn-----')
 				if ("CANCEL" not in str(btn.HTML_CONTENT) and "SAVE" not in str(btn.HTML_CONTENT)):
 					Trace.Write("dynamic_Button---"+str(btn.HTML_CONTENT))
 					if btn.RELATED_LIST_RECORD_ID:
@@ -141,7 +141,7 @@ def Related_Sub_Banner(
 							multi_buttons.append(add_button)
 							
 						else:
-							Trace.Write("Billing matrix 124--------")
+							#Trace.Write("Billing matrix 124--------")
 							add_button = btn.HTML_CONTENT
 							if btn.RELATED_LIST_RECORD_ID:
 								div_id = "div_CTR_"+str(SYOBJH_ID.NAME).replace(" ","_")
@@ -176,7 +176,7 @@ def Related_Sub_Banner(
 							Trace.Write('176---------------')
 							add_button = '<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
 					except:
-						Trace.Write('176--------EXCEPT-------')
+						#Trace.Write('176--------EXCEPT-------')
 						add_button = ""
 					add_button = ""
 		else:
