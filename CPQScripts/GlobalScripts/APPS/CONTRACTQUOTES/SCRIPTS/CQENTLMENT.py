@@ -632,7 +632,7 @@ class Entitlements:
 						characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
 						Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
-					except Exception,e:
+					except Exception as e:
 						Trace.Write('error--pop--'+str(e))
 						#pass
 
