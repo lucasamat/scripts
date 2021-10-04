@@ -1020,13 +1020,14 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["QTEREV_ID"] = self.quote_revision_id
 			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
+			Product.SetGlobal('insertservice',insertservice)
 			try:
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 			except:
-				columns = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.keys() if x != 'ENTITLEMENT_XML')
+				columns = ', '.join('{}'.format(x) for x in tbrow.keys() if x != 'ENTITLEMENT_XML')
 				values = ', '.join("'"+'{}'.format(y)+"'" for x,y in tbrow.items() if x != 'ENTITLEMENT_XML' )
 			
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
