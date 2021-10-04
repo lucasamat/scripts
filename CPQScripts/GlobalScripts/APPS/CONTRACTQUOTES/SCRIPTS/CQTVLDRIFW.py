@@ -19,7 +19,7 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id):
+def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id, where_condition):
 
     #Trace.Write("1111111111111111     " + str(username))
     requestdata = (
@@ -33,7 +33,9 @@ def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id
         +str(Userid)
         +"</Userid><quote_revision_record_id>"
         +str(quote_revision_record_id)
-        +"</quote_revision_record_id></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
+        +"</quote_revision_record_id><where_condition>"
+        +str(where_condition)
+        +"</where_condition></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
     Log.Info("Predefined------" + str(requestdata))
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='VALUEDRIVER_PREDEFINED'")
