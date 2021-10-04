@@ -1063,7 +1063,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				pass
 			#calling pre-logic valuedriver script
 			try:
-				Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+				Trace.Write("PREDEFINED WAFER DRIVER IFLOW-")
 				where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
 				CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 			except:
