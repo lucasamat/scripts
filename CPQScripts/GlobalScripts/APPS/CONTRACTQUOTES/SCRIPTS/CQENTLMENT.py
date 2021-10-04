@@ -730,7 +730,7 @@ class Entitlements:
 				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 				Sql.RunQuery(Updatecps)
 			else:
-				Trace.Write('SAQTS-----VALUE DRIVERS------')
+				Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = ""
