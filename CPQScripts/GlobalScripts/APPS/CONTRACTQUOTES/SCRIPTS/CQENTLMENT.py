@@ -512,7 +512,7 @@ class Entitlements:
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 			#restriction for value driver call to CPS start
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-			if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+			if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 			
 				Trace.Write("Fullresponse--"+str(Fullresponse))
@@ -1583,7 +1583,7 @@ class Entitlements:
 					if  AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 						Trace.Write("AttributeID---904----"+str(AttributeID))
 						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-						if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+						if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
 							Trace.Write("Fullresponse"+str(Fullresponse))
 							Trace.Write("tableName--894---"+str(tableName))
@@ -1813,12 +1813,12 @@ class Entitlements:
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 				if get_datatype:
 					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-					if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
 						get_tool_desc= get_datatype.ATTRDESC
 				else:
 					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
-					if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
 						get_tool_desc =''
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
