@@ -300,7 +300,10 @@ class SyncQuoteAndCustomTables:
 				#tbrow["IS_DEFAULT"] = '1'
 				#Trace.Write('254----')
 				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+				try:
+					values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+				except:
+					values = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.values())
 				#Trace.Write('257----')
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
