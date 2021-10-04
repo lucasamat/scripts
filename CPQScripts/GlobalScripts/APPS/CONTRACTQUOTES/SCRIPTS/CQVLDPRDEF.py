@@ -151,8 +151,8 @@ def service_level_predefined():
 	Sql.RunQuery( "UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(updateentXML.replace("'","''") , quote_record_id,TreeParam, quote_revision_record_id) )
 
 	##rolldown
-	for roll_obj in ['SAQSFE','SAQSGE','SAQSCE','SAQSAE']:
-		Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} ".format(roll_obj, updateentXML.replace("'","''") ,where_condition   ) )
+	# for roll_obj in ['SAQSFE','SAQSGE','SAQSCE','SAQSAE']:
+	# 	Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} ".format(roll_obj, updateentXML.replace("'","''") ,where_condition   ) )
 		
 	
 	
