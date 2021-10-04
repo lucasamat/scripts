@@ -52,7 +52,7 @@ def devicetype_predefinedlogic(entitlement_string, equipment_record_id):
 def equipment_predefined():
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
 	ent_value =""
-	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML FROM SAQSCE {}""".format(str(where_condition) ))
+	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSCE {}""".format(str(where_condition) ))
 	for rec in getall_recid:
 		entxmldict = {}
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -63,13 +63,19 @@ def equipment_predefined():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
-			if 'WAFER' in val.ENTITLEMENT_DESCRIPTION.upper():
-				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
-				updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+			if 'WAFER NODE' in val.ENTITLEMENT_DESCRIPTION.upper():
+				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
+				if get_val.VALDRV_WAFERNODE:
+					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_WAFERNODE)
+			elif 'DEVICE TYPE' in val.ENTITLEMENT_DESCRIPTION.upper():
+				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
+				if get_val.VALDRV_DEVICETYPE:
+					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
 
 
-		#Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = ''{}'' WHERE QUOTE_RECORD_ID = '{}' AND EQUIPMENT_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(final_xml, quote_record_id, equip_id.EQUIPMENT_RECORD_ID, quote_revision_record_id) )
-
+		for roll_obj in ['SAQSCE','SAQSAE']:
+			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID) )
+   
 def greenbook_predefined():
 	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
 	
@@ -127,8 +133,6 @@ def service_level_predefined():
 	
 def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 	where =""
-	#Trace.Write("entxmldict--"+str(entxmldict))	
-	
 	if ent_value:
 		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, TreeParam, ent_value) )
 		entitlement_string = entxmldict[ent_id]
