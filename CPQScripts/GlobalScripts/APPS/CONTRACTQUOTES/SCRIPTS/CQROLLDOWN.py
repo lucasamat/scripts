@@ -132,8 +132,8 @@ def CoveredObjEntitlement():
 	#calling pre-logic valuedriver script
 	try:
 		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
-		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
-		CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"EQUIPMENT_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
+		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
+		CQTVLDRIFW.valuedriver_predefined(Qt_rec_id ,"EQUIPMENT_LEVEL" ,TreeParam , userId, rev_rec_id, where_condition)
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
 	sendEmail(level)
