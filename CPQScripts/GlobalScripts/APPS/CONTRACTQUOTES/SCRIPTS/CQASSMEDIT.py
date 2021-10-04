@@ -340,8 +340,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					#Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-					<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 					<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>                    
 					<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 					<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
