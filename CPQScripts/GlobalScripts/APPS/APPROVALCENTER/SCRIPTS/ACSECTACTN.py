@@ -3122,13 +3122,14 @@ class approvalCenter:
 		if CurrentTabName == 'Quotes':
 			quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id ))
 			quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+			revision_record_id = Product.GetGlobal("quote_revision_record_id")
 			if quote_obj is not None:
 				##multi chain approval
 				if str(TransactionId) != 'None': 
-					approval_queue_obj = Sql.GetFirst("select TOP 1 ACAPMA.APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{TransId}' ORDER BY ACAPMA.CpqTableEntryId DESC".format(quote_record_id = quote_record_id,TransId = str(TransactionId)))
+					approval_queue_obj = Sql.GetFirst("select TOP 1 ACAPMA.APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{TransId}' ORDER BY ACAPMA.CpqTableEntryId DESC".format(quote_record_id = revision_record_id,TransId = str(TransactionId)))
 				##multi chain approval
 				else:
-					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = revision_record_id))
 				self.QuoteNumber = approval_queue_obj.APPROVAL_RECORD_ID
 		else:
 			try:
