@@ -153,7 +153,8 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 
 		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_value_code.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
 		where = " AND PRENVL.ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_value)
-		input_xml = re.sub(r'<ENTITLEMENT_ID>'+str(ent_id)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
+		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(ent_id)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string, input_xml )
+		# re.sub(r'<ENTITLEMENT_ID>'+str(ent_id)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
 		Log.Info("EID11->{}, {} ".format(str(ent_id),str(entitlement_string)) )
 
 	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, TreeParam, where))
@@ -162,7 +163,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
 
 		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
-		input_xml = re.sub(r'<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string2, input_xml )
+		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, input_xml )
 		Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string2)) )
 	return input_xml
 
