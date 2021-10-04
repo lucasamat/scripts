@@ -184,10 +184,10 @@ def tool_uptimetimprovementdriver_update():
 try:
 	if LEVEL == 'SERVICE_LEVEL':
 		service_level_predefined()
-	elif LEVEL == 'UPTIME_IMPROVEMENT'
+	elif LEVEL == 'UPTIME_IMPROVEMENT':
 		tool_uptimetimprovementdriver_update()
 	else:
-		obj_list = ["SAQSFE,SAQSGE,SAQSCE"]
+		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
 		for obj in obj_list:
 			if obj == "SAQSFE":
 				#fab_predefined()
