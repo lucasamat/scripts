@@ -158,12 +158,12 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 
 	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, TreeParam, where))
 	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
-		entitlement_string = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
-		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
+		entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
 
-		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
-		updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, updateentXML )
-		Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string)) )
+		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
+		updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string2, updateentXML )
+		Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string2)) )
 	return updateentXML
 
 def tool_uptimetimprovementdriver_update():
