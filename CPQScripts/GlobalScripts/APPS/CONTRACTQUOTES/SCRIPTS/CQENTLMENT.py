@@ -510,9 +510,14 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
-			Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
-			Trace.Write("Fullresponse--"+str(Fullresponse))
-			Product.SetGlobal('Fullresponse',str(Fullresponse))
+			#restriction for value driver call to CPS start
+			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+			
+				Trace.Write("Fullresponse--"+str(Fullresponse))
+				Product.SetGlobal('Fullresponse',str(Fullresponse))
+			#restriction for value driver call to CPS end
 			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
 			if get_datatype:
 				get_tool_desc = get_datatype.ATTRDESC
@@ -1577,13 +1582,15 @@ class Entitlements:
 					#if 'AGS_LAB_OPT' in AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 					if  AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 						Trace.Write("AttributeID---904----"+str(AttributeID))
-						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
-						Trace.Write("Fullresponse"+str(Fullresponse))
-						Trace.Write("tableName--894---"+str(tableName))
-						Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
-						Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
-						Trace.Write("whereReq--894---"+str(whereReq))
-						Product.SetGlobal('Fullresponse',str(Fullresponse))
+						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+						if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Trace.Write("Fullresponse"+str(Fullresponse))
+							Trace.Write("tableName--894---"+str(tableName))
+							Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
+							Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
+							Trace.Write("whereReq--894---"+str(whereReq))
+							Product.SetGlobal('Fullresponse',str(Fullresponse))
 						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 						Sql.RunQuery(Updatecps)
 						characteristics_attr_values = []
@@ -1791,7 +1798,7 @@ class Entitlements:
 				GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(Gettabledata.SERVICE_ID)))
 		for AttributeID,valcode in dict(Getprevdict).items():
 			Trace.Write(str(valcode)+'170-------'+str(AttributeID))
-			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc','LABOR_TYPE_primp','T2_LABOR_TYPE_imt']:
+			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc']:
 				valdisplaycode.append(str(valcode))
 				attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)
 				#Trace.Write("tableName--"+str(tableName)+'---'+str(serviceId)+'---'+str(whereReq))	
@@ -1805,11 +1812,15 @@ class Entitlements:
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 				if get_datatype:
-					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
-					get_tool_desc= get_datatype.ATTRDESC
+					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+						get_tool_desc= get_datatype.ATTRDESC
 				else:
-					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
-					get_tool_desc =''
+					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() != "VALUE DRIVER":
+						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
+						get_tool_desc =''
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
 				if Fullresponse['complete'] == 'true':
 					configuration_status = 'COMPLETE'
