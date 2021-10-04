@@ -1020,13 +1020,17 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["QTEREV_ID"] = self.quote_revision_id
 			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
-			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 			try:
+				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
+				Sql.RunQuery(insert_qtqtse_query)
 			except:
+				columns = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.keys())
 				values = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.values())
-			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-			Sql.RunQuery(insert_qtqtse_query)
+			
+				Sql.RunQuery("INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values) )
+				#Sql.RunQuery(insert_qtqtse_query)
 			if AttributeID_Pass:
 				try:
 					Trace.Write('312---NewValue- -'+str(NewValue))
