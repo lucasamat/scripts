@@ -596,7 +596,7 @@ class Entitlements:
 							characteristics_attr_values = Productvalue
 			Trace.Write("durga---s"+str(serviceId)+'--tableName---'+str(tableName))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':product_obj.PRD_ID,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
+			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			attributesallowedlst = get_attr_leve_based_list
 			Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
 			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
@@ -778,7 +778,8 @@ class Entitlements:
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
 			Trace.Write('524---658-attributes_service_sublist--'+str(attributes_service_sublist))
-			
+			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
+			Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
@@ -1690,7 +1691,7 @@ class Entitlements:
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
 		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
 		
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
