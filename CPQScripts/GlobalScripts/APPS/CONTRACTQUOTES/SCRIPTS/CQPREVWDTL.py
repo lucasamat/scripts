@@ -88,7 +88,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 		)
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class= "sec_' + str(sect.RECORD_ID) + ' collapse in">'
@@ -101,6 +101,9 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 				+ "</label> </abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
+			object_name = sefl.API_NAME
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{sefl_api}' and OBJECT_NAME ='{object_name}'".format(sefl_api = sefl_api,object_name = object_name))
+			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM SAOPQT WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
@@ -113,16 +116,26 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 						+ str(current_user)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
-				elif sefl_api=="POES":
+				elif data_type =="CHECKBOX":
 					act_status = (eval("col_name." + str(sefl_api)))
-					sec_str += (
-						'<div class="col-md-3 padtop5 padleft10"><input id="'
-						+ str(sefl_api)
-						+ '" type="CHECKBOX" value="'
-						+ str(act_status)
-						+ '" class="custom" '
-						+ 'disabled checked><span class="lbl"></span></div>'
-					)		
+					if act_status == "True"  or act_status == "1":
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
