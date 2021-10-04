@@ -435,7 +435,7 @@ class Entitlements:
 		multi_select_attr_list = {}
 		attributevalues_textbox = []
 		attributedefaultvalue = []
-		attribute_non_defaultvalue = []
+		attribute_non_defaultvalue = get_attr_leve_based_list = []
 		dropdownallowlist_selected = []
 		where = pricemethodupdate = get_tool_desc = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
