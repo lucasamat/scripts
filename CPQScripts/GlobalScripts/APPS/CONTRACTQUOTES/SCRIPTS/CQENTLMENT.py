@@ -1952,7 +1952,7 @@ class Entitlements:
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue
 	def Rolldown(self):
-		#Log.Info("Newdict------523----> "+str(Newdict))
+		Trace.Write("Newdict------523----> "+str(Newdict))
 		try:
 			Log.Info("Newdict-----745---> "+str(Newdict))
 			AttributeList = ','.join(map(str, Newdict))
