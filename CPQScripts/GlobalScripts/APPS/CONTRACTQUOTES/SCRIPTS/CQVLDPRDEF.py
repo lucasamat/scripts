@@ -17,18 +17,18 @@ from SYDATABASE import SQL
 Sql = SQL()
 
 try:
-	quote_record_id = Param.CPQ_Columns['Quote'] 
+	quote_record_id = Param.quote_rec_id
 except:
 	quote_record_id = ""
 try:
-	LEVEL = Param.CPQ_Columns['Level']
+	LEVEL = Param.level
 except:
 	LEVEL = ""
 try:
-	TreeParam = Param.CPQ_Columns['TreeParam']   
-	userId = Param.CPQ_Columns['Userid']
-	quote_revision_record_id = Param.CPQ_Columns['quote_revision_record_id']
-	where_condition =  Param.CPQ_Columns['where_condition']
+	TreeParam = Param.treeparam
+	userId = Param.user_id
+	quote_revision_record_id = Param.quote_rev_id
+	where_condition =  Param.where_condition
 except: 
 	TreeParam = ""
 	userId = ""
