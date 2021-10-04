@@ -19,7 +19,10 @@ class ContractQuoteItem:
 		self.user_name = str(User.UserName)		
 		self.datetime_value = datetime.datetime.now()
 		self.where_condition_string = ''
-	
+		self.contract_quote_record_id = kwargs.get('contract_quote_record_id')
+		self.contract_quote_revision_record_id = kwargs.get('contract_quote_revision_record_id')
+		self.action_type = kwargs.get('action_type')
+		self.service_id = kwargs.get('service_id')	
 
 	def _quote_item_insert_process(self, where_string='', max_quote_item_count=0):
 		# Insert SAQITM - Start
@@ -89,8 +92,8 @@ class ContractQuoteItem:
 					IQ.LINE_ITEM_ID as LINE_ITEM_ID,
 					0 as OBJECT_QUANTITY,
 					1 as QUANTITY,
-					'{Currency}' as CURRENCY,
-					'{CurrencyRecordId}' as CURRENCY_RECORD_ID,
+					SAQTMT.QUOTE_CURRENCY as CURRENCY,
+					SAQTMT.QUOTE_CURRENCY_RECORD_ID as CURRENCY_RECORD_ID,
 					'ZCB1' as ITEM_TYPE,
 					'Active' as ITEM_STATUS,
 					0 as NET_VALUE,
@@ -127,11 +130,9 @@ class ContractQuoteItem:
 					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
 					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
 					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}
-			""".format(						
-				Currency=self.contract_currency,
-				CurrencyRecordId=self.contract_currency_record_id,
+			""".format(
 				QuoteRecordId=self.contract_quote_record_id,
-				RevisionRecordId=self.quote_revision_record_id,
+				RevisionRecordId=self.contract_quote_revision_record_id,
 				UserId=self.user_id,
 				UserName=self.user_name,
 				WhereString=where_string,
@@ -141,16 +142,15 @@ class ContractQuoteItem:
 		return True
 	
 	def _quote_item_lines_insert_process(self, where_string='', join_string='', quote_item_line_temp='', price_temp=''):
-		##inserting SAQICO except chamber based equipment A055S000P01-6826
-		
+		##inserting SAQICO except chamber based equipment A055S000P01-6826		
 		self._process_query("""INSERT SAQICO (BD_PRICE,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_COST_IMPACT, EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, CONTRACT_VALID_FROM, CONTRACT_VALID_TO,LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,KPU, NET_PRICE, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TARGET_PRICE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, BD_DISCOUNT, BD_DISCOUNT_RECORD_ID, BD_PRICE_MARGIN, BD_PRICE_MARGIN_RECORD_ID, CEILING_PRICE, CLEANING_COST, CM_PART_COST, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, KPI_COST,MODEL_PRICE,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK, LABOR_COST, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PM_PART_COST, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, NET_VALUE, SALES_DISCOUNT_PRICE, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, LINE, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 				SELECT DISTINCT
-					SAQICO.BD_PRICE as BD_PRICE,
+					null as BD_PRICE,
 					0 as ENTITLEMENT_PRICE_IMPACT,
 					0 AS ENTITLEMENT_COST_IMPACT,
 					SAQSCO.EQUIPMENT_DESCRIPTION,
-					'ACQUIRING' AS STATUS,
+					null AS STATUS,
 					SAQSCO.EQUIPMENT_ID,
 					SAQSCO.EQUIPMENT_RECORD_ID,                        
 					SAQSCO.FABLOCATION_ID, 
@@ -168,7 +168,7 @@ class ContractQuoteItem:
 					SAQSCO.QTEREV_ID,
 					SAQSCO.QTEREV_RECORD_ID,
 					SAQSCO.KPU,
-					SAQICO.NET_PRICE as NET_PRICE,
+					null as NET_PRICE,
 					SAQSCO.SAP_PART_NUMBER, 
 					SAQSCO.SERIAL_NO, 
 					SAQSCO.SERVICE_DESCRIPTION, 
@@ -188,30 +188,30 @@ class ContractQuoteItem:
 					SAQITM.SRVTAXCLA_RECORD_ID,
 					null as BD_DISCOUNT, 
 					null as BD_DISCOUNT_RECORD_ID, 
-					SAQICO.BD_PRICE_MARGIN as BD_MARGIN, 
-					SAQICO.BD_PRICE_MARGIN_RECORD_ID as BD_MARGIN_RECORD_ID, 
-					SAQICO.CEILING_PRICE as CEILING_PRICE, 
-					SAQICO.CLEANING_COST as CLEANING_COST,
-					SAQICO.CM_PART_COST as CM_PART_COST, 
+					null as BD_MARGIN, 
+					null as BD_MARGIN_RECORD_ID, 
+					null as CEILING_PRICE, 
+					null as CLEANING_COST,
+					null as CM_PART_COST, 
 					SAQSCO.CUSTOMER_TOOL_ID, 
 					SAQSCO.EQUIPMENTCATEGORY_ID, 
 					SAQSCO.EQUIPMENTCATEGORY_RECORD_ID, 
 					SAQSCO.EQUIPMENT_STATUS, 
-					SAQICO.KPI_COST as KPI_COST, 
+					null as KPI_COST, 
 					0 as MODEL_PRICE,
 					0 as TOTAL_COST_WOSEEDSTOCK,
 					0 as TOTAL_COST_WSEEDSTOCK,
-					SAQICO.LABOR_COST as LABOR_COST, 
+					null as LABOR_COST, 
 					SAQSCO.MNT_PLANT_ID, 
 					SAQSCO.MNT_PLANT_NAME, 
 					SAQSCO.MNT_PLANT_RECORD_ID,
-					SAQICO.PM_PART_COST as PM_PART_COST,
+					null as PM_PART_COST,
 					null as SLSDIS_PRICE_MARGIN_RECORD_ID, 
 					SAQSCO.SALESORG_ID, 
 					SAQSCO.SALESORG_NAME, 
 					SAQSCO.SALESORG_RECORD_ID, 
-					SAQICO.TARGET_PRICE_MARGIN as TARGET_MARGIN, 
-					SAQICO.TARGET_PRICE_MARGIN_RECORD_ID as TARGET_MARGIN_THRESHOLD_RECORD_ID,
+					null as TARGET_MARGIN, 
+					null as TARGET_MARGIN_THRESHOLD_RECORD_ID,
 					SAQSCO.WARRANTY_END_DATE, 
 					SAQSCO.WARRANTY_START_DATE, 
 					SAQSCO.GREENBOOK, 
@@ -248,8 +248,7 @@ class ContractQuoteItem:
 					SAQSCO (NOLOCK)					 
 					JOIN SAQSCE (NOLOCK) ON SAQSCE.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCE.SERVICE_ID = SAQSCO.SERVICE_ID AND SAQSCE.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 					AND SAQSCE.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID 
-					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID
-					LEFT JOIN {TempTable} SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID 
+					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID					
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID         
 					JOIN SAQTRV (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID 
 					JOIN SAQITM (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID 
@@ -260,8 +259,8 @@ class ContractQuoteItem:
 				WHERE 
 					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'
 				) IQ
-				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-				TempTable=quote_item_line_temp, JoinString=join_string, WhereString=where_string )
+				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
+				JoinString=join_string, WhereString=where_string )
 			)
 		if 'Z0016' in where_string:
 			self._process_query("""UPDATE SAQICO
@@ -278,11 +277,10 @@ class ContractQuoteItem:
 										) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID				
 									WHERE 
 										SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER'		
-									""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	 
+									""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id))	 
 		
 		##inserting assembly to SAQICO if a equipemnt is chamber based FTS A055S000P01-6826
-		if self.sale_type == 'TOOL RELOCATION':
-			
+		if self.sale_type == 'TOOL RELOCATION':			
 			self._process_query("""INSERT SAQICO (BD_PRICE,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_COST_IMPACT, EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,KPU, NET_PRICE, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TARGET_PRICE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, BD_DISCOUNT, BD_DISCOUNT_RECORD_ID, BD_PRICE_MARGIN, BD_PRICE_MARGIN_RECORD_ID, CEILING_PRICE, CLEANING_COST, CM_PART_COST, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, KPI_COST,MODEL_PRICE,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK, LABOR_COST, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PM_PART_COST, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, NET_VALUE, SALES_DISCOUNT_PRICE, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, LINE,ASSEMBLY_ID,ASSEMBLY_RECORD_ID, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT
@@ -404,7 +402,7 @@ class ContractQuoteItem:
 					WHERE 
 						SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString}  AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1
 					) IQ
-					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, 
+					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, 
 					TempTable=quote_item_line_temp, JoinString=join_string, WhereString= str(where_string) )
 				)
 			
@@ -424,43 +422,28 @@ class ContractQuoteItem:
 											) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID				
 										WHERE 
 											SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1		
-										""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	
+										""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id))	
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'		
 		return True
 	
 	def _quote_items_insert(self):
-		## Delete SAQICO, SAQITM  and native quote items - Start		
-		# Temp table creation and delete(if altready there) for SAQICO - Start
-		temp_table = "SAQICO_BKP_"+str(self.c4c_quote_id)
-		temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
-		SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(temp_table)+" FROM SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"''' ")
-		# Temp table creation and delete(if altready there) for SAQICO - End
-
 		#Temp table for storing price and cost impact
 		price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)
-		quote_services_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_id = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0016'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		quote_services_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_id = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0016'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_services_obj:			
 			price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 			SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(entitlement_xml,''&'','';#38''),'''','';#39''),'' < '','' &lt; ''),'' > '','' &gt; '')  as entitlement_xml from SAQSCE(nolock) where quote_record_id=''"+str(self.contract_quote_record_id)+"'' )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT INTO "+str(price_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'') ; exec sys.sp_xml_removedocument @H; '")
 		
-		for table_name in ('SAQICO', 'SAQITM'):
-			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
-					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, WhereCondition='',
-				)
-			self._process_query(delete_query)
-		for item in Quote.MainItems:
-			item.Delete()
-		## Delete SAQICO, SAQITM  and native quote items - End
 		# Non tool base quote item insert
-		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-		if services_obj:
-			item_where_string = "AND SAQSCE.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
+		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if service_obj:
+			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Insert SAQITM - Start
 			self._quote_item_insert_process(where_string=item_where_string)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
-			item_line_where_string = "AND SAQSCO.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
+			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
 			join_string = "AND SAQITM.LINE_ITEM_ID = CAST(ISNULL(SAQSCE.ENTITLEMENT_GROUP_ID,'1.1') AS DECIMAL(5,1))"
@@ -468,22 +451,22 @@ class ContractQuoteItem:
 			# Insert Quote Items Covered Object - End
 		
 		# Tool base quote item insert
-		services_obj = Sql.GetList("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-		if services_obj:
-			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-			item_where_string = "AND SAQSCE.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
+		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID,  FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if service_obj:
+			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=service_obj.SERVICE_ID))
+			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Insert SAQITM - Start
 			self._quote_item_insert_process(where_string=item_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
-			item_line_where_string = "AND SAQSCO.SERVICE_ID IN ('{}')".format("','".join([service_obj.SERVICE_ID for service_obj in services_obj]))
+			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
 			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='', quote_item_line_temp=temp_table, price_temp=price_temp)
 			# Insert Quote Items Covered Object - End
 
 		# Native Cart Items Insert - Start
-		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		for quote_item_obj in quote_items_obj:
 			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
 			if product_obj:
@@ -498,7 +481,7 @@ class ContractQuoteItem:
 		
 		Sql.RunQuery("DELETE FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")		
 		entries = str(self.contract_quote_id)
-		revision = str(self.quote_revision_record_id)
+		revision = str(self.contract_quote_revision_record_id)
 		user = self.user_name		
 		CQPARTIFLW.iflow_pricing_call(user,entries,revision)
 		
@@ -525,7 +508,7 @@ class ContractQuoteItem:
 									AND PRPRBM.EQUIPMENT_RECORD_ID = IQ.EQUIPMENT_RECORD_ID
 									AND PRPRBM.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID
 									AND PRPRBM.CONTRACT_VALID_FROM = IQ.CONTRACT_VALID_FROM								
-			""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+			""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		
 		self._process_query("""UPDATE SAQICO
 			SET
@@ -551,7 +534,7 @@ class ContractQuoteItem:
 									AND PRPRBM.TOOL_CONFIGURATION = IQ.TOOL_CONFIGURATION
 									AND PRPRBM.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID
 									AND PRPRBM.CONTRACT_VALID_FROM = IQ.CONTRACT_VALID_FROM					
-			""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+			""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		
 		Sql.RunQuery("""UPDATE SAQITM
 							SET 									
@@ -577,7 +560,7 @@ class ContractQuoteItem:
 										WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'
 										GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId)IQ
 							ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+							WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		
 		#Item Level Assembly Insert - Start
 		Sql.RunQuery("""INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
@@ -587,7 +570,7 @@ class ContractQuoteItem:
 									SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQSCA.GREENBOOK,SAQSCA.GREENBOOK_RECORD_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_DESCRIPTION,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID 
 								FROM SAQTSE (NOLOCK) 
 								JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}') SAQSCA ON SAQTSE.			QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID 		AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '	{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}') IQ 
-								JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID)IQ""".format(UserId=User.Id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+								JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID)IQ""".format(UserId=User.Id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		#Item Level Assembly Insert - End
 		
 		Sql.RunQuery("""INSERT SAQIAE (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,ENTITLEMENT_XML,QUOTE_ITEM_ASSEMBLY_ENTITLEMENT_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
@@ -597,7 +580,7 @@ class ContractQuoteItem:
 						DISTINCT SAQSCA.EQUIPMENT_ID,SAQSCA.EQUIPMENT_RECORD_ID,SAQTSE.QUOTE_ID,SAQTSE.QUOTE_RECORD_ID,SAQTSE.QTEREV_ID,SAQTSE.QTEREV_RECORD_ID,SAQTSE.SERVICE_DESCRIPTION,SAQTSE.SERVICE_ID,SAQTSE.SERVICE_RECORD_ID,SAQTSE.CPS_CONFIGURATION_ID,SAQTSE.CPS_MATCH_ID,SAQSCA.FABLOCATION_ID,SAQSCA.FABLOCATION_NAME,SAQSCA.FABLOCATION_RECORD_ID,SAQSCA.ASSEMBLY_ID,SAQSCA.ASSEMBLY_RECORD_ID,SAQTSE.SALESORG_ID,SAQTSE.SALESORG_NAME,SAQTSE.SALESORG_RECORD_ID 
 					FROM SAQTSE (NOLOCK) 
 					JOIN (SELECT * FROM SAQSCA (NOLOCK) WHERE SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCA.QTEREV_RECORD_ID = '{RevisionRecordId}' ) SAQSCA ON SAQTSE.QUOTE_RECORD_ID = SAQSCA.QUOTE_RECORD_ID AND SAQTSE.SERVICE_RECORD_ID = SAQSCA.SERVICE_RECORD_ID AND SAQTSE.QTEREV_RECORD_ID = SAQSCA.QTEREV_RECORD_ID WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}') IQ 
-					JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(UserId=User.Id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+					JOIN SAQSCE (NOLOCK) M ON M.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND M.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND M.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND M.EQUIPMENT_ID = IQ.EQUIPMENT_ID )IQ""".format(UserId=User.Id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		
 		get_curr = str(Quote.GetCustomField('Currency').Content)
 		#assigning value to quote summary starts
@@ -621,7 +604,7 @@ class ContractQuoteItem:
 		#getdecimalplacecurr =decimal_val = ''
 		items_data = {}
 		get_billing_matrix_year =[]
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
 		if items_obj:
 			for item_obj in items_obj:
 				#getdecimalplacecurr = item_obj.CURRENCY
@@ -688,13 +671,13 @@ class ContractQuoteItem:
 		price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		
 		# Is Changed Information Notification - Start
-		self._process_query("""UPDATE SAQSCE SET IS_CHANGED = 0 FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		self._process_query("""UPDATE SAQSCE SET IS_CHANGED = 0 FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		# Is Changed Information Notification - End
 		return True
 
 	def _insert_quote_item_fab_location(self, **kwargs):
 		SAQIEN_query = """INSERT SAQIEN (QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERIAL_NO,ENTITLEMENT_XML,CPS_CONFIGURATION_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,EQUIPMENT_LINE_ID,LINE_ITEM_ID,CPS_MATCH_ID,QTEITMCOB_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QTEITM_RECORD_ID) (select DISTINCT CONVERT(VARCHAR(4000), NEWID()) AS  QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, SAQSCE.QUOTE_ID,SAQSCE.QUOTE_RECORD_ID,SAQSCE.QTEREV_ID,SAQSCE.QTEREV_RECORD_ID,SAQSCE.QTESRVENT_RECORD_ID,SAQSCE.SERVICE_RECORD_ID,SAQSCE.SERVICE_ID,SAQSCE.SERVICE_DESCRIPTION,SAQICO.SERIAL_NO,SAQSCE.ENTITLEMENT_XML,SAQSCE.CPS_CONFIGURATION_ID,SAQSCE.FABLOCATION_ID,SAQSCE.FABLOCATION_NAME,SAQSCE.FABLOCATION_RECORD_ID,SAQICO.EQUIPMENT_LINE_ID,SAQICO.LINE_ITEM_ID,SAQSCE.CPS_MATCH_ID,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,SAQICO.EQUIPMENT_ID,SAQICO.EQUIPMENT_RECORD_ID,SAQSCE.SALESORG_ID,SAQSCE.SALESORG_NAME,SAQSCE.SALESORG_RECORD_ID,SAQITM.QUOTE_ITEM_RECORD_ID FROM SAQSCE (NOLOCK) JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.FABLOCATION_ID = SAQSCE.FABLOCATION_ID AND SAQICO.GREENBOOK = SAQSCE.GREENBOOK AND SAQICO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID JOIN SAQITM on SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID  where SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' )""".format(
-		QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id)
+		QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id)
 		Sql.RunQuery(SAQIEN_query)
 		self._process_query(
 			"""INSERT SAQIFL(
@@ -752,7 +735,7 @@ class ContractQuoteItem:
 				AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
 				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 				) FB""".format(
-								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
+								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
 								UserId=self.user_id,
 								UserName=self.user_name,
 							)
@@ -820,7 +803,7 @@ class ContractQuoteItem:
 				AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
 				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND NOT EXISTS (SELECT GREENBOOK FROM SAQIGB WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')
 				) FB""".format(
-								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
+								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
 								UserId=self.user_id,
 								UserName=self.user_name,
 							)
@@ -836,13 +819,13 @@ class ContractQuoteItem:
 				JOIN SAQIGB (NOLOCK) ON SAQIGB.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID and SAQIGB.GREENBOOK_RECORD_ID = SAQICO.GREENBOOK_RECORD_ID and SAQIGB.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID and SAQIGB.FABLOCATION_RECORD_ID = SAQICO.FABLOCATION_RECORD_ID and SAQIGB.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID 
 				WHERE SAQICO.QUOTE_RECORD_ID ='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY SAQICO.FABLOCATION_RECORD_ID,SAQICO.SERVICE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQIGB.CpqTableEntryId
 			)AS IQ
-			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))	
+			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))	
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs): ##User story 4432 starts..
 		##Deleteing the tables before insert the data starts..
 		for table_name in ('SAQIFP', 'SAQITM'):
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
-					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, WhereCondition='',
+					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, WhereCondition='',
 				)
 			self._process_query(delete_query)
 		##Deleteing the tables before insert the data ends..
@@ -959,7 +942,7 @@ class ContractQuoteItem:
 				Currency=self.contract_currency,
 				CurrencyRecordId=self.contract_currency_record_id,
 				QuoteRecordId=self.contract_quote_record_id,
-				RevisionRecordId=self.quote_revision_record_id,
+				RevisionRecordId=self.contract_quote_revision_record_id,
 				UserId=self.user_id,
 				UserName=self.user_name,
 				ExistingCount=0
@@ -1048,7 +1031,7 @@ class ContractQuoteItem:
 						currency=self.contract_currency, 
 						currency_rec_id=self.contract_currency_record_id, 
 						QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
+						RevisionRecordId=self.contract_quote_revision_record_id,
 						status='ACQUIRING...',
 						UserId=self.user_id,
 						UserName=self.user_name
@@ -1056,7 +1039,7 @@ class ContractQuoteItem:
 				)
 		##quote item spart parts insert ends..
 		# Native Cart Items Insert for spare quotes- Start
-		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		for quote_item_obj in quote_items_obj:
 			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
 			if product_obj:
@@ -1089,7 +1072,7 @@ class ContractQuoteItem:
 		total_model_price = 0.00
 		items_data = {}
 		get_billing_matrix_year =[]
-		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
 		if items_obj:
 			for item_obj in items_obj:
 				#getdecimalplacecurr = item_obj.CURRENCY
