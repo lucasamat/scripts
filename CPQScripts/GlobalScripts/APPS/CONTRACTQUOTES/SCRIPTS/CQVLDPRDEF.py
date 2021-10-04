@@ -210,7 +210,29 @@ def tool_uptimetimprovementdriver_update():
 				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
 			querystring = querystring + entxmldict[key]
 			Trace.Write(querystring)
-			Update_xml_uptime = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))
+			Update_xml_uptime = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))	
+	
+def updating_xml(entxmldict, input_xml, ent_id, ent_value):
+	where =""
+	if ent_value:
+		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, TreeParam, ent_value) )
+		entitlement_string = entxmldict[ent_id]
+		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(ent_value)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
+
+		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_value_code.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
+		where = " AND PRENVL.ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_value)
+
+	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, TreeParam, where))
+	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
+		entitlement_string = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+		entitlement_string = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string)
+
+		entitlement_string = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string)
+		updateentXML = re.sub(r'<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
+	Log.Info("EID->{}, {} ".format(str(ent_id),updateentXML)
+	return updateentXML
+
+
 
 try:
 	if LEVEL == 'SERVICE_LEVEL':
