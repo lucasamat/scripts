@@ -887,6 +887,9 @@ class SyncQuoteAndCustomTables:
 									"OPPORTUNITY_NAME": opportunity_obj.OPPORTUNITY_NAME,
 									"OPPORTUNITY_RECORD_ID": opportunity_obj.OPPORTUNITY_RECORD_ID,
 									"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+									"POES":custom_fields_detail.get("POES")
+									if custom_fields_detail.get("POES")
+									else 'FALSE',#A055S000P01-9777 Code starts..ends...
 									"CPQTABLEENTRYDATEADDED": datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),
 									"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 									"ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
