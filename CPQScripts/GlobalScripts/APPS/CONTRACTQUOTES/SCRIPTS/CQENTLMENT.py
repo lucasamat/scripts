@@ -597,7 +597,8 @@ class Entitlements:
 			Trace.Write("durga---s"+str(serviceId)+'--tableName---'+str(tableName))
 			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':product_obj.PRD_ID,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
-			Trace.Write("attributes_service_sublist--532------"+str(attributes_service_sublist))
+			attributesallowedlst = get_attr_leve_based_list
+			Trace.Write("get_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
 			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 				try:
