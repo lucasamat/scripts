@@ -305,7 +305,7 @@ def Related_Sub_Banner(
 			elif TabName == "App" and str(TreeParam) == "Section Fields" and str(ObjName) == "SYSEFL":
 				PrimaryLable = "Section Fields"
 				PrimaryValue = "All"
-			elif TabName == "Quote" and str(TreeParentParam) == "Quote Information" and str(TreeParam) == "Approvals" :                
+			elif TabName == "Quotes" and str(TreeParam) == "Approvals" :                
 				PrimaryLable = "Approvals"
 				PrimaryValue = "All"                                    
 			elif TabName == "Quotes"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "SAQTSV" :                
@@ -756,7 +756,7 @@ def Related_Sub_Banner(
 				# 	SecondLable = "Greenbook"
 				# 	SecondValue = str(TreeParam)
 					Trace.Write("SLabel"+SecondLable)
-			elif TreeParam == "Approvals" and TreeParentParam == "Quote Information":
+			elif TreeParam == "Approvals" and TabName == "Quotes":
 				
 				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
@@ -1645,7 +1645,7 @@ def Related_Sub_Banner(
 		FifthValue = str(EquipmentId)
 		SixthLable = "Serial Number"
 		SixthValue = str(SerialNumber)
-	elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quote':
+	elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quotes':
 		getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
 		PrimaryLable = 'Approval Chain ID'
 		PrimaryValue = str(TreeParentParam)
