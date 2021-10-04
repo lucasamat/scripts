@@ -19,7 +19,7 @@ from SYDATABASE import SQL
 #import time
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
-import CQTVLDRIFW
+import CQVLDRIFLW
 
 
 try:
@@ -4495,11 +4495,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				covered_end_time = time.time()
 				Log.Info("ADD_COVERED_OBJ end==> "+str(covered_end_time - covered_start_time) +" QUOTE ID----"+str(self.contract_quote_id))
 				d2 = Sql.GetFirst("""SELECT QTEREV_ID,GREENBOOK FROM SAQSGB WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK='CMP' """.format(str(self.contract_quote_record_id),self.quote_revision_record_id))
-				try:
-					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
-					CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
-				except:
-					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")			
+				# try:
+				# 	Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+				# 	CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"PREDEFINED DRIVER",self.tree_param, self.tree_parent_level_0, self.tree_parent_level_1, self.tree_parent_level_2,self.user_id,self.user_name,self.quote_revision_record_id)
+				# except:
+				# 	Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW")			
 		return True
 	
 	def _update(self):
