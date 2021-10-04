@@ -2024,7 +2024,7 @@ class Entitlements:
 			Log.Info("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
-			responsive_where = where.replace('SRC.','').replace("'","$$")
+			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			Trace.Write("where---"+str(where))
@@ -2043,10 +2043,12 @@ class Entitlements:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
 			#A055S000P01-9645 VD code commented
-			# try:			
-			# 	CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,User.Id,User.UserName,self.revision_recordid)
-			# except Exception as e:
-			# 	Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
+			if objName == 'SAQSCE':
+				try:			
+					where_condition = responsive_where
+					predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
+				except Exception as e:
+					Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
 		return True
 
 	def popup(self):
