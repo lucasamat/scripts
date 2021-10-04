@@ -3318,6 +3318,7 @@ except:
 Trace.Write("ACTION--->"+str(ACTION))
 """Object Initialization by Factory Method."""
 try:
+	Trace.Write("QuoteNumber_check "+str(QuoteNumber))
 	objDef = eval(violationruleInsert.Factory(ACTION))(QuoteNumber=QuoteNumber)
 except Exception, e:
 	if ACTION in ["APPROVEBTN", "REJECTBTN"]:
