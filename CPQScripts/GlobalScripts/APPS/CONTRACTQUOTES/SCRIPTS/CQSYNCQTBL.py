@@ -1399,6 +1399,14 @@ class SyncQuoteAndCustomTables:
 								
 								self.CreateEntitlements(quote_record_id)
 								entitle_end_time = time.time()
+								#calling pre-logic valuedriver script
+								try:
+									Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+									where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
+									CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
+								except:
+									Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW") 
+								
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
 								#Log.Info(""""EQUIPMENTS INSERT""")

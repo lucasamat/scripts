@@ -14,6 +14,7 @@ import re
 from SYDATABASE import SQL
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
+import CQTVLDRIFW
 Sql = SQL()
 userId = str(User.Id)
 userName = str(User.UserName)
@@ -128,6 +129,13 @@ def CoveredObjEntitlement():
 	##A055S000P01-8873 ends
 	
 	level = "Offering Entitlement "
+	#calling pre-logic valuedriver script
+	try:
+		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
+		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
+		CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"EQUIPMENT_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
+	except:
+		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
 	sendEmail(level)
 
 
