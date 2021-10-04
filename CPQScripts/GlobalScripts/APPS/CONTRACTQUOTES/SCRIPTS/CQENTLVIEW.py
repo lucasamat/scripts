@@ -1205,7 +1205,7 @@ class EntitlementView():
 									
 									
 									elif DType == "Free Input, no Matching" :
-										Trace.Write('val.ENTITLEMENT_NAME--durga----'+str(val.ENTITLEMENT_NAME))
+										Trace.Write('val.ENTITLEMENT_NAME------'+str(val.ENTITLEMENT_NAME))
 										if val.ENTITLEMENT_ID == str(attrSysId):
 											sec_str1 = ""
 											sec_str_imt = ""
