@@ -74,7 +74,7 @@ def equipment_predefined():
 
 		for roll_obj in ['SAQSCE','SAQSAE']:
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID) )
-   
+
 def greenbook_predefined():
 	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
 	
@@ -179,7 +179,38 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 def tool_uptimetimprovementdriver_update():
 	Trace.Write("11"+str(TreeParam))
 	Trace.Write("22"+str(where_condition))
-
+	getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM SAQSCE '{where_condition}' """.format(where_condition =where_condition))
+	entxmldict = {}
+	querystring =''
+	uptime=''
+	pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+	pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+	updateentXML = getxml_query.ENTITLEMENT_XML
+	for m in re.finditer(pattern_tag, updateentXML):
+		sub_string = m.group(1)
+		x=re.findall(pattern_name,sub_string)
+		entxmldict[x[0]]=sub_string
+	if 'AGS_Z0091_KPI_SDUTBP' and 'AGS_Z0091_KPI_SDUTTP' in entxmldict.keys():
+		base= entxmldict['AGS_Z0091_KPI_SDUTBP']
+		base_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',base)
+		base_price_value =str(base_price.group(1))
+		#Trace.Write("aaaaaa"+str(base_price.group(1)))
+		target= entxmldict['AGS_Z0091_KPI_SDUTTP']
+		target_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',target)
+		target_price_value=str(target_price.group(1))
+		#Trace.Write("bbbb"+str(target_price.group(1)))
+		uptime=float(target_price_value)-float(base_price_value)
+		Trace.Write("a"+str(uptime))
+		if uptime >= 10:
+			uptime = 10
+		update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' ".format(uptime=uptime))
+		for key in entxmldict.keys():
+			if 'AGS_Z0091_VAL_UPIMPV' == key:
+				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
+				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
+			querystring = querystring + entxmldict[key]
+			Trace.Write(querystring)
+			Update_xml_uptime = "UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))
 
 try:
 	if LEVEL == 'SERVICE_LEVEL':
