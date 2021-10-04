@@ -953,7 +953,7 @@ try:
 		msg = MailMessage(fromEmail, toEmail)
 
 		# Set message subject and body
-		msg.Subject = "AMAT INTEGRATION CRM TO CPQ EXCEPTIONS - CPQ DEV"
+		msg.Subject = "AMAT INTEGRATION CRM TO CPQ EXCEPTIONS - CPQ(X-Tenant)"
 		msg.IsBodyHtml = True
 		msg.Body = Error_Info
 

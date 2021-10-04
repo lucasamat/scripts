@@ -126,7 +126,7 @@ try:
             msg = MailMessage(fromEmail, toEmail)
 
             # Set message subject and body
-            msg.Subject = "SSCM to CPQ - Pricing Status Notification"
+            msg.Subject = "SSCM to CPQ - Pricing Status Notification(X-Tenant)"
             msg.IsBodyHtml = True
             msg.Body = Error_Info
 

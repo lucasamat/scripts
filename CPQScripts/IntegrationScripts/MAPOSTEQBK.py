@@ -612,7 +612,7 @@ def EquipementBulk(Eq_type):
 			msg = MailMessage(fromEmail, toEmail)
 
 			# Set message subject and body
-			msg.Subject = "EQUIPMENT EXCEPTIONS - AMAT CPQ DEV"
+			msg.Subject = "EQUIPMENT EXCEPTIONS - AMAT CPQ(X-Tenant)"
 			msg.IsBodyHtml = True
 			msg.Body = Error_Info
 

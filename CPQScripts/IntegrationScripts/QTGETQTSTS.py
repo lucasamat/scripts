@@ -105,7 +105,7 @@ try:
 					msg = MailMessage(fromEmail, toEmail)
 
 					# Set message subject and body
-					msg.Subject = "Quote Error Status - Notification"
+					msg.Subject = "Quote Error Status - Notification(X-Tenant)"
 					msg.IsBodyHtml = True
 					msg.Body = Error_Info
 

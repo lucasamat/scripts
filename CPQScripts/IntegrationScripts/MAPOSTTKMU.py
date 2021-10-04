@@ -262,7 +262,7 @@ try :
 	msg = MailMessage(fromEmail, toEmail)
 
 	# Set message subject and body
-	msg.Subject = "SC KIT DATA - Notification"
+	msg.Subject = "SC KIT DATA - Notification(X-Tenant)"
 	msg.IsBodyHtml = True
 	msg.Body = Error_Info
 
@@ -311,7 +311,7 @@ except:
 	msg = MailMessage(fromEmail, toEmail)
 
 	# Set message subject and body
-	msg.Subject = "KIT BOM - Error Notification"
+	msg.Subject = "KIT BOM - Error Notification(X-Tenant)"
 	msg.IsBodyHtml = True
 	msg.Body = Error_Info
 

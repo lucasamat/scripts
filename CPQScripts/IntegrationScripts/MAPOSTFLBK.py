@@ -384,7 +384,7 @@ try:
 		msg = MailMessage(fromEmail, toEmail)
 
 		# Set message subject and body
-		msg.Subject = "FAB LOCATION EXCEPTIONS - AMAT CPQ DEV"
+		msg.Subject = "FAB LOCATION EXCEPTIONS - AMAT CPQ(X-Tenant)"
 		msg.IsBodyHtml = True
 		msg.Body = Error_Info
 
