@@ -37,7 +37,7 @@ def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id
         +str(where_condition)
         +"</where_condition></CPQ_Columns></soapenv:Body></soapenv:Envelope>"
     )
-    Log.Info("Predefined------" + str(requestdata))
+    Log.Info("Predefined------" + str(requestdata)) 
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='VALUEDRIVER_PREDEFINED'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
     if LOGIN_CREDENTIALS is not None:
