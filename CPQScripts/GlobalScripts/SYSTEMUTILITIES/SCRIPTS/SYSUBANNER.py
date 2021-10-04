@@ -2733,6 +2733,9 @@ def Related_Sub_Banner(
 		elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
 			sec_rel_sub_bnr += ""
 		else:
+			Trace.Write("TreeParam-->"+str(TreeParam))
+			Trace.Write("TabName-->"+str(TabName))
+			Trace.Write("subTabName-->"+str(subTabName))
 			Trace.Write("Involved Parties button")
 			if str(multi_buttons) != "":
 				for btn in multi_buttons:
