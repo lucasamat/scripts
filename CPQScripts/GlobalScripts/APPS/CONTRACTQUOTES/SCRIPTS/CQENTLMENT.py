@@ -1203,8 +1203,8 @@ class Entitlements:
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
-					Trace.Write("updateentXML-970------"+str(updateentXML))
-				Trace.Write('configuration_status----'+str(configuration_status))
+					#Trace.Write("updateentXML-970------"+str(updateentXML))
+				#Trace.Write('configuration_status----'+str(configuration_status))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
