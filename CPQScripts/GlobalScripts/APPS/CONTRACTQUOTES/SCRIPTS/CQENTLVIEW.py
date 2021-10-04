@@ -486,8 +486,8 @@ class EntitlementView():
 							#Trace.Write('attr_value------1'+str(attr_value)+'---'+str(attrSysId))
 							insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>							
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
