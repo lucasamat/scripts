@@ -16,7 +16,7 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import re
 from datetime import timedelta , date
-
+import CQTVLDRIFW
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 #Log.Info("==========================>00000000")
@@ -123,6 +123,7 @@ class SyncQuoteAndCustomTables:
 		return date_str
 
 	def CreateEntitlements(self,quote_record_id):
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
 		#Log.Info("quote_record_id---123------"+str(quote_record_id))
 		tableInfo = SqlHelper.GetTable("SAQTSE")
@@ -350,7 +351,17 @@ class SyncQuoteAndCustomTables:
 				except:
 					Trace.Write('except scenario----final--')
 					cpsmatc_incr = ''
+				#calling pre-logic valuedriver script
+				try:
+					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+					where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(quote_record_id, quote_revision_record_id, OfferingRow_detail.SERVICE_ID)
+					# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
+					
+					predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": quote_record_id ,"level":"SERVICE_LEVEL", "treeparam": OfferingRow_detail.SERVICE_ID,"user_id": User.Id, "quote_rev_id":quote_revision_record_id})
 
+				except:
+					Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW") 
+				
 				#inseryservice_ent = """INSERT SAQTSE () VALUES ()"""
 				#Log.Info('inseryservice_ent-----columns-----values----'+str(insert_qtqtse_query))
 
@@ -1399,13 +1410,6 @@ class SyncQuoteAndCustomTables:
 								
 								self.CreateEntitlements(quote_record_id)
 								entitle_end_time = time.time()
-								#calling pre-logic valuedriver script
-								try:
-									Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
-									where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(self.contract_quote_record_id, self.quote_revision_record_id, OfferingRow_detail.get("SERVICE_ID"))
-									CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
-								except:
-									Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW") 
 								
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
 							if equipment_data:
