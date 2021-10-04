@@ -21,7 +21,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 def valuedriver_predefined(quote,level,TreeParam,Userid,quote_revision_record_id, where_condition):
 
-    #Trace.Write("1111111111111111     " + str(username))
+    #Trace.Write("1111111111111111  " + str(username))
     requestdata = (
         '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><Quote>'
         + str(quote)
