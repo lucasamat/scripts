@@ -2485,7 +2485,7 @@ def Related_Sub_Banner(
 			Trace.Write(sec_rel_sub_bnr)
 		
 
-	''' elif TreeParam == 'Approvals' and TabName == "Quote":
+	elif TreeParam == 'Approvals' and TabName == "Quotes":
 		quote_status = Sql.GetFirst("SELECT QUOTE_STATUS,QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		#Trace.Write("quote status------->"+str(quote_status.QUOTE_STATUS))
 		Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
@@ -2511,7 +2511,7 @@ def Related_Sub_Banner(
 			Trace.Write("submit for approval")
 			sec_rel_sub_bnr += (
 					'<button class="btnconfig cust_def_btn submitbutton" data-target="#submit_for_approval" data-toggle="modal" id="submit_for_approval_btn_primary" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
-					) '''
+					)
 		# else:
 		# 	Trace.Write("elseeee")
 	Trace.Write("tabNameeee"+str(TabName))
