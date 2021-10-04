@@ -367,6 +367,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					edit_lock_icon = "fa fa-pencil"
 				else:
 					edit_lock_icon = "fa fa-lock"  
+			else:
+				edit_lock_icon = "fa fa-lock"
 			##edit_lock_icon in quote based on permission ends
 			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
 			sec_str += "</div>"
