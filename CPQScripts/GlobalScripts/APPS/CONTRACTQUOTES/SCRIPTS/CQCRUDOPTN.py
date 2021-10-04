@@ -999,6 +999,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 					<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 					</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc = get_toolptip.replace("'","''") if "'" in get_toolptip else get_toolptip)
+			insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
 			
 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 			tbrow["QUOTE_ID"]=OfferingRow_detail.get("QUOTE_ID")
@@ -1020,19 +1021,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["QTEREV_ID"] = self.quote_revision_id
 			tbrow["CONFIGURATION_STATUS"] = configuration_status
 			#tbrow["IS_DEFAULT"] = '1'
-			Product.SetGlobal('insertservice',insertservice)
-			try:
-				columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-				Sql.RunQuery(insert_qtqtse_query)
-			except:
-				columns = ', '.join('{}'.format(x) for x in tbrow.keys() if x != 'ENTITLEMENT_XML')
-				values = ', '.join("'"+'{}'.format(y)+"'" for x,y in tbrow.items() if x != 'ENTITLEMENT_XML' )
+
+			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
+			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
+			Sql.RunQuery(insert_qtqtse_query)
 			
-				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-				Sql.RunQuery(insert_qtqtse_query)
-				Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(insertservice,OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id) )
 			if AttributeID_Pass:
 				try:
 					Trace.Write('312---NewValue- -'+str(NewValue))
