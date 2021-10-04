@@ -51,7 +51,6 @@ def devicetype_predefinedlogic(entitlement_string, equipment_record_id):
 
 def equipment_predefined():
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
-	ent_value =""
 	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSCE {}""".format(str(where_condition) ))
 	for rec in getall_recid:
 		entxmldict = {}
@@ -94,6 +93,35 @@ def greenbook_predefined():
 				ent_value = rec.GREENBOOK
 				updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
 		
+		#Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
+
+		##rolldown
+		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
+			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
+			
+
+
+def fab_predefined():
+	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
+	
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(TreeParam) )
+	for rec in getxml_query:
+		entxmldict = {}
+		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		updateentXML = rec.ENTITLEMENT_XML
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			entxmldict[x[0]]=sub_string
+		for val in get_valuedriver_ids:
+			if 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
+				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"'")
+				account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
+				tools_count_query = SqlHelper.GetList("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(Qt_rec_id)+"' GROUP BY FABLOCATION_NAME")
+				#ent_value = rec.GREENBOOK
+				updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+		
 		Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
 
 		##rolldown
@@ -101,9 +129,6 @@ def greenbook_predefined():
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
 			
 
-
-def fab_predefined():
-	pass
 ##service level
 def service_level_predefined(): 
 	getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM SAQTSE {} """.format(str(where_condition)))
@@ -159,7 +184,8 @@ else:
 	obj_list = ["SAQSFE,SAQSGE,SAQSCE"]
 	for obj in obj_list:
 		if obj == "SAQSFE":
-			fab_predefined()
+			#fab_predefined()
+			pass
 		elif obj == "SAQSGE":
 			greenbook_predefined()
 		elif obj == "SAQSCE":
