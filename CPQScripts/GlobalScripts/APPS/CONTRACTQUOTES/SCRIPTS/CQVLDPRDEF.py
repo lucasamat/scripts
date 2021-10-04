@@ -228,8 +228,7 @@ try:
 		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
 		for obj in obj_list:
 			if obj == "SAQSFE":
-				#fab_predefined()
-				pass
+				fab_predefined()
 			elif obj == "SAQSGE":
 				greenbook_predefined()
 			elif obj == "SAQSCE":
