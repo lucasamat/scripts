@@ -1591,100 +1591,100 @@ class Entitlements:
 							Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
 							Trace.Write("whereReq--894---"+str(whereReq))
 							Product.SetGlobal('Fullresponse',str(Fullresponse))
-						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-						Sql.RunQuery(Updatecps)
-						characteristics_attr_values = []
-						for rootattribute, rootvalue in Fullresponse.items():
-							if rootattribute == "rootItem":
-								for Productattribute, Productvalue in rootvalue.items():
-									if Productattribute == "variantConditions":
-										characteristics_attr_values = Productvalue
-									# if Productattribute == "characteristics":
-									# 	for prdvalue in Productvalue:											
-									# 		for attribute in prdvalue["values"]:
-									# 			if prdvalue["id"] in characteristics_attr_values:
-									# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
-									# 			else:
-									# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
-						Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-						
-						if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
-							try:
-								sectional_current_dict = Param.sectional_current_dict
-								sectional_current_dict =eval(sectional_current_dict)
-								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
-								#b = eval(a)
-								non_integer_list =[]
-								#remove_indices = []
-								for key,value in sectional_current_dict.items():
-									if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
-										val = str(value.split('||')[0])
-										Trace.Write('val---'+str(val))
-										if float(val).is_integer() == False:
-											non_integer_list.append(key)
-								##
-								Trace.Write('non_integer_list--'+str(non_integer_list))
-								remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
-								Trace.Write('remove_indices--'+str(remove_indices))
-								# response_charactr = enumerate(characteristics_attr_values)
-								# for key,value in response_charactr:
-								# 	if value['key'] in non_integer_list:
-								# 		remove_indices.append(key)
-								# 		Trace.Write('bb---'+str(index)+'--'+str(value))
-										#characteristics_attr_values.pop(index)
-								characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
-								Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
+							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+							Sql.RunQuery(Updatecps)
+							characteristics_attr_values = []
+							for rootattribute, rootvalue in Fullresponse.items():
+								if rootattribute == "rootItem":
+									for Productattribute, Productvalue in rootvalue.items():
+										if Productattribute == "variantConditions":
+											characteristics_attr_values = Productvalue
+										# if Productattribute == "characteristics":
+										# 	for prdvalue in Productvalue:											
+										# 		for attribute in prdvalue["values"]:
+										# 			if prdvalue["id"] in characteristics_attr_values:
+										# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
+										# 			else:
+										# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
+							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
+							
+							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
+								try:
+									sectional_current_dict = Param.sectional_current_dict
+									sectional_current_dict =eval(sectional_current_dict)
+									Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
+									#b = eval(a)
+									non_integer_list =[]
+									#remove_indices = []
+									for key,value in sectional_current_dict.items():
+										if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
+											val = str(value.split('||')[0])
+											Trace.Write('val---'+str(val))
+											if float(val).is_integer() == False:
+												non_integer_list.append(key)
+									##
+									Trace.Write('non_integer_list--'+str(non_integer_list))
+									remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
+									Trace.Write('remove_indices--'+str(remove_indices))
+									# response_charactr = enumerate(characteristics_attr_values)
+									# for key,value in response_charactr:
+									# 	if value['key'] in non_integer_list:
+									# 		remove_indices.append(key)
+									# 		Trace.Write('bb---'+str(index)+'--'+str(value))
+											#characteristics_attr_values.pop(index)
+									characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
+									Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
-							except Exception,e:
-								Trace.Write('error--pop--'+str(e))
-								#pass
+								except Exception,e:
+									Trace.Write('error--pop--'+str(e))
+									#pass
 
 
-							Trace.Write("serviceId---"+str(serviceId))
-							attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
-							#Product.SetGlobal('attr_level_pricing',str(attr_prices))
-							Trace.Write("attr_prices---908---"+str(attr_prices))
-							if attr_prices:
-								for attr, attr_value in attr_prices.items():
-									data_dict = {'key':attr}
-									Trace.Write("attr_prices--912=-----"+str(attr)+str(data_dict))
-									data_dict.update(attr_value)
-									attr_level_pricing.append(data_dict)
-									#Trace.Write("attr_prices----"+str(attr))
-									# data_dict = {'key':AttributeID}
-									# data_dict.update(attr_value)
-									# attr_level_pricing.append(data_dict)
-						# if attr_level_pricing:
-						# 	getcostbaborimpact = attr_level_pricing[0].get('total_price')
-						# 	getpriceimpact = attr_level_pricing[0].get('price')		
-						# 	factor_value = 	attr_level_pricing[0].get('factor')	
-				# 	updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-				# 	<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-				# 	<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-				# 	<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-				# 	<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-				# 	<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-				# 	<IS_DEFAULT>{is_default}</IS_DEFAULT>
-				# 	<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-				# 	<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-				# 	<PRICE_METHOD>{pm}</PRICE_METHOD>
-				# 	<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-				# 	</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
-				# Trace.Write("---------------------------222222222222222"+str(updateentXML))
-				# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
-				
+								Trace.Write("serviceId---"+str(serviceId))
+								attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
+								#Product.SetGlobal('attr_level_pricing',str(attr_prices))
+								Trace.Write("attr_prices---908---"+str(attr_prices))
+								if attr_prices:
+									for attr, attr_value in attr_prices.items():
+										data_dict = {'key':attr}
+										Trace.Write("attr_prices--912=-----"+str(attr)+str(data_dict))
+										data_dict.update(attr_value)
+										attr_level_pricing.append(data_dict)
+										#Trace.Write("attr_prices----"+str(attr))
+										# data_dict = {'key':AttributeID}
+										# data_dict.update(attr_value)
+										# attr_level_pricing.append(data_dict)
+							# if attr_level_pricing:
+							# 	getcostbaborimpact = attr_level_pricing[0].get('total_price')
+							# 	getpriceimpact = attr_level_pricing[0].get('price')		
+							# 	factor_value = 	attr_level_pricing[0].get('factor')	
+					# 	updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+					# 	<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+					# 	<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					# 	<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+					# 	<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+					# 	<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+					# 	<IS_DEFAULT>{is_default}</IS_DEFAULT>
+					# 	<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+					# 	<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+					# 	<PRICE_METHOD>{pm}</PRICE_METHOD>
+					# 	<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+					# 	</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
+					# Trace.Write("---------------------------222222222222222"+str(updateentXML))
+					# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
+					
 
-				#Sql.RunQuery(UpdateEntitlement)	
-				'''if getmaualipval:
-					AttributeID = inputId
-					NewValue = getmaualipval
-				Trace.Write('335-------NewValue------------456----------'+str(NewValue))
-				Trace.Write('335-------NewValue------------456----------'+str(NewValue))						
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}',IS_DEFAULT = '0' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-				tableName,NewValue,AttributeID, whereReq
-				)
-				Sql.RunQuery(UpdateEntitlement)'''
-				# to insert  input column value end
+					#Sql.RunQuery(UpdateEntitlement)	
+					'''if getmaualipval:
+						AttributeID = inputId
+						NewValue = getmaualipval
+					Trace.Write('335-------NewValue------------456----------'+str(NewValue))
+					Trace.Write('335-------NewValue------------456----------'+str(NewValue))						
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}',IS_DEFAULT = '0' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
+					tableName,NewValue,AttributeID, whereReq
+					)
+					Sql.RunQuery(UpdateEntitlement)'''
+					# to insert  input column value end
 			
 		factcurreny = ""
 		dataent = ""
