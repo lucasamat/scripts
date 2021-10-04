@@ -1026,11 +1026,12 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 			except:
-				columns = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.keys())
-				values = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.values())
+				columns = ', '.join("'"+'{}'.format(x)+"'" for x in tbrow.keys() if x != 'ENTITLEMENT_XML')
+				values = ', '.join("'"+'{}'.format(y)+"'" for x,y in tbrow.items() if x != 'ENTITLEMENT_XML' )
 			
-				insert_qtqtse_query = "INSERT INTO SAQTSE ( {} ) VALUES ( {} );".format(columns, values)
+				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
+				Sql.RunQuery("UPDATE SAQTSE SET ENTITLEMENT_XML = '{}' WHERE QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(insertservice,OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id) )
 			if AttributeID_Pass:
 				try:
 					Trace.Write('312---NewValue- -'+str(NewValue))
