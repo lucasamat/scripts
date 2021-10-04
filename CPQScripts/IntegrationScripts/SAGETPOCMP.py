@@ -38,18 +38,18 @@ try:
                 if str(tbl).upper() == "DISTRIBUTIONCHANNEL_ID":
                     DISTRIBUTIONCHANNEL_ID = str(table_dict.Value)    
                 
-                #PRODUCTOFFERING_ID is empty
-                if PRODUCTOFFERING_ID == '':
-                    table = SqlHelper.GetFirst("SELECT replace ('{\"ProductOffering\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ServiceID\" : \"'+ServiceID+'\",\"DocumentType\" : \"'+DocumentType+'\"}' AS JSON from (SELECT DISTINCT A.SAP_PART_NUMBER AS ServiceID,A.DOCTYP_ID AS DocumentType FROM MAMADT A(NOLOCK) JOIN MAMSOP (NOLOCK) B ON A.SAP_PART_NUMBER = b.SAP_PART_NUMBER JOIN MAADPR C(NOLOCK) ON A.SAP_PART_NUMBER = C.PRDOFR_ID WHERE B.SALESORG_ID ='"+ str(SALESORG_ID) +"' AND B.DISTRIBUTIONCHANNEL_ID ='"+ str(DISTRIBUTIONCHANNEL_ID) + "' AND ISNULL(A.POES,'FALSE') = '"+str(POES)+"' ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT " )
-                
-                #PRODUCTOFFERING_ID is not empty
-                if PRODUCTOFFERING_ID != '': 
-                    table = SqlHelper.GetFirst("SELECT replace ('{\"ProductOffering\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ServiceID\" : \"'+ServiceID+'\",\"DocumentType\" : \"'+DocumentType+'\"}' AS JSON from (SELECT DISTINCT A.PRDOFR_ID AS ServiceID ,A.PRDOFR_DOCTYP AS DocumentType FROM MAADPR A(NOLOCK) JOIN MAMSOP (NOLOCK) B ON A.PRDOFR_ID = b.SAP_PART_NUMBER WHERE A.PRDOFR_ID ='"+ str(PRODUCTOFFERING_ID) +"' AND B.SALESORG_ID ='"+ str(SALESORG_ID) +"' AND B.DISTRIBUTIONCHANNEL_ID ='"+ str(DISTRIBUTIONCHANNEL_ID) + "' AND ISNULL(A.POES,'FALSE') = '"+str(POES)+"') t    ) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")        
-                if str(table).upper() != "NONE" and str(type(table.RESULT)) == "<type 'str'>":
-                    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": table.RESULT}]})  
+            #PRODUCTOFFERING_ID is empty
+            if PRODUCTOFFERING_ID == '':
+                table = SqlHelper.GetFirst("SELECT replace ('{\"ProductOffering\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ServiceID\" : \"'+ServiceID+'\",\"DocumentType\" : \"'+DocumentType+'\"}' AS JSON from (SELECT DISTINCT A.SAP_PART_NUMBER AS ServiceID,A.DOCTYP_ID AS DocumentType FROM MAMADT A(NOLOCK) JOIN MAMSOP (NOLOCK) B ON A.SAP_PART_NUMBER = b.SAP_PART_NUMBER JOIN MAADPR C(NOLOCK) ON A.SAP_PART_NUMBER = C.PRDOFR_ID WHERE B.SALESORG_ID ='"+ str(SALESORG_ID) +"' AND B.DISTRIBUTIONCHANNEL_ID ='"+ str(DISTRIBUTIONCHANNEL_ID) + "' AND ISNULL(A.POES,'FALSE') = '"+str(POES)+"' ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT " )
+            
+            #PRODUCTOFFERING_ID is not empty
+            if PRODUCTOFFERING_ID != '': 
+                table = SqlHelper.GetFirst("SELECT replace ('{\"ProductOffering\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ServiceID\" : \"'+ServiceID+'\",\"DocumentType\" : \"'+DocumentType+'\"}' AS JSON from (SELECT DISTINCT A.COMP_PRDOFR_ID AS ServiceID ,A.COMP_PRDOFR_DOCTYP AS DocumentType FROM MAADPR A(NOLOCK) JOIN MAMSOP (NOLOCK) B ON A.COMP_PRDOFR_ID = b.SAP_PART_NUMBER WHERE A.PRDOFR_ID ='"+ str(PRODUCTOFFERING_ID) +"' AND B.SALESORG_ID ='"+ str(SALESORG_ID) +"' AND B.DISTRIBUTIONCHANNEL_ID ='"+ str(DISTRIBUTIONCHANNEL_ID) + "' AND ISNULL(A.POES,'FALSE') = '"+str(POES)+"' AND ISNULL(VISIBLE_INCONFIG,'FALSE')='TRUE' ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT ")        
+            if str(table).upper() != "NONE" and str(type(table.RESULT)) == "<type 'str'>":
+                ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": table.RESULT}]})  
 
-                else:
-                    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "NO DATA AVAILABLE FOR SYNCHRONIZATION"}]})                
+            else:
+                ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "NO DATA AVAILABLE FOR SYNCHRONIZATION"}]})                
                             
 except:
     Log.Info("SAGETPOCMP ERROR---->:" + str(sys.exc_info()[1]))
