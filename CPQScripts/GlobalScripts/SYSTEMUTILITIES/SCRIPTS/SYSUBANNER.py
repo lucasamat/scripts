@@ -2534,7 +2534,7 @@ def Related_Sub_Banner(
 				else:
 					Trace.Write('No button-2454-')
 					buttonvisibility = "Hide_button"
-			elif TreeParam == "Approvals":
+			elif TreeParam == "Approvals" and CurrentTabName == 'Quotes'::
 				Trace.Write("SUBMIT FOR APP Button")
 				sec_rel_sub_bnr = add_button
 			else:
