@@ -50,25 +50,24 @@ def devicetype_predefinedlogic(entitlement_string, equipment_record_id):
 	return entitlement_string
 
 def equipment_predefined():
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = 'Z0091' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
+	
 	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML FROM SAQSCE {}""".format(str(where_condition) ))
 	for rec in getall_recid:
-		input_xml = rec.ENTITLEMENT_XML 
-		
-
-		#ref_dict = {'AGS_Z0091_VAL_WAFNOD': wafernode_predefinedlogic,'AGS_Z0091_VAL_DEVTYP': devicetype_predefinedlogic}
-
 		entxmldict = {}
-		final_xml=''
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
-
-		for m in re.finditer(pattern_tag, input_xml):
+		updateentXML = rec.ENTITLEMENT_XML
+		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
+		for val in get_valuedriver_ids:
+			if 'WAFER' in val.ENTITLEMENT_DESCRIPTION.upper():
+				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE , P.ENTITLEMENT_VALUE_CODE as ENTITLEMENT_VALUE_CODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 
 
-		Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = ''{}'' WHERE QUOTE_RECORD_ID = '{}' AND EQUIPMENT_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(final_xml, quote_record_id, equip_id.EQUIPMENT_RECORD_ID, quote_revision_record_id) )
+		#Sql.RunQuery( "UPDATE SAQSCE SET ENTITLEMENT_XML = ''{}'' WHERE QUOTE_RECORD_ID = '{}' AND EQUIPMENT_RECORD_ID = '{}' AND QTEREV_RECORD_ID='{}'".format(final_xml, quote_record_id, equip_id.EQUIPMENT_RECORD_ID, quote_revision_record_id) )
 
 def greenbook_predefined():
 	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
