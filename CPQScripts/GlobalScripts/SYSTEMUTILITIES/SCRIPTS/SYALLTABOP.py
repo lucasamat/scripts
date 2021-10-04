@@ -797,13 +797,17 @@ else:
 Product.SetGlobal("Pricemodel", "")
 
 if tab_name != "":
-    Trace.Write("TestProduct.CurrentTab "+str(TestProduct.CurrentTab))
-    if (TestProduct.CurrentTab == "Quotes" or TestProduct.CurrentTab == "SALES") and record_id != "":
+    try:
+        CurrentTab = TestProduct.CurrentTab
+    except:
+        CurrentTab = "Quotes"
+    Trace.Write("TestProduct.CurrentTab "+str(CurrentTab))
+    if (CurrentTab == "Quotes" or CurrentTab == "SALES") and record_id != "":
         Product.SetGlobal("contract_quote_record_id", record_id)
-    elif (TestProduct.CurrentTab == "Contracts" or TestProduct.CurrentTab == "SALES") and record_id != "":
+    elif (CurrentTab == "Contracts" or CurrentTab == "SALES") and record_id != "":
         Product.SetGlobal("contract_record_id", record_id)
         #Trace.Write("COntract_TESTZ"+str(Product.GetGlobal("contract_record_id")))
-    elif (TestProduct.CurrentTab == "Team Approvals Queue" or TestProduct.CurrentTab == "Team Approvals Queues"):
+    elif (CurrentTab == "Team Approvals Queue" or CurrentTab == "Team Approvals Queues"):
         Product.SetGlobal("team_approval_record_id", record_id)
     if tab_name == "Quotes" and product_name == "APPROVAL CENTER":
         product_name = "SALES"
