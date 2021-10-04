@@ -115,12 +115,12 @@ def CoveredObjEntitlement():
 	
 	level = "Offering Entitlement "
 	#calling pre-logic valuedriver script
-	try:
-		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
-		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
-		CQTVLDRIFW.valuedriver_predefined(Qt_rec_id ,"EQUIPMENT_LEVEL" ,TreeParam , userId, rev_rec_id, where_condition)
-	except:
-		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
+	# try:
+	# 	Log.Info("PREDEFINED WAFER DRIVER IFLOW")
+	# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
+	# 	CQTVLDRIFW.valuedriver_predefined(Qt_rec_id ,"EQUIPMENT_LEVEL" ,TreeParam , userId, rev_rec_id, where_condition)
+	# except:
+	# 	Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
 	#calling pre-logic valuedriver script
 	try:
 		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
