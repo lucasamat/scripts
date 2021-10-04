@@ -1,7 +1,7 @@
 # =========================================================================================================================================
 #   __script_name : CQPREVWDTL.PY
 #   __script_description : THIS SCRIPT IS USED TO  TRIGGER POPUP WHILE SAVING THE DRIVERS, PRICE,ENTITLEMENTS 
-#   __primary_author__ : WASIM ABDUL
+#   __primary_author__ : WASIM ABDUL 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
