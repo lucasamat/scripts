@@ -1285,6 +1285,7 @@ class EntitlementView():
 									else:
 										required_symbol_class = get_requiredicon = ""
 									new_value_dicta["APPROVAL"] = imgstr
+									Trace.Write(str(attrSysId)+'Icon')
 									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
 									new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
 									new_value_dicta["REQUIRED"] = get_requiredicon
