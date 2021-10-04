@@ -756,7 +756,7 @@ def Related_Sub_Banner(
 				# 	SecondLable = "Greenbook"
 				# 	SecondValue = str(TreeParam)
 					Trace.Write("SLabel"+SecondLable)
-			elif TreeParam == "Approvals" and TabName == "Quotes":
+			elif TreeParam == "Approvals"  and TabName == "Quotes":
 				
 				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
