@@ -648,6 +648,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								
 								get_code = re.findall( re.compile(r'<ENTITLEMENT_VALUE_CODE>([^>]*?)</ENTITLEMENT_VALUE_CODE>'), get_val_list[0] )[0]
 								get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )[0]
+								Log.Info("value driver-fab-"+str(get_value)+str(value.ENTITLEMENT_ID))
 
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
