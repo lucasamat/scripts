@@ -707,10 +707,8 @@ def do_process(record_id, tab_name, action, product_name):
         Trace.Write("sections_obj" + str(sections_obj))
         for index, section_obj in enumerate(sections_obj):
             if index == 0:
-                try:
-                    TestProduct.ChangeTab(str(section_obj.SAPCPQ_ALTTAB_NAME).strip())
-                except:
-                    Trace.Write("EXCEPT: TestProduct")
+                TestProduct.ChangeTab(str(section_obj.SAPCPQ_ALTTAB_NAME).strip())
+                Trace.Write("TestProduct" + str(TestProduct))
                 try:
                     Product.Attributes.GetByName("MA_MTR_TAB_ACTION").AssignValue(action.upper())
                 except:
