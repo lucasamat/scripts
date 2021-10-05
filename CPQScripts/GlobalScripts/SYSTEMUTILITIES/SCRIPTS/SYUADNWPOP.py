@@ -4923,14 +4923,14 @@ def POPUPLISTVALUEADDNEW(
 
 			GettreeEnable = Sql.GetFirst("select ENABLE_TREE FROM SYTABS where SAPCPQ_ALTTAB_NAME='" + str(TabName) + "'")
 			if GettreeEnable is not None and str(GettreeEnable.ENABLE_TREE).upper() == "TRUE":
-				cancel_button = ""
-				save_button = ""
 				event_name = "loadRelatedList('" + str(popup_table_id) + "','" + str(DIVNAME) + "')"
 				
 
 				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"' AND TAB_NAME LIKE '%"+str(TabName)+"%'")
 
 				for btn in html_content:
+    				cancel_button = ""
+					save_button = ""
 					try:
 						# if "CANCEL" in str(btn.HTML_CONTENT) and "SAVE" in str(btn.HTML_CONTENT):
 						if "CANCEL" in str(btn.HTML_CONTENT):
