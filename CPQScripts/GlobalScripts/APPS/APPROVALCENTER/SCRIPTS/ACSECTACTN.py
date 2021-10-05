@@ -3143,6 +3143,7 @@ class approvalCenter:
 				self.QuoteNumber = ''
 		   #current_chain_step = approval_queue_obj.CUR_APRCHNSTP
 		try:
+			Trace.Write("@3146---Approval Trans Record Id--"+str(TransactionId))
 			TreeParam = AllParams.get("TreeParam")
 			RecipientCommentInfo = "RECIPIENT COMMENT"
 			ButtonNeed = "False"
