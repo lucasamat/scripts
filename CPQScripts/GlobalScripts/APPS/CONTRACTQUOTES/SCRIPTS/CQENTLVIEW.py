@@ -987,7 +987,7 @@ class EntitlementView():
 
 											Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
 											Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
-											if Status and attrValue !="":
+											if Status :
 												if Status.APPROVAL_REQUIRED == True:
 											
 													imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
@@ -1287,6 +1287,7 @@ class EntitlementView():
 									else:
 										required_symbol_class = get_requiredicon = ""
 									new_value_dicta["APPROVAL"] = imgstr
+									imgstr=""
 									Trace.Write(str(attrSysId)+'Icon')
 									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
 									new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
