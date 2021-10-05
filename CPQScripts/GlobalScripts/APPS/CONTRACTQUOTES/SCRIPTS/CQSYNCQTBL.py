@@ -1201,6 +1201,7 @@ class SyncQuoteAndCustomTables:
 						fab_location_ids, service_ids = [], []
 						equipment_data = {}
 						covered_object_data = {}
+						service_level_covered_object_data = {}
 						payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
 						payload_json = eval(payload_json.get('Param'))
 						payload_json = payload_json.get('CPQ_Columns')
@@ -1229,7 +1230,13 @@ class SyncQuoteAndCustomTables:
 								if equipment_json_data.get('SERVICE_OFFERING_ID') in covered_object_data:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
-									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')] 
+									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
+						if payload_json.get('SAQSCO'):
+							for service_level_equipment_json_data in payload_json.get('SAQSCO'):
+								if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in service_level_covered_object_data:
+									service_level_covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
+								else:
+									service_level_covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_IDS')]
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
@@ -1594,6 +1601,29 @@ class SyncQuoteAndCustomTables:
 															SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID= '{AccountId}'
 																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=custom_fields_detail.get("STPAccountID"),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
+							if service_level_covered_object_data:
+								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
+									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
+									quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' and QUOTE_ID = '{Quote_Id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),Quote_Id = contract_quote_data.get("QUOTE_ID")))
+									quote_fab_equipments_record_id = [quote_fab_equipment_obj.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID for quote_fab_equipment_obj in quote_fab_equipments_obj]
+									service_id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID')
+									service_type = quote_service_obj.SERVICE_TYPE
+									quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+									contract_quote_record_id = Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
+									#Log.Info("service_id------->"+str(service_id))
+									ScriptExecutor.ExecuteGlobal(
+															"CQCRUDOPTN",
+														{
+															"NodeType"   : "COVERED OBJ MODEL",
+															"ActionType" : "ADD_COVERED_OBJ",
+															"Opertion"    : "ADD",
+															"AllValues"  : False,
+															"call_from"   : "python_script",
+															"Values"	  : quote_fab_equipments_record_id,
+															"service_id"  : service_id,
+															"service_type" : service_type,
+														},
+													)
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
