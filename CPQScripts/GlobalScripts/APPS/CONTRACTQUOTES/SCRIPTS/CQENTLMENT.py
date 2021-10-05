@@ -2019,10 +2019,28 @@ class Entitlements:
 		
 		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
 			responsive_where = where.replace('SRC.','')
+			entxmldict = {}
 			getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQTSE {}""".format(str(responsive_where)))
 			get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' ".format(AttributeList, serviceId))
+			updateentXML = getxml_query.ENTITLEMENT_XML
+			for rec in getxml_query:
+				
+				pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+				updateentXML = rec.ENTITLEMENT_XML
+				for m in re.finditer(pattern_tag, updateentXML):
+					sub_string = m.group(1)
+					x=re.findall(pattern_name,sub_string)
+					entxmldict[x[0]]=sub_string
 
-		Trace.Write("ENT_IP_DICT---"+str(ENT_IP_DICT))
+					Trace.Write("entxmldict---"+str(entxmldict))
+			Trace.Write("entxmldict--2037----"+str(entxmldict))
+			if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
+				entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+				entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
+
+				entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
+				input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(type(AttributeList)))
