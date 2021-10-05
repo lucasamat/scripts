@@ -212,11 +212,15 @@ def tool_uptimetimprovementdriver_update():
 		update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' ".format(uptime=uptime))
 		for key in entxmldict.keys():
 			if 'AGS_Z0091_VAL_UPIMPV' == key:
+				Trace.Write("ifffffff")
 				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
 				entxmldict['AGS_Z0091_VAL_UPIMPV'] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict['AGS_Z0091_VAL_UPIMPV'])
-			querystring = querystring + entxmldict[key]
-			Trace.Write(querystring)
-			Update_xml_uptime = ("UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}' ".format(querystring=querystring,where_condition=where_condition))	
+				querystring = querystring + entxmldict['AGS_Z0091_VAL_UPIMPV']
+				Trace.Write("if-----"+str(querystring))
+			else:
+				querystring = querystring + entxmldict[key]
+		Update_xml_uptime = ("UPDATE SAQSCE SET ENTITLEMENT_XML = '{querystring}' '{where_condition}'".format(querystring=querystring,where_condition=where_condition))
+		Sql.RunQuery(Update_xml_uptime)	
 	
 
 try:
