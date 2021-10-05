@@ -182,6 +182,32 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 		Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string2)) )
 	return input_xml
 
+
+def valuedriver_onchage():
+	entxmldict = {}
+	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM SAQTSE {}""".format(str(responsive_where)))
+	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' ".format(AttributeList, serviceId))
+	
+	for rec in getxml_query:
+		updateentXML = rec.ENTITLEMENT_XML
+		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		updateentXML = rec.ENTITLEMENT_XML
+		for m in re.finditer(pattern_tag, updateentXML):
+			sub_string = m.group(1)
+			x=re.findall(pattern_name,sub_string)
+			entxmldict[x[0]]=sub_string
+
+			Trace.Write("entxmldict---"+str(entxmldict))
+	Trace.Write("entxmldict--2037----"+str(entxmldict))
+	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
+		entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
+
+		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
+		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
+	return inputXML
+
 def tool_uptimetimprovementdriver_update():
 	Trace.Write("11"+str(TreeParam))
 	Trace.Write("22"+str(where_condition))
