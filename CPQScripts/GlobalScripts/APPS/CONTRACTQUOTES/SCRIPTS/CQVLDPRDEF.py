@@ -23,8 +23,10 @@ except:
 	
 try:
 	get_selected_value = dict(Param.get_selected_value)
+	Trace.Write('get_selected_value--try--'+str(get_selected_value))
 except:
 	get_selected_value = ""
+	Trace.Write('get_selected_value--try--except--')
 try:
 	LEVEL = Param.level
 except:
