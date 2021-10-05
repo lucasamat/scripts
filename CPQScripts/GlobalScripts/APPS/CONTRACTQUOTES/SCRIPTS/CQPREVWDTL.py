@@ -766,7 +766,7 @@ def constructapprovalchaininformation(MODE,record_id):
 		
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		
 		for sefl in Oppp_SEFL:
