@@ -779,7 +779,10 @@ def constructapprovalchaininformation(MODE,record_id):
 				+ str(sefl.FIELD_LABEL)
 				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i  class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
-			sefl_api = sefl.API_FIELD_NAME
+			sefl_api = sefl.API_FIELD_NAME			
+			object_name = sefl.API_NAME
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM ACAPCH WHERE APPROVAL_CHAIN_RECORD_ID = '"+str(record_id)+"'")
 												
 			if col_name:
@@ -837,6 +840,27 @@ def constructapprovalchaininformation(MODE,record_id):
 						+ str(eval("col_name." + str(sefl_api)))
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled='' style = 'display':'none'> </div>"
 					) 
+				elif data_type =="CHECKBOX":
+					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("act_status---->"+str(act_status))
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)	
 				else:
 					# if sefl_api != "REGION":                    
 					sec_str += (
