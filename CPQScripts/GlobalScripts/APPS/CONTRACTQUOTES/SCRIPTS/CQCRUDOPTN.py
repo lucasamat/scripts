@@ -2411,6 +2411,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					yield row_data.QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID
 
 	def _insert_quote_service_covered_object(self, **kwargs):
+		Log.Info("self.tree_param------------>"+str(self.tree_param))
+		Log.Info("self.tree_parent_level_0"+str(self.tree_parent_level_0))
 		if self.sale_type == "TOOL RELOCATION":
 			Trace.Write('covered_object_insert')
 			if self.tree_param != "Sending Equipment":
@@ -2986,10 +2988,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		else:
 			#Trace.Write('3436---'+str(self.tree_param))
 			Log.Info("self.trigger_from ---->"+str(self.trigger_from))
-			if self.trigger_from == 'PythonScript':
-				Log.Info("self.trigger_from inside---->")
-				self.tree_param = service_id
-				self.tree_parent_level_0 = service_type
 			self._process_query(
 				"""
 					INSERT SAQSCO (
