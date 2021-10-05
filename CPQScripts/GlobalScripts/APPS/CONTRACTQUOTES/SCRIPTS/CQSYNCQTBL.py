@@ -1760,6 +1760,7 @@ class SyncQuoteAndCustomTables:
 	##A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
+#A055S000P01-9608 START
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
 getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
@@ -1768,5 +1769,6 @@ if getService is None:
 
 	if getRevision is None:
 		ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':""})
+#A055S000P01-9608 END
 
 
