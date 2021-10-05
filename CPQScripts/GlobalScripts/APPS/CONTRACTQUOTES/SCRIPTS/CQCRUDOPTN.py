@@ -5142,7 +5142,9 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 		###Value Driver coefficient Sum up  starts
 		if price_temp:
-			Trace.Write('price_temp---'+str(price_temp))
+			
+			temp_count = Sql.GetFirst("SELECT count(*) as cnt FROM {} ".format(price_temp))
+			Trace.Write('price_temp---'+str(temp_count.cnt))
 
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
