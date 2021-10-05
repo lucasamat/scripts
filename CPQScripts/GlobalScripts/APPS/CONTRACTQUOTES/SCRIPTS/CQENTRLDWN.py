@@ -609,10 +609,14 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						Sql.RunQuery(UpdateEntitlement)
 				else:
 					get_value_query = Sql.GetList("select distinct FABLOCATION_ID from SAQSFB {} ".format(where_cond))
+					get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE like '%VALUE DRIVER%' AND PRENTL.ENTITLEMENT_ID NOT IN ('AGS_Z0091_VAL_UPIMPV', 'AGS_Z0091_VAL_CSTSEG', 'AGS_Z0091_VAL_SVCCMP', 'AGS_Z0091_VAL_QLYREQ') AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(get_serviceid) )
+					
 					for fab in get_value_query:
 						where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
 						get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
 						updateentXML = ""
+						get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
+						
 						for value in GetXMLsecField:
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
@@ -629,6 +633,13 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 										get_price_impact = 0.00
 							get_desc = value.ENTITLEMENT_DESCRIPTION	
 							get_code = value.ENTITLEMENT_VALUE_CODE
+							###updating exisitng value for non editable value drivers
+							if get_valuedriver_ids and get_previous_xml and  value.ENTITLEMENT_ID in get_valuedriver_ids:
+								get_val_list =re.findall(r''+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</ENTITLEMENT_DISPLAY_VALUE>',get_previous_xml.ENTITLEMENT_XML)
+								
+								get_code = re.findall( re.compile(r'<ENTITLEMENT_VALUE_CODE>([^>]*?)</ENTITLEMENT_VALUE_CODE>'), get_val_list[0] )
+								get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )
+
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
