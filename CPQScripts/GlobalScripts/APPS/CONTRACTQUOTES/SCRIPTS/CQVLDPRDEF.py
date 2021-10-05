@@ -107,6 +107,7 @@ def fab_predefined():
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
 		updateentXML = rec.ENTITLEMENT_XML
+		Log.Info('updateentXML---'+str(updateentXML))
 		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
 			Log.Info('sub_string---'+str(sub_string))
