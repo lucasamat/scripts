@@ -1140,7 +1140,7 @@ class ContractQuoteItem:
         Quote.Save()
         #assigning value to custom fields(quote summary section) in quote items node ends
 
-    def _create(self):		
+    def _do_opertion(self):		
         if self.action_type == "INSERT_LINE_ITEMS":
             if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..				
                 self._insert_quote_item_forecast_parts() ##User story 4432 ends..
@@ -1185,4 +1185,5 @@ else:
     parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
     parameters['service_id']=str(Param.ServiceId)
     
-ContractQuoteItem(parameters)
+contract_quote_item_obj = ContractQuoteItem(parameters)
+contract_quote_item_obj._do_opertion()
