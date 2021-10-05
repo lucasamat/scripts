@@ -4929,31 +4929,34 @@ def POPUPLISTVALUEADDNEW(
 				
 
 				html_content = Sql.GetList("SELECT HTML_CONTENT,RELATED_LIST_RECORD_ID FROM SYPGAC (NOLOCK) WHERE RELATED_LIST_RECORD_ID = '"+str(popup_table_id)+"' AND TAB_NAME LIKE '%"+str(TabName)+"%'")
-
-				for btn in html_content:
-					try:
-						# if "CANCEL" in str(btn.HTML_CONTENT) and "SAVE" in str(btn.HTML_CONTENT):
-						if "CANCEL" in str(btn.HTML_CONTENT):
-							cancel_button = str(btn.HTML_CONTENT).format(event_name=event_name)
-						if "SAVE" in str(btn.HTML_CONTENT):
-							save_button = str(btn.HTML_CONTENT).format(ObjectName=ObjectName, func2=func2)
-						# else:
-						#     cancel_button = ""
-						#     save_button = ""
-					except:
-						Trace.Write("Button Exceptions")
+				if html_content:
+					sec_str += (
+							'<div class="row ma_text_align_sixteen">'
+						)
+					for btn in html_content:
 						cancel_button = ""
 						save_button = ""
-
-					sec_str += (
-						'<div class="row ma_text_align_sixteen">'+str(cancel_button)+str(save_button)
-					)
+						try:
+							# if "CANCEL" in str(btn.HTML_CONTENT) and "SAVE" in str(btn.HTML_CONTENT):
+							if "CANCEL" in str(btn.HTML_CONTENT):
+								cancel_button = str(btn.HTML_CONTENT).format(event_name=event_name)
+								sec_str += str(cancel_button)
+							if "SAVE" in str(btn.HTML_CONTENT):
+								save_button = str(btn.HTML_CONTENT).format(ObjectName=ObjectName, func2=func2)
+								sec_str += str(save_button)
+							# else:
+							#     cancel_button = ""
+							#     save_button = ""
+						except:
+							Trace.Write("Button Exceptions")
+							cancel_button = ""
+							save_button = ""
 
 					SaveCancel = (
 						'<div id="HideSavecancel">' +str(save_button)+ str(cancel_button)+"</div>"
 					)
 
-				sec_str += "</div>"
+					sec_str += "</div>"
 				#Trace.Write("cancel__J "+str(cancel_button)+" save_J "+str(save_button))
 	else:
 		sec_str += '<div class="ma_text_align_sixteen">No matching records found </div><div class="modal-footer"><button type="button" class="btnstyle flt_rt" data-dismiss="modal">Close</button></div>'
