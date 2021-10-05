@@ -2985,7 +2985,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		# 	)
 		else:
 			#Trace.Write('3436---'+str(self.tree_param))
+			Log.Info("self.trigger_from ---->"+str(self.trigger_from))
 			if self.trigger_from == 'PythonScript':
+				Log.Info("self.trigger_from inside---->")
 				self.tree_param = service_id
 				self.tree_parent_level_0 = service_type
 			self._process_query(
