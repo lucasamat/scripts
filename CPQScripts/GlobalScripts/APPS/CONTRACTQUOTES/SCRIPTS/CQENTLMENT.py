@@ -2020,7 +2020,7 @@ class Entitlements:
 		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
 			responsive_where = where.replace('SRC.','')
 			entxmldict = {}
-			getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM SAQTSE {}""".format(str(responsive_where)))
+			getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM SAQTSE {}""".format(str(responsive_where)))
 			get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' ".format(AttributeList, serviceId))
 			updateentXML = getxml_query.ENTITLEMENT_XML
 			for rec in getxml_query:
