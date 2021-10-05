@@ -3155,6 +3155,8 @@ class approvalCenter:
 			SaveApproverComment = RecipientComment = BtnName = readonly = FromHistory = ""
 			if str(TreeParam) == "Approvals":
 				FromHistory = "True"
+				if TransactionId is None:
+					TransactionId = Product.GetGlobal("CurrentApprovalTransaction")
 				ApprTrxRecIdQry = Sql.GetFirst(
 					"""select ACAPTX.APPROVAL_TRANSACTION_RECORD_ID
 						from ACAPMA (nolock)
