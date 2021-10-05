@@ -2985,6 +2985,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		# 	)
 		else:
 			#Trace.Write('3436---'+str(self.tree_param))
+			if self.trigger_from == 'PythonScript':
+				self.tree_param = service_id
+				self.tree_parent_level_0 = service_type
 			self._process_query(
 				"""
 					INSERT SAQSCO (
@@ -4409,6 +4412,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			ON SAQIGB.CpqTableEntryId = IQ.CpqTableEntryId""".format(QuoteRecordId= self.contract_quote_record_id))
 	def _create(self):
 		if self.action_type == "ADD_COVERED_OBJ":
+			Log.Info("action_type"+str(self.action_type))
 			covered_start_time = time.time()
 			master_object_name = "SAQFEQ"
 			if self.values:
@@ -4439,6 +4443,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					if table_total_rows:
 						record_ids = [data for data in self.get_results(query_string, table_total_rows)]                    
 				else:
+					Log.Info("self.values--"+str(self.values))
 					Trace.Write("self.values--"+str(self.values))
 					record_ids = [
 						CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
