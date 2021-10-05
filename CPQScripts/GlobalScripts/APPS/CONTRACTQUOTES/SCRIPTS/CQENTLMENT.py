@@ -2020,13 +2020,16 @@ class Entitlements:
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
 		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
+		cust_seg = 'AGS_'+str(serviceId)+'_VAL_CSTSEG'
+		serv_comp = 'AGS_'+str(serviceId)+'_VAL_SVCCMP'
+		qa_req = 'AGS_'+str(serviceId)+'_QLYREQ'
 		if AttributeList:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
 			get_selected_dict = {}
 			for key,val in ENT_IP_DICT.items():
 				
-				if str(key) in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
+				if str(key) in [cust_seg,serv_comp,qa_req]:
 					getvalue = str((val).split("||")[0]).strip()
 					get_selected_dict[str(key)] = getvalue
 			Trace.Write(str(get_selected_dict)+'--getvalue--'+str(getvalue))
@@ -2173,9 +2176,7 @@ except:
 	inputId = ''
 try:
 	ENT_IP_DICT = dict(Param.ENT_IP_DICT)
-	Trace.Write('ENT_IP_DICT----'+str(ENT_IP_DICT))
 except:
-	Trace.Write('ENT_IP_DICT--except--')
 	ENT_IP_DICT = ''
 try:
 	multiselect_flag = Param.multiselect_flag
