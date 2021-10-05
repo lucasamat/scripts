@@ -37,6 +37,7 @@ try:
 	quote_revision_record_id = Param.quote_rev_id
 	where_condition =  Param.where_condition
 	uptime_list = list(Param.uptime_list)
+	get_ent_type_val = Param.get_ent_type_val
 	#serviceId =Param.serviceId
 except: 
 	TreeParam = ""
@@ -44,6 +45,7 @@ except:
 	quote_revision_record_id = ""
 	where_condition = ""
 	uptime_list = ""
+	get_ent_type_val = ""
 	#serviceId =''
 try:
 	serviceId =Param.serviceId
