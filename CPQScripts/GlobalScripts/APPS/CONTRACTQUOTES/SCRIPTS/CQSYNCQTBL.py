@@ -1622,7 +1622,7 @@ class SyncQuoteAndCustomTables:
 															"ActionType" : "ADD_COVERED_OBJ",
 															"Opertion"    : "ADD",
 															"AllValues"  : False,
-															"call_from"   : "python_script",
+															"trigger_from"   : "python_script",
 															"Values"	  : quote_fab_equipments_record_id,
 															"service_id"  : service_id,
 															"service_type" : service_type,
