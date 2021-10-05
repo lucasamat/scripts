@@ -126,7 +126,7 @@ try :
 		ApiResponse = ApiResponseFactory.JsonResponse(str(resp))
 	
 except:
-	#Log.Info("SGPOSTINBD cpqentryid ---->:" + str(cpqentryid))
+	##Log.Info("SGPOSTINBD cpqentryid ---->:" + str(cpqentryid))
 	Log.Info("SGPOSTINBD ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("SGPOSTINBD ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
 	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
