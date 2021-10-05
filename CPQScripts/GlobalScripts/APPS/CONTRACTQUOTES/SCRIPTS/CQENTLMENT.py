@@ -2025,13 +2025,13 @@ class Entitlements:
 					getvalue = str((val).split("||")[0]).strip()
 			Trace.Write('getvalue--'+str(getvalue))
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList,'get_selected_value':getvalue})
-		else:
-			try:			
-				responsive_where = where.replace('SRC.','')
-				where_condition = responsive_where
-				predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
-			except Exception as e:
-				Log.Info("UPTIME_IMPROVEMENT"+str(e))	
+		# else:
+		# 	try:			
+		# 		responsive_where = where.replace('SRC.','')
+		# 		where_condition = responsive_where
+		# 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
+		# 	except Exception as e:
+		# 		Log.Info("UPTIME_IMPROVEMENT"+str(e))	
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
