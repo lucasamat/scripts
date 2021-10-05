@@ -23,6 +23,11 @@ try:
 	quote_record_id = Param.quote_rec_id
 except:
 	quote_record_id = ""
+	
+try:
+	get_selected_value = Param.get_selected_value
+except:
+	get_selected_value = ""
 try:
 	LEVEL = Param.level
 except:
