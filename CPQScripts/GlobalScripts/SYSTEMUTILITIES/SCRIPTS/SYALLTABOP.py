@@ -221,200 +221,198 @@ def process_view(details_and_qstns_obj, record_obj, record_id, tab_name, product
                 Product.Attributes.GetByName(str(app_attr_name)).Allowed = False
                 
         Trace.Write("app_attr_name-->" + str(app_attr_name))
-        try:
-            if Product.Attributes.GetByName(app_attr_name) is not None:
-                if detail_and_qstn_obj.API_FIELD_NAME == "" or detail_and_qstn_obj.API_FIELD_NAME is None:
-                    Product.Attributes.GetByName(app_attr_name).AssignValue("")
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    continue
-                Product.ResetAttr(str(app_attr_name))
-                
-                get_record_val = get_value_from_obj(record_obj, str(detail_and_qstn_obj.API_FIELD_NAME))
-                Trace.Write('get_record_val@@@'+str(get_record_val))
-                if qstn_custom_object_field.upper() == "CPQTABLEENTRYMODIFIEDBY":
-                    if str(get_record_val) != "" and get_record_val is not None:
-                        Trace.Write('get_record_val####'+str(get_record_val))
-                        try:
-                            get_record_val_qry = Sql.GetFirst(
-                                "select USERNAME from users (nolock) where id = ' " + str(get_record_val) + " ' "
-                            )
-                            
-                        except:
-                            get_record_val_qry = ""
-                        if str(get_record_val_qry) != "" and str(get_record_val_qry) is not None:
-                            get_record_val = get_record_val_qry.USERNAME
-                            
-
-                formula_data_type = str(detail_and_qstn_obj.FORMULA_DATA_TYPE)
-                if data_type == "AUTO NUMBER":
-                    
-                    Product.Attributes.GetByName(app_attr_name).Allowed = True
-                    Product.Attributes.GetByName(app_attr_name).DisplayType = "FreeInputNoMatching"
-                    Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    Trace.Write("AUTONUMBER-----" + str(Product.Attributes.GetByName(app_attr_name).GetValue()))
-
-                elif data_type == "PICKLIST":
-                    
+        if Product.Attributes.GetByName(app_attr_name) is not None:
+            if detail_and_qstn_obj.API_FIELD_NAME == "" or detail_and_qstn_obj.API_FIELD_NAME is None:
+                Product.Attributes.GetByName(app_attr_name).AssignValue("")
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                continue
+            Product.ResetAttr(str(app_attr_name))
+            
+            get_record_val = get_value_from_obj(record_obj, str(detail_and_qstn_obj.API_FIELD_NAME))
+            Trace.Write('get_record_val@@@'+str(get_record_val))
+            if qstn_custom_object_field.upper() == "CPQTABLEENTRYMODIFIEDBY":
+                if str(get_record_val) != "" and get_record_val is not None:
+                    Trace.Write('get_record_val####'+str(get_record_val))
                     try:
-                        
-                        Trace.Write("app_attr_name++" + str(app_attr_name))
-                        Trace.Write("get_record_val" + str(get_record_val))
-                        if app_attr_name == "QSTN_SYSEFL_SY_00773":
-                            Trace.Write("app_attr_name---218------" + str(app_attr_name))
-                        if app_attr_name == "QSTN_SYSEFL_QT_01155":
-                            Trace.Write("app_attr_name-90 DAYS" + str(app_attr_name))
-                            cncl = Product.Attributes.GetByName('QSTN_SYSEFL_QT_01155').SelectDisplayValues("90 DAYS")
-                            Trace.Write("cancel"+str(cncl))
-                            # QUE = Sql.GetTable("SAQTMT")
-                            # row = {}
-                            # row['CANCELLATION_PERIOD'] = '90 DAYS'
-                            # QUE.AddRow(row)
-                            # Sql.Upsert(QUE)                        
-                            Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly    
-                        if qstn_custom_object_field.upper() == "DECIMAL_PLACES":
-
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
-                        elif qstn_custom_object_field.upper() == "CONTRACT_STATUS":
-                            
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
-                        else:
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(get_record_val)
-                            Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(get_record_val)
-                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    except:
-                        Trace.Write("Error: PickList --> Can't get the attribute or assign value")
-                elif data_type == "CHECKBOX" or formula_data_type == "CHECKBOX":
-                    # Trace.Write(str(app_attr_name) + " Error: PickList -->" + str(data_type))
-                    # Trace.Write("Error: PickList1 -->" + str(get_record_val))
-                    if str(get_record_val).upper() == "TRUE" or str(get_record_val) == "1":
-                        Trace.Write(str(app_attr_name) + " Error: PickList33 -->" + str(data_type))
-                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("1")
-                        #   Product.Attributes.GetByName(app_attr_name).Access = 1
-                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    elif str(get_record_val) == "False" or str(get_record_val) == "0":
-                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("0")
-                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                        # Product.Attributes.GetByName(app_attr_name).Access = 0
-                    elif str(get_record_val)=="":
-                        Trace.Write('Empty get_rec_val')
-                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                        
-                        
-                elif data_type == "NUMBER" or data_type == "CURRENCY":
-                    # Trace.Write("Error444444: PickList1 -->" + str(get_record_val))
-                    # Trace.Write("Error444444: PickList1 -->" + str(app_attr_name))
-                    # Trace.Write("Error444444: PickList1 -->" + str(Decimal_Value))
-                    if data_type == "CURRENCY":
-                        Sym = "$"
-                    else:
-                        Sym = ""
-                    if get_record_val is not None and str(get_record_val).strip() != "" and str(get_record_val).strip() != "0":
-                        
-                        if str(qstn_rec_id) == "SYSEFL_TQ_00895":
-                            data_type = "number"
-                        #Trace.Write("Error444444: PickList12 -->" + str(Decimal_Value))
-                        my_format = "{:." + str(Decimal_Value) + "f}"
-                        
-                        get_record_val = Sym + str(my_format.format(round(float(get_record_val), int(Decimal_Value))))
-                        
-                        Product.Attributes.GetByName(app_attr_name).AssignValue((get_record_val))
-                    #Trace.Write("check1111122223Decimal_Value" + str(Product.Attributes.GetByName(app_attr_name).GetValue()))
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-
-                elif formula_data_type == "PERCENT" or data_type == "PERCENT":
-                    #Trace.Write("258 get_record_val" + str(get_record_val))
-                    if get_record_val:
-                        my_format = "{:." + str(Decimal_Value) + "f}"
-                        get_record_val = str(my_format.format(round(float(get_record_val), int(Decimal_Value))))
-                        Product.Attributes.GetByName(app_attr_name).AssignValue((get_record_val))
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    
-
-                elif data_type == "FORMULA" and formula_data_type != "CHECKBOX":
-                    if tab_name == "Quotes" and detail_and_qstn_obj.API_FIELD_NAME == "SOURCE_CONTRACT_ID":
-                        
-                        load_attr_with_anchor_tag(record_obj, "SOURCE_CONTRACT_ID", get_record_val, app_attr_name, "|Contracts")
-                    elif (tab_name == "My Approval Queue" and detail_and_qstn_obj.API_FIELD_NAME == "APRTRXOBJ_ID") or (tab_name == "Team Approval Queue" and detail_and_qstn_obj.API_FIELD_NAME == "APRTRXOBJ_ID"):
-                        load_attr_with_anchor_tag(record_obj, "APRTRXOBJ_ID", get_record_val, app_attr_name, "|Quotes")
-                    else:
-                        if detail_and_qstn_obj.API_FIELD_NAME == "EXCHANGE_RATE_DATE" and get_record_val != "":
-                            get_record_val = str(get_record_val).split(" ")[0]
-                        try:
-                            Trace.Write(">>>>>>>>>>>>" + str(app_attr_name))
-                            Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                        except:
-                            Product.Attributes.GetByName(app_attr_name).AssignValue(get_record_val)
-
-                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                        app_lookup_attr_name = "QSTN_LKP_{}".format(qstn_rec_id)
-                        Trace.Write("app_lookup_attr_name----------> " + str(app_lookup_attr_name))
-                        try:
-                            lookup_detail_obj = Sql.GetFirst(
-                                """
-                                                    SELECT 
-                                                        API_NAME
-                                                    FROM 
-                                                        SYOBJD (NOLOCK) 
-                                                    WHERE 
-                                                        LTRIM(RTRIM(DATA_TYPE))='LOOKUP' AND 
-                                                        LTRIM(RTRIM(OBJECT_NAME))='{Obj_Name}' AND
-                                                        LTRIM(RTRIM(LOOKUP_API_NAME))='{LOOKUP_API_NAME}'
-                                                """.format(
-                                    Obj_Name=table_name, LOOKUP_API_NAME=str(detail_and_qstn_obj.API_FIELD_NAME).strip(),
-                                )
-                            )
-
-                            if lookup_detail_obj is not None:
-                                if Product.Attributes.GetByName(app_lookup_attr_name):
-                                    Product.Attributes.GetByName(app_lookup_attr_name).Allowed = False
-                                custom_obj_val = get_value_from_obj(record_obj, str(lookup_detail_obj.API_FIELD_NAME))
-                                if Product.Attributes.GetByName(app_lookup_attr_name) is not None and custom_obj_val:
-                                    Product.Attributes.GetByName(app_lookup_attr_name).HintFormula = custom_obj_val
-                                elif Product.Attributes.GetByName(app_lookup_attr_name) is not None:
-                                    Product.Attributes.GetByName(app_lookup_attr_name).HintFormula = ""
-                        except:
-                            Trace.Write("ERROR")
-                elif data_type == "LOOKUP":
-                    Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                elif data_type == "DATE/TIME":
-                    try:
-                        get_record_val=datetime.strptime(str(get_record_val), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
-                        Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                    except:
-                        Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                else:
-                    if str(app_attr_name) == "QSTN_SYSEFL_AC_00067_LONG":
-                        GetMsgBoyVal = Sql.GetFirst(
-                            " select * FROM ACEMTP(NOLOCK) WHERE EMAIL_TEMPLATE_RECORD_ID = '" + str(record_id) + "' "
+                        get_record_val_qry = Sql.GetFirst(
+                            "select USERNAME from users (nolock) where id = ' " + str(get_record_val) + " ' "
                         )
-                        if GetMsgBoyVal is not None:
-                            get_record_val = (
-                                str(GetMsgBoyVal.MESSAGE_BODY)
-                                + ""
-                                + str(GetMsgBoyVal.MESSAGE_BODY_2)
-                                + ""
-                                + str(GetMsgBoyVal.MESSAGE_BODY_3)
-                                + ""
-                                + str(GetMsgBoyVal.MESSAGE_BODY_4)
-                                + ""
-                                + str(GetMsgBoyVal.MESSAGE_BODY_5)
+                        
+                    except:
+                        get_record_val_qry = ""
+                    if str(get_record_val_qry) != "" and str(get_record_val_qry) is not None:
+                        get_record_val = get_record_val_qry.USERNAME
+                        
+
+            formula_data_type = str(detail_and_qstn_obj.FORMULA_DATA_TYPE)
+            if data_type == "AUTO NUMBER":
+                
+                Product.Attributes.GetByName(app_attr_name).Allowed = True
+                Product.Attributes.GetByName(app_attr_name).DisplayType = "FreeInputNoMatching"
+                Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                Trace.Write("AUTONUMBER-----" + str(Product.Attributes.GetByName(app_attr_name).GetValue()))
+
+            elif data_type == "PICKLIST":
+                
+                try:
+                    
+                    Trace.Write("app_attr_name++" + str(app_attr_name))
+                    Trace.Write("get_record_val" + str(get_record_val))
+                    if app_attr_name == "QSTN_SYSEFL_SY_00773":
+                        Trace.Write("app_attr_name---218------" + str(app_attr_name))
+                    if app_attr_name == "QSTN_SYSEFL_QT_01155":
+                        Trace.Write("app_attr_name-90 DAYS" + str(app_attr_name))
+                        cncl = Product.Attributes.GetByName('QSTN_SYSEFL_QT_01155').SelectDisplayValues("90 DAYS")
+                        Trace.Write("cancel"+str(cncl))
+                        # QUE = Sql.GetTable("SAQTMT")
+                        # row = {}
+                        # row['CANCELLATION_PERIOD'] = '90 DAYS'
+                        # QUE.AddRow(row)
+                        # Sql.Upsert(QUE)                        
+                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly    
+                    if qstn_custom_object_field.upper() == "DECIMAL_PLACES":
+
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
+                    elif qstn_custom_object_field.upper() == "CONTRACT_STATUS":
+                        
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(str(get_record_val))
+                    else:
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(get_record_val)
+                        Product.Attributes.GetByName(app_attr_name).SelectDisplayValues(get_record_val)
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                except:
+                    Trace.Write("Error: PickList --> Can't get the attribute or assign value")
+            elif data_type == "CHECKBOX" or formula_data_type == "CHECKBOX":
+                # Trace.Write(str(app_attr_name) + " Error: PickList -->" + str(data_type))
+                # Trace.Write("Error: PickList1 -->" + str(get_record_val))
+                if str(get_record_val).upper() == "TRUE" or str(get_record_val) == "1":
+                    Trace.Write(str(app_attr_name) + " Error: PickList33 -->" + str(data_type))
+                    Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("1")
+                    #   Product.Attributes.GetByName(app_attr_name).Access = 1
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                elif str(get_record_val) == "False" or str(get_record_val) == "0":
+                    Product.Attributes.GetByName(app_attr_name).SelectDisplayValue("0")
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                    # Product.Attributes.GetByName(app_attr_name).Access = 0
+                elif str(get_record_val)=="":
+                    Trace.Write('Empty get_rec_val')
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                    
+                    
+            elif data_type == "NUMBER" or data_type == "CURRENCY":
+                # Trace.Write("Error444444: PickList1 -->" + str(get_record_val))
+                # Trace.Write("Error444444: PickList1 -->" + str(app_attr_name))
+                # Trace.Write("Error444444: PickList1 -->" + str(Decimal_Value))
+                if data_type == "CURRENCY":
+                    Sym = "$"
+                else:
+                    Sym = ""
+                if get_record_val is not None and str(get_record_val).strip() != "" and str(get_record_val).strip() != "0":
+                    
+                    if str(qstn_rec_id) == "SYSEFL_TQ_00895":
+                        data_type = "number"
+                    #Trace.Write("Error444444: PickList12 -->" + str(Decimal_Value))
+                    my_format = "{:." + str(Decimal_Value) + "f}"
+                    
+                    get_record_val = Sym + str(my_format.format(round(float(get_record_val), int(Decimal_Value))))
+                    
+                    Product.Attributes.GetByName(app_attr_name).AssignValue((get_record_val))
+                #Trace.Write("check1111122223Decimal_Value" + str(Product.Attributes.GetByName(app_attr_name).GetValue()))
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+
+            elif formula_data_type == "PERCENT" or data_type == "PERCENT":
+                #Trace.Write("258 get_record_val" + str(get_record_val))
+                if get_record_val:
+                    my_format = "{:." + str(Decimal_Value) + "f}"
+                    get_record_val = str(my_format.format(round(float(get_record_val), int(Decimal_Value))))
+                    Product.Attributes.GetByName(app_attr_name).AssignValue((get_record_val))
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                
+
+            elif data_type == "FORMULA" and formula_data_type != "CHECKBOX":
+                if tab_name == "Quotes" and detail_and_qstn_obj.API_FIELD_NAME == "SOURCE_CONTRACT_ID":
+                    
+                    load_attr_with_anchor_tag(record_obj, "SOURCE_CONTRACT_ID", get_record_val, app_attr_name, "|Contracts")
+                elif (tab_name == "My Approval Queue" and detail_and_qstn_obj.API_FIELD_NAME == "APRTRXOBJ_ID") or (tab_name == "Team Approval Queue" and detail_and_qstn_obj.API_FIELD_NAME == "APRTRXOBJ_ID"):
+                    load_attr_with_anchor_tag(record_obj, "APRTRXOBJ_ID", get_record_val, app_attr_name, "|Quotes")
+                else:
+                    if detail_and_qstn_obj.API_FIELD_NAME == "EXCHANGE_RATE_DATE" and get_record_val != "":
+                        get_record_val = str(get_record_val).split(" ")[0]
+                    try:
+                        Trace.Write(">>>>>>>>>>>>" + str(app_attr_name))
+                        Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                    except:
+                        Product.Attributes.GetByName(app_attr_name).AssignValue(get_record_val)
+
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                    app_lookup_attr_name = "QSTN_LKP_{}".format(qstn_rec_id)
+                    Trace.Write("app_lookup_attr_name----------> " + str(app_lookup_attr_name))
+                    try:
+                        lookup_detail_obj = Sql.GetFirst(
+                            """
+                                                SELECT 
+                                                    API_NAME
+                                                FROM 
+                                                    SYOBJD (NOLOCK) 
+                                                WHERE 
+                                                    LTRIM(RTRIM(DATA_TYPE))='LOOKUP' AND 
+                                                    LTRIM(RTRIM(OBJECT_NAME))='{Obj_Name}' AND
+                                                    LTRIM(RTRIM(LOOKUP_API_NAME))='{LOOKUP_API_NAME}'
+                                            """.format(
+                                Obj_Name=table_name, LOOKUP_API_NAME=str(detail_and_qstn_obj.API_FIELD_NAME).strip(),
                             )
+                        )
+
+                        if lookup_detail_obj is not None:
+                            if Product.Attributes.GetByName(app_lookup_attr_name):
+                                Product.Attributes.GetByName(app_lookup_attr_name).Allowed = False
+                            custom_obj_val = get_value_from_obj(record_obj, str(lookup_detail_obj.API_FIELD_NAME))
+                            if Product.Attributes.GetByName(app_lookup_attr_name) is not None and custom_obj_val:
+                                Product.Attributes.GetByName(app_lookup_attr_name).HintFormula = custom_obj_val
+                            elif Product.Attributes.GetByName(app_lookup_attr_name) is not None:
+                                Product.Attributes.GetByName(app_lookup_attr_name).HintFormula = ""
+                    except:
+                        Trace.Write("ERROR")
+            elif data_type == "LOOKUP":
+                Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+            elif data_type == "DATE/TIME":
+                try:
+                    get_record_val=datetime.strptime(str(get_record_val), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y %I:%M:%S %p')
+                    Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                except:
+                    Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+            else:
+                if str(app_attr_name) == "QSTN_SYSEFL_AC_00067_LONG":
+                    GetMsgBoyVal = Sql.GetFirst(
+                        " select * FROM ACEMTP(NOLOCK) WHERE EMAIL_TEMPLATE_RECORD_ID = '" + str(record_id) + "' "
+                    )
+                    if GetMsgBoyVal is not None:
+                        get_record_val = (
+                            str(GetMsgBoyVal.MESSAGE_BODY)
+                            + ""
+                            + str(GetMsgBoyVal.MESSAGE_BODY_2)
+                            + ""
+                            + str(GetMsgBoyVal.MESSAGE_BODY_3)
+                            + ""
+                            + str(GetMsgBoyVal.MESSAGE_BODY_4)
+                            + ""
+                            + str(GetMsgBoyVal.MESSAGE_BODY_5)
+                        )
+                    Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
+                    Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+                else:    
+                    try:
                         Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
                         Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                    else:    
-                        try:
-                            Product.Attributes.GetByName(app_attr_name).AssignValue(str(get_record_val))
-                            Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-                        except:
-                            Product.Attributes.GetByName(app_attr_name).AssignValue(get_record_val)
-                            Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
-        except:
-            Trace.Write("EXCEPT: Attribute not loaded for Quote explorer")
+                    except:
+                        Product.Attributes.GetByName(app_attr_name).AssignValue(get_record_val)
+                        Product.Attributes.GetByName(app_attr_name).Access = AttributeAccess.ReadOnly
+    
 
 
 def process_edit(details_and_qstns_obj, record_obj, record_id, tab_name, product_name, table_name):
