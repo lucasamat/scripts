@@ -1666,14 +1666,18 @@ class approvalCenter:
 								max_round = get_chain_max_round.appround       
 						## to get REQUESTOR_COMMENTS of particular chain starts         
 						GetMinQuery = Sql.GetFirst(
-						"""select ACAPTX.APRCHNSTP_ID, ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND as appround
+						"""select ACAPTX.APRCHNSTP_ID, ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND as appround
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 							where ACAPMA.{ApiName} = '{revision_rec_id}' AND ACAPTX.APPROVAL_ROUND = '{round}' AND ACAPTX.APRCHN_ID = '{approval_chain}'""".format(
 							revision_rec_id=  self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=str(max_round),approval_chain= str(approval_chain)
 						)
 						)
-						requestor_comments = GetMinQuery.REQUESTOR_COMMENTS  
+						requestor_comments = GetMinQuery.REQUESTOR_COMMENTS
+						if GetMinQuery:
+							Product.SetGlobal("CurrentApprovalTransaction",GetMinQuery.APPROVAL_TRANSACTION_RECORD_ID)
+						else:
+							Product.SetGlobal("CurrentApprovalTransaction","")
 					#A055S000P01-3376 - END      
 				else:                    
 					requestor_comments = ""
