@@ -3131,6 +3131,7 @@ class approvalCenter:
 				else:
 					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = revision_record_id))
 				self.QuoteNumber = approval_queue_obj.APPROVAL_RECORD_ID
+				Trace.Write("@3134---Approval Record Id--"+str(self.QuoteNumber))
 		else:
 			try:
 				TransactionId = self.QuoteNumber
