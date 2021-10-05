@@ -36,12 +36,14 @@ try:
 	userId = Param.user_id
 	quote_revision_record_id = Param.quote_rev_id
 	where_condition =  Param.where_condition
+	uptime_list = list(Param.uptime_list)
 	#serviceId =Param.serviceId
 except: 
 	TreeParam = ""
 	userId = ""
 	quote_revision_record_id = ""
 	where_condition = ""
+	uptime_list = ""
 	#serviceId =''
 try:
 	serviceId =Param.serviceId
