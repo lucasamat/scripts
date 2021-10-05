@@ -217,18 +217,19 @@ def valuedriver_onchage():
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
-	for key,val in get_selected_value.items():
-		Trace.Write('get_selected_value---217--'+str(key))
-		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
-		if get_coefficient_val:
-			if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
-				entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
-				entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
-				Trace.Write(str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+"---entitlement_string2---"+str(entitlement_string2))
-				entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
-				input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
-				Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
-		Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=input_xml.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
+	if get_ent_type_val == "VALUE DRIVER":
+		for key,val in get_selected_value.items():
+			Trace.Write('get_selected_value---217--'+str(key))
+			get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
+			if get_coefficient_val:
+				if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
+					entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+					entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
+					Trace.Write(str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+"---entitlement_string2---"+str(entitlement_string2))
+					entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
+					input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
+					Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
+			Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=input_xml.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
 	return inputXML
 
 def tool_uptimetimprovementdriver_update():
