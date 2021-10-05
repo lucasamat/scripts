@@ -270,23 +270,23 @@ def tool_uptimetimprovementdriver_update():
 		Sql.RunQuery(Update_xml_uptime)	
 	
 
-#try:
-if LEVEL == 'SERVICE_LEVEL':
-	service_level_predefined()
-elif LEVEL == 'UPTIME_IMPROVEMENT':
-	tool_uptimetimprovementdriver_update()
-elif LEVEL == 'ONCHNGAE_DRIVERS':
-	valuedriver_onchage()
-else:
-	obj_list = ['SAQSFE','SAQSGE','SAQSCE']
-	for obj in obj_list:
-		if obj == "SAQSFE":
-			fab_predefined()
-		elif obj == "SAQSGE":
-			greenbook_predefined()
-		elif obj == "SAQSCE":
-			equipment_predefined()
-# except Exception as e:
-# 	Log.Info('error--'+str(e))
+try:
+	if LEVEL == 'SERVICE_LEVEL':
+		service_level_predefined()
+	elif LEVEL == 'UPTIME_IMPROVEMENT':
+		tool_uptimetimprovementdriver_update()
+	elif LEVEL == 'ONCHNGAE_DRIVERS':
+		valuedriver_onchage()
+	else:
+		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
+		for obj in obj_list:
+			if obj == "SAQSFE":
+				fab_predefined()
+			elif obj == "SAQSGE":
+				greenbook_predefined()
+			elif obj == "SAQSCE":
+				equipment_predefined()
+except Exception as e:
+	Log.Info('error--'+str(e))
 
 #predefined_logic()
