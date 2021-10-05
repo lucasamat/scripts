@@ -5140,12 +5140,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 											SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = 'Z0016' AND ISNULL(SAQSCO.INCLUDED,'') = 'CHAMBER' AND SAQSCA.INCLUDED = 1		
 										""".format(PriceTemp=price_temp, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id))	 
 
-		###Value Driver coefficient Sum up  starts
-		if price_temp:
-			
-			temp_count = Sql.GetFirst("SELECT count(*) as cnt FROM {} ".format(price_temp))
-			Trace.Write('price_temp---'+str(temp_count.cnt))
-
+		
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 		
