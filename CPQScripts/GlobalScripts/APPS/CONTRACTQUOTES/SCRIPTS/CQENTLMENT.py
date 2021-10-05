@@ -2017,7 +2017,7 @@ class Entitlements:
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		
 		
-		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
+		if AttributeList:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
 			for key,val in ENT_IP_DICT.items():
