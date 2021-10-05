@@ -2023,6 +2023,7 @@ class Entitlements:
 		cust_seg = 'AGS_'+str(serviceId)+'_VAL_CSTSEG'
 		serv_comp = 'AGS_'+str(serviceId)+'_VAL_SVCCMP'
 		qa_req = 'AGS_'+str(serviceId)+'_QLYREQ'
+		uptime_list = [base_percent,target_percent,uptime_key]
 		if AttributeList:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
@@ -2033,7 +2034,7 @@ class Entitlements:
 					getvalue = str((val).split("||")[0]).strip()
 					get_selected_dict[str(key)] = getvalue
 			Trace.Write(str(get_selected_dict)+'--getvalue--'+str(getvalue))
-			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict})
+			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list})
 		# else:
 		# 	try:			
 		# 		responsive_where = where.replace('SRC.','')
