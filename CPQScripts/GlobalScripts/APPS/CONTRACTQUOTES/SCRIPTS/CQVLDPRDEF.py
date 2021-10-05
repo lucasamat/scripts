@@ -33,20 +33,25 @@ except:
 	LEVEL = ""
 try:
 	TreeParam = Param.treeparam
-	userId = Param.user_id
-	quote_revision_record_id = Param.quote_rev_id
-	where_condition =  Param.where_condition
-	uptime_list = list(Param.uptime_list)
-	get_ent_type_val = Param.get_ent_type_val
-	#serviceId =Param.serviceId
+	
 except: 
 	TreeParam = ""
-	userId = ""
+try:
+	quote_revision_record_id = Param.quote_rev_id
+except:
 	quote_revision_record_id = ""
-	where_condition = ""
+try:
+	where_condition =  Param.where_condition
+except:
+	where_condition =  ""	
+try:
+	uptime_list = list(Param.uptime_list)
+except:
 	uptime_list = ""
+try:
+	get_ent_type_val = Param.get_ent_type_val
+except:
 	get_ent_type_val = ""
-	#serviceId =''
 try:
 	serviceId =Param.serviceId
 except:
