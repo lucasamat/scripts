@@ -212,6 +212,7 @@ def valuedriver_onchage():
 	entxmldict = {}
 	input_xml =''
 	Trace.Write('get_selected_value---205--'+str(type(get_selected_value)))
+	Trace.Write('uptime_list---333--'+str(uptime_list))
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
 	for rec in getxml_query:
 		updateentXML = rec.ENTITLEMENT_XML
