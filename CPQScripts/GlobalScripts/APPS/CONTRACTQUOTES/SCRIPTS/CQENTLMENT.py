@@ -2025,7 +2025,7 @@ class Entitlements:
 					getvalue = str((val).split("||")[0]).strip()
 			Trace.Write('getvalue--'+str(getvalue))
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList,'get_selected_value':getvalue})
-		if objName:
+		else:
 			try:			
 				responsive_where = where.replace('SRC.','')
 				where_condition = responsive_where
