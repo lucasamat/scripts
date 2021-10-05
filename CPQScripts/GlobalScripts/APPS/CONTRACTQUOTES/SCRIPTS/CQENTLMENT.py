@@ -2016,13 +2016,7 @@ class Entitlements:
 				whereReq = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		
-		if objName:
-			try:			
-				responsive_where = where.replace('SRC.','')
-				where_condition = responsive_where
-				predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
-			except Exception as e:
-				Log.Info("UPTIME_IMPROVEMENT"+str(e))
+		
 		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
@@ -2031,7 +2025,13 @@ class Entitlements:
 					getvalue = str((val).split("||")[0]).strip()
 			Trace.Write('getvalue--'+str(getvalue))
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList,'get_selected_value':getvalue})
-			
+		if objName:
+			try:			
+				responsive_where = where.replace('SRC.','')
+				where_condition = responsive_where
+				predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
+			except Exception as e:
+				Log.Info("UPTIME_IMPROVEMENT"+str(e))	
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(type(AttributeList)))
