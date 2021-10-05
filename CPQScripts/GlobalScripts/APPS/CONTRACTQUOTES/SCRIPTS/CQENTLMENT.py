@@ -2017,6 +2017,9 @@ class Entitlements:
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		
 		Trace.Write('AttributeList----'+str(AttributeList))
+		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
+		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
+		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
 		if AttributeList:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
