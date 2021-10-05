@@ -15,7 +15,7 @@ Param = Param  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 import clr
-
+import re
 clr.AddReference("Webcom.Configurator")
 import System.Net
 import sys
@@ -2017,6 +2017,10 @@ class Entitlements:
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		
 		
+		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
+			responsive_where = where.replace('SRC.','')
+			getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQTSE {}""".format(str(responsive_where)))
+			get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' ".format(AttributeList, serviceId))
 
 		Trace.Write("ENT_IP_DICT---"+str(ENT_IP_DICT))
 		if ENT_IP_DICT != '':
