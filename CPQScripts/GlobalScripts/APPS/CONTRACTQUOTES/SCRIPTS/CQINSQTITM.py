@@ -1152,11 +1152,11 @@ class ContractQuoteItem:
             return True
 
 try:
-    where_condition_string = Param.where_string
+    where_condition_string = Param.WhereString
 except:
     where_condition_string = ''
 
-action_type = Param.action_type
+action_type = Param.ActionType
 parameters = {}
 parameters['action_type']=str(action_type)
 if action_type == "UPDATE_LINE_ITEMS":
@@ -1179,10 +1179,10 @@ if action_type == "UPDATE_LINE_ITEMS":
     if "FABLOCATION_ID" in where_condition_string:
         pattern = re.compile(r'FABLOCATION_ID\s*\=\s*\'([^>]*?)\'')
         result = re.search(pattern, where_condition_string).group(1)
-        parameters['fab_id']=str(result)
+        parameters['fablocation_id']=str(result)
 else:
-    parameters['contract_quote_record_id']=str(Param.contract_quote_record_id)
-    parameters['contract_quote_revision_record_id']=str(Param.contract_quote_revision_record_id)
-    parameters['service_id']=str(Param.service_id)
+    parameters['contract_quote_record_id']=str(Param.ContractQuoteRecordId)
+    parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
+    parameters['service_id']=str(Param.ServiceId)
     
 ContractQuoteItem(parameters)
