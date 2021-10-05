@@ -2019,7 +2019,7 @@ class Entitlements:
 		
 		if AttributeList in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
 			responsive_where = where.replace('SRC.','')
-			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId})
+			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList})
 			
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
