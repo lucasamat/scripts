@@ -211,14 +211,15 @@ def valuedriver_onchage():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 
-			Trace.Write("entxmldict---"+str(entxmldict))
-	Trace.Write("entxmldict--2037----"+str(entxmldict))
+			#Trace.Write("entxmldict---"+str(entxmldict))
+	#Trace.Write("entxmldict--2037----"+str(entxmldict))
 	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
 		entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
 		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
-
+		Trace.Write(str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+"---entitlement_string2---"+str(entitlement_string2))
 		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
 		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
+		Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
 		Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=input_xml.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
 	return inputXML
 
