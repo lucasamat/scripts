@@ -22,7 +22,7 @@ except:
 	quote_record_id = ""
 	
 try:
-	get_selected_value = eval(Param.get_selected_dict)
+	get_selected_value = eval(Param.get_selected_value)
 except:
 	get_selected_value = ""
 try:
