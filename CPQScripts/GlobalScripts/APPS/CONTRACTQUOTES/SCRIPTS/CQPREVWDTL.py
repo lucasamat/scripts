@@ -964,7 +964,8 @@ except:
 	quote_revision_record_id = ""
 
 if ACTION == 'QIPOPUPSER':
-	ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
+	#ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
+	pass
 
 # commented the code(Approvals node functionality in Quotes explorer) -start    
 # elif ACTION == 'SUBMITQUOTE':
