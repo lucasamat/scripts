@@ -1961,7 +1961,7 @@ class Entitlements:
 		except:
 			Log.Info("Newdict----748--> "+str(Newdict))
 			AttributeList = ','.join(map(int, Newdict))
-		Trace.Write("Attr List-> "+str(AttributeList))
+		Trace.Write("Attr List-> "+str(type(AttributeList)))
 		# try:
 		# 	Getprevdict = eval(Param.getprevdict)
 		# except:
