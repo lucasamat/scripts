@@ -2511,7 +2511,7 @@ def Related_Sub_Banner(
 		if get_quote_status and str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' and Submit_approval == "True" and Quote_item_obj is not None:
 			Trace.Write("submit for approval")
 			sec_rel_sub_bnr += (
-					'<button class="btnconfig cust_def_btn submitbutton" data-target="#submit_for_approval" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
+					'<button class="btnconfig cust_def_btn submitbutton" data-target="#cont_viewModalSection" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
 					)
 		# else:
 		# 	Trace.Write("elseeee")
