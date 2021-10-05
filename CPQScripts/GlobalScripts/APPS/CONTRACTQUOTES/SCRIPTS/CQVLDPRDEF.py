@@ -235,7 +235,7 @@ def tool_uptimetimprovementdriver_update():
 	base_percent = 'AGS_'+str(dynamic_service)+'_KPI_SDUTBP'
 	target_percent = 'AGS_'+str(dynamic_service)+'_KPI_SDUTTP'
 	uptime_key = 'AGS_'+str(dynamic_service)+'_VAL_UPIMPV'
-	getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM '{TreeParam}' '{where_condition}' """.format(TreeParam=TreeParam,where_condition=where_condition))
+	getxml_query = Sql.GetFirst(""" SELECT ENTITLEMENT_XML FROM {TreeParam} {where_condition}""".format(TreeParam=TreeParam,where_condition=where_condition))
 	entxmldict = {}
 	querystring =''
 	uptime=''
@@ -267,7 +267,7 @@ def tool_uptimetimprovementdriver_update():
 				Trace.Write("if-----"+str(querystring))
 			else:
 				querystring = querystring + entxmldict[key]
-		Update_xml_uptime = ("UPDATE '{TreeParam}' SET ENTITLEMENT_XML = '{querystring}' '{where_condition}'".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
+		Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
 		Sql.RunQuery(Update_xml_uptime)	
 	
 
