@@ -213,7 +213,7 @@ def valuedriver_onchage():
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
-	for key,val in get_selected_value:
+	for key,val in get_selected_value.items():
 		Trace.Write('get_selected_value---217--'+str(key))
 		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
 		if get_coefficient_val:
