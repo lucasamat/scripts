@@ -1232,6 +1232,7 @@ class SyncQuoteAndCustomTables:
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
 						if payload_json.get('SAQSCO'):
+							Log.Info("saqsco in json")
 							for service_level_equipment_json_data in payload_json.get('SAQSCO'):
 								if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in service_level_covered_object_data:
 									service_level_covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
@@ -1604,6 +1605,7 @@ class SyncQuoteAndCustomTables:
 																SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_RECORD_ID,EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,  FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, MNT_PLANT_ID, '' as MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, '{QuoteId}' as QUOTE_ID, '{QuoteName}' as QUOTE_NAME, '{QuoteRecordId}' as QUOTE_RECORD_ID,  EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENT_STATUS, GREENBOOK, GREENBOOK_RECORD_ID FROM MAEQUP (NOLOCK) WHERE ACCOUNT_ID= '{AccountId}'
 																) A""".format(UserId=User.Id,UserName=User.Name,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, FabLocationId=fab_location_id, AccountId=custom_fields_detail.get("STPAccountID"),quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 							if service_level_covered_object_data:
+								Log.Info("service_level_covered_object_data-------")
 								for service_level_equipment_json_data in payload_json.get('SAQSCO'):
 									quote_fab_equipments_obj = Sql.GetList("Select QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID FROM SAQFEQ(NOLOCK) WHERE EQUIPMENT_ID IN ({equipment_ids}) AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(equipment_ids = service_level_equipment_json_data.get('EQUIPMENT_IDS'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
 									quote_service_obj = Sql.GetFirst("select SERVICE_TYPE from SAQTSV where SERVICE_ID = '{Service_Id}' AND QUOTE_RECORD_ID = '{quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Service_Id = service_level_equipment_json_data.get('SERVICE_OFFERING_ID'),quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")))
@@ -1626,6 +1628,7 @@ class SyncQuoteAndCustomTables:
 															"service_type" : service_type,
 														},
 													)
+								Log.Info("CQCRUDOPTN script called ")
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
