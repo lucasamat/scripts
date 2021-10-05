@@ -202,7 +202,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 def valuedriver_onchage():
 	entxmldict = {}
 	input_xml =''
-	Trace.Write('get_selected_value---'+str(get_selected_value))
+	Trace.Write('get_selected_value---205--'+str(type(get_selected_value)))
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
 	for rec in getxml_query:
 		updateentXML = rec.ENTITLEMENT_XML
@@ -214,6 +214,7 @@ def valuedriver_onchage():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 	for key,val in get_selected_value:
+		Trace.Write('get_selected_value---217--'+str(key))
 		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
 		if get_coefficient_val:
 			if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
