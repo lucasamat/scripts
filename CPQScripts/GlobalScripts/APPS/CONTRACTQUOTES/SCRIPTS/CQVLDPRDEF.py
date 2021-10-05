@@ -110,12 +110,12 @@ def fab_predefined():
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
 		updateentXML = rec.ENTITLEMENT_XML
-		Log.Info('updateentXML---'+str(updateentXML))
+		#Log.Info('updateentXML---'+str(updateentXML))
 		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
-			Log.Info('sub_string---'+str(sub_string))
+			#Log.Info('sub_string---'+str(sub_string))
 			x=re.findall(pattern_name,sub_string)
-			Log.Info('x---'+str(x))
+			#Log.Info('x---'+str(x))
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
 			if 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
@@ -156,9 +156,9 @@ def service_level_predefined():
 	updateentXML = getxml_query.ENTITLEMENT_XML
 	for m in re.finditer(pattern_tag, updateentXML):
 		sub_string = m.group(1)
-		Log.Info('sub_string---'+str(sub_string))
+		#Log.Info('sub_string---'+str(sub_string))
 		x=re.findall(pattern_name,sub_string)
-		Log.Info('x---'+str(x))
+		#Log.Info('x---'+str(x))
 
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING LEVEL' ".format(TreeParam))
 
