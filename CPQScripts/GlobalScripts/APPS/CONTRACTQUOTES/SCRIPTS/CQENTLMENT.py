@@ -2033,14 +2033,14 @@ class Entitlements:
 		# 	except Exception as e:
 		# 		Log.Info("UPTIME_IMPROVEMENT"+str(e))	
 		if ENT_IP_DICT != '':
-			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
+			#Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
-			Trace.Write("where---"+str(where))
+			#Trace.Write("where---"+str(where))
 			#Trace.Write("Getprevdict---"+str(Getprevdict))
 			Trace.Write("objName-ent"+str(objName))
 			Trace.Write("attributemy"+str(AttributeList))
