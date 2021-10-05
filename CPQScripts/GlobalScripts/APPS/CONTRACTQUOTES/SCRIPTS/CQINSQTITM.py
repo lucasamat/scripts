@@ -23,8 +23,12 @@ class ContractQuoteItem:
         self.action_type = kwargs.get('action_type')
         self.service_id = kwargs.get('service_id')
         self.greenbook_id = kwargs.get('greenbook_id')
-        self.fab_id = kwargs.get('fab_id')
+        self.fab_id = kwargs.get('fablocation_id')
     
+	def _quote_item_delete_process(self):
+		delete_saqsco_statement = """DELETE FROM SAQSCO A JOIN SAQSCE B ON A.EQUIPMENT_RECORD_ID = B.EQUIPMENT_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID=B.QTESRVCOB_RECORD_ID AND A.QUOTE_RECORD_ID=B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID WHERE A.QUOTE_RECORD_ID='{}' AND A.QTEREV_RECORD_ID='{}' AND B.CONFIGURATION_STATUS ='INCOMPLETE' """.format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id))
+		Sql.RunQuery(delete_saqsco_statement)
+  
     def _quote_item_insert_process(self, where_string='', max_quote_item_count=0):
         # Insert SAQITM - Start
         Sql.RunQuery("""
