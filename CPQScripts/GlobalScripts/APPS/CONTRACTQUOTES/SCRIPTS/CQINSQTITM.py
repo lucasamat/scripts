@@ -1160,8 +1160,6 @@ action_type = Param.action_type
 parameters = {}
 parameters['action_type']=str(action_type)
 if action_type == "UPDATE_LINE_ITEMS":
-    parameters = {}
-    parameters['action_type']=str(action_type)
     if "QUOTE_RECORD_ID" in where_condition_string:
         pattern = re.compile(r'QUOTE_RECORD_ID\s*\=\s*\'([^>]*?)\'')
         result = re.search(pattern, where_condition_string).group(1)
