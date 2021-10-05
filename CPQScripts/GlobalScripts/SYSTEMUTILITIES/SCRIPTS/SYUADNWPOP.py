@@ -4933,6 +4933,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 							'<div class="row ma_text_align_sixteen">'
 						)
+					SaveCancel += ('<div id="HideSavecancel">')
 					for btn in html_content:
 						cancel_button = ""
 						save_button = ""
@@ -4941,9 +4942,11 @@ def POPUPLISTVALUEADDNEW(
 							if "CANCEL" in str(btn.HTML_CONTENT):
 								cancel_button = str(btn.HTML_CONTENT).format(event_name=event_name)
 								sec_str += str(cancel_button)
+								SaveCancel += str(cancel_button)
 							if "SAVE" in str(btn.HTML_CONTENT):
 								save_button = str(btn.HTML_CONTENT).format(ObjectName=ObjectName, func2=func2)
 								sec_str += str(save_button)
+								SaveCancel += str(save_button)
 							# else:
 							#     cancel_button = ""
 							#     save_button = ""
@@ -4952,9 +4955,7 @@ def POPUPLISTVALUEADDNEW(
 							cancel_button = ""
 							save_button = ""
 
-					SaveCancel = (
-						'<div id="HideSavecancel">' +str(save_button)+ str(cancel_button)+"</div>"
-					)
+					SaveCancel += ("</div>")
 
 					sec_str += "</div>"
 				#Trace.Write("cancel__J "+str(cancel_button)+" save_J "+str(save_button))
