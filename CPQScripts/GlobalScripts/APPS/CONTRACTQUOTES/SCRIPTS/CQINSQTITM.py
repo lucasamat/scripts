@@ -1148,8 +1148,10 @@ class ContractQuoteItem:
                 self._quote_items_insert()
                 #batch_group_record_id = str(Guid.NewGuid()).upper()
                 self._insert_quote_item_fab_location()
-                self._insert_quote_item_greenbook()			
-            return True
+                self._insert_quote_item_greenbook()		
+        else:
+            pass	
+        return True
 
 try:
     where_condition_string = Param.WhereString
