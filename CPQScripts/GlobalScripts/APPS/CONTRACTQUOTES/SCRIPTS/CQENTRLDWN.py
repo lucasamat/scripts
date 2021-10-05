@@ -648,7 +648,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								
 								get_code = re.findall( re.compile(r'<ENTITLEMENT_VALUE_CODE>([^>]*?)</ENTITLEMENT_VALUE_CODE>'), get_val_list[0] )[0]
 								get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )[0]
-								Log.Info("value driver-fab-"+str(get_value)+str(value.ENTITLEMENT_ID))
+								#Log.Info("value driver-fab-"+str(get_value)+str(value.ENTITLEMENT_ID))
 
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
@@ -753,7 +753,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 							get_code = value.ENTITLEMENT_VALUE_CODE
 							###updating exisitng value for non editable value drivers
 							if val_list and get_previous_xml and  value.ENTITLEMENT_ID in val_list:
-								Log.Info("value driver--"+str(value.ENTITLEMENT_ID))
+								#Log.Info("value driver--"+str(value.ENTITLEMENT_ID))
 								get_val_list =re.findall(r''+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</ENTITLEMENT_DISPLAY_VALUE>',get_previous_xml.ENTITLEMENT_XML)
 								
 								get_code = re.findall( re.compile(r'<ENTITLEMENT_VALUE_CODE>([^>]*?)</ENTITLEMENT_VALUE_CODE>'), get_val_list[0] )[0]
