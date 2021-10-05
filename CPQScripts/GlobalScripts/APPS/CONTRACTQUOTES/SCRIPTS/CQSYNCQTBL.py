@@ -1614,7 +1614,8 @@ class SyncQuoteAndCustomTables:
 									service_type = quote_service_obj.SERVICE_TYPE
 									quote_record_id = contract_quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 									contract_quote_record_id = Product.SetGlobal("contract_quote_record_id",str(quote_record_id))
-									#Log.Info("service_id------->"+str(service_id))
+									Log.Info("service_id service_id------->"+str(service_id))
+									Log.Info("service_type service_type------->"+str(service_type))
 									ScriptExecutor.ExecuteGlobal(
 															"CQCRUDOPTN",
 														{
