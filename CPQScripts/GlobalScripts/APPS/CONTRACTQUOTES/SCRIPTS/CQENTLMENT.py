@@ -2034,7 +2034,7 @@ class Entitlements:
 				Log.Info("UPTIME_IMPROVEMENT"+str(e))	
 		if ENT_IP_DICT != '':
 			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
-			Trace.Write("inside Attr List------> "+str(type(AttributeList)))
+			Trace.Write("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
