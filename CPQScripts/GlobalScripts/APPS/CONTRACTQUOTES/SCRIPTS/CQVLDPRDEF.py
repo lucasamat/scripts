@@ -109,7 +109,9 @@ def fab_predefined():
 		updateentXML = rec.ENTITLEMENT_XML
 		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
+			Log.Info('sub_string---'+str(sub_string))
 			x=re.findall(pattern_name,sub_string)
+			Log.Info('x---'+str(x))
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
 			if 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
