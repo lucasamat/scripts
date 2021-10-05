@@ -3210,6 +3210,7 @@ class approvalCenter:
 				BtnName,
 				ApprTrxRecId,
 			)
+			Trace.Write("HTML STR---"+str(Htmlstr))
 		except Exception, e:
 			self.exceptMessage = (
 				"ACSECTACTN : PreviewApproversComments : EXCEPTION : ERROR IN APPROVAL COMMENT : EXCEPTION E : " + str(e)
