@@ -2020,11 +2020,13 @@ class Entitlements:
 		if AttributeList:
 			responsive_where = where.replace('SRC.','')
 			getvalue =''
+			get_selected_dict = {}
 			for key,val in ENT_IP_DICT.items():
 				if str(key) in ["AGS_Z0091_VAL_CSTSEG","AGS_Z0091_VAL_SVCCMP","AGS_Z0091_VAL_QLYREQ"]:
 					getvalue = str((val).split("||")[0]).strip()
+					get_selected_dict[str(key)] = getvalue
 			Trace.Write('getvalue--'+str(getvalue))
-			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList,'get_selected_value':getvalue})
+			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'AttributeList':AttributeList,'get_selected_value':get_selected_dict})
 		# else:
 		# 	try:			
 		# 		responsive_where = where.replace('SRC.','')

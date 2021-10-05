@@ -16,7 +16,7 @@ from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
 Sql = SQL()
 try:
-	AttributeList= Param.AttributeList
+	AttributeList= list(Param.AttributeList)
 except:
 	AttributeList = ''
 try:
