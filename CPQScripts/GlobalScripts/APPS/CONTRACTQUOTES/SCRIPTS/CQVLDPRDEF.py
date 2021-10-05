@@ -278,7 +278,7 @@ try:
 				greenbook_predefined()
 			elif obj == "SAQSCE":
 				equipment_predefined()
-except:
-	pass
+except Exception as e:
+	Log.Info('error--'+str(e))
 
 #predefined_logic()
