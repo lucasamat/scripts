@@ -153,8 +153,9 @@ def service_level_predefined():
 	updateentXML = getxml_query.ENTITLEMENT_XML
 	for m in re.finditer(pattern_tag, updateentXML):
 		sub_string = m.group(1)
+		Log.Info('sub_string---'+str(sub_string))
 		x=re.findall(pattern_name,sub_string)
-		entxmldict[x[0]]=sub_string
+		Log.Info('x---'+str(x))
 
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING LEVEL' ".format(TreeParam))
 
