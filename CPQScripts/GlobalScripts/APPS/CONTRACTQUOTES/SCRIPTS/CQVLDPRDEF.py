@@ -15,17 +15,14 @@ from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
 Sql = SQL()
-try:
-	AttributeList= list(Param.AttributeList)
-except:
-	AttributeList = ''
+
 try:
 	quote_record_id = Param.quote_rec_id
 except:
 	quote_record_id = ""
 	
 try:
-	get_selected_value = Param.get_selected_value
+	get_selected_value = eval(Param.get_selected_dict)
 except:
 	get_selected_value = ""
 try:
@@ -202,9 +199,9 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 
 def valuedriver_onchage():
 	entxmldict = {}
+	input_xml =''
+	Trace.Write('get_selected_value---'+str(get_selected_value))
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
-	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(AttributeList, serviceId,get_selected_value))
-	
 	for rec in getxml_query:
 		updateentXML = rec.ENTITLEMENT_XML
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -214,16 +211,16 @@ def valuedriver_onchage():
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
-
-			#Trace.Write("entxmldict---"+str(entxmldict))
-	#Trace.Write("entxmldict--2037----"+str(entxmldict))
-	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
-		entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
-		entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
-		Trace.Write(str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+"---entitlement_string2---"+str(entitlement_string2))
-		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
-		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
-		Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
+	for key,val in get_selected_value:
+		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
+		if get_coefficient_val:
+			if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
+				entitlement_string2 = entxmldict[get_coefficient_val.ENTITLEMENT_ID]
+				entitlement_string2 = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entitlement_string2)
+				Trace.Write(str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+"---entitlement_string2---"+str(entitlement_string2))
+				entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
+				input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
+				Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
 		Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=input_xml.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
 	return inputXML
 
