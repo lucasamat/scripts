@@ -3352,9 +3352,9 @@ elif ACTION in ["SUBMIT_FOR_APPROVAL", "RECALL"]:
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.SubmitForApproval(RequestDesc, ACTION))
 # A043S001P01 -  11384  Start
 elif ACTION =="STATUS":
-	valllllll = objDef.approvalstatusbar(QuoteNumber)
 	
-	ApiResponse = ApiResponseFactory.JsonResponse(valllllll)
+	
+	ApiResponse = ApiResponseFactory.JsonResponse(objDef.approvalstatusbar(QuoteNumber))
 elif ACTION == "RichText":
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.RichTextArea(QuoteNumber))
 # A043S001P01 -  11384  End
