@@ -784,9 +784,9 @@ class Entitlements:
 											attributedefaultvalue.append(prdvalue["id"])
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
-			Trace.Write('524---658-attributes_service_sublist--'+str(attributes_service_sublist))
+			Trace.Write('524--787-attributes_service_sublist--'+str(attributes_service_sublist))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
-			Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
+			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
