@@ -1189,7 +1189,7 @@ class Entitlements:
 					# 		ent_disp_val = attributevalues.get(key)
 
 					# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
-					# Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+					Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
