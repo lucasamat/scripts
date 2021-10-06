@@ -1262,7 +1262,6 @@ class Entitlements:
 								EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getPSE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getSSE.LABOR_RATE_GLCURR)))
 								list3[str(a.EQUIPMENT_ID)] = EntCost3
 								#list3.append(EntCost3)
-								Trace.Write("LIST3----"+str(list3))
 								EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getPSE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getSSE.LABOR_RATE_GLCURR)))
 								list4[str(a.EQUIPMENT_ID)] = EntCost4
 								#list4.append(EntCost4)
