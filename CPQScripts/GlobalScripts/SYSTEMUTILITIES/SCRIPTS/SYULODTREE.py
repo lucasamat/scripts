@@ -2042,6 +2042,7 @@ class TreeView:
     									else:
 											if entitlement_obj is not None and entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Some Exclusions":
 												subTabName = str(getRightView.SUBTAB_NAME)	
+										Trace.Write("**2045 Subtab-->"+str(subTabName))
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
