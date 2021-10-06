@@ -1214,6 +1214,16 @@ class EntitlementView():
 											sec_str_faccur = ""
 											attr_value = val.ENTITLEMENT_DISPLAY_VALUE
 											#Trace.Write("DType free1---"+str(attr_value)+str(attrSysId)+str(add_style))
+											Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
+											if Status :
+												if Status.APPROVAL_REQUIRED == True:
+											
+													imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
+												else:
+													imgstr  = ""
+											else:
+												imgstr  = ""
+
 											if str(attrSysId) == "AGS_REL_STDATE":
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
