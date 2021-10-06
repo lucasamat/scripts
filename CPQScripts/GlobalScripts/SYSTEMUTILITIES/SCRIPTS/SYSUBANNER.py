@@ -1130,6 +1130,17 @@ def Related_Sub_Banner(
 					FourthValue = str(TreeParam)
 					FifthLable = "Equipment"
 					FifthValue = "ALL" 
+				elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quotes':
+					Trace.Write("inside round")
+					getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
+					PrimaryLable = 'Approval Chain ID'
+					PrimaryValue = str(TreeParentParam)
+					SecondLable = 'Approval Chain Name'
+					SecondValue = getchain.APRCHN_NAME
+					ThirdLable = 'Approval Round'
+					ThirdValue = str(TreeParam).split(' ')[1]
+					FourthLable = ''
+					FourthValue = ''
 				if (TreeSuperParentParam == "Sending Equipment" or TreeSuperParentParam == "Receiving Equipment") and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" ):
 					Trace.Write("Fab23")
 					if subTabName == "Equipment Fab Value Drivers":
@@ -1646,29 +1657,7 @@ def Related_Sub_Banner(
 		FifthValue = str(EquipmentId)
 		SixthLable = "Serial Number"
 		SixthValue = str(SerialNumber)
-	elif TreeSuperParentParam == 'Approvals' and CurrentTabName == 'Quotes':
-		Trace.Write("inside round")
-		getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
-		PrimaryLable = 'Approval Chain ID'
-		PrimaryValue = str(TreeParentParam)
-		SecondLable = 'Approval Chain Name'
-		SecondValue = getchain.APRCHN_NAME
-		ThirdLable = 'Approval Round'
-		ThirdValue = str(TreeParam).split(' ')[1]
-		FourthLable = ''
-		FourthValue = ''
-		# FourthLable = "GreenBook" 
-		# FourthValue = str(TreeParam)
-		# FifthLable = "Equipment ID"
-		# FifthValue = "All"
-		# if SerialNumber is not None:
-		#     SixthLable = "Serial Number"
-		#     SixthValue = str(SerialNumber)
-		# else:
-		#     SixthLable = ""
-		#     SixthValue = ""
-	#elif str(TreeParentParam) == "Complementary Products" or str(TreeParentParam) == "Comprehensive Services":
-		#Trace.Write('-----------'+str(TreeParentParam)+str(TreeParam))
+	
 	elif TopSuperParentParam == "Comprehensive Services" or TopSuperParentParam == "Add-On Products":	
 		try:
 			getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
