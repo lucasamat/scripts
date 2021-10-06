@@ -1440,7 +1440,7 @@ class EntitlementView():
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
-										+ '" value = "'+str(attrValue)+'" title="'+str(attrValue)+'" onchange="editent_bt(this)" >'
+										+ '" value = "'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'" title="'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'" onchange="editent_bt(this)" >'
 										+ "</input>"
 									)
 								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
