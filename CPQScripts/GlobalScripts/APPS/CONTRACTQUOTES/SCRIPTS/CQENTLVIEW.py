@@ -1439,7 +1439,6 @@ class EntitlementView():
 										attrValue = ''
 									if attrSysId in inserted_value_dict.keys():
 										attr_value = inserted_value_dict[attrSysId]
-									Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attr_value) )
 									sec_str1 += (
 										'<input class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 										+ str(attrSysId)
