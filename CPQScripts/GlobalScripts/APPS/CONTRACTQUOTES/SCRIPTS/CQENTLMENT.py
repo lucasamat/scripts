@@ -1104,9 +1104,7 @@ class Entitlements:
 						getpriceimpact = priceimapct
 					try:
 						attr_level_pricing = eval(Product.GetGlobal('attr_level_pricing')) 
-						Trace.Write("try----")
 						getcostbaborimpact = attr_level_pricing[key]['price']
-						Trace.Write("get_cost---"+str(get_cost))
 
 					except:	
 						attr_level_pricing = ""
