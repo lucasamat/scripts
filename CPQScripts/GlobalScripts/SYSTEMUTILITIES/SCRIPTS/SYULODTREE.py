@@ -586,6 +586,8 @@ class TreeView:
 							RelatedId = getRightView.RELATED_RECORD_ID
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ProductDict["id"] = RelatedId
+							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 							if subTabName:
 								if subTabName == "Spare Parts Line Item Details":
