@@ -836,10 +836,10 @@ class Entitlements:
 								) A""".format(description=description,service_id = service_id,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
 					##A055S000P01-9646  code ends..
 					if key == "AGS_Z0091_KPI_BPTKPI" and str((val).split("||")[0]).strip() == "Yes":
-						
+						tbrow={}
 						Trace.Write("YES to Bonus & Penalty Tied to KPI")
 						Quote.SetGlobal("KPI","YES")
-						getAddOn = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
+						getAddOn = Sql.GetFirst("SELECT * FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
 						GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 						if getAddOn is None:
 							
@@ -906,6 +906,25 @@ class Entitlements:
 									<PRICE_METHOD>{pm}</PRICE_METHOD>
 									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
+								tbrow["QUOTE_ID"]=getAddOn.QUOTE_ID
+								tbrow["ENTITLEMENT_XML"]=insertservice
+								tbrow["QUOTE_NAME"]=getAddOn.QUOTE_NAME
+								tbrow["QUOTE_RECORD_ID"]=getAddOn.QUOTE_RECORD_ID
+								tbrow["QTESRV_RECORD_ID"]=getAddOn.QUOTE_SERVICE_RECORD_ID
+								tbrow["SERVICE_RECORD_ID"]=getAddOn.SERVICE_RECORD_ID
+								tbrow["SERVICE_ID"]=getAddOn.SERVICE_ID
+								tbrow["SERVICE_DESCRIPTION"]=getAddOn.SERVICE_DESCRIPTION
+								tbrow["CPS_CONFIGURATION_ID"]=getAddOn.CPS_CONFIGURATION_ID
+								tbrow["SALESORG_RECORD_ID"]=getAddOn.SALESORG_RECORD_ID
+								tbrow["SALESORG_ID"]=getAddOn.SALESORG_ID
+								tbrow["SALESORG_NAME"]=getAddOn.SALESORG_NAME
+								tbrow["CPS_MATCH_ID"] = getAddOn.CPS_MATCH_ID
+								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+								tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
+								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+								tbrow["CONFIGURATION_STATUS"] = getAddOn.configuration_status
 								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
