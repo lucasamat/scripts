@@ -1091,7 +1091,7 @@ class Entitlements:
 					except:	
 						attr_level_pricing = ""
 						Trace.Write("")
-					Trace.Write("attr_level_pricing"+str(attr_level_pricing))
+					#Trace.Write("attr_level_pricing"+str(attr_level_pricing))
 					if attr_level_pricing:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
