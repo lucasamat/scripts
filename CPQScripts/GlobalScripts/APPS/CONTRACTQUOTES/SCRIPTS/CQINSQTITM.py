@@ -26,7 +26,14 @@ class ContractQuoteItem:
         self.fablocation_id = kwargs.get('fablocation_id')
         self.equipment_id = kwargs.get('equipment_id')
         self.quote_type = ''
-    
+        self.set_contract_quote_related_details()
+
+    def set_contract_quote_related_details(self):
+        contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+        if contract_quote_obj:
+            self.contract_quote_id = contract_quote_obj.QUOTE_ID        
+        return True
+
     def _quote_item_delete_process(self):
         for delete_object in ['SAQIAE','SAQICA', 'SAQIEN', 'SAQICO']:
             delete_statement = "DELETE DT FROM " +str(delete_object)+" DT JOIN SAQSCE ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND SAQSCE.CONFIGURATION_STATUS ='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))
@@ -555,7 +562,7 @@ class ContractQuoteItem:
             # Insert Quote Items Covered Object - End
         
         # Tool base quote item insert
-        service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID,  FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+        service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
         if service_obj:
             quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=service_obj.SERVICE_ID))
             item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
@@ -568,7 +575,9 @@ class ContractQuoteItem:
                 item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
             self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='')
             # Insert Quote Items Covered Object - End
-        
+        quote_obj = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
+		time.sleep( 5 )
+		Quote.RefreshActions()
         self._native_quote_item_insert()
 
         # Sql.RunQuery("DELETE FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")				
