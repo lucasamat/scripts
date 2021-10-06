@@ -588,7 +588,6 @@ class TreeView:
 							ProductDict["id"] = RelatedId
 
 							if subTabName:
-    							Trace.Write('**591')
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
@@ -1096,7 +1095,6 @@ class TreeView:
 									RelatedName = getRightView.RELATED_LIST_NAME
 									
 									if subTabName:
-    									Trace.Write('**1099')
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
@@ -1247,8 +1245,7 @@ class TreeView:
 							RelatedId = getRightView.RELATED_RECORD_ID
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ChildDict["id"] = RelatedId
-							if subTabName:				
-								Trace.Write('**1251')			
+							if subTabName:							
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
@@ -2363,9 +2360,14 @@ class TreeView:
 							RelatedName = getRightView.RELATED_LIST_NAME
 							ChildDict["id"] = RelatedId
 							if subTabName:
-    							Trace.Write("**2366")
 								if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 									subTabName = ""
+								elif subTabName =="Spare Parts Line Item Details":
+									Trace.Write("Build Spare Parts line item details condition")
+									subTabName = ""
+									doc_type = Sql.GetFirst("select DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id))
+									if doc_type.DOCTYP_ID =="ZWK1":
+										subTabName = str(getRightView.SUBTAB_NAME)
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
@@ -2706,7 +2708,6 @@ class TreeView:
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
 								if subTabName:
-    								Trace.Write('**2709')
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
 									SubTabList.append(
