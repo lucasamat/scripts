@@ -2149,7 +2149,7 @@ class TreeView:
 								+ "' ORDER BY abs(DISPLAY_ORDER)"
 							)   """                          
 							# Getting parent node for Add-On Products 
-							if NodeText in ('Z0091','Z0092','Z0035','Z0004','Z0007','Z0010','Z0016'): 
+							if NodeText in ('Z0091','Z0092','Z0035','Z0004','Z0100','Z0110','Z0006','Z0007','Z0010','Z0016'): 
 								Product.SetGlobal("SERVICE",NodeText)
 							
 							# PROFILE EXPLORER
