@@ -1285,7 +1285,6 @@ class Entitlements:
 								#list4.append(EntCost4)
 								Trace.Write("LIST4----"+str(list4))
 							else:
-								Trace.Write("else---")
 								EntCost = 0.00
 								EntCost2 = 0.00
 								EntCost3 = 0.00
