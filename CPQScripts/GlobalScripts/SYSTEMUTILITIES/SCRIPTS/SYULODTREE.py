@@ -2363,7 +2363,7 @@ class TreeView:
 								if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 									subTabName = ""
 								elif subTabName =="Spare Parts Line Item Details":
-    								Trace.Write("Build Spare Parts line item details condition")
+									Trace.Write("Build Spare Parts line item details condition")
 									subTabName = ""
 									doc_type = Sql.GetFirst("select DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id))
 									if doc_type.DOCTYP_ID =="ZWK1":
