@@ -2039,13 +2039,7 @@ class Entitlements:
 					get_selected_dict[str(key)] = getvalue
 			Trace.Write(str(get_selected_dict)+'--getvalue--'+str(get_ent_type_val))
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
-		# else:
-		# 	try:			
-		# 		responsive_where = where.replace('SRC.','')
-		# 		where_condition = responsive_where
-		# 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
-		# 	except Exception as e:
-		# 		Log.Info("UPTIME_IMPROVEMENT"+str(e))	
+	
 		if ENT_IP_DICT != '':
 			#Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
@@ -2069,13 +2063,6 @@ class Entitlements:
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
-			#A055S000P01-9645 VD code commented
-			# if objName == 'SAQSCE':
-			# 	try:			
-			# 		where_condition = responsive_where
-			# 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": self.ContractRecordId,"level":"UPTIME_IMPROVEMENT", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid})
-			# 	except Exception as e:
-			# 		Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
 		return True
 
 	def popup(self):
