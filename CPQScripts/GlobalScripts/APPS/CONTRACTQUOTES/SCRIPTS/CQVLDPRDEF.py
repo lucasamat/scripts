@@ -213,8 +213,8 @@ def valuedriver_onchage():
 	input_xml =''
 	querystring =''
 	uptime=''
-	Trace.Write('get_selected_value---205--'+str(type(get_selected_value)))
-	Trace.Write('uptime_list---333--'+str(uptime_list))
+	Trace.Write('get_selected_value---205--'+str(get_selected_value))
+	
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
 	updateentXML =''
 	for rec in getxml_query:
@@ -226,7 +226,7 @@ def valuedriver_onchage():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 	#if str(get_ent_type_val).upper() in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
-	Trace.Write('get_ent_type_val------'+str(get_ent_type_val))
+	Trace.Write('updateentXML-----'+str(updateentXML))
 	for key,val in get_selected_value.items():
 		Trace.Write('get_selected_value---217--'+str(key))
 		get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMETITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' and PRENVL.ENTITLEMENT_DISPLAY_VALUE='{}'".format(str(key), serviceId,val))
