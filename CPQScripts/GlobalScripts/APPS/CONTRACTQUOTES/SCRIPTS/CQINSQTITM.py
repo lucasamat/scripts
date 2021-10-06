@@ -896,5 +896,5 @@ else:
     parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
     parameters['service_id']=str(Param.ServiceId)
     
-contract_quote_item_obj = ContractQuoteItem(parameters)
+contract_quote_item_obj = ContractQuoteItem(**parameters)
 contract_quote_item_obj._do_opertion()
