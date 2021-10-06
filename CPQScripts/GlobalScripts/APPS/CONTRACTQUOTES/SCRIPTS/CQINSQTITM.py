@@ -24,14 +24,17 @@ class ContractQuoteItem:
         self.service_id = kwargs.get('service_id')
         self.greenbook_id = kwargs.get('greenbook_id')
         self.fablocation_id = kwargs.get('fablocation_id')
-        self.equipment_id = kwargs.get('equipment_id')
-        self.quote_type = ''
+        self.equipment_id = kwargs.get('equipment_id')        
         self.set_contract_quote_related_details()
 
     def set_contract_quote_related_details(self):
-        contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+        contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
         if contract_quote_obj:
-            self.contract_quote_id = contract_quote_obj.QUOTE_ID        
+            self.contract_quote_id = contract_quote_obj.QUOTE_ID      
+            self.quote_type = contract_quote_obj.QUOTE_TYPE
+        else:
+            self.contract_quote_id = ''  
+            self.quote_type = ''
         return True
 
     def _quote_item_delete_process(self):
