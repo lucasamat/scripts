@@ -908,24 +908,24 @@ class Entitlements:
 									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
 								get_service_data = Sql.GetFirst("select * from SAQTSV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0046'")
 								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
-								tbrow["QUOTE_ID"]=getAddOn.QUOTE_ID
+								tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
 								tbrow["ENTITLEMENT_XML"]=insertservice
-								tbrow["QUOTE_NAME"]=getAddOn.QUOTE_NAME
-								tbrow["QUOTE_RECORD_ID"]=getAddOn.QUOTE_RECORD_ID
-								tbrow["QTESRV_RECORD_ID"]=getAddOn.QUOTE_SERVICE_RECORD_ID
-								tbrow["SERVICE_RECORD_ID"]=getAddOn.SERVICE_RECORD_ID
-								tbrow["SERVICE_ID"]=getAddOn.SERVICE_ID
-								tbrow["SERVICE_DESCRIPTION"]=getAddOn.SERVICE_DESCRIPTION
-								tbrow["CPS_CONFIGURATION_ID"]=getAddOn.CPS_CONFIGURATION_ID
-								tbrow["SALESORG_RECORD_ID"]=getAddOn.SALESORG_RECORD_ID
-								tbrow["SALESORG_ID"]=getAddOn.SALESORG_ID
-								tbrow["SALESORG_NAME"]=getAddOn.SALESORG_NAME
-								tbrow["CPS_MATCH_ID"] = getAddOn.CPS_MATCH_ID
+								tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
+								tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
+								tbrow["QTESRV_RECORD_ID"]=get_service_data.QUOTE_SERVICE_RECORD_ID
+								tbrow["SERVICE_RECORD_ID"]=get_service_data.SERVICE_RECORD_ID
+								tbrow["SERVICE_ID"]=get_service_data.SERVICE_ID
+								tbrow["SERVICE_DESCRIPTION"]=get_service_data.SERVICE_DESCRIPTION
+								tbrow["CPS_CONFIGURATION_ID"]=get_service_data.CPS_CONFIGURATION_ID
+								tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
+								tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
+								tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
+								tbrow["CPS_MATCH_ID"] = get_service_data.CPS_MATCH_ID
 								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
 								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 								tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
 								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-								tbrow["CONFIGURATION_STATUS"] = getAddOn.configuration_status
+								tbrow["CONFIGURATION_STATUS"] = get_service_data.CONFIGURATION_STATUS
 								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
