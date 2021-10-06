@@ -216,11 +216,11 @@ def valuedriver_onchage():
 	Trace.Write('get_selected_value---205--'+str(type(get_selected_value)))
 	Trace.Write('uptime_list---333--'+str(uptime_list))
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
+	updateentXML =''
 	for rec in getxml_query:
 		updateentXML = rec.ENTITLEMENT_XML
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
-		updateentXML = rec.ENTITLEMENT_XML
 		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
