@@ -890,6 +890,10 @@ class Entitlements:
 											get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 											get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+									if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
+										tool_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
+									else:
+										tool_desc = ''
 									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 									<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
 									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -901,7 +905,7 @@ class Entitlements:
 									<IS_DEFAULT>{is_default}</IS_DEFAULT>
 									<PRICE_METHOD>{pm}</PRICE_METHOD>
 									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
 									Trace.Write('insertservice---'+str(insertservice))
 								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
