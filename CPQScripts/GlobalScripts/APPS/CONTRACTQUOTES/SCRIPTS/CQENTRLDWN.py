@@ -619,6 +619,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
+					Log.Info("val_list--fab-"+str(val_list))
 					for fab in get_value_query:
 						where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
 						get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
@@ -727,6 +728,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
+					Log.Info("val_list--grn-"+str(val_list))
 					for grnbk in get_value_query:
 						where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
 						updateentXML = ""
@@ -792,6 +794,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 					val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 					val_list.extend(val_coeff)
+				Log.Info("val_list--equp-"+str(val_list))
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
