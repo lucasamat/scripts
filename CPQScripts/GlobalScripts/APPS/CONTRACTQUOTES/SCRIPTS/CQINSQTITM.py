@@ -458,7 +458,8 @@ class ContractQuoteItem:
 		Quote.RefreshActions()
 	
 	def _native_quote_item_insert(self):
-		self._native_quote_edit()
+		if not Quote:
+			self._native_quote_edit()
 		# Native Cart Items Insert - Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		for quote_item_obj in quote_items_obj:
@@ -475,6 +476,8 @@ class ContractQuoteItem:
 		return True
 	
 	def _native_quote_item_update(self):
+		if not Quote:
+			self._native_quote_edit()
 		get_curr = str(Quote.GetCustomField('Currency').Content)
 		#assigning value to quote summary starts
 		total_cost = 0.00
