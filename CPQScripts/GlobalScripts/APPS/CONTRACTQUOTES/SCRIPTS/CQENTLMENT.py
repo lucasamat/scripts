@@ -906,6 +906,7 @@ class Entitlements:
 									<PRICE_METHOD>{pm}</PRICE_METHOD>
 									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+								get_service_data = Sql.GetFirst("select * from SAQTSV where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0046'")
 								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 								tbrow["QUOTE_ID"]=getAddOn.QUOTE_ID
 								tbrow["ENTITLEMENT_XML"]=insertservice
