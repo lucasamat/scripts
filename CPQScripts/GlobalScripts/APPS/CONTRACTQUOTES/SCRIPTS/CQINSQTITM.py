@@ -23,7 +23,8 @@ class ContractQuoteItem:
 		self.action_type = kwargs.get('action_type')
 		self.service_id = kwargs.get('service_id')
 		self.greenbook_id = kwargs.get('greenbook_id')
-		self.fab_id = kwargs.get('fablocation_id')
+		self.fablocation_id = kwargs.get('fablocation_id')
+		self.equipment_id = kwargs.get('equipment_id')
 	
 	def _quote_item_delete_process(self):
 		for delete_object in ['SAQIAE','SAQICA', 'SAQIEN', 'SAQICO']:
@@ -1193,6 +1194,10 @@ if action_type == "UPDATE_LINE_ITEMS":
 		pattern = re.compile(r'FABLOCATION_ID\s*\=\s*\'([^>]*?)\'')
 		result = re.search(pattern, where_condition_string).group(1)
 		parameters['fablocation_id']=str(result)
+	if "EQUIPMENT_ID" in where_condition_string:
+		pattern = re.compile(r'EQUIPMENT_ID\s*\=\s*\'([^>]*?)\'')
+		result = re.search(pattern, where_condition_string).group(1)
+		parameters['equipment_id']=str(result)
 else:
 	parameters['contract_quote_record_id']=str(Param.ContractQuoteRecordId)
 	parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
