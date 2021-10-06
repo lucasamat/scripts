@@ -1437,6 +1437,7 @@ class EntitlementView():
 									
 									if attrValue == "DefaultValue":
 										attrValue = ''
+									attr_value = ""
 									if attrSysId in inserted_value_dict.keys():
 										attr_value = inserted_value_dict[attrSysId]
 									sec_str1 += (
