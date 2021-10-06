@@ -3239,6 +3239,7 @@ class approvalCenter:
 					value = "APPROVALS"
 			elif value =="BOOKING SUBMITTED" or value == "CONVERTED TO CONTRACT":
 				value = "APPROVED"
+			Trace.Write("VALUE---"+str(value))
 			return value
 		except Exception, e:
 			
