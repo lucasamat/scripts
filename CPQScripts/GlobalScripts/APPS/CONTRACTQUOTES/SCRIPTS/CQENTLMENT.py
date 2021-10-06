@@ -733,7 +733,7 @@ class Entitlements:
 				Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
-			getvalue = ""
+			getvalue = insertservice =""
 			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
 			Fullresponse = Product.GetGlobal('Fullresponse')
 			configuration_status =""
@@ -906,7 +906,6 @@ class Entitlements:
 									<PRICE_METHOD>{pm}</PRICE_METHOD>
 									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-									Trace.Write('insertservice---'+str(insertservice))
 								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
