@@ -131,6 +131,10 @@ def CoveredObjEntitlement():
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
 	sendEmail(level)
+	try:
+		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
+	except Exception:
+		Log.Info("Exception in Quote Item insert") 
 
 
 def CoveredObjItemEntitlement():
