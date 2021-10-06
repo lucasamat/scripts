@@ -3222,14 +3222,14 @@ class approvalCenter:
 		try:  
 			##Showing approve/reject in list grid starts
 			
-			#Trace.Write("QuoteNumber"+str(QuoteNumber)+str(grid_flag))
+			Trace.Write("QuoteNumber"+str(QuoteNumber)+str(grid_flag))
 			if grid_flag == 'True':
 				
 				get_quote_id = Sql.GetFirst("SELECT ACAPMA.APRTRXOBJ_RECORD_ID FROM ACAPMA (NOLOCK) INNER JOIN ACAPTX (NOLOCK) ON ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID WHERE ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(QuoteNumber)+"' ")
 				QuoteNumber = get_quote_id.APRTRXOBJ_RECORD_ID
 			##Showing approve/reject in list grid ends
 			
-			GETstatus=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) WHERE  MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' ")
+			GETstatus=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) WHERE  MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id) + "'")
 			value = str(GETstatus.QUOTE_STATUS)             
 			if value =="IN-PROGRESS":
 				a=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID  INNER JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
