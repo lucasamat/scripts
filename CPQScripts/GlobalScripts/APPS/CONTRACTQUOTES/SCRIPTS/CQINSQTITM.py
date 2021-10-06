@@ -436,6 +436,100 @@ class ContractQuoteItem:
         # Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'		
         return True
     
+    def _native_quote_item_insert(self):
+        # Native Cart Items Insert - Start
+        quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+        for quote_item_obj in quote_items_obj:
+            product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
+            if product_obj:
+                temp_product = Quote.AddItem('vc_config_cpq')
+                for product in temp_product:
+                    product.PartNumber = str(quote_item_obj.SERVICE_ID)
+                    product.Description = product_obj.PRODUCT_NAME
+                    product.QUOTE_ID.Value = self.contract_quote_id		
+                    product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
+                Quote.Save()			
+        # Native Cart Items Insert - End
+        return True
+    
+    def _native_quote_item_update(self):
+        get_curr = str(Quote.GetCustomField('Currency').Content)
+        #assigning value to quote summary starts
+        total_cost = 0.00
+        total_target_price = 0.00
+        total_ceiling_price = 0.00
+        total_sls_discount_price = 0.00
+        total_bd_margin = 0.00
+        total_bd_price = 0.00
+        total_sales_price = 0.00
+        total_yoy = 0.00
+        total_year_1 = 0.00
+        total_year_2 = 0.00
+        total_year_3 = 0.00
+        total_year_4 = 0.00
+        total_year_5 = 0.00
+        total_tax = 0.00
+        total_extended_price = 0.00
+        total_model_price = 0.00        
+        items_data = {}
+        item_obj = Sql.GetFirst("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '{}%'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
+        if item_obj:
+            items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST_WOSEEDSTOCK, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+        
+        for item in Quote.MainItems:
+            item_number = int(item.RolledUpQuoteItem)
+            if item_number in items_data.keys():
+                if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
+                    item_data = items_data.get(item_number)
+                    item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
+                    total_cost += float(item_data.get('TOTAL_COST'))
+                    item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
+                    total_target_price += item.TARGET_PRICE.Value
+                    total_ceiling_price += item.CEILING_PRICE.Value
+                    total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
+                    total_bd_margin += item.BD_PRICE_MARGIN.Value
+                    total_bd_price += item.BD_PRICE.Value
+                    total_sales_price += item.NET_PRICE.Value
+                    if item.MODEL_PRICE.Value:
+                        total_model_price += item.MODEL_PRICE.Value
+                    else:
+                        total_model_price +=0.00
+                    item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
+                    total_yoy += item.YEAR_OVER_YEAR.Value
+                    item.YEAR_1.Value = item_data.get('YEAR_1')
+                    total_year_1 += item.YEAR_1.Value
+                    item.YEAR_2.Value = item_data.get('YEAR_2')
+                    total_year_2 += item.YEAR_2.Value
+                    item.YEAR_3.Value = item_data.get('YEAR_3')
+                    total_year_3 += item.YEAR_3.Value
+                    item.YEAR_4.Value = item_data.get('YEAR_4')
+                    total_year_4 += item.YEAR_4.Value
+                    item.YEAR_5.Value = item_data.get('YEAR_5')
+                    total_year_5 += item.YEAR_5.Value
+                    total_tax += item.TAX.Value
+                    item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
+                    total_extended_price += item.NET_VALUE.Value	
+                    item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
+        Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
+        Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
+        Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
+        Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
+        Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
+        Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
+        Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
+        Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
+        Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
+        Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+        Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
+        Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
+        Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
+        Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
+        Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
+        #Quote.GetCustomField('DISCOUNT').Content = str(total_discount) + " %"
+        Quote.Save()
+        #assigning value to quote summary ends
+        return True
+
     def _quote_items_insert(self):
         #Temp table for storing price and cost impact
         # price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)
@@ -473,21 +567,9 @@ class ContractQuoteItem:
                 item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
             self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='')
             # Insert Quote Items Covered Object - End
-
-        # Native Cart Items Insert - Start
-        quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-        for quote_item_obj in quote_items_obj:
-            product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
-            if product_obj:
-                temp_product = Quote.AddItem('vc_config_cpq')
-                for product in temp_product:
-                    product.PartNumber = str(quote_item_obj.SERVICE_ID)
-                    product.Description = product_obj.PRODUCT_NAME
-                    product.QUOTE_ID.Value = self.contract_quote_id		
-                    product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
-                Quote.Save()			
-        # Native Cart Items Insert - End
         
+        self._native_quote_item_insert()
+
         # Sql.RunQuery("DELETE FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")				
         # CQPARTIFLW.iflow_pricing_call(self.user_name,self.contract_quote_id,self.contract_quote_revision_record_id)
         
@@ -593,85 +675,7 @@ class ContractQuoteItem:
                 JOIN SAQSCE (NOLOCK) ON SAQSCE.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQSCE.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSCE.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSCE.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE'
             )OQ""".format(UserId=self.user_id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
         
-        get_curr = str(Quote.GetCustomField('Currency').Content)
-        #assigning value to quote summary starts
-        total_cost = 0.00
-        total_target_price = 0.00
-        total_ceiling_price = 0.00
-        total_sls_discount_price = 0.00
-        total_bd_margin = 0.00
-        total_bd_price = 0.00
-        total_sales_price = 0.00
-        total_yoy = 0.00
-        total_year_1 = 0.00
-        total_year_2 = 0.00
-        total_year_3 = 0.00
-        total_year_4 = 0.00
-        total_year_5 = 0.00
-        total_tax = 0.00
-        total_extended_price = 0.00
-        total_model_price = 0.00
-        #total_discount =0.00
-        #getdecimalplacecurr =decimal_val = ''
-        items_data = {}
-        item_obj = Sql.GetFirst("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '{}%'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
-        if item_obj:
-            items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST_WOSEEDSTOCK, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
-        #curr_symbol_obj = Sql.GetFirst("select DISPLAY_DECIMAL_PLACES from PRCURR where CURRENCY = '"+str(getdecimalplacecurr)+"'")
-        #decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
-        #formatting_string = "{0:." + str(decimal_val) + "f}"
-        for item in Quote.MainItems:
-            item_number = int(item.RolledUpQuoteItem)
-            if item_number in items_data.keys():
-                if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
-                    item_data = items_data.get(item_number)
-                    item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
-                    total_cost += float(item_data.get('TOTAL_COST'))
-                    item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
-                    total_target_price += item.TARGET_PRICE.Value
-                    total_ceiling_price += item.CEILING_PRICE.Value
-                    total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
-                    total_bd_margin += item.BD_PRICE_MARGIN.Value
-                    total_bd_price += item.BD_PRICE.Value
-                    total_sales_price += item.NET_PRICE.Value
-                    if item.MODEL_PRICE.Value:
-                        total_model_price += item.MODEL_PRICE.Value
-                    else:
-                        total_model_price +=0.00
-                    item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
-                    total_yoy += item.YEAR_OVER_YEAR.Value
-                    item.YEAR_1.Value = item_data.get('YEAR_1')
-                    total_year_1 += item.YEAR_1.Value
-                    item.YEAR_2.Value = item_data.get('YEAR_2')
-                    total_year_2 += item.YEAR_2.Value
-                    item.YEAR_3.Value = item_data.get('YEAR_3')
-                    total_year_3 += item.YEAR_3.Value
-                    item.YEAR_4.Value = item_data.get('YEAR_4')
-                    total_year_4 += item.YEAR_4.Value
-                    item.YEAR_5.Value = item_data.get('YEAR_5')
-                    total_year_5 += item.YEAR_5.Value
-                    total_tax += item.TAX.Value
-                    item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
-                    total_extended_price += item.NET_VALUE.Value	
-                    item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
-        Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
-        Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
-        Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
-        Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
-        Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
-        Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
-        Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
-        Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
-        Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
-        Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
-        Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
-        Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
-        Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
-        Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
-        Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
-        #Quote.GetCustomField('DISCOUNT').Content = str(total_discount) + " %"
-        Quote.Save()
-        #assigning value to quote summary ends
+        self._native_quote_item_update()
         
         # price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
         
