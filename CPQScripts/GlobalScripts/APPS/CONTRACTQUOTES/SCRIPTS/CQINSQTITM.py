@@ -25,6 +25,7 @@ class ContractQuoteItem:
         self.greenbook_id = kwargs.get('greenbook_id')
         self.fablocation_id = kwargs.get('fablocation_id')
         self.equipment_id = kwargs.get('equipment_id')
+        self.quote_type = ''
     
     def _quote_item_delete_process(self):
         for delete_object in ['SAQIAE','SAQICA', 'SAQIEN', 'SAQICO']:
