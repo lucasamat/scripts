@@ -1100,6 +1100,7 @@ class EntitlementView():
 										
 
 									elif DType == "Check Box" :
+										Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
 										STDVALUES = SqlHelper.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
