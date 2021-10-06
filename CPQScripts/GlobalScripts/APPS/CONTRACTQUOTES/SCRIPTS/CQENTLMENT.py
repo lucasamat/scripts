@@ -2022,7 +2022,7 @@ class Entitlements:
 		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
 		cust_seg = 'AGS_'+str(serviceId)+'_VAL_CSTSEG'
 		serv_comp = 'AGS_'+str(serviceId)+'_VAL_SVCCMP'
-		qa_req = 'AGS_'+str(serviceId)+'_QLYREQ'
+		qa_req = 'AGS_'+str(serviceId)+'_VAL_QLYREQ'
 		get_ent_type_val =''
 		uptime_list = [base_percent,target_percent,uptime_key]
 		if AttributeList:
