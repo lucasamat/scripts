@@ -1094,6 +1094,7 @@ def Related_Sub_Banner(
 						ThirdLable = "Greenbook"
 						ThirdValue = ListKey[3]
 					if ObjName == 'ACACHR':
+						Trace.Write("1097---")
 						FourthLable = "Approval Round"
 						FourthValue = TreeParam
 
