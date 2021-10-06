@@ -1432,7 +1432,7 @@ class EntitlementView():
 								elif DType == "Free Input, no Matching":
 									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
-									#Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
+									Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue))
 									if attrValue == "DefaultValue":
 										attrValue = ''
 									sec_str1 += (
