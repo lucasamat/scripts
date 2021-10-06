@@ -2048,7 +2048,7 @@ class TreeView:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
 									RelatedName = getRightView.RELATED_LIST_NAME
-									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss"+str(subTabName)+'--1947---'+str(NodeText))
+									Trace.Write(str(ObjRecId)+"---SUBTAB_NAMEsss*"+str(subTabName)+'--1947---'+str(NodeText))
 										
 									if subTabName:
 										SubTabList.append(
