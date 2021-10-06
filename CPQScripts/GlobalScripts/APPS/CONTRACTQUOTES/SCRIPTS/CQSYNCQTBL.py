@@ -1623,10 +1623,10 @@ class SyncQuoteAndCustomTables:
 															"ActionType" : "ADD_COVERED_OBJ",
 															"Opertion"    : "ADD",
 															"AllValues"  : False,
-															"trigger_from"   : "python_script",
+															"TriggerFrom"   : "python_script",
 															"Values"	  : quote_fab_equipments_record_id,
-															"service_id"  : service_id,
-															"service_type" : service_type,
+															"ServiceId"  : service_id,
+															"ServiceType" : service_type,
 														},
 													)
 								Log.Info("CQCRUDOPTN script called ")
