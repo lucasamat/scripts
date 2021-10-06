@@ -8,8 +8,10 @@
 
 import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
-from SYDATABASE import SQL
 import re
+import time
+from SYDATABASE import SQL
+
 Sql = SQL()
 
 
@@ -28,13 +30,15 @@ class ContractQuoteItem:
         self.set_contract_quote_related_details()
 
     def set_contract_quote_related_details(self):
-        contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+        contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
         if contract_quote_obj:
             self.contract_quote_id = contract_quote_obj.QUOTE_ID      
             self.quote_type = contract_quote_obj.QUOTE_TYPE
+            self.sale_type = contract_quote_obj.SALE_TYPE
         else:
             self.contract_quote_id = ''  
             self.quote_type = ''
+            self.sale_type = ''
         return True
 
     def _quote_item_delete_process(self):
@@ -447,7 +451,13 @@ class ContractQuoteItem:
         # Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'		
         return True
     
+    def _native_quote_edit(self):
+        Quote = QuoteHelper.Edit(self.contract_quote_id)
+        time.sleep(5)
+        Quote.RefreshActions()
+    
     def _native_quote_item_insert(self):
+        self._native_quote_edit()
         # Native Cart Items Insert - Start
         quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
         for quote_item_obj in quote_items_obj:
@@ -578,9 +588,8 @@ class ContractQuoteItem:
                 item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
             self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='')
             # Insert Quote Items Covered Object - End
-        quote_obj = QuoteHelper.Edit(get_quote_info_details.QUOTE_ID)
-		time.sleep( 5 )
-		Quote.RefreshActions()
+
+        self._native_quote_edit()
         self._native_quote_item_insert()
 
         # Sql.RunQuery("DELETE FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")				
