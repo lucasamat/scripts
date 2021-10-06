@@ -761,9 +761,11 @@ class EntitlementView():
 
 			#Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
 			#Trace.Write('after inserting in table---where-----'+str(where))
+			inserted_value_dict = {}
 			getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
 			GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'&lt;','<' ),'&gt;','>') as ENTITLEMENT_DESCRIPTION,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
-			
+			for val in GetXMLsecField:
+				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write('766---ObjectName-----'+str(ObjectName))
 			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
@@ -1432,15 +1434,18 @@ class EntitlementView():
 								elif DType == "Free Input, no Matching":
 									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
-									Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attrValue)+'--'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'---'+str(val.ENTITLEMENT_VALUE_CODE))
+									
 									if attrValue == "DefaultValue":
 										attrValue = ''
+									if attrSysId in inserted_value_dict.keys():
+										attr_value = inserted_value_dict[attrSysId]
+									Trace.Write(str(attrSysId)+'--attrValue---3594---'+str(attr_value) )
 									sec_str1 += (
 										'<input class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
-										+ '" value = "'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'" title="'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'" onchange="editent_bt(this)" >'
+										+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="editent_bt(this)" >'
 										+ "</input>"
 									)
 								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
