@@ -953,7 +953,9 @@ class CONTAINER:
                                             if "CONTRACT_VALID_TO" in str(where):
                                                 where = str(where).replace("CONTRACT_VALID_TO","SAQTRV.CONTRACT_VALID_TO")
                                             if "SAQTRV.SAQTRV.CONTRACT_VALID_FROM" in str(where):
-                                                where = str(where).replace("SAQTRV.SAQTRV.CONTRACT_VALID_FROM","SAQTRV.CONTRACT_VALID_FROM")        
+                                                where = str(where).replace("SAQTRV.SAQTRV.CONTRACT_VALID_FROM","SAQTRV.CONTRACT_VALID_FROM")
+                                            if "SAQTRV.SAQTRV.CONTRACT_VALID_TO" in str(where):
+                                                where = str(where).replace("SAQTRV.SAQTRV.CONTRACT_VALID_TO","SAQTRV.CONTRACT_VALID_TO")            
                                             QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER(ORDER BY SAQTMT.CpqTableEntryId DESC) AS ROW, SAQTMT.[QUOTE_TYPE],SAQTMT.[SALE_TYPE],SAQTRV.[QUOTE_ID],SAQTRV.[NET_VALUE],SAQTMT.[QUOTE_STATUS],SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID],SAQTMT.[ACCOUNT_ID],SAQTMT.[ACCOUNT_NAME],SAQTMT.[ACCOUNT_RECORD_ID],SAQTMT.[OWNER_NAME],SAQTMT.[QTEREV_RECORD_ID],SAQTRV.[QTEREV_ID],SAQTRV.[SALESORG_ID],SAQTRV.[REVISION_STATUS],SAQTRV.[REVISION_DESCRIPTION],SAOPQT.[OPPORTUNITY_NAME],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),SAQTRV.CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO]  from SAQTMT INNER JOIN SAQTRV ON  SAQTMT.[MASTER_TABLE_QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] INNER JOIN SAOPQT ON SAOPQT.[QUOTE_RECORD_ID] = SAQTRV.[QUOTE_RECORD_ID] AND SAQTRV.ACTIVE = 'True'  "
                                                 + str(where)
