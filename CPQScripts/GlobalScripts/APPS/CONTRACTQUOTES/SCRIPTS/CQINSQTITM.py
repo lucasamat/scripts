@@ -10,6 +10,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import System.Net
 import re
 import time
+import datetime
 from SYDATABASE import SQL
 
 Sql = SQL()
