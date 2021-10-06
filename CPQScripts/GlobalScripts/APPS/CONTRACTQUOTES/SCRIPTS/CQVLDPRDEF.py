@@ -211,6 +211,8 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 def valuedriver_onchage():
 	entxmldict = {}
 	input_xml =''
+	querystring =''
+	uptime=''
 	Trace.Write('get_selected_value---205--'+str(type(get_selected_value)))
 	Trace.Write('uptime_list---333--'+str(uptime_list))
 	getxml_query = Sql.GetList(""" SELECT ENTITLEMENT_XML FROM {objname} {where}""".format(objname=TreeParam,where=str(where_condition)))
@@ -237,8 +239,36 @@ def valuedriver_onchage():
 				input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, updateentXML )
 				Trace.Write("entxmldict---entitlement_string2--"+str(entitlement_string2))
 				Sql.RunQuery( "UPDATE {objname} SET ENTITLEMENT_XML = '{xml_data}'  {where}".format(xml_data=input_xml.replace("'","''") ,objname=TreeParam,where=str(where_condition)) )
-	#else:
-		#Trace.Write('other part ')
+	if uptime_list:
+		base_percent = uptime_list[0]
+		target_percent = uptime_list[1]
+		uptime_key = uptime_list[2]
+		obj =re.match(r".*SERVICE_ID\s*\=\s*\'([^>]*?)\'",where_condition)
+		dynamic_service = obj.group(1)
+		if base_percent and target_percent in entxmldict.keys():
+			base= entxmldict[base_percent]
+			base_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',base)
+			base_price_value =str(base_price.group(1))
+			target= entxmldict[target_percent]
+			target_price=re.search(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>',target)
+			target_price_value=str(target_price.group(1))
+			uptime=float(target_price_value)-float(base_price_value)
+			Trace.Write("a"+str(uptime))
+			if uptime >= 10:
+				uptime = 10
+			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
+			for key in entxmldict.keys():
+				if uptime_key == key:
+					Trace.Write("ifffffff")
+					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
+					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
+					querystring = querystring + entxmldict[uptime_key]
+					Trace.Write("if-----"+str(querystring))
+				else:
+					querystring = querystring + entxmldict[key]
+			Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
+			Sql.RunQuery(Update_xml_uptime)
+
 	return inputXML
 
 def tool_uptimetimprovementdriver_update():
