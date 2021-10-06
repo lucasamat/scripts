@@ -1053,7 +1053,10 @@ class Entitlements:
 						Quote.SetGlobal("KPI","NO")
 						Trace.Write("NO to Bonus & Penalty Tied to KPI")
 						if self.treeparam == 'Z0091':
+							
 							Sql.RunQuery("DELETE FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							Sql.RunQuery("DELETE FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							Sql.RunQuery("DELETE FROM SAQSFE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
 							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
 						else:
 							if self.treeparentparam == "Z0091":
