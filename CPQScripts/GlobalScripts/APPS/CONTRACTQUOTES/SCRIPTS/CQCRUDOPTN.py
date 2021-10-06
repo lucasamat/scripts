@@ -4693,7 +4693,10 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				CpqTableEntryDateModified,
 				IS_CHANGED,
 				SERVICE_ID,
-				SERVICE_RECORD_ID
+				SERVICE_RECORD_ID,
+				SALESORG_ID,
+				SALESORG_NAME,
+				SALESORG_RECORD_ID
 				) 
 				SELECT 
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_BILLING_PLAN_RECORD_ID,
@@ -4712,7 +4715,10 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				GETDATE() as CpqTableEntryDateModified,
 				1,
 				SAQTSV.SERVICE_ID,
-				SAQTSV.SERVICE_RECORD_ID                      
+				SAQTSV.SERVICE_RECORD_ID,
+				SAQTSV.SALESORG_ID,
+				SAQTSV.SALESORG_NAME,
+				SAQTSV.SALESORG_RECORD_ID                     
 				FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID
 				
 				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
