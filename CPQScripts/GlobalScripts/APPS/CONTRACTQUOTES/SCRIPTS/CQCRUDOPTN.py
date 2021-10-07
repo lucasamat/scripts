@@ -759,6 +759,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id,self.quote_revision_record_id) for spare_part in self.values[0].splitlines()]
 				
 				spare_parts_details_joined = ', '.join(map(str, spare_parts_details))
+				Trace.Write("spare_parts_details_joined -------->"+str(spare_parts_details_joined))
+				spareparts_list = Sql.GetList("select PART_NUMBER FROM SAQTSP WHERE PART_NUMBER NOT IN '{}'".format(spare_parts_details_joined))
 				self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) 
 										SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID)""".format(spare_parts_details_joined))											
 				self._process_query("""
