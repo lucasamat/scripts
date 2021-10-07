@@ -1108,7 +1108,8 @@ class PartsListModel(ContractQuoteCrudOpertion):
 								key="CpqTableEntryId"
 								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 							qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
-				query_str="""SELECT MATERIAL_RECORD_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,PRODUCT_TYPE FROM MAMTRL WHERE IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE '{}' QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(qury_str,self.contract_quote_record_id,self.quote_revision_record_id)
+				query_str="""SELECT MATERIAL_RECORD_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,PRODUCT_TYPE FROM MAMTRL WHERE IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT SERVICE_ID FROM SAQSPT (NOLOCK) WHERE '{}' QUOTE_RECORD_ID = '{}' AND  QTEREV_RECORD_ID ='{}')""".format(qury_str,self.contract_quote_record_id,self.quote_revision_record_id)
+				Trace.Write('query_str---'+str(query_str))
 				query_string=SqlHelper.GetList(query_str)
 				if query_string is not None:
 					record_ids = [data.MATERIAL_RECORD_ID for data in query_string]
