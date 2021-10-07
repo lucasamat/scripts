@@ -3272,6 +3272,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 		
 	
 	def _insert_quote_service_covered_assembly(self, **kwargs):
+		Log.Info("self.tree_param---_insert_quote_service_covered_assembly------>"+str(self.tree_param))
+		Log.Info("self.tree_parent_level_0 ------_insert_quote_service_covered_assembly----->"+str(self.tree_parent_level_0))
+		Log.Info("self.sale_type ----_insert_quote_service_covered_assembly-->"+str(self.sale_type))
 		Log.Info("""
 				INSERT SAQSCA (
 					QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
