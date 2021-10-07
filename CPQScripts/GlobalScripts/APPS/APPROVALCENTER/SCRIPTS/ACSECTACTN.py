@@ -2066,6 +2066,7 @@ class approvalCenter:
 															req_status = ""
 														else:
 															req_status = '''<img title='Approval Required'  src = "'''+str(clock_exe)+'''">'''
+													
 													if (str(data.APRCHNSTP_APPROVER_ID).startswith("PRO") or str(data.APRCHNSTP_APPROVER_ID).startswith("ROL")):
 														Htmlstr += (''' <div class="chainstep_arrow_out">
 
@@ -2109,7 +2110,7 @@ class approvalCenter:
 														elif str(data.APPROVALSTATUS) == "REJECTED":
 															req_status = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''">'''
 														elif str(data.APPROVALSTATUS) == "APPROVAL REQUIRED":
-															req_status = ""
+															req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
 														elif str(data.APPROVALSTATUS) == "APPROVAL NO LONGER REQUIRED":
 															req_status = '''<img title = 'Approval No Longer Required' class = "group_user_green_tick" src="'''+str(GroupUserIcon)+'''">'''
 
