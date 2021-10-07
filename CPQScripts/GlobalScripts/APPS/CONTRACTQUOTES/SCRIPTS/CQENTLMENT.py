@@ -608,8 +608,9 @@ class Entitlements:
 				Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 				
 				if sectional_current_dict:
+					Trace.Write()
 					for key,value in sectional_current_dict.items():
-						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value[0])) )
+						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
 						if approval_status:
 							approval_list.append(key)
 					Trace.Write("try---"+str(approval_list))
