@@ -2040,7 +2040,7 @@ class approvalCenter:
 													Htmlstr += ('''<div id="collapse_'''+str(AllStep.APRCHNSTP_ID)+'''" class="panel-collapse collapse"> ''')
 												for data in acaptx_data:
 													if str(data.APPROVALSTATUS) == "REQUESTED":
-														if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID) or str(User.Id) == '125'):
+														if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID)):
 															if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																
 																req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
@@ -2091,7 +2091,7 @@ class approvalCenter:
 													if (str(data.APRCHNSTP_APPROVER_ID).startswith("USR") or str(data.APRCHNSTP_APPROVER_ID).startswith("USR")):
 														
 														if str(data.APPROVALSTATUS) == "REQUESTED":
-															if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID) or str(User.Id) == '125'):
+															if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID)):
 																if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																	
 																	req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
