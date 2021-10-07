@@ -69,15 +69,15 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		level_name = 'OFFERING FAB LEVEL'
 	elif ent_level_table == "SAQSGE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
+		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK LEVEL'
 	elif ent_level_table == "SAQSCE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
+		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	else:
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
+		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
 	for val in inserted_value_list:
@@ -88,7 +88,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 			get_visible_fields= Sql.GetFirst("select PRENLI.ENTITLEMENTLEVEL_ID from PRENLI JOIN PRENGB on PRENLI.ENTITLEMENT_ID=PRENGB.ENTITLEMENT_ID where PRENLI.ENTITLEMENT_ID = '"+str(val)+"' and PRENLI.ENTITLEMENTLEVEL_NAME = '"+str(level_name)+"' and PRENGB.GREENBOOK = '"+str(get_clicked_greenbook)+"'")
 		if get_visible_fields:
 			get_attr_leve_based_list.append(str(val))
-	Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
+	#Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
 	return get_attr_leve_based_list
 # def get_entitlement_status(partnumber,where_cond,ent_level_table):
 # 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
@@ -109,24 +109,24 @@ action= Param.action
 
 try:
 	where_cond= Param.where_cond
-	Trace.Write('where_cond-----try--'+str(where_cond))
+	#Trace.Write('where_cond-----try--'+str(where_cond))
 except:
 	where_cond = ""
-	Trace.Write('where_cond----except--'+str(where_cond))
+	#Trace.Write('where_cond----except--'+str(where_cond))
 try:
 	ent_level_table= Param.ent_level_table
-	Trace.Write('ent_level_table---try---'+str(ent_level_table))
+	#Trace.Write('ent_level_table---try---'+str(ent_level_table))
 except:
 	ent_level_table = ""
-	Trace.Write('ent_level_table---except---'+str(ent_level_table))
+	#Trace.Write('ent_level_table---except---'+str(ent_level_table))
 try:
 	
 	partnumber= Param.partnumber
-	Trace.Write('partnumber---try---'+str(partnumber))
+	#Trace.Write('partnumber---try---'+str(partnumber))
 except:
 	
 	partnumber = ""
-	Trace.Write('partnumber--except----'+str(partnumber))
+	#Trace.Write('partnumber--except----'+str(partnumber))
 try:
 	inserted_value_list = list(Param.inserted_value_list)
 except:
