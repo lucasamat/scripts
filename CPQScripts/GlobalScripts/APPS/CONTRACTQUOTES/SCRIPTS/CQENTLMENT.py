@@ -662,7 +662,7 @@ class Entitlements:
 							attrValueSysId = attributevalues.get(attrSysId)	
 							GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 							## replace fn &apos; added for A055S000P01-3158
-							Trace.Write("attrValue---612---"+str(attrValue))
+							#Trace.Write("attrValue---612---"+str(attrValue))
 							Trace.Write("DType---612---"+str(DType))
 							Trace.Write(str(attrLabel)+"----attrSysId---612---"+str(attrSysId)+'----'+str(attrValue))
 							if GetDefault:
@@ -706,7 +706,7 @@ class Entitlements:
 							else:
 								ent_disp_val = attributevalues.get(attrSysId)
 								Trace.Write('attr_value--636------11'+str(ent_disp_val))
-							Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(attrSysId))
+							Trace.Write(str(DType)+'--attr_value---'+str(ent_disp_val)+'-637--'+str(attrSysId))
 
 							Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
 							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
@@ -786,7 +786,7 @@ class Entitlements:
 											attribute_non_defaultvalue.append(prdvalue["id"])
 			Trace.Write('524--787-attributes_service_sublist--'+str(attributes_service_sublist))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
-			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
+			Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
