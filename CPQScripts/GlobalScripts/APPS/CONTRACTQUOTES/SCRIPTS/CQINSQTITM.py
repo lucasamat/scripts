@@ -851,8 +851,12 @@ class ContractQuoteItem:
 			)
 
 	def _quote_items_update(self):
-		pass
-	
+		quote_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM (NOLOCK) WHERE SERVICE_ID LIKE '{ServiceId}%' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if not quote_item_obj:
+			self._quote_items_insert()				
+			self._insert_quote_item_fab_location()
+			self._insert_quote_item_greenbook()	
+
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":
 			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..				
