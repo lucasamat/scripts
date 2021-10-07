@@ -542,7 +542,7 @@ class TreeView:
 						image_url = str(getParentObj.TREEIMAGE_URL)
 						image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 						active_image_url = str(getParentObj.ACTIVE_TREEIMAGE_URL)
-						active_image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
+						active_image_url = '<img class="activeimage-leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
 					else:
 						image_url = active_image_url = ''
 					ProductDict = {}
@@ -2438,7 +2438,7 @@ class TreeView:
 							if str(findSubChildOne.TREEIMAGE_URL):
 								image_url = str(findSubChildOne.TREEIMAGE_URL)
 								active_image_url = str(getParentObj.ACTIVE_TREEIMAGE_URL)
-								active_image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
+								active_image_url = '<img class="activeimage-leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
 								Trace.Write('image_url2--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME)+'--'+str(NodeText))	
 							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findSubChildOne.NODE_TYPE)
