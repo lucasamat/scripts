@@ -612,10 +612,12 @@ class Entitlements:
 					for key,value in sectional_current_dict.items():
 						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
 						if approval_status:
-							approval_list[key] = 'True'
-						else:
-							approval_list[key] = 'False'
-					Trace.Write("try---"+str(approval_list))
+							if approval_status.APPROVAL_REQUIRED == True:
+								approval_list[key] = 'True'
+							else:
+								approval_list[key] = 'False'
+							
+					#Trace.Write("try---"+str(approval_list))
 				# except Exception as e:
 				# 	Trace.Write("e---"+str(e))
 					#pass
