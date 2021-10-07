@@ -2042,11 +2042,12 @@ class Entitlements:
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
 		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
+		uptime_coeff = 'AGS_'+str(serviceId)+'_VAL_UPIMCO'
 		cust_seg = 'AGS_'+str(serviceId)+'_VAL_CSTSEG'
 		serv_comp = 'AGS_'+str(serviceId)+'_VAL_SVCCMP'
 		qa_req = 'AGS_'+str(serviceId)+'_VAL_QLYREQ'
 		get_ent_type_val =''
-		uptime_list = [base_percent,target_percent,uptime_key]
+		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
 		if AttributeList:
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:

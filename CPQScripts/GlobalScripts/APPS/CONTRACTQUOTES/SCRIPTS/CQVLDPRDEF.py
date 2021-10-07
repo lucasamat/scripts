@@ -254,11 +254,11 @@ def valuedriver_onchage():
 			uptime=float(target_price_value)-float(base_price_value)
 			if uptime >= 10:
 				uptime = 10
-			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
+			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
 			for key in entxmldict.keys():
 				if uptime_key == key:
 					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_key])
-					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
+					entxmldict[uptime_key] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_VALUE_CODE)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_key])
 					querystring = querystring + entxmldict[uptime_key]
 				else:
 					querystring = querystring + entxmldict[key]
