@@ -1056,9 +1056,6 @@ def Related_Sub_Banner(
 						elif ObjName == "CTCTIP":
 							ThirdLable = "Party ID"
 							ThirdValue = str(ListVal[2])
-						elif ObjName == "ACACHR":
-							ThirdLable = "Approval Round"
-							ThirdValue = TreeParam
 						else:
 							Trace.Write('list222--------')
 							ThirdLable = ListKey[2]
@@ -1069,14 +1066,17 @@ def Related_Sub_Banner(
 				try:
 					Trace.Write("727")
 					getQuotetype = ""   
-						
-					CurrentTabName = TestProduct.CurrentTab
+					if ObjName == 'ACACHR':
+						Trace.Write("1097---")
+						FourthLable = "Approval Round"
+						FourthValue = TreeParam
+					#CurrentTabName = TestProduct.CurrentTab
 					
-					if CurrentTabName == "Quote":
+					if TabName == "Quote":
 						getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
 						Trace.Write("734")
 						
-					elif CurrentTabName == "Contract":
+					elif TabName == "Contract":
 						getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_016912").GetValue()
 						
 					if ObjName == "SAQTIP":
@@ -1096,10 +1096,7 @@ def Related_Sub_Banner(
 						Trace.Write('CT')
 						ThirdLable = "Greenbook"
 						ThirdValue = ListKey[3]
-					if ObjName == 'ACACHR':
-						Trace.Write("1097---")
-						FourthLable = "Approval Round"
-						FourthValue = TreeParam
+					
 
 				except Exception as e:
 					Trace.Write("error3"+str(e))				
