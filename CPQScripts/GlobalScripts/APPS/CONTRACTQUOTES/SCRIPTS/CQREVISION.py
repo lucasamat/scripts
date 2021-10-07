@@ -21,6 +21,12 @@ import SYCNGEGUID as CPQID
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
+# When we create a new revision for existing quote from C4C, quote edit is taking some time. So if quote is not edited in backend, we do again here.
+if not Quote:
+	try:
+		Quote = QuoteHelper.Edit(Param.QuoteId)
+	except Exception:
+		pass
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----test')
 #A055S000P01-8729 start
