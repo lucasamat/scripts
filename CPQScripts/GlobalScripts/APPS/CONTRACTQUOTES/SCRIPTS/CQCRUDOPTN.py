@@ -1115,7 +1115,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					record_ids = [data.MATERIAL_RECORD_ID for data in query_string]
 
 				query_string_for_count = "SELECT COUNT(*) as count FROM ({Query_String})OQ".format(
-					Query_String=query_string
+					Query_String=query_str
 				)
 				table_count_data = Sql.GetFirst(query_string_for_count)
 				if table_count_data is not None:
