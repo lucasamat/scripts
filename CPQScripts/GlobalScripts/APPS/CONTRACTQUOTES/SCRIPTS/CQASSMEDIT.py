@@ -346,6 +346,9 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
 				#Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
+				if attrs == "AGS_Z0016_NET_PRICNG"
+					ent_disp_val = ''
+					ent_val_code = ''
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 				<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
