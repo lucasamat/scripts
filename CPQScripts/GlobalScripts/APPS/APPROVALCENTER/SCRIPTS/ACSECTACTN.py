@@ -1382,7 +1382,7 @@ class approvalCenter:
 		elif str(ACTION) == "RECALL":
 			#recallresponse = self.sendmailNotification("Recall")
 			#try:
-			if CurrentTabName == 'Quote':
+			if CurrentTabName == 'Quotes':
 				quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 				quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				if quote_obj is not None:
