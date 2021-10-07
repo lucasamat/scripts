@@ -2936,6 +2936,7 @@ class approvalCenter:
 			#emailId = str(getnotify.EMAIL)
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
 			bodycontent = re.findall('<td class="TblHeadercolor">(.+?)</td>', bodywithformatsplit[1])
+			Trace.Write("bodycontent-->"+str(bodycontent))
 			bodyAPIName = []
 			currencylist = []
 			for eachlable in bodycontent:
