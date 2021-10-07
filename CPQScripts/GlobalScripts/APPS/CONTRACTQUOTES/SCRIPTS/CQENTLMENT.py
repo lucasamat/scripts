@@ -613,8 +613,10 @@ class Entitlements:
 						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value[0])) )
 						if approval_status:
 							approval_list.append(key)
-				except:
-					pass
+					Trace.Write("try---"+str(approval_list))
+				except Exception as e:
+					Trace.Write("e---"+str(e))
+					#pass
 				if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 					try:
 						sectional_current_dict = Param.sectional_current_dict
