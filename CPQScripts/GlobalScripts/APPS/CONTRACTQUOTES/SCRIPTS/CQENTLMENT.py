@@ -498,6 +498,7 @@ class Entitlements:
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
 		attributes_service_sublist = []
+		approval_list = []
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -605,6 +606,15 @@ class Entitlements:
 				attributesallowedlst = get_attr_leve_based_list
 				Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
 				Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
+				
+				try:
+					sectional_current_dict = Param.sectional_current_dict
+					for key,value in sectional_current_dict.items():
+						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value[0])) )
+						if approval_status:
+							approval_list.append(key)
+				except:
+					pass
 				if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
 					try:
 						sectional_current_dict = Param.sectional_current_dict
@@ -619,7 +629,7 @@ class Entitlements:
 								Trace.Write('val---'+str(val))
 								if float(val).is_integer() == False:
 									non_integer_list.append(key)
-						##
+						
 						Trace.Write('non_integer_list--'+str(non_integer_list))
 						remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
 						Trace.Write('remove_indices--'+str(remove_indices))
@@ -1722,7 +1732,7 @@ class Entitlements:
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
 		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 		
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
