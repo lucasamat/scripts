@@ -498,7 +498,7 @@ class Entitlements:
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
 		attributes_service_sublist = []
-		approval_list = []
+		approval_list = {}
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
@@ -612,7 +612,9 @@ class Entitlements:
 					for key,value in sectional_current_dict.items():
 						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
 						if approval_status:
-							approval_list.append(key)
+							approval_list[key] = 'True'
+						else:
+							approval_list[key] = 'False'
 					Trace.Write("try---"+str(approval_list))
 				# except Exception as e:
 				# 	Trace.Write("e---"+str(e))
