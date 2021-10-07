@@ -1238,13 +1238,6 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
-						if payload_json.get('SAQSCO'):
-							Log.Info("saqsco in json")
-							for service_level_equipment_json_data in payload_json.get('SAQSCO'):
-								if service_level_equipment_json_data.get('SERVICE_OFFERING_ID') in service_level_covered_object_data:
-									service_level_covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')].append(service_level_equipment_json_data.get('EQUIPMENT_IDS'))
-								else:
-									service_level_covered_object_data[service_level_equipment_json_data.get('SERVICE_OFFERING_ID')] = [service_level_equipment_json_data.get('EQUIPMENT_IDS')]
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
