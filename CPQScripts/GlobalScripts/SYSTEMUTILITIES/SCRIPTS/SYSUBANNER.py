@@ -1115,6 +1115,7 @@ def Related_Sub_Banner(
 						SixthValue = ListVal[5]
 				except:
 					Trace.Write("error5")
+				Trace.Write("LISTVAL---"+str(ListVal))
 				if str(ObjName) == 'SYPGAC' and TabName == 'Tab':
 					PrimaryLable = "Key"
 					PrimaryValue = PrimaryValue
