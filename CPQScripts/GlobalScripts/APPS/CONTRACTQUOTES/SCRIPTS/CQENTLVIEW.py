@@ -1041,7 +1041,7 @@ class EntitlementView():
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															if approval_status.APPROVAL_REQUIRED == 1:
-																imgstr = '<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
+																imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
 														VAR1 += (
 															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														)
@@ -1303,7 +1303,7 @@ class EntitlementView():
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
 									else:
 										required_symbol_class = get_requiredicon = ""
-									Trace.Write('imgstr--'+str(imgstr)+'---'+str(attrName))
+									#Trace.Write('imgstr--'+str(imgstr)+'---'+str(attrName))
 									new_value_dicta["APPROVAL"] = imgstr
 									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
 									new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
