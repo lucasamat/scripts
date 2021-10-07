@@ -1206,6 +1206,7 @@ class approvalCenter:
 	
 	def SubmitForApprovalAction(self, GetStatus=None, RequestDesc=''):
 		UpdateTrans = ""
+		Trace.Write("GetStatus "+str(GetStatus))
 		if GetStatus:                            
 			Sql.RunQuery("""UPDATE ACAPMA SET
 				APROBJ_STATUSFIELD_VALUE = '{ApprovalStatus}',
