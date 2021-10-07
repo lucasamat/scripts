@@ -1720,9 +1720,9 @@ class Entitlements:
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
 		Trace.Write('attr_tab_list_disallow---'+str(attr_tab_list_disallow))
-		Trace.Write('attr_tab_list_allow---'+str(attr_tab_list_allow))
+		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 		
-		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
