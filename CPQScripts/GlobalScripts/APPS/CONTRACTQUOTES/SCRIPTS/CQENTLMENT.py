@@ -609,6 +609,7 @@ class Entitlements:
 				
 				try:
 					sectional_current_dict = Param.sectional_current_dict
+					sectional_current_dict =eval(sectional_current_dict)
 					for key,value in sectional_current_dict.items():
 						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value[0])) )
 						if approval_status:
