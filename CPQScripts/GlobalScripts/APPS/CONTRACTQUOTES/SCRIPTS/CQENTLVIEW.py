@@ -945,11 +945,13 @@ class EntitlementView():
 							
 							#userselectedvalue = [val.ENTITLEMENT_DESCRIPTION for val in GetXMLsecField if GetXMLsecField]
 							sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
+							imgstr =""
 							#Trace.Write("inserted_value_list--"+str(inserted_value_list))
 							if GetXMLsecField and attrSysId in get_attr_leve_based_list:
 								# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
+									imgstr = ""
 									userselectedvalue.append(val.ENTITLEMENT_NAME)
 									#getnameentallowed.append(val.ENTITLEMENT_NAME)
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
@@ -988,15 +990,7 @@ class EntitlementView():
 												default = 'selected'
 
 											#Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
-											Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
-											if Status :
-												if Status.APPROVAL_REQUIRED == True:
 											
-													imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
-												else:
-													imgstr  = ""
-											else:
-												imgstr  = ""
 											# if str(attrName) == "Fab Location":
 											# 	if getquote_sales_val in get_il_sales_list:
 											# 		VAR1 += '<option value="select" ' +str(default)+'> </option>'
@@ -1013,6 +1007,11 @@ class EntitlementView():
 													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
 														#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														if approval_status:
+															if approval_status.APPROVAL_REQUIRED == 1:
+																imgstr = '<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
+															
 														
 														selected_option = str(val.ENTITLEMENT_DISPLAY_VALUE)
 														VAR1 += (
@@ -1038,6 +1037,10 @@ class EntitlementView():
 													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														if approval_status:
+															if approval_status.APPROVAL_REQUIRED == 1:
+																imgstr = '<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
 														VAR1 += (
 															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 														)
