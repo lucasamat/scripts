@@ -454,11 +454,13 @@ class ContractQuoteItem:
 	
 	def _native_quote_edit(self):
 		Quote = QuoteHelper.Edit(self.contract_quote_id)
-		time.sleep(5)
+		time.sleep(15)
 		Quote.RefreshActions()
 	
 	def _native_quote_item_insert(self):
+		
 		if not Quote:
+			Log.Info("_native_quote_item_insert ==> Mo Quote")
 			self._native_quote_edit()
 		# Native Cart Items Insert - Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
