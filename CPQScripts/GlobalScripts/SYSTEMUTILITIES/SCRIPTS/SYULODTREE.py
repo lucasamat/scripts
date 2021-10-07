@@ -2437,6 +2437,8 @@ class TreeView:
 						for findSubChildOne in findSubChildAvailable:
 							if str(findSubChildOne.TREEIMAGE_URL):
 								image_url = str(findSubChildOne.TREEIMAGE_URL)
+								active_image_url = str(getParentObj.ACTIVE_TREEIMAGE_URL)
+								active_image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
 								Trace.Write('image_url2--'+str(image_url)+'--'+str(findSubChildOne.NODE_NAME)+'--'+str(NodeText))	
 							parobj = str(findSubChildOne.PARENTNODE_OBJECT)
 							NodeType = str(findSubChildOne.NODE_TYPE)
