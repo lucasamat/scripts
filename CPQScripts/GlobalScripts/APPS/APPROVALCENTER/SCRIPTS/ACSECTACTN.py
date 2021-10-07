@@ -1364,7 +1364,7 @@ class approvalCenter:
 								)
 							)
 							# Trace.Write("RequestDescRequestDesc1--2004--"+str(RequestDesc)+str(GetStatus.APRCHNSTP_RECORD_ID)+str(GetStatus.APPROVAL_METHOD))
-							# self.SubmitForApprovalAction(GetStatus,RequestDesc)
+							self.SubmitForApprovalAction(GetStatus,RequestDesc)
 			else:
 				GetStatus = Sql.GetFirst(
 					"""SELECT ACACSS.APROBJ_STATUSFIELD_VAL,ACAPMA.APRCHNSTP_RECORD_ID,ACAPCH.APPROVAL_METHOD
