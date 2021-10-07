@@ -1009,7 +1009,7 @@ class EntitlementView():
 														#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
-															Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
+															#Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = '<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
 															
@@ -1303,7 +1303,7 @@ class EntitlementView():
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
 									else:
 										required_symbol_class = get_requiredicon = ""
-									Trace.Write('imgstr--'+str(imgstr)+'---'+str(attrSysId))
+									#Trace.Write('imgstr--'+str(imgstr)+'---'+str(attrSysId))
 									new_value_dicta["APPROVAL"] = imgstr
 									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
 									new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
