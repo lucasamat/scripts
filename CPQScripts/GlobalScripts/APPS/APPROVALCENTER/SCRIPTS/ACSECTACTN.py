@@ -1998,8 +1998,8 @@ class approvalCenter:
 													dynamic_icon =  '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''" class="center-block">'''
 													dynamic_icon_1 =  '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''" class="chainstep_collapse_img_top">'''
 												elif "APPROVAL REQUIRED" in headIcon_status and ("REQUESTED" not in headIcon_status and "REJECTED" not in headIcon_status and "APPROVED" not in headIcon_status):
-													dynamic_icon = '''<img title = 'Approved' src="'''+str(LargeTickgreen)+'''" class="center-block">'''
-													dynamic_icon_1 = '''<img title = 'Approved' src="'''+str(LargeTickgreen)+'''" class="chainstep_collapse_img_top">'''
+													dynamic_icon = ""
+													dynamic_icon_1 = ""
 												elif "REJECTED" in headIcon_status:
 													dynamic_icon = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''" class="center-block">''' 
 													dynamic_icon_1 = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''" class="chainstep_collapse_img_top">''' 
