@@ -757,7 +757,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				#spare_parts_obj = re.finditer(r'([a-zA-Z0-9_\-.\(\)]*\s?[a-zA-Z0-9\-]?)\t+(\d*)', self.values[0])                         
 				#spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part_obj.group(1), spare_part_obj.group(2), 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id) for spare_part_obj in spare_parts_obj]
 				Trace.Write("self.values----->"+str(self.values))
-				Trace.Write(self.values[0].splitlines())
+				Trace.Write(self.values[0])
 				spare_parts_details = [(str(Guid.NewGuid()).upper(), spare_part, 1, 'IN PROGRESS', self.contract_quote_id, self.contract_quote_record_id, batch_group_record_id,self.quote_revision_record_id) for spare_part in self.values[0].splitlines()]
 				
 				spare_parts_details_joined = ', '.join(map(str, spare_parts_details))
