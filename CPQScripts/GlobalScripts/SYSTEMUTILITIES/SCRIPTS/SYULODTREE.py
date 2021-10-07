@@ -541,8 +541,10 @@ class TreeView:
 					if str(getParentObj.TREEIMAGE_URL):
 						image_url = str(getParentObj.TREEIMAGE_URL)
 						image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
+						active_image_url = str(getParentObj.ACTIVE_TREEIMAGE_URL)
+						active_image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = active_image_url)
 					else:
-						image_url = ''
+						image_url = active_image_url = ''
 					ProductDict = {}
 					ChildListData = []
 					SubTabList = []
