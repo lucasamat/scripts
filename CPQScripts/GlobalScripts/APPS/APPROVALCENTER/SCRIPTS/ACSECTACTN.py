@@ -2693,10 +2693,10 @@ class approvalCenter:
 			quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 			if quote_obj is not None:
 				if notifiType == "Request":
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'SERIES STEP APPROVAL'".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'SERIES STEP APPROVAL'".format(quote_record_id = self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 				elif notifiType == "ParallelRequest":
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'PARALLEL STEP APPROVAL'".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'PARALLEL STEP APPROVAL'".format(quote_record_id = self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 				else:
 					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}'".format(quote_record_id = self.quote_revision_record_id))
