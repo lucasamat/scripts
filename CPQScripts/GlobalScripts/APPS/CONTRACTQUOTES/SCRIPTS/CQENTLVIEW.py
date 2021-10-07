@@ -50,7 +50,7 @@ class EntitlementView():
 		ChangedList = totaldisallowlist = section_not_list = []
 		Trace.Write("EntitlementType"+str(EntitlementType))
 
-		Trace.Write('TreeSuperParentParam'+'--'+str(self.treesupertopparentparam)+'--'+str(self.treetopsuperparentparam))
+		#Trace.Write('TreeSuperParentParam'+'--'+str(self.treesupertopparentparam)+'--'+str(self.treetopsuperparentparam))
 		objname_ent = "" ##add on product entitilement obj declare
 		if self.treesuperparentparam == "Product Offerings":		
 			ProductPartnumber = self.treeparam
@@ -111,19 +111,19 @@ class EntitlementView():
 		##addon product fab and greenbook level 
 		elif (self.treesuperparentparam in ('Receiving Equipment', 'Sending Equipment') and self.treesupertopparentparam == 'Complementary Products'):
 			self.treesuperparentparam = ProductPartnumber = self.treetopsuperparentparam
-			Trace.Write('comes1'+str(ProductPartnumber))
+			#Trace.Write('comes1'+str(ProductPartnumber))
 		#A055S000P01-9226 start
 		getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(quoteid)+"'")
 		if getslaes_value:
 			getquote_sales_val = getslaes_value.SALESORG_ID
-		Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
+		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
 		get_il_sales = SqlHelper.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS" and objname_ent == 'SAQSAO':
-				Trace.Write('126----126----')
+				#Trace.Write('126----126----')
 				TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QTESRV_RECORD_ID = '" + str(RECORD_ID) + "'")
 				ParentObj = Sql.GetFirst("select * from SAQSAO (NOLOCK) where QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID = '" + str(RECORD_ID) + "'")
 				if ParentObj:
@@ -220,7 +220,7 @@ class EntitlementView():
 					
 		if EntitlementType != "SENDING_LEVEL":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
-				Trace.Write('223----durga---')
+				#Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,)
@@ -241,7 +241,7 @@ class EntitlementView():
 			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
 			# where = ""
 			Trace.Write("Fullresponse_J "+str(Fullresponse))
-			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
+			#Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			#Product.SetGlobal('Fullresponse',str(Fullresponse_load))
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
@@ -279,8 +279,8 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
-			Trace.Write("validation_dict---"+str(validation_dict))
+			#Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
+			#Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
 										MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
@@ -614,7 +614,7 @@ class EntitlementView():
 										+ "</input> "
 									)
 								else:
-									Trace.Write('617----attrSysId----'+str(attrSysId))
+									#Trace.Write('617----attrSysId----'+str(attrSysId))
 									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
 									if attr_value == "DefaultValue":
@@ -758,7 +758,7 @@ class EntitlementView():
 			getnameentallowed = []
 			multi_select_attr_list = {}
 			attributedefaultvalue = []
-
+			Trace.Write("after inserting in table")
 			#Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
 			#Trace.Write('after inserting in table---where-----'+str(where))
 			inserted_value_dict = {}
@@ -767,8 +767,8 @@ class EntitlementView():
 			for val in GetXMLsecField:
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
-			Trace.Write('766---ObjectName-----'+str(ObjectName))
-			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
+			#Trace.Write('766---ObjectName-----'+str(ObjectName))
+			#Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
 			#Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
@@ -987,7 +987,7 @@ class EntitlementView():
 											else:
 												default = 'selected'
 
-											Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
+											#Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
 											Status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
 											if Status :
 												if Status.APPROVAL_REQUIRED == True:
@@ -1128,7 +1128,7 @@ class EntitlementView():
 													display_value_query = Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' and STANDARD_ATTRIBUTE_VALUE in {code} ".format(attr_code = attribute_code,code = display_value_code )  )
 													display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in display_value_query]
 												except Exception as e:
-													Trace.Write('except1'+str(e))
+													#Trace.Write('except1'+str(e))
 													display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
 											
 											multi_select_attr_list[attrSysId] = display_value_arr
@@ -1208,7 +1208,7 @@ class EntitlementView():
 									
 									
 									elif DType == "Free Input, no Matching" :
-										Trace.Write('val.ENTITLEMENT_NAME------'+str(val.ENTITLEMENT_NAME))
+										#Trace.Write('val.ENTITLEMENT_NAME------'+str(val.ENTITLEMENT_NAME))
 										if val.ENTITLEMENT_ID == str(attrSysId):
 											sec_str1 = ""
 											sec_str_imt = ""
@@ -1285,7 +1285,7 @@ class EntitlementView():
 												# 	sec_str_primp += ""
 											except Exception as e:
 												sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
-												Trace.Write(str(e)+'error2222')
+												#Trace.Write(str(e)+'error2222')
 												
 											#calc_factor = val.CALCULATION_FACTOR
 											sec_str_cf +=str(val.CALCULATION_FACTOR)
@@ -1571,7 +1571,6 @@ class EntitlementView():
 		quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id ))
 		if quote_status:
 			if quote_status.QUOTE_STATUS == "APPROVED":
-				Trace.Write('dbl_click123====')
 				dbl_clk_function = ""
 
 			
@@ -1622,17 +1621,17 @@ except:
 ##getting params
 SubtabName = Param.SubtabName
 action = Param.action
-Trace.Write("SubtabName==="+str(SubtabName))
+#Trace.Write("SubtabName==="+str(SubtabName))
 try:
 	RECORD_ID = Param.RECORD_ID
 except:
 	RECORD_ID = ""
 try:
 	ObjectName = Param.ObjectName
-	Trace.Write("ObjectName--"+str(ObjectName))
+	#Trace.Write("ObjectName--"+str(ObjectName))
 except Exception as e:
 	ObjectName = ""
-	Trace.Write("ObjectName-err--"+str(e))
+	#Trace.Write("ObjectName-err--"+str(e))
 try:
 	SectionList = Param.DetailList
 except:
@@ -1668,7 +1667,6 @@ if SectionList is not None and (
 	or "0EF8591C-4B5A-4EC2-863F-F8229B5FA025" in SectionList
 	or "484F3029-7844-4DE7-BBB4-535A7BAE476E" in SectionList
 ):
-	Trace.Write("SectionList111")
 
 	sectionId = tuple(SectionList)
 	sectObj = Sql.GetFirst("SELECT PRIMARY_OBJECT_NAME FROM SYSECT (NOLOCK) WHERE RECORD_ID IN " + str(sectionId) + "")
@@ -1722,27 +1720,26 @@ if SectionList is not None and (
 			EntitlementType = "ITEMGREENBOOK"				
 			
 elif ((SubtabName in ('Entitlements','Equipment Entitlements','Assembly Entitlements') ) and (TreeParam.upper() == "SENDING EQUIPMENT" or TreeSuperParentParam.upper() =="SENDING EQUIPMENT" or TreeParentParam.upper() =="SENDING EQUIPMENT")):
-	Trace.Write("Entitlements"+str(TreeParam))
+	#Trace.Write("Entitlements"+str(TreeParam))
 	EntitlementType = "SENDING_LEVEL"
 	SectionObjectName = "SAQSRA"
 
 elif ObjectName == "SAQTSE":	
-	Trace.Write("TOOLS")
+	#Trace.Write("TOOLS")
 	SectionObjectName = ObjectName
 	EntitlementType = "TOOLS"
 	
-elif ObjectName == "CTCTSE":	
-	SectionObjectName = ObjectName
-	EntitlementType = "TOOLS"
-else:
-	Trace.Write("ObjectName-else--"+str(ObjectName))
+# elif ObjectName == "CTCTSE":	
+# 	SectionObjectName = ObjectName
+# 	EntitlementType = "TOOLS"
+# else:
+# 	Trace.Write("ObjectName-else--"+str(ObjectName))
 
-Trace.Write("mode--"+str(mode))
 ##calling class
 entview_class = EntitlementView()
 if action == "VIEW":
-	if mode == 'Contracts':
-		ApiResponse = ApiResponseFactory.JsonResponse(entview_class.contract_entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
-	else:
-		ApiResponse = ApiResponseFactory.JsonResponse(entview_class.entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
+	# if mode == 'Contracts':
+	# 	ApiResponse = ApiResponseFactory.JsonResponse(entview_class.contract_entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
+	# else:
+	ApiResponse = ApiResponseFactory.JsonResponse(entview_class.entitlement_view(RECORD_ID,SectionObjectName,EntitlementType) )
 	
