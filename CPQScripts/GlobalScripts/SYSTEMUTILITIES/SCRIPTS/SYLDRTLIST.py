@@ -7953,7 +7953,6 @@ class SYLDRTLIST:
                         if value1234 is not None and value1234 != '':
                             my_format = "{:." + str(decimal_place) + "f}"
                             value1234 = str(my_format.format(round(float(value1234), int(decimal_place)))) + " %"
-                    Trace.Write('at 7956'+str(value123)+' val-->'+str(value1234))
                     Trace.Write("@8221----->LOOKUP DISPLAY LIST"+str(lookup_list))
                     if value123 in lookup_disply_list:
                         for key, value in lookup_list.items():
@@ -8073,7 +8072,6 @@ class SYLDRTLIST:
                         
                         value1234 = value1234[1]
                     else:                 
-                        Trace.Write('at 7306'+str(value123)+' val-->'+str(value1234))
                         img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
                         if str(ObjectName) == "SAQIFP":
                             img_list.append('PRICING_STATUS')
