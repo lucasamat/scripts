@@ -453,12 +453,10 @@ class ContractQuoteItem:
 		return True
 	
 	def _native_quote_edit(self):
-		Quote = QuoteHelper.Edit(self.contract_quote_id)
-		time.sleep(15)
-		Quote.RefreshActions()
+		Quote = QuoteHelper.Edit(self.contract_quote_id)		
+		#Quote.RefreshActions()
 	
-	def _native_quote_item_insert(self):
-		
+	def _native_quote_item_insert(self):		
 		if not Quote:
 			Log.Info("_native_quote_item_insert ==> Mo Quote")
 			self._native_quote_edit()

@@ -132,6 +132,12 @@ def CoveredObjEntitlement():
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
 	sendEmail(level)
 	try:
+		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
+		if quote_obj:
+			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)	
+	except Exception:
+		Log.Info("Exception in Quote Edit") 
+	try:
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
