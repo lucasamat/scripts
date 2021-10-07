@@ -4327,8 +4327,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
 							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
 					""".format(
-							TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
-							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
+							TreeParam=self.tree_param if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
+							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
 							QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id,
 							BatchGroupRecordId=kwargs.get('batch_group_record_id'),
