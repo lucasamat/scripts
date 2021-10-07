@@ -592,12 +592,10 @@ class ContractQuoteItem:
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
 			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_string='')
 			# Insert Quote Items Covered Object - End
-		try:
-			self._native_quote_edit()
-			self._native_quote_item_insert()
-		except Exception:
-			Log.Info("Exception in native quote item insert")
-
+		
+		self._native_quote_edit()
+		self._native_quote_item_insert()
+		
 		# Sql.RunQuery("DELETE FROM QT__SAQICD where QUOTE_ID = '"+str(self.contract_quote_id)+"'")				
 		# CQPARTIFLW.iflow_pricing_call(self.user_name,self.contract_quote_id,self.contract_quote_revision_record_id)
 		
@@ -702,10 +700,9 @@ class ContractQuoteItem:
 				) IQ 
 				JOIN SAQSCE (NOLOCK) ON SAQSCE.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQSCE.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQSCE.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQSCE.EQUIPMENT_ID = IQ.EQUIPMENT_ID AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE'
 			)OQ""".format(UserId=self.user_id,  QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-		try:
-			self._native_quote_item_update()
-		except Exception:
-			Log.Info("Exception in native quote item update")
+		
+		self._native_quote_item_update()
+		
 		
 		# price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		
