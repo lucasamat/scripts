@@ -305,7 +305,8 @@ def Related_Sub_Banner(
 			elif TabName == "App" and str(TreeParam) == "Section Fields" and str(ObjName) == "SYSEFL":
 				PrimaryLable = "Section Fields"
 				PrimaryValue = "All"
-			elif TabName == "Quotes" and str(TreeParam) == "Approvals" :                
+			elif TabName == "Quotes" and str(TreeParam) == "Approvals" :
+				Trace.Write("309")              
 				PrimaryLable = "Approvals"
 				PrimaryValue = "All"                                    
 			elif TabName == "Quotes"  and str(TreeParentParam) == "Product Offerings" and str(TreeParam) != "" and str(ObjName) == "SAQTSV" :                
@@ -757,7 +758,7 @@ def Related_Sub_Banner(
 				# 	SecondValue = str(TreeParam)
 					Trace.Write("SLabel"+SecondLable)
 			elif TreeParam == "Approvals"  and TabName == "Quotes":
-				
+				Trace.Write("760")
 				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				getval = Sql.GetFirst(" select DISTINCT TOP 10 ACAPCH.APRCHN_ID, ACAPMA.APRCHN_RECORD_ID ,ACAPCH.APPROVAL_CHAIN_RECORD_ID, ACAPCH.APRCHN_NAME, ACAPCH.APPROVAL_METHOD FROM ACAPMA (nolock) inner join ACAPCH (nolock) on ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID  where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(contract_quote_record_id)+"' AND ACAPCH.APRCHN_ID = '"+str(subTabName)+"'")
 				getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
