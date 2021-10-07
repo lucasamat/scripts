@@ -607,21 +607,18 @@ class Entitlements:
 				Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
 				Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
 				
-				try:
-					sectional_current_dict = Param.sectional_current_dict
-					sectional_current_dict =eval(sectional_current_dict)
+				if sectional_current_dict:
 					for key,value in sectional_current_dict.items():
 						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value[0])) )
 						if approval_status:
 							approval_list.append(key)
 					Trace.Write("try---"+str(approval_list))
-				except Exception as e:
-					Trace.Write("e---"+str(e))
+				# except Exception as e:
+				# 	Trace.Write("e---"+str(e))
 					#pass
 				if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
-					try:
-						sectional_current_dict = Param.sectional_current_dict
-						sectional_current_dict =eval(sectional_current_dict)
+					#try:
+					if sectional_current_dict:
 						Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
 						#b = eval(a)
 						non_integer_list =[]
@@ -636,17 +633,12 @@ class Entitlements:
 						Trace.Write('non_integer_list--'+str(non_integer_list))
 						remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
 						Trace.Write('remove_indices--'+str(remove_indices))
-						# response_charactr = enumerate(characteristics_attr_values)
-						# for key,value in response_charactr:
-						# 	if value['key'] in non_integer_list:
-						# 		remove_indices.append(key)
-						# 		Trace.Write('bb---'+str(index)+'--'+str(value))
-								#characteristics_attr_values.pop(index)
+						
 						characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
 						Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
-					except Exception as e:
-						Trace.Write('error--pop--'+str(e))
+					# except Exception as e:
+					# 	Trace.Write('error--pop--'+str(e))
 						#pass
 
 					Trace.Write("serviceId--1--"+str(serviceId))
@@ -1646,35 +1638,29 @@ class Entitlements:
 							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 							
 							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
-								try:
-									sectional_current_dict = Param.sectional_current_dict
-									sectional_current_dict =eval(sectional_current_dict)
-									Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
-									#b = eval(a)
-									non_integer_list =[]
-									#remove_indices = []
-									for key,value in sectional_current_dict.items():
-										if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
-											val = str(value.split('||')[0])
-											Trace.Write('val---'+str(val))
-											if float(val).is_integer() == False:
-												non_integer_list.append(key)
-									##
-									Trace.Write('non_integer_list--'+str(non_integer_list))
-									remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
-									Trace.Write('remove_indices--'+str(remove_indices))
-									# response_charactr = enumerate(characteristics_attr_values)
-									# for key,value in response_charactr:
-									# 	if value['key'] in non_integer_list:
-									# 		remove_indices.append(key)
-									# 		Trace.Write('bb---'+str(index)+'--'+str(value))
-											#characteristics_attr_values.pop(index)
-									characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
-									Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
+								#try:
+								
+								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
+								#b = eval(a)
+								non_integer_list =[]
+								#remove_indices = []
+								for key,value in sectional_current_dict.items():
+									if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
+										val = str(value.split('||')[0])
+										Trace.Write('val---'+str(val))
+										if float(val).is_integer() == False:
+											non_integer_list.append(key)
+								
+								Trace.Write('non_integer_list--'+str(non_integer_list))
+								remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
+								Trace.Write('remove_indices--'+str(remove_indices))
+								
+								characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
+								Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
-								except Exception,e:
-									Trace.Write('error--pop--'+str(e))
-									#pass
+								# except Exception,e:
+								# 	Trace.Write('error--pop--'+str(e))
+								# 	#pass
 
 
 								Trace.Write("serviceId---"+str(serviceId))
@@ -2209,7 +2195,12 @@ except:
 try:
 	multiselect_flag = Param.multiselect_flag
 except:
-	multiselect_flag =''		
+	multiselect_flag =''
+try:
+	sectional_current_dict = Param.sectional_current_dict
+	sectional_current_dict =eval(sectional_current_dict)	
+except:
+	sectional_current_dict =""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
 #Trace.Write("calc_factor : " + str(calc_factor) + " costimpact : " + str(costimpact) + " priceimapct "+str(priceimapct))
 #Trace.Write("AttributeID : " + str(AttributeID) + " AttributeValCode : " + str(AttributeValCode))
