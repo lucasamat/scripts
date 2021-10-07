@@ -919,7 +919,8 @@ class SyncQuoteAndCustomTables:
 						}
 						quote_involved_party_table_info.AddRow(primary_contact_update)
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
-						employee_obj = SqlHelper.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						if employee_obj:
 							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 							contact_info_update = {
@@ -938,7 +939,13 @@ class SyncQuoteAndCustomTables:
 								"STATE": employee_obj.STATE,
 								"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
 								"CITY":employee_obj.CITY,
-								"POSTAL_CODE":employee_obj.POSTAL_CODE
+								"POSTAL_CODE":employee_obj.POSTAL_CODE,
+								"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
+								"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
+								"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
+								"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
+								"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
+								"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 							}
 							quote_involved_party_contact_table_info.AddRow(contact_info_update)
 						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
