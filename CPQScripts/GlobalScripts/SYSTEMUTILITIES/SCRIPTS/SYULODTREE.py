@@ -550,7 +550,7 @@ class TreeView:
 					SubTabList = []
 					NewList = []
 					RecId = str(getParentObj.TREE_NODE_RECORD_ID)
-					NodeText = image_url+ str(getParentObj.NODE_NAME)
+					NodeText = image_url+ active_image_url+str(getParentObj.NODE_NAME)
 					ProductDict["text"] = NodeText
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
