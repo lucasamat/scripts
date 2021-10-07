@@ -3481,7 +3481,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				""".format(
 				UserId=self.user_id,
 				UserName=self.user_name,
-				TreeParam=self.tree_param if (self.tree_parent_level_0 == 'Comprehensive Services' or self.tree_parent_level_0 == 'Complementary Products') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
+				TreeParam=self.tree_param if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
 				TreeParentParam=self.tree_parent_level_1 if self.tree_param  == 'Sending Equipment' else self.tree_parent_level_0,
 				QuoteRecordId=self.contract_quote_record_id,
 				RevisionRecordId=self.quote_revision_record_id,
