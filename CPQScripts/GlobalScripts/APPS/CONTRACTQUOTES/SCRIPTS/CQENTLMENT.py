@@ -912,7 +912,7 @@ class Entitlements:
 								tbrow["ENTITLEMENT_XML"]=insertservice
 								tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
 								tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
-								tbrow["QTESRV_RECORD_ID"]=sap_matid
+								tbrow["QTESRV_RECORD_ID"]=getAddOn.QUOTE_SERVICE_RECORD_ID
 								tbrow["SERVICE_RECORD_ID"]=sap_matid
 								tbrow["SERVICE_ID"]='Z0046'
 								tbrow["SERVICE_DESCRIPTION"]=sap_desc
