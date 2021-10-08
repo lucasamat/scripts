@@ -2071,7 +2071,7 @@ class approvalCenter:
 													elif str(data.APPROVALSTATUS) == "REJECTED":
 														req_status = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''">'''
 													elif str(data.APPROVALSTATUS) == "APPROVAL REQUIRED":
-														req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
+														req_status = ''
 													elif str(data.APPROVALSTATUS) == "APPROVAL NO LONGER REQUIRED":
 														req_status = '''<img title = 'Approval No Longer Required' class = "group_user_green_tick" src="'''+str(GroupUserIcon)+'''">'''
  
@@ -2124,7 +2124,7 @@ class approvalCenter:
 														elif str(data.APPROVALSTATUS) == "REJECTED":
 															req_status = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''">'''
 														elif str(data.APPROVALSTATUS) == "APPROVAL REQUIRED":
-															req_status = '''<img title='Approval Required' src="'''+str(clock_exe)+'''">'''
+															req_status = ''
 														elif str(data.APPROVALSTATUS) == "APPROVAL NO LONGER REQUIRED":
 															req_status = '''<img title = 'Approval No Longer Required' class = "group_user_green_tick" src="'''+str(GroupUserIcon)+'''">'''
 
