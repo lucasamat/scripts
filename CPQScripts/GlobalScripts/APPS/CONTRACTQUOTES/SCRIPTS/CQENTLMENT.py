@@ -166,7 +166,7 @@ class Entitlements:
 			# 	NewValue = ''
 		#Trace.Write('cpsmatchID--132-----------'+str(cpsmatchID))
 		#Trace.Write('AttributeID--132-----------'+str(AttributeID))
-		#Trace.Write('NewValue--132-----------'+str(NewValue))
+		Trace.Write('NewValue--132-----------'+str(NewValue))
 		response = self.Request_access_token()
 		webclient = System.Net.WebClient()		
 		Trace.Write(response["access_token"])
@@ -242,7 +242,11 @@ class Entitlements:
 								requestdata = requestdata.replace(',]}]}',']}]}')
 				
 			else:
-				requestdata += '{"value":"' + NewValue + '","selected":true}'
+				if not NewValue:
+					Trace.Write('empty new value')
+					requestdata += '{"value":"1","selected":false}'
+				else:
+					requestdata += '{"value":"' + NewValue + '","selected":true}'
 				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
@@ -1828,7 +1832,7 @@ class Entitlements:
 			
 		valdisplaycode = []
 		Getprevdict = eval(str(Getprevdict))
-		Trace.Write('Getprevdict----------'+str(Getprevdict))
+		#Trace.Write('Getprevdict----------'+str(Getprevdict))
 		###added  3157
 		#attId=AttributeID = valcode=""
 		#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
@@ -1845,7 +1849,7 @@ class Entitlements:
 				WHERE SYSTEM_ID ='{SystemId}' 
 				GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(Gettabledata.SERVICE_ID)))
 		for AttributeID,valcode in dict(Getprevdict).items():
-			Trace.Write(str(valcode)+'170-------'+str(AttributeID))
+			#Trace.Write(str(valcode)+'170-------'+str(AttributeID))
 			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc']:
 				valdisplaycode.append(str(valcode))
 				attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)
