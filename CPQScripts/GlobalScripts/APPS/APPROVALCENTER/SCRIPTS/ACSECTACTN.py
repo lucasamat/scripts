@@ -1338,12 +1338,13 @@ class approvalCenter:
 			parallel = ""
 			Trace.Write("@1336--"+ str(CurrentTabName))
 			Trace.Write("QuoteNumber "+str(self.QuoteNumber)+ " - "+str(RequestDesc))
-			UpdateTrans = """
-			    UPDATE ACAPTX SET 
-			    APPROVALSTATUS = 'REQUESTED',
+			approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+			approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
+			UpdateTrans = """UPDATE ACAPTX SET
+				APPROVALSTATUS = 'REQUESTED',
 				REQUESTOR_COMMENTS = '{RequestDesc}'
-				WHERE APPROVAL_RECORD_ID = '{QuoteNumber}' """.format(
-				QuoteNumber=str(self.QuoteNumber),
+				WHERE APPROVAL_RECORD_ID = '{approval_record_id}'""".format(
+				approval_record_id=approval_record_id,
 				RequestDesc=str(RequestDesc),
 			)
 			a=Sql.RunQuery(UpdateTrans)
