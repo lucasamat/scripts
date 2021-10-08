@@ -1048,6 +1048,9 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		Log.Info("Exception in Quote Edit") 
 
 	try:
+		if 'Z0091' in get_serviceid and ancillary_flag == 'YES':
+			where = where.replace('Z0091','Z0046')	
+		Log.Info('where--CQINSQTITM-'+str(where))
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
