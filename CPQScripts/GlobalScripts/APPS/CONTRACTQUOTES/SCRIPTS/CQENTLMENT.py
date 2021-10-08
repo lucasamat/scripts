@@ -1045,7 +1045,7 @@ class Entitlements:
 								QTEREV_ID
 								FROM SAQSCO (NOLOCK)
 								WHERE 
-								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where}
+								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{revision_rec_id}' AND SERVICE_ID IN ('Z0091','Z0046')
 														
 							""".format(
 								TreeParam="Z0046",
