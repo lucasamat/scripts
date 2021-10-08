@@ -825,18 +825,18 @@ class Entitlements:
 						curr = GetRegion.GLOBAL_CURRENCY if GetRegion else "" """
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
-				for key,val in ENT_IP_DICT.items():	
+				for key,dict_val in ENT_IP_DICT.items():	
 					getcostbaborimpact =""
 					getpriceimpact = ""
 					calculation_factor =""
 					pricemethodupdate = ""
-					Trace.Write("val---"+str(val))
+					Trace.Write("val---"+str(dict_val))
 					#Trace.Write("key---"+str(key))
 					#getregionvalq = "AMT"
-					getvalue = str((val).split("||")[4]).strip()
+					getvalue = str((dict_val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
 					if str(self.treeparam) == "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
-						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str((val).split("||")[0]).strip() == "Some Exclusions":
+						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str((dict_val).split("||")[0]).strip() == "Some Exclusions":
 							service_id = self.treeparam
 							ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
 							material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0101'")
@@ -853,7 +853,7 @@ class Entitlements:
 								WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 								) A""".format(description=description,service_id = service_id,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
 					##A055S000P01-9646  code ends..
-					if key == "AGS_Z0091_KPI_BPTKPI" and str((val).split("||")[0]).strip() == "Yes":
+					if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 						tbrow={}
 						#Trace.Write("YES to Bonus & Penalty Tied to KPI")
 						Quote.SetGlobal("KPI","YES")
@@ -906,7 +906,7 @@ class Entitlements:
 											if getslaes_value:
 												getquote_sales_val = getslaes_value.SALESORG_ID
 											get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-											get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+											get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
 									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 									if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
 										tool_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
@@ -1067,7 +1067,7 @@ class Entitlements:
 							)
 							)
 				
-					elif key == "AGS_Z0091_KPI_BPTKPI" and str((val).split("||")[0]).strip() == "No":
+					elif key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "No":
 						Quote.SetGlobal("KPI","NO")
 						#Trace.Write("NO to Bonus & Penalty Tied to KPI")
 						if self.treeparam == 'Z0091':
@@ -1097,7 +1097,7 @@ class Entitlements:
 					my_format = "{:." + str(decimal_place) + "f}"
 					try:
 						if getvalue:
-							if str((val).split("||")[1]) == "CE":	
+							if str((dict_val).split("||")[1]) == "CE":	
 								
 								getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
 								if getcostbabor:
@@ -1110,7 +1110,7 @@ class Entitlements:
 									getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
 									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
 									
-							elif str((val).split("||")[1]) == "Technician_or_3rd_Party":			
+							elif str((dict_val).split("||")[1]) == "Technician_or_3rd_Party":			
 								gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
 								if gettechlabor:
 									getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
@@ -1118,7 +1118,7 @@ class Entitlements:
 									getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
 									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
 									
-							elif str((val).split("||")[1]) == "PSE":							
+							elif str((dict_val).split("||")[1]) == "PSE":							
 								getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
 								if getpselabor:
 									getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
@@ -1145,17 +1145,17 @@ class Entitlements:
 						calculation_factor =  attr_level_pricing[key]['factor']
 						pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
-						Trace.Write("attr_level_pricing"+str(val))
-						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
-							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
+						Trace.Write("attr_level_pricing"+str(dict_val))
+						if str((dict_val).split("||")[5]).strip() and str((dict_val).split("||")[5]).strip() not in ('undefined','NULL'):
+							getcostbaborimpact = str((dict_val).split("||")[5]).replace(',','').strip()
 							try:
 								getcostbaborimpact = getcostbaborimpact.split(" ")[0].strip()
 								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
 								getcostbaborimpact = getcostbaborimpact	
 							#Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
-						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
-							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
+						if str((dict_val).split("||")[6]).strip() and str((dict_val).split("||")[6]).strip()not in ('undefined','NULL'):
+							getpriceimpact = str((dict_val).split("||")[6]).replace(',','').strip()
 							try:
 								price_split = getpriceimpact.split(" ")
 								getpriceimpact = price_split[0].strip()
@@ -1163,8 +1163,8 @@ class Entitlements:
 							except:
 								getpriceimpact = getpriceimpact	
 							#Trace.Write("getpriceimpact---"+str(getpriceimpact))
-						if str((val).split("||")[4]).strip() and str((val).split("||")[4]).strip() not in ('undefined','NULL'):
-							calculation_factor = str((val).split("||")[4]).strip()
+						if str((dict_val).split("||")[4]).strip() and str((dict_val).split("||")[4]).strip() not in ('undefined','NULL'):
+							calculation_factor = str((dict_val).split("||")[4]).strip()
 							#Trace.Write("calculation_factor---"+str(calculation_factor))
 						# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
 						# 	pricemethodupdate = str((val).split("||")[7]).strip()
@@ -1185,8 +1185,8 @@ class Entitlements:
 						getpriceimpact = ""
 					##storing values for multi select  starts
 					#Trace.Write('product_id---'+str(product_obj.PRD_ID))
-					if str((val).split("||")[2]) == "Check Box" :
-						display_vals = str((val).split("||")[0])
+					if str((dict_val).split("||")[2]) == "Check Box" :
+						display_vals = str((dict_val).split("||")[0])
 						if display_vals:
 							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
 							#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
@@ -1202,9 +1202,9 @@ class Entitlements:
 								#multi_select_attr_list[str(key)] = display_value_arr
 						else:
 							attr_code = ""
-					elif str((val).split("||")[2]) == "DropDown":
+					elif str((dict_val).split("||")[2]) == "DropDown":
 						try:
-							display_vals = str((val).split("||")[0])
+							display_vals = str((dict_val).split("||")[0])
 						except:
 							display_vals = ''
 						
@@ -1220,7 +1220,7 @@ class Entitlements:
 								ent_val_code =''
 						
 					else:
-						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
+						ent_val_code = 	str((dict_val).split("||")[0]).replace("'","&apos;")
 					#'+str(key)+'--'+str(ent_val_code))
 					##ends
 
@@ -1235,7 +1235,7 @@ class Entitlements:
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
 					try:
-						ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+						ent_disp_val = str((dict_val).split("||")[0]).replace("'","&apos;")
 					except:
 						ent_disp_val = ''
 					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
@@ -1259,7 +1259,7 @@ class Entitlements:
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
 					#Trace.Write("updateentXML-970------"+str(updateentXML))
 				#Trace.Write('configuration_status----'+str(configuration_status))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
