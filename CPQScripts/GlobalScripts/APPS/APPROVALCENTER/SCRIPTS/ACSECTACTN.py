@@ -1207,7 +1207,9 @@ class approvalCenter:
 	def SubmitForApprovalAction(self, GetStatus=None, RequestDesc=''):
 		UpdateTrans = ""
 		Trace.Write("GetStatus "+str(GetStatus))
-		if GetStatus:                            
+		if GetStatus:        
+			approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+			approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 			Sql.RunQuery("""UPDATE ACAPMA SET
 				APROBJ_STATUSFIELD_VALUE = '{ApprovalStatus}',
 				APRSTAMAP_APPROVALSTATUS = 'REQUESTED',
@@ -1216,9 +1218,9 @@ class approvalCenter:
 				REQUESTOR_COMMENTS = '{RequestDesc}',
 				REQUEST_DATE = '{datetime_value}',
 				CUR_APRCHNSTP_ENTRYDATE = '{datetime_value}'
-				WHERE APPROVAL_RECORD_ID = '{QuoteNumber}' """.format(
+				WHERE APPROVAL_RECORD_ID = '{approval_record_id}' """.format(
 				ApprovalStatus=str(GetStatus.APROBJ_STATUSFIELD_VAL),
-				QuoteNumber=str(self.QuoteNumber),
+				approval_record_id=str(approval_record_id),
 				UserName=str(self.UserName),
 				UserId=str(self.UserId),
 				datetime_value=str(self.datetime_value),
@@ -1242,11 +1244,13 @@ class approvalCenter:
 							RequestDesc=str(RequestDesc),
 						)
 				else:
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 					UpdateTrans = """UPDATE ACAPTX SET
 						APPROVALSTATUS = 'REQUESTED',
 						REQUESTOR_COMMENTS = '{RequestDesc}'
-						WHERE APPROVAL_RECORD_ID = '{QuoteNumber}' """.format(
-						QuoteNumber=str(self.QuoteNumber),
+						WHERE APPROVAL_RECORD_ID = '{approval_record_id}' """.format(
+						approval_record_id=str(approval_record_id),
 						RequestDesc=str(RequestDesc),
 					)
 			else:
@@ -1279,20 +1283,25 @@ class approvalCenter:
 							#    #stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 							#))
 				else:
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 					UpdateTrans = """UPDATE ACAPTX SET
 						APPROVALSTATUS = 'REQUESTED',
 						REQUESTOR_COMMENTS = '{RequestDesc}'
-						WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
+						WHERE APPROVAL_RECORD_ID = '{approval_record_id}'
 						AND APRCHNSTP_RECORD_ID = '{stepRecordId}' """.format(
-						QuoteNumber=str(self.QuoteNumber),
+						approval_record_id=str(approval_record_id),
 						RequestDesc=str(RequestDesc),
 						stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 					)
 			##added runquery in update ACAPMA query
 			#a = Sql.RunQuery(UpdateAppoval)
 			b = Sql.RunQuery(UpdateTrans)
-			UPDATE_ACACHR = """ UPDATE ACACHR SET INITIATED_DATE = '{datetime_value}', INTIATEDBY_RECORD_ID = '{UserId}', INITIATED_BY = '{UserName}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
+			approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+			approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
+			UPDATE_ACACHR = """ UPDATE ACACHR SET INITIATED_DATE = '{datetime_value}', INTIATEDBY_RECORD_ID = '{UserId}', INITIATED_BY = '{UserName}' WHERE ACACHR.APPROVAL_RECORD_ID='{approval_record_id}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,approval_record_id=approval_record_id)
 			Sql.RunQuery(UPDATE_ACACHR)
+
 			GetCurStatus = Sql.GetFirst(
 				"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 					ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
@@ -1300,8 +1309,8 @@ class approvalCenter:
 					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID =SYOBJD.RECORD_ID
 					INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.OBJECT_NAME=SYOBJD.OBJECT_NAME
 					INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL=SYOBJH.LABEL
-					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL'""".format(
-					QuoteNumber=str(self.QuoteNumber)
+					WHERE ACAPMA.APPROVAL_RECORD_ID = '{approval_record_id}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL'""".format(
+					approval_record_id=str(approval_record_id)
 				)
 			)
 			if GetCurStatus:
