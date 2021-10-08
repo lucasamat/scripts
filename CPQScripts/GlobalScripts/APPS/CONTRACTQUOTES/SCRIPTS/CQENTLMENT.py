@@ -173,7 +173,7 @@ class Entitlements:
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		#webclient.Headers.Add("If-Match", "111")
-		#Trace.Write('cpsmatchID------'+str(cpsmatchID))
+		Trace.Write('cpsmatchID------'+str(cpsmatchID))
 		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
@@ -205,7 +205,7 @@ class Entitlements:
 					for val in STANDARD_ATTRIBUTE_VALUES:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
-						#Trace.Write('NewValue'+str(NewValue)+'---'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+						Trace.Write('NewValue'+str(NewValue)+'---'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
 							Trace.Write('inside-------')
@@ -246,10 +246,10 @@ class Entitlements:
 				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
-			#Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
+			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
 
 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-			#Trace.Write("patch response1---170---" + str(response1))
+			Trace.Write("patch response1---170---" + str(response1))
 			
 			cpsmatc_incr = int(cpsmatchID) + 10
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
