@@ -1262,7 +1262,7 @@ class approvalCenter:
 					quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 					
 					if quote_obj is not None:
-						approval_queue_obj = Sql.GetList("select APPROVAL_RECORD_ID,APRCHNSTP_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL') AND APRCHNSTP_RECORD_ID = '{chain_step_rec_id}'".format(quote_record_id = quote_record_id,chain_step_rec_id = GetStatus.APRCHNSTP_RECORD_ID))
+						approval_queue_obj = Sql.GetList("select APPROVAL_RECORD_ID,APRCHNSTP_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL') AND APRCHNSTP_RECORD_ID = '{chain_step_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,chain_step_rec_id = GetStatus.APRCHNSTP_RECORD_ID))
 						for approval_queue in approval_queue_obj:
 							approval_record_id = approval_queue.APPROVAL_RECORD_ID
 							UpdateTrans = """UPDATE ACAPTX SET
