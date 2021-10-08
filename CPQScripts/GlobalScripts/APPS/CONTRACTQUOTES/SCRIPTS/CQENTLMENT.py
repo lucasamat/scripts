@@ -213,7 +213,7 @@ class Entitlements:
 							requestdata +=','
 							attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
 						elif field_type == 'Check Box':
-							Trace.Write("inside_J____")
+							Trace.Write("inside_J____checkbox")
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
 						elif field_type == 'Drop Down':
