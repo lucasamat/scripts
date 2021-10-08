@@ -56,7 +56,7 @@ try:
 	serviceId =Param.serviceId
 except:
 	serviceId = ""
-Log.Info('params----'+str(TreeParam)+str(quote_revision_record_id)+str(quote_record_id)+str(where_condition))
+#Log.Info('params----'+str(TreeParam)+str(quote_revision_record_id)+str(quote_record_id)+str(where_condition))
 def equipment_predefined():
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
 	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSCE {}""".format(str(where_condition) ))
@@ -195,7 +195,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 		where = " AND PRENVL.ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_value)
 		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(ent_id)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string, input_xml )
 		# re.sub(r'<ENTITLEMENT_ID>'+str(ent_id)+'<[\w\W]*?</CALCULATION_FACTOR>', entitlement_string, input_xml )
-		Log.Info("EID11->{}, {} ".format(str(ent_id),str(entitlement_string)) )
+		#Log.Info("EID11->{}, {} ".format(str(ent_id),str(entitlement_string)) )
 
 	get_coefficient_val = Sql.GetFirst("SELECT ENTITLEMENT_COEFFICIENT, PRENTL.ENTITLEMENT_ID FROM PRENVL (NOLOCK) INNER JOIN PRENTL (NOLOCK) ON PAR_ENPAR_ENTITLEMENT_ID = PRENVL.ENTITLEMENT_ID AND PRENVL.SERVICE_ID = PRENTL.SERVICE_ID WHERE PRENVL.ENTITLEMENT_ID = '{}' AND PRENVL.SERVICE_ID = '{}' {}".format(ent_id, TreeParam, where))
 	if get_coefficient_val.ENTITLEMENT_ID in entxmldict.keys():
@@ -204,7 +204,7 @@ def updating_xml(entxmldict, input_xml, ent_id, ent_value):
 
 		entitlement_string2 = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(get_coefficient_val.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entitlement_string2)
 		input_xml = re.sub(r'<QUOTE_ITEM_ENTITLEMENT>\s*<ENTITLEMENT_ID>'+str(get_coefficient_val.ENTITLEMENT_ID)+'[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>', entitlement_string2, input_xml )
-		Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string2)) )
+		#Log.Info("EID->{}, {} ".format(str(ent_id),str(entitlement_string2)) )
 	return input_xml
 
 
