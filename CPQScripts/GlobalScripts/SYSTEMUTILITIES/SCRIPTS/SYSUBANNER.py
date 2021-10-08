@@ -1263,7 +1263,7 @@ def Related_Sub_Banner(
 					FifthValue = get_val.EQUIPMENT_ID
 					SixthLable = "Serial No"
 					SixthValue = get_val.SERIAL_NO
-				if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName == 'SAQSPT')) and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
+				if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName) == 'SAQSPT') and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
 					Trace.Write('subb--')					
 					TreeParam = Quote.GetGlobal("TreeParam")
 					TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
