@@ -35,6 +35,7 @@ quote = objItems[2].split(",")[1]
 revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
+ancillary_flag = objItems[2].split(",")[3]
 try: 
 	attributeList = objItems[1].split(",")
 except:
@@ -1029,7 +1030,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		if 'Z0016' in get_serviceid and objectName != 'SAQTSE':
 			entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
-		if 'Z0091' in get_serviceid:
+		if 'Z0091' in get_serviceid and ancillary_flag == 'YES':
 			ancillary_service_Z0046(get_serviceid)
 		sendEmail(level)
 
