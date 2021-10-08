@@ -760,7 +760,7 @@ def Related_Sub_Banner(
 			elif TreeParam == "Approvals"  and TabName == "Quotes":
 				Trace.Write("760")
 				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-				getval = Sql.GetFirst(" select DISTINCT TOP 10 APRCHN_ID, APRCHN_RECORD_ID ,APPROVAL_CHAIN_RECORD_ID, APRCHN_NAME, APPROVAL_METHOD FROM ACAPCH (nolock) WHERE APRCHN_ID = '"+str(subTabName)+"'")
+				getval = Sql.GetFirst(" select DISTINCT TOP 10 APRCHN_ID, APRCHN_NAME, APPROVAL_METHOD FROM ACAPCH (nolock) WHERE APRCHN_ID = '"+str(subTabName)+"'")
 				getown = Sql.GetFirst(" select DISTINCT TOP 10 OWNER_NAME from SAQTMT(nolock) where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
 				# acaptx_dat = Sql.GetFirst("SELECT * FROM ACAPCH (NOLOCK) WHERE APRCHN_ID = '{Subtab}'".format(Subtab=subTabName))
 				PrimaryLable = "Approval Chain ID"
