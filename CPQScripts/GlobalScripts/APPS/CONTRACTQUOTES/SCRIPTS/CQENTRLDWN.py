@@ -958,7 +958,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	
 	try:
 		pattern = re.compile(r'QUOTE_RECORD_ID\s*\=\s*\'([^>]*?)\'')
-		result = re.search(pattern, where_condition_string).group(1)
+		result = re.search(pattern, where).group(1)
 		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(result))
 		if quote_obj:
 			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)	
