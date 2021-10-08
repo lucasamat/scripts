@@ -494,9 +494,10 @@ def ancillary_service_Z0046(get_serviceid):
 		if get_ancillaryservice :
 			Log.Info('Z0091--Z0046---')
 			#if 
-			get_ancillary_fab = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSFE {where_condition}""".format(where_condition=where_condition ))
+			get_ancillary_fab = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSFE {where_condition}".format(where_condition=where_condition ))
 			if get_ancillary_fab:
 				if get_ancillary_fab.cnt == 0:
+					Log.Info('get_ancillary_fab---'+str())
 					SAQSFE_ancillary_query="""
 						INSERT SAQSFE (ENTITLEMENT_XML,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,	
 						CPS_CONFIGURATION_ID, CPS_MATCH_ID,QTESRVENT_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,QTESRVFBL_RECORD_ID,CONFIGURATION_STATUS,QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID, CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)
@@ -512,7 +513,7 @@ def ancillary_service_Z0046(get_serviceid):
 					Sql.RunQuery(SAQSFE_ancillary_query)
 					
 			
-			get_ancillary_grn = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSGE {where_condition}""".format(where_condition=where_condition ))
+			get_ancillary_grn = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSGE {where_condition}".format(where_condition=where_condition ))
 			if get_ancillary_grn:
 				if get_ancillary_grn.cnt == 0: 
 					qtqtse_query_anc="""
@@ -529,7 +530,7 @@ def ancillary_service_Z0046(get_serviceid):
 					Log.Info("qtqtse_query_anc---163------"+str(qtqtse_query_anc))
 					Sql.RunQuery(qtqtse_query_anc)
 			
-			get_ancillary_equp = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSCE {where_condition}""".format(where_condition=where_condition ))
+			get_ancillary_equp = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSCE {where_condition}".format(where_condition=where_condition ))
 			if get_ancillary_equp:
 				if get_ancillary_equp.cnt == 0: 
 					qtqsce_anc_query="""
