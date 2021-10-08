@@ -2950,6 +2950,8 @@ class approvalCenter:
 			Trace.Write("bodycontent-->"+str(bodycontent))
 			bodyAPIName = []
 			currencylist = []
+			bodycontent.remove('CANCELLATION PERIOD')
+			bodycontent.remove('PAYMENT TERM ID')
 			for eachlable in bodycontent:
 				GetObjdAPI = Sql.GetFirst(
 					"""SELECT API_NAME,DATA_TYPE FROM SYOBJD (NOLOCK)
