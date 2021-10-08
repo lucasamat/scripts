@@ -2935,6 +2935,7 @@ class SYLDRTLIST:
                                                     + str(module_txt)
                                                     + "'"
                                                 )
+                                            Trace.Write("POP_6 "+str(value1234))
                                             if product_id != "" and product_id is not None:
                                                 pop_val[key] = value1234 + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
                                             else:
@@ -2945,6 +2946,7 @@ class SYLDRTLIST:
                                                     + str(key)
                                                     + "' AND DATA_TYPE = 'LOOKUP'"
                                                 )
+                                                Trace.Write("POP_5 "+str(value1234))
                                                 lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                                 pop_val[key] = value1234 + "|" + lookup_val
                                             lookup_rl_popup.append(key)
@@ -2956,6 +2958,7 @@ class SYLDRTLIST:
                                             + str(key)
                                             + "' AND DATA_TYPE = 'LOOKUP'"
                                         )
+                                        Trace.Write("POP_4 "+str(value1234))
                                         lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                         pop_val[key] = value1234 + "|" + lookup_val
                                         lookup_rl_popup.append(key)
@@ -7995,6 +7998,7 @@ class SYLDRTLIST:
                                             )
                                         if not value1234:
                                             value1234 = ""
+                                        Trace.Write("POP_3 "+str(value1234))
                                         if product_id != "" and product_id is not None:
                                             pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
                                         else:
@@ -8007,6 +8011,7 @@ class SYLDRTLIST:
                                             )
                                             if not value1234:
                                                 value1234 = ""
+                                            Trace.Write("POP_2 "+str(value1234))
                                             lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                             pop_val[key] = str(value1234) + "|" + lookup_val
                                 else:
@@ -8019,6 +8024,7 @@ class SYLDRTLIST:
                                     )
                                     if not value1234:
                                         value1234 = ""
+                                    Trace.Write("POP_1 "+str(value1234))
                                     lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                     pop_val[key] = str(value1234) + "|" + lookup_val
                     elif value123 == objRecName:
