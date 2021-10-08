@@ -54,7 +54,6 @@ class approvalCenter:
 		self.ImagePath = "/mt/" + str(Login_Domain) + "/Additionalfiles/"
 
 	def ApproveVoilationRule(self, AllParams, ACTION, ApproveDesc, CurrentTransId):
-		Trace.Write("tracechecker")
 		"""Approve and Reject Function."""
 		#try:
 		Trace.Write("@59")
