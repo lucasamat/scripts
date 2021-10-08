@@ -8027,6 +8027,7 @@ class SYLDRTLIST:
                                     Trace.Write("POP_1 "+str(value1234))
                                     lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                     pop_val[key] = str(value1234) + "|" + lookup_val
+                                    Trace.Write("POP_1_J "+str(pop_val))
                     elif value123 == objRecName:
                         key_value = str(value1234)
                         if str(ObjectName) == "USERS":                            
