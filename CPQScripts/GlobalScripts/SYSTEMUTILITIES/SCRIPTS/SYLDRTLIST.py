@@ -3175,7 +3175,7 @@ class SYLDRTLIST:
                         new_dict["ACTIONS"] = Action_str   
                         new_dict["ids"] = ids
                         new_dict["seg_pric"] = seg_pric
-                        new_dict["pop_val"] = pop_val
+                        # new_dict["pop_val"] = pop_val
                         new_dict["primary"] = primary
                         list_lineup.append(value123)
                                  
