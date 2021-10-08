@@ -1204,6 +1204,8 @@ class Entitlements:
 							if STANDARD_ATTRIBUTE_VALUES:
 								
 								ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+							else:
+								ent_val_code =''
 						
 					else:
 						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
