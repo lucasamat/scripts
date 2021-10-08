@@ -1196,7 +1196,10 @@ class Entitlements:
 						else:
 							attr_code = ""
 					elif str((val).split("||")[2]) == "DropDown":
-						display_vals = str((val).split("||")[0])
+						try:
+							display_vals = str((val).split("||")[0])
+						except:
+							display_vals = ''
 						
 						if display_vals:
 							
