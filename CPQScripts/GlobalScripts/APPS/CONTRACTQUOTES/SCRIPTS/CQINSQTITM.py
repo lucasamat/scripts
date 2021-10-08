@@ -1,5 +1,5 @@
 # =========================================================================================================================================
-#   __script_name : CQINSQTITM.PY 
+#   __script_name : CQINSQTITM.PY
 #   __script_description : THIS SCRIPT IS USED TO INSERT QUOTE ITEMS AND ITS RELATED TABLES BASED ENTITLEMENT
 #   __primary_author__ : AYYAPPAN SUBRAMANIYAN
 #   __create_date :30-09-2021
