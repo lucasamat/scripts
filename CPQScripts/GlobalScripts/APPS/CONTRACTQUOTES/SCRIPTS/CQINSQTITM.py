@@ -33,17 +33,19 @@ class ContractQuoteItem:
 		self.set_contract_quote_related_details()
 
 	def set_contract_quote_related_details(self):
-		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if contract_quote_obj:
 			self.contract_quote_id = contract_quote_obj.QUOTE_ID      
 			self.quote_type = contract_quote_obj.QUOTE_TYPE
 			self.sale_type = contract_quote_obj.SALE_TYPE
 			self.c4c_quote_id = contract_quote_obj.C4C_QUOTE_ID
+			self.contract_quote_revision_id = contract_quote_obj.QTEREV_ID
 		else:
 			self.contract_quote_id = ''  
 			self.quote_type = ''
 			self.sale_type = ''
 			self.c4c_quote_id = ''
+			self.contract_quote_revision_id = ''
 		return True
 
 	def _quote_item_delete_process(self):
@@ -930,6 +932,8 @@ class ContractQuoteItem:
 				self._insert_quote_item_greenbook()		
 		else:
 			self._quote_items_update()	
+		# Pricing Calculation
+		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
 		return True
 
 try:
