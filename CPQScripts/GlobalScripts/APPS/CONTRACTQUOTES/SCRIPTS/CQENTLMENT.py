@@ -1227,7 +1227,10 @@ class Entitlements:
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+					try:
+						ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+					except:
+						ent_disp_val = ''
 					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
 
 					# 	if attributevalues.get(key) is None:
