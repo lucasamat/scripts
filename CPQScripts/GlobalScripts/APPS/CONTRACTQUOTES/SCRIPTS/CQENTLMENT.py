@@ -1138,13 +1138,14 @@ class Entitlements:
 					except:	
 						attr_level_pricing = ""
 						#Trace.Write("")
-					#Trace.Write("attr_level_pricing"+str(attr_level_pricing))
+					
 					if attr_level_pricing:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
 						calculation_factor =  attr_level_pricing[key]['factor']
 						pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
+						Trace.Write("attr_level_pricing"+str(val))
 						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
 							try:
