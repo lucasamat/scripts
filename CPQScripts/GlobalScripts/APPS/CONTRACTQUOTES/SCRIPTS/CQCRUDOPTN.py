@@ -767,7 +767,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				# spareparts_list = Sql.GetList("select PART_NUMBER FROM SAQTSP WHERE PART_NUMBER NOT IN '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(spare_parts_details_joined,self.contract_quote_record_id,self.quote_revision_record_id))
 				self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) 
 										SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID)""".format(spare_parts_details_joined))
-				self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQSPT ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID """)
+				self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQSPT ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
@@ -1082,7 +1082,6 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				Trace.Write("EXCEPT----PREDEFINED DRIVER IFLOW") 
 
 class PartsListModel(ContractQuoteCrudOpertion):
-	Trace.Write('-----Parts List CRUD-----')
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
 											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
@@ -1095,7 +1094,6 @@ class PartsListModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		if self.action_type == "ADD_PART":
-			Trace.Write('SAQSPT---- Insert')
 			self._add_parts_list()
 	
 	def _add_parts_list(self):
@@ -1112,7 +1110,6 @@ class PartsListModel(ContractQuoteCrudOpertion):
 								val = ''.join(re.findall(r'\d+', val)) if not val.isdigit() else val
 							qury_str+=" MAMTRL."+key+" LIKE '%"+val+"%' AND "
 				query_str="""SELECT MATERIAL_RECORD_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,PRODUCT_TYPE FROM MAMTRL WHERE IS_SPARE_PART = 'True' AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE {} QUOTE_RECORD_ID = '{}' AND  QTEREV_RECORD_ID ='{}')""".format(qury_str,self.contract_quote_record_id,self.quote_revision_record_id)
-				Trace.Write('query_str---'+str(query_str))
 				query_string=SqlHelper.GetList(query_str)
 				if query_string is not None:
 					record_ids = [data.MATERIAL_RECORD_ID for data in query_string]
@@ -1130,7 +1127,6 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					else value
 					for value in self.values
 				]
-			Trace.Write('Record-ids-->'+str(record_ids))
 			batch_group_record_id = str(Guid.NewGuid()).upper()
 			record_ids = str(str(record_ids)[1:-1].replace("'",""))
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")			
@@ -1226,11 +1222,11 @@ class PartsListModel(ContractQuoteCrudOpertion):
 					)
 				)
 
-			# self._process_query(
-			# 			"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
-			# 				BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
-			# 			)
-			# 		)
+			self._process_query(
+						"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
+							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
+						)
+					)
 
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
