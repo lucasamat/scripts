@@ -1976,7 +1976,7 @@ class Entitlements:
 		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
-		#Trace.Write("valdisplaycode--------"+str(valdisplaycode))
+		Trace.Write("attributeEditonlylst----durga----"+str(attributeEditonlylst))
 		'''try:			
 			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
