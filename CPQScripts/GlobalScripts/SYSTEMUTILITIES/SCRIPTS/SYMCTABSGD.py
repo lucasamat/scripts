@@ -928,7 +928,7 @@ class CONTAINER:
                                         #     )
                                         ##A055S000P01-8871 Code starts..
                                         if flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
-                                            where += " AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0".format(User.UserName)
+                                            where += " AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 'False'".format(User.UserName)
                                             if "CONTRACT_VALID_FROM" in str(where):
                                                 where = str(where).replace("CONTRACT_VALID_FROM","SAQTRV.CONTRACT_VALID_FROM")
                                             if "CONTRACT_VALID_TO" in str(where):
@@ -1134,7 +1134,7 @@ class CONTAINER:
                                             )
                                                 Trace.Write("QueryStr---->"+str(QueryStr))
                                             elif flag == 3 and (str(x_tabs) == 'Quotes' or str(x_tabs) == 'Contracts'):
-                                                where += " AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0".format(User.UserName)
+                                                where += " AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' AND SAQTMT.CPQTABLEENTRYADDEDBY = '{}' AND SAQTRV.REVISION_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 'False' ".format(User.UserName)
                                                 if "CONTRACT_VALID_FROM" in str(where):
                                                     where = str(where).replace("CONTRACT_VALID_FROM","SAQTRV.CONTRACT_VALID_FROM")
                                                 if "CONTRACT_VALID_TO" in str(where):
