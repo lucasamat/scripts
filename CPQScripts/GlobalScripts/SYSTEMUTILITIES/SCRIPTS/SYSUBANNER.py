@@ -770,14 +770,12 @@ def Related_Sub_Banner(
 					SecondValue = getval.APRCHN_NAME
 					ThirdLable = "Approval Chain Method"
 					ThirdValue = getval.APPROVAL_METHOD
-					FourthLable = "Quote Owner"
+					#FourthLable = "Quote Owner"
 				else:
 					PrimaryLable = "Approvals"
 					PrimaryValue = "All" 
 					SecondLable = ""
-					SecondValue = ""
-				if getown:
-					FourthValue = getown.OWNER_NAME                   
+					SecondValue = ""                 
 			elif (TreeParam.startswith('Sending') or TreeParam.startswith('Receiving')):
 				
 				if subTabName == "Details" and TreeParam.startswith('Sending Account'):
