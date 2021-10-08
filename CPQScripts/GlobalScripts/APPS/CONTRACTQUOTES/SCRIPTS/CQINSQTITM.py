@@ -959,9 +959,9 @@ if action_type == "UPDATE_LINE_ITEMS":
             result = re.search(pattern, where_condition_string).group(1)
             parameters[keysofparameters[key]]=str(result)	
 else:
-    parameters['contract_quote_record_id']=str(Param.ContractQuoteRecordId)
-    parameters['contract_quote_revision_record_id']=str(Param.ContractQuoteRevisionRecordId)
-    parameters['service_id']=str(Param.ServiceId)
+    parameters[keysofparameters['QUOTE_RECORD_ID']]=str(Param.ContractQuoteRecordId)
+    parameters[keysofparameters['QTEREV_RECORD_ID']]=str(Param.ContractQuoteRevisionRecordId)
+    parameters[keysofparameters['SERVICE_ID']]=str(Param.ServiceId)
     
 contract_quote_item_obj = ContractQuoteItem(**parameters)
 contract_quote_item_obj._do_opertion()
