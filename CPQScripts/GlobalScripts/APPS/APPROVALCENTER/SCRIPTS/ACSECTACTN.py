@@ -1266,7 +1266,7 @@ class approvalCenter:
 						# (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL')
 						for approval_queue in approval_queue_obj:
 							approval_record_id = approval_queue.APPROVAL_RECORD_ID
-							UpdateTrans = """UPDATE ACAPTX SET
+							UpdateTrans = """UPDATE ACAPTX SET 
 								APPROVALSTATUS = 'REQUESTED',
 								REQUESTOR_COMMENTS = '{RequestDesc}'
 								WHERE APPROVAL_RECORD_ID = '{approval_record_id}'
