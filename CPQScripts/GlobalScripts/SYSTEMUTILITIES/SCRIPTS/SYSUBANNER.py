@@ -1264,7 +1264,7 @@ def Related_Sub_Banner(
 					SixthLable = "Serial No"
 					SixthValue = get_val.SERIAL_NO
 				if (str(ObjName) == 'SAQTSV'or str(ObjName) == 'SAQSCO' or str(ObjName) == 'SAQSPT') and TreeSuperParentParam == 'Product Offerings'and TabName == "Quotes":
-					Trace.Write('subb--')					
+					Trace.Write('*subb--')					
 					TreeParam = Quote.GetGlobal("TreeParam")
 					TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
 					getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
