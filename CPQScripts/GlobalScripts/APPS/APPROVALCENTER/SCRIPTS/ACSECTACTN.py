@@ -1337,17 +1337,6 @@ class approvalCenter:
 		if str(ACTION) == "SUBMIT_FOR_APPROVAL":
 			parallel = ""
 			Trace.Write("@1336--"+ str(CurrentTabName))
-			Trace.Write("QuoteNumber "+str(self.QuoteNumber)+ " - "+str(RequestDesc))
-			approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
-			approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
-			UpdateTrans = """UPDATE ACAPTX SET
-				APPROVALSTATUS = 'REQUESTED',
-				REQUESTOR_COMMENTS = '{RequestDesc}'
-				WHERE APPROVAL_RECORD_ID = '{approval_record_id}'""".format(
-				approval_record_id=approval_record_id,
-				RequestDesc=str(RequestDesc),
-			)
-			a=Sql.RunQuery(UpdateTrans)
 			if CurrentTabName == 'Quotes':
 				
 				quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
