@@ -1137,7 +1137,7 @@ def Related_Sub_Banner(
 					FourthValue = str(TreeParam)
 					FifthLable = "Equipment"
 					FifthValue = "ALL" 
-				elif (ObjName == 'ACACHR' or TreeSuperParentParam == "Approvals") and CurrentTabName == 'Quotes':
+				elif (ObjName == 'ACACHR' or TreeSuperParentParam == "Approvals"):
 					Trace.Write("inside round")
 					getchain = Sql.GetFirst("SELECT APRCHN_NAME FROM ACAPCH WHERE APRCHN_ID = '{}'".format(str(TreeParentParam)))
 					PrimaryLable = 'Approval Chain ID'
