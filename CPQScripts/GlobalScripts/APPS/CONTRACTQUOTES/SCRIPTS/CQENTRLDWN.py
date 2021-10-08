@@ -616,7 +616,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 					if get_valuedriver_ids:
 						lst = str(tuple([i.ENTITLEMENT_ID for i in get_valuedriver_ids])).replace(",)",')')
-						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
+						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
 					Log.Info("val_list--fab-"+str(val_list))
@@ -725,7 +725,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 					if get_valuedriver_ids:
 						lst = str(tuple([i.ENTITLEMENT_ID for i in get_valuedriver_ids])).replace(",)",')')
-						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
+						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
 					Log.Info("val_list--grn-"+str(val_list))
@@ -791,7 +791,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				val_list = [i.ENTITLEMENT_ID for i in get_valuedriver_ids]
 				if get_valuedriver_ids:
 					lst = str(tuple([i.ENTITLEMENT_ID for i in get_valuedriver_ids])).replace(",)",')')
-					get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMETITLEMENT_ID in {} ".format(get_serviceid ,lst) )
+					get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 					val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 					val_list.extend(val_coeff)
 				Log.Info("val_list--equp-"+str(val_list))
