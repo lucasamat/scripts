@@ -182,7 +182,7 @@ class Entitlements:
 			#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
 			requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 			attribute_code = []
-			Trace.Write("field_type--"+str(field_type))
+			#Trace.Write("field_type--"+str(field_type))
 			Trace.Write(str(AttributeID)+"--AttributeID---previous_val---- "+str(Getprevdict))
 			
 			
