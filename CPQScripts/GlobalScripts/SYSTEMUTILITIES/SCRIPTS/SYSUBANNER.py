@@ -1068,7 +1068,7 @@ def Related_Sub_Banner(
 				try:
 					Trace.Write("727")
 					getQuotetype = ""   
-					if ObjName == 'ACACHR' or TreeSuperParentParam == "Approvals":
+					if ObjName == 'ACACHR' or  TreeSuperParentParam == "Approvals":
 						Trace.Write("1097---")
 						FourthLable = "Approval Round"
 						FourthValue = TreeParam
