@@ -1093,34 +1093,34 @@ class Entitlements:
 					my_format = "{:." + str(decimal_place) + "f}"
 					try:
 						if getvalue:
-						if str((val).split("||")[1]) == "CE":	
-							
-							getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
-							if getcostbabor:
-								cecost = str(getcostbabor.CE_COST).strip()
-								getcostbaborimpact = str(float(getvalue)*float(cecost))
-								#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
+							if str((val).split("||")[1]) == "CE":	
 								
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
-								getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-								
-						elif str((val).split("||")[1]) == "Technician_or_3rd_Party":			
-							gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
-							if gettechlabor:
-								getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-								
-						elif str((val).split("||")[1]) == "PSE":							
-							getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
-							if getpselabor:
-								getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+								getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
+								if getcostbabor:
+									cecost = str(getcostbabor.CE_COST).strip()
+									getcostbaborimpact = str(float(getvalue)*float(cecost))
+									#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
+									
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
+									getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+									
+							elif str((val).split("||")[1]) == "Technician_or_3rd_Party":			
+								gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
+								if gettechlabor:
+									getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+									
+							elif str((val).split("||")[1]) == "PSE":							
+								getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
+								if getpselabor:
+									getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
 					except:
 						pass
 					##assigning cost impact, price impact, calc factor value  starts
