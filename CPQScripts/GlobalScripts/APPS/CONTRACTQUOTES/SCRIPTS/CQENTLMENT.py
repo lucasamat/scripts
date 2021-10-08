@@ -1624,6 +1624,8 @@ class Entitlements:
 					#if 'AGS_LAB_OPT' in AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 					if  AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 						Trace.Write("AttributeID---904----"+str(AttributeID))
+						if 'Z0046' in AttributeID and serviceId == 'Z0091':
+							serviceId = 'Z0046'
 						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 						if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
