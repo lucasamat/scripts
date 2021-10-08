@@ -1224,7 +1224,7 @@ class SyncQuoteAndCustomTables:
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[1]
 							else:
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]
-							
+							Log.Info("SERVICE IDS----service_id_first---->"+str(service_id_first))
 							Log.Info("SERVICE IDS-----1187--->"+str(service_ids))
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):       
