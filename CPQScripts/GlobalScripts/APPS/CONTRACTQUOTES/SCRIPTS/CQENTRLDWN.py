@@ -546,7 +546,7 @@ def ancillary_service_Z0046(get_serviceid):
 					Sql.RunQuery(qtqsce_anc_query)
 			
 			# get_SAQSCO = Sql.GetFirst("""SELECT count(*) as cnt FROM SAQSCO (NOLOCK) WHERE SAQSCO.QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id))
-			# Log.Info("get_SAQSCO---> "+ str(get_SAQSCO.cnt))
+			# Log.Info("get_SAQSCO---> "+ str(get_SAQSCO.cnt)) 
 			
 			# get_SAQSCE = Sql.GetFirst("""SELECT count(*) as cnt FROM SAQSCE (NOLOCK) WHERE SAQSCE.QUOTE_RECORD_ID = '{ContractId}' AND QTEREV_RECORD_ID = '{revision_rec_id}'""".format(ContractId=Qt_rec_id,revision_rec_id = rev_rec_id))
 			# Log.Info("get_SAQSCE---> "+ str(get_SAQSCE.cnt))
