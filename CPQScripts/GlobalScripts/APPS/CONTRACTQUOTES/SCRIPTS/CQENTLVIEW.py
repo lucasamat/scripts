@@ -450,7 +450,7 @@ class EntitlementView():
 								attributes_disallowed_list.append(attrSysId)
 							else:
 								add_style = ""
-							#Trace.Write(str(attrSysId)+'--attrLabel-2602---attrValue--'+str(add_style))
+							Trace.Write('---attributeEditlst--'+str(attributeEditlst))
 							if attrSysId not in attributedefaultvalue:
 								#Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
