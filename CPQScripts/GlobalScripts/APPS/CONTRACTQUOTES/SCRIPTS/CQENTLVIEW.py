@@ -1617,7 +1617,7 @@ try:
 		TreeTopSuperTopParentParam = ""
 
 except:
-	Trace.Write("inside except")
+	#Trace.Write("inside except")
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
