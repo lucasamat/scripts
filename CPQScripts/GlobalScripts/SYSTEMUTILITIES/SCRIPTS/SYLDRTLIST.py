@@ -3179,7 +3179,7 @@ class SYLDRTLIST:
                         # new_dict["pop_val"] = pop_val
                         new_dict["primary"] = primary
                         list_lineup.append(value123)
-                                 
+                        del new_dict['pop_val']
                     table_list.append(new_dict)
                 table_header += "<tr id='getbannername'>"
             #A055S000P01-682 start to hide the Actions column for related list
@@ -8203,6 +8203,7 @@ class SYLDRTLIST:
                     # new_dict["pop_val"] = pop_val
                     new_dict["primary"] = primary
                 Trace.Write('new_dict-->'+str(new_dict))
+                del new_dict['pop_val']
                 table_list.append(new_dict)
                 Trace.Write('After append table_list--->'+str(table_list))
                 footer_str, footer = "", ""
