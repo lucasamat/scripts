@@ -927,7 +927,7 @@ class EntitlementView():
 							if attrSysId not in attributedefaultvalue:
 								#Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
-							#Trace.Write(str(attrSysId)+'--attrLabel-2602-3076--attrValue--'+str(add_style))
+							Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
 								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
