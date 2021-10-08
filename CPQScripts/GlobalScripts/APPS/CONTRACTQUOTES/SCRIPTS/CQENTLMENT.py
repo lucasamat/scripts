@@ -1091,7 +1091,8 @@ class Entitlements:
 					totalpriceent = ""					
 					decimal_place ="2"
 					my_format = "{:." + str(decimal_place) + "f}"
-					if getvalue:
+					try:
+						if getvalue:
 						if str((val).split("||")[1]) == "CE":	
 							
 							getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
@@ -1120,7 +1121,8 @@ class Entitlements:
 								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
 								getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
 								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-					
+					except:
+						pass
 					##assigning cost impact, price impact, calc factor value  starts
 					else:
 						getcostbaborimpact = costimpact
