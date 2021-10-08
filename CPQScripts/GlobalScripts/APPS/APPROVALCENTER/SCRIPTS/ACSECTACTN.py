@@ -1269,9 +1269,9 @@ class approvalCenter:
 							UpdateTrans = """UPDATE ACAPTX SET 
 								APPROVALSTATUS = 'REQUESTED',
 								REQUESTOR_COMMENTS = '{RequestDesc}'
-								WHERE APPROVAL_RECORD_ID = '{approval_record_id}'
+								WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
 								AND APRCHNSTP_ID = '1' """.format(
-								approval_record_id=approval_record_id,
+								QuoteNumber=str(self.QuoteNumber),
 								RequestDesc=str(RequestDesc),
 								#stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 							)
