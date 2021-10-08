@@ -1337,8 +1337,10 @@ class approvalCenter:
 		if str(ACTION) == "SUBMIT_FOR_APPROVAL":
 			parallel = ""
 			Trace.Write("@1336--"+ str(CurrentTabName))
-			UpdateTrans = """UPDATE ACAPTX SET
-				APPROVALSTATUS = 'REQUESTED',
+			Trace.Write("QuoteNumber "+str(self.QuoteNumber)+ " - "+str(RequestDesc))
+			UpdateTrans = """
+			    UPDATE ACAPTX SET 
+			    APPROVALSTATUS = 'REQUESTED',
 				REQUESTOR_COMMENTS = '{RequestDesc}'
 				WHERE APPROVAL_RECORD_ID = '{QuoteNumber}' """.format(
 				QuoteNumber=str(self.QuoteNumber),
