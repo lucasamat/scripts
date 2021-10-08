@@ -2709,11 +2709,7 @@ class approvalCenter:
 					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'PARALLEL STEP APPROVAL'".format(quote_record_id = self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 				else:
-<<<<<<< Updated upstream
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}'".format(quote_record_id = self.quote_revision_record_id))
-=======
 					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}'".format(quote_revision_record_id=self.quote_revision_record_id))
->>>>>>> Stashed changes
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID  
 		else:
 			Quoteid = Sql.GetFirst("Select APRTRXOBJ_RECORD_ID FROM ACAPMA WHERE APPROVAL_RECORD_ID = '"+str(self.QuoteNumber)+"'")
