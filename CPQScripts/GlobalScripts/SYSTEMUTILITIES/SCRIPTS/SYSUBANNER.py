@@ -1272,6 +1272,12 @@ def Related_Sub_Banner(
 					PrimaryValue = TreeParam
 					ThirdLable = "Product Offering Type"
 					ThirdValue = TreeParentParam
+					if ObjName == "SAQSPT":
+						parts_obj = Sql.GetFirst("select PART_NUMBER from SAQSPT(nolock) where QUOTE_SERVICE_PART_RECORD_ID = '{}'".format(CurrentRecordId))
+						FourthValue = "Equipment"
+						FifthLable = "All"
+						FifthLable = "Part Number"
+						FifthValue = parts_obj.PART_NUMBER
 					##adding configuration status in offering subtab
 					contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 					where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, TreeParam )
@@ -1289,10 +1295,15 @@ def Related_Sub_Banner(
 
 					except:
 						status_image = ''
-
-					FourthLable = "Configuration Status"
+					if ObjName == "SAQSPT":
+						SixthLable = "Configuration Status"
+					else:
+						FourthLable = "Configuration Status"
 					if status_image:
-						FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+						if ObjName == "SAQSPT":
+							SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
+						else:
+							FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 					FifthLable = ""
 					FifthValue = ""
 					if getService is not None:
