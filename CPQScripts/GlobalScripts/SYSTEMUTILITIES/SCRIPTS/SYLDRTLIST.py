@@ -3171,7 +3171,8 @@ class SYLDRTLIST:
                                                             new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
                                                         #new_dict[value123] = value1234
                                                 
-                        
+                        if str(pop_val).startswith("{<System"):
+                            pop_val = ""
                         new_dict["ACTIONS"] = Action_str   
                         new_dict["ids"] = ids
                         new_dict["seg_pric"] = seg_pric
