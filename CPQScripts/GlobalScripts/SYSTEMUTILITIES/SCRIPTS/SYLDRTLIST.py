@@ -7993,6 +7993,8 @@ class SYLDRTLIST:
                                                 + str(module_txt)
                                                 + "'"
                                             )
+                                        if not value1234:
+                                            value1234 = ""
                                         if product_id != "" and product_id is not None:
                                             pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
                                         else:
