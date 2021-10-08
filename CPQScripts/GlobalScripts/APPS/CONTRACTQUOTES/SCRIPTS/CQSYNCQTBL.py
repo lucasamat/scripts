@@ -911,7 +911,7 @@ class SyncQuoteAndCustomTables:
 							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
 							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": "",
+							"PARTY_ID": custom_fields_detail.get("PrimaryContactId"),
 							"PARTY_NAME": custom_fields_detail.get("PrimaryContactName"),
 							"PARTY_ROLE": "PRIMARY CONTACT",
 							"PHONE": "",
