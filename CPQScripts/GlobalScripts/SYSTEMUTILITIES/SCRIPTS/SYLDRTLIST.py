@@ -3272,7 +3272,7 @@ class SYLDRTLIST:
                 + str(list(eval(Columns)))
                 + ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "ACTION" : "PRODUCT_ONLOAD_FILTER",  "SortColumn":SortColumn, "SortColumnOrder": SortColumnOrder, "PerPage": PerPage, "PageInform": PageInform, "PR_CURR": PR_CURR, "TP": TP ,"SUBTAB":"'
                 + str(SubTab)
-                +'"}, function(data) { console.log(data);$("'
+                +'"}, function(data) { debugger; console.log(data);$("'
                 + str(table_ids)
                 + '").bootstrapTable("load", data[0] );if (document.getElementById(\''
                 + str(table_id)
@@ -4656,7 +4656,7 @@ class SYLDRTLIST:
                 select_obj_str = str(obj_str) + "," + str(lookup_str)
             else:
                 select_obj_str = str(obj_str)
-            Trace.Write("select_obj_str_select_obj_str_select "+str(select_obj_str))
+            Trace.Write("select_obj_str_select_obj_str_select "+str(lookup_str))
             lookup_disply_list123 = ""
             lookup_str = ",".join(list(lookup_disply_list))
             if len(list(lookup_disply_list)) > 1:
