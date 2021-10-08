@@ -830,7 +830,7 @@ class Entitlements:
 					getpriceimpact = ""
 					calculation_factor =""
 					pricemethodupdate = ""
-					#Trace.Write("val---"+str(val))
+					Trace.Write("val---"+str(val))
 					#Trace.Write("key---"+str(key))
 					#getregionvalq = "AMT"
 					getvalue = str((val).split("||")[4]).strip()
