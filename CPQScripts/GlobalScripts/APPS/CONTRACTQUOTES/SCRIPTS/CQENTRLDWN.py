@@ -489,7 +489,7 @@ def ancillary_service_Z0046(get_serviceid):
 	try:
 	#if get_serviceid == "Z0091":
 		Log.Info('Z0091-1-Z0046---')
-		where_condition = where.replace('SRC.','')
+		where_condition = where.replace('SRC.','').replace("Z0091","Z0046")
 		get_ancillaryservice = Sql.GetFirst("select * from SAQTSE {where_condition}""".format(where_condition= SAQITMWhere.replace('A.','')))
 		if get_ancillaryservice :
 			Log.Info('Z0091--Z0046---')
