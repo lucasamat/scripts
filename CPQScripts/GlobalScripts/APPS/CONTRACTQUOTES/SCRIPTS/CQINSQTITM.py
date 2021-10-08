@@ -195,7 +195,7 @@ class ContractQuoteItem:
 								JOIN {TempTable} SAQICO_TEMP (NOLOCK) ON SAQICO_TEMP.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQICO_TEMP.SERVICE_ID = SAQICO.SERVICE_ID AND SAQICO_TEMP.EQUIPMENT_RECORD_ID = SAQICO.EQUIPMENT_RECORD_ID AND SAQICO_TEMP.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID 		
 								WHERE 
 									SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}'
-								""".format(TempTable=self.quote_line_item_temp_table, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id, ServiceId=self.service_id))	 
+								""".format(TempTable=self.quote_line_item_temp_table, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))	 
 
 		Sql.RunQuery("""UPDATE SAQICO
 								SET
@@ -213,7 +213,7 @@ class ContractQuoteItem:
 									) SAQSCE_TEMP ON SAQSCE_TEMP.QUOTE_ID = SAQSCO.QUOTE_ID AND SAQSCE_TEMP.EQUIPMENT_ID = SAQSCO.EQUIPMENT_ID AND SAQSCE_TEMP.SERVICE_ID = SAQSCO.SERVICE_ID				
 								WHERE 
 									SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = '{ServiceId}'
-								""".format(PriceTemp=self.pricing_temp_table, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.quote_revision_record_id, ServiceId=self.service_id))	 
+								""".format(PriceTemp=self.pricing_temp_table, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))	 
 		return True
 
 	def _quote_item_lines_insert_process(self, where_string='', join_string=''):
@@ -575,7 +575,7 @@ class ContractQuoteItem:
 		temp_table = "SAQICO_BKP_"+str(self.c4c_quote_id)
 		try:			
 			temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
-			SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(temp_table)+" FROM SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"''' ")
+			SqlHelper.GetFirst("sp_executesql @T=N'SELECT * INTO "+str(temp_table)+" FROM SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"''' ")
 		except Exception:
 			temp_table_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(temp_table)+"'' ) BEGIN DROP TABLE "+str(temp_table)+" END  ' ")
 		# Temp table creation and delete(if altready there) for SAQICO - End
@@ -584,7 +584,7 @@ class ContractQuoteItem:
 		price_temp = "SAQSCE_BKP_"+str(self.c4c_quote_id)			
 		try:	
 			price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
-			SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(entitlement_xml,''&'','';#38''),'''','';#39''),'' < '','' &lt; ''),'' > '','' &gt; '')  as entitlement_xml from SAQSCE(nolock) where QUOTE_RECORD_ID=''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'')A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT INTO "+str(price_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'') ; exec sys.sp_xml_removedocument @H; '")
+			SqlHelper.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><SERVICE_ID>''+service_id+''</SERVICE_ID><EQUIPMENT_ID>''+equipment_id+''</EQUIPMENT_ID>'' AS sml,replace(replace(replace(replace(entitlement_xml,''&'','';#38''),'''','';#39''),'' < '','' &lt; ''),'' > '','' &gt; '')  as entitlement_xml from SAQSCE(nolock) where QUOTE_RECORD_ID=''"+str(self.contract_quote_record_id)+"'' AND QTEREV_RECORD_ID = ''"+str(self.contract_quote_revision_record_id)+"'' AND SERVICE_ID = ''"+str(self.service_id)+"'')A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT INTO "+str(price_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',EQUIPMENT_ID VARCHAR(100) ''EQUIPMENT_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'') ; exec sys.sp_xml_removedocument @H; '")
 		except Exception:
 			price_temp_drop = SqlHelper.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(price_temp)+"'' ) BEGIN DROP TABLE "+str(price_temp)+" END  ' ")
 		return temp_table, price_temp
@@ -592,10 +592,10 @@ class ContractQuoteItem:
 	def _delete_quote_items(self):		
 		## Delete SAQICO, SAQITM  and native quote items - Start
 		Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
-					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,ServiceId=self.service_id
+					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
 				))
 		Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
-					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,ServiceId=self.service_id
+					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
 				))
 		for item in Quote.MainItems:
 			item.Delete()
