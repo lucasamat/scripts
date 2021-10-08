@@ -56,8 +56,8 @@ def ancillary_service_Z0046():
 				SAQTSE (NOLOCK)
 				JOIN SAQSFB ON SAQSFB.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFB.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID
 				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ""".format(UserId=userId, QuoteRecordId=Qt_rec_id, ServiceId='Z0046', revision_rec_id = rev_rec_id)
-				Log.Info('SAQSFE_ancillary_query--148----ROLL DOWN----'+str(SAQSFE_ancillary_query))
-				Sql.RunQuery(SAQSFE_ancillary_query)
+			Log.Info('SAQSFE_ancillary_query--148----ROLL DOWN----'+str(SAQSFE_ancillary_query))
+			Sql.RunQuery(SAQSFE_ancillary_query)
 
 
 
