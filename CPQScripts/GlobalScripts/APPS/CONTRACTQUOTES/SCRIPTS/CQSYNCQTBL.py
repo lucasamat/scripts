@@ -793,7 +793,7 @@ class SyncQuoteAndCustomTables:
 						getSales = Sql.GetFirst("SELECT CpqTableEntryId FROM SASOAC (NOLOCK) WHERE SALESORG_ID = '{}' AND ACCOUNT_ID = '{}'".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('STPAccountID')))
 						
 						if not account_obj:
-							getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+							getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST (NOLOCK) WHERE STATE = '{}' AND COUNTRY = '{}'".format(custom_fields_detail.get("PayerState"),custom_fields_detail.get("PayerCountry")))
 							NewAccountRecordId = str(Guid.NewGuid()).upper()
 							Sql.RunQuery("""INSERT INTO SAACNT (ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_TYPE,ACTIVE,ADDRESS_1,CITY,COUNTRY,COUNTRY_RECORD_ID,PHONE,POSTAL_CODE,REGION,REGION_RECORD_ID,STATE,STATE_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)VALUES('{AccountRecordId}','{AccountId}','{AccountName}','{Type}',1,'{Address}','{City}','{Country}','{CountryRecordId}','{Phone}','{PostalCode}','{Region}','{RegionRecordId}','{State}','{StateRecordId}','{UserName}',GETDATE())
 							""".format(AccountRecordId=NewAccountRecordId,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),Type=custom_fields_detail.get("STPAccountType"),Address=custom_fields_detail.get("PayerAddress1"),City=custom_fields_detail.get("PayerCity"),Country=custom_fields_detail.get("PayerCountry"),CountryRecordId=salesorg_country.COUNTRY_RECORD_ID,Phone=custom_fields_detail.get("PayerPhone"),PostalCode=custom_fields_detail.get("PayerPostalCode"),Region='',RegionRecordId='',State=custom_fields_detail.get("PayerState"),StateRecordId=getState.STATE_RECORD_ID,UserName=User.UserName))
@@ -1336,8 +1336,8 @@ class SyncQuoteAndCustomTables:
 							# quote_involved_party_sending_account.AddRow(sending_account_quote_data)
 							# Sql.Upsert(quote_involved_party_sending_account)
 							# Log.Info("SENDING_ACCOUNT ADDED")
-
-							getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+							getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST (NOLOCK) WHERE STATE = '{}' AND COUNTRY = '{}'".format(custom_fields_detail.get("PayerState"),custom_fields_detail.get("PayerCountry")))
+							#getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 							quote_sending_account_details = Sql.GetTable("SAQSRA")
 							sending_account_detail_data = {
 								"ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
@@ -1580,7 +1580,8 @@ class SyncQuoteAndCustomTables:
 									account_obj = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME,EMAIL,ACCOUNT_RECORD_ID, ACCOUNT_TYPE,PHONE,ADDRESS_1, FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
 						
 									if not account_obj:
-										getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+										getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST (NOLOCK) WHERE STATE = '{}' AND COUNTRY = '{}'".format(custom_fields_detail.get("PayerState"),custom_fields_detail.get("PayerCountry")))
+										#getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 										NewAccountRecordId = str(Guid.NewGuid()).upper()
 										Sql.RunQuery("""INSERT INTO SAACNT (ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_TYPE,ACTIVE,ADDRESS_1,CITY,COUNTRY,COUNTRY_RECORD_ID,PHONE,POSTAL_CODE,REGION,REGION_RECORD_ID,STATE,STATE_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)VALUES('{AccountRecordId}','{AccountId}','{AccountName}','{Type}',1,'{Address}','{City}','{Country}','{CountryRecordId}','{Phone}','{PostalCode}','{Region}','{RegionRecordId}','{State}','{StateRecordId}','{UserName}',GETDATE())
 										""".format(AccountRecordId=NewAccountRecordId,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),Type="",Address=custom_fields_detail.get("PayerAddress1"),City=custom_fields_detail.get("PayerCity"),Country=custom_fields_detail.get("PayerCountry"),CountryRecordId=salesorg_country.COUNTRY_RECORD_ID,Phone=custom_fields_detail.get("PayerPhone"),PostalCode=custom_fields_detail.get("PayerPostalCode"),Region='',RegionRecordId='',State=custom_fields_detail.get("PayerState"),StateRecordId=getState.STATE_RECORD_ID,UserName=User.UserName))
