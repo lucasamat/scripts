@@ -31,6 +31,8 @@ def Request_access_token():
 
 def entitlement_request(partnumber,request_url,request_type):
 	gettodaydate = datetime.now().strftime("%Y-%m-%d")
+	Trace.Write('request_url---'+str(request_url))
+	Trace.Write('request_type---'+str(request_type))
 	partnumber = partnumber.strip()
 	webclient = System.Net.WebClient()
 	response = Request_access_token()
@@ -90,15 +92,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 			get_attr_leve_based_list.append(str(val))
 	#Trace.Write('get_attr_leve_based_list--type return'+str(type(get_attr_leve_based_list)))
 	return get_attr_leve_based_list
-# def get_entitlement_status(partnumber,where_cond,ent_level_table):
-# 	get_cps = Sql.GetFirst("SELECT * FROM {} {}".format(ent_level_table,where_cond) )
-# 	if get_cps:
-# 		request_url = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(get_cps.CPS_CONFIGURATION_ID)
-# 		fullresponse = entitlement_request(partnumber,request_url,'EXISTING')
-# 		if fullresponse:
-# 			status = fullresponse['complete']
-# 			Trace.Write('status--'+str(status))
-# 			return status
+
 
 
 action= Param.action
