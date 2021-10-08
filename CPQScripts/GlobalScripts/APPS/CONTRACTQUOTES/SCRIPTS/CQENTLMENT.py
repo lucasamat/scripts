@@ -608,16 +608,18 @@ class Entitlements:
 				attributesallowedlst = get_attr_leve_based_list
 				#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
 				#Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
-				
-				if sectional_current_dict:
-					#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
-					for key,value in sectional_current_dict.items():
-						approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
-						if approval_status:
-							if approval_status.APPROVAL_REQUIRED == True:
-								approval_list[key] = 'True'
-							else:
-								approval_list[key] = 'False'
+				try:
+					if sectional_current_dict:
+						#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
+						for key,value in sectional_current_dict.items():
+							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
+							if approval_status:
+								if approval_status.APPROVAL_REQUIRED == True:
+									approval_list[key] = 'True'
+								else:
+									approval_list[key] = 'False'
+				except:
+					Trace.Write('error-622--'+str(key))
 							
 					#Trace.Write("try---"+str(approval_list))
 				# except Exception as e:
