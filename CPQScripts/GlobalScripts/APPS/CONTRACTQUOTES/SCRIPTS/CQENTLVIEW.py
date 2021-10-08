@@ -1286,7 +1286,7 @@ class EntitlementView():
 												# 	Trace.Write("else price")
 												# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
 												# 	sec_str_primp += ""
-											except Exception as e:
+											except Exception as e: 
 												sec_str_primp += str(val.ENTITLEMENT_PRICE_IMPACT)
 												#Trace.Write(str(e)+'error2222')
 												
