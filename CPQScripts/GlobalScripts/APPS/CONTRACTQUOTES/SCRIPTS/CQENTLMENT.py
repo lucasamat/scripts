@@ -1070,6 +1070,7 @@ class Entitlements:
 							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
 							try:
 								Sql.RunQuery("DELETE FROM SAQSGE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+								Sql.RunQuery("DELETE FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
 							except:
 								Trace.Write('error--1064---')
 						else:
@@ -2074,7 +2075,7 @@ class Entitlements:
 		if ENT_IP_DICT != '':
 			#Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
-			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
+			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
