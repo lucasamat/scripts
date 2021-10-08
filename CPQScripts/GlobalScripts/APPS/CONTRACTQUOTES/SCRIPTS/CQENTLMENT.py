@@ -512,7 +512,7 @@ class Entitlements:
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 			#restriction for value driver call to CPS start
-			if 'Z0046' in AttributeID and serviceId = 'Z0091':
+			if 'Z0046' in AttributeID and serviceId == 'Z0091':
 				serviceId = 'Z0046'
 			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
