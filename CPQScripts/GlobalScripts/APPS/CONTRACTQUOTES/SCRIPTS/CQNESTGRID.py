@@ -6208,6 +6208,7 @@ def UpdateBreadcrumb():
 	qry = ""
 	eq_id = ""
 	Action_Str = ""
+	Trace.Write("TABLENAME_chk "=str(TABLENAME))
 	if (TreeParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products" or TreeTopSuperParentParam == "Complementary Products") and TABLENAME == 'SAQSCO' and CurrentTabName == "Quote" : 
 		qry = Sql.GetFirst(
 			"SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO (NOLOCK) WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
