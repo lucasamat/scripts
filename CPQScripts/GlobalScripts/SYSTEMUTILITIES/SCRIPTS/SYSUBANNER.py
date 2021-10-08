@@ -1336,8 +1336,7 @@ def Related_Sub_Banner(
 						FourthValue = "All"
 						FifthLable = ""
 						FifthValue = ""		
-				elif (str(ObjName) == 'CTCTSV'or str(ObjName) == 'CTCSCO' or str(ObjName == 'CTCSPT')) and TreeSuperParentParam == 'Product Offerings'and CurrentTab == "Contracts":
-					Trace.Write('subb@@@@@@@--')					
+				elif (str(ObjName) == 'CTCTSV'or str(ObjName) == 'CTCSCO' or str(ObjName == 'CTCSPT')) and TreeSuperParentParam == 'Product Offerings'and CurrentTab == "Contracts":					
 					TreeParam = Quote.GetGlobal("TreeParam")
 					TreeParentParam = Quote.GetGlobal("TreeParentLevel0")
 					getService = Sql.GetFirst("select SERVICE_DESCRIPTION from CTCTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
