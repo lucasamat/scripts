@@ -8188,6 +8188,13 @@ class SYLDRTLIST:
                                                         new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
                                                     else:
                                                         new_dict[value123] = value1234
+
+
+
+
+                    
+                    if str(pop_val).startswith("<System"):
+                        pop_val = ""
                     Trace.Write("pop_val_J "+str(pop_val))
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
