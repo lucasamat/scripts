@@ -1274,8 +1274,8 @@ def Related_Sub_Banner(
 					ThirdValue = TreeParentParam
 					if ObjName == "SAQSPT":
 						parts_obj = Sql.GetFirst("select PART_NUMBER from SAQSPT(nolock) where QUOTE_SERVICE_PART_RECORD_ID = '{}'".format(CurrentRecordId))
-						FourthValue = "Equipment"
-						FifthLable = "All"
+						FourthLable = "Equipment"
+						FourthValue = "All"
 						FifthLable = "Part Number"
 						FifthValue = parts_obj.PART_NUMBER
 					##adding configuration status in offering subtab
@@ -1304,8 +1304,8 @@ def Related_Sub_Banner(
 							SixthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
 						else:
 							FourthValue = '<img class="treeinsideicon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image}"/>'.format(image = status_image)
-					FifthLable = ""
-					FifthValue = ""
+					# FifthLable = ""
+					# FifthValue = ""
 					if getService is not None:
 						SecondLable = "Product Offering Description"
 						SecondValue = getService.SERVICE_DESCRIPTION
