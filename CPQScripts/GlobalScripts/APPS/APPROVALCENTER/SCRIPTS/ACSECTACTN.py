@@ -2953,7 +2953,7 @@ class approvalCenter:
 			for eachlable in bodycontent:
 				GetObjdAPI = Sql.GetFirst(
 					"""SELECT API_NAME,DATA_TYPE FROM SYOBJD (NOLOCK)
-					WHERE OBJECT_NAME= 'SAQTMT' AND API_NAME = '{}' """.format(
+					WHERE OBJECT_NAME= 'SAQTMT' AND UPPER(FIELD_LABEL) = '{}' """.format(
 						str(eachlable)
 					)
 				)
