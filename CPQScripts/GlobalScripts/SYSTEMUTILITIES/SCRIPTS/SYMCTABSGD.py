@@ -897,7 +897,7 @@ class CONTAINER:
                                         #     where += "AND ACAPTX.APPROVAL_RECIPIENT_RECORD_ID = '" + str(User.Id) + "' and QUOTE_STATUS = 'WAITING FOR APPROVAL' AND ACAPTX.ARCHIVED = 0"  
                                         #     tot_names +=  ',APPROVAL_TRANSACTION_RECORD_ID'
                                         if flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
-                                            where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 'False' "
+                                            where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                             
                                         elif flag == 2 and (str(x_tabs) == 'My Approvals Queue'):
                                             where += " AND APPROVALSTATUS NOT IN  ('REQUESTED') "
@@ -1154,7 +1154,7 @@ class CONTAINER:
                                             )    
                                             ##A055S000P01-8871 Code ends..    
                                             elif flag == 0 and (str(x_tabs) == 'My Approvals Queue'):
-                                                where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 'False' "
+                                                where += " AND APPROVALSTATUS = 'REQUESTED' AND ARCHIVED = 0 "
                                                 QueryStr = (
                                                 "select * from (select ROW_NUMBER() OVER("
                                                 + str(objh_column)
