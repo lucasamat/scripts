@@ -3101,7 +3101,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			if Quote.GetGlobal("KPI") == "YES" and self.tree_param == "Z0091":
 				self._process_query(
 				"""
-					 (
+					INSERT SAQSCO (
 						QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 						EQUIPMENT_ID,
 						EQUIPMENT_RECORD_ID,
