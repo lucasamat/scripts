@@ -1296,7 +1296,6 @@ class EntitlementView():
 											##FACTOR CURRENCY
 											sec_str_faccur += str(val.PRICE_METHOD)
 																			
-									Trace.Write(str(attrSysId)+'sec_str1--1288---'+str(sec_str1))
 									if attrSysId in attriburesrequired_list:
 										required_symbol_class = 'required_symbol'
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
