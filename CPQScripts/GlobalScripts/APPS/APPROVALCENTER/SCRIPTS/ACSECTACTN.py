@@ -1615,7 +1615,7 @@ class approvalCenter:
 						## to get max round of a particular chain in multi chain starts
 						if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 							GetMaxQuery = Sql.GetFirst(
-								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID
+								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS 
 									from ACAPTX (nolock)
 									inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 									where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' AND ACAPMA.APRCHN_RECORD_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID""".format(
