@@ -1476,7 +1476,7 @@ class EntitlementView():
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 								new_value_dicta["VALIDATION"] = ""
 								new_value_dicta["CALCULATION FACTOR"] = ""	
-							#Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
+							Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 							totaldisallowlist = [item for item in attributesdisallowedlst]
 							
 							if new_value_dicta:
