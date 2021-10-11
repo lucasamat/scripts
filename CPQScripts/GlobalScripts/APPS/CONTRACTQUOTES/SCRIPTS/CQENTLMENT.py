@@ -233,7 +233,7 @@ class Entitlements:
 								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
 								Trace.Write("ent_total_val--235--- "+str(ent_total_val))
-								requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
+								requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 								requestdata +=','
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
