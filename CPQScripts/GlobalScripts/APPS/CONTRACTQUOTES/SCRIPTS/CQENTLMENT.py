@@ -233,7 +233,10 @@ class Entitlements:
 								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
 								Trace.Write("ent_total_val--235--- "+str(ent_total_val))
-								
+								requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
+								requestdata +=','
+								requestdata += ']}]}'
+								requestdata = requestdata.replace(',]}]}',']}]}')
 								#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 							elif NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
