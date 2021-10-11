@@ -255,8 +255,8 @@ class EntitlementView():
 									attr_tab_list_disallow.append(prdvalue["id"])
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
-								# if prdvalue["visible"] == "false":
-								# 	attributesdisallowedlst.append(prdvalue["id"])
+								if prdvalue["visible"] == "false":
+									attributesdisallowedlst.append(prdvalue["id"])
 								if prdvalue["readOnly"] == "true":
 									attributeReadonlylst.append(prdvalue["id"])
 								if prdvalue["readOnly"] == "false":
@@ -744,7 +744,7 @@ class EntitlementView():
 				
 				#Trace.Write("getnameentallowed"+str(getnameentallowed))
 				getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
-				#totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
+				totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
 				#Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
 		elif EntitlementType == "SENDING_LEVEL":
 			sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
@@ -1319,8 +1319,8 @@ class EntitlementView():
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
 							else:
-								#if attrSysId not in attributesdisallowedlst and attrSysId:
-								attributesdisallowedlst.append(attrSysId)
+								if attrSysId not in attributesdisallowedlst and attrSysId:
+									attributesdisallowedlst.append(attrSysId)
 								add_style = "display:none"							
 								if DType == "Drop Down":
 									Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
@@ -1476,7 +1476,7 @@ class EntitlementView():
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 								new_value_dicta["VALIDATION"] = ""
 								new_value_dicta["CALCULATION FACTOR"] = ""	
-							Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
+							#Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 							totaldisallowlist = [item for item in attributesdisallowedlst]
 							
 							if new_value_dicta:
