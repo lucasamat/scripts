@@ -679,7 +679,7 @@ class SyncQuoteAndCustomTables:
 							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								##A055S000P01-4418 exchange rate details starts..
-								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								#Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								
 								if exchange_obj:
