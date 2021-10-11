@@ -1324,7 +1324,7 @@ class EntitlementView():
 									attributesdisallowedlst.append(attrSysId)
 								add_style = "display:none"							
 								if DType == "Drop Down":
-									#Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
+									Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
