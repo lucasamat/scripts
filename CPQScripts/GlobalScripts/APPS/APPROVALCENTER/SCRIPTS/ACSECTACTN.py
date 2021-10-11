@@ -1522,7 +1522,7 @@ class approvalCenter:
 			##approval image based on chain step ends
 			Trace.Write("CurrentTabName_J "+str(CurrentTabName))
 			Trace.Write("From Seg "+str(FromSeg))
-			if str(FromSeg) == "True" or CurrentTabName == 'Quotes':
+			if str(FromSeg) == "True" or CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				ApiName = "APRTRXOBJ_RECORD_ID"
 			else:
 				if CurrentTabName == 'My Approval Queue':
@@ -1533,7 +1533,7 @@ class approvalCenter:
 					ApiName = "APPROVAL_RECORD_ID"
 					getrecid = Sql.GetFirst("SELECT APPROVAL_RECORD_ID FROM ACAPTX WHERE APPROVAL_TRANSACTION_RECORD_ID = '{}'".format(self.QuoteNumber))
 					recid = str(getrecid.APPROVAL_RECORD_ID)
-			if CurrentTabName == 'Quotes':
+			if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id=  self.quote_revision_record_id))
 				quote_record_id = my_approval_queue_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				GetMaxStepsQuery = Sql.GetList(
@@ -1559,7 +1559,7 @@ class approvalCenter:
 				)
 				my_queue_obj = Sql.GetFirst("""select APRTRXOBJ_RECORD_ID from ACAPMA where APPROVAL_RECORD_ID = '{QuoteNumber}'""".format(QuoteNumber=recid,revision_rec_id=  self.quote_revision_record_id))
 				my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{quote_rec_id}'  AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID,revision_rec_id=  self.quote_revision_record_id))
-			if CurrentTabName == 'Quotes':
+			if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id=  self.quote_revision_record_id))
 				quote_record_id = my_approval_queue_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				GetMaxQuery = Sql.GetFirst(
@@ -1613,7 +1613,7 @@ class approvalCenter:
 					appround = MaxStep = ""
 					if GetMaxQuery:
 						## to get max round of a particular chain in multi chain starts
-						if CurrentTabName == 'Quotes':
+						if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 							GetMaxQuery = Sql.GetFirst(
 								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID
 									from ACAPTX (nolock)
@@ -1647,7 +1647,7 @@ class approvalCenter:
 				Htmlstr += "</ul></div>"
 				if GetMaxQuery:  
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for quote tab
-					if CurrentTabName != "Quotes":                  
+					if CurrentTabName != "Quotes" or CurrentTabName == 'Quote':                  
 						requestor_comments = GetMaxQuery.REQUESTOR_COMMENTS
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for ends
 					if Product.GetGlobal("TreeParentLevel1") == 'Approvals':                        
@@ -1672,7 +1672,7 @@ class approvalCenter:
 						else:
 							requestor_comments = ""
 					#A055S000P01-3376 - START    
-					elif Product.GetGlobal("TreeParam") == 'Approvals' and CurrentTabName == 'Quotes': 
+					elif Product.GetGlobal("TreeParam") == 'Approvals' and (CurrentTabName == 'Quotes' or CurrentTabName == 'Quote'): 
 						##to get REQUESTOR_COMMENTS of particular chain starts
 						max_round = 1
 						for get_chain_max_round in get_chain_max_rounds:
@@ -1722,7 +1722,7 @@ class approvalCenter:
 
 
 				Htmlstr += ('''<div class="row step_chain_outer_wrap">''')
-				if CurrentTabName == "Quotes":
+				if CurrentTabName == "Quotes" or CurrentTabName == 'Quote':
 					quote_record = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id))
 					##Max_Round is commented and added below to get max round for particular chain
 					#Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}'".format(quote_record = quote_record.QUOTE_ID))
@@ -1744,7 +1744,7 @@ class approvalCenter:
 						# Htmlstr += "</div>"
 					# Htmlstr += '<div class="row vert-flexstart">'
 					for GetMaxStep in GetMaxStepsQuery:
-						if CurrentTabName == "Quotes":
+						if CurrentTabName == "Quotes" or CurrentTabName == 'Quote':
 							##Max_Round is added to get max round for particular chain
 							Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_RECORD_ID = '{chain_rec_id}'".format(quote_record = quote_record.QUOTE_ID, chain_rec_id = GetMaxStep.APRCHN_RECORD_ID))
 							if Max_Round is not None:
@@ -2520,7 +2520,7 @@ class approvalCenter:
 					# # Htmlstr += "</div>"
 				Htmlstr += "</div>"
 			else:
-				if CurrentTabName == 'Quotes':
+				if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 					my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME,QUOTE_STATUS,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id") ,revision_rec_id=  self.quote_revision_record_id))
 					
 					quote_status = my_approval_queue_obj.QUOTE_STATUS
