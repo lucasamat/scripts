@@ -334,9 +334,8 @@ class Entitlements:
 			return attr_prices
 					
 
-	def EntitlementSave(self, subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT):
+	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
-		Trace.Write(str(type(PrevValue))+'----PrevValue')
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
@@ -2206,10 +2205,7 @@ try:
 	NewValue = Param.current
 except:
 	NewValue = ""
-try:
-	PrevValue = Param.prev
-except:
-	PrevValue =""
+
 try:
 	AttributeValCode = Param.attvalcode
 except:
@@ -2313,5 +2309,5 @@ elif ACTION == 'SAVE':
 else:
 	Trace.Write("calling else save")
 	ApiResponse = ApiResponseFactory.JsonResponse(
-		EntObj.EntitlementSave(subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
+		EntObj.EntitlementSave(subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
 	)
