@@ -998,7 +998,7 @@ class EntitlementView():
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in STDVALUES:
 												if value.SYSTEM_ID in dropdowndisallowlist:
-													Trace.Write('3179--1001---'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
+													Trace.Write(str(attrName)+'--dhurga--3179--1001---'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
 													disallow_style = "style = 'display:none'"
 												else:	
 													disallow_style = ""
