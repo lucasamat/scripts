@@ -220,7 +220,7 @@ class Entitlements:
 							Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
-							Trace.Write("list_of_vals_J "+str(list_of_vals))
+							#Trace.Write("list_of_vals_J "+str(list_of_vals))
 							# try:
 							# 	previous_value = Product.GetGlobal("previous_ent_val")
 							# except:
