@@ -790,7 +790,7 @@ class SyncQuoteAndCustomTables:
 					
 					
 					if custom_fields_detail.get("STPAccountID"):
-						account_obj = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID, ACCOUNT_TYPE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
+						account_obj = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID, ACCOUNT_TYPE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID = '{}'".format(custom_fields_detail.get("STPAccountID")))
 						getSales = Sql.GetFirst("SELECT CpqTableEntryId FROM SASOAC (NOLOCK) WHERE SALESORG_ID = '{}' AND ACCOUNT_ID = '{}'".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('STPAccountID')))
 						
 						if not account_obj:
