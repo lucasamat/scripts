@@ -241,11 +241,7 @@ class Entitlements:
 								requestdata +=','
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
-						else:
-							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
-							requestdata +=','
-							requestdata += ']}]}'
-							requestdata = requestdata.replace(',]}]}',']}]}')
+						
 				
 			else:
 				Trace.Write("NewValue--245-----"+str(NewValue)+'--'+str(previous_val))
