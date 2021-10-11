@@ -217,7 +217,7 @@ class Entitlements:
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
 						elif field_type == 'Drop Down':
-							Trace.Write("New_VALUE_J 213----"+str(val.STANDARD_ATTRIBUTE_VALUE))
+							Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
 							# Trace.Write("list_of_vals_J "+str(list_of_vals))
@@ -233,6 +233,7 @@ class Entitlements:
 								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
 								Trace.Write("ent_total_val--235--- "+str(ent_total_val))
+								
 								#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 							elif NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
