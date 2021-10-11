@@ -2495,7 +2495,7 @@ def Related_Sub_Banner(
 			Trace.Write(sec_rel_sub_bnr)
 		
 
-	elif TreeParam == 'Approvals' and TabName == "Quotes":
+	elif TreeParam == 'Approvals' and (TabName == "Quotes" or TabName == "Quote"):
 		quote_status = Sql.GetFirst("SELECT QUOTE_STATUS,QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
 		#Trace.Write("quote status------->"+str(quote_status.QUOTE_STATUS))
 		Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
