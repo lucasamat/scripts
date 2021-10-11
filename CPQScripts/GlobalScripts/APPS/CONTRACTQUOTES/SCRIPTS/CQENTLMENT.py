@@ -205,7 +205,7 @@ class Entitlements:
 				for val in STANDARD_ATTRIBUTE_VALUES:
 					
 					#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
-					Trace.Write('NewValue'+str(NewValue)+'--208--STANDARD_ATTRIBUTE_DISPLAY_VAL--'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+					
 					ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
 						Trace.Write('inside----211-----')
