@@ -877,78 +877,83 @@ class Entitlements:
 							#Trace.Write("@@@727-----attributes_service_sublist-----"+str(attributes_service_sublist))
 							ent_disp_val = ent_val_code = ''
 							if attributes_service_sublist:
-								ProductVersionObj = SqlHelper.GetFirst("""SELECT 
-													MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
-												FROM PRODUCTS PDS 
-												INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
-												WHERE SYSTEM_ID ='{SystemId}'
-												GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
+								z0046_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+				
+								z0046_fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'Z0046','request_url':z0046_request_url,'request_type':"New"})
+								#ProductVersionObj = Sql.GetFirst("""SELECT 
+												# 	MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+												# FROM PRODUCTS PDS 
+												# INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+												# WHERE SYSTEM_ID ='{SystemId}'
+												# GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
+								ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(z0046_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(z0046_fullresponse['kbKey']['version'])+"'")
 								HasDefaultvalue=False
-								for attrs in attributes_service_sublist:
-									if attrs in attributevalues:
-										HasDefaultvalue=True					
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
-										ent_disp_val = attributevalues[attrs]
-										ent_val_code = attributevalues[attrs]
-										#Trace.Write("ent_disp_val----"+str(ent_disp_val))
-									else:					
-										HasDefaultvalue=False
-										ent_disp_val = ""
-										ent_val_code = ""
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
-									ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
-									PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
-									if PRODUCT_ATTRIBUTES:
-										if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
-											get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-											ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-											
-											getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
-											if getslaes_value:
-												getquote_sales_val = getslaes_value.SALESORG_ID
-											get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-											get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
-									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
-									if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
-										tool_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
-									else:
-										tool_desc = ''
-									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-									<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-									<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-									<IS_DEFAULT>{is_default}</IS_DEFAULT>
-									<PRICE_METHOD>{pm}</PRICE_METHOD>
-									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-								get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
-								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
-								tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
-								tbrow["ENTITLEMENT_XML"]=insertservice
-								tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
-								tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
-								tbrow["QTESRV_RECORD_ID"]=sap_matid
-								tbrow["SERVICE_RECORD_ID"]=sap_matid
-								tbrow["SERVICE_ID"]='Z0046'
-								tbrow["SERVICE_DESCRIPTION"]=sap_desc
-								tbrow["CPS_CONFIGURATION_ID"]=get_service_data.CPS_CONFIGURATION_ID
-								tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
-								tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
-								tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
-								tbrow["CPS_MATCH_ID"] = get_service_data.CPS_MATCH_ID
-								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
-								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-								tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
-								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-								tbrow["CONFIGURATION_STATUS"] = get_service_data.CONFIGURATION_STATUS
-								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-								Sql.RunQuery(insert_qtqtse_query)
+								if ProductVersionObj:
+									for attrs in attributes_service_sublist:
+										if attrs in attributevalues:
+											HasDefaultvalue=True					
+											STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
+											ent_disp_val = attributevalues[attrs]
+											ent_val_code = attributevalues[attrs]
+											#Trace.Write("ent_disp_val----"+str(ent_disp_val))
+										else:					
+											HasDefaultvalue=False
+											ent_disp_val = ""
+											ent_val_code = ""
+											STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
+										ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
+										PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+										if PRODUCT_ATTRIBUTES:
+											if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+												get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+												ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+												
+												getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
+												if getslaes_value:
+													getquote_sales_val = getslaes_value.SALESORG_ID
+												get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+												get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
+										DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+										if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
+											tool_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
+										else:
+											tool_desc = ''
+										insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+										<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+										<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+										<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+										<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+										<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+										<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+										<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+										<IS_DEFAULT>{is_default}</IS_DEFAULT>
+										<PRICE_METHOD>{pm}</PRICE_METHOD>
+										<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+										</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+									get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
+									tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
+									tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
+									tbrow["ENTITLEMENT_XML"]=insertservice
+									tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
+									tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
+									tbrow["QTESRV_RECORD_ID"]=sap_matid
+									tbrow["SERVICE_RECORD_ID"]=sap_matid
+									tbrow["SERVICE_ID"]='Z0046'
+									tbrow["SERVICE_DESCRIPTION"]=sap_desc
+									tbrow["CPS_CONFIGURATION_ID"]= z0046_fullresponse['id']
+									tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
+									tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
+									tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
+									tbrow["CPS_MATCH_ID"] = 11
+									tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+									tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
+									tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+									tbrow["CONFIGURATION_STATUS"] = get_service_data.CONFIGURATION_STATUS
+									columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
+									values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+									insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
+									Sql.RunQuery(insert_qtqtse_query)
 						if self.treeparam == "Z0091":
 							where = ""
 						elif self.treeparentparam == "Z0091":
