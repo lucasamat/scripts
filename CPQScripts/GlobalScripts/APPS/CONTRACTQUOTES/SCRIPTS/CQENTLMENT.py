@@ -205,10 +205,10 @@ class Entitlements:
 					for val in STANDARD_ATTRIBUTE_VALUES:
 						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
-						Trace.Write('NewValue'+str(NewValue)+'--208----'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+						Trace.Write('NewValue'+str(NewValue)+'--208--STANDARD_ATTRIBUTE_DISPLAY_VAL--'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
-							Trace.Write('inside-------')
+							Trace.Write('inside----211-----')
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 							requestdata +=','
 							attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
@@ -220,7 +220,7 @@ class Entitlements:
 							Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
-							# Trace.Write("list_of_vals_J "+str(list_of_vals))
+							Trace.Write("list_of_vals_J "+str(list_of_vals))
 							# try:
 							# 	previous_value = Product.GetGlobal("previous_ent_val")
 							# except:
