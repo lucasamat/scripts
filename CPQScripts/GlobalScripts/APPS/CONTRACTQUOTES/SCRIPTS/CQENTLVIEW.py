@@ -767,10 +767,10 @@ class EntitlementView():
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			#Trace.Write('766---ObjectName-----'+str(ObjectName))
-			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
+			#Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
-			#Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
+			Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
 			for val in GetXMLsecField:
 				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
 				if val.IS_DEFAULT == '1':
@@ -1103,7 +1103,7 @@ class EntitlementView():
 										
 
 									elif DType == "Check Box" :
-										#Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
+										Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
 										STDVALUES = SqlHelper.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
@@ -1124,14 +1124,14 @@ class EntitlementView():
 											try:
 												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
 											except Exception as e:
-												Trace.Write('except'+str(e))
+												Trace.Write('except checkbox'+str(e))
 												try:
 													display_value_code = str(tuple(eval(val.ENTITLEMENT_VALUE_CODE))).replace(',)',')')
 													#Trace.Write('display_value_code'+str(display_value_code))
 													display_value_query = Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' and STANDARD_ATTRIBUTE_VALUE in {code} ".format(attr_code = attribute_code,code = display_value_code )  )
 													display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in display_value_query]
 												except Exception as e:
-													#Trace.Write('except1'+str(e))
+													Trace.Write('except1'+str(e))
 													display_value_arr = str(val.ENTITLEMENT_DISPLAY_VALUE)
 											
 											multi_select_attr_list[attrSysId] = display_value_arr
@@ -1296,7 +1296,7 @@ class EntitlementView():
 											##FACTOR CURRENCY
 											sec_str_faccur += str(val.PRICE_METHOD)
 																			
-									#race.Write(str(attrSysId)+'attriburesrequired_list--1288---'+str(attriburesrequired_list))
+									Trace.Write(str(attrSysId)+'sec_str1--1288---'+str(sec_str1))
 									if attrSysId in attriburesrequired_list:
 										required_symbol_class = 'required_symbol'
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
