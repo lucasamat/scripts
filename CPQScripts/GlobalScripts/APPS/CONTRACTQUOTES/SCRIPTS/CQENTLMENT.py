@@ -242,7 +242,8 @@ class Entitlements:
 								requestdata = requestdata.replace(',]}]}',']}]}')
 				
 			else:
-				if not NewValue and previous_val:
+				Trace.Write("NewValue---"+str(NewValue)+'--'+str(previous_val))
+				if (not NewValue) and previous_val:
 					Trace.Write('empty new value')
 					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
 				else:
