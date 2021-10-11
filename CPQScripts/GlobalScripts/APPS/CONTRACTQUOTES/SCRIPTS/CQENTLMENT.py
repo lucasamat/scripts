@@ -242,9 +242,9 @@ class Entitlements:
 								requestdata = requestdata.replace(',]}]}',']}]}')
 				
 			else:
-				if not NewValue:
+				if not NewValue and previous_val:
 					Trace.Write('empty new value')
-					requestdata += '{"value":"1","selected":false}'
+					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
 				else:
 					requestdata += '{"value":"' + NewValue + '","selected":true}'
 				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
@@ -2238,6 +2238,11 @@ try:
 	sectional_current_dict =eval(sectional_current_dict)	
 except:
 	sectional_current_dict =""
+
+try:
+	previous_val = Param.prev
+except:
+	previous_val =""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
 #Trace.Write("calc_factor : " + str(calc_factor) + " costimpact : " + str(costimpact) + " priceimapct "+str(priceimapct))
 #Trace.Write("AttributeID : " + str(AttributeID) + " AttributeValCode : " + str(AttributeValCode))
