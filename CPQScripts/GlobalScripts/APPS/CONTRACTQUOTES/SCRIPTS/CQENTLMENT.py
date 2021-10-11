@@ -177,97 +177,94 @@ class Entitlements:
 		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
-		try:
-			STANDARD_ATTRIBUTE_VALUES =''
-			#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
-			requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
-			attribute_code = []
-			#Trace.Write("field_type--"+str(field_type))
-			Trace.Write(str(AttributeID)+"--AttributeID---previous_val---- "+str(Getprevdict))
-			
-			
-			if field_type != 'input':
-				#if AttributeID != "AGS_Z0091_KPI_BPTKPI":
-					#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
+		#try:
+		STANDARD_ATTRIBUTE_VALUES =''
+		#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
+		requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+		attribute_code = []
+		#Trace.Write("field_type--"+str(field_type))
+		Trace.Write(str(AttributeID)+"--AttributeID---previous_val---- "+str(Getprevdict))
+		
+		
+		if field_type != 'input':
+			#if AttributeID != "AGS_Z0091_KPI_BPTKPI":
+				#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
 
-				STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_id ))
-				# else:
-				# 	Trace.Write("--238---NewValue----- "+str(NewValue))
-				# 	requestdata += '{"value":"' + NewValue + '","selected":true}'
-				# code added to get active deopdown values so commented this one ..
-				# else:
-				# 	STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE != 'NO' ".format(AttributeID))
-				
-				if STANDARD_ATTRIBUTE_VALUES is not None:				
-					#AttributeValCode=STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
-					ent_total_val = []
-					ent_non_selec_value = []
-					for val in STANDARD_ATTRIBUTE_VALUES:
-						Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
-						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
-						Trace.Write('NewValue'+str(NewValue)+'--208--STANDARD_ATTRIBUTE_DISPLAY_VAL--'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
-						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
-							Trace.Write('inside----211-----')
-							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
-							requestdata +=','
-							attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
-						elif field_type == 'Check Box':
-							Trace.Write("inside_J____checkbox")
-							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
-							requestdata +=','
-						elif field_type == 'Drop Down':
-							Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
-							# list_of_vals = []
-							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
-							#Trace.Write("list_of_vals_J "+str(list_of_vals))
-							# try:
-							# 	previous_value = Product.GetGlobal("previous_ent_val")
-							# except:
-							# 	previous_value = ""
-							# Trace.Write("previous_Value_J "+str(previous_value))
-							
-							
-
-							if NewValue != 'select':
-								
-								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
-								Trace.Write("ent_total_val--235--- "+str(ent_total_val))
-								requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
-								requestdata +=','
-								requestdata += ']}]}'
-								requestdata = requestdata.replace(',]}]}',']}]}')
-								#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
-							elif NewValue == 'select':
-								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
-								requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
-								requestdata +=','
-								requestdata += ']}]}'
-								requestdata = requestdata.replace(',]}]}',']}]}')
+			STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_id ))
+			# else:
+			# 	Trace.Write("--238---NewValue----- "+str(NewValue))
+			# 	requestdata += '{"value":"' + NewValue + '","selected":true}'
+			# code added to get active deopdown values so commented this one ..
+			# else:
+			# 	STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE != 'NO' ".format(AttributeID))
+			
+			if STANDARD_ATTRIBUTE_VALUES is not None:				
+				#AttributeValCode=STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+				ent_total_val = []
+				ent_non_selec_value = []
+				for val in STANDARD_ATTRIBUTE_VALUES:
+					Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
+					#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
+					Trace.Write('NewValue'+str(NewValue)+'--208--STANDARD_ATTRIBUTE_DISPLAY_VAL--'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+					ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
+					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
+						Trace.Write('inside----211-----')
+						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
+						requestdata +=','
+						attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
+					elif field_type == 'Check Box':
+						Trace.Write("inside_J____checkbox")
+						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
+						requestdata +=','
+					elif field_type == 'Drop Down':
+						Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
+						# list_of_vals = []
+						# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
+						#Trace.Write("list_of_vals_J "+str(list_of_vals))
+						# try:
+						# 	previous_value = Product.GetGlobal("previous_ent_val")
+						# except:
+						# 	previous_value = ""
+						# Trace.Write("previous_Value_J "+str(previous_value))
 						
-				
-			else:
-				Trace.Write("NewValue--245-----"+str(NewValue)+'--'+str(previous_val))
-				if (not NewValue) and previous_val:
-					Trace.Write('empty new value')
-					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
-				else:
-					requestdata += '{"value":"' + NewValue + '","selected":true}'
-				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
-			requestdata += ']}]}'
-			requestdata = requestdata.replace(',]}]}',']}]}')
-			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
+						
 
-			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-			Trace.Write("patch response1---170---" + str(response1))
-			
-			cpsmatc_incr = int(cpsmatchID) + 10
-			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
+						if NewValue != 'select':
+							
+							ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
+							Trace.Write("ent_total_val--235--- "+str(ent_total_val))
+							
+							#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
+						elif NewValue == 'select':
+							Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
+							requestdata += '{"value":"' + str(Product.GetGlobal("pre_ent_val")) + '","selected":false}'
+							requestdata +=','
+							requestdata += ']}]}'
+							requestdata = requestdata.replace(',]}]}',']}]}')
 					
 			
-		except Exception:
-			Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
-			cpsmatc_incr = cpsmatchID
+		else:
+			Trace.Write("NewValue--245-----"+str(NewValue)+'--'+str(previous_val))
+			if (not NewValue) and previous_val:
+				Trace.Write('empty new value')
+				requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
+			else:
+				requestdata += '{"value":"' + NewValue + '","selected":true}'
+			#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
+		requestdata += ']}]}'
+		requestdata = requestdata.replace(',]}]}',']}]}')
+		Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
+
+		response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
+		Trace.Write("patch response1---170---" + str(response1))
+		
+		cpsmatc_incr = int(cpsmatchID) + 10
+		Trace.Write("new cps match Id: "+str(cpsmatc_incr))
+					
+			
+		#except Exception:
+			#Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
+			#cpsmatc_incr = cpsmatchID
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		try:
