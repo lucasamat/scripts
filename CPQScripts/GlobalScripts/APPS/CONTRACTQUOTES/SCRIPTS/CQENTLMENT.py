@@ -886,11 +886,11 @@ class Entitlements:
 							z0046_fullresponse= eval(z0046_fullresponse)
 							##getting configuration_status status
 							if z0046_fullresponse['complete'] == 'true':
-								configuration_status = 'COMPLETE'
+								z0046_configuration_status = 'COMPLETE'
 							elif z0046_fullresponse['complete'] == 'false':
-								configuration_status = 'INCOMPLETE'
+								z0046_configuration_status = 'INCOMPLETE'
 							else:
-								configuration_status = 'ERROR'
+								z0046_configuration_status = 'ERROR'
 							attributesdisallowedlst=[]
 							attributeReadonlylst=[]
 							attributesallowedlst=[]
@@ -994,9 +994,9 @@ class Entitlements:
 								tbrow["CPS_MATCH_ID"] = 11
 								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
 								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-								tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
+								tbrow["QTEREV_RECORD_ID"] = self.revision_recordid
 								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-								tbrow["CONFIGURATION_STATUS"] = configuration_status
+								tbrow["CONFIGURATION_STATUS"] = z0046_configuration_status
 								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
