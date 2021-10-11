@@ -956,7 +956,7 @@ class EntitlementView():
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
-									Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
+									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
 									
 									if DType == "Drop Down" :
 										
@@ -1022,7 +1022,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 													else:
-														#Trace.Write('drpppppp---3031----3342-----'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+														Trace.Write('drpppppp---3031---durga---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
@@ -1033,7 +1033,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 												except:
-													#Trace.Write('except dropdown {} {}'.format(value.SYSTEM_ID, value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+													Trace.Write('except dropdown ---durga--'+str(attrName))
 													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
