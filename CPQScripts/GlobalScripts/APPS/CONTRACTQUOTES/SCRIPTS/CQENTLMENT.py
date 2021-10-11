@@ -878,6 +878,7 @@ class Entitlements:
 							#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
 							#Trace.Write("@@@727-----attributes_service_sublist-----"+str(attributes_service_sublist))
 							ent_disp_val = ent_val_code = ''
+							get_tooltip = ''
 							if attributes_service_sublist:
 								z0046_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				
@@ -904,8 +905,10 @@ class Entitlements:
 											ent_val_code = ""
 											STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
 										ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
-										PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+										PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC,P.ATTRDESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
 										if PRODUCT_ATTRIBUTES:
+											if PRODUCT_ATTRIBUTES.ATTRDESC:
+												get_tooltip = PRODUCT_ATTRIBUTES.ATTRDESC
 											if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
 												get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 												ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
@@ -917,9 +920,9 @@ class Entitlements:
 												get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
 										DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
 										if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
-											tool_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
+											ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
 										else:
-											tool_desc = ''
+											ent_desc = ''
 										insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 										<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 										<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -933,7 +936,7 @@ class Entitlements:
 										<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 										<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 										</QUOTE_ITEM_ENTITLEMENT>
-										</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = tool_desc,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+										</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
 									get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
 									tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
 									tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
