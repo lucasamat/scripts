@@ -1647,7 +1647,7 @@ class approvalCenter:
 				Htmlstr += "</ul></div>"
 				if GetMaxQuery:  
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for quote tab
-					if CurrentTabName != "Quotes" or CurrentTabName == 'Quote':                  
+					if CurrentTabName != "Quotes" or CurrentTabName != 'Quote':                  
 						requestor_comments = GetMaxQuery.REQUESTOR_COMMENTS
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for ends
 					if Product.GetGlobal("TreeParentLevel1") == 'Approvals':                        
