@@ -767,7 +767,7 @@ class EntitlementView():
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			#Trace.Write('766---ObjectName-----'+str(ObjectName))
-			#Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
+			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
 			#Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
@@ -926,7 +926,7 @@ class EntitlementView():
 							if attrSysId not in attributedefaultvalue:
 								#Trace.Write("add_style----3077----- "+str(attrSysId))
 								add_style = "color:#1B78D2"
-							Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
+							#Trace.Write('--attributeEditlst-930----'+str(attributeEditlst))
 							if attrSysId in attributeEditlst :
 								disable_edit = 'disable_edit'
 								edit_pencil_icon = '<a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil"  aria-hidden="true"></i></a>'
