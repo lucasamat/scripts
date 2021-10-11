@@ -1022,7 +1022,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 													else:
-														Trace.Write('drpppppp---3031---durga---3342-----'+str(attrName))
+														Trace.Write(str(disallow_style)+'---'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---durga---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
