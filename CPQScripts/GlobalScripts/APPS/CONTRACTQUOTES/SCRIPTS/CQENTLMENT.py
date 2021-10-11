@@ -203,7 +203,7 @@ class Entitlements:
 					ent_total_val = []
 					ent_non_selec_value = []
 					for val in STANDARD_ATTRIBUTE_VALUES:
-						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
+						Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
 						Trace.Write('NewValue'+str(NewValue)+'--208--STANDARD_ATTRIBUTE_DISPLAY_VAL--'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
