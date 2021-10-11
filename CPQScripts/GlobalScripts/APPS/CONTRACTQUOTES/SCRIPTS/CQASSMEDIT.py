@@ -120,15 +120,15 @@ def edit_assembly_level(Values):
 	return chamber_res_list
 
 def Request_access_token():
-		webclient = System.Net.WebClient()
-		webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-		webclient.Headers[
-			System.Net.HttpRequestHeader.Authorization
-		] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-		response = webclient.DownloadString(
-			"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
-		)
-		return eval(response)
+	webclient = System.Net.WebClient()
+	webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
+	webclient.Headers[
+		System.Net.HttpRequestHeader.Authorization
+	] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
+	response = webclient.DownloadString(
+		"https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials"
+	)
+	return eval(response)
 
 
 def child_ent_request(tableName,where,serviceId):		
