@@ -56,6 +56,7 @@ def Related_Sub_Banner(
         CurrentRecordId = str(CurrentRecordId)"""    
     user_id = User.Id
     buttonvisibility = ''
+    price_bar = ''
     LOGIN_CREDENTIALS = Sql.GetFirst("SELECT top 1 Domain FROM SYCONF (nolock) order by CpqTableEntryId")
     if LOGIN_CREDENTIALS is not None:
         Login_Domain = str(LOGIN_CREDENTIALS.Domain)
@@ -2535,14 +2536,14 @@ def Related_Sub_Banner(
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
-        item_covered_obj = Sql.GetList("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        for status in item_covered_obj:
-            if status.STATUS == 0:
-                buttonvisibility = "acquired_status"
-                Trace.Write("config status==="+str(buttonvisibility))
-            else:
-                buttonvisibility = "not_acquired_status"
-                Trace.Write("config status111==="+str(buttonvisibility))                    
+        item_covered_obj = Sql.First("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        #for status in item_covered_obj:
+        if item_covered_obj.STATUS == 0:
+            price_bar = "acquired_status"
+            Trace.Write("config status==="+str(price_bar))
+        else:
+            buttonvisibility = "not_acquired_status"
+            Trace.Write("config status111==="+str(price_bar))                    
         if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
@@ -2762,7 +2763,7 @@ def Related_Sub_Banner(
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         sec_rel_sub_bnr += (btn)
         Trace.Write('sec_rel_sub_bnr----'+str(sec_rel_sub_bnr))
-    return sec_rel_sub_bnr,recall_edit,buttonvisibility
+    return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
     CurrentRecordId = Param.CurrentRecordId
     Trace.Write('CurrentRecordId111'+str(CurrentRecordId))
