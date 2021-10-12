@@ -3673,7 +3673,7 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 			TreeParam = Product.GetGlobal("TreeParam")
-			inner_join = ""
+			inner_join = "INNER JOIN MAMSOP MAMSOP (NOLOCK)  on MAMTRL.SAP_PART_NUMBER = MAMSOP.SAP_PART_NUMBER"
 			additional_where = ""
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
