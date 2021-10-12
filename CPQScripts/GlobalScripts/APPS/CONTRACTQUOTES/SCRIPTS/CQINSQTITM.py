@@ -174,7 +174,8 @@ class ContractQuoteItem:
 					LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
 					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
 					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
-					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}'{WhereString}
+					LEFT JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQITM.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID
+					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND ISNULL(SAQITM.SERVICE_RECORD_ID,'') = '' {WhereString}
 			""".format(
 				QuoteRecordId=self.contract_quote_record_id,
 				RevisionRecordId=self.contract_quote_revision_record_id,
@@ -932,12 +933,13 @@ class ContractQuoteItem:
 
 	def _quote_items_update(self):
 		quote_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM (NOLOCK) WHERE SERVICE_ID LIKE '{ServiceId}%' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
-		if not quote_item_obj:
+		if not quote_item_obj or self.service_id == 'Z0016':
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()	
 		else:
 			self._quote_item_delete_process()
+		return True
 
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":
