@@ -1514,13 +1514,13 @@ class EntitlementView():
 				
 		##Adding Audit information section in Entitlement starts...
 		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS"):
-			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
+			get_sec = SqlHelper.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
 				section_id = get_sec.RECORD_ID
 				section_desc = get_sec.SECTION_NAME
 				
 				sec_str_boot += ('<div id="container" class="wdth100 margtop10"><div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
-				get_sefl = Sql.GetList(
+				get_sefl = SqlHelper.GetList(
 					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
 				col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
