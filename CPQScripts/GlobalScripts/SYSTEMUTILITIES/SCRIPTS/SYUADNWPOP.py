@@ -3722,7 +3722,7 @@ def POPUPLISTVALUEADDNEW(
 			for val in get_xml_val:
 				#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 				if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
-					non_consumable_val_mamsop = 'NC'
+					non_consumable_val_mamsop = 'N'
 				elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
 					consumable_value_mamsop  = 'C'
 			Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
