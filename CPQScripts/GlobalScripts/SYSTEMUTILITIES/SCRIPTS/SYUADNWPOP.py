@@ -3709,6 +3709,12 @@ def POPUPLISTVALUEADDNEW(
 				"SAP_DESCRIPTION",
 				"MATERIALGROUP_ID"
 				]
+			ordered_keys_mam = [
+				"MAMTRL.MATERIAL_RECORD_ID",
+				"MAMTRL.SAP_PART_NUMBER",
+				"MAMTRL.SAP_DESCRIPTION",
+				"MAMTRL.MATERIALGROUP_ID"
+				]
 			#get consumable and non consumable values from XML start
 			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = 'Z0091' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE = 'Some Exclusions'")
@@ -3739,7 +3745,7 @@ def POPUPLISTVALUEADDNEW(
 			# )
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
-					", ".join(ordered_keys),
+					", ".join(ordered_keys_mam),
 					ObjectName
 					,inner_join if inner_join else "",
 					"WHERE " + where_string if where_string else "" ,
