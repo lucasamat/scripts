@@ -106,6 +106,7 @@ class SyncQuoteAndCustomTables:
 			'SourceAccountName':self.quote.GetCustomField('SourceAccountName').Content,
 			'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
 			'POES':self.quote.GetCustomField('POES').Content,#A055S000P01-9777 code starts..
+			'LOW':self.quote.GetCustomField('LOW').Content,
 		}
 
 	@staticmethod
@@ -493,6 +494,9 @@ class SyncQuoteAndCustomTables:
 							"POES":custom_fields_detail.get("POES")
 							if custom_fields_detail.get("POES")
 							else 'FALSE',#A055S000P01-9777 Code starts..ends..
+							"LOW":custom_fields_detail.get("LOW")
+							if custom_fields_detail.get("LOW")
+							else 'FALSE',
 							"CONTRACT_VALID_FROM": start_date,
 							"CONTRACT_VALID_TO": end_date,
 							"QUOTE_CREATED_DATE": str(created_date),                            
