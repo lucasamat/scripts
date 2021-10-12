@@ -56,7 +56,11 @@ def POPUPLISTVALUEADDNEW(
 	#getting dynamic values for consumables and non consumables start
 	TreeParam = Product.GetGlobal("TreeParam")
 	non_consumable_value = 'AGS_'+str(TreeParam)+'_TSC_NONCNS'
-	consumable_value ='AGS_'+str(TreeParam)+'_TSC_CONSUM'
+	#consumable_value ='AGS_'+str(TreeParam)+'_TSC_CONSUM'
+	if TreeParam = 'Z0092':
+		consumable_value = ''
+	else:
+		consumable_value ='AGS_'+str(TreeParam)+'_TSC_CONSUM'
 	#getting dynamic values for consumables and non consumables end
 	if RECORDID is not None:
 		RECORD_ID = RECORDID.split("-")
