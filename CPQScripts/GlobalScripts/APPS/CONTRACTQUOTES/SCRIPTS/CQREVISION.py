@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO CREATE NEW REVISIONS,EDIT REVISIONS AND UPDATE CUSTOM TABLES
 #   __primary_author__ : SRIJAYDHURGA
 #   __create_date :08/30/2021
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # #====================================================================================================================#======================
 import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
@@ -165,15 +165,13 @@ def create_new_revision(Opertion,cartrev):
 				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
 				selectcols = "SELECT "
 				for col in sqlobj:
-					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
-						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + str(col.COLUMN_NAME)
-					elif cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
+					
+					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
 						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
-						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+						insertcols = insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
 						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
@@ -186,6 +184,8 @@ def create_new_revision(Opertion,cartrev):
 						insertcols = insertcols + "," + str(col.COLUMN_NAME)
 						selectcols = selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
+				insertcols = insertcols.replace("( ,","( ")
+				selectcols = selectcols.replace("SELECT ,","SELECT ")
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
 				finalquery=insertcols+' '+selectcols
 				Trace.Write(finalquery)
