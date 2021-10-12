@@ -3677,6 +3677,7 @@ def POPUPLISTVALUEADDNEW(
 			additional_where = ""
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
+			Trace.Write('where_string--3680---'+str(where_string))
 			Pagination_M = Sql.GetFirst(
 				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND {}.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
 					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName, ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
