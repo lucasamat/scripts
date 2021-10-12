@@ -57,7 +57,7 @@ def POPUPLISTVALUEADDNEW(
 	TreeParam = Product.GetGlobal("TreeParam")
 	non_consumable_value = 'AGS_'+str(TreeParam)+'_TSC_NONCNS'
 	#consumable_value ='AGS_'+str(TreeParam)+'_TSC_CONSUM'
-	if TreeParam = 'Z0092':
+	if TreeParam == 'Z0092':
 		consumable_value = ''
 	else:
 		consumable_value ='AGS_'+str(TreeParam)+'_TSC_CONSUM'
