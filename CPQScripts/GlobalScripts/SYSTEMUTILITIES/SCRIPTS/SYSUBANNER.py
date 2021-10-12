@@ -2534,6 +2534,15 @@ def Related_Sub_Banner(
         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+
+        item_covered_obj = Sql.GetList("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        for status in item_covered_obj:
+            if status.STATUS == 0:
+                buttonvisibility = "acquired_status"
+                Trace.Write("config status==="+str(buttonvisibility))
+            else:
+                buttonvisibility = "not_acquired_status"
+                Trace.Write("config status111==="+str(buttonvisibility))                    
         if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
