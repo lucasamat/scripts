@@ -12,7 +12,7 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 from System.Net import HttpWebRequest, NetworkCredential
-
+from System.Net import *
 clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
@@ -88,58 +88,42 @@ try:
 
             Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
             
-            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA'',''"+str(quote_id)+ "'',GETDATE() ' ")
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA1'',''"+str(quote_id)+ "'',GETDATE() ' ")
 
             Log.Info("QTGETSCMPR Ends---->Hitting2")
             
-            """
-            Header = "<!DOCTYPE html><html><head><style>table {font-family: Calibri, sans-serif; border-collapse: collapse; width: 75%}td, th {  border: 1px solid #dddddd;  text-align: left; padding: 8px;}.im {color: #222;}tr:nth-child(even) {background-color: #dddddd;}</style></head><body>"
+            webRequest = 'https://amat-staging-dev.apigee.net/sscm/pricingDataServices/v1/cpq/pricing/toolDataRequest?sessionid='+str(Sesion_id)+'&quoteid='+str(quote_id)+''
+            def GetNewRequest(targetUrl, Btoken):
 
-            Table_start = "<p>Hi Team,<br>SSCM Pricing data successfully stored in SYINPL.</p><br>"
+                newRequest = HttpWebRequest.Create(targetUrl)
+                newRequest.AllowAutoRedirect = 0
+                newRequest.Headers.Add("AUTHORIZATION", Btoken)
+                newRequest.Method = 'GET'
+                newRequest.ContentLength = 0
+                newRequest.ContentType = 'application/json'
+
+                return newRequest
+
+            Oauth_info = SqlHelper.GetFirst("SELECT  DOMAIN,URL FROM SYCONF where EXTERNAL_TABLE_NAME ='OAUTH'")
+
+            requestdata =Oauth_info.DOMAIN
+            webclient = System.Net.WebClient()
+            webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded"
+            response = webclient.UploadString(Oauth_info.URL,str(requestdata))
+
+            response = eval(response)
+            access_token = response['access_token']
+            Btoken = "Bearer " + access_token
+
+            rew = GetNewRequest(webRequest, Btoken)
+            resp = rew.GetResponse()                                        
+
+            streamReader = StreamReader(resp.GetResponseStream())
+            jsonData = streamReader.ReadToEnd()
+            conv_data = jsonData.replace("'",'%%')
             
-            Table_End = "</table><p><strong>Note : </strong>Please do not reply to this email.</p></body></html>"
-            Table_info = ""     
+            primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(conv_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA'',''"+str(quote_id)+ "'',GETDATE() ' ")
 
-            Error_Info = Header + Table_start + Table_info + Table_End
-
-            LOGIN_CRE = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password FROM SYCONF where Domain ='SUPPORT_MAIL'")
-
-            # Create new SmtpClient object
-            mailClient = SmtpClient()
-
-            # Set the host and port (eg. smtp.gmail.com)
-            mailClient.Host = "smtp.gmail.com"
-            mailClient.Port = 587
-            mailClient.EnableSsl = "true"
-
-            # Setup NetworkCredential
-            mailCred = NetworkCredential()
-            mailCred.UserName = str(LOGIN_CRE.Username)
-            mailCred.Password = str(LOGIN_CRE.Password)
-            mailClient.Credentials = mailCred
-
-            # Create two mail adresses, one for send from and the another for recipient
-            toEmail = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
-            fromEmail = MailAddress("INTEGRATION.SUPPORT@BOSTONHARBORCONSULTING.COM")
-
-            # Create new MailMessage object
-            msg = MailMessage(fromEmail, toEmail)
-
-            # Set message subject and body
-            msg.Subject = "SSCM to CPQ - Pricing Status Notification"
-            msg.IsBodyHtml = True
-            msg.Body = Error_Info
-
-            # CC Emails 
-            copyEmail5 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
-            msg.CC.Add(copyEmail5)
-            
-            copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
-            msg.CC.Add(copyEmail4)
-            
-            # Send the message
-            mailClient.Send(msg)        
-            """
             LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT USER_NAME as Username,Password,Domain FROM SYCONF where Domain='AMAT_TST'")
             if LOGIN_CREDENTIALS is not None:
                 Login_Username = str(LOGIN_CREDENTIALS.Username)
@@ -175,9 +159,7 @@ try:
                 }
             )
     
-
-
 except:     
     Log.Info("QTGETSCMPR ERROR---->:" + str(sys.exc_info()[1]))
     Log.Info("QTGETSCMPR ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
-    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]}) 
+    ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})

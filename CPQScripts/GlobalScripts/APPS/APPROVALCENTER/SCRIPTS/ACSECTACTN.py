@@ -56,14 +56,16 @@ class approvalCenter:
 	def ApproveVoilationRule(self, AllParams, ACTION, ApproveDesc, CurrentTransId):
 		"""Approve and Reject Function."""
 		#try:
-		
+		Trace.Write("@59")
 		Product.SetGlobal("ApprovalMasterRecId", str(self.QuoteNumber))
-		if CurrentTabName == 'Quote':
+		if CurrentTabName == 'Quotes':
 			quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 			quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+
 			if quote_obj is not None:
-				approval_queue_obj = Sql.GetFirst("SELECT ACAPMA.APPROVAL_RECORD_ID FROM ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APRSTAMAP_APPROVALSTATUS <> 'RECALLED' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{CurrentTransId}'".format(quote_record_id = quote_record_id,CurrentTransId = str(CurrentTransId)))
+				approval_queue_obj = Sql.GetFirst("SELECT ACAPMA.APPROVAL_RECORD_ID FROM ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRSTAMAP_APPROVALSTATUS <> 'RECALLED' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{CurrentTransId}'".format(CurrentTransId=CurrentTransId))
 				self.QuoteNumber = approval_queue_obj.APPROVAL_RECORD_ID 
+			# APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND
 		else:
 			transaction_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPTX where APPROVAL_TRANSACTION_RECORD_ID = '{TransactionId}'".format(TransactionId = self.QuoteNumber))
 			self.QuoteNumber = transaction_obj.APPROVAL_RECORD_ID
@@ -1204,7 +1206,10 @@ class approvalCenter:
 	
 	def SubmitForApprovalAction(self, GetStatus=None, RequestDesc=''):
 		UpdateTrans = ""
-		if GetStatus:                            
+		Trace.Write("GetStatus "+str(GetStatus))
+		if GetStatus:        
+			# approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+			# approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 			Sql.RunQuery("""UPDATE ACAPMA SET
 				APROBJ_STATUSFIELD_VALUE = '{ApprovalStatus}',
 				APRSTAMAP_APPROVALSTATUS = 'REQUESTED',
@@ -1224,12 +1229,12 @@ class approvalCenter:
 			if str(GetStatus.APPROVAL_METHOD).upper() == "PARALLEL STEP APPROVAL":
 				
 				parallel = "True"
-				if CurrentTabName == 'Quote':
+				if CurrentTabName == 'Quotes':
 					
 					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 					quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 					if quote_obj is not None:
-						approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_record_id = quote_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+						approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
 						approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 						UpdateTrans = """UPDATE ACAPTX SET
 							APPROVALSTATUS = 'REQUESTED',
@@ -1239,31 +1244,34 @@ class approvalCenter:
 							RequestDesc=str(RequestDesc),
 						)
 				else:
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 					UpdateTrans = """UPDATE ACAPTX SET
 						APPROVALSTATUS = 'REQUESTED',
 						REQUESTOR_COMMENTS = '{RequestDesc}'
-						WHERE APPROVAL_RECORD_ID = '{QuoteNumber}' """.format(
-						QuoteNumber=str(self.QuoteNumber),
+						WHERE APPROVAL_RECORD_ID = '{approval_record_id}' """.format(
+						approval_record_id=str(approval_record_id),
 						RequestDesc=str(RequestDesc),
 					)
 			else:
 				
 				parallel = "False"
-				if CurrentTabName == 'Quote':
-					
+				if CurrentTabName == 'Quotes':
+					Trace.Write("Quote_Tab_J")
 					quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 					quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 					
 					if quote_obj is not None:
-						approval_queue_obj = Sql.GetList("select APPROVAL_RECORD_ID,APRCHNSTP_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL') AND APRCHNSTP_RECORD_ID = '{chain_step_rec_id}'".format(quote_record_id = quote_record_id,chain_step_rec_id = GetStatus.APRCHNSTP_RECORD_ID))
+						approval_queue_obj = Sql.GetList("select APPROVAL_RECORD_ID,APRCHNSTP_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL') AND APRCHNSTP_RECORD_ID = '{chain_step_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,chain_step_rec_id = GetStatus.APRCHNSTP_RECORD_ID))
+						# (APRSTAMAP_APPROVALSTATUS = 'REQUESTED' OR APRSTAMAP_APPROVALSTATUS = 'WAITING FOR APPROVAL')
 						for approval_queue in approval_queue_obj:
 							approval_record_id = approval_queue.APPROVAL_RECORD_ID
-							UpdateTrans = """UPDATE ACAPTX SET
+							UpdateTrans = """UPDATE ACAPTX SET 
 								APPROVALSTATUS = 'REQUESTED',
 								REQUESTOR_COMMENTS = '{RequestDesc}'
-								WHERE APPROVAL_RECORD_ID = '{approval_record_id}'
+								WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
 								AND APRCHNSTP_ID = '1' """.format(
-								approval_record_id=approval_record_id,
+								QuoteNumber=str(self.QuoteNumber),
 								RequestDesc=str(RequestDesc),
 								#stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 							)
@@ -1276,20 +1284,26 @@ class approvalCenter:
 							#    #stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 							#))
 				else:
+					Trace.Write("Approval_Center_J")
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 					UpdateTrans = """UPDATE ACAPTX SET
 						APPROVALSTATUS = 'REQUESTED',
 						REQUESTOR_COMMENTS = '{RequestDesc}'
-						WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
+						WHERE APPROVAL_RECORD_ID = '{approval_record_id}'
 						AND APRCHNSTP_RECORD_ID = '{stepRecordId}' """.format(
-						QuoteNumber=str(self.QuoteNumber),
+						approval_record_id=str(approval_record_id),
 						RequestDesc=str(RequestDesc),
 						stepRecordId=str(GetStatus.APRCHNSTP_RECORD_ID),
 					)
 			##added runquery in update ACAPMA query
 			#a = Sql.RunQuery(UpdateAppoval)
 			b = Sql.RunQuery(UpdateTrans)
-			UPDATE_ACACHR = """ UPDATE ACACHR SET INITIATED_DATE = '{datetime_value}', INTIATEDBY_RECORD_ID = '{UserId}', INITIATED_BY = '{UserName}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
+			approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APPROVAL_RECORD_ID = '{approval_rec_id}'".format(quote_revision_record_id=self.quote_revision_record_id,approval_rec_id = GetStatus.APPROVAL_RECORD_ID))
+			approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
+			UPDATE_ACACHR = """ UPDATE ACACHR SET INITIATED_DATE = '{datetime_value}', INTIATEDBY_RECORD_ID = '{UserId}', INITIATED_BY = '{UserName}' WHERE ACACHR.APPROVAL_RECORD_ID='{approval_record_id}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,approval_record_id=approval_record_id)
 			Sql.RunQuery(UPDATE_ACACHR)
+
 			GetCurStatus = Sql.GetFirst(
 				"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 					ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
@@ -1297,8 +1311,8 @@ class approvalCenter:
 					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID =SYOBJD.RECORD_ID
 					INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.OBJECT_NAME=SYOBJD.OBJECT_NAME
 					INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL=SYOBJH.LABEL
-					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL'""".format(
-					QuoteNumber=str(self.QuoteNumber)
+					WHERE ACAPMA.APPROVAL_RECORD_ID = '{approval_record_id}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL'""".format(
+					approval_record_id=str(approval_record_id)
 				)
 			)
 			if GetCurStatus:
@@ -1333,13 +1347,14 @@ class approvalCenter:
 
 		if str(ACTION) == "SUBMIT_FOR_APPROVAL":
 			parallel = ""
-			if CurrentTabName == 'Quote':
+			Trace.Write("@1336--"+ str(CurrentTabName))
+			if CurrentTabName == 'Quotes':
 				
 				quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 				quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				if quote_obj is not None:
 					##query is to get max distinct round APPROVAL_RECORD_ID 
-					approval_queues_obj = Sql.GetList("""SELECT DISTINCT ACAPTX.APPROVAL_RECORD_ID from ACAPTX (NOLOCK) INNER JOIN ACAPMA (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID and ACAPTX.APRTRXOBJ_ID = ACAPMA.APRTRXOBJ_ID INNER JOIN (select ACAPMA.APRCHN_ID,max(APPROVAL_ROUND) as round,ACAPMA.APRTRXOBJ_RECORD_ID from ACAPMA (NOLOCK) inner join ACAPTX (NOLOCK) ON ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID and ACAPTX.APRTRXOBJ_ID = ACAPMA.APRTRXOBJ_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' GROUP BY ACAPMA.APRCHN_ID,ACAPMA.APRTRXOBJ_RECORD_ID) m on m.APRCHN_ID = ACAPTX.APRCHN_ID and m.round = ACAPTX.APPROVAL_ROUND and m.APRTRXOBJ_RECORD_ID = ACAPMA.APRTRXOBJ_RECORD_ID WHERE ACAPMA.APRSTAMAP_APPROVALSTATUS IN ('APPROVAL REQUIRED','RECALLED')""".format(quote_record_id = quote_record_id))
+					approval_queues_obj = Sql.GetList("""SELECT DISTINCT ACAPTX.APPROVAL_RECORD_ID from ACAPTX (NOLOCK) INNER JOIN ACAPMA (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID and ACAPTX.APRTRXOBJ_ID = ACAPMA.APRTRXOBJ_ID INNER JOIN (select ACAPMA.APRCHN_ID,max(APPROVAL_ROUND) as round,ACAPMA.APRTRXOBJ_RECORD_ID from ACAPMA (NOLOCK) inner join ACAPTX (NOLOCK) ON ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID and ACAPTX.APRTRXOBJ_ID = ACAPMA.APRTRXOBJ_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' GROUP BY ACAPMA.APRCHN_ID,ACAPMA.APRTRXOBJ_RECORD_ID) m on m.APRCHN_ID = ACAPTX.APRCHN_ID and m.round = ACAPTX.APPROVAL_ROUND and m.APRTRXOBJ_RECORD_ID = ACAPMA.APRTRXOBJ_RECORD_ID WHERE ACAPMA.APRSTAMAP_APPROVALSTATUS IN ('APPROVAL REQUIRED','RECALLED')""".format(quote_record_id = self.quote_revision_record_id))
 					for approval_queue_obj in approval_queues_obj:
 						approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 						self.QuoteNumber = approval_record_id
@@ -1361,7 +1376,7 @@ class approvalCenter:
 								)
 							)
 							# Trace.Write("RequestDescRequestDesc1--2004--"+str(RequestDesc)+str(GetStatus.APRCHNSTP_RECORD_ID)+str(GetStatus.APPROVAL_METHOD))
-							# self.SubmitForApprovalAction(GetStatus,RequestDesc)
+							self.SubmitForApprovalAction(GetStatus,RequestDesc)
 			else:
 				GetStatus = Sql.GetFirst(
 					"""SELECT ACACSS.APROBJ_STATUSFIELD_VAL,ACAPMA.APRCHNSTP_RECORD_ID,ACAPCH.APPROVAL_METHOD
@@ -1380,11 +1395,11 @@ class approvalCenter:
 		elif str(ACTION) == "RECALL":
 			#recallresponse = self.sendmailNotification("Recall")
 			#try:
-			if CurrentTabName == 'Quote':
+			if CurrentTabName == 'Quotes':
 				quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id=self.quote_revision_record_id))
 				quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				if quote_obj is not None:
-					approval_queues_obj = Sql.GetList("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND APRSTAMAP_APPROVALSTATUS = 'REJECTED'".format(quote_record_id = quote_record_id))
+					approval_queues_obj = Sql.GetList("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}' AND APRSTAMAP_APPROVALSTATUS = 'REJECTED'".format(quote_revision_record_id=self.quote_revision_record_id))
 					#approval_record_id = 
 					for approval_queue_obj in approval_queues_obj:
 						self.QuoteNumber = str(approval_queue_obj.APPROVAL_RECORD_ID)
@@ -1506,7 +1521,8 @@ class approvalCenter:
 			
 			##approval image based on chain step ends
 			Trace.Write("CurrentTabName_J "+str(CurrentTabName))
-			if str(FromSeg) == "True":
+			Trace.Write("From Seg "+str(FromSeg))
+			if str(FromSeg) == "True" or CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				ApiName = "APRTRXOBJ_RECORD_ID"
 			else:
 				if CurrentTabName == 'My Approval Queue':
@@ -1517,17 +1533,17 @@ class approvalCenter:
 					ApiName = "APPROVAL_RECORD_ID"
 					getrecid = Sql.GetFirst("SELECT APPROVAL_RECORD_ID FROM ACAPTX WHERE APPROVAL_TRANSACTION_RECORD_ID = '{}'".format(self.QuoteNumber))
 					recid = str(getrecid.APPROVAL_RECORD_ID)
-			if CurrentTabName == 'Quote':
+			if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id=  self.quote_revision_record_id))
 				quote_record_id = my_approval_queue_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				GetMaxStepsQuery = Sql.GetList(
 					"""select ACAPCH.APRCHN_ID, ACAPCH.APRCHN_NAME,ACAPMA.CUR_APRCHNSTP, ACAPCH.APRCHN_DESCRIPTION, ACAPMA.APPROVAL_RECORD_ID,ACAPMA.APRTRXOBJ_ID,ACAPMA.APRCHN_RECORD_ID
 						from ACAPCH (nolock)
 						inner join ACAPMA (nolock) on ACAPMA.APRCHN_RECORD_ID = ACAPCH.APPROVAL_CHAIN_RECORD_ID
-						JOIN (SELECT ACAPCH.APRCHN_ID, ACAPMA.APRTRXOBJ_RECORD_ID,MAX(ACAPMA.CPQTABLEENTRYID) AS CPQTABLEENTRYID FROM ACAPMA(NOLOCK) JOIN ACAPCH(NOLOCK) ON ACAPMA.APRCHN_RECORD_ID = ACAPCH.APPROVAL_CHAIN_RECORD_ID WHERE ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}'  GROUP BY ACAPCH.APRCHN_ID, ACAPMA.APRTRXOBJ_RECORD_ID) B ON ACAPMA.APRTRXOBJ_RECORD_ID = B.APRTRXOBJ_RECORD_ID AND ACAPCH.APRCHN_ID = B.APRCHN_ID AND ACAPMA.CPQTABLEENTRYID = B.CPQTABLEENTRYID 
-						WHERE ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}'
+						JOIN (SELECT ACAPCH.APRCHN_ID, ACAPMA.APRTRXOBJ_RECORD_ID,MAX(ACAPMA.CPQTABLEENTRYID) AS CPQTABLEENTRYID FROM ACAPMA(NOLOCK) JOIN ACAPCH(NOLOCK) ON ACAPMA.APRCHN_RECORD_ID = ACAPCH.APPROVAL_CHAIN_RECORD_ID WHERE ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}'  GROUP BY ACAPCH.APRCHN_ID, ACAPMA.APRTRXOBJ_RECORD_ID) B ON ACAPMA.APRTRXOBJ_RECORD_ID = B.APRTRXOBJ_RECORD_ID AND ACAPCH.APRCHN_ID = B.APRCHN_ID AND ACAPMA.CPQTABLEENTRYID = B.CPQTABLEENTRYID 
+						WHERE ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}'
 						""".format(
-						quote_record_id=quote_record_id
+						revision_rec_id=  self.quote_revision_record_id
 					)
 				)
 			else:
@@ -1542,16 +1558,16 @@ class approvalCenter:
 					)
 				)
 				my_queue_obj = Sql.GetFirst("""select APRTRXOBJ_RECORD_ID from ACAPMA where APPROVAL_RECORD_ID = '{QuoteNumber}'""".format(QuoteNumber=recid,revision_rec_id=  self.quote_revision_record_id))
-				my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{quote_rec_id}'  AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID))
-			if CurrentTabName == 'Quote':
+				my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{quote_rec_id}'  AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID,revision_rec_id=  self.quote_revision_record_id))
+			if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id=  self.quote_revision_record_id))
 				quote_record_id = my_approval_queue_obj.MASTER_TABLE_QUOTE_RECORD_ID
 				GetMaxQuery = Sql.GetFirst(
 					"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, ACAPTX.REQUESTOR_COMMENTS,max(ACAPTX.APPROVAL_ROUND) as appround 
 						from ACAPTX (nolock)
 						inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-						where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' GROUP BY ACAPTX.REQUESTOR_COMMENTS""".format(
-						quote_record_id=quote_record_id
+						where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' GROUP BY ACAPTX.REQUESTOR_COMMENTS""".format(
+						revision_rec_id=  self.quote_revision_record_id
 					)
 				)
 			else:
@@ -1597,13 +1613,13 @@ class approvalCenter:
 					appround = MaxStep = ""
 					if GetMaxQuery:
 						## to get max round of a particular chain in multi chain starts
-						if CurrentTabName == 'Quote':
+						if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 							GetMaxQuery = Sql.GetFirst(
-								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID
+								"""select max(ACAPTX.APRCHNSTP_ID) as MaxStep, max(ACAPTX.APPROVAL_ROUND) as appround,ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS 
 									from ACAPTX (nolock)
 									inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-									where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPMA.APRCHN_RECORD_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID""".format(
-									quote_record_id=quote_record_id,chain_rec_id = GetMaxStep.APRCHN_RECORD_ID
+									where ACAPMA.APRTRXOBJ_RECORD_ID = '{revision_rec_id}' AND ACAPMA.APRCHN_RECORD_ID = '{chain_rec_id}' GROUP BY ACAPTX.APRCHN_ID,ACAPTX.REQUESTOR_COMMENTS""".format(
+									revision_rec_id=  self.quote_revision_record_id,chain_rec_id = GetMaxStep.APRCHN_RECORD_ID
 								)
 							)
 						get_chain_max_rounds.append(GetMaxQuery)   ##to get max rounds of all chains
@@ -1631,7 +1647,7 @@ class approvalCenter:
 				Htmlstr += "</ul></div>"
 				if GetMaxQuery:  
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for quote tab
-					if CurrentTabName != "Quote":                  
+					if CurrentTabName != "Quotes" or CurrentTabName != 'Quote':                  
 						requestor_comments = GetMaxQuery.REQUESTOR_COMMENTS
 					## REQUESTOR_COMMENTS is not in GetMaxQuery for ends
 					if Product.GetGlobal("TreeParentLevel1") == 'Approvals':                        
@@ -1640,7 +1656,7 @@ class approvalCenter:
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 							where ACAPMA.{ApiName} = '{QuoteNumber}' AND ACAPTX.APPROVAL_ROUND = {round} AND ACAPTX.APRCHN_ID = '{chain}' GROUP BY ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND""".format(
-							QuoteNumber=Quote.GetGlobal("contract_quote_record_id"), ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
+							QuoteNumber=self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
 						)
 						)
 						GetComments = Sql.GetFirst(
@@ -1648,7 +1664,7 @@ class approvalCenter:
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 							where ACAPMA.{ApiName} = '{QuoteNumber}' AND ACAPTX.APPROVAL_ROUND = {round} AND ACAPTX.APRCHN_ID = '{chain}' AND ACAPTX.REQUESTOR_COMMENTS != '' GROUP BY ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND""".format(
-							QuoteNumber=Quote.GetGlobal("contract_quote_record_id"), ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
+							QuoteNumber=self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=Product.GetGlobal("TreeParam").split(" ")[1],chain=Product.GetGlobal("TreeParentLevel0")
 						)
 						)
 						if GetComments:
@@ -1656,7 +1672,7 @@ class approvalCenter:
 						else:
 							requestor_comments = ""
 					#A055S000P01-3376 - START    
-					elif Product.GetGlobal("TreeParam") == 'Approvals' and CurrentTabName == 'Quote': 
+					elif Product.GetGlobal("TreeParam") == 'Approvals' and (CurrentTabName == 'Quotes' or CurrentTabName == 'Quote'): 
 						##to get REQUESTOR_COMMENTS of particular chain starts
 						max_round = 1
 						for get_chain_max_round in get_chain_max_rounds:
@@ -1664,14 +1680,18 @@ class approvalCenter:
 								max_round = get_chain_max_round.appround       
 						## to get REQUESTOR_COMMENTS of particular chain starts         
 						GetMinQuery = Sql.GetFirst(
-						"""select ACAPTX.APRCHNSTP_ID, ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND as appround
+						"""select ACAPTX.APRCHNSTP_ID, ACAPTX.APPROVAL_TRANSACTION_RECORD_ID,ACAPTX.REQUESTOR_COMMENTS,ACAPTX.APPROVAL_ROUND as appround
 							from ACAPTX (nolock)
 							inner join ACAPMA (nolock) on ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
-							where ACAPMA.{ApiName} = '{QuoteNumber}' AND ACAPTX.APPROVAL_ROUND = {round} AND ACAPTX.APRCHN_ID = '{approval_chain}'""".format(
-							QuoteNumber=Quote.GetGlobal("contract_quote_record_id"), ApiName="APRTRXOBJ_RECORD_ID",round=str(max_round),approval_chain= str(approval_chain)
+							where ACAPMA.{ApiName} = '{revision_rec_id}' AND ACAPTX.APPROVAL_ROUND = '{round}' AND ACAPTX.APRCHN_ID = '{approval_chain}'""".format(
+							revision_rec_id=  self.quote_revision_record_id, ApiName="APRTRXOBJ_RECORD_ID",round=str(max_round),approval_chain= str(approval_chain)
 						)
 						)
-						requestor_comments = GetMinQuery.REQUESTOR_COMMENTS  
+						requestor_comments = GetMinQuery.REQUESTOR_COMMENTS
+						if GetMinQuery:
+							Product.SetGlobal("CurrentApprovalTransaction",GetMinQuery.APPROVAL_TRANSACTION_RECORD_ID)
+						else:
+							Product.SetGlobal("CurrentApprovalTransaction","")
 					#A055S000P01-3376 - END      
 				else:                    
 					requestor_comments = ""
@@ -1702,7 +1722,7 @@ class approvalCenter:
 
 
 				Htmlstr += ('''<div class="row step_chain_outer_wrap">''')
-				if CurrentTabName == "Quote":
+				if CurrentTabName == "Quotes" or CurrentTabName == 'Quote':
 					quote_record = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id))
 					##Max_Round is commented and added below to get max round for particular chain
 					#Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}'".format(quote_record = quote_record.QUOTE_ID))
@@ -1724,7 +1744,7 @@ class approvalCenter:
 						# Htmlstr += "</div>"
 					# Htmlstr += '<div class="row vert-flexstart">'
 					for GetMaxStep in GetMaxStepsQuery:
-						if CurrentTabName == "Quote":
+						if CurrentTabName == "Quotes" or CurrentTabName == 'Quote':
 							##Max_Round is added to get max round for particular chain
 							Max_Round = Sql.GetFirst("SELECT MAX(APPROVAL_ROUND) AS ROUND FROM ACAPTX (NOLOCK) WHERE APRTRXOBJ_ID = '{quote_record}' AND ACAPTX.APRCHN_RECORD_ID = '{chain_rec_id}'".format(quote_record = quote_record.QUOTE_ID, chain_rec_id = GetMaxStep.APRCHN_RECORD_ID))
 							if Max_Round is not None:
@@ -2034,7 +2054,8 @@ class approvalCenter:
 													Htmlstr += ('''<div id="collapse_'''+str(AllStep.APRCHNSTP_ID)+'''" class="panel-collapse collapse"> ''')
 												for data in acaptx_data:
 													if str(data.APPROVALSTATUS) == "REQUESTED":
-														if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID) or str(User.Id) == '125'):
+														if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID)):
+															Trace.Write("CHKNG_ICON_CONDTN")
 															if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																
 																req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
@@ -2050,7 +2071,7 @@ class approvalCenter:
 													elif str(data.APPROVALSTATUS) == "REJECTED":
 														req_status = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''">'''
 													elif str(data.APPROVALSTATUS) == "APPROVAL REQUIRED":
-														req_status = ""
+														req_status = ''
 													elif str(data.APPROVALSTATUS) == "APPROVAL NO LONGER REQUIRED":
 														req_status = '''<img title = 'Approval No Longer Required' class = "group_user_green_tick" src="'''+str(GroupUserIcon)+'''">'''
  
@@ -2059,6 +2080,7 @@ class approvalCenter:
 															req_status = ""
 														else:
 															req_status = '''<img title='Approval Required'  src = "'''+str(clock_exe)+'''">'''
+													
 													if (str(data.APRCHNSTP_APPROVER_ID).startswith("PRO") or str(data.APRCHNSTP_APPROVER_ID).startswith("ROL")):
 														Htmlstr += (''' <div class="chainstep_arrow_out">
 
@@ -2085,7 +2107,7 @@ class approvalCenter:
 													if (str(data.APRCHNSTP_APPROVER_ID).startswith("USR") or str(data.APRCHNSTP_APPROVER_ID).startswith("USR")):
 														
 														if str(data.APPROVALSTATUS) == "REQUESTED":
-															if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID) or str(User.Id) == '125'):
+															if (str(User.Id) == str(data.APPROVAL_RECIPIENT_RECORD_ID)):
 																if Product.GetGlobal("TreeParentLevel1") != 'Approvals':
 																	
 																	req_status = '''<a class ='' id="approve_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="approve_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(ApprovedIcon)+ '''" alt=""></a><a class ='' id="reject_'''+str(data.APPROVAL_TRANSACTION_RECORD_ID)+'''" data-target="#preview_approval" onclick="reject_request(this)" data-toggle="modal"> <img class="iconsize" src="'''+ str(RejectIcon)+ '''" alt=""></a>'''
@@ -2102,7 +2124,7 @@ class approvalCenter:
 														elif str(data.APPROVALSTATUS) == "REJECTED":
 															req_status = '''<img title = 'Rejected' src="'''+str(LargeCrossRed)+'''">'''
 														elif str(data.APPROVALSTATUS) == "APPROVAL REQUIRED":
-															req_status = ""
+															req_status = ''
 														elif str(data.APPROVALSTATUS) == "APPROVAL NO LONGER REQUIRED":
 															req_status = '''<img title = 'Approval No Longer Required' class = "group_user_green_tick" src="'''+str(GroupUserIcon)+'''">'''
 
@@ -2498,7 +2520,7 @@ class approvalCenter:
 					# # Htmlstr += "</div>"
 				Htmlstr += "</div>"
 			else:
-				if CurrentTabName == 'Quote':
+				if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 					my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME,QUOTE_STATUS,QTEREV_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id") ,revision_rec_id=  self.quote_revision_record_id))
 					
 					quote_status = my_approval_queue_obj.QUOTE_STATUS
@@ -2509,7 +2531,7 @@ class approvalCenter:
 				else:   
 					
 					Htmlstr += "<div class='noRecDisp'>No Records to Display</div>"
-			#Trace.Write("Htmlstr"+str(Htmlstr))
+			Trace.Write("Htmlstr"+str(Htmlstr))
 			return Htmlstr,data_list
 		
 
@@ -2677,18 +2699,18 @@ class approvalCenter:
 		bodyname =""
 		dearname =""        
 		
-		if CurrentTabName == 'Quote':
+		if CurrentTabName == 'Quotes':
 			quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id))
 			quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 			if quote_obj is not None:
 				if notifiType == "Request":
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'SERIES STEP APPROVAL'".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'SERIES STEP APPROVAL'".format(quote_record_id = self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 				elif notifiType == "ParallelRequest":
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'PARALLEL STEP APPROVAL'".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA (NOLOCK) INNER JOIN ACAPCH (NOLOCK) ON ACAPMA.APRCHN_ID = ACAPCH.APRCHN_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPCH.APPROVAL_METHOD = 'PARALLEL STEP APPROVAL'".format(quote_record_id = self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID
 				else:
-					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_record_id}'".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select APPROVAL_RECORD_ID from ACAPMA where APRTRXOBJ_RECORD_ID = '{quote_revision_record_id}'".format(quote_revision_record_id=self.quote_revision_record_id))
 					approval_record_id = approval_queue_obj.APPROVAL_RECORD_ID  
 		else:
 			Quoteid = Sql.GetFirst("Select APRTRXOBJ_RECORD_ID FROM ACAPMA WHERE APPROVAL_RECORD_ID = '"+str(self.QuoteNumber)+"'")
@@ -2925,12 +2947,15 @@ class approvalCenter:
 			#emailId = str(getnotify.EMAIL)
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
 			bodycontent = re.findall('<td class="TblHeadercolor">(.+?)</td>', bodywithformatsplit[1])
+			Trace.Write("bodycontent-->"+str(bodycontent))
 			bodyAPIName = []
 			currencylist = []
+			bodycontent.remove('CANCELLATION PERIOD')
+			bodycontent.remove('PAYMENT TERM ID')
 			for eachlable in bodycontent:
 				GetObjdAPI = Sql.GetFirst(
 					"""SELECT API_NAME,DATA_TYPE FROM SYOBJD (NOLOCK)
-					WHERE OBJECT_NAME= 'SAQTMT' AND FIELD_LABEL = '{}' """.format(
+					WHERE OBJECT_NAME= 'SAQTMT' AND UPPER(FIELD_LABEL) LIKE '%{}%' """.format(
 						str(eachlable)
 					)
 				)
@@ -3117,17 +3142,19 @@ class approvalCenter:
 	def PreviewApproversComments(self, ACTION, TransactionId):
 		Htmlstr = ""
 
-		if CurrentTabName == 'Quote':
+		if CurrentTabName == 'Quotes':
 			quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = self.quote_revision_record_id ))
 			quote_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+			revision_record_id = Product.GetGlobal("quote_revision_record_id")
 			if quote_obj is not None:
 				##multi chain approval
 				if str(TransactionId) != 'None': 
-					approval_queue_obj = Sql.GetFirst("select TOP 1 ACAPMA.APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{TransId}' ORDER BY ACAPMA.CpqTableEntryId DESC".format(quote_record_id = quote_record_id,TransId = str(TransactionId)))
+					approval_queue_obj = Sql.GetFirst("select TOP 1 ACAPMA.APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) JOIN ACAPTX (NOLOCK) on ACAPTX.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID and ACAPMA.APRCHN_RECORD_ID = ACAPTX.APRCHN_RECORD_ID where APRTRXOBJ_RECORD_ID = '{quote_record_id}' AND ACAPTX.APPROVAL_TRANSACTION_RECORD_ID ='{TransId}' ORDER BY ACAPMA.CpqTableEntryId DESC".format(quote_record_id = revision_record_id,TransId = str(TransactionId)))
 				##multi chain approval
 				else:
-					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = quote_record_id))
+					approval_queue_obj = Sql.GetFirst("select TOP 1 APPROVAL_RECORD_ID,CUR_APRCHNSTP from ACAPMA (NOLOCK) where APRTRXOBJ_RECORD_ID = '{quote_record_id}' ORDER BY CpqTableEntryId DESC".format(quote_record_id = revision_record_id))
 				self.QuoteNumber = approval_queue_obj.APPROVAL_RECORD_ID
+				Trace.Write("@3134---Approval Record Id--"+str(self.QuoteNumber))
 		else:
 			try:
 				TransactionId = self.QuoteNumber
@@ -3139,6 +3166,7 @@ class approvalCenter:
 				self.QuoteNumber = ''
 		   #current_chain_step = approval_queue_obj.CUR_APRCHNSTP
 		try:
+			Trace.Write("@3146---Approval Trans Record Id--"+str(TransactionId))
 			TreeParam = AllParams.get("TreeParam")
 			RecipientCommentInfo = "RECIPIENT COMMENT"
 			ButtonNeed = "False"
@@ -3146,6 +3174,8 @@ class approvalCenter:
 			SaveApproverComment = RecipientComment = BtnName = readonly = FromHistory = ""
 			if str(TreeParam) == "Approvals":
 				FromHistory = "True"
+				if TransactionId is None:
+					TransactionId = Product.GetGlobal("CurrentApprovalTransaction")
 				ApprTrxRecIdQry = Sql.GetFirst(
 					"""select ACAPTX.APPROVAL_TRANSACTION_RECORD_ID
 						from ACAPMA (nolock)
@@ -3199,6 +3229,7 @@ class approvalCenter:
 				BtnName,
 				ApprTrxRecId,
 			)
+			Trace.Write("HTML STR---"+str(Htmlstr))
 		except Exception, e:
 			self.exceptMessage = (
 				"ACSECTACTN : PreviewApproversComments : EXCEPTION : ERROR IN APPROVAL COMMENT : EXCEPTION E : " + str(e)
@@ -3210,23 +3241,24 @@ class approvalCenter:
 		try:  
 			##Showing approve/reject in list grid starts
 			
-			#Trace.Write("QuoteNumber"+str(QuoteNumber)+str(grid_flag))
+			Trace.Write("QuoteNumber"+str(QuoteNumber)+str(grid_flag))
 			if grid_flag == 'True':
 				
 				get_quote_id = Sql.GetFirst("SELECT ACAPMA.APRTRXOBJ_RECORD_ID FROM ACAPMA (NOLOCK) INNER JOIN ACAPTX (NOLOCK) ON ACAPTX.APPROVAL_RECORD_ID = ACAPMA.APPROVAL_RECORD_ID WHERE ACAPTX.APPROVAL_TRANSACTION_RECORD_ID = '"+str(QuoteNumber)+"' ")
 				QuoteNumber = get_quote_id.APRTRXOBJ_RECORD_ID
 			##Showing approve/reject in list grid ends
 			
-			GETstatus=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) WHERE  MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' ")
+			GETstatus=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) WHERE  MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id) + "'")
 			value = str(GETstatus.QUOTE_STATUS)             
 			if value =="IN-PROGRESS":
-				a=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID  INNER JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				a=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID  INNER JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND SAQTMT.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 				if a:
 					value = "SUBMIT FOR APPROVAL"
 				else:
 					value = "APPROVALS"
 			elif value =="BOOKING SUBMITTED" or value == "CONVERTED TO CONTRACT":
 				value = "APPROVED"
+			Trace.Write("VALUE---"+str(value))
 			return value
 		except Exception, e:
 			
@@ -3315,9 +3347,10 @@ except:
 Trace.Write("ACTION--->"+str(ACTION))
 """Object Initialization by Factory Method."""
 try:
+	Trace.Write("QuoteNumber_check "+str(QuoteNumber))
 	objDef = eval(violationruleInsert.Factory(ACTION))(QuoteNumber=QuoteNumber)
 except Exception, e:
-	if ACTION in ["APPROVEBTN", "REJECTBTN"]:
+	if ACTION in ["APPROVEBTN", "REJECTBTN","STATUS"]:
 		objDef = approvalCenter(QuoteNumber=QuoteNumber)
 	else:
 		Trace.Write("Class reference is not created" + str(e))
@@ -3339,9 +3372,10 @@ elif ACTION in ["SUBMIT_FOR_APPROVAL", "RECALL"]:
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.SubmitForApproval(RequestDesc, ACTION))
 # A043S001P01 -  11384  Start
 elif ACTION =="STATUS":
-	valllllll = str(objDef.approvalstatusbar(QuoteNumber))
 	
+	valllllll = objDef.approvalstatusbar(QuoteNumber)
 	ApiResponse = ApiResponseFactory.JsonResponse(valllllll)
+	#ApiResponse = ApiResponseFactory.JsonResponse(objDef.approvalstatusbar(QuoteNumber))
 elif ACTION == "RichText":
 	ApiResponse = ApiResponseFactory.JsonResponse(objDef.RichTextArea(QuoteNumber))
 # A043S001P01 -  11384  End

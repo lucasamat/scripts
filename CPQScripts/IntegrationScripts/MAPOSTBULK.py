@@ -579,7 +579,7 @@ try:
 		msg = MailMessage(fromEmail, toEmail)
 
 		# Set message subject and body
-		msg.Subject = "AMAT INTEGRATION MATMAS EXCEPTIONS - CPQ TST"
+		msg.Subject = "AMAT INTEGRATION MATMAS EXCEPTIONS - CPQ(X-Tenant)"
 		msg.IsBodyHtml = True
 		msg.Body = Error_Info
 

@@ -32,7 +32,7 @@ def bannerdetails(Quoteid,active_tab_name):
 		###ends
 		Quoteid = SQLObj.QUOTE_ID
 		#matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
-		matchObj = re.search(r'\d+', Quoteid).group()
+		#matchObj = re.search(r'\d+', Quoteid).group()
 	# if active_tab_name == "Quotes":
 	# 	Trace.Write('matchObj--'+str(matchObj))
 	# 	Trace.Write('Quoteid--'+str(Quoteid))
@@ -45,6 +45,8 @@ def bannerdetails(Quoteid,active_tab_name):
 		if matchObj:
 			#qid=str(matchObj.group(1))
 			qid=str(matchObj)
+			if active_tab_name == "Contracts":
+				qid=str(Quoteid)
 			Trace.Write('34--qid---'+str(qid))			
 			Quote = QuoteHelper.Edit(str(qid))				
 			Quote.RefreshActions()

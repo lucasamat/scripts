@@ -21,6 +21,12 @@ import SYCNGEGUID as CPQID
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
+# When we create a new revision for existing quote from C4C, quote edit is taking some time. So if quote is not edited in backend, we do again here.
+if not Quote:
+	try:
+		Quote = QuoteHelper.Edit(Param.QuoteId)
+	except Exception:
+		pass
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----test')
 #A055S000P01-8729 start
@@ -37,29 +43,14 @@ def create_new_revision(Opertion,cartrev):
 		"SAQSFE":"QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID",
 		"SAQSAE":"QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID",
 		"SAQSGB":"QUOTE_SERVICE_GREENBOOK_RECORD_ID",
+		"SAQSPT":"QUOTE_SERVICE_PART_RECORD_ID",
 		"SAQSRA":"QUOTE_SENDING_RECEIVING_ACCOUNT",
 		"SAQSSE":"QUOTE_SERVICE_SENDING_FAB_LOC_EQUIP_ID",
 		"SAQSSA":"QUOTE_SERVICE_SENDING_FAB_EQUIP_ASS_ID",
 		"SAQFEA":"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"SAQFGB":"QUOTE_FAB_LOC_GB_RECORD_ID",
 		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID",
-		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID",
-		"SAQTVD":"QUOTE_VALUEDRIVER_RECORD_ID",
-		"SAQVDV":"QUOTE_VALUE_DRIVER_VALUE_RECORD_ID",
-		"SAQFVD":"QUOTE_FABLOCATION_VALUEDRIVER_RECORD_ID",
-		"SAQFDV":"QUOTE_FAB_VALDRIVER_VALUE_RECORD_ID",
-		"SAQFGD":"QUOTE_FAB_LOC_GB_VAL_DRIVER_RECORD_ID",
-		"SAQFGV":"QUOTE_FAB_LOC_GB_VAL_DRIVER_VAL_RECORD_ID",
-		"SAQFED":"QUOTE_FAB_LOC_EQUIP_VAL_DRIVER_RECORD_ID",
-		"SAQEDV":"QUOTE_FAB_LOC_EQUIP_DRV_VAL_RECORD_ID",
-		"SAQSVD":"QUOTE_SERVICE_TOOL_VALUE_DRIVER_RECORD_ID",
-		"SAQSDV":"QUOTE_SERVICE_TOOL_VALUE_DRIVER_VALUES_RECORD_ID",
-		"SAQSFD":"QUOTE_SERVICE_FBL_TOOL_VAL_DRV_RECORD_ID",
-		"SAQSFV":"QUOTE_SERVICE_FAB_LOC_DRV_VAL_RECORD_ID",
-		"SAQSGD":"QUOTE_SERVICE_GREENBOOK_VAL_DRV_RECORD_ID",
-		"SAQSCD":"QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_RECORD_ID",
-		"SAQSCV":"QUOTE_SERVICE_COVERED_OBJ_TOOL_DRIVER_VALUE_RECORD_ID"
-		
+		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID"
 		}
 	#"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
 	# "SAQITM":"QUOTE_ITEM_RECORD_ID",
@@ -241,6 +232,7 @@ def create_new_revision(Opertion,cartrev):
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
 		Quote.GetCustomField('YEAR_1').Content = '' 
 		Quote.GetCustomField('YEAR_2').Content = '' 
+		Quote.GetCustomField('YEAR_3').Content = '' 
 		Quote.GetCustomField('TAX').Content = '' 
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
 		Quote.GetCustomField('MODEL_PRICE').Content = '' 
@@ -306,11 +298,13 @@ def save_desc_revision(Opertion,cartrev,cartrev_id,):
 	recid =''
 	cpqid = cartrev_id.split('-')[1].strip()
 	get_rev_quote_info_details = Sql.GetFirst("select * from SAQTRV where QUOTE_ID = '{}' and QTEREV_ID = {}".format(ObjectName,cpqid))
+	cartrev = re.sub(r"'","''",cartrev)
 	if get_rev_quote_info_details:
 		recid = get_rev_quote_info_details.QUOTE_REVISION_RECORD_ID
 	#recid = CPQID.KeyCPQId.GetKEYId(ObjectName,str(cpqid))
 	update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET REVISION_DESCRIPTION = '{rev_desc}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND  QUOTE_REVISION_RECORD_ID = '{recid}' """.format(QuoteRecordId=quote_contract_recordId,recid =recid,rev_desc= cartrev))
-	productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(cartrev)+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
+	productdesc = Sql.RunQuery("""UPDATE  CART_REVISIONS SET DESCRIPTION = '{rev_desc}' WHERE CART_ID = '{quote_idnative}' AND  VISITOR_ID = '{recid}' """.format(quote_idnative=Quote.QuoteId,recid =Quote.UserId,rev_desc= cartrev))
+	#productdesc = SqlHelper.GetFirst("sp_executesql @t=N'update CART_REVISIONS set DESCRIPTION =''"+str(cartrev)+"'' where CART_ID = ''"+str(Quote.QuoteId)+"'' and VISITOR_ID =''"+str(Quote.UserId)+"''  '")
 	return True
 #edit quote description field end
 

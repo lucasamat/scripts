@@ -10,7 +10,6 @@ import System.Net
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
-import CQTVLDRIFW
 from SYDATABASE import SQL
 
 
@@ -387,6 +386,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 		item_lines_record_ids = []
 		for rec in selected_rows:
 			row = {}
+			if TITLE == 'DISCOUNT' and '%' in VALUE:
+				VALUE = VALUE.replace('%','')
 			row = {TITLE: str(VALUE)}
 			
 			cpqid = rec.split("-")[1].lstrip("0")
@@ -565,6 +566,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
+				Quote.GetCustomField('YEAR_3').Content =str(getServiceSum.YEAR3) + " " + get_curr
 				Quote.GetCustomField('DISCOUNT').Content =str(TotalServiceDiscount)
 				for item in Quote.MainItems:
 					if item.PartNumber == a.SERVICE_ID:
@@ -585,9 +587,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				except:
 					Trace.Write("NO STATUS UPDATE")
 			elif TITLE == 'DISCOUNT':
-				
+				if '%' in VALUE:
+					VALUE = VALUE.replace('%','')
 				a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE,ISNULL(TARGET_PRICE,0) AS  TARGET_PRICE, SERVICE_ID,QUOTE_RECORD_ID,GREENBOOK,FABLOCATION_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR,CONTRACT_VALID_FROM,CONTRACT_VALID_TO  FROM SAQICO (NOLOCK) WHERE CpqTableEntryId = {}".format(cpqid))
-
+				amt = 0.00
 				if float(a.TARGET_PRICE) != 0.0 or float(a.TARGET_PRICE) != 0.00:
 					if "+" not in VALUE and "-" not in VALUE:
 						#discount =(float(VALUE)/float(a.SALES_DISCOUNT_PRICE))*100.00
@@ -674,6 +677,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 				Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(getServiceSum.SUM_PRICE) + " " + get_curr
 				Quote.GetCustomField('YEAR_1').Content =str(getServiceSum.YEAR1) + " " + get_curr
 				Quote.GetCustomField('YEAR_2').Content =str(getServiceSum.YEAR2) + " " + get_curr
+				Quote.GetCustomField('YEAR_3').Content =str(getServiceSum.YEAR3) + " " + get_curr
 				Quote.GetCustomField('DISCOUNT').Content =str(TotalServiceDiscount) + "%"
 				for item in Quote.MainItems:
 					if item.PartNumber == a.SERVICE_ID:
@@ -683,8 +687,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 						item.YEAR_3.Value = str(b.YEAR3)
 						item.YEAR_4.Value = str(b.YEAR4)
 						item.YEAR_5.Value = str(b.YEAR5)
-						item.EXTENDED_PRICE.Value = str(b.NET_VALUE)
-						item.DISCOUNT.Value = str(TotalDiscount)+ "%"
+						item.NET_VALUE.Value = str(b.NET_VALUE)
+						item.DISCOUNT.Value = str(TotalDiscount)
 				Quote.Save()
 				getPRCFVA = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(a.SERVICE_ID))
 				try:
@@ -945,7 +949,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 					add_where = " and INCLUDED = 'CHAMBER'"
 					AttributeID = 'AGS_QUO_QUO_TYP'
 					NewValue = 'Chamber based'
-					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(ServiceId)
+					table_name = 'SAQSCE'
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(NewValue)+"||"+str(ServiceId)+'||'+str(table_name)
 					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					if result:
 						Trace.Write('rolldown-'+str(result))
@@ -986,20 +991,6 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 			###update SAQFEA ends
 			else:
 				Sql.RunQuery("""INSERT SAQFEA (QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, EQUIPMENT_DESCRIPTION, ASSEMBLY_ID, ASSEMBLY_STATUS, ASSEMBLY_DESCRIPTION, ASSEMBLY_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERIAL_NUMBER, QUOTE_RECORD_ID,QTEREV_RECORD_ID,QTEREV_ID, QUOTE_ID, QUOTE_NAME, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_DESCRIPTION, EQUIPMENTTYPE_DESCRIPTION, EQUIPMENTTYPE_RECORD_ID, GOT_CODE, MNT_PLANT_RECORD_ID, MNT_PLANT_ID, WARRANTY_START_DATE, WARRANTY_END_DATE, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified ) SELECT A.* FROM (SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID, MAEQUP.PAR_EQUIPMENT_ID, MAEQUP.PAR_EQUIPMENT_RECORD_ID, MAEQUP.PAR_EQUIPMENT_DESCRIPTION, SAQSTE.EQUIPMENT_ID, SAQSTE.EQUIPMENT_STATUS, SAQSTE.EQUIPMENT_DESCRIPTION, SAQSTE.EQUIPMENT_RECORD_ID, SAQSTE.FABLOCATION_ID, SAQSTE.FABLOCATION_NAME, SAQSTE.FABLOCATION_RECORD_ID, MAEQUP.SERIAL_NO,SAQSTE.QUOTE_RECORD_ID,SAQSTE.QTEREV_RECORD_ID,SAQSTE.QTEREV_ID, SAQSTE.QUOTE_ID,SAQSTE.QUOTE_NAME, SAQSTE.EQUIPMENTCATEGORY_RECORD_ID, SAQSTE.EQUIPMENTCATEGORY_ID, SAQSTE.EQUIPMENTCATEGORY_DESCRIPTION, '' as EQUIPMENTTYPE_DESCRIPTION, MAEQUP.EQUIPMENTTYPE_RECORD_ID, MAEQUP.GOT_CODE, SAQSTE.MNT_PLANT_RECORD_ID, SAQSTE.MNT_PLANT_ID, MAEQUP.WARRANTY_START_DATE, MAEQUP.WARRANTY_END_DATE, MAEQUP.SALESORG_ID, MAEQUP.SALESORG_NAME, MAEQUP.SALESORG_RECORD_ID,'{UserName}' AS CPQTABLEENTRYADDEDBY,GETDATE() as CPQTABLEENTRYDATEADDED,'{UserId}' as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified  FROM MAEQUP (NOLOCK)INNER JOIN  SAQSTE on MAEQUP.PAR_EQUIPMENT_ID = SAQSTE.EQUIPMENT_ID  WHERE QUOTE_RECORD_ID = '{QuoteRecId}' AND SAQSTE.QTEREV_RECORD_ID = '{quote_revision_record_id}' AND SAQSTE.FABLOCATION_ID ='{fabid}' ) A LEFT JOIN SAQFEA M(NOLOCK) ON A.QUOTE_ID = M.QUOTE_ID AND A.EQUIPMENT_ID = M.ASSEMBLY_ID WHERE M.ASSEMBLY_ID IS NULL""".format(UserName=User.UserName,UserId=User.Id,QuoteRecId=ContractRecordId,fabid=VALUE,quote_revision_record_id=quote_revision_record_id))
-
-			try:
-				
-				quote = Qt_rec_id
-				level = "QUOTE VALUE DRIVER"
-				userId = str(User.Id)
-				userName = str(User.UserName)
-				TreeParam = Product.GetGlobal("TreeParam")
-				TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-				TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-				TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-				CQTVLDRIFW.iflow_valuedriver_rolldown(quote,level,TreeParam, TreeParentParam, TreeSuperParentParam, TreeTopSuperParentParam,userId,userName)
-			except:
-				Trace.Write("EXCEPT----QUOTE VALUE DRIVER LEVEL IFLOW")
 
 
 	return ""

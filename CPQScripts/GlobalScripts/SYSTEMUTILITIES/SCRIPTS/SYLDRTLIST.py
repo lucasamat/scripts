@@ -2060,9 +2060,11 @@ class SYLDRTLIST:
                             Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
                         elif str(RECORD_ID) == "SYOBJR-98868":
                             Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
+                        elif str(RECORD_ID) == "SYOBJR-98870":
+                            Qustr += " AND SERVICE_ID = '"+str(TreeParam)+"'"
                         Trace.Write('In 1958---'+str(Qustr))
-                        # if str(RECORD_ID) != "SYOBJR-98869":
-                        #     Qustr += "AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+                        if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013"):
+                        	Qustr += "AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
                         Qury_str = (
                             "select DISTINCT top "
                             + str(PerPage)
@@ -2147,11 +2149,12 @@ class SYLDRTLIST:
                     )
                 elif RECORD_ID == 'SYOBJR-00010':
                     imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
-                    acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'  
+                    acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+                    cps_pricing_img ="<a href=''#'' onclick=''cps_pricing_call(this)''><img src=''/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png''  style=''height: 15px; width: 15px; background-size: 20px 20px;''> </a>"
                     Qury_str = (
                         "SELECT DISTINCT TOP "
                         + str(PerPage)
-                        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+                        + " QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID, PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,MATPRIGRP_ID,PART_DESCRIPTION,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP "+ str(PerPage)+" ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
                         +"' AND QTEREV_RECORD_ID = '"
                         +str(quote_revision_record_id)
                         +"') m where m.ROW BETWEEN "
@@ -2269,7 +2272,7 @@ class SYLDRTLIST:
                         round_value = TreeParam.split()[1]
                         dynamic_condtn=" and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APPROVAL_ROUND = '{step_value}'".format(chain_step_name = step_id,step_value = round_value)
                     Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn})m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam) + str(Page_start) + " and " + str(Page_End))
-                    QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam)
+                    QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn}""".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam)
             
                 ##involved parties source fab starts
                 elif (str(RECORD_ID) == "SYOBJR-98857") and str(TreeParam) == "Quote Information":
@@ -2606,7 +2609,7 @@ class SYLDRTLIST:
                 + str(ObjectName)
                 + "' and SE.SECTION_NAME ='BASIC INFORMATION'"
             )
-            
+            Trace.Write("CHKNG_QUERY_J "+str(Qury_str))
             if Query_Obj is not None:
                 for ik in Query_Obj:					                  
                     new_dict = {}
@@ -2932,6 +2935,7 @@ class SYLDRTLIST:
                                                     + str(module_txt)
                                                     + "'"
                                                 )
+                                            Trace.Write("POP_6 "+str(value1234))
                                             if product_id != "" and product_id is not None:
                                                 pop_val[key] = value1234 + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
                                             else:
@@ -2942,6 +2946,7 @@ class SYLDRTLIST:
                                                     + str(key)
                                                     + "' AND DATA_TYPE = 'LOOKUP'"
                                                 )
+                                                Trace.Write("POP_5 "+str(value1234))
                                                 lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                                 pop_val[key] = value1234 + "|" + lookup_val
                                             lookup_rl_popup.append(key)
@@ -2953,6 +2958,7 @@ class SYLDRTLIST:
                                             + str(key)
                                             + "' AND DATA_TYPE = 'LOOKUP'"
                                         )
+                                        Trace.Write("POP_4 "+str(value1234))
                                         lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                         pop_val[key] = value1234 + "|" + lookup_val
                                         lookup_rl_popup.append(key)
@@ -3165,14 +3171,15 @@ class SYLDRTLIST:
                                                             new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
                                                         #new_dict[value123] = value1234
                                                 
-                        
+                        if str(pop_val).startswith("{<System"):
+                            pop_val = ""
                         new_dict["ACTIONS"] = Action_str   
                         new_dict["ids"] = ids
                         new_dict["seg_pric"] = seg_pric
-                        new_dict["pop_val"] = pop_val
+                        # new_dict["pop_val"] = pop_val
                         new_dict["primary"] = primary
                         list_lineup.append(value123)
-                                 
+                        del new_dict['pop_val']
                     table_list.append(new_dict)
                 table_header += "<tr id='getbannername'>"
             #A055S000P01-682 start to hide the Actions column for related list
@@ -3243,6 +3250,7 @@ class SYLDRTLIST:
             
             # Billing Matrix - Pivot - Start
             Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
+            Trace.Write("SubTab------>"+str(SubTab))
             Colcount = 0
             #Trace.Write('Colcount--ObjectName-----'+str(ObjectName))
             Trace.Write('Colcount--billing_date_column-----'+str(len(billing_date_column)))
@@ -3268,7 +3276,7 @@ class SYLDRTLIST:
                 + str(list(eval(Columns)))
                 + ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList, "ACTION" : "PRODUCT_ONLOAD_FILTER",  "SortColumn":SortColumn, "SortColumnOrder": SortColumnOrder, "PerPage": PerPage, "PageInform": PageInform, "PR_CURR": PR_CURR, "TP": TP ,"SUBTAB":"'
                 + str(SubTab)
-                +'"}, function(data) { console.log(data);$("'
+                +'"}, function(data) { debugger; console.log(data);$("'
                 + str(table_ids)
                 + '").bootstrapTable("load", data[0] );if (document.getElementById(\''
                 + str(table_id)
@@ -4271,7 +4279,7 @@ class SYLDRTLIST:
         
         if str(TreeParentParam) == "Billing":
             dbl_clk_function += (
-                "try {var bildict = [];$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').on('click-row.bs.table', function (e, row, $element) { $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').find(':input(:disabled)').prop('disabled', false);$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); $('.billclassedit').parent().css('background-color','lightyellow');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305  tbody  tr td input').css('background-color','lightyellow');$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); var BillingmatrixBtn = $('.secondary_highlight_panel').find('button#REFRESH_MATRIX'); var billsave = $('.secondary_highlight_panel').find('button#billingmatrix_save'); var billcan = $('.secondary_highlight_panel').find('button#billingmatrix_cancel'); if (BillingmatrixBtn.length == 1){ BillingmatrixBtn.remove() } $('#billingmatrix_save').css('display','block'); $('#billingmatrix_cancel').css('display','block');$('#input#billeditval_disable').attr('disabled', true);$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 tbody tr td input').change(function () {console.log('on change function--');var getbillamt = $(this).val();console.log('getbillamt-------',getbillamt);var equipid = $(this).closest('tr').find('td:nth-child(4)').text();var annualamt_total = $(this).closest('tr').find('td:nth-child(9)').text();console.log('eduip-----',equipid);var test = $(this).closest('td').index();var getindex = test+1;var getheaderdate = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();var getannualtotal = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();console.log('getannualtotal----',getannualtotal);console.log('annualamt_total----',annualamt_total);var concate_data = equipid+ ' - '+getheaderdate+ '- '+getbillamt+' - '+annualamt_total;if(!bildict.includes(concate_data)){bildict.push(concate_data)};getbilldictdata = JSON.stringify(bildict);localStorage.setItem('getbilldictdata', getbilldictdata);}); })}catch (err){console.log('catch-----')}"
+                "try {var bildict = [];$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').on('click-row.bs.table', function (e, row, $element) { $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305').find(':input(:disabled)').prop('disabled', false);$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block');$('#generatingbillingmatrix').css('display','none'); $('.billclassedit').parent().css('background-color','lightyellow');$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305  tbody  tr td input').css('background-color','lightyellow');$('#billingmatrix_save').css('display','block');$('#billingmatrix_cancel').css('display','block'); var BillingmatrixBtn = $('.secondary_highlight_panel').find('button#REFRESH_MATRIX'); var billsave = $('.secondary_highlight_panel').find('button#billingmatrix_save'); var billcan = $('.secondary_highlight_panel').find('button#billingmatrix_cancel'); if (BillingmatrixBtn.length == 1){ BillingmatrixBtn.remove() } $('#billingmatrix_save').css('display','block'); $('#billingmatrix_cancel').css('display','block');$('#input#billeditval_disable').attr('disabled', true);$('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 tbody tr td input').change(function () {console.log('on change function--');var getbillamt = $(this).val();console.log('getbillamt-------',getbillamt);localStorage.setItem('getbillamt', getbillamt);var equipid = $(this).closest('tr').find('td:nth-child(4)').text();var annualamt_total = $(this).closest('tr').find('td:nth-child(9)').text();console.log('eduip-----',equipid);var test = $(this).closest('td').index();var getindex = test+1;var getheaderdate = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();var getannualtotal = $('#SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305 thead th:nth-child('+getindex+')').text();console.log('getannualtotal----',getannualtotal);console.log('annualamt_total----',annualamt_total);var concate_data = equipid+ ' - '+getheaderdate+ '- '+getbillamt+' - '+annualamt_total;if(!bildict.includes(concate_data)){bildict.push(concate_data)};getbilldictdata = JSON.stringify(bildict);localStorage.setItem('getbilldictdata', getbilldictdata);}); })}catch (err){console.log('catch-----')}"
             )
                         
         if ObjectName == 'SAQICO':
@@ -4507,7 +4515,7 @@ class SYLDRTLIST:
                     Product.GetGlobal("TreeParentLevel3"),
                     Product.GetGlobal("TreeParentLevel4"),
                 )                
-
+        Trace.Write("subtab name----->"+str(SubTab))
         if obj_obj is None:
             return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
         Action_permission = {}
@@ -4652,6 +4660,7 @@ class SYLDRTLIST:
                 select_obj_str = str(obj_str) + "," + str(lookup_str)
             else:
                 select_obj_str = str(obj_str)
+            Trace.Write("select_obj_str_select_obj_str_select "+str(lookup_str))
             lookup_disply_list123 = ""
             lookup_str = ",".join(list(lookup_disply_list))
             if len(list(lookup_disply_list)) > 1:
@@ -6026,7 +6035,7 @@ class SYLDRTLIST:
                         Trace.Write('6026-------------')
                         Qury_str = ("select DISTINCT TOP "
                             + str(PerPage)
-                            + " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
+                            + " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where "+str(ATTRIBUTE_VALUE_STR)+ " QUOTE_RECORD_ID = '" 
                             + str(contract_quote_record_id) + "' ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
@@ -6050,10 +6059,11 @@ class SYLDRTLIST:
                     elif RECORD_ID == 'SYOBJR-00010':
                         imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                         acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'                     
+                        cps_pricing_img ='<a href="#" onclick=""><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png"></a>'
                         Qury_str = (
                             "SELECT DISTINCT TOP "
                             + str(PerPage)
-                            + "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
+                            + "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select TOP 10 ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)
                             +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " AND "
@@ -6139,17 +6149,17 @@ class SYLDRTLIST:
                             )
                             QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
                     elif RECORD_ID == 'SYOBJR-00024':
-                        
+                        dynamic_condtn = ""
                         quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"), revision_rec_id = quote_revision_record_id))
                         quote_id = quote_obj.QUOTE_ID
                         TreeParam = Product.GetGlobal("TreeParam")
                         if TreeSuperParentParam == 'Approvals':
-                            chain_step_name = subTab.split(':')[1].strip()
+                            chain_step_name = SubTab.split(':')[1].strip()
                             step_id = chain_step_name.split(' ')[1]
                             round_value = TreeParam.split()[1]
                             TreeParam = Product.GetGlobal("TreeParam")
-                            Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id, chain_step_name = step_id,chain_id = TreeParentParam,step_value = round_value ) + str(Page_start) + " and " + str(Page_End))
-                            QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,chain_step_name = step_id,chain_id = TreeParentParam,step_value = round_value)
+                            Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and {ATTRIBUTE_VALUE_STR} ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn})m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam) + str(Page_start) + " and " + str(Page_End))
+                            QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and {ATTRIBUTE_VALUE_STR} ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn}""".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam)
                         else:
                             
                             Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APPROVAL_TRANSACTION_RECORD_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and  {ATTRIBUTE_VALUE_STR} ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{Chain}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,Chain = TreeParam,ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR) + str(Page_start) + " and " + str(Page_End))
@@ -6527,6 +6537,8 @@ class SYLDRTLIST:
                     elif str(RECORD_ID) == "SYOBJR-98785":
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                    elif str(RECORD_ID) == "SYOBJR-98870":
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TreeParam)+"' "
                     else:    
                         Trace.Write('Record Id -->'+str(RECORD_ID))
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
@@ -7438,10 +7450,11 @@ class SYLDRTLIST:
                         elif RECORD_ID == 'SYOBJR-00010':    
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+                            cps_pricing_img ='<a href="#" onclick=""><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info.png"></a>'
                             Qury_str = (
                                 "SELECT DISTINCT TOP "
                                 + str(PerPage)
-                                + "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
+                                + "QUOTE_ITEM_FORECAST_PART_RECORD_ID, CASE WHEN PRICING_STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN PRICING_STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' ELSE '"+ acquiring_img_str +"' END AS PRICING_STATUS,SERVICE_ID,PART_LINE_ID,CONCAT('"+cps_pricing_img+ "',PART_NUMBER) AS PART_NUMBER,PART_DESCRIPTION,MATPRIGRP_ID,BASEUOM_ID,SCHEDULE_MODE,DELIVERY_MODE,UNIT_PRICE,EXTENDED_PRICE,ANNUAL_QUANTITY,CUSTOMER_PART_NUMBER_RECORD_ID,BASEUOM_RECORD_ID,MATPRIGRP_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SALESORG_RECORD_ID,SERVICE_RECORD_ID,PART_RECORD_ID,SALESUOM_RECORD_ID,CpqTableEntryId,TAX,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE from ( select ROW_NUMBER() OVER(order by "+ str(Wh_API_NAMEs) +") AS ROW, * from SAQIFP (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue)
                                 +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ) m where m.ROW BETWEEN "
                                 + str(Page_start)
                                 + " AND "
@@ -7558,14 +7571,14 @@ class SYLDRTLIST:
                             quote_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}' ".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"), revision_rec_id = quote_revision_record_id))
                             quote_id = quote_obj.QUOTE_ID
                             TreeParam = Product.GetGlobal("TreeParam")
-                            
+                            dynamic_condtn = ""
                             if TreeSuperParentParam == 'Approvals':
-                                chain_step_name = subTab.split(':')[1].strip()
+                                chain_step_name = SubTab.split(':')[1].strip()
                                 step_id = chain_step_name.split(' ')[1]
                                 round_value = TreeParam.split()[1]
                                 TreeParam = Product.GetGlobal("TreeParam")
-                                Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id, chain_step_name = step_id,chain_id = TreeParentParam,step_value = round_value ) + str(Page_start) + " and " + str(Page_End))
-                                QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHNSTP_ID = '{chain_step_name}' and ACAPTX.APRCHN_ID = '{chain_id}' and ACAPTX.APPROVAL_ROUND = '{step_value}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,chain_step_name = step_id,chain_id =  TreeParentParam,step_value = round_value)
+                                Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY ACAPTX.APRCHNSTP_ID) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn})m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam) + str(Page_start) + " and " + str(Page_End))
+                                QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{chain_id}' {dynamic_condtn}""".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,dynamic_condtn=dynamic_condtn,chain_id=TreeParentParam if TreeSuperParentParam == 'Approvals' else TreeParam)
                             else:                            
                                 Qury_str = ("""select DISTINCT top {PerPage} * from (select ROW_NUMBER() OVER( ORDER BY {Wh_API_NAMEs}) AS ROW,ACAPTX.APPROVAL_TRANSACTION_RECORD_ID, ACAPTX.APPROVAL_ID,ACAPTX.APRCHNSTP_ID,ACAPTX.APRCHNSTP_APPROVER_ID,ACAPTX.APPROVAL_ROUND,ACAPTX.APPROVALSTATUS,ACAPTX.RECIPIENT_COMMENTS,ACAPTX.APRCHNSTP_RECORD_ID,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.CpqTableEntryId FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID  and ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{Chain}')m where m.ROW BETWEEN """.format(PerPage = PerPage,contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,Chain = TreeParam,Wh_API_NAMEs = Wh_API_NAMEs ) + str(Page_start) + " and " + str(Page_End))
                                 QuryCount_str = """select count(ACAPTX.CpqTableEntryId) as cnt FROM ACAPTX (nolock) inner join ACACST (nolock) on ACAPTX.APRCHNSTP_RECORD_ID = ACACST.APPROVAL_CHAIN_STEP_RECORD_ID and  ACAPTX.APRTRXOBJ_ID = '{Quote_id}' and ACAPTX.APRCHNSTPTRX_ID like '%{Quote_id}%' and ACAPTX.APRCHN_ID = '{Chain}' """.format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Quote_id = quote_id,Chain = TreeParam)
@@ -7694,6 +7707,11 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-98785":
                             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
+                        elif str(RECORD_ID) == "SYOBJR-98870":
+                            Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND SERVICE_ID = '"+str(TreeParam)+"' "
+                        elif str(RECORD_ID) == "SYOBJR-00013":
+                            RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
+                            Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                         else:
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                             Trace.Write("7100"+str(Qustr))
@@ -7702,6 +7720,7 @@ class SYLDRTLIST:
                     Trace.Write("7105")
                     Trace.Write("select_obj_str+++BILLING"+str(select_obj_str))    
                     select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]") 
+                    select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
                     if str(RECORD_ID) == "SYOBJR-00007":
                         Trace.Write("Pagination ifffff")
                         pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
@@ -7875,6 +7894,7 @@ class SYLDRTLIST:
                 for inm in ik:
                     value123 = str(inm).split(",")[0].replace("[", "").lstrip()
                     value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
+                    Trace.Write('**value123--->'+str(value123)+' value1234-->'+str(value1234))
                     if value123 == objRecName:
                         #current_rec_id = ""
                         current_rec_id = value1234
@@ -7977,6 +7997,9 @@ class SYLDRTLIST:
                                                 + str(module_txt)
                                                 + "'"
                                             )
+                                        if not value1234:
+                                            value1234 = ""
+                                        Trace.Write("POP_3 "+str(value1234))
                                         if product_id != "" and product_id is not None:
                                             pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
                                         else:
@@ -7989,6 +8012,7 @@ class SYLDRTLIST:
                                             )
                                             if not value1234:
                                                 value1234 = ""
+                                            Trace.Write("POP_2 "+str(value1234))
                                             lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                             pop_val[key] = str(value1234) + "|" + lookup_val
                                 else:
@@ -8001,8 +8025,12 @@ class SYLDRTLIST:
                                     )
                                     if not value1234:
                                         value1234 = ""
+                                    Trace.Write("POP_1 "+str(value1234))
                                     lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                     pop_val[key] = str(value1234) + "|" + lookup_val
+                                    if str(pop_val).startswith("{<System"):
+                                        pop_val = ""
+                                    Trace.Write("POP_1_J "+" - "+str(pop_val)+" - "+str(value1234)+" - "+str(lookup_val))
                     elif value123 == objRecName:
                         key_value = str(value1234)
                         if str(ObjectName) == "USERS":                            
@@ -8059,7 +8087,6 @@ class SYLDRTLIST:
                         
                         value1234 = value1234[1]
                     else:                 
-                        Trace.Write('at 7306'+str(value123)+' val-->'+str(value1234))
                         img_list = ['PO_NOTES','PRICING_STATUS','STATUS','EQUIPMENT_STATUS']
                         if str(ObjectName) == "SAQIFP":
                             img_list.append('PRICING_STATUS')
@@ -8163,12 +8190,20 @@ class SYLDRTLIST:
                                                     else:
                                                         new_dict[value123] = value1234
 
+
+
+
+                    
+                    if str(pop_val).startswith("{<System"):
+                        pop_val = ""
+                    Trace.Write("pop_val_J "+str(pop_val))
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
                     new_dict["seg_pric"] = seg_pric
-                    new_dict["pop_val"] = pop_val
+                    # new_dict["pop_val"] = pop_val
                     new_dict["primary"] = primary
                 Trace.Write('new_dict-->'+str(new_dict))
+                del new_dict['pop_val']
                 table_list.append(new_dict)
                 Trace.Write('After append table_list--->'+str(table_list))
                 footer_str, footer = "", ""

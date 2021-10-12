@@ -1,7 +1,7 @@
 # =========================================================================================================================================
 #   __script_name : CQPREVWDTL.PY
 #   __script_description : THIS SCRIPT IS USED TO  TRIGGER POPUP WHILE SAVING THE DRIVERS, PRICE,ENTITLEMENTS 
-#   __primary_author__ : WASIM ABDUL
+#   __primary_author__ : WASIM ABDUL 
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
@@ -45,43 +45,7 @@ def popups(params):
 				</div>"""  
 	return sec_str
 
-def popupser(params):
-	sec_str = ""
-	sec_str += """<div class="drop-boxess" style="display: none;">
-				<div class="col-md-3 pl-0 rolling_popup">
-				<div class="col-md-2 p-0">
-					<img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info_icon.svg" class="img-responsive center-block">
-				</div>
-				<div class="col-md-10 p-0">
-					<h3>"""+str(params)+""" Cost and Value Driver Roll Down <button type="button"
-					class="close"
-					aria-label="Close" onclick="close_popup()"> 
-				<span aria-hidden="true">×</span> 
-			</button></h3>
-				<p>The <q>"""+str(params)+""" Cost and Value Driver</q> settings are being applied to the Equipment in this quote. You will be notified by email when this background job completes.</p>
-				</div>
-				</div>
-				</div>"""  
-	return sec_str
 
-def popupuser():
-	sec_str = ""
-	sec_str += """<div class="drop-boxess" style="display: none;">
-				<div class="col-md-3 pl-0 rolling_popup">
-				<div class="col-md-2 p-0">
-					<img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/info_icon.svg" class="img-responsive center-block">
-				</div>
-				<div class="col-md-10 p-0">
-					<h3>Price Calculation <button type="button"
-					class="close"
-					aria-label="Close" onclick="close_popup()"> 
-				<span aria-hidden="true">×</span> 
-			</button></h3>
-				<p>Price calculation is currently in progress. You will be notified by email notification when this background job completes.</p>
-				</div>
-				</div>
-				</div>"""  
-	return sec_str
 # commented the code(Approvals node functionality in Quotes explorer) -start
 # def submitapproval():
 #     sec_str = ""
@@ -124,7 +88,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 		)
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class= "sec_' + str(sect.RECORD_ID) + ' collapse in">'
@@ -137,6 +101,9 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 				+ "</label> </abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
+			object_name = sefl.API_NAME
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM SAOPQT WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
@@ -149,6 +116,27 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 						+ str(current_user)
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
+				elif data_type =="CHECKBOX":
+					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("act_status---->"+str(act_status))
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
@@ -293,7 +281,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						)  
 				# To get the hyperlink for source contract id field in Quote information node - end              
 				##to get date from datetime for CONTRACT_VALID_FROM and CONTRACT_VALID_TO strts
-				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO","QUOTE_EXPIRE_DATE","QUOTE_CREATED_DATE","REV_APPROVE_DATE","REV_CREATE_DATE","REV_EXPIRE_DATE"):
+				elif sefl_api in ("CONTRACT_VALID_FROM","CONTRACT_VALID_TO","QUOTE_EXPIRE_DATE","QUOTE_CREATED_DATE","REV_APPROVE_DATE","REV_CREATE_DATE","REV_EXPIRE_DATE","EXCHANGE_RATE_DATE"):
 					Trace.Write("date---->"+str(eval("col_name." + str(sefl_api))))
 					try:
 						datetime_value = datetime.strptime(str(eval("col_name." + str(sefl_api))), '%m/%d/%Y %I:%M:%S %p').strftime('%m/%d/%Y')
@@ -379,6 +367,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					edit_lock_icon = "fa fa-pencil"
 				else:
 					edit_lock_icon = "fa fa-lock"  
+			else:
+				edit_lock_icon = "fa fa-lock"
 			##edit_lock_icon in quote based on permission ends
 			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
 			sec_str += "</div>"
@@ -776,7 +766,7 @@ def constructapprovalchaininformation(MODE,record_id):
 		
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		
 		for sefl in Oppp_SEFL:
@@ -789,7 +779,10 @@ def constructapprovalchaininformation(MODE,record_id):
 				+ str(sefl.FIELD_LABEL)
 				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i  class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
-			sefl_api = sefl.API_FIELD_NAME
+			sefl_api = sefl.API_FIELD_NAME			
+			object_name = sefl.API_NAME
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM ACAPCH WHERE APPROVAL_CHAIN_RECORD_ID = '"+str(record_id)+"'")
 												
 			if col_name:
@@ -847,6 +840,27 @@ def constructapprovalchaininformation(MODE,record_id):
 						+ str(eval("col_name." + str(sefl_api)))
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled='' style = 'display':'none'> </div>"
 					) 
+				elif data_type =="CHECKBOX":
+					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("act_status---->"+str(act_status))
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)	
 				else:
 					# if sefl_api != "REGION":                    
 					sec_str += (
@@ -948,12 +962,10 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
-if ACTION == 'POPUPS':
-	ApiResponse = ApiResponseFactory.JsonResponse(popups(params))
-elif ACTION == 'POPUPSER':
-	ApiResponse = ApiResponseFactory.JsonResponse(popupser(params))
-elif ACTION == 'QIPOPUPSER':
-	ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
+
+if ACTION == 'QIPOPUPSER':
+	#ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
+	pass
 
 # commented the code(Approvals node functionality in Quotes explorer) -start    
 # elif ACTION == 'SUBMITQUOTE':

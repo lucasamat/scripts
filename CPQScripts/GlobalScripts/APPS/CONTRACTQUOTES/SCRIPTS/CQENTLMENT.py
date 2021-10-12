@@ -15,14 +15,14 @@ Param = Param  # pylint: disable=E0602
 ScriptExecutor = ScriptExecutor  # pylint: disable=E0602
 ApiResponseFactory = ApiResponseFactory  # pylint: disable=E0602
 import clr
-
+import re
 clr.AddReference("Webcom.Configurator")
 import System.Net
 import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
-import CQTVLDRIFW
+#import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
 Sql = SQL()
@@ -100,7 +100,7 @@ class Entitlements:
 				ent_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 				ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 				where_cond = where.replace("'","''")
-				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(entitlement_xml,''&'','';#38'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+				Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; ''),'' > '','' &gt; ''),''_>'',''_&gt;''),''_<'',''_&lt;'')  as entitlement_xml from "+str(tableName)+"(nolock) WHERE "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_NAME,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
 
 				Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 				Trace.Write("where------ "+str(where))
@@ -126,14 +126,14 @@ class Entitlements:
 						#webclient.Headers.Add("If-Match", "111")
 						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
 							
-						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_NAME !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
-							Trace.Write('row--'+str(row.ENTITLEMENT_NAME))
+						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
+							#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
 							try:
 								requestdata = '{"characteristics":['
 								
-								requestdata +='{"id":"'+ str(row.ENTITLEMENT_NAME) + '","values":[' 
+								requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 								if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-									Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+									#Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 									for code in eval(row.ENTITLEMENT_VALUE_CODE):
 										requestdata += '{"value":"' + str(code) + '","selected":true}'
 										requestdata +=','
@@ -142,7 +142,7 @@ class Entitlements:
 									requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 								requestdata += ']}'
 								requestdata = requestdata.replace('},]','}]')
-								Trace.Write("requestdata--child-- " + str(requestdata))
+								#Trace.Write("requestdata--child-- " + str(requestdata))
 								response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 								cpsmatchID = cpsmatchID + 10			
 								
@@ -166,14 +166,13 @@ class Entitlements:
 			# 	NewValue = ''
 		#Trace.Write('cpsmatchID--132-----------'+str(cpsmatchID))
 		#Trace.Write('AttributeID--132-----------'+str(AttributeID))
-		Trace.Write('NewValue--132-----------'+str(NewValue))
 		response = self.Request_access_token()
 		webclient = System.Net.WebClient()		
 		Trace.Write(response["access_token"])
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		#webclient.Headers.Add("If-Match", "111")
-		#Trace.Write('cpsmatchID------'+str(cpsmatchID))
+		Trace.Write('cpsmatchID------'+str(cpsmatchID))
 		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
@@ -182,18 +181,18 @@ class Entitlements:
 			#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE FROM STANDARD_ATTRIBUTE_VALUES (nolock) where STANDARD_ATTRIBUTE_DISPLAY_VAL='{}' and SYSTEM_ID like '{}%'".format(NewValue,AttributeID))
 			requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 			attribute_code = []
-			Trace.Write("field_type--"+str(field_type))
+			#Trace.Write("field_type--"+str(field_type))
 			Trace.Write(str(AttributeID)+"--AttributeID---previous_val---- "+str(Getprevdict))
 			
 			
 			if field_type != 'input':
-				if AttributeID != "AGS_KPI_BNS_PNL":
+				#if AttributeID != "AGS_Z0091_KPI_BPTKPI":
 					#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
 
-					STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_id ))
-				else:
-					Trace.Write("--238---NewValue----- "+str(NewValue))
-					requestdata += '{"value":"' + NewValue + '","selected":true}'
+				STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{}' AND PA.PRODUCT_ID ={} ".format(AttributeID,product_id ))
+				# else:
+				# 	Trace.Write("--238---NewValue----- "+str(NewValue))
+				# 	requestdata += '{"value":"' + NewValue + '","selected":true}'
 				# code added to get active deopdown values so commented this one ..
 				# else:
 				# 	STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE != 'NO' ".format(AttributeID))
@@ -203,24 +202,24 @@ class Entitlements:
 					ent_total_val = []
 					ent_non_selec_value = []
 					for val in STANDARD_ATTRIBUTE_VALUES:
-						#Trace.Write('val.STANDARD_ATTRIBUTE_DISPLAY_VAL'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'---'+str(NewValue))
+						
 						#if val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue:
-						#Trace.Write('NewValue'+str(NewValue)+'---'+str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+						
 						ent_total_val.append(val.STANDARD_ATTRIBUTE_VALUE)
 						if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
-							Trace.Write('inside-------')
+							Trace.Write('inside----211-----')
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 							requestdata +=','
 							attribute_code.append(val.STANDARD_ATTRIBUTE_VALUE)
 						elif field_type == 'Check Box':
-							Trace.Write("inside_J____")
+							Trace.Write("inside_J____checkbox")
 							requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 							requestdata +=','
 						elif field_type == 'Drop Down':
-							Trace.Write("New_VALUE_J 213----"+str(val.STANDARD_ATTRIBUTE_VALUE))
+							Trace.Write("New_VALUE_J 213---220---"+str(val.STANDARD_ATTRIBUTE_VALUE))
 							# list_of_vals = []
 							# list_of_vals.append(val.STANDARD_ATTRIBUTE_VALUE)
-							# Trace.Write("list_of_vals_J "+str(list_of_vals))
+							#Trace.Write("list_of_vals_J "+str(list_of_vals))
 							# try:
 							# 	previous_value = Product.GetGlobal("previous_ent_val")
 							# except:
@@ -232,7 +231,8 @@ class Entitlements:
 							if NewValue != 'select':
 								
 								ent_non_selec_value.append(val.STANDARD_ATTRIBUTE_VALUE)
-								#Trace.Write("ent_total_val "+str(ent_total_val))
+								Trace.Write("ent_total_val--235--- "+str(ent_total_val))
+								
 								#Trace.Write("ent_non_selec_value "+str(ent_non_selec_value))
 							elif NewValue == 'select':
 								Trace.Write("inside_J____DROP_DOWN = "+str(Product.GetGlobal("pre_ent_val")))
@@ -240,23 +240,29 @@ class Entitlements:
 								requestdata +=','
 								requestdata += ']}]}'
 								requestdata = requestdata.replace(',]}]}',']}]}')
+						
 				
 			else:
-				requestdata += '{"value":"' + NewValue + '","selected":true}'
-				Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
+				Trace.Write("NewValue--245-----"+str(NewValue)+'--'+str(previous_val))
+				if (not NewValue) and previous_val:
+					Trace.Write('empty new value')
+					requestdata += '{"value":"'+str(previous_val)+'","selected":false}'
+				else:
+					requestdata += '{"value":"' + NewValue + '","selected":true}'
+				#Trace.Write("@@@230--->NEW VALUE IS"+str(NewValue))
 			requestdata += ']}]}'
 			requestdata = requestdata.replace(',]}]}',']}]}')
 			Trace.Write(str(Request_URL)+"---requestdata--166---" + str(requestdata))
 
 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-			#Trace.Write("patch response1---170---" + str(response1))
+			Trace.Write("patch response1---170---" + str(response1))
 			
 			cpsmatc_incr = int(cpsmatchID) + 10
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
 					
 			
 		except Exception:
-			Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
+			#Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
 			cpsmatc_incr = cpsmatchID
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
@@ -265,10 +271,10 @@ class Entitlements:
 		except:
 			requestdata_split =""	
 		Product.SetGlobal("pre_ent_val",str(requestdata_split))
-		Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
+		#Trace.Write("ELSE = "+str(Product.GetGlobal("pre_ent_val")))
 		Trace.Write("requestdata---180---" + str(requestdata))
 		response2 = webclient.DownloadString(Request_URL)
-		Trace.Write('response2--182---------'+str(response2))
+		#Trace.Write('response2--182---------'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		return eval(response2),cpsmatc_incr,attribute_code
 	
@@ -327,9 +333,8 @@ class Entitlements:
 			return attr_prices
 					
 
-	def EntitlementSave(self, subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT):
+	def EntitlementSave(self, subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT):
 		#AttributeValCode = AttributeValCode.replace("_"," ")
-		Trace.Write(str(type(PrevValue))+'----PrevValue')
 		Trace.Write(str(type(NewValue))+'----NewValue')
 		if not type(NewValue) is 'str' and multiselect_flag == 'true':
 			NewValue = list(NewValue)	
@@ -422,21 +427,25 @@ class Entitlements:
 		
 		
 		Trace.Write('tableName'+str(tableName))
-		attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)		
+		attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)		
 		cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
 		
 		attributesdisallowedlst = []
 		attributesallowedlst = []
 		attributeReadonlylst = []
 		attributeEditonlylst = []
+		attr_tab_list_allow = []
+		attr_tab_list_disallow = []
 		attributevalues = {}
+		multi_select_attr_list = {}
 		attributevalues_textbox = []
 		attributedefaultvalue = []
+		attribute_non_defaultvalue = get_attr_leve_based_list = []
 		dropdownallowlist_selected = []
-		where = pricemethodupdate = ""
+		where = pricemethodupdate = get_tool_desc = ""
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if multiselect_flag != 'true':
-			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
+			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 		else:
 			GetDefault = ''	
 		product_obj = Sql.GetFirst("""SELECT 
@@ -476,7 +485,7 @@ class Entitlements:
 					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
 				else:
 					tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-		Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
+		#Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 		# if GetDefault:
 		# 	#Trace.Write("GetDefault------")
 		# 	if GetDefault.PRICE_METHOD:
@@ -493,11 +502,13 @@ class Entitlements:
 		dropdownallowlist = []
 		dropdownallowlist_selected = []
 		dropdowndisallowlist = []
+		attributes_service_sublist = []
+		approval_list = {}
 		if EntitlementType == 'Dropdown':
 			#attr_mapping_dict, cpsmatc_incr = self.labor_type_entitlement_attr_code_mapping(cpsConfigID,cpsmatchID,AttributeID,NewValue)
 			#Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
 			#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
-			get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+			get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC
 												FROM TAB_PRODUCTS
 												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
 												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
@@ -505,197 +516,296 @@ class Entitlements:
 												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
-			Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
-			Trace.Write("Fullresponse--"+str(Fullresponse))
-			Product.SetGlobal('Fullresponse',str(Fullresponse))
-			Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
-			'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
-			if GetDefault.PRICE_METHOD:
-				pricemethodupdate = GetDefault.PRICE_METHOD
-			else:
-				pricemethodupdate = ''
-			if GetDefault.IS_DEFAULT == 0:
-				defaultval = 0
-			else:
-				defaultval = 1'''
-			#UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-			#tableName,defaultval,AttributeID, whereReq)
-			Trace.Write('whereReq----'+str(whereReq))
-			#Sql.RunQuery(UpdateIsdefault)
-			characteristics_attr_values = []
-			#dropdownallow = {}
-			for rootattribute, rootvalue in Fullresponse.items():
-				if rootattribute == "rootItem":
-					for Productattribute, Productvalue in rootvalue.items():
-						if Productattribute == "characteristics":
-							for prdvalue in Productvalue:
-								#dropdownallowlist = []
-								#Trace.Write('attr_chk----'+str(prdvalue))
-								if prdvalue["visible"] == "false":							
-									attributesdisallowedlst.append(prdvalue["id"])
-								if prdvalue["visible"] == "true":							
-									attributesallowedlst.append(prdvalue["id"])
-								if prdvalue["readOnly"] == "true":
-									attributeReadonlylst.append(prdvalue["id"])
-								if prdvalue["readOnly"] == "false":
-									attributeEditonlylst.append(prdvalue["id"])
-								if prdvalue["values"]:
-									for i in prdvalue["values"]:
-										if i['value']:
-											dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
-								if prdvalue["possibleValues"]:
-									for i in prdvalue["possibleValues"]:
-
-										if i['selectable'] == 'false' and 'valueLow' in i.keys():
-											dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
-										elif i['selectable'] == 'true' and 'valueLow' in i.keys():
-											dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)#dropdownallowlist_selected.append(str(prdvalue["id"])+'}}'+str(i['valueLow'])	)
-										#dropdownallow[prdvalue["id"]] = dropdownallowlist
-								for attribute in prdvalue["values"]:									
-									attributevalues[str(prdvalue["id"])] = attribute["value"]
-									attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
-									Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
-									if attribute["author"] in ("Default","System"):
-										#Trace.Write('524------'+str(prdvalue["id"]))
-										attributedefaultvalue.append(prdvalue["id"])
-								
-									# if prdvalue["id"] in characteristics_attr_values:
-									# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
-									# else:
-									# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
-						if Productattribute == "variantConditions":
-							characteristics_attr_values = Productvalue
-			Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-			Trace.Write("attributesallowedlst"+str(attributesallowedlst))
-			Trace.Write("dropdownallowlist--532------"+str(dropdownallowlist))
-			Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
-			if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
-				try:
-					sectional_current_dict = Param.sectional_current_dict
-					sectional_current_dict =eval(sectional_current_dict)
-					Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
-					#b = eval(a)
-					non_integer_list =[]
-					#remove_indices = []
-					for key,value in sectional_current_dict.items():
-						if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
-							val = str(value.split('||')[0])
-							Trace.Write('val---'+str(val))
-							if float(val).is_integer() == False:
-								non_integer_list.append(key)
-					##
-					Trace.Write('non_integer_list--'+str(non_integer_list))
-					remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
-					Trace.Write('remove_indices--'+str(remove_indices))
-					# response_charactr = enumerate(characteristics_attr_values)
-					# for key,value in response_charactr:
-					# 	if value['key'] in non_integer_list:
-					# 		remove_indices.append(key)
-					# 		Trace.Write('bb---'+str(index)+'--'+str(value))
-							#characteristics_attr_values.pop(index)
-					characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
-					Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
-
-				except Exception,e:
-					Trace.Write('error--pop--'+str(e))
-					#pass
-
-				Trace.Write("serviceId--1--"+str(serviceId))
-				attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
-				Trace.Write("attr_prices"+str(attr_prices)+'---')
-				if self.attr_code_mapping and attr_prices:
-					for attr, attr_value in attr_prices.items():
-						data_dict = {'key':attr}
-						data_dict.update(attr_value)
-						attr_level_pricing.append(data_dict)
-				# else:
-				# 	attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
-					
-			Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
-			ServiceContainer = Product.GetContainerByName("Services")
-			sec_name = updateentXML = ""
-			for tab in product_tabs_obj:
-				if tabwise_product_attributes.get(tab.TAB_PROD_ID):
-					for attribute in tabwise_product_attributes.get(tab.TAB_PROD_ID):
-						new_value_dicta = {}
-						attrName = attribute['attribute_name']
-						attrLabel = attribute['attribute_label']
-						attrValue = attribute['attribute_name']
-						attrSysId = attribute['attribute_system_id']
-						DType = attribute['attribute_dtype']
-						attrValueSysId = attributevalues.get(attrSysId)	
-						GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
-						## replace fn &apos; added for A055S000P01-3158
-						Trace.Write("attrValue---612---"+str(attrValue))
-						Trace.Write("DType---612---"+str(DType))
-						Trace.Write(str(attrLabel)+"----attrSysId---612---"+str(attrSysId)+'----'+str(attrValue))
-						if GetDefault:
-							pricemethodupdate = GetDefault.PRICE_METHOD
-						try:
-							if attrSysId == AttributeID:
-								ent_disp_val = 	str(NewValue).replace("'", '"')
-								
-								ent_val_code = str(attribute_code).replace("'", '"')
-								Trace.Write('ArrayList-----11'+str(NewValue))
-							else:
-								ent_disp_val = 	attrValue
-								ent_val_code = attrValue
-						except Exception as e:
-							Trace.Write('except'+str(e))
-							ent_disp_val = 	attrValue
-							ent_val_code = attrValue
-						Trace.Write(str(DType)+'--DType---attr_value-----11'+str(ent_disp_val)+'--631---'+str(attrLabel))
-						if attributevalues.get(attrSysId) is None:
-							ent_disp_val = ''
-						else:
-							ent_disp_val = attributevalues.get(attrSysId)
-							Trace.Write('attr_value--636------11'+str(ent_disp_val))
-						Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(attrSysId))
-
-						Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
-						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-						<IS_DEFAULT>{is_default}</IS_DEFAULT>
-						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-						<PRICE_METHOD>{pm}</PRICE_METHOD>
-						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '')
-
-						UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
-						#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
-							
-			#Sql.RunQuery(UpdateEntitlement)	
-			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-			Sql.RunQuery(Updatecps)
-		else:
-			# to insert new input column value and price factor, cost impact for manual input Start 
-			getvalue = ""
-			Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
-			Fullresponse = Product.GetGlobal('Fullresponse')
-			if Fullresponse:
-				Fullresponse = eval(Fullresponse)
+			#restriction for value driver call to CPS start
+			if 'Z0046' in AttributeID and serviceId == 'Z0091':
+				serviceId = 'Z0046'
+			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+				Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,NewValue,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+			
+				Trace.Write("Fullresponse--"+str(Fullresponse))
+				Product.SetGlobal('Fullresponse',str(Fullresponse))
+				#restriction for value driver call to CPS end
+				Trace.Write("===============>>> attr_mapping_dict"+str(self.attr_code_mapping))
+				if get_datatype:
+					get_tool_desc = get_datatype.ATTRDESC
+				'''GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
+				if GetDefault.PRICE_METHOD:
+					pricemethodupdate = GetDefault.PRICE_METHOD
+				else:
+					pricemethodupdate = ''
+				if GetDefault.IS_DEFAULT == 0:
+					defaultval = 0
+				else:
+					defaultval = 1'''
+				#UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
+				#tableName,defaultval,AttributeID, whereReq)
+				#Trace.Write('whereReq----'+str(whereReq))
+				#Sql.RunQuery(UpdateIsdefault)
+				characteristics_attr_values = []
+				#dropdownallow = {}
 				for rootattribute, rootvalue in Fullresponse.items():
 					if rootattribute == "rootItem":
 						for Productattribute, Productvalue in rootvalue.items():
+							if Productattribute == "characteristicGroups":
+								for prdvalue in Productvalue:
+									
+									if prdvalue["visible"] == "true":
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+											attr_tab_list_allow.append(getrec.RECORD_ID)
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")							
+											#attr_tab_list_allow.append(getrec.RECORD_ID)
+									if prdvalue["visible"] == "false":
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+											attr_tab_list_disallow.append(getrec.RECORD_ID)
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										
 							if Productattribute == "characteristics":
 								for prdvalue in Productvalue:
-									for attribute in prdvalue["values"]:									
-										if attribute["author"] in ("Default","System"):
-											Trace.Write('524---658---'+str(prdvalue["id"]))
-											attributedefaultvalue.append(prdvalue["id"])
+									#dropdownallowlist = [] 
+									#Trace.Write('attr_chk----'+str(prdvalue))
+									if prdvalue['id'].startswith('AGS_Z0046_'):
+										attributes_service_sublist.append(prdvalue['id'])
+									if prdvalue["visible"] == "false":							
+										attributesdisallowedlst.append(prdvalue["id"])
+									if prdvalue["visible"] == "true":							
+										attributesallowedlst.append(prdvalue["id"])
+									if prdvalue["readOnly"] == "true":
+										attributeReadonlylst.append(prdvalue["id"])
+									if prdvalue["readOnly"] == "false":
+										attributeEditonlylst.append(prdvalue["id"])
+									if prdvalue["values"]:
+										for i in prdvalue["values"]:
+											if i['value']:
+												dropdownallowlist_selected.append(str(prdvalue["id"])+'_'+str(i['value']))
+									if prdvalue["possibleValues"]:
+										for i in prdvalue["possibleValues"]:
+
+											if i['selectable'] == 'false' and 'valueLow' in i.keys():
+												dropdowndisallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)
+											elif i['selectable'] == 'true' and 'valueLow' in i.keys():
+												dropdownallowlist.append(str(prdvalue["id"])+'_'+str(i['valueLow'])	)#dropdownallowlist_selected.append(str(prdvalue["id"])+'}}'+str(i['valueLow'])	)
+											#dropdownallow[prdvalue["id"]] = dropdownallowlist
 									for attribute in prdvalue["values"]:									
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
-										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
-										Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"])	)
+										Trace.Write(str(prdvalue["id"])+'--541-------'+str(attribute["value"]))
 										if attribute["author"] in ("Default","System"):
 											#Trace.Write('524------'+str(prdvalue["id"]))
 											attributedefaultvalue.append(prdvalue["id"])
-			
+										elif attribute["author"] == "User":
+											attribute_non_defaultvalue.append(prdvalue["id"])
+
+
+										# if prdvalue["id"] in characteristics_attr_values:
+										# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
+										# else:
+										# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
+							if Productattribute == "variantConditions":
+								characteristics_attr_values = Productvalue
+				#Trace.Write("-s"+str(serviceId)+'--tableName---'+str(tableName))
+				#Trace.Write("attributesallowedlst"+str(attributesallowedlst))
+				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
+				attributesallowedlst = get_attr_leve_based_list
+				#Trace.Write(str(attributesallowedlst)+"--attributesallowedlst--durgaget_attr_leve_based_list--532------"+str(get_attr_leve_based_list))
+				#Trace.Write("dropdownallowlist_selected--532-dropdownallowlist_selected-----"+str(dropdownallowlist_selected))
+				try:
+					if sectional_current_dict:
+						#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
+						for key,value in sectional_current_dict.items():
+							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
+							if approval_status:
+								if approval_status.APPROVAL_REQUIRED == True:
+									approval_list[key] = 'True'
+								else:
+									approval_list[key] = 'False'
+				except:
+					Trace.Write('error-622--'+str(key))
+							
+					#Trace.Write("try---"+str(approval_list))
+				# except Exception as e:
+				# 	Trace.Write("e---"+str(e))
+					#pass
+				if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
+					#try:
+					if sectional_current_dict:
+						#Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
+						#b = eval(a)
+						non_integer_list =[]
+						#remove_indices = []
+						for key,value in sectional_current_dict.items():
+							if key != 'undefined' and str(value.split('||')[1]) == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in key:
+								val = str(value.split('||')[0])
+								Trace.Write('val---'+str(val))
+								if float(val).is_integer() == False:
+									non_integer_list.append(key)
+						
+						Trace.Write('non_integer_list--'+str(non_integer_list))
+						remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
+						Trace.Write('remove_indices--'+str(remove_indices))
+						
+						characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
+						Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
+
+					# except Exception as e:
+					# 	Trace.Write('error--pop--'+str(e))
+						#pass
+
+					Trace.Write("serviceId--1--"+str(serviceId))
+					attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
+					Trace.Write("attr_prices"+str(attr_prices)+'---')
+					if self.attr_code_mapping and attr_prices:
+						for attr, attr_value in attr_prices.items():
+							data_dict = {'key':attr}
+							data_dict.update(attr_value)
+							attr_level_pricing.append(data_dict)
+					# else:
+					# 	attr_level_pricing  =[ {'key':i['key'],'total_price':0.00, 'price':0.00, 'factor':0.00,} for i in characteristics_attr_values]
+						
+				#Trace.Write("attr_level_pricing----"+str(attr_level_pricing))
+				ServiceContainer = Product.GetContainerByName("Services")
+				sec_name = updateentXML = get_tool_desc = ""
+				for tab in product_tabs_obj:
+					if tabwise_product_attributes.get(tab.TAB_PROD_ID):
+						for attribute in tabwise_product_attributes.get(tab.TAB_PROD_ID):
+							new_value_dicta = {}
+							attrName = attribute['attribute_name']
+							attrLabel = attribute['attribute_label']
+							attrValue = attribute['attribute_name']
+							attrSysId = attribute['attribute_system_id']
+							DType = attribute['attribute_dtype']
+							attrValueSysId = attributevalues.get(attrSysId)	
+							GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),attrValue))
+							## replace fn &apos; added for A055S000P01-3158
+							#Trace.Write("attrValue---612---"+str(attrValue))
+							#Trace.Write("DType---612---"+str(DType))
+							#Trace.Write(str(attrLabel)+"----attrSysId---612---"+str(attrSysId)+'----'+str(attrValue))
+							if GetDefault:
+								pricemethodupdate = GetDefault.PRICE_METHOD
+							try:
+								if attrSysId == AttributeID:
+									ent_disp_val = 	str(NewValue).replace("'", '"')
+									
+									ent_val_code = str(attribute_code).replace("'", '"')
+									#Trace.Write('ArrayList-----11'+str(NewValue))
+								else:
+									ent_disp_val = 	attrValue
+									ent_val_code = attrValue
+							except Exception as e:
+								Trace.Write('except'+str(e))
+								ent_disp_val = 	attrValue
+								ent_val_code = attrValue
+							#Trace.Write(str(DType)+'--DType---attr_value-----11'+str(ent_disp_val)+'--631---'+str(attrLabel)+'-'+str(ent_val_code))
+							
+							if str(DType) == "Check Box":
+								STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}'".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID))
+								display_value_arr =[]
+								# if ent_val_code:
+								# 	display_value_arr =[]
+								# 	ent_chkbox_code = str(tuple(eval(ent_val_code))).replace(',)',')')
+								# 	STANDARD_ATTRIBUTE_VALUES=SqlHelper.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE AD.SYSTEM_ID = '{sys_id}' AND  PA.PRODUCT_ID ='{pid}' AND V.STANDARD_ATTRIBUTE_VALUE in {ent_chkbox_code}".format(sys_id = str(attrSysId),pid =product_obj.PRD_ID), ent_chkbox_code= ent_chkbox_code)
+								# 	if STANDARD_ATTRIBUTE_VALUES :
+										
+								# 		display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
+								if STANDARD_ATTRIBUTE_VALUES:
+									try:
+										if STANDARD_ATTRIBUTE_VALUES.ATTRDESC:
+											get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+										else:
+											get_tool_desc = ''
+									except:
+										get_tool_desc = ''
+								multi_select_attr_list[str(attrSysId)] = display_value_arr
+							if attributevalues.get(attrSysId) is None:
+								ent_disp_val = ''
+							else:
+								ent_disp_val = attributevalues.get(attrSysId)
+								#Trace.Write('attr_value--636------11'+str(ent_disp_val))
+							#Trace.Write(str(DType)+'--attr_value---'+str(ent_disp_val)+'-637--'+str(attrSysId))
+
+							#Trace.Write('ent_disp_val-----11'+str(ent_disp_val)+'--'+str(attrSysId))
+							updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+							<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
+							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+							<IS_DEFAULT>{is_default}</IS_DEFAULT>
+							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+							<PRICE_METHOD>{pm}</PRICE_METHOD>
+							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrSysId),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = costimpact,pi = priceimapct,is_default = 1 if str(attrSysId) in attributedefaultvalue else '0',ent_type = DType,ent_desc=attrLabel ,pm =  pricemethodupdate if str(attrSysId)==AttributeID else '',cf = '',tool_desc =get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
+
+							UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
+							#Trace.Write("@548----UpdateEntitlement"+str(UpdateEntitlement))	
+								
+				#Sql.RunQuery(UpdateEntitlement)	
+				Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+				Sql.RunQuery(Updatecps)
+			else:
+				Trace.Write('SAQTS-----VALUE DRIVERS----whereReq----'+str(whereReq))
+		else:
+			# to insert new input column value and price factor, cost impact for manual input Start 
+			getvalue = insertservice =""
+			#Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
+			Fullresponse = Product.GetGlobal('Fullresponse')
+			configuration_status =""
+			if Fullresponse:
+				Fullresponse = eval(Fullresponse)
+				##getting configuration_status status
+				if Fullresponse['complete'] == 'true':
+					configuration_status = 'COMPLETE'
+				elif Fullresponse['complete'] == 'false':
+					configuration_status = 'INCOMPLETE'
+				else:
+					configuration_status = 'ERROR'
+				for rootattribute, rootvalue in Fullresponse.items():
+					if rootattribute == "rootItem":
+						for Productattribute, Productvalue in rootvalue.items():
+							if Productattribute == "characteristicGroups":
+								for prdvalue in Productvalue:
+									if prdvalue["visible"] == "true":
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+											attr_tab_list_allow.append(getrec.RECORD_ID)
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										#attr_tab_list_allow.append(getrec.RECORD_ID)
+									if prdvalue["visible"] == "false":
+										try:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+											attr_tab_list_allow.append(getrec.RECORD_ID)
+										except:
+											getrec = Sql.GetFirst("select RECORD_ID from SYSECT where PARENT_SECTION_TEXT = '"+str(prdvalue["id"])+"'")
+										#attr_tab_list_disallow.append(prdvalue["id"])
+							if Productattribute == "characteristics":
+								for prdvalue in Productvalue:
+									if prdvalue['id'].startswith('AGS_Z0046_'):
+										attributes_service_sublist.append(prdvalue['id'])
+									for attribute in prdvalue["values"]:									
+										if attribute["author"] in ("Default","System"):
+											#Trace.Write('524---658---'+str(prdvalue["id"]))
+											attributedefaultvalue.append(prdvalue["id"])
+										elif attribute["author"] == "User":
+											attribute_non_defaultvalue.append(prdvalue["id"])
+									for attribute in prdvalue["values"]:									
+										attributevalues[str(prdvalue["id"])] = attribute["value"]
+										attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
+										#Trace.Write(str(prdvalue["id"])+'-6778--------'+str(attribute["value"]))
+										if attribute["author"] in ("Default","System"):
+											#Trace.Write('524------'+str(prdvalue["id"]))
+											attributedefaultvalue.append(prdvalue["id"])
+										elif attribute["author"] == "User":
+											attribute_non_defaultvalue.append(prdvalue["id"])
+			#Trace.Write('524--787-attributes_service_sublist--'+str(attributes_service_sublist))
+			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
+			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
 			if "calc" in AttributeID:
 				updateentXML = getDeinstall = ""
 				
@@ -716,21 +826,39 @@ class Entitlements:
 						curr = GetRegion.GLOBAL_CURRENCY if GetRegion else "" """
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
-				for key,val in ENT_IP_DICT.items():	
+				for key,dict_val in ENT_IP_DICT.items():	
 					getcostbaborimpact =""
 					getpriceimpact = ""
 					calculation_factor =""
 					pricemethodupdate = ""
-					Trace.Write("val---"+str(val))
-					Trace.Write("key---"+str(key))
+					Trace.Write("val---"+str(dict_val))
+					#Trace.Write("key---"+str(key))
 					#getregionvalq = "AMT"
-					getvalue = str((val).split("||")[4]).strip()
-					
-					if key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "Yes":
-						
-						Trace.Write("YES to Bonus & Penalty Tied to KPI")
+					getvalue = str((dict_val).split("||")[4]).strip()
+					##A055S000P01-9646 code starts..
+					if str(self.treeparam) == "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
+						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str((dict_val).split("||")[0]).strip() == "Some Exclusions":
+							service_id = self.treeparam
+							ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
+							material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0101'")
+							if ancillary_object is None:
+								if material_obj:
+									description = material_obj.SAP_DESCRIPTION
+									material_record_id = material_obj.MATERIAL_RECORD_ID
+								else:
+									description = material_record_id = ''
+
+								Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+								SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+								SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0101' AS SERVICE_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '' AS SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
+								WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+								) A""".format(description=description,service_id = service_id,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
+					##A055S000P01-9646  code ends..
+					if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
+						tbrow={}
+						#Trace.Write("YES to Bonus & Penalty Tied to KPI")
 						Quote.SetGlobal("KPI","YES")
-						getAddOn = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
+						getAddOn = Sql.GetFirst("SELECT * FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
 						GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
 						if getAddOn is None:
 							
@@ -740,13 +868,138 @@ class Entitlements:
 							else:
 								sap_matid = sap_desc = ''
 
-							# Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-							# 			SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-							# 				SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UNIT_OF_MEASURE, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0046' AS SERVICE_ID, '{recordid}' AS SERVICE_RECORD_ID, '', CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
-							# 				WHERE SERVICE_ID = 'Z0091' AND QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{revision}')
-							# 				) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
-						Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
-						Trace.Write("@@@727---------->Equipme"+str(EquipmentId))
+							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, UOM_RECORD_ID,SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+										SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+											SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0046' AS SERVICE_ID, '{recordid}' AS SERVICE_RECORD_ID, '' as SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,UOM_RECORD_ID,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
+											WHERE SERVICE_ID = 'Z0091' AND QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{revision}'
+											) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
+							#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
+							#Trace.Write("@@@727-----attributes_service_sublist-----"+str(attributes_service_sublist))
+							ent_disp_val = ent_val_code = ''
+							get_tooltip = ''
+							z0046_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+				
+							z0046_fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'Z0046','request_url':z0046_request_url,'request_type':"New"})
+							z0046_fullresponse=str(z0046_fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
+							z0046_fullresponse= eval(z0046_fullresponse)
+							##getting configuration_status status
+							if z0046_fullresponse['complete'] == 'true':
+								z0046_configuration_status = 'COMPLETE'
+							elif z0046_fullresponse['complete'] == 'false':
+								z0046_configuration_status = 'INCOMPLETE'
+							else:
+								z0046_configuration_status = 'ERROR'
+							attributesdisallowedlst=[]
+							attributeReadonlylst=[]
+							attributesallowedlst=[]
+							attributedefaultvalue = []
+							overall_att_list_sub =[]
+							overallattributeslist =[]
+							attributevalues={}
+							get_toolptip= ''
+							#getquote_sales_val = AttributeID_Pass = ''
+							for rootattribute, rootvalue in z0046_fullresponse.items():
+								if rootattribute=="rootItem":
+									for Productattribute, Productvalue in rootvalue.items():
+										if Productattribute=="characteristics":
+											for prdvalue in Productvalue:
+												overallattributeslist.append(prdvalue['id'])
+												if prdvalue['id'].startswith('AGS_Z0046_'):
+													overall_att_list_sub.append(prdvalue['id'])
+												if prdvalue['visible'] =='false':
+													attributesdisallowedlst.append(prdvalue['id'])
+												else:								
+													attributesallowedlst.append(prdvalue['id'])
+												if prdvalue['readOnly'] =='true':
+													attributeReadonlylst.append(prdvalue['id'])
+												for attribute in prdvalue['values']:								
+													attributevalues[str(prdvalue['id'])]=attribute['value']
+													if attribute["author"] in ('Default','System'):
+														#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
+														attributedefaultvalue.append(prdvalue["id"])
+							attributesallowedlst = list(set(attributesallowedlst))
+							overallattributeslist = list(set(overallattributeslist))
+							#if z0046_fullresponse:
+							
+							#ProductVersionObj = Sql.GetFirst("""SELECT 
+											# 	MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+											# FROM PRODUCTS PDS 
+											# INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+											# WHERE SYSTEM_ID ='{SystemId}'
+											# GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
+							ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(z0046_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(z0046_fullresponse['kbKey']['version'])+"'")
+							HasDefaultvalue=False
+							if ProductVersionObj:
+								for attrs in overallattributeslist:
+									if attrs in attributevalues:
+										HasDefaultvalue=True					
+										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
+										ent_disp_val = attributevalues[attrs]
+										ent_val_code = attributevalues[attrs]
+										#Trace.Write("ent_disp_val----"+str(ent_disp_val))
+									else:					
+										HasDefaultvalue=False
+										ent_disp_val = ""
+										ent_val_code = ""
+										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
+									ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
+									PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC,P.ATTRDESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+									if PRODUCT_ATTRIBUTES:
+										if PRODUCT_ATTRIBUTES.ATTRDESC:
+											get_tooltip = PRODUCT_ATTRIBUTES.ATTRDESC
+										if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+											get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+											ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+											
+											getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
+											if getslaes_value:
+												getquote_sales_val = getslaes_value.SALESORG_ID
+											get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+											get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
+									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+									if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
+										ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
+									else:
+										ent_desc = ''
+									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+									<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
+									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+									<IS_DEFAULT>{is_default}</IS_DEFAULT>
+									<PRICE_METHOD>{pm}</PRICE_METHOD>
+									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+									<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+									</QUOTE_ITEM_ENTITLEMENT>
+									""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+								get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
+								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
+								tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
+								tbrow["ENTITLEMENT_XML"]=insertservice
+								tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
+								tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
+								tbrow["QTESRV_RECORD_ID"]=sap_matid
+								tbrow["SERVICE_RECORD_ID"]=sap_matid
+								tbrow["SERVICE_ID"]='Z0046'
+								tbrow["SERVICE_DESCRIPTION"]=sap_desc
+								tbrow["CPS_CONFIGURATION_ID"]= z0046_fullresponse['id']
+								tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
+								tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
+								tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
+								tbrow["CPS_MATCH_ID"] = 11
+								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+								tbrow["QTEREV_RECORD_ID"] = self.revision_recordid
+								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+								tbrow["CONFIGURATION_STATUS"] = z0046_configuration_status
+								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
+								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
+								Sql.RunQuery(insert_qtqtse_query)
+					
 						if self.treeparam == "Z0091":
 							where = ""
 						elif self.treeparentparam == "Z0091":
@@ -850,7 +1103,7 @@ class Entitlements:
 								QTEREV_ID
 								FROM SAQSCO (NOLOCK)
 								WHERE 
-								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where}
+								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='Z0046')
 														
 							""".format(
 								TreeParam="Z0046",
@@ -866,12 +1119,21 @@ class Entitlements:
 							)
 							)
 				
-					elif key == "AGS_KPI_BNS_PNL" and str((val).split("||")[0]).strip() == "No":
+					elif key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "No":
 						Quote.SetGlobal("KPI","NO")
-						Trace.Write("NO to Bonus & Penalty Tied to KPI")
+						#Trace.Write("NO to Bonus & Penalty Tied to KPI")
 						if self.treeparam == 'Z0091':
+							
 							Sql.RunQuery("DELETE FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							Sql.RunQuery("DELETE FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							Sql.RunQuery("DELETE FROM SAQSFE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
 							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							try:
+								Sql.RunQuery("DELETE FROM SAQSGE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+								Sql.RunQuery("DELETE FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+								Sql.RunQuery("DELETE FROM SAQSAE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+							except:
+								Trace.Write('error--1064---')
 						else:
 							if self.treeparentparam == "Z0091":
 								where = " AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam)
@@ -885,76 +1147,77 @@ class Entitlements:
 					totalpriceent = ""					
 					decimal_place ="2"
 					my_format = "{:." + str(decimal_place) + "f}"
-					if getvalue:
-						if str((val).split("||")[1]) == "CE":	
-							
-							getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
-							if getcostbabor:
-								cecost = str(getcostbabor.CE_COST).strip()
-								getcostbaborimpact = str(float(getvalue)*float(cecost))
-								#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
+					try:
+						if getvalue:
+							if str((dict_val).split("||")[1]) == "CE":	
 								
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
-								getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-								
-						elif str((val).split("||")[1]) == "Technician_or_3rd_Party":			
-							gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
-							if gettechlabor:
-								getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-								
-						elif str((val).split("||")[1]) == "PSE":							
-							getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
-							if getpselabor:
-								getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
-								getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-								getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
-								getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-					
+								getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
+								if getcostbabor:
+									cecost = str(getcostbabor.CE_COST).strip()
+									getcostbaborimpact = str(float(getvalue)*float(cecost))
+									#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
+									
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
+									getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+									
+							elif str((dict_val).split("||")[1]) == "Technician_or_3rd_Party":			
+								gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
+								if gettechlabor:
+									getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+									
+							elif str((dict_val).split("||")[1]) == "PSE":							
+								getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
+								if getpselabor:
+									getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
+									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+									getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
+									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+					except:
+						pass
 					##assigning cost impact, price impact, calc factor value  starts
 					else:
 						getcostbaborimpact = costimpact
 						getpriceimpact = priceimapct
 					try:
 						attr_level_pricing = eval(Product.GetGlobal('attr_level_pricing')) 
-						Trace.Write("try----")
 						getcostbaborimpact = attr_level_pricing[key]['price']
-						Trace.Write("get_cost---"+str(get_cost))
 
 					except:	
 						attr_level_pricing = ""
-						Trace.Write("")
-					Trace.Write("attr_level_pricing"+str(attr_level_pricing))
+						#Trace.Write("")
+					
 					if attr_level_pricing:
 						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
 						getpriceimpact = attr_level_pricing[key]['total_price']
 						calculation_factor =  attr_level_pricing[key]['factor']
 						pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
-						if str((val).split("||")[5]).strip() and str((val).split("||")[5]).strip() not in ('undefined','NULL'):
-							getcostbaborimpact = str((val).split("||")[5]).replace(',','').strip()
+						Trace.Write("attr_level_pricing"+str(dict_val))
+						if str((dict_val).split("||")[5]).strip() and str((dict_val).split("||")[5]).strip() not in ('undefined','NULL'):
+							getcostbaborimpact = str((dict_val).split("||")[5]).replace(',','').strip()
 							try:
 								getcostbaborimpact = getcostbaborimpact.split(" ")[0].strip()
 								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
 							except:
 								getcostbaborimpact = getcostbaborimpact	
-							Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
-						if str((val).split("||")[6]).strip() and str((val).split("||")[6]).strip()not in ('undefined','NULL'):
-							getpriceimpact = str((val).split("||")[6]).replace(',','').strip()
+							#Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
+						if str((dict_val).split("||")[6]).strip() and str((dict_val).split("||")[6]).strip()not in ('undefined','NULL'):
+							getpriceimpact = str((dict_val).split("||")[6]).replace(',','').strip()
 							try:
 								price_split = getpriceimpact.split(" ")
 								getpriceimpact = price_split[0].strip()
 								pricemethodupdate = price_split[1].strip()
 							except:
 								getpriceimpact = getpriceimpact	
-							Trace.Write("getpriceimpact---"+str(getpriceimpact))
-						if str((val).split("||")[4]).strip() and str((val).split("||")[4]).strip() not in ('undefined','NULL'):
-							calculation_factor = str((val).split("||")[4]).strip()
-							Trace.Write("calculation_factor---"+str(calculation_factor))
+							#Trace.Write("getpriceimpact---"+str(getpriceimpact))
+						if str((dict_val).split("||")[4]).strip() and str((dict_val).split("||")[4]).strip() not in ('undefined','NULL'):
+							calculation_factor = str((dict_val).split("||")[4]).strip()
+							#Trace.Write("calculation_factor---"+str(calculation_factor))
 						# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
 						# 	pricemethodupdate = str((val).split("||")[7]).strip()
 
@@ -973,23 +1236,29 @@ class Entitlements:
 					if getpriceimpact == 0.00:
 						getpriceimpact = ""
 					##storing values for multi select  starts
-					Trace.Write('product_id---'+str(product_obj.PRD_ID))
-					if str((val).split("||")[2]) == "Check Box" :
-						display_vals = str((val).split("||")[0])
+					#Trace.Write('product_id---'+str(product_obj.PRD_ID))
+					if str((dict_val).split("||")[2]) == "Check Box" :
+						display_vals = str((dict_val).split("||")[0])
 						if display_vals:
 							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
 							#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
 							
-							STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
-							Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
+							STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
+							#Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
 							if STANDARD_ATTRIBUTE_VALUES:
 								attr_code = [code.STANDARD_ATTRIBUTE_VALUE for code in STANDARD_ATTRIBUTE_VALUES]
-								Trace.Write('attr_code--if'+str(attr_code))
+								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
+								#Trace.Write('attr_code--if'+str(attr_code))
 								ent_val_code =  str(attr_code).replace("'", '"')
+								get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+								#multi_select_attr_list[str(key)] = display_value_arr
 						else:
 							attr_code = ""
-					elif str((val).split("||")[2]) == "DropDown":
-						display_vals = str((val).split("||")[0])
+					elif str((dict_val).split("||")[2]) == "DropDown":
+						try:
+							display_vals = str((dict_val).split("||")[0])
+						except:
+							display_vals = ''
 						
 						if display_vals:
 							
@@ -999,10 +1268,12 @@ class Entitlements:
 							if STANDARD_ATTRIBUTE_VALUES:
 								
 								ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+							else:
+								ent_val_code =''
 						
 					else:
-						ent_val_code = 	str((val).split("||")[0]).replace("'","&apos;")
-					Trace.Write('ent_val_code--'+str(key)+'--'+str(ent_val_code))
+						ent_val_code = 	str((dict_val).split("||")[0]).replace("'","&apos;")
+					#'+str(key)+'--'+str(ent_val_code))
 					##ends
 
 					##------ commented and assign the default currency ---++
@@ -1015,9 +1286,10 @@ class Entitlements:
 					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
 					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
 					is_default = ''
-					Trace.Write("attributevalues----846-DTYPE------"+str((val).split("||")[2]))
-					Trace.Write('key---958---'+str(key))
-					ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+					try:
+						ent_disp_val = str((dict_val).split("||")[0]).replace("'","&apos;")
+					except:
+						ent_disp_val = ''
 					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
 
 					# 	if attributevalues.get(key) is None:
@@ -1026,21 +1298,23 @@ class Entitlements:
 					# 		ent_disp_val = attributevalues.get(key)
 
 					# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
-					# Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+					#Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+						<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 						<IS_DEFAULT>{is_default}</IS_DEFAULT>
 						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 						<PRICE_METHOD>{pm}</PRICE_METHOD>
 						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor )
-					Trace.Write("updateentXML-970------"+str(updateentXML))
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE() WHERE  {} ".format(tableName, updateentXML,userId,whereReq)
+						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
+					#Trace.Write("updateentXML-970------"+str(updateentXML))
+				#Trace.Write('configuration_status----'+str(configuration_status))
+				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
 				get_match_id = Sql.GetFirst("select CPS_MATCH_ID FROM {} WHERE {}".format(tableName,whereReq))
 				ent_tables_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQSAE']
@@ -1051,7 +1325,7 @@ class Entitlements:
 						Sql.RunQuery(Updatecps)
 				##to update match id at all level while saving ends
 				Sql.RunQuery(UpdateEntitlement)
-				Trace.Write("TEST COMMIT")
+				#Trace.Write("TEST COMMIT")
 				where = " QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
 				EntCost = EntCost2 = EntCost3 = EntCost4 = 0.00
 				getPlatform = Sql.GetList("SELECT EQUIPMENT_ID,WAFER_SIZE,GREENBOOK,PLATFORM  FROM SAQSCO (NOLOCK) WHERE {where}".format(where=where))
@@ -1079,28 +1353,26 @@ class Entitlements:
 						for a in getPlatform:
 							getDeinstall = Sql.GetFirst("SELECT ISNULL(INSTALL_T0T1_CE_HRS,0) AS INSTALL_T0T1_CE_HRS,ISNULL(INSTALL_T0T1_TECH_HRS,0) AS INSTALL_T0T1_TECH_HRS ,ISNULL(INSTALL_T2_CE_HRS,0) AS INSTALL_T2_CE_HRS,ISNULL(INSTALL_T2_PSE_HRS,0) AS INSTALL_T2_PSE_HRS,ISNULL(INSTALL_T2_SSE_HRS,0) AS INSTALL_T2_SSE_HRS,ISNULL(INSTALL_T3_CE_HRS,0) AS INSTALL_T3_CE_HRS,ISNULL(INSTALL_T3_PSE_HRS,0) AS INSTALL_T3_PSE_HRS,ISNULL(INSTALL_T3_SSE_HRS,0) AS INSTALL_T3_SSE_HRS,ISNULL(DEINSTALL_CE_HRS,0) AS DEINSTALL_CE_HRS,DEINSTALL_PRICE,DEINSTALL_TECH_HRS,DEINSTALL_TRDPTY_AMOUNT FROM PRLPBK (NOLOCK) WHERE GREENBOOK = '{Greenbook}' AND SUBSTRATESIZE_ID = '{sub}' AND PLATFORM_ID = '{plt}' AND REGION = '{Region}'".format(Greenbook=a.GREENBOOK,sub=a.WAFER_SIZE,Region=Region,plt=a.PLATFORM))
 							if getDeinstall:
-								Trace.Write("if---")
+								#Trace.Write("if---")
 								
 								EntCost =str((float(getDeinstall.DEINSTALL_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.DEINSTALL_TECH_HRS)*float(getTEST.LABOR_RATE_GLCURR)))
 								list1[str(a.EQUIPMENT_ID)] = EntCost
 								#list1.append(EntCost)
-								Trace.Write("LIST1----"+str(list1))
+								#Trace.Write("LIST1----"+str(list1))
 								
 								EntCost2 = str((float(getDeinstall.INSTALL_T0T1_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T0T1_TECH_HRS)*float(getTEST.LABOR_RATE_GLCURR)) + float(getDeinstall.DEINSTALL_TRDPTY_AMOUNT))
 								list2[str(a.EQUIPMENT_ID)] = EntCost2
 								#list2.append(EntCost2)
-								Trace.Write("LIST2----"+str(list2))
+								#Trace.Write("LIST2----"+str(list2))
 								
 								EntCost3 = str((float(getDeinstall.INSTALL_T2_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T2_PSE_HRS)*float(getPSE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T2_SSE_HRS)*float(getSSE.LABOR_RATE_GLCURR)))
 								list3[str(a.EQUIPMENT_ID)] = EntCost3
 								#list3.append(EntCost3)
-								Trace.Write("LIST3----"+str(list3))
 								EntCost4 = str((float(getDeinstall.INSTALL_T3_CE_HRS)*float(getCE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T3_PSE_HRS)*float(getPSE.LABOR_RATE_GLCURR)) + (float(getDeinstall.INSTALL_T3_SSE_HRS)*float(getSSE.LABOR_RATE_GLCURR)))
 								list4[str(a.EQUIPMENT_ID)] = EntCost4
 								#list4.append(EntCost4)
-								Trace.Write("LIST4----"+str(list4))
+								#Trace.Write("LIST4----"+str(list4))
 							else:
-								Trace.Write("else---")
 								EntCost = 0.00
 								EntCost2 = 0.00
 								EntCost3 = 0.00
@@ -1110,12 +1382,12 @@ class Entitlements:
 								list3[str(a.EQUIPMENT_ID)] = str(EntCost3)
 								list4[str(a.EQUIPMENT_ID)] = str(EntCost4)
 					except:
-						Trace.Write("else-1063-----")
+						#Trace.Write("else-1063-----")
 						pass
 					objName = tableName
-					Trace.Write("objName--"+str(objName)+'----'+str(where))
-					getinnercon  = Sql.GetFirst("select CPS_MATCH_ID,CPS_CONFIGURATION_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
-					GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
+					#Trace.Write("objName--"+str(objName)+'----'+str(where))
+					getinnercon  = Sql.GetFirst("select CPS_MATCH_ID,CPS_CONFIGURATION_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' )) as ENTITLEMENT_XML from "+str(objName)+" (nolock)  where  "+str(where)+"")
+					GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39','''') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 
 					get_curr = ''
 					for e in getPlatform:
@@ -1124,8 +1396,8 @@ class Entitlements:
 						eq = str(e.EQUIPMENT_ID)
 						for value in GetXMLsecField:
 							
-							get_name = value.ENTITLEMENT_NAME
-							Trace.Write("VALUE IN XML--------->"+str(get_name))
+							get_name = value.ENTITLEMENT_ID
+							#Trace.Write("VALUE IN XML--------->"+str(get_name))
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
@@ -1136,7 +1408,7 @@ class Entitlements:
 									get_cost_impact = "{0:.2f}".format(float(list1[eq]))
 									#get_cost_impact = "{0:.2f}".format(float(list1[0]))
 									get_curr = curr
-									Trace.Write("ENTCOST1 = "+str(get_cost_impact))
+									#Trace.Write("ENTCOST1 = "+str(get_cost_impact))
 								elif 'AGS_RFM_INS_T1' in get_name and 'Included' in get_value:
 									#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list2 if str(e.EQUIPMENT_ID) in x))
 									#Trace.Write("list2="+str(list2))
@@ -1149,7 +1421,7 @@ class Entitlements:
 									#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list3 if str(e.EQUIPMENT_ID) in x))
 									get_cost_impact = "{0:.2f}".format(float(list3[eq]))
 									get_curr = curr
-									Trace.Write("ENTCOST3 = "+str(get_cost_impact))
+									#Trace.Write("ENTCOST3 = "+str(get_cost_impact))
 								elif 'AGS_RFM_INS_T3' in get_name and 'Included' in get_value:
 									#get_cost_impact = "{0:.2f}".format(next(float(x.split("_")[0]) for x in list1 if str(e.EQUIPMENT_ID) in x))
 									get_cost_impact = "{0:.2f}".format(float(list4[eq]))
@@ -1158,27 +1430,28 @@ class Entitlements:
 								get_curr = ''
 								pass
 								#Trace.Write("ENTCOST4 = "+str(get_cost_impact))
-							
+							get_tool_desc = value.ENTITLEMENT_DESCRIPTION
 							updatexml  = """<QUOTE_ITEM_ENTITLEMENT>
-								<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+								<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 								<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+								<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
 								<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
 								<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
 								<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
 								<IS_DEFAULT>{is_default}</IS_DEFAULT>
 								<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-								<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
 								<PRICE_METHOD>{pm}</PRICE_METHOD>
 								<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_DESCRIPTION ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE)
+								<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+								</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = get_name,ent_val_code = value.ENTITLEMENT_VALUE_CODE,ent_disp_val = get_value ,ct = str(get_cost_impact) ,pi = get_price_impact ,is_default = value.IS_DEFAULT ,ent_desc= value.ENTITLEMENT_NAME ,pm = get_curr ,cf= value.CALCULATION_FACTOR , ent_type = value.ENTITLEMENT_TYPE,tool_desc =  get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc)
 							updateentXML  += updatexml
-							if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
+							# if ('AGS_RFM_INS_T0' in get_name or 'AGS_RFM_INS_T1' in get_name):
 						
-								Trace.Write("xml--------->"+str(updatexml))
+							# 	Trace.Write("xml--------->"+str(updatexml))
 						where = " SAQSCE.QUOTE_RECORD_ID = '{}' AND SAQSCE.QTEREV_RECORD_ID = '{}' AND SAQSCE.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,self.treeparentparam)
-						Trace.Write("where condition--"+str(where))
+						#Trace.Write("where condition--"+str(where))
 						UpdateEntitlement = "UPDATE SAQSCE SET ENTITLEMENT_XML= '{}',CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} AND SAQSCE.EQUIPMENT_ID = '{}'".format(updateentXML,getinnercon.CPS_MATCH_ID,getinnercon.CPS_CONFIGURATION_ID,where,e.EQUIPMENT_ID)
-						Trace.Write("UPDATE---"+str(UpdateEntitlement))
+						#Trace.Write("UPDATE---"+str(UpdateEntitlement))
 						# UpdateEntitlement_tst = " UPDATE {} SET ENTITLEMENT_XML= '', {} {} ".format(obj,update_fields,where_condition)
 						Sql.RunQuery(UpdateEntitlement)
 				#update SAQICO
@@ -1418,34 +1691,37 @@ class Entitlements:
 					#if 'AGS_LAB_OPT' in AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 					if  AttributeID and str((val).split("||")[1]).strip() == AttributeID:
 						Trace.Write("AttributeID---904----"+str(AttributeID))
-						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
-						Trace.Write("Fullresponse"+str(Fullresponse))
-						Trace.Write("tableName--894---"+str(tableName))
-						Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
-						Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
-						Trace.Write("whereReq--894---"+str(whereReq))
-						Product.SetGlobal('Fullresponse',str(Fullresponse))
-						Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
-						Sql.RunQuery(Updatecps)
-						characteristics_attr_values = []
-						for rootattribute, rootvalue in Fullresponse.items():
-							if rootattribute == "rootItem":
-								for Productattribute, Productvalue in rootvalue.items():
-									if Productattribute == "variantConditions":
-										characteristics_attr_values = Productvalue
-									# if Productattribute == "characteristics":
-									# 	for prdvalue in Productvalue:											
-									# 		for attribute in prdvalue["values"]:
-									# 			if prdvalue["id"] in characteristics_attr_values:
-									# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
-									# 			else:
-									# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
-						Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
-						
-						if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
-							try:
-								sectional_current_dict = Param.sectional_current_dict
-								sectional_current_dict =eval(sectional_current_dict)
+						if 'Z0046' in AttributeID and serviceId == 'Z0091':
+							serviceId = 'Z0046'
+						get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+						if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+							Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,str(NewValue),'input',product_obj.PRD_ID)
+							Trace.Write("Fullresponse"+str(Fullresponse))
+							Trace.Write("tableName--894---"+str(tableName))
+							Trace.Write("cpsmatc_incr--894---"+str(cpsmatc_incr))
+							Trace.Write("cpsConfigID--894---"+str(cpsConfigID))
+							Trace.Write("whereReq--894---"+str(whereReq))
+							Product.SetGlobal('Fullresponse',str(Fullresponse))
+							Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}' WHERE {} ".format(tableName, cpsmatc_incr,cpsConfigID, whereReq)
+							Sql.RunQuery(Updatecps)
+							characteristics_attr_values = []
+							for rootattribute, rootvalue in Fullresponse.items():
+								if rootattribute == "rootItem":
+									for Productattribute, Productvalue in rootvalue.items():
+										if Productattribute == "variantConditions":
+											characteristics_attr_values = Productvalue
+										# if Productattribute == "characteristics":
+										# 	for prdvalue in Productvalue:											
+										# 		for attribute in prdvalue["values"]:
+										# 			if prdvalue["id"] in characteristics_attr_values:
+										# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
+										# 			else:
+										# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
+							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
+							
+							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
+								#try:
+								
 								Trace.Write('sectional_current_dict----'+str(sectional_current_dict))
 								#b = eval(a)
 								non_integer_list =[]
@@ -1456,81 +1732,78 @@ class Entitlements:
 										Trace.Write('val---'+str(val))
 										if float(val).is_integer() == False:
 											non_integer_list.append(key)
-								##
+								
 								Trace.Write('non_integer_list--'+str(non_integer_list))
 								remove_indices = [key for key,value in enumerate(characteristics_attr_values) if value['key'] in non_integer_list]
 								Trace.Write('remove_indices--'+str(remove_indices))
-								# response_charactr = enumerate(characteristics_attr_values)
-								# for key,value in response_charactr:
-								# 	if value['key'] in non_integer_list:
-								# 		remove_indices.append(key)
-								# 		Trace.Write('bb---'+str(index)+'--'+str(value))
-										#characteristics_attr_values.pop(index)
+								
 								characteristics_attr_values = [i for j, i in enumerate(characteristics_attr_values) if j not in remove_indices]
 								Trace.Write('characteristics_attr_values--aftr--pop--'+str(characteristics_attr_values))
 
-							except Exception,e:
-								Trace.Write('error--pop--'+str(e))
-								#pass
+								# except Exception,e:
+								# 	Trace.Write('error--pop--'+str(e))
+								# 	#pass
 
 
-							Trace.Write("serviceId---"+str(serviceId))
-							attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
-							#Product.SetGlobal('attr_level_pricing',str(attr_prices))
-							Trace.Write("attr_prices---908---"+str(attr_prices))
-							if attr_prices:
-								for attr, attr_value in attr_prices.items():
-									data_dict = {'key':attr}
-									Trace.Write("attr_prices--912=-----"+str(attr)+str(data_dict))
-									data_dict.update(attr_value)
-									attr_level_pricing.append(data_dict)
-									#Trace.Write("attr_prices----"+str(attr))
-									# data_dict = {'key':AttributeID}
-									# data_dict.update(attr_value)
-									# attr_level_pricing.append(data_dict)
-						# if attr_level_pricing:
-						# 	getcostbaborimpact = attr_level_pricing[0].get('total_price')
-						# 	getpriceimpact = attr_level_pricing[0].get('price')		
-						# 	factor_value = 	attr_level_pricing[0].get('factor')	
-				# 	updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-				# 	<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-				# 	<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-				# 	<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-				# 	<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-				# 	<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-				# 	<IS_DEFAULT>{is_default}</IS_DEFAULT>
-				# 	<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-				# 	<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-				# 	<PRICE_METHOD>{pm}</PRICE_METHOD>
-				# 	<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-				# 	</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
-				# Trace.Write("---------------------------222222222222222"+str(updateentXML))
-				# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
-				
+								Trace.Write("serviceId---"+str(serviceId))
+								attr_prices = self.get_product_attr_level_cps_pricing(characteristics_attr_values,serviceId)
+								#Product.SetGlobal('attr_level_pricing',str(attr_prices))
+								Trace.Write("attr_prices---908---"+str(attr_prices))
+								if attr_prices:
+									for attr, attr_value in attr_prices.items():
+										data_dict = {'key':attr}
+										Trace.Write("attr_prices--912=-----"+str(attr)+str(data_dict))
+										data_dict.update(attr_value)
+										attr_level_pricing.append(data_dict)
+										#Trace.Write("attr_prices----"+str(attr))
+										# data_dict = {'key':AttributeID}
+										# data_dict.update(attr_value)
+										# attr_level_pricing.append(data_dict)
+							# if attr_level_pricing:
+							# 	getcostbaborimpact = attr_level_pricing[0].get('total_price')
+							# 	getpriceimpact = attr_level_pricing[0].get('price')		
+							# 	factor_value = 	attr_level_pricing[0].get('factor')	
+					# 	updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+					# 	<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
+					# 	<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					# 	<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+					# 	<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+					# 	<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+					# 	<IS_DEFAULT>{is_default}</IS_DEFAULT>
+					# 	<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+					# 	<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
+					# 	<PRICE_METHOD>{pm}</PRICE_METHOD>
+					# 	<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+					# 	</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = str((val).split("||")[0]),ent_disp_val = str((val).split("||")[0]),ct = getcostbaborimpact,pi = getpriceimpact,is_default = '0' if str(key)==AttributeID else '1',ent_type = str((val).split("||")[2]),ent_desc=str((val).split("||")[3]) ,pm = pricemethodupdate if str(key)==AttributeID else '',cf=factor_value)
+					# Trace.Write("---------------------------222222222222222"+str(updateentXML))
+					# UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= '{}' WHERE  {} ".format(tableName, updateentXML,whereReq)
+					
 
-				#Sql.RunQuery(UpdateEntitlement)	
-				'''if getmaualipval:
-					AttributeID = inputId
-					NewValue = getmaualipval
-				Trace.Write('335-------NewValue------------456----------'+str(NewValue))
-				Trace.Write('335-------NewValue------------456----------'+str(NewValue))						
-				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}',IS_DEFAULT = '0' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
-				tableName,NewValue,AttributeID, whereReq
-				)
-				Sql.RunQuery(UpdateEntitlement)'''
-				# to insert  input column value end
+					#Sql.RunQuery(UpdateEntitlement)	
+					'''if getmaualipval:
+						AttributeID = inputId
+						NewValue = getmaualipval
+					Trace.Write('335-------NewValue------------456----------'+str(NewValue))
+					Trace.Write('335-------NewValue------------456----------'+str(NewValue))						
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_DISPLAY_VALUE = '{}',IS_DEFAULT = '0' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
+					tableName,NewValue,AttributeID, whereReq
+					)
+					Sql.RunQuery(UpdateEntitlement)'''
+					# to insert  input column value end
 			
 		factcurreny = ""
 		dataent = ""
-		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_NAME = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
+		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_ID = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
 		if getedit_calc:
 			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
 				dataent = getedit_calc.DT				
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
-		Trace.Write('attributevalues_textbox---'+str(attributevalues_textbox))
-		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attributedefaultvalue,dropdownallowlist_selected,attributevalues_textbox
+		Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
+		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
+		
+		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
 		#Trace.Write('Cancel function--Getprevdict-----'+str(dict(Getprevdict)))
@@ -1612,7 +1885,7 @@ class Entitlements:
 			
 		valdisplaycode = []
 		Getprevdict = eval(str(Getprevdict))
-		Trace.Write('Getprevdict----------'+str(Getprevdict))
+		#Trace.Write('Getprevdict----------'+str(Getprevdict))
 		###added  3157
 		#attId=AttributeID = valcode=""
 		#cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
@@ -1629,13 +1902,13 @@ class Entitlements:
 				WHERE SYSTEM_ID ='{SystemId}' 
 				GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(Gettabledata.SERVICE_ID)))
 		for AttributeID,valcode in dict(Getprevdict).items():
-			Trace.Write(str(valcode)+'170-------'+str(AttributeID))
-			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc','LABOR_TYPE_primp','T2_LABOR_TYPE_imt']:
+			#Trace.Write(str(valcode)+'170-------'+str(AttributeID))
+			if AttributeID not in ['T0_T1_LABOR_calc','T0_T1_LABOR_imt','T3_LABOR','T0_T1_LABOR','T3_LABOR_imt','T2_LABOR_calc']:
 				valdisplaycode.append(str(valcode))
-				attId = "AND ENTITLEMENT_NAME = '{}' ".format(AttributeID)
+				attId = "AND ENTITLEMENT_ID = '{}' ".format(AttributeID)
 				#Trace.Write("tableName--"+str(tableName)+'---'+str(serviceId)+'---'+str(whereReq))	
 				cpsmatchID,cpsConfigID,oldConfigID = self.getcpsID(tableName,serviceId,parentObj,whereReq,attId,ParentwhereReq)
-				get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC
+				get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC
 												FROM TAB_PRODUCTS
 												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
 												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
@@ -1644,10 +1917,26 @@ class Entitlements:
 												
 												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
 				if get_datatype:
-					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+					if 'Z0046' in AttributeID and serviceId == 'Z0091':
+						serviceId = 'Z0046'
+					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode,get_datatype.ATT_DISPLAY_DESC,product_obj.PRD_ID)
+						get_tool_desc= get_datatype.ATTRDESC
 				else:
-					Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
+					if 'Z0046' in AttributeID and serviceId == 'Z0091':
+						serviceId = 'Z0046'
+					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+					if str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
+						Fullresponse,cpsmatc_incr,attribute_code = self.EntitlementRequest(cpsConfigID,cpsmatchID,AttributeID,valcode)
+						get_tool_desc =''
 				#Trace.Write("Cancel - new cps match Id: "+str(cpsmatc_incr))
+				if Fullresponse['complete'] == 'true':
+					configuration_status = 'COMPLETE'
+				elif Fullresponse['complete'] == 'false':
+					configuration_status = 'INCOMPLETE'
+				else:
+					configuration_status = 'ERROR'
 				attributesdisallowedlst = []
 				attributesallowedlst = []
 				attributeReadonlylst = []
@@ -1674,6 +1963,7 @@ class Entitlements:
 										attributevalues[str(prdvalue["id"])] = attribute["value"]
 										if attribute["author"] in ("Default","System"):
 											attributedefaultvalue.append(prdvalue["id"])
+										
 				ServiceContainer = Product.GetContainerByName("Services")
 				sec_name =""
 				# for row in ServiceContainer.Rows:
@@ -1728,8 +2018,8 @@ class Entitlements:
 				#Sql.RunQuery(Updatecps)
 				## set entitlement_xml for cancel fn A055S000P01-3157 starts
 				if getprevent_xml:
-					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={} WHERE {}  ".format(
-							tableName,getprevent_xml,cpsmatc_incr,whereReq
+					UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML = '{}',CPS_MATCH_ID ={},CONFIGURATION_STATUS = '{}' WHERE {}  ".format(
+							tableName,getprevent_xml,cpsmatc_incr,configuration_status,whereReq
 						)
 					#Trace.Write("UpdateEntitlement--"+ str(UpdateEntitlement))
 					Sql.RunQuery(UpdateEntitlement)	
@@ -1742,13 +2032,13 @@ class Entitlements:
 				##to update match id at all level while cancelling ends
 
 				## set entitlement_xml for cancel fn A055S000P01-3157 ends	
-				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
+				GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,valcode))
 				if GetDefault:
 					if GetDefault.IS_DEFAULT == 0:
 						defaultval = 0
 					else:
 						defaultval = 1
-					UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(
+					UpdateIsdefault = " UPDATE {} SET IS_DEFAULT = '{}' WHERE ENTITLEMENT_ID = '{}' AND {}  ".format(
 					tableName,defaultval,AttributeID, whereReq
 					)
 					Sql.RunQuery(UpdateIsdefault)
@@ -1763,7 +2053,7 @@ class Entitlements:
 		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
-		#Trace.Write("valdisplaycode--------"+str(valdisplaycode))
+		Trace.Write("attributeEditonlylst----durga----"+str(attributeEditonlylst))
 		'''try:			
 			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
@@ -1771,14 +2061,14 @@ class Entitlements:
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue
 	def Rolldown(self):
-		#Log.Info("Newdict------523----> "+str(Newdict))
+		Trace.Write("Newdict------523----> "+str(Newdict))
 		try:
 			Log.Info("Newdict-----745---> "+str(Newdict))
 			AttributeList = ','.join(map(str, Newdict))
 		except:
 			Log.Info("Newdict----748--> "+str(Newdict))
 			AttributeList = ','.join(map(int, Newdict))
-		Log.Info("Attr List-> "+str(AttributeList))
+		Trace.Write("Attr List-> "+str(type(AttributeList)))
 		# try:
 		# 	Getprevdict = eval(Param.getprevdict)
 		# except:
@@ -1833,19 +2123,47 @@ class Entitlements:
 				whereReq = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		
-		
-
-		Trace.Write("ENT_IP_DICT---"+str(ENT_IP_DICT))
+		#Trace.Write('AttributeList----'+str(AttributeList))
+		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
+		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
+		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
+		uptime_coeff = 'AGS_'+str(serviceId)+'_VAL_UPIMCO'
+		cust_seg = 'AGS_'+str(serviceId)+'_VAL_CSTSEG'
+		serv_comp = 'AGS_'+str(serviceId)+'_VAL_SVCCMP'
+		qa_req = 'AGS_'+str(serviceId)+'_VAL_QLYREQ'
+		get_ent_type_val =''
+		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
+		if AttributeList:
+			if 'Z0046' in AttributeID and serviceId == 'Z0091':
+				serviceId = 'Z0046'
+			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			if get_ent_type:
+				get_ent_type_val = get_ent_type.ENTITLEMENT_TYPE
+			responsive_where = where.replace('SRC.','')
+			getvalue =''
+			get_selected_dict = {}
+			for key,val in ENT_IP_DICT.items():
+				
+				if str(key) in [cust_seg,serv_comp,qa_req]:
+					getvalue = str((val).split("||")[0]).strip()
+					get_selected_dict[str(key)] = getvalue
+			Trace.Write(str(get_selected_dict)+'--getvalue--'+str(get_ent_type_val))
+			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
+	
 		if ENT_IP_DICT != '':
-			Trace.Write("ENT_IP_DICT-inside--"+str(ENT_IP_DICT))
-			Log.Info("inside Attr List------> "+str(AttributeList))
-			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))
+			ancillary_flag = Quote.GetGlobal("KPI")
+			Trace.Write("ancillary_flag--"+str(ancillary_flag))
+			Trace.Write("inside Attr List------> "+str(AttributeList))
+			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)+','+str(ancillary_flag)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
-			responsive_where = where.replace('SRC.','').replace("'","$$")
+			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
-			Trace.Write("where---"+str(where))
+			#Trace.Write("where---"+str(where))
 			#Trace.Write("Getprevdict---"+str(Getprevdict))
+			Trace.Write("objName-ent"+str(objName))
+			Trace.Write("attributemy"+str(AttributeList))
+			Trace.Write("attributemywhere"+str(responsive_where))
 			Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			Log.Info('where---'+str(responsive_where))
@@ -1856,10 +2174,6 @@ class Entitlements:
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
-			try:			
-				CQTVLDRIFW.valuedriver_predefined(self.ContractRecordId,"ENTITLEMENT PREDEFINED DRIVER",objName,responsive_where,Coverage_where,self.treetopsuperparentparam,User.Id,User.UserName,self.revision_recordid)
-			except Exception as e:
-				Log.Info("ENTITLEMENT PREDEFINED ERROR! "+str(e))
 		return True
 
 	def popup(self):
@@ -1890,10 +2204,7 @@ try:
 	NewValue = Param.current
 except:
 	NewValue = ""
-try:
-	PrevValue = Param.prev
-except:
-	PrevValue =""
+
 try:
 	AttributeValCode = Param.attvalcode
 except:
@@ -1965,14 +2276,22 @@ except:
 	inputId = ''
 try:
 	ENT_IP_DICT = dict(Param.ENT_IP_DICT)
-	Trace.Write('ENT_IP_DICT----'+str(ENT_IP_DICT))
 except:
-	Trace.Write('ENT_IP_DICT--except--')
 	ENT_IP_DICT = ''
 try:
 	multiselect_flag = Param.multiselect_flag
 except:
-	multiselect_flag =''		
+	multiselect_flag =''
+try:
+	sectional_current_dict = Param.sectional_current_dict
+	sectional_current_dict =eval(sectional_current_dict)	
+except:
+	sectional_current_dict =""
+
+try:
+	previous_val = Param.prev
+except:
+	previous_val =""
 Trace.Write("subtabName : " + str(subtabName)+".. EntitlementType : "+str(EntitlementType)+"Action : "+str(ACTION))
 #Trace.Write("calc_factor : " + str(calc_factor) + " costimpact : " + str(costimpact) + " priceimapct "+str(priceimapct))
 #Trace.Write("AttributeID : " + str(AttributeID) + " AttributeValCode : " + str(AttributeValCode))
@@ -1989,5 +2308,5 @@ elif ACTION == 'SAVE':
 else:
 	Trace.Write("calling else save")
 	ApiResponse = ApiResponseFactory.JsonResponse(
-		EntObj.EntitlementSave(subtabName, PrevValue, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
+		EntObj.EntitlementSave(subtabName, NewValue, AttributeID, AttributeValCode,SectionRecordId,EquipmentId,calc_factor,costimpact,priceimapct,getmaualipval,ENT_IP_DICT)
 	)

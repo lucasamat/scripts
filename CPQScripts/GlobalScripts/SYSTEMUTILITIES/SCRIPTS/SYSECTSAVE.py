@@ -72,7 +72,7 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 					{UserId} as CPQTABLEENTRYADDEDBY, 
 					GETDATE() as CPQTABLEENTRYDATEADDED
 				FROM SAQICO (NOLOCK)     
-				JOIN SAQTSE (NOLOCK) ON SAQTSE.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND  SAQTSE.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND QTQTSE.ENTITLEMENT_NAME = 'FIXED_PRICE_PER_RESOU_EVENT_91'                    
+				JOIN SAQTSE (NOLOCK) ON SAQTSE.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND  SAQTSE.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQTSE.ENTITLEMENT_ID = 'FIXED_PRICE_PER_RESOU_EVENT_91'                    
 				WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID='{revision_rec_id}'""".format(
 					UserId=User.Id, QuoteRecordId=contract_quote_record_id,
 					Months=total_months,
@@ -156,6 +156,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		ObjectName = "SAQIGB"
 	elif Product.GetGlobal("TreeParentLevel1") == "Quote Items":
 		ObjectName = "SAQIFL"
+	elif Product.GetGlobal("TreeParentLevel0") == "Quote Items":
+		ObjectName = "SAQITM"
+		sect_name = RECORD.get("SECTION_ID")
+		Trace.Write("section name = "+str(sect_name))
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
@@ -163,6 +167,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		
 		VISIBLEval = RECORD.get("VISIBLE")
 		sect_name = RECORD.get("SECTION_ID")
+		Trace.Write("section name = "+str(sect_name))
 		sect_rec_id = RECORD.get("PROFILE_SECTION_RECORD_ID")
 		tableInfosf = Sql.GetTable("SYPRSF")
 		newdictSF = {}
@@ -445,7 +450,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						notification = 'Billing Start Date should be less than Billing End Date'
 				else:
 					if TableName == "SAQITM":
-						if newdict.has_key("TAX_PERCENTAGE") or newdict.has_key("BD_PRICE_MARGIN") or newdict.has_key("TARGET_PRICE_MARGIN") :
+						if (newdict.has_key("TAX_PERCENTAGE") or newdict.has_key("BD_PRICE_MARGIN") or newdict.has_key("TARGET_PRICE_MARGIN")) and (newdict.get("DISCOUNT") is None or newdict.get("DISCOUNT") == ''):
 							newdict["TAX_PERCENTAGE"] = (newdict.get("TAX_PERCENTAGE").replace("%", "").strip())
 							newdict["BD_PRICE_MARGIN"] = (newdict.get("BD_PRICE_MARGIN").replace("%", "").strip())
 							newdict["TARGET_PRICE_MARGIN"] = (newdict.get("BD_PRICE_MARGIN").replace("%", "").strip())
@@ -454,7 +459,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							tableInfo = Sql.GetTable(str(TableName))
 							tablerow = newdict
 							tableInfo.AddRow(tablerow)
-							Sql.Upsert(tableInfo)
+							#Sql.Upsert(tableInfo)
 							item_obj = Sql.GetFirst("select SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID from SAQITM where SERVICE_ID = '{Service_id}' and QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{revision_rec_id}'".format(Service_id = '-'.join(TreeParam.split('-')[1:]).strip(),contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id = quote_revision_record_id))
 							quote_item_covered_obj = """UPDATE SAQICO SET SRVTAXCAT_ID = '{}',SRVTAXCAT_DESCRIPTION = '{}',SRVTAXCAT_RECORD_ID = '{}',SRVTAXCLA_ID = '{}',SRVTAXCLA_DESCRIPTION = '{}',SRVTAXCLA_RECORD_ID = '{}' where SERVICE_ID = '{}' and QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(item_obj.SRVTAXCAT_ID,item_obj.SRVTAXCAT_DESCRIPTION,item_obj.SRVTAXCAT_RECORD_ID,item_obj.SRVTAXCLA_ID,item_obj.SRVTAXCLA_DESCRIPTION,item_obj.SRVTAXCLA_RECORD_ID,'-'.join(TreeParam.split('-')[1:]).strip(),Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id )
 							Sql.RunQuery(quote_item_covered_obj)
@@ -467,6 +472,247 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							QUOTE_RECORD_ID=Quote.GetGlobal("contract_quote_record_id"), SERVICE_ID=TreeParam.split('-')[1].strip() +" - "+TreeParam.split('-')[2].strip(), revision_rec_id = quote_revision_record_id
 							))
 							getting_cps_tax(check_itm_obj,'tool')
+						elif newdict.has_key("DISCOUNT") and (newdict.get("DISCOUNT") is not None or newdict.get("DISCOUNT") != ''):
+							dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
+							newdict["SERVICE_ID"] = TreeParam
+							newdict.update(dictc)
+							tableInfo = Sql.GetTable(str(TableName))
+							tablerow = newdict
+							#tableInfo.AddRow(tablerow)
+							#Sql.Upsert(tableInfo)
+							VALUE = float(newdict.get("DISCOUNT"))
+							Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
+							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+							ServiceId = TreeParam.split("-")[1].strip()
+							
+							decimal_discount = VALUE / 100.0
+							Sql.RunQuery("""UPDATE SAQICO SET 
+															NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+															YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+															NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
+															YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
+															DISCOUNT = '{Discount}'
+														FROM SAQICO (NOLOCK)                                     
+														WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}'""".format(
+															QuoteRecordId=contract_quote_record_id,
+															RevisionRecordId=quote_revision_record_id,
+															DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
+															Discount=VALUE,
+															plus="+",
+															TreeParam=ServiceId))
+							#self._update_year()
+							for count in range(2, 6):
+								Sql.RunQuery("""UPDATE SAQICO SET
+																SAQICO.YEAR_{Year} = CASE  
+																	WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
+																		THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+																	ELSE 0
+																END,
+																SAQICO.YEAR_{Year}_INGL_CURR = CASE  
+																	WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
+																		THEN ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) - (ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+																	ELSE 0
+																END
+															FROM SAQICO (NOLOCK) 
+															JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
+															WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID = '{TreeParam}'""".format(
+																QuoteRecordId=contract_quote_record_id,
+																RevisionRecordId=quote_revision_record_id,
+																Year=count,
+																Count=count - 1,
+																TreeParam=ServiceId
+																)
+											)    
+							Sql.RunQuery("""UPDATE SAQICO SET 
+															NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
+															NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0),
+															DISCOUNT_AMOUNT_INGL_CURR = TARGET_PRICE_INGL_CURR - NET_PRICE_INGL_CURR 
+														FROM SAQICO (NOLOCK)                                     
+														WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{TreeParam}'""".format(
+															QuoteRecordId=contract_quote_record_id,
+															RevisionRecordId=quote_revision_record_id,
+															TreeParam=ServiceId
+															))
+							c = Sql.GetFirst("SELECT SUM(DISCOUNT_AMOUNT_INGL_CURR) AS DISCOUNT_AMOUNT_INGL_CURR,SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_PRICE_INGL_CURR) AS SUM_PRICE_INGL_CURR, SUM(YEAR_1_INGL_CURR) AS YEAR1_INGL_CURR, SUM(YEAR_2_INGL_CURR) AS YEAR2_INGL_CURR, SUM(YEAR_3_INGL_CURR) AS YEAR3_INGL_CURR, SUM(YEAR_4_INGL_CURR) AS YEAR4_INGL_CURR, SUM(YEAR_5_INGL_CURR) AS YEAR5_INGL_CURR FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,ServiceId,quote_revision_record_id))
+
+							FabNetValue = c.YEAR1 + c.YEAR2 + c.YEAR3 + c.YEAR4 + c.YEAR5
+
+							# Sql.RunQuery("UPDATE SAQITM SET DISCOUNT_AMOUNT_INGL_CURR = {DiscountAmt},NET_VALUE = {netvalue},DISCOUNT = {discount},NET_PRICE = '{net_price}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_PRICE_INGL_CURR = '{net_price_in_gl}',YEAR_1_INGL_CURR = {y1_gl},YEAR_2_INGL_CURR = {y2_gl},YEAR_3_INGL_CURR={y3_gl},YEAR_4_INGL_CURR={y4_gl},YEAR_5_INGL_CURR = {y5_gl}  WHERE QUOTE_RECORD_ID = '{quote_record_id}' AND SERVICE_ID LIKE '%{service_id}%' AND FABLOCATION_ID = '{fab_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(discount = float(VALUE),net_price = float(c.SUM_PRICE),net_price_in_gl = float(c.SUM_PRICE_INGL_CURR),quote_record_id = contract_quote_record_id,service_id = TreeParentParam.split("-")[1].strip(),fab_id = TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,y1_gl=c.YEAR1_INGL_CURR,y2_gl=c.YEAR2_INGL_CURR,y3_gl=c.YEAR3_INGL_CURR,y4_gl=c.YEAR4_INGL_CURR,y5_gl=c.YEAR5_INGL_CURR,quote_revision_record_id=quote_revision_record_id,netvalue=FabNetValue,DiscountAmt=c.DISCOUNT_AMOUNT_INGL_CURR))
+							Sql.RunQuery("""UPDATE SAQITM
+												SET 
+												NET_VALUE = IQ.NET_VALUE,
+												NET_PRICE = IQ.NET_PRICE,
+												YEAR_1 = IQ.YEAR_1,
+												YEAR_2 = IQ.YEAR_2,
+												YEAR_3 = IQ.YEAR_3,
+												YEAR_4 = IQ.YEAR_4,
+												YEAR_5 = IQ.YEAR_5,
+												NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+												NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+												YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+												YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+												YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+												YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+												YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+												DISCOUNT = '{Discount}'			
+												FROM SAQITM (NOLOCK)
+												INNER JOIN (SELECT SAQITM.CpqTableEntryId,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+															CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+															FROM SAQITM (NOLOCK) 
+															JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
+															WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID LIKE '%{TreeParam}%'
+															GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId,SAQITM.QTEREV_RECORD_ID)IQ
+												ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
+												WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
+												Discount=VALUE,plus="+",TreeParam=ServiceId))
+							Sql.RunQuery("""UPDATE SAQIFL
+							SET 
+							NET_VALUE = IQ.NET_VALUE,
+							NET_PRICE = IQ.NET_PRICE,
+							YEAR_1 = IQ.YEAR_1,
+							YEAR_2 = IQ.YEAR_2,
+							YEAR_3 = IQ.YEAR_3,
+							YEAR_4 = IQ.YEAR_4,
+							YEAR_5 = IQ.YEAR_5,
+							NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+							YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+							YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+							YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+							YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+							YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
+							DISCOUNT = '{Discount}'					
+							FROM  SAQIFL SAQICO (NOLOCK)
+							INNER JOIN (SELECT FABLOCATION_ID, SERVICE_ID,QTEREV_RECORD_ID,QUOTE_RECORD_ID,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+										FROM SAQICO (NOLOCK) 
+										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+										GROUP BY FABLOCATION_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,LINE_ITEM_ID,SERVICE_ID)IQ
+							ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = IQ.SERVICE_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.FABLOCATION_ID = IQ.FABLOCATION_ID 
+							WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
+							Discount=VALUE))
+							Sql.RunQuery("""UPDATE SAQIGB
+							SET
+							NET_VALUE = IQ.NET_VALUE,
+							NET_PRICE = IQ.NET_PRICE,
+							YEAR_1 = IQ.YEAR_1,
+							YEAR_2 = IQ.YEAR_2,
+							YEAR_3 = IQ.YEAR_3,
+							YEAR_4 = IQ.YEAR_4,
+							YEAR_5 = IQ.YEAR_5,
+							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
+							NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+							YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+							YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+							YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+							YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+							YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+							DISCOUNT = '{Discount}'
+							FROM SAQIGB (NOLOCK)
+							INNER JOIN (SELECT 
+							GREENBOOK_RECORD_ID,
+							QUOTE_RECORD_ID,
+							SERVICE_ID,
+							FABLOCATION_RECORD_ID,
+							QTEREV_RECORD_ID,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+							CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+							FROM SAQICO (NOLOCK)
+							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
+							GROUP BY LINE_ITEM_ID, QUOTE_RECORD_ID,QTEREV_RECORD_ID,GREENBOOK_RECORD_ID,SERVICE_ID,FABLOCATION_RECORD_ID)IQ
+							ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID  AND SAQIGB.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGB.SERVICE_ID = IQ.SERVICE_ID AND SAQIGB.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
+							WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQIGB.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,Discount=VALUE))
+
+							quote_currency = str(Quote.GetCustomField('Currency').Content)		
+							total_net_price = 0.00		
+							total_year_1 = 0.00
+							total_year_2 = 0.00
+							total_year_3 = 0.00
+							total_year_4 = 0.00
+							total_year_5 = 0.00
+							total_net_value = 0.00
+							items_data = {}
+
+							items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(contract_quote_record_id,quote_revision_record_id,ServiceId))
+							if items_obj:
+								for item_obj in items_obj:
+									Trace.Write("1---SERVICE ID -->"+str(item_obj.SERVICE_ID))
+									items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+									Trace.Write("2---SERVICE ID -->"+str(item_obj.SERVICE_ID))
+							for item in Quote.MainItems:
+								item_number = int(item.RolledUpQuoteItem)
+								if item_number in items_data.keys():
+									if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
+										item_data = items_data.get(item_number)
+										item.NET_PRICE.Value = float(item_data.get('NET_PRICE'))
+										total_net_price += item.NET_PRICE.Value
+										item.NET_VALUE.Value = item_data.get('NET_VALUE')
+										total_net_value += item.NET_VALUE.Value	
+										item.YEAR_1.Value = item_data.get('YEAR_1')
+										total_year_1 += item.YEAR_1.Value
+										item.YEAR_2.Value = item_data.get('YEAR_2')
+										total_year_2 += item.YEAR_2.Value
+										item.YEAR_3.Value = item_data.get('YEAR_3')
+										total_year_3 += item.YEAR_3.Value
+										item.YEAR_4.Value = item_data.get('YEAR_4')
+										total_year_4 += item.YEAR_4.Value
+										item.YEAR_5.Value = item_data.get('YEAR_5')
+										total_year_5 += item.YEAR_5.Value
+										item.DISCOUNT.Value = "+"+str(VALUE)
+							##Added the percentage symbol for discount custom field...
+							Percentage = '%'
+							Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
+							#discount_value = Quote.GetCustomField('DISCOUNT').Content
+							#Trace.Write("discount"+str(discount_value))
+							Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+							Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+							Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+							Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
+							Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+							Quote.Save()
 					#A055S000P01-4288 start
 					elif TableName == "SAQTRV":
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
@@ -570,10 +816,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE = IQ.NET_PRICE,
 											YEAR_1 = IQ.YEAR_1,
 											YEAR_2 = IQ.YEAR_2,
+											YEAR_3 = IQ.YEAR_3,
+											YEAR_4 = IQ.YEAR_4,
+											YEAR_5 = IQ.YEAR_5,
 											NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+											YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+											YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+											YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
 											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
@@ -581,10 +833,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
-														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
 														FROM SAQITM (NOLOCK) 
 														JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
 														WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.GREENBOOK = '{TreeParam}' AND SAQICO.FABLOCATION_ID = '{TreeParentParam}'
@@ -596,15 +854,18 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
-						total_year_2 = 0.00        
+						total_year_2 = 0.00
+						total_year_3 = 0.00
+						total_year_4 = 0.00
+						total_year_5 = 0.00
 						total_net_value = 0.00
 						items_data = {}
 
-						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4,ISNULL(YEAR_5, 0) as YEAR_5, ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
 						
 						if items_obj:
 							for item_obj in items_obj:
-								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2,'YEAR_3':item_obj.YEAR_3,'YEAR_4':item_obj.YEAR_4,'YEAR_5':item_obj.YEAR_5, 'NET_PRICE':item_obj.NET_PRICE}
 						
 						for item in Quote.MainItems:
 							item_number = int(item.RolledUpQuoteItem)
@@ -618,16 +879,23 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									item.YEAR_1.Value = item_data.get('YEAR_1')
 									total_year_1 += item.YEAR_1.Value
 									item.YEAR_2.Value = item_data.get('YEAR_2')
-									total_year_2 += item.YEAR_2.Value        
+									total_year_2 += item.YEAR_2.Value
+									item.YEAR_3.Value = item_data.get('YEAR_3')
+									total_year_3 += item.YEAR_2.Value
+									item.YEAR_4.Value = item_data.get('YEAR_4')
+									total_year_4 += item.YEAR_4.Value
+									item.YEAR_5.Value = item_data.get('YEAR_5')
+									total_year_5 += item.YEAR_5.Value
 									item.DISCOUNT.Value = str(VALUE)
 						##Added the percentage symbol for discount custom field...
 						Percentage = '%'
-						Quote.GetCustomField('DISCOUNT').Content = "+"+str(VALUE)+ " " + Percentage
+						Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
 						#discount_value = Quote.GetCustomField('DISCOUNT').Content
 						#Trace.Write("discount"+str(discount_value))
 						Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
 						Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency      
+						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+						Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
 						Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 						Quote.Save()
 					elif TableName == "SAQIFL":
@@ -700,10 +968,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 											NET_PRICE = IQ.NET_PRICE,
 											YEAR_1 = IQ.YEAR_1,
 											YEAR_2 = IQ.YEAR_2,
+											YEAR_3 = IQ.YEAR_3,
+											YEAR_4 = IQ.YEAR_4,
+											YEAR_5 = IQ.YEAR_5,
 											NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
 											NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 											YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
 											YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+											YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+											YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+											YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
 											DISCOUNT = '{Discount}'					
 											FROM SAQITM (NOLOCK)
 											INNER JOIN (SELECT SAQITM.CpqTableEntryId,
@@ -711,10 +985,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
 														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
-														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+														CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
 														FROM SAQITM (NOLOCK) 
 														JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
 														WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'
@@ -725,11 +1005,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						quote_currency = str(Quote.GetCustomField('Currency').Content)		
 						total_net_price = 0.00		
 						total_year_1 = 0.00
-						total_year_2 = 0.00        
+						total_year_2 = 0.00
+						total_year_3 = 0.00
+						total_year_4 = 0.00
+						total_year_5 = 0.00
 						total_net_value = 0.00
 						items_data = {}
 
-						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+						items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
 						if items_obj:
 							for item_obj in items_obj:
 								items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
@@ -745,18 +1028,26 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 									item.YEAR_1.Value = item_data.get('YEAR_1')
 									total_year_1 += item.YEAR_1.Value
 									item.YEAR_2.Value = item_data.get('YEAR_2')
-									total_year_2 += item.YEAR_2.Value        
+									total_year_2 += item.YEAR_2.Value
+									item.YEAR_3.Value = item_data.get('YEAR_3')
+									total_year_3 += item.YEAR_3.Value
+									item.YEAR_4.Value = item_data.get('YEAR_4')
+									total_year_4 += item.YEAR_4.Value
+									item.YEAR_5.Value = item_data.get('YEAR_5')
+									total_year_5 += item.YEAR_5.Value
 									item.DISCOUNT.Value = "+"+str(VALUE)
 						##Added the percentage symbol for discount custom field...
 						Percentage = '%'
-						Quote.GetCustomField('DISCOUNT').Content = "+"+str(VALUE)+ " " + Percentage
+						Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
 						#discount_value = Quote.GetCustomField('DISCOUNT').Content
 						#Trace.Write("discount"+str(discount_value))
 						Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
 						Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency      
+						Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+						Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
 						Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 						Quote.Save()
+
 
 					else:
 						
@@ -983,154 +1274,19 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						except:
 							Trace.Write('except--1---')
 							ent_disp_val = ""
-						get_config_ids = Sql.GetFirst("Select * from SAQTSE (nolock) where QUOTE_RECORD_ID ='"+str(quote_record_id)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '{}' ".format(service.SERVICE_ID))
-						cpsmatchID = get_config_ids.CPS_MATCH_ID
-						cpsConfigID = get_config_ids.CPS_CONFIGURATION_ID
+						
 						if int(ent_disp_val) > 364:
-									
-							Trace.Write("---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
-							webclient = System.Net.WebClient()
-							webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
-							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
-							response = webclient.DownloadString("https://cpqprojdevamat.authentication.us10.hana.ondemand.com:443/oauth/token?grant_type=client_credentials")
-							response = eval(response)
-							webclient = System.Net.WebClient()		
-							#Log.Info("---requestdata--252--")
-							Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
-							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-							#webclient.Headers.Add("If-Match", "111")
-
-							webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
-									
-							AttributeID = 'AGS_CON_DAY'
-							NewValue = ent_disp_val
-							#Trace.Write("---requestdata--252-NewValue-----"+str(NewValue))
-							whereReq = "QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '{}'".format(service.SERVICE_ID)
-							#Trace.Write('whereReq---'+str(whereReq))
-							requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
-							#Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
-							response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							#requestdata = {"characteristics":[{"id":"' + AttributeID + '":[{"value":"' +NewValue+'","selected":true}]}]}
-
-							#Log.Info(str(Request_URL)+"---requestdata--166---" + str(response2))
-
-
-							#Log.Info("patch response1---170---" + str(response2))
-							Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
-							webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-							#Log.Info("requestdata---180--265----" + str(requestdata))
-							response2 = webclient.DownloadString(Request_URL)
-							Trace.Write('response2--182----267-----'+str(response2))
-							response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
-							Fullresponse= eval(response2)
-							attributesdisallowedlst=[]
-							attributeReadonlylst=[]
-							attributesallowedlst=[]
-							attributedefaultvalue = []
-							multi_value = ""
-							#overallattributeslist =[]
-							attributevalues={}
-							for rootattribute, rootvalue in Fullresponse.items():
-								if rootattribute=="rootItem":
-									for Productattribute, Productvalue in rootvalue.items():
-										if Productattribute=="characteristics":
-											for prdvalue in Productvalue:
-												multi_value = ""
-												#overallattributeslist.append(prdvalue['id'])
-												if prdvalue['visible'] =='false':
-													attributesdisallowedlst.append(prdvalue['id'])
-												else:
-													#Trace.Write(prdvalue['id']+" set here")
-													attributesallowedlst.append(prdvalue['id'])
-												if prdvalue['readOnly'] =='true':
-													attributeReadonlylst.append(prdvalue['id'])
-												#for attribute in prdvalue['values']:
-												# attributevalues[str(prdvalue['id'])]=attribute['value']
-												# for attribute in prdvalue['values']:
-												if len(prdvalue["values"]) == 1:
-													#Trace.Write('ifffff'+str(prdvalue["id"]))
-													attributevalues[str(prdvalue["id"])] = prdvalue['values'][0]['value']
-												elif len(prdvalue["values"]) > 1:
-													#Trace.Write('else if'+str(prdvalue["id"]))
-													for attribute in prdvalue["values"]:
-														#Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
-														value_list = [attribute["value"] for attribute in prdvalue["values"]]
-														if attribute["author"] in ("Default","System"):
-															#Trace.Write('524------'+str(prdvalue["id"]))
-															attributedefaultvalue.append(prdvalue["id"])
-														#value_list = str(value_list)
-													attributevalues[str(prdvalue["id"])] = value_list
-												# else:
-												#     Trace.Write('else'+str(prdvalue["id"]))
-
-							
-							attributesallowedlst = list(set(attributesallowedlst))
-							#overallattributeslist = list(set(overallattributeslist))
-							HasDefaultvalue=False
-							Trace.Write('response2--182----315---'+str(attributesallowedlst))
-							Trace.Write('attributevalues--182----315---'+str(attributevalues))
-							ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
-							if ProductVersionObj is not None:
-								#tbrow={}
-								insertservice = ""
-								tblist = []
-								#Log.Info('response2--182----321-')
-								for attrs in attributesallowedlst:
-									Trace.Write('value code---'+str(attrs))
-									#tbrow1 = {}
-									if attrs in attributevalues:
-										HasDefaultvalue=True
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs,attributevalues[attrs]))
-										ent_disp_val = attributevalues[attrs]
-										ent_val_code = attributevalues[attrs]
-									else:
-										HasDefaultvalue=False
-										ent_disp_val = ""
-										ent_val_code = ""
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
-									ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
-									
-									PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.product_id,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
-									
-									if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
-										get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-										ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-									elif PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Check Box') and ent_disp_val and ent_val_code:
-										Trace.Write('ent_val_code--'+str(type(ent_val_code))+'---'+str(ent_val_code))
-										if type(eval(str(ent_val_code))) is list:
-											ent_val = str(tuple(ent_val_code)).replace(',)',')')
-											get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
-											ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val ]
-											ent_disp_val = str(ent_disp_val).replace("'", '"')
-											ent_val_code = str(ent_val_code).replace("'", '"')
-										else:
-											get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-											ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
-											ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
-
-									
-									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
-									#Log.Info('response2--182----342-')
-									#Trace.Write('value code---'+str(attributevalues[attrs])+'--'+str(attrs))
-									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-									<ENTITLEMENT_NAME>{ent_name}</ENTITLEMENT_NAME>
-									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>									
-									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-									<ENTITLEMENT_DESCRIPTION>{ent_desc}</ENTITLEMENT_DESCRIPTION>
-									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-									<IS_DEFAULT>{is_default}</IS_DEFAULT>
-									<PRICE_METHOD>{pm}</PRICE_METHOD>
-									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-									</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '', is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-									cpsmatc_incr = int(cpsmatchID) + 10
-									Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
-								Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE() WHERE {} ".format('SAQTSE', cpsmatc_incr,cpsConfigID,insertservice, User.Id, whereReq)
-								Trace.Write('Updatecps'+str(Updatecps))
-								Sql.RunQuery(Updatecps)
-								
-
+							try:
+								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+								AttributeID = 'AGS_CON_DAY'
+								add_where =''
+								ServiceId = service.SERVICE_ID
+								whereReq =  """QUOTE_RECORD_ID ='"+str(quote_record_id)+"'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND SERVICE_ID = '{}' """.format(service.SERVICE_ID)
+								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+							except:
+									pass
+				
 		except Exception:
 			Trace.Write("except---")
 			pass

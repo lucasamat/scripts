@@ -128,6 +128,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
 		Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
 		Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)
+		Quote.GetCustomField('YEAR_3').Content = str(total_item_obj.YEAR_3)
 		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_item_obj.EXTENDED_PRICE)
 	pricefactor_obj = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(service_id))
 	if float(pricefactor_obj.FACTOR_PCTVAR) < discount:

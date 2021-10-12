@@ -10,6 +10,10 @@
 from SYDATABASE import SQL
 import Webcom.Configurator.Scripting.Test.TestProduct
 import SYCNGEGUID as CPQ
+from datetime import *
+import datetime
+from System.Net import CookieContainer, NetworkCredential, Mail
+from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 Sql = SQL()
 Param = Param
 
@@ -69,7 +73,7 @@ class ConfigUpdateScript:
 		"""TO DO."""
 		##A055S000P01-9370 ,A055S000P01-4191 code starts...
 		if obj_name == "SAQTMT":
-			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME"
+			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME,SAQTMT.POES"
 			query_string = """
 					SELECT {Column_Name}
 					FROM {Table_Name} (NOLOCK)
@@ -223,7 +227,7 @@ class ConfigUpdateScript:
 					labels.append(objd_record.FIELD_LABEL)
 				##A055S000P01-9370 , A055S000P01-4191 code starts...
 				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner"
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES"
 				else:
 					field_lables = ",".join(labels)
 				##A055S000P01-9370, A055S000P01-4191 code ends..
@@ -544,8 +548,8 @@ class ConfigUpdateScript:
 
 		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit
 
-
 configobj = ConfigUpdateScript()
+
 if hasattr(Param, "keyData_val"):
 	keyData_val = Param.keyData_val
 	# Changes for sales app primary banner load - start
@@ -558,3 +562,5 @@ if hasattr(Param, "keyData_val"):
 			pass
 	# Changes for sales app primary banner load - End
 	ApiResponse = ApiResponseFactory.JsonResponse(configobj.ConfiguratorCall(keyData_val))
+
+

@@ -13,30 +13,28 @@ import sys
 from SYDATABASE import SQL
 Sql = SQL()
 
-def update_document_type(QuoteRecordId,RevisionRecordId):
-    document_type_list = []
-    service_obj  = Sql.GetList("select SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
-    for service in service_obj:
-        #Log.Info("service_obj--------------->"+str(service.SERVICE_ID))
-        document_type_obj = Sql.GetFirst("select DOCTYP_ID from MAMADT where SAP_PART_NUMBER = '{}'".format(service.SERVICE_ID))
-        #Log.Info("document_type_obj--------------->"+str(document_type_obj.DOCTYP_ID))
-        if document_type_obj is not None:
-            document_type_list.append(document_type_obj.DOCTYP_ID)
-    if 'ZTBC' in document_type_list:
-        document_type = 'ZTBC'
-    elif not service_obj:
-        document_type = 'ZTBC'
+def update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId):
+    service_obj  = Sql.GetFirst("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServicerecordId}'".format(QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId,ServicerecordId = ServicerecordId))
+        
+    Quote_obj = Sql.GetFirst("SELECT POES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId))
+    if service_obj:
+        document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_obj.SERVICE_ID,Quote_obj.POES))
+        Sql.RunQuery("UPDATE SAQTSV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId,ServicerecordId = ServicerecordId))
     else:
-        document_type = document_type_obj.DOCTYP_ID
-    #Log.Info(document_type_list)
-    document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID = '{}'".format(document_type))
-    #Log.Info("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
-    Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+        if str(Quote_obj.POES).upper() =="TRUE":
+            document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID ='ZSWC'")
+        else:
+            document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT where DOCTYP_ID ='ZTBC'")    
+        
 
+    Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId)) 
+    Log.Info("CQDOCUTYPE--------->UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId = QuoteRecordId,RevisionRecordId = RevisionRecordId))             
 try:
     QuoteRecordId = Param.QUOTE_RECORD_ID
     RevisionRecordId = Param.QTEREV_RECORD_ID
+    ServicerecordId = Param.SERVICE_ID
 except:
     QuoteRecordId = ""
-    RevisionRecordId = ""    
-update_document_type(QuoteRecordId,RevisionRecordId)
+    RevisionRecordId = "" 
+    ServicerecordId = ""   
+update_document_type(QuoteRecordId,RevisionRecordId,ServicerecordId)
