@@ -49,7 +49,7 @@ class ContractQuoteItem:
 		return True
 
 	def _quote_item_delete_process(self):
-		for delete_object in ['SAQIAE','SAQICA', 'SAQIEN', 'SAQICO']:
+		for delete_object in ['SAQIAE','SAQICA','SAQIEN','SAQICO']:
 			delete_statement = "DELETE DT FROM " +str(delete_object)+" DT JOIN SAQSCE ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND SAQSCE.CONFIGURATION_STATUS ='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))
 			Sql.RunQuery(delete_statement)
 
@@ -58,6 +58,16 @@ class ContractQuoteItem:
 		
 		delete_statement = "DELETE DT FROM SAQIFL DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.FABLOCATION_ID NOT IN(SELECT CO.FABLOCATION_ID FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')""".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
 		Sql.RunQuery(delete_statement) 
+
+		quote_line_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQICO (NOLOCK) QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		if not quote_line_item_obj:
+			self._native_quote_edit()
+			Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			for item in Quote.MainItems:
+				item.Delete()
+			# Update Zero in Quote custom fields
+			self._native_quote_item_update()
+		return True
 
 	def _quote_item_insert_process(self, where_string='', max_quote_item_count=0):
 		# Insert SAQITM - Start
@@ -926,6 +936,8 @@ class ContractQuoteItem:
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()	
+		else:
+			self._quote_item_delete_process()
 
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":
