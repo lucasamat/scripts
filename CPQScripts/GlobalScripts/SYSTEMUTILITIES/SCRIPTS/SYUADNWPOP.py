@@ -3717,6 +3717,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 			#get consumable and non consumable values from XML start
 			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+			iclusions_val_list = []
 			get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = 'Z0091' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE = 'Some Exclusions'")
 			non_consumable_val_mamsop = consumable_value_mamsop = ''
 			for val in get_xml_val:
@@ -3725,20 +3726,20 @@ def POPUPLISTVALUEADDNEW(
 					consumable_value_mamsop = 'N'
 				elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
 					consumable_value_mamsop  = 'C'
-				#iclusions_val.append(consumable_value_mamsop)
+				iclusions_val_list.append(consumable_value_mamsop)
 			Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
 			#get consumable and non consumable values from XML end
 			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			if non_consumable_val_mamsop:
-				iclusions_val = non_consumable_val_mamsop
-			elif consumable_value:
-				iclusions_val = consumable_value
-			elif non_consumable_val_mamsop and consumable_value:
-				iclusions_val = non_consumable_val_mamsop+','+consumable_value
-			else:
-				iclusions_val = ''
-			Trace.Write('iclusions_val---'+str(iclusions_val))
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in ('{iclusions_val}') and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+			# if non_consumable_val_mamsop:
+			# 	iclusions_val = non_consumable_val_mamsop
+			# elif consumable_value:
+			# 	iclusions_val = consumable_value
+			# elif non_consumable_val_mamsop and consumable_value:
+			# 	iclusions_val = non_consumable_val_mamsop+','+consumable_value
+			# else:
+			# 	iclusions_val = ''
+			Trace.Write('iclusions_val---'+str(iclusions_val_list))
+			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in ('{iclusions_val}') and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val_list)
 			#Trace.Write('inner_join----'+str(inner_join))
 			#Trace.Write('ordered_keys----'+str(ordered_keys))
 			#Trace.Write('additional_where----'+str(additional_where))
