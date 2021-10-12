@@ -3738,8 +3738,8 @@ def POPUPLISTVALUEADDNEW(
 			# 	iclusions_val = non_consumable_val_mamsop+','+consumable_value
 			# else:
 			# 	iclusions_val = ''
-			Trace.Write('iclusions_val---'+str(iclusions_val_list))
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in ('{iclusions_val}') and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val_list)
+			Trace.Write('iclusions_val---'+str(type(iclusions_val_list)))
+			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in ('{iclusions_val}') and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = tuple(iclusions_val_list))
 			#Trace.Write('inner_join----'+str(inner_join))
 			#Trace.Write('ordered_keys----'+str(ordered_keys))
 			#Trace.Write('additional_where----'+str(additional_where))
