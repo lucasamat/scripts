@@ -3734,7 +3734,7 @@ def POPUPLISTVALUEADDNEW(
 			#Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
 			#get consumable and non consumable values from XML end
 			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			iclusions_val = str(tuple(iclusions_val)).replace(',)',')')
+			iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
 			Trace.Write('iclusions_val---'+str(iclusions_val))
 			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
 			#Trace.Write('inner_join----'+str(inner_join))
