@@ -837,7 +837,7 @@ class Entitlements:
 					getvalue = str((dict_val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
 					if str(self.treeparam) == "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
-						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str((dict_val).split("||")[0]).strip() == "Some Exclusions":
+						if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions"):
 							service_id = self.treeparam
 							ancillary_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = 'Z0101' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
 							material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0101'")
