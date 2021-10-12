@@ -3726,6 +3726,16 @@ def POPUPLISTVALUEADDNEW(
 			Trace.Write('inner_join----'+str(inner_join))
 			Trace.Write('ordered_keys----'+str(ordered_keys))
 			Trace.Write('additional_where----'+str(additional_where))
+			# table_data = Sql.GetList(
+			# 	"select {} from {} (NOLOCK) {} {} {} {} {}".format(
+			# 		", ".join(ordered_keys),
+			# 		ObjectName
+			# 		,inner_join if inner_join else "",
+			# 		"WHERE " + where_string if where_string else "" ,
+			# 		additional_where,
+			# 		order_by,pagination_condition
+			# 	)
+			# )
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
 					", ".join(ordered_keys),
