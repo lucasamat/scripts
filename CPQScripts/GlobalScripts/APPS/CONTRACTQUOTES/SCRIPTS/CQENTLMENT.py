@@ -166,7 +166,6 @@ class Entitlements:
 			# 	NewValue = ''
 		#Trace.Write('cpsmatchID--132-----------'+str(cpsmatchID))
 		#Trace.Write('AttributeID--132-----------'+str(AttributeID))
-		Trace.Write('NewValue--132-----------'+str(NewValue))
 		response = self.Request_access_token()
 		webclient = System.Net.WebClient()		
 		Trace.Write(response["access_token"])
