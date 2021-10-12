@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO LOAD SUMMARY IN QUOTE ITEMS
 #   __primary_author__ : NAMRATA SIVAKUMAR
 #   __create_date : 12/10/2021
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
 import SYTABACTIN as Table
@@ -16,7 +16,7 @@ def LoadSummary():
     # #Oppp_SECT = Sql.GetList(
     #     "SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = '{primary_objname}' ORDER BY DISPLAY_ORDER".format(primary_objname = primary_objname))
     #for sect in Oppp_SECT: 
-    sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
+    #sec_str += '<div id="container" class="wdth100 margtop10 ' + str("TOOL IDLING") + '">'
     # if (str(sect.SECTION_NAME) == "CONTRACT BOOKING INFORMATION" or str(sect.SECTION_NAME) == "AUDIT INFORMATION" ):
     #     sec_str += (
     #         '<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down mt-10px" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'
@@ -32,23 +32,15 @@ def LoadSummary():
     #     edit_action = str(sec_html_btn.HTML_CONTENT).format(rec_id = str(sect.RECORD_ID), edit_click = str(editclick))
     # else:
     #     edit_action = ''
+    #sec_str += (
     sec_str += (
-        '''<div id="container" class="wdth100 margtop10"><div onclick="dyn_main_sec_collapse_arrow(this)" 
-        data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
-        'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" 
-            data-target=".sec_"  id="dyn1577"  data-toggle="collapse"  class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
-        <label data-bind="html: hint" class="onlytext"><div>'''+str("TOOL IDLING")+'''</div></label> </div>'''
+        '<div style="padding-left: 0 !important;padding-right: 5px !important;" class="col-md-12 col-sm-12 col-xs-12 section_row_fld opport_info trans_hide enable_custom_fld transaction_summary_new quote_summary collapse in" data-bind="attr:{"id":$data.name}" id="IdlingAllowed"><div class="col-md-5 col-sm-6 col-xs-12 property_label section_cust_fld_txt"><!--<span style="display:none;" id="aabb" data-bind="text: console.log("test 44---",stdAttrCode())"></span>--><label data-bind="html: label" title="" style="display: inline-block;">Idling Allowed</label></div><div class="col-md-7 col-sm-6 col-xs-12 property_value section_cust_fld_val"><span class="hint_icon_req"><i class="fa fa-info-circle autoClosePopover"></i><span class="req-field mrg_lft_ft_lft" style="visibility: hidden;">*</span></span><span data-bind="visible: isRequiredIndicatorVisible" class="required" style="display: none;">*</span><a target="_blank" class="oppo_link"><span data-bind="text: content" tabindex="6">Yes</span></a><i class="fa fa-lock" aria-hidden="true" style="font-size: 13px;float: right;color: #cccaca !important;"></i></div></div>'
     )
-    sec_str += '<div id="sec_" class=  "sec_" collapse in "> '
-    sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
-    sec_str += (
-        "<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
-        + str("Idling Allowed")
-        + "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
-        + str("Idling Allowed")
-        + "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str("Idling Allowed")+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str("Idling Allowed")+"' class='fa fa-info-circle fltlt'></i></a> </div>"
-    )
-
+    '''sec_str += (
+                "<div class='col-md-3 pad-0'> <input type='text' title = '"+ str("YES")+"' value = '"
+                + str("YES")
+                + "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+                )'''
 
     '''Oppp_SEFL = Sql.GetList(
         "SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
@@ -210,7 +202,7 @@ def LoadSummary():
         # else:
     edit_lock_icon = "fa fa-lock"
     ##edit_lock_icon in quote based on permission ends
-    sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
+    #sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
     sec_str += "</div>"
 
     sec_str += "</div>"
@@ -244,9 +236,9 @@ def LoadSummary():
 
     #return sec_str,quote_id,accunt_id,accunt_name,quote_type,sale_type,valid_from,valid_to
     Trace.Write("sec_str --->"+str(sec_str))
-    return sec_str
+    return str(sec_str)
 
 SubtabName = Param.SUBTAB
 if SubtabName == "Summary":
-    LoadSummary()
+    ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 
