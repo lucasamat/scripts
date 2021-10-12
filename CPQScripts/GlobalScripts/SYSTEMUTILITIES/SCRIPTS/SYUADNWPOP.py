@@ -3722,20 +3722,21 @@ def POPUPLISTVALUEADDNEW(
 			for val in get_xml_val:
 				#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 				if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
-					non_consumable_val_mamsop = 'N'
+					consumable_value_mamsop = 'N'
 				elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
 					consumable_value_mamsop  = 'C'
+				iclusions_val.append(consumable_value_mamsop)
 			Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
 			#get consumable and non consumable values from XML end
 			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			if non_consumable_val_mamsop:
-				iclusions_val = non_consumable_val_mamsop
-			elif consumable_value:
-				iclusions_val = consumable_value
-			elif non_consumable_val_mamsop and consumable_value:
-				iclusions_val = non_consumable_val_mamsop+','+consumable_value
-			else:
-				iclusions_val = ''
+			# if non_consumable_val_mamsop:
+			# 	iclusions_val = non_consumable_val_mamsop
+			# elif consumable_value:
+			# 	iclusions_val = consumable_value
+			# elif non_consumable_val_mamsop and consumable_value:
+			# 	iclusions_val = non_consumable_val_mamsop+','+consumable_value
+			# else:
+			# 	iclusions_val = ''
 			Trace.Write('iclusions_val---'+str(iclusions_val))
 			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in ('{iclusions_val}') and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
 			#Trace.Write('inner_join----'+str(inner_join))
