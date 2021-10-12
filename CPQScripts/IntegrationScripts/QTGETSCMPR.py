@@ -87,12 +87,14 @@ try:
             timestamp_sessionid = "'" + str(sessionid.A) + "'"
 
             Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
+
+            LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='SSCM_DATA_GETMETHOD'")
             
             primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,INTEGRATION_KEY,CpqTableEntryDateModified)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''SSCM_TO_CPQ_PRICING_DATA1'',''"+str(quote_id)+ "'',GETDATE() ' ")
 
             Log.Info("QTGETSCMPR Ends---->Hitting2")
             
-            webRequest = 'https://amat-staging-dev.apigee.net/sscm/pricingDataServices/v1/cpq/pricing/toolDataRequest?sessionid='+str(Sesion_id)+'&quoteid='+str(quote_id)+''
+            webRequest = str(LOGIN_CRE.URL).format(Sesion_id = Sesion_id,quote_id =quote_id )
             def GetNewRequest(targetUrl, Btoken):
 
                 newRequest = HttpWebRequest.Create(targetUrl)
