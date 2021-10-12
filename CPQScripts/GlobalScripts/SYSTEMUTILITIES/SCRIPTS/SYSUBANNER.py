@@ -2542,7 +2542,7 @@ def Related_Sub_Banner(
             price_bar = "acquired_status"
             Trace.Write("config status==="+str(price_bar))
         else:
-            buttonvisibility = "not_acquired_status"
+            price_bar = "not_acquired_status"
             Trace.Write("config status111==="+str(price_bar))                    
         if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
