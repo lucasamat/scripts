@@ -29,6 +29,7 @@ try:
 	
 	primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter1.QUERY_CRITERIA_1)+ " SYINPL SET STATUS = ''DUPLICATE'' FROM SYINPL (NOLOCK)  JOIN(SELECT MIN(CPQTABLEENTRYID) AS CPQTABLEENTRYID,INTEGRATION_PAYLOAD FROM SYINPL (NOLOCK) WHERE INTEGRATION_NAME = ''CRM_TO_CPQ_CONTRACT_ID'' AND ISNULL(STATUS ,'''')= '''' GROUP BY INTEGRATION_PAYLOAD HAVING COUNT(CPQTABLEENTRYID)>1) SUB_SYINPL ON SYINPL.INTEGRATION_PAYLOAD = SUB_SYINPL.INTEGRATION_PAYLOAD  WHERE SYINPL.CPQTABLEENTRYID <> SUB_SYINPL.CPQTABLEENTRYID  ' ")
 	
+	LOGIN_CRE = SqlHelper.GetFirst("SELECT URL FROM SYCONF (nolock) where EXTERNAL_TABLE_NAME ='CONTRACT_DATA_GETMETHOD'")
 	while check_flag == 0:
 		
 		ContractIdquery = SqlHelper.GetList("SELECT INTEGRATION_PAYLOAD from SYINPL(NOLOCK) where INTEGRATION_NAME = 'CRM_TO_CPQ_CONTRACT_ID' and ISNULL(STATUS ,'')= '' ")			
@@ -36,7 +37,9 @@ try:
 		if len(ContractIdquery) > 0:
 			for Cnt_Id in ContractIdquery:		
 
-				webRequest = 'https://amat-staging-dev.apigee.net/sap/crm/salesDataServices/v1/cpq/contract?ContractIDJSON={ "ContractIDJSON" : "'+str(Cnt_Id.INTEGRATION_PAYLOAD)+'" }'
+				contract_input = '{ "ContractIDJSON" : "'+str(Cnt_Id.INTEGRATION_PAYLOAD)+'" }'
+
+				webRequest = str(LOGIN_CRE.URL).format(contract_input)
 				
 				
 				def GetNewRequest(targetUrl, Btoken):
