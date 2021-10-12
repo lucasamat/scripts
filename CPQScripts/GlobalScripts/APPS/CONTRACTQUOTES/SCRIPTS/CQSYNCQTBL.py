@@ -126,8 +126,7 @@ class SyncQuoteAndCustomTables:
 	def CreateEntitlements(self,quote_record_id):
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
-		#Log.Info("quote_record_id---123------"+str(quote_record_id))
-		tableInfo = SqlHelper.GetTable("SAQTSE")
+		#Log.Info("quote_record_id---123------"+str(quote_record_id))		
 		x = datetime.datetime.today()
 		x= str(x)
 		y = x.split(" ")
@@ -179,8 +178,7 @@ class SyncQuoteAndCustomTables:
 			ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 			if ProductVersionObj is not None:
 				tbrow={}
-				insertservice =ent_disp_valdate =  ""
-				tblist = []
+				insertservice = ""
 				#Log.Info("178----")
 				for attrs in overallattributeslist:
 					#tbrow1 = {}
@@ -218,19 +216,17 @@ class SyncQuoteAndCustomTables:
 								#Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
 								ent_disp_val = ent_disp_val
 								ent_val_code = ''
-						else:
-							Trace.Write('208--attrs---'+str(attrs))
+						else:							
 							ent_disp_val = ent_disp_val
 							ent_val_code = ent_val_code
 						#Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
 						if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.SERVICE_ID: 
 							try:
 								QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-								Trace.Write('208--attrs---date check')
+								
 								QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
 								contract_days = (QuoteEndDate - QuoteStartDate).days
-								ent_disp_val = 	str(contract_days)
-								Trace.Write('208--attrs---date check--ent_disp_val--'+str(ent_disp_val))
+								ent_disp_val = 	str(contract_days)								
 							except:
 								#Log.Info('except-----')
 								ent_disp_val = ent_disp_val 
@@ -309,12 +305,9 @@ class SyncQuoteAndCustomTables:
 				#Trace.Write('257----')
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-				Trace.Write('269-addednew trace---')
 				#9226 starts
 				if AttributeID_Pass:
-					try:
-						Trace.Write('312---NewValue--'+str(NewValue))
-						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					try:						
 						add_where =''
 						ServiceId = OfferingRow_detail.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
@@ -323,10 +316,8 @@ class SyncQuoteAndCustomTables:
 					except:
 						Trace.Write('error--296')
 				#9226 ends
-				try:
-					Trace.Write('269--')
-					if 'Z0016' in OfferingRow_detail.SERVICE_ID:
-						Trace.Write('269--OfferingRow_detail--')
+				try:					
+					if 'Z0016' in OfferingRow_detail.SERVICE_ID:						
 						try:
 							QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
 							QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
@@ -335,9 +326,7 @@ class SyncQuoteAndCustomTables:
 						except:
 							#Log.Info('except-----')
 							ent_disp_val = ent_disp_val
-						Trace.Write('269--OfferingRow_detail-ent_disp_val----'+str(ent_disp_val))
-						cpsmatchID = tbrow["CPS_MATCH_ID"]
-						cpsConfigID = Fullresponse['id']
+						
 						if int(ent_disp_val) > 364:
 							try:
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -349,15 +338,11 @@ class SyncQuoteAndCustomTables:
 								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 							except:
-								pass
-
-							
+								pass							
 				except:
-					Trace.Write('except scenario----final--')
-					cpsmatc_incr = ''
+					Trace.Write('except scenario----final--')					
 				#calling pre-logic valuedriver script
-				try:
-					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+				try:					
 					where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(quote_record_id, quote_revision_record_id, OfferingRow_detail.SERVICE_ID)
 					# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 					
@@ -429,8 +414,7 @@ class SyncQuoteAndCustomTables:
 				paydesc = ""
 				payrec = ""
 				pay_days = pay_name = ""
-				if not quote_obj:
-					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
+				if not quote_obj:					
 					if custom_fields_detail.get("SalesOrgID"):
 						salesorg_obj = Sql.GetFirst(
 							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
@@ -530,7 +514,7 @@ class SyncQuoteAndCustomTables:
 					#expired_date_val = date.today()+ timedelta(days=365)
 					expired_date_val = datetime.datetime.strptime(end_date, '%m/%d/%Y').date()
 					expired_date_val = expired_date_val + timedelta(days=365)
-					Trace.Write(str(expired_date_val)+'571----expired_date_val---'+str(type(end_date)))
+					#Trace.Write(str(expired_date_val)+'571----expired_date_val---'+str(type(end_date)))
 					#quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
 					# if salesorg_obj and get_rev_details:
 					# 	quote_rev_data = {
@@ -1213,7 +1197,6 @@ class SyncQuoteAndCustomTables:
 						fab_location_ids, service_ids = [], []
 						equipment_data = {}
 						covered_object_data = {}
-						service_level_covered_object_data = {}
 						payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
 						payload_json = eval(payload_json.get('Param'))
 						payload_json = payload_json.get('CPQ_Columns')
