@@ -3753,7 +3753,7 @@ def POPUPLISTVALUEADDNEW(
 					order_by,pagination_condition
 				)
 			)
-			Trace.Write('3721---')
+			Trace.Write('3721-----')
 			QueryCountObj = Sql.GetFirst(
 					"select count(*) as cnt from {} (NOLOCK) {} {} {} ".format(
 					ObjectName,
