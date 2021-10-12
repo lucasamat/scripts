@@ -1270,7 +1270,7 @@ def Related_Sub_Banner(
                     getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
                     PrimaryLable = "Product Offering ID"
                     PrimaryValue = TreeParam
-                    ThirdLable = "Product Offering Type"
+                    ThirdLable = "POA Product Offering Quote Item Grouping"
                     ThirdValue = TreeParentParam
                     if ObjName == "SAQSPT":
                         parts_obj = Sql.GetFirst("select PART_NUMBER from SAQSPT(nolock) where QUOTE_SERVICE_PART_RECORD_ID = '{}'".format(CurrentRecordId))
