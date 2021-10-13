@@ -517,7 +517,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						'<div class="col-md-3 padtop5 padleft10"><select id="'
 						+ str(sefl_api) 
-						+ '" type="text" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow" value="'
+						+ '" type="text" class="form-control pop_up_brd_rad related_popup_css fltlt" value="'
 						+ str(eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
 						+ 'disabled ><span class="lbl"></span><option value="Select"></option>'
