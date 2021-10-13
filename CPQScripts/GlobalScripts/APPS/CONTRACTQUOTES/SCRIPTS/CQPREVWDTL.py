@@ -507,7 +507,34 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 							+ '" class="custom" '
 							+ 'disabled ><span class="lbl"></span></div>'
 						)
-				
+				elif data_type =="PICKLIST":
+					
+                    Sql_Quality_Tier = Sql.GetFirst(
+                        "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='SAQTRV' and DATA_TYPE='PICKLIST' and API_NAME = '"
+                        + str(sefl_api)
+                        + "' "
+                    )
+					sec_str += (
+						'<div class="col-md-3 padtop5 padleft10"><select id="'
+						+ str(sefl_api) 
+						+ '" type="text" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow" value="'
+						+ str(eval("col_name." + str(sefl_api)))
+						+ '" class="custom" '
+						+ 'disabled ><span class="lbl"></span><option value='Select'></option>'
+					)
+					if (
+						str(Sql_Quality_Tier.PICKLIST_VALUES).strip() is not None
+						and str(Sql_Quality_Tier.PICKLIST_VALUES).strip() != ""
+					):						
+						Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")		
+						for req1 in Tier_List:
+							req1 = req1.strip()							
+							if current_obj_value == req1:								
+								sec_str += "<option selected>" + str(req1) + "</option>"
+							else:								
+								sec_str += "<option>" + str(req1) + "</option>"
+					else:						
+						sec_str += "<option selected>" + str(current_obj_value) + "</option></div>"
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
