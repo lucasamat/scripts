@@ -112,24 +112,24 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
 	WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	##Updating custom fields...
-	# total_item_obj = SqlHelper.GetFirst("""SELECT 
-	# SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
-	# SUM(ISNULL(SALES_PRICE, 0)) as SALES_PRICE,
-	# SUM(ISNULL(YEAR_OVER_YEAR, 0)) as YEAR_OVER_YEAR,
-	# SUM(ISNULL(YEAR_1, 0)) as YEAR_1,
-	# SUM(ISNULL(YEAR_2, 0)) as YEAR_2,
-	# SUM(ISNULL(YEAR_3, 0)) as YEAR_3,
-	# SUM(ISNULL(YEAR_4, 0)) as YEAR_4,
-	# SUM(ISNULL(YEAR_5, 0)) as YEAR_5
-	# FROM SAQITM (NOLOCK)
-	# WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
-	#if total_item_obj is not None:
-		# Quote.GetCustomField('TOTAL_NET_PRICE').Content = str(total_item_obj.SALES_PRICE)
-		# Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
-		# Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
-		# Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)
-		# Quote.GetCustomField('YEAR_3').Content = str(total_item_obj.YEAR_3)
-		# Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_item_obj.EXTENDED_PRICE)
+	total_item_obj = SqlHelper.GetFirst("""SELECT 
+	SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
+	SUM(ISNULL(SALES_PRICE, 0)) as SALES_PRICE,
+	SUM(ISNULL(YEAR_OVER_YEAR, 0)) as YEAR_OVER_YEAR,
+	SUM(ISNULL(YEAR_1, 0)) as YEAR_1,
+	SUM(ISNULL(YEAR_2, 0)) as YEAR_2,
+	SUM(ISNULL(YEAR_3, 0)) as YEAR_3,
+	SUM(ISNULL(YEAR_4, 0)) as YEAR_4,
+	SUM(ISNULL(YEAR_5, 0)) as YEAR_5
+	FROM SAQITM (NOLOCK)
+	WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+	if total_item_obj is not None:
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content = str(total_item_obj.SALES_PRICE)
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content = str(total_item_obj.YEAR_OVER_YEAR)
+		Quote.GetCustomField('YEAR_1').Content = str(total_item_obj.YEAR_1)
+		Quote.GetCustomField('YEAR_2').Content = str(total_item_obj.YEAR_2)
+		Quote.GetCustomField('YEAR_3').Content = str(total_item_obj.YEAR_3)
+		Quote.GetCustomField('EXTENDED_PRICE').Content = str(total_item_obj.EXTENDED_PRICE)
 
 		#Sql.RunQuery("""UPDATE A SET NET_PRICE_INGL_CURR = {net_price}, NET_VALUE = {net_val}, YEAR_1_INGL_CURR = {total_year_1}, YEAR_2_INGL_CURR = {total_year_2}, YEAR_3_INGL_CURR = {total_year_3}, YEAR_4_INGL_CURR = {total_year_4}, YEAR_5_INGL_CURR = {total_year_5} FROM SAQTRV (NOLOCK) INNER JOIN  WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format( net_price = total_item_obj.SALES_PRICE , net_val = total_item_obj.EXTENDED_PRICE, total_year_1 = total_item_obj.YEAR_1, total_year_2 = total_item_obj.YEAR_2,total_year_3 = total_item_obj.YEAR_3, total_year_4 = total_item_obj.YEAR_4, total_year_5 = total_item_obj.YEAR_5, quote_rec_id = Quote.GetGlobal("contract_quote_record_id"),quote_revision_rec_id = Quote.GetGlobal("quote_revision_record_id")) )
 
