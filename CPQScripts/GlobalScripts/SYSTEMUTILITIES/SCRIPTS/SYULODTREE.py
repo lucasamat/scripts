@@ -2019,10 +2019,11 @@ class TreeView:
 										NodeText = image_url+NodeText
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
-									NodeText = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
+									if get_fab_name:
+										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 
 
-								ChildDict["text"] = NodeText
+								ChildDict["text"] = NodeText_temp
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
 								"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
