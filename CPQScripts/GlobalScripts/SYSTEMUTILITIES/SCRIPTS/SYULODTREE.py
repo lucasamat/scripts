@@ -2017,6 +2017,7 @@ class TreeView:
 									if image_url:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
+								NodeText_temp = ""
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
 									if get_fab_name:
