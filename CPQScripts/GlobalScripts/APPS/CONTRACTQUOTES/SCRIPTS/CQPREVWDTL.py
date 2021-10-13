@@ -520,7 +520,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 						+ '" type="text" class="form-control pop_up_brd_rad related_popup_css fltlt light_yellow" value="'
 						+ str(eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
-						+ 'disabled ><span class="lbl"></span><option value='Select'></option>'
+						+ 'disabled ><span class="lbl"></span><option value="Select"></option>'
 					)
 					if (
 						str(Sql_Quality_Tier.PICKLIST_VALUES).strip() is not None
