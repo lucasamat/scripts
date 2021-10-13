@@ -2064,7 +2064,7 @@ class SYLDRTLIST:
                             Qustr += " AND SERVICE_ID = '"+str(TreeParam)+"'"
                         Trace.Write('In 1958---'+str(Qustr))
                         if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825"):
-                        	Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+                            Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
                             Trace.Write('Adding QTEREV_RECORD_ID')
                         Qury_str = (
                             "select DISTINCT top "
