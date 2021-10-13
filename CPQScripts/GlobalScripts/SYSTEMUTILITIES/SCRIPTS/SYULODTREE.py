@@ -1938,7 +1938,7 @@ class TreeView:
 									NodeText += " - "
 									NodeName1 = Nodesplit[1]
 									NodeText += str(eval("childdata." + str(NodeName1)))									
-									childQueryObj = SqlHelper.GetFirst(
+									childQueryObj = Sql.GetFirst(
 										"select * from "
 										+ str(ObjName)
 										+ " (nolock) where "
