@@ -16,10 +16,10 @@ Sql = SQL()
 
 
 def quote_header_details():
-    Trace.Write("inside the CPQTOC4CWB11111111111")
+    Log.Info("inside the CPQTOC4CWB11111111111")
     revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
     quote_obj = Sql.GetFirst("select NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-    Trace.Write("inside the CPQTOC4CWB22222222222")
+    Log.Info("inside the CPQTOC4CWB22222222222")
     quote_header_data = {
         "ProcessingTypeCode": revision_obj.DOCTYP_ID,
         "BuyerPartyID": quote_obj.ACCOUNT_ID,
@@ -35,7 +35,7 @@ def quote_header_details():
         "ZWB_TotalQuoteContent_KUT": quote_obj.NET_VALUE,
         "ZWB_TotalQuotecurrencyCode_KUT" : "USD"
     }
-    Trace.Write("inside the CPQTOC4CWB3333333"+str(quote_header_data))
+    Log.Info("inside the CPQTOC4CWB3333333"+str(quote_header_data))
     return quote_header_data
     
     
