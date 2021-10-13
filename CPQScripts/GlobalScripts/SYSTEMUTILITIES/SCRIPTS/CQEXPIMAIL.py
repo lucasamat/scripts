@@ -28,7 +28,7 @@ class qt_expiration_mail_trigger:
             getting_quotes = Sql.GetList("SELECT OWNER_NAME,QUOTE_ID,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
             for quote in getting_quotes:
                 employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_NAME = '"+str(quote.OWNER_NAME)+"'")
-                expiration_date = str(quote.CONTRACT_VALID_TO).split(" ")[0].strip()
+                expiration_date = str(quote.QUOTE_EXPIRE_DATE).split(" ")[0].strip()
                 Subject = "Your Quote is going to Expire in 7 Days"
                 mailBody = """
                             Dear """+str(quote.OWNER_NAME)+""",<br><br>
@@ -115,10 +115,18 @@ expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) W
 
 # if today_date_string == mail_trigger_date:
 expired_quotes = []
-for quotes in expired_quotes_query:
-    expired_quotes.append(quotes.QUOTE_ID)
-if expired_quotes is not None:
-    expiration_obj.mailtrigger(expired_quotes)
+for quotes in expired_quotes_query:   
+    expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
+    Trace.Write("expire_date_CHK_J "+str(expire_date))
+    if target_mail_date == expire_date:
+        expired_quotes.append(quotes.QUOTE_ID)
+    if expired_quotes is not None:
+        expiration_obj.mailtrigger(expired_quotes)
+# expired_quotes = []
+# for quotes in expired_quotes_query:
+#     expired_quotes.append(quotes.QUOTE_ID)
+# if expired_quotes is not None:
+#     expiration_obj.mailtrigger(expired_quotes)
 
 
 
