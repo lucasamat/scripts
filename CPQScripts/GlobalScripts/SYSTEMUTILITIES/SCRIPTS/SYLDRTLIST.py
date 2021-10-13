@@ -8027,9 +8027,8 @@ class SYLDRTLIST:
                                         value1234 = ""
                                     Trace.Write("POP_1 "+str(value1234))
                                     lookup_val = str(lookup_obj.LOOKUP_OBJECT)
-                                    pop_val[key] = str(value1234) + "|" + lookup_val
-                                    for ele in key:
-                                        trace.Write("TRAZ_CHK_J "+str(ele)+" - "+str(lookup_val))
+                                    if key:
+                                        pop_val[key] = str(value1234) + "|" + lookup_val
                                     #if str(pop_val).startswith("{<System"):
                                     #    pop_val = ""
                                     #Trace.Write("POP_1_J "+" - "+str(pop_val)+" - "+str(value1234)+" - "+str(lookup_val))
