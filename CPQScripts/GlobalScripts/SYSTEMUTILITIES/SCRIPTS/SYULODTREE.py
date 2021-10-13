@@ -2018,7 +2018,8 @@ class TreeView:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
-									NodeText = NodeText +' - '+ childQueryObj.FABLOCATION_NAME
+									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
+									NodeText = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 
 
 								ChildDict["text"] = NodeText
