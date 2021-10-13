@@ -218,22 +218,22 @@ def create_new_revision(Opertion,cartrev):
 		for item in Quote.MainItems:
 			item.Delete()
 		## making the quote summary custom field empty
-		# Quote.GetCustomField('TARGET_PRICE').Content = '' 
-		# Quote.GetCustomField('CEILING_PRICE').Content = ''
-		# Quote.GetCustomField('TOTAL_COST').Content = '' 
-		# Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = ''
-		# Quote.GetCustomField('BD_PRICE_MARGIN').Content = ''
-		# Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = ''
-		# Quote.GetCustomField('TOTAL_NET_PRICE').Content = ''
-		# Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
-		# Quote.GetCustomField('YEAR_1').Content = '' 
-		# Quote.GetCustomField('YEAR_2').Content = '' 
-		# Quote.GetCustomField('YEAR_3').Content = '' 
-		# Quote.GetCustomField('TAX').Content = '' 
-		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
-		# Quote.GetCustomField('MODEL_PRICE').Content = '' 
-		# Quote.GetCustomField('BD_PRICE').Content = ''
-		# Quote.GetCustomField('DISCOUNT').Content = ''
+		Quote.GetCustomField('TARGET_PRICE').Content = '' 
+		Quote.GetCustomField('CEILING_PRICE').Content = ''
+		Quote.GetCustomField('TOTAL_COST').Content = '' 
+		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = ''
+		Quote.GetCustomField('BD_PRICE_MARGIN').Content = ''
+		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = ''
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content = ''
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
+		Quote.GetCustomField('YEAR_1').Content = '' 
+		Quote.GetCustomField('YEAR_2').Content = '' 
+		Quote.GetCustomField('YEAR_3').Content = '' 
+		Quote.GetCustomField('TAX').Content = '' 
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
+		Quote.GetCustomField('MODEL_PRICE').Content = '' 
+		Quote.GetCustomField('BD_PRICE').Content = ''
+		Quote.GetCustomField('DISCOUNT').Content = ''
 		Quote.Save()
 		#Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
@@ -270,15 +270,15 @@ def set_active_revision(Opertion,cartrev):
 		time.sleep( 5 )
 		Quote.RefreshActions()
 		##assigning active revision custom field value
-		# get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(quote_contract_recordId, get_rev_info_details.CART_ID, Quote.UserId ))
-		# cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
-		# if get_act_rev_custom_val:
-		# 	for i in cust_list:
-		# 		#a = "TOTAL_COST:0.0 USD,TOTAL_NET_PRICE:0.0 USD,DISCOUNT:60 %25,"
-		# 		val = re.findall(r''+i+':[\w\W]*?,', get_act_rev_custom_val.globals)
-		# 		val = str(val[0][:-1].split(':')[1].strip() )
-		# 		Trace.Write('res-'+str(val) )
-		# 		Quote.GetCustomField(i).Content = val
+		get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(quote_contract_recordId, get_rev_info_details.CART_ID, Quote.UserId ))
+		cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
+		if get_act_rev_custom_val:
+			for i in cust_list:
+				#a = "TOTAL_COST:0.0 USD,TOTAL_NET_PRICE:0.0 USD,DISCOUNT:60 %25,"
+				val = re.findall(r''+i+':[\w\W]*?,', get_act_rev_custom_val.globals)
+				val = str(val[0][:-1].split(':')[1].strip() )
+				Trace.Write('res-'+str(val) )
+				Quote.GetCustomField(i).Content = val
 						
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)

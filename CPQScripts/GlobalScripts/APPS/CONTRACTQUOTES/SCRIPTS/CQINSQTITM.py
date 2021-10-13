@@ -565,21 +565,21 @@ class ContractQuoteItem:
 					item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
 					total_extended_price += item.NET_VALUE.Value	
 					item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
-		# Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
-		# Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
-		# Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
-		# Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
-		# Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
-		# Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
-		# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
-		# Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
-		# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
-		# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
-		# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
-		# Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
-		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
-		# Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
-		# Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
+		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
+		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
+		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
+		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
+		Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
+		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
+		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
+		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
+		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
+		Quote.GetCustomField('MODEL_PRICE').Content = str(total_model_price) + " " + get_curr
+		Quote.GetCustomField('BD_PRICE').Content = str(total_bd_price) + " " + get_curr
 		#Quote.GetCustomField('DISCOUNT').Content = str(total_discount) + " %"
 
 
