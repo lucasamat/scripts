@@ -5901,6 +5901,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
 		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
 		Quote.Save()
+		
+		Sql.RunQuery("""UPDATE SAQTRV SET TARGET_PRICE_INGL_CURR = {total_target}, BD_PRICE_INGL_CURR = {bd_price}, CEILING_PRICE_INGL_CURR = {ceiling_price}, NET_PRICE_INGL_CURR = {net_price}, TAX_AMOUNT_INGL_CURR = {tax_amt}, NET_VALUE = {net_val}, SLSDIS_PRICE_INGL_CURR = {sls_price}, YEAR_1_INGL_CURR = {total_year_1}, YEAR_2_INGL_CURR = {total_year_2}, YEAR_3_INGL_CURR = {total_year_3}, YEAR_4_INGL_CURR = {total_year_4}, YEAR_5_INGL_CURR = {total_year_5}  WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(total_target= total_target_price, bd_price = total_bd_price, ceiling_price = total_ceiling_price, net_price = total_sales_price, tax_amt = total_tax, net_val = total_extended_price, sls_price = total_sls_discount_price, total_year_1 = total_year_1, total_year_2 = total_year_2,total_year_3 = total_year_3, total_year_4 = total_year_4, total_year_5 = total_year_5, quote_rec_id = self.contract_quote_record_id,quote_revision_rec_id = self.quote_revision_record_id ) )
 		#assigning value to custom fields(quote summary section) in quote items node ends
 
 		##calling the iflow for pricing..
