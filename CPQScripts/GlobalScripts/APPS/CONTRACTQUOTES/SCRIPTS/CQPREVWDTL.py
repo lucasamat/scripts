@@ -452,13 +452,24 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class= "sec_' + str(sect.RECORD_ID) + ' collapse in">'
 			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
-			sec_str += (
-				"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
-				+ str(sefl.FIELD_LABEL)
-				+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
-				+ str(sefl.FIELD_LABEL)
-				+ "</label> </abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
-			)
+			if sefl.REQUIRED == "True" or sefl.REQUIRED == "1":
+				mandatory = '<span class="req-field mrg3fltltmt7"  >*</span>'
+			
+				sec_str += (
+					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+					+ str(sefl.FIELD_LABEL)
+					+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+					+ str(sefl.FIELD_LABEL)
+					+ "</label><span class='req-field mrg3fltltmt7' >*</span></abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+				)
+			else:
+				sec_str += (
+					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+					+ str(sefl.FIELD_LABEL)
+					+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+					+ str(sefl.FIELD_LABEL)
+					+ "</label></abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+				)
 			sefl_api = sefl.API_FIELD_NAME
 			object_name = sefl.API_NAME
 			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
