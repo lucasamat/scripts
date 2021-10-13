@@ -507,7 +507,18 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 
 				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
-			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='fa fa-lock' aria-hidden='true'></i></a></div></div>"
+			permission_chk_query = Sql.GetFirst("SELECT PERMISSION FROM SYOBJD where OBJECT_NAME = 'SAQTRV' and API_NAME = '"+str(sefl_api)+"'")
+				
+			if permission_chk_query:
+				if str(permission_chk_query.PERMISSION) == "EDITABLE" and str(col_name.REVISION_STATUS).upper() != "APPROVED":
+					edit_lock_icon = "fa fa-pencil"
+				else:
+					edit_lock_icon = "fa fa-lock"  
+			else:
+				edit_lock_icon = "fa fa-lock"
+			##edit_lock_icon in quote based on permission ends
+			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='{icon}' aria-hidden='true'></i></a></div></div>".format(icon = edit_lock_icon)
+			#sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='fa fa-lock' aria-hidden='true'></i></a></div></div>"
 			sec_str += "</div>"
 
 			sec_str += "</div>"
