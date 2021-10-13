@@ -415,7 +415,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 	API_NAME_LIST = []
 	PModel = "disabled"
 	sec_rec_id = "AED0A92A-8644-46AE-ACF0-90D6E331E506"
-	editclick = "QuoteinformationEDIT(this)"
+	editclick = "legalsowEDIT(this)"
 	#editclick = "CommonEDIT(this)"
 	edit_action = ""
 	Oppp_SECT = Sql.GetList(
