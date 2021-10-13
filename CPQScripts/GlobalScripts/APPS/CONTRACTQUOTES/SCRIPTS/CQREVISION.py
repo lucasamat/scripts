@@ -161,33 +161,29 @@ def create_new_revision(Opertion,cartrev):
 			
 			#CLONE ALL OBJECTS 
 			for cloneobjectname in cloneobject.keys():
+				insertval = 'INSERT INTO '+ str(cloneobjectname) +'( '
+				selectval = "SELECT "
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
-				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
-				selectcols = "SELECT "
+				insertcols = ''
+				selectcols = ''
 				for col in sqlobj:
-					
-					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
-					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+					if col.COLUMN_NAME == cloneobject[cloneobjectname]:
+						insertcols =  str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = "CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols =  "{} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "CpqTableEntryId":
 						continue
 					else:
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
-				insertcols = insertcols.replace("( ,","( ")
-				selectcols = selectcols.replace("SELECT ,","SELECT ")
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
-				finalquery=insertcols+' '+selectcols
+				finalquery=insertval + insertcols +' '+ selectval + selectcols
 				Trace.Write(finalquery)
 				ExecObjQuery = Sql.RunQuery(finalquery)
 			
@@ -201,8 +197,8 @@ def create_new_revision(Opertion,cartrev):
 			query_result1 = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement1) + "'")
 			Trace.Write(query_result)
 			## END CLONE OBJECT SAQSCO TO SAQSCE
-   			
-      		#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			
+			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
 			#Insert fabs start
