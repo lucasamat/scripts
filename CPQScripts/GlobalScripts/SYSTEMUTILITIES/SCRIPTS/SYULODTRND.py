@@ -668,9 +668,9 @@ def CommonTreeViewHTMLDetail(
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			try:
-				if str(TreeSuperParentParam.split("-")[3]):
+				if str(TreeSuperParentParam.split("-")[4]):
 					Trace.Write("try if") 
-					service_id = TreeSuperParentParam.split('-')[-2].strip()
+					service_id = TreeSuperParentParam.split('-')[-3].strip()
 				else:
 					Trace.Write("try else")
 					service_id = TreeSuperParentParam.split('-')[1].strip()
