@@ -408,7 +408,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 
 
 
-def constructlegalsow((Qt_rec_id, Quote, MODE):    
+def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
 	add_style = ""
