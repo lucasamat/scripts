@@ -509,11 +509,11 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 						)
 				elif data_type =="PICKLIST":
 					
-                    Sql_Quality_Tier = Sql.GetFirst(
-                        "select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='SAQTRV' and DATA_TYPE='PICKLIST' and API_NAME = '"
-                        + str(sefl_api)
-                        + "' "
-                    )
+					Sql_Quality_Tier = Sql.GetFirst(
+						"select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='SAQTRV' and DATA_TYPE='PICKLIST' and API_NAME = '"
+						+ str(sefl_api)
+						+ "' "
+					)
 					sec_str += (
 						'<div class="col-md-3 padtop5 padleft10"><select id="'
 						+ str(sefl_api) 
