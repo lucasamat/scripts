@@ -101,11 +101,11 @@ now = datetime.datetime.now()
 current_date_obj = str(now).split(" ")[0].strip()
 today_date_obj = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
 today_date_string = str(today_date_obj).split(" ")[0].strip()
-target_mail_date_obj = today_date_obj + timedelta(days=14)
+target_mail_date_obj = today_date_obj + timedelta(days=7)
 target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
-target_mail_date = "12/4/2022"
+target_mail_date = "19/4/2022"
 
 
 # mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
@@ -130,14 +130,14 @@ if expired_quotes is not None:
 # except:
 # 	Trace.Write("EXCEPT: quote_expiration_mail")
 # 	quote_expiration_mail = "FALSE"
-try:
-    if Quote.GetCustomField("quote_expiration_mail").Content != "":
-        quote_expiration_mail = Quote.GetCustomField("quote_expiration_mail").Content
-    else:
-        quote_expiration_mail = "TRUE"
-except:
-    quote_expiration_mail = "TRUE"
-Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
-if str(today_date_string) == str(mail_trigger_date):
-    if quote_expiration_mail == "TRUE":
-        expiration_obj.mailtrigger()
+# try:
+#     if Quote.GetCustomField("quote_expiration_mail").Content != "":
+#         quote_expiration_mail = Quote.GetCustomField("quote_expiration_mail").Content
+#     else:
+#         quote_expiration_mail = "TRUE"
+# except:
+#     quote_expiration_mail = "TRUE"
+# Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
+# if str(today_date_string) == str(mail_trigger_date):
+#     if quote_expiration_mail == "TRUE":
+#         expiration_obj.mailtrigger()
