@@ -3178,10 +3178,10 @@ class SYLDRTLIST:
                         new_dict["ACTIONS"] = Action_str   
                         new_dict["ids"] = ids
                         new_dict["seg_pric"] = seg_pric
-                        # new_dict["pop_val"] = pop_val
+                        new_dict["pop_val"] = pop_val
                         new_dict["primary"] = primary
                         list_lineup.append(value123)
-                        del new_dict['pop_val']
+                        # del new_dict['pop_val']
                     table_list.append(new_dict)
                 table_header += "<tr id='getbannername'>"
             #A055S000P01-682 start to hide the Actions column for related list
