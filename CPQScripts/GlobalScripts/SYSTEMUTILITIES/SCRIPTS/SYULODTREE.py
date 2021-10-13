@@ -2022,8 +2022,10 @@ class TreeView:
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 
-
-								ChildDict["text"] = NodeText_temp
+								if NodeText_temp:
+									ChildDict["text"] = NodeText_temp
+								else:
+									ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
 								"SELECT OBJECT_NAME FROM SYOBJH WHERE RECORD_ID = '" + str(OBJECT_RECORD_ID) + "'"
