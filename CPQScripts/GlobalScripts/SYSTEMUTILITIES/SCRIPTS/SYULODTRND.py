@@ -321,7 +321,7 @@ def CommonTreeViewHTMLDetail(
 		Trace.Write('elee====2')
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.SECTION_DESC != '' AND SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 	else:
-		Trace.Write('eleee===1')		
+		Trace.Write(str(queryStr)+'---eleee===1'+str(LEGALSOW))		
 		"""QStr1 = (
 			"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 			+ " JOIN SYPRSN (NOLOCK) ON SYPRSN.SECTION_RECORD_ID = SYSECT.RECORD_ID"
@@ -333,8 +333,10 @@ def CommonTreeViewHTMLDetail(
 			+ str(queryStr)
 			+ " ORDER BY ABS(SYSECT.DISPLAY_ORDER)"
 		)"""	
-		
-		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		if LEGALSOW:
+			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
+		else:
+			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 		#QStr1 = (
 			#"SELECT TOP 1000 SYSECT.* FROM SYSECT WITH (NOLOCK)"
 			#+ " WHERE SYSECT.PRIMARY_OBJECT_NAME = '"
