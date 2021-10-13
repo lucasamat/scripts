@@ -8200,10 +8200,10 @@ class SYLDRTLIST:
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
                     new_dict["seg_pric"] = seg_pric
-                    # new_dict["pop_val"] = pop_val
+                    new_dict["pop_val"] = pop_val
                     new_dict["primary"] = primary
                 Trace.Write('new_dict-->'+str(new_dict))
-                del new_dict['pop_val']
+                # del new_dict['pop_val']
                 table_list.append(new_dict)
                 Trace.Write('After append table_list--->'+str(table_list))
                 footer_str, footer = "", ""
