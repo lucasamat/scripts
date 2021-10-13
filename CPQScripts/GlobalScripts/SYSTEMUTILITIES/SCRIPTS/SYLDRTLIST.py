@@ -1,7 +1,7 @@
 # ==========================================================================================================================================
 #   __script_name : SYLDRTLIST.PY
 #   __script_description : THIS SCRIPT IS USED TO LOAD RELATED LISTS FOR A GIVEN OBJECT.
-#   __primary_author__ : JOE EBENEZER
+#   __primary_author__ : JOE EBENEZER 
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
