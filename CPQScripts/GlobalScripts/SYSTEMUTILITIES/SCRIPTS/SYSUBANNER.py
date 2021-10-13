@@ -2538,7 +2538,7 @@ def Related_Sub_Banner(
 
         item_covered_obj = Sql.GetFirst("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         #for status in item_covered_obj:
-        if item_covered_obj.STATUS >= 0:
+        if item_covered_obj.STATUS > 0:
             price_bar = "acquired_status"
             Trace.Write("config status==="+str(price_bar))
         else:
