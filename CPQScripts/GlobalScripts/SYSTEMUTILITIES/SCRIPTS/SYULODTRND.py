@@ -668,9 +668,9 @@ def CommonTreeViewHTMLDetail(
 			TreeParam = Product.GetGlobal("TreeParam")
 			TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 			try:
-				if str(TreeSuperParentParam.split("-")[4]):
+				if str(TreeSuperParentParam.split("-")[3]):
 					Trace.Write("try if") 
-					service_id = TreeSuperParentParam.split('-')[-3].strip()
+					service_id = TreeSuperParentParam.split('-')[-2].strip()
 				else:
 					Trace.Write("try else")
 					service_id = TreeSuperParentParam.split('-')[1].strip()
@@ -2266,8 +2266,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 		pass #to handle error while we are in system admin
 	if Product.GetGlobal("TreeParentLevel0") == "Comprehensive Services" and TreeSuperParentParam == "Product Offerings":		
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
-		addon_details = Sql.GetList("SELECT SERVICE_ID FROM SAQSAO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam.split('-')[0].strip())+"'")
-		equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam.split('-')[0].strip())+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+		addon_details = Sql.GetList("SELECT SERVICE_ID FROM SAQSAO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"'")
+		equipment_details = Sql.GetFirst("SELECT * FROM SAQSCO (NOLOCK) WHERE SERVICE_ID = '"+str(TreeParam)+"' AND QUOTE_RECORD_ID ='"+str(quoteid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 		if addon_details and equipment_details:
 			Ad_on_prd = "True"
 		else:
