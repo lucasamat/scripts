@@ -1038,7 +1038,7 @@ def constructapprovalchaininformation(MODE,record_id):
 # commented the code(Approvals node functionality in Quotes explorer) -end
 
 ACTION = Param.ACTION
-
+Trace.Write('ACTION---1041--'+str(ACTION))
 try:
 	AllTreeParam = Param.AllTreeParam
 	TreeParam = AllTreeParam['TreeParam']
