@@ -1988,9 +1988,9 @@ class TreeView:
 								if str(ObjectName).strip() == 'ACAPCH' and str(NodeName) == 'APRCHNSTP_NAME' and str(ProductName).upper() == "APPROVAL CENTER":
 									NodeText = "Step "+str(childdata.APRCHNSTP_NUMBER)+ " : " +str(NodeText)
 								##showing config status along with offering	
-								Trace.Write('NodeText--child-'+str(ObjName))
+								#Trace.Write('NodeText--child-'+str(ObjName))
 								if str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
-									Trace.Write('NodeText--inside-'+str(NodeText))
+									#Trace.Write('NodeText--inside-'+str(NodeText))
 									service_id = NodeText
 									##adding configuration status in offering subtab
 									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -2017,6 +2017,10 @@ class TreeView:
 									if image_url:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
+								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
+									NodeText = NodeText +' - '+ childQueryObj.FABLOCATION_NAME
+
+
 								ChildDict["text"] = NodeText
 							ChildDict["nodeId"] = int(nodeId)
 							objQuery = Sql.GetFirst(
