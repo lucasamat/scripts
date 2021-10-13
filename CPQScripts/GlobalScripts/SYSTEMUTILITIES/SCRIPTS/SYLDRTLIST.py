@@ -8014,7 +8014,8 @@ class SYLDRTLIST:
                                                 value1234 = ""
                                             Trace.Write("POP_2 "+str(value1234))
                                             lookup_val = str(lookup_obj.LOOKUP_OBJECT)
-                                            pop_val[key] = str(value1234) + "|" + lookup_val
+                                            if key:
+                                                pop_val[key] = str(value1234) + "|" + lookup_val
                                 else:
                                     lookup_obj = Sql.GetFirst(
                                         "SELECT LOOKUP_OBJECT FROM  SYOBJD (nolock) WHERE OBJECT_NAME = '"
