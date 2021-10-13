@@ -333,7 +333,7 @@ def CommonTreeViewHTMLDetail(
 			+ str(queryStr)
 			+ " ORDER BY ABS(SYSECT.DISPLAY_ORDER)"
 		)"""	
-		if LEGAL_SOW:
+		if LEGALSOW == 'LEGAL_SOW':
 			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 		else:
 			QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
