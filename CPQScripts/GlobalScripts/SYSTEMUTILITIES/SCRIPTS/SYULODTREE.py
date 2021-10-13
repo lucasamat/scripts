@@ -2020,14 +2020,17 @@ class TreeView:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
 								##concatenate name with ID
-								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
+								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB' or  str(ObjName).strip() == 'SAQIFL') and str(NodeName) == 'FABLOCATION_ID': 
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-								elif str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID': 
+								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
 									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(ObjName, where_string ) )
 									if get_service_name:
-										NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
+										if ObjName == 'SAQITM':
+											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
+										else:
+											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
