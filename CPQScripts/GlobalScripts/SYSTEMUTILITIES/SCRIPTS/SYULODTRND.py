@@ -4550,7 +4550,10 @@ try:
 	ObjectName = Param.ObjName
 except:
 	ObjectName = None
-
+try:
+	LEGALSOW= Param.LEGALSOW
+except:
+	LEGALSOW = ''
 try:
 	SectionList = Param.DetailList
 except:
