@@ -406,6 +406,102 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 	Trace.Write("sec_str --->"+str(sec_str))
 	return sec_str
 
+
+
+def constructlegalsow((Qt_rec_id, Quote, MODE):    
+	VAR1 = ""
+	sec_str = ""
+	add_style = ""
+	API_NAME_LIST = []
+	PModel = "disabled"
+	sec_rec_id = "AED0A92A-8644-46AE-ACF0-90D6E331E506"
+	Oppp_SECT = Sql.GetList(
+		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAQTRV' and RECORD_ID = 'AED0A92A-8644-46AE-ACF0-90D6E331E506' ORDER BY DISPLAY_ORDER"
+	)
+	for sect in Oppp_SECT:
+		sec_str += '<div id="container" class="wdth100 margtop10 g4 ' + str(sect.RECORD_ID) + '">'
+		sec_str += (
+			'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'
+			+ str(sect.RECORD_ID)
+			+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
+			+ str(sect.SECTION_NAME)
+			+ "</div></label></div>"
+		)
+
+		Oppp_SEFL = Sql.GetList(
+			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,API_NAME FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+		)
+		for sefl in Oppp_SEFL:
+			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class= "sec_' + str(sect.RECORD_ID) + ' collapse in">'
+			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
+			sec_str += (
+				"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
+				+ str(sefl.FIELD_LABEL)
+				+ "'> <label class='col-md-11 pull-left' style='padding: 5px 5px;margin: 0;' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
+				+ str(sefl.FIELD_LABEL)
+				+ "</label> </abbr> <a href='#' title='"+str(sefl.FIELD_LABEL)+"' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
+			)
+			sefl_api = sefl.API_FIELD_NAME
+			object_name = sefl.API_NAME
+			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
+			data_type = syobjd_obj.DATA_TYPE
+			col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
+			if col_name:
+				if sefl_api == "CpqTableEntryModifiedBy":
+					current_obj_value = col_name.CpqTableEntryModifiedBy
+					current_user = Sql.GetFirst(
+						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
+					).USERNAME
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input type='text' value = '"
+						+ str(current_user)
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)
+				elif data_type =="CHECKBOX":
+					act_status = (eval("col_name." + str(sefl_api)))
+					Trace.Write("act_status---->"+str(act_status))
+					if act_status == True  or act_status == 1:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled checked><span class="lbl"></span></div>'
+						)
+					else:
+						sec_str += (
+							'<div class="col-md-3 padtop5 padleft10"><input id="'
+							+ str(sefl_api)
+							+ '" type="CHECKBOX" value="'
+							+ str(act_status)
+							+ '" class="custom" '
+							+ 'disabled ><span class="lbl"></span></div>'
+						)
+				else:
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input type='text' value = '"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' tabindex='' disabled=''> </div>"
+					)
+			else:
+
+				sec_str += "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+			sec_str += "<div class='col-md-3' style='display:none;'> <span class='' data-bind='attr:{'id': $data.name()}' id=''>  </div>"
+			sec_str += "<div class='col-md-1' style='float: right;'> <div class='col-md-12 editiconright'><a href='#' onclick='editclick_row(this)' class='editclick'>	<i class='fa fa-lock' aria-hidden='true'></i></a></div></div>"
+			sec_str += "</div>"
+
+			sec_str += "</div>"
+		sec_str += "</div>"
+	sec_str += '<table class="wth100mrg8"><tbody>'
+	#Trace.Write("111111" + str(Qt_rec_id))
+
+	sec_str += "</tbody></table></div>"
+	sec_str += "</div>"
+	#Trace.Write(str(sec_str))
+	return sec_str
 # def constructidlingattributes(Qt_rec_id, Quote, MODE):    
 # 	anchor_tag_id_value = ""
 # 	VAR1 = ""
@@ -976,6 +1072,17 @@ if ACTION == 'QIPOPUPSER':
 #     ApiResponse = ApiResponseFactory.JsonResponse(aprvrrejected())
 
 # commented the code(Approvals node functionality in Quotes explorer) -end
+elif ACTION == "LEGALSOW_VIEW":
+	if TreeParam == "Contract Information":
+		contract_record_id = Quote.GetGlobal("contract_record_id")
+		contract_id = Sql.GetFirst("SELECT CONTRACT_ID FROM CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '"+str(contract_record_id)+"'")
+		quote_id = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE CRM_CONTRACT_ID ='"+str(contract_id.CONTRACT_ID)+"'")
+		Quote = quote_id.MASTER_TABLE_QUOTE_RECORD_ID
+	elif TreeParam == "Quote Information":
+		Quote = Quote.GetGlobal("contract_quote_record_id")
+	Trace.Write("Quote---->" + str(Quote))
+	MODE = "VIEW"
+	ApiResponse = ApiResponseFactory.JsonResponse(constructlegalsow(Qt_rec_id, Quote, MODE))
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
