@@ -689,7 +689,7 @@ def CommonTreeViewHTMLDetail(
 		if ObjectName == 'SAQFGB':			
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			fab_location_gb = Sql.GetFirst(
-				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0").split('-')[0].strip())+"'"
+				"select QUOTE_FAB_LOC_GB_RECORD_ID from SAQFGB (NOLOCK) where QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  AND GREENBOOK = '"+str(TreeParam)+"' AND FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"'"
 			)
 			if fab_location_gb:
 				RECORD_ID = fab_location_gb.QUOTE_FAB_LOC_GB_RECORD_ID
@@ -701,7 +701,7 @@ def CommonTreeViewHTMLDetail(
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			prd_location_gb = Sql.GetFirst(
 				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
-and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam.split('-')[0].strip())
+and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
 			)
 			if prd_location_gb:
 				RECORD_ID = prd_location_gb.QUOTE_SERVICE_GREENBOOK_RECORD_ID
@@ -714,7 +714,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 				)				
 			else:
 				prd_location_fb = Sql.GetFirst(
-					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}'".format(quote_record_id,quote_revision_record_id,Product.GetGlobal("TreeParentLevel0").split('-')[0].strip(),TreeParam.split('-')[0].strip() )
+					"select QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSFB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}'".format(quote_record_id,quote_revision_record_id,Product.GetGlobal("TreeParentLevel0"),TreeParam)
 				)
 			if prd_location_fb:
 				RECORD_ID = prd_location_fb.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID		
