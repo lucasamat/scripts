@@ -36,7 +36,7 @@ gettodaydate = datetime.now().strftime("%Y-%m-%d")
 #gettodaydate = datetime.datetime.now().strftime("%Y-%m-%d")
 #datetime_value = datetime.datetime.now()
 def CommonTreeViewHTMLDetail(
-	MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList,
+	MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList,LEGALSOW,
 ):	
 	try:
 		current_prod = Product.Name
@@ -4887,6 +4887,6 @@ else:
 	Trace.Write('Section List-->'+str(SectionList))
 	ApiResponse = ApiResponseFactory.JsonResponse(
 		CommonTreeViewHTMLDetail(
-			MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList
+			MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList,LEGALSOW
 		)
 	)
