@@ -403,7 +403,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 	# 	valid_to = ""	
 
 	#return sec_str,quote_id,accunt_id,accunt_name,quote_type,sale_type,valid_from,valid_to
-	Trace.Write("sec_str --->"+str(sec_str))
+	#Trace.Write("sec_str --->"+str(sec_str))
 	return sec_str
 
 
