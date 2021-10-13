@@ -1288,8 +1288,8 @@ class SYLDRTLIST:
                             TreeParentParam = Product.GetGlobal("TreeParentLevel1")
                             
                             try:
-                                if str(TreeParentParam.split("-")[3]):
-                                    ServiceId = TreeParentParam.split("-")[-2].strip()
+                                if str(TreeParentParam.split("-")[4]):
+                                    ServiceId = TreeParentParam.split("-")[-3].strip()
                                 else:
                                     ServiceId = TreeParentParam.split("-")[1].strip() 
                             except:
@@ -1390,8 +1390,8 @@ class SYLDRTLIST:
                             #A055S000P01-4578 ends
                             elif Product.GetGlobal("TreeParentLevel1") == 'Quote Items': 
                                 try:                               
-                                    if str(TreeParentParam.split("-")[3]):
-                                        ServiceId = TreeParentParam.split("-")[-2].strip()
+                                    if str(TreeParentParam.split("-")[4]):
+                                        ServiceId = TreeParentParam.split("-")[-3].strip()
                                     else:
                                         ServiceId = TreeParentParam.split("-")[1].strip()
                                 except:
@@ -5637,8 +5637,8 @@ class SYLDRTLIST:
                             TreeParentParam = Product.GetGlobal("TreeParentLevel1")
                             
                             try:
-                                if str(TreeParentParam.split("-")[3]):
-                                    ServiceId = TreeParentParam.split("-")[-2].strip()
+                                if str(TreeParentParam.split("-")[4]):
+                                    ServiceId = TreeParentParam.split("-")[-3].strip()
                                 else:
                                     ServiceId = TreeParentParam.split("-")[1].strip() 
                             except:
@@ -7096,8 +7096,8 @@ class SYLDRTLIST:
                                 TreeParentParam = Product.GetGlobal("TreeParentLevel1")
                                 
                                 try:
-                                    if str(TreeParentParam.split("-")[3]):
-                                        ServiceId = TreeParentParam.split("-")[-2].strip()
+                                    if str(TreeParentParam.split("-")[4]):
+                                        ServiceId = TreeParentParam.split("-")[-3].strip()
                                 except:
                                     ServiceId = TreeParentParam.split("-")[1].strip()                            
                                 Qury_str = ("SELECT DISTINCT TOP " + str(PerPage) + " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '"+ exclamation +"' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"' ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,SERIAL_NO,TARGET_PRICE_MARGIN,GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU,MODEL_PRICE,TARGET_PRICE,CEILING_PRICE,SALDIS_PERCENT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE,NET_VALUE,EQUIPMENT_RECORD_ID,SERVICE_RECORD_ID,FABLOCATION_RECORD_ID,LINE_ITEM_ID,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,NET_PRICE,YEAR_OVER_YEAR,YEAR_1,YEAR_2,BD_DISCOUNT_RECORD_ID,EQUIPMENTCATEGORY_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,MNT_PLANT_RECORD_ID,SALESORG_RECORD_ID,SALES_DISCOUNT_PRICE,GREENBOOK_RECORD_ID,PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (nolock)  where QUOTE_RECORD_ID ='"+str(RecAttValue) +"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and GREENBOOK = '"+str(TreeParam)+"' and SERVICE_ID = '"+str(ServiceId)+"' and FABLOCATION_ID = '"+str(Product.GetGlobal("TreeParentLevel0"))+"') m where m.ROW BETWEEN " + str(Page_start) + " AND " + str(Page_End) )
