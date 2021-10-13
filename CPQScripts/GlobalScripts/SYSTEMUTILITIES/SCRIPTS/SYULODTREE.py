@@ -1997,6 +1997,7 @@ class TreeView:
 									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 									where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText )
 									image_url =""
+									
 									try:
 										get_status = Sql.GetFirst("SELECT CONFIGURATION_STATUS FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText ) )
 										if get_status:
@@ -2018,12 +2019,15 @@ class TreeView:
 									if image_url:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
-								
+								##concatenate name with ID
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB') and str(NodeName) == 'FABLOCATION_ID': 
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-
+								elif str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID': 
+									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(ObjName, where_string ) )
+									if get_service_name:
+										NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
