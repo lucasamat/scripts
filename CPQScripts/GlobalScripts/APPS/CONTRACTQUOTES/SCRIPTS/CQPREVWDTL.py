@@ -415,17 +415,34 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 	API_NAME_LIST = []
 	PModel = "disabled"
 	sec_rec_id = "AED0A92A-8644-46AE-ACF0-90D6E331E506"
+	editclick = "QuoteinformationEDIT(this)"
+	edit_action = ""
 	Oppp_SECT = Sql.GetList(
 		"SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE PRIMARY_OBJECT_NAME = 'SAQTRV' and RECORD_ID = 'AED0A92A-8644-46AE-ACF0-90D6E331E506' ORDER BY DISPLAY_ORDER"
 	)
 	for sect in Oppp_SECT:
-		sec_str += '<div id="container" class="wdth100 margtop10 g4 ' + str(sect.RECORD_ID) + '">'
+		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
+		# if (str(sect.SECTION_NAME) == "CONTRACT BOOKING INFORMATION" or str(sect.SECTION_NAME) == "AUDIT INFORMATION" ):
+		#     sec_str += (
+		#         '<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down mt-10px" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'
+		#         + str(sect.RECORD_ID)
+		#         + '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
+		#         + str(sect.SECTION_NAME)
+		#         + "</div></label></div>"
+		#     )
+		
+		# else:
+		sec_html_btn = Sql.GetFirst("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE ACTION_NAME = 'EDIT' AND SECTION_RECORD_ID = '"+str(sect.RECORD_ID)+"'")
+		if sec_html_btn is not None:
+			edit_action = str(sec_html_btn.HTML_CONTENT).format(rec_id = str(sect.RECORD_ID), edit_click = str(editclick))
+		else:
+			edit_action = ''
 		sec_str += (
-			'<div class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target=".sec_'
-			+ str(sect.RECORD_ID)
-			+ '" data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>'
-			+ str(sect.SECTION_NAME)
-			+ "</div></label></div>"
+			'''<div onclick="dyn_main_sec_collapse_arrow(this)" 
+			data-bind="attr: {'data-toggle':'collapse','data-target':'.col'+stdAttrCode(), 
+			'id':'dyn'+stdAttrCode(),'class': isWholeRow() ? 'g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer' : 'g1 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer'}" 
+				data-target=".sec_'''+str(sect.RECORD_ID)+'''"  id="dyn1577"  data-toggle="collapse"  class="g4 dyn_main_head master_manufac add_level glyphicon glyphicon-chevron-down pointer"> 
+			<label data-bind="html: hint" class="onlytext"><div>'''+ str(edit_action) + str(sect.SECTION_NAME)+'''</div></label> </div>'''
 		)
 
 		Oppp_SEFL = Sql.GetList(
