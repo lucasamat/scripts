@@ -496,12 +496,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 							+ '" class="custom" '
 							+ 'disabled ><span class="lbl"></span></div>'
 						)
-				elif data_type== "LONG TEXT AREA":
-					sec_str += ("<div class='col-md-3 pad-0'><textarea class='form-control related_popup_css 		txtArea' id="'
-						+ str(sefl_api)
-						+ '" rows="1" cols="100" >
-						+ str(eval("col_name." + str(sefl_api)))
-						+ "</textarea></div>")
+				
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
