@@ -529,12 +529,12 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 						Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")		
 						for req1 in Tier_List:
 							req1 = req1.strip()							
-							if current_obj_value == req1:								
+							if str(eval("col_name." + str(sefl_api))) == req1:								
 								sec_str += "<option selected>" + str(req1) + "</option>"
 							else:								
 								sec_str += "<option>" + str(req1) + "</option>"
 					else:						
-						sec_str += "<option selected>" + str(current_obj_value) + "</option></div>"
+						sec_str += "<option selected>" + str(sefl_api) + "</option></div>"
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
