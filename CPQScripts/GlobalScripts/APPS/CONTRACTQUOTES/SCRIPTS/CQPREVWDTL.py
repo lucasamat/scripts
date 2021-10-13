@@ -520,7 +520,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 						+ '" type="text" class="form-control pop_up_brd_rad related_popup_css fltlt" value="'
 						+ str(eval("col_name." + str(sefl_api)))
 						+ '" class="custom" '
-						+ 'disabled ><span class="lbl"></span><option value="Select"></option>'
+						+ 'disabled ><option value="Select"></option>'
 					)
 					if (
 						str(Sql_Quality_Tier.PICKLIST_VALUES).strip() is not None
@@ -534,7 +534,8 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 							else:								
 								sec_str += "<option>" + str(req1) + "</option>"
 					else:						
-						sec_str += "<option selected>" + str(sefl_api) + "</option></div>"
+						sec_str += "<option selected>" + str(sefl_api) + "</option>"
+					sec_str += "</select></div>"
 				else:
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <input type='text' value = '"
