@@ -2702,6 +2702,7 @@ class SYLDRTLIST:
 
 
                     Trace.Write("12111111===3=====>"+str(Action_permission.get("Edit")).upper())
+                    Trace.Write("13333333"+str(Action_permission.get("Delete")).upper())
                     if str(Action_permission.get("Edit")).upper() == "TRUE":
                         if related_list_edit_permission:
                             Trace.Write('other_tab111==='+str(primary_view))
