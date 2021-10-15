@@ -2748,7 +2748,6 @@ class SYLDRTLIST:
                                 Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">EDIT</a></li>'
                             elif ObjectName == "SAQTIP":
                                 Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#viewProfileRelatedList" onclick="profileObjSetEdit(this)">REPLACE CONTACT</a></li>'
-
                             elif ObjectName == "SAQTRV":
                                 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
                                 get_activerev = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and ACTIVE =1 and CpqTableEntryId = '"+str(value1234)+"'")
