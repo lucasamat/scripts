@@ -2762,6 +2762,7 @@ class SYLDRTLIST:
                                     )
 
                                 elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
+                                    Trace.Write("2765"+str(ObjectName))
                                     Action_str += (
                                         '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'
                                     )
@@ -7870,6 +7871,7 @@ class SYLDRTLIST:
                         else:
                             Action_str += '<li><a class="dropdown-item" href="#" onclick="set_as_active(this)" >SET AS ACTIVE</a></li>'
                     else:
+                        Trace.Write("7874"+str(ObjectName))
                         Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
                 if str(Action_permission.get("Delete")).upper() == "TRUE":
                     Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
