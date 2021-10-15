@@ -2937,7 +2937,8 @@ class SYLDRTLIST:
                                                 )
                                             Trace.Write("POP_6 "+str(value1234))
                                             if product_id != "" and product_id is not None:
-                                                pop_val[key] = value1234 + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
+                                                if key:
+                                                    pop_val[key] = value1234 + "|" + tab_val + "," + str(product_id.PRODUCT_ID)
                                             else:
                                                 lookup_obj = Sql.GetFirst(
                                                     "SELECT LOOKUP_OBJECT FROM  SYOBJD (nolock) WHERE OBJECT_NAME = '"
@@ -2948,7 +2949,8 @@ class SYLDRTLIST:
                                                 )
                                                 Trace.Write("POP_5 "+str(value1234))
                                                 lookup_val = str(lookup_obj.LOOKUP_OBJECT)
-                                                pop_val[key] = value1234 + "|" + lookup_val
+                                                if key:
+                                                    pop_val[key] = value1234 + "|" + lookup_val
                                             lookup_rl_popup.append(key)
                                     else:
                                         lookup_obj = Sql.GetFirst(
@@ -2960,7 +2962,8 @@ class SYLDRTLIST:
                                         )
                                         Trace.Write("POP_4 "+str(value1234))
                                         lookup_val = str(lookup_obj.LOOKUP_OBJECT)
-                                        pop_val[key] = value1234 + "|" + lookup_val
+                                        if key:
+                                            pop_val[key] = value1234 + "|" + lookup_val
                                         lookup_rl_popup.append(key)
                         elif value123 == objRecName:
                             key_value = str(value1234)
@@ -8001,7 +8004,8 @@ class SYLDRTLIST:
                                             value1234 = ""
                                         Trace.Write("POP_3 "+str(value1234))
                                         if product_id != "" and product_id is not None:
-                                            pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
+                                            if key:
+                                                pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
                                         else:
                                             lookup_obj = Sql.GetFirst(
                                                 "SELECT LOOKUP_OBJECT FROM  SYOBJD (nolock) WHERE OBJECT_NAME = '"
