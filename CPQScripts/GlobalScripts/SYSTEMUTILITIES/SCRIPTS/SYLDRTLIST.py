@@ -2771,20 +2771,20 @@ class SYLDRTLIST:
                                 else:
                                     Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
                     if str(Action_permission.get("Delete")).upper() == "TRUE":
-                        # if related_list_delete_permission:
-                        onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
-                        if str(ObjectName) == "SYOBJC":
-                            Action_str += (
-                                '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
-                                + str(onclick)
-                                + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DROP</a></li>'
-                            )
-                        else:
-                            Action_str += (
-                                '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
-                                + str(onclick)
-                                + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
-                            )
+                        if related_list_delete_permission:
+                            onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
+                            if str(ObjectName) == "SYOBJC":
+                                Action_str += (
+                                    '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+                                    + str(onclick)
+                                    + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DROP</a></li>'
+                                )
+                            else:
+                                Action_str += (
+                                    '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+                                    + str(onclick)
+                                    + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
+                                )
                     Action_str += "</ul></div></div>"
                     
                     list_lineup1.append(("ACTIONS", Action_str))
