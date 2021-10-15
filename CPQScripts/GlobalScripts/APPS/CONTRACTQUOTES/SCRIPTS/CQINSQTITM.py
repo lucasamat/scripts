@@ -33,13 +33,16 @@ class ContractQuoteItem:
 		self.set_contract_quote_related_details()
 
 	def set_contract_quote_related_details(self):
-		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
+		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		if contract_quote_obj:
 			self.contract_quote_id = contract_quote_obj.QUOTE_ID      
 			self.quote_type = contract_quote_obj.QUOTE_TYPE
 			self.sale_type = contract_quote_obj.SALE_TYPE
 			self.c4c_quote_id = contract_quote_obj.C4C_QUOTE_ID
 			self.contract_quote_revision_id = contract_quote_obj.QTEREV_ID
+			self.contract_currency = contract_quote_obj.QUOTE_CURRENCY
+			self.contract_currency_record_id = contract_quote_obj.QUOTE_CURRENCY_RECORD_ID
+			
 		else:
 			self.contract_quote_id = ''  
 			self.quote_type = ''
@@ -948,8 +951,344 @@ class ContractQuoteItem:
 		else:
 			self._quote_item_delete_process()
 		return True
+	
+	def _insert_quote_item_forecast_parts(self, **kwargs):
+		##Deleteing the tables before insert the data starts..
+		for table_name in ('SAQIFP', 'SAQITM'):
+			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
+					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, WhereCondition='',
+				)
+			self._process_query(delete_query)
+		##Deleteing the tables before insert the data ends..
+		##Delete the native product before adding the product starts..
+		for item in Quote.MainItems:
+			item.Delete()
+		##Delete the native product before adding the product ends..
+		##quote item insert starts..
+		self._process_query("""
+					INSERT SAQITM (
+					QUOTE_ITEM_RECORD_ID,
+					QUOTE_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_NAME,
+					QTEREV_ID,
+					QTEREV_RECORD_ID,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED,
+					CpqTableEntryModifiedBy,
+					CpqTableEntryDateModified,
+					SERVICE_DESCRIPTION,
+					SERVICE_ID,
+					SERVICE_RECORD_ID,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					LINE_ITEM_ID,
+					OBJECT_QUANTITY,
+					QUANTITY,
+					CURRENCY,
+					CURRENCY_RECORD_ID,
+					ITEM_TYPE,
+					ITEM_STATUS,
+					NET_VALUE,
+					UOM_ID, 
+					UOM_RECORD_ID,
+					PLANT_RECORD_ID,
+					PLANT_ID,
+					PRICING_STATUS,
+					LINE_ITEM_FROM_DATE,
+					LINE_ITEM_TO_DATE,
+					SRVTAXCAT_RECORD_ID,
+					SRVTAXCAT_DESCRIPTION,
+					SRVTAXCAT_ID,
+					SRVTAXCLA_DESCRIPTION,
+					SRVTAXCLA_ID,
+					SRVTAXCLA_RECORD_ID,
+					DOC_CURRENCY,
+					DOCCURR_RECORD_ID,
+					QUOTE_CURRENCY,
+					QUOTE_CURRENCY_RECORD_ID,
+					GLOBAL_CURRENCY,
+					GLOBAL_CURRENCY_RECORD_ID,
+					YEAR_OVER_YEAR) 
+					SELECT 
+					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_RECORD_ID,
+					SAQSPT.QUOTE_RECORD_ID,
+					SAQSPT.QUOTE_ID,
+					SAQTMT.QUOTE_NAME,
+					SAQTMT.QTEREV_ID,
+					SAQTMT.QTEREV_RECORD_ID,
+					'{UserName}' AS CPQTABLEENTRYADDEDBY,
+					GETDATE() as CPQTABLEENTRYDATEADDED,
+					{UserId} as CpqTableEntryModifiedBy,
+					GETDATE() as CpqTableEntryDateModified,
+					SAQSPT.SERVICE_DESCRIPTION,
+					CONCAT(SAQSPT.SERVICE_ID, '- BASE') as SERVICE_ID,
+					SAQSPT.SERVICE_RECORD_ID,
+					SAQSPT.SALESORG_ID,
+					SAQTRV.SALESORG_NAME,
+					SAQSPT.SALESORG_RECORD_ID,
+					IQ.LINE_ITEM_ID as LINE_ITEM_ID,
+					0 as OBJECT_QUANTITY,
+					1 as QUANTITY,
+					'{Currency}' as CURRENCY,
+					'{CurrencyRecordId}' as CURRENCY_RECORD_ID,
+					'ZCB1' as ITEM_TYPE,
+					'Active' as ITEM_STATUS,
+					0 as NET_VALUE,
+					MAMTRL.UNIT_OF_MEASURE, 
+					MAMTRL.UOM_RECORD_ID,
+					MAMSOP.PLANT_RECORD_ID,
+					MAMSOP.PLANT_ID,
+					'ACQUIRING' AS PRICING_STATUS,
+					SAQTMT.CONTRACT_VALID_FROM as LINE_ITEM_FROM_DATE,
+					SAQTMT.CONTRACT_VALID_TO as LINE_ITEM_TO_DATE,
+					MAMSCT.TAXCATEGORY_RECORD_ID,
+					MAMSCT.TAXCATEGORY_DESCRIPTION, 
+					MAMSCT.TAXCATEGORY_ID, 
+					MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
+					MAMSCT.TAXCLASSIFICATION_ID,
+					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
+					SAQTRV.DOC_CURRENCY,
+					SAQTRV.DOCCURR_RECORD_ID,
+					'' as QUOTE_CURRENCY,
+					'' as QUOTE_CURRENCY_RECORD_ID,
+					SAQTRV.GLOBAL_CURRENCY,
+					SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
+					PRCFVA.FACTOR_PCTVAR as YEAR_OVER_YEAR
+					FROM SAQSPT (NOLOCK)    
+					JOIN (
+						SELECT SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSPT.SERVICE_RECORD_ID) + {ExistingCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSPT (NOLOCK) 
+						WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+						GROUP BY SAQSPT.QUOTE_RECORD_ID, SAQSPT.SERVICE_RECORD_ID
+					) AS IQ ON IQ.CpqTableEntryId = SAQSPT.CpqTableEntryId
+					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID            
+					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSPT.SERVICE_ID 
+					JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = SAQSPT.SALESORG_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
+					LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
+					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSPT.SALESORG_ID					
+					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSPT.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'
+					WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+			""".format(						
+				Currency=self.contract_currency,
+				CurrencyRecordId=self.contract_currency_record_id,
+				QuoteRecordId=self.contract_quote_record_id,
+				RevisionRecordId=self.contract_quote_revision_record_id,
+				UserId=self.user_id,
+				UserName=self.user_name,
+				ExistingCount=0
+			))
+		##quote item insert ends..
+		##quote item spare parts insert starts..
+		self._process_query(
+					"""
+					INSERT SAQIFP (
+						QUOTE_ITEM_FORECAST_PART_RECORD_ID,
+						DELIVERY_MODE,
+						EXTENDED_PRICE,
+						LINE_ITEM_ID,
+						PART_LINE_ID,
+						PART_DESCRIPTION,
+						PART_NUMBER,
+						PART_RECORD_ID,
+						QUOTE_ID,
+						QUOTE_NAME,
+						QUOTE_RECORD_ID,
+						QTEREV_ID,
+						QTEREV_RECORD_ID,
+						SALESORG_ID,
+						SALESORG_RECORD_ID,
+						SALESUOM_ID,
+						SALESUOM_RECORD_ID,
+						SCHEDULE_MODE,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID,
+						UNIT_PRICE,
+						VALID_FROM_DATE,
+						VALID_TO_DATE,
+						BASEUOM_ID,
+						BASEUOM_RECORD_ID,
+						ANNUAL_QUANTITY,
+						MATPRIGRP_ID,
+						MATPRIGRP_RECORD_ID,
+						PRICING_STATUS,
+						DOC_CURRENCY,
+						DOCCURR_RECORD_ID,
+						CPQTABLEENTRYADDEDBY, 
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified
+						)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID, A.* FROM( SELECT
+						DISTINCT
+						SAQSPT.DELIVERY_MODE,
+						SAQSPT.EXTENDED_UNIT_PRICE,
+						'10' as LINE_ITEM_ID,
+						ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) * 10 as PART_LINE_ID,
+						SAQSPT.PART_DESCRIPTION,
+						SAQSPT.PART_NUMBER,
+						SAQSPT.PART_RECORD_ID,
+						SAQSPT.QUOTE_ID,
+						SAQSPT.QUOTE_NAME,
+						SAQSPT.QUOTE_RECORD_ID,
+						SAQSPT.QTEREV_ID,
+						SAQSPT.QTEREV_RECORD_ID,
+						SAQSPT.SALESORG_ID,
+						SAQSPT.SALESORG_RECORD_ID,
+						SAQSPT.SALESUOM_ID,
+						SAQSPT.SALESUOM_RECORD_ID,
+						SAQSPT.SCHEDULE_MODE,
+						SAQSPT.SERVICE_DESCRIPTION,
+						SAQSPT.SERVICE_ID,
+						SAQSPT.SERVICE_RECORD_ID,
+						SAQSPT.UNIT_PRICE,
+						SAQSPT.VALID_FROM_DATE,
+						SAQSPT.VALID_TO_DATE,
+						SAQSPT.BASEUOM_ID,
+						SAQSPT.BASEUOM_RECORD_ID,
+						SAQSPT.CUSTOMER_ANNUAL_QUANTITY,
+						SAQSPT.MATPRIGRP_ID,
+						SAQSPT.MATPRIGRP_RECORD_ID,
+						'{status}' AS PRICING_STATUS,
+						'{currency}' AS DOC_CURRENCY,
+						'{currency_rec_id}' AS DOCCURR_RECORD_ID,
+						'{UserName}' as CPQTABLEENTRYADDEDBY, 
+						GETDATE() as CPQTABLEENTRYDATEADDED,
+						{UserId} AS CpqTableEntryModifiedBy,
+						GETDATE() as CpqTableEntryDateModified
+						FROM SAQSPT (NOLOCK)
+						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')A
+					""".format(
+						currency=self.contract_currency, 
+						currency_rec_id=self.contract_currency_record_id, 
+						QuoteRecordId=self.contract_quote_record_id,
+						RevisionRecordId=self.contract_quote_revision_record_id,
+						status='ACQUIRING...',
+						UserId=self.user_id,
+						UserName=self.user_name
+					)
+				)
+		##quote item spart parts insert ends..
+		# Native Cart Items Insert for spare quotes- Start
+		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		for quote_item_obj in quote_items_obj:
+			product_obj = Sql.GetFirst("SELECT MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME FROM PRODUCTS (NOLOCK) PDS INNER JOIN PRODUCT_VERSIONS (NOLOCK) PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID WHERE SYSTEM_ID ='{Partnumber}' GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME".format(Partnumber = str(quote_item_obj.SERVICE_ID)) )
+			if product_obj:
+				temp_product = Quote.AddItem('vc_config_cpq')
+				for product in temp_product:
+					product.PartNumber = str(quote_item_obj.SERVICE_ID)
+					product.Description = product_obj.PRODUCT_NAME
+					product.QUOTE_ID.Value = self.contract_quote_id		
+					product.QUOTE_RECORD_ID.Value = self.contract_quote_record_id
+				Quote.Save()			
+		# Native Cart Items Insert for spare quotes- End
 
-	def _do_opertion(self):		
+		#assigning value to custom fields(quote summary section) in quote items node starts
+		get_curr = str(Quote.GetCustomField('Currency').Content)
+		total_cost = 0.00
+		total_target_price = 0.00
+		total_ceiling_price = 0.00
+		total_sls_discount_price = 0.00
+		total_bd_margin = 0.00
+		total_bd_price = 0.00
+		total_sales_price = 0.00
+		total_yoy = 0.00
+		total_year_1 = 0.00
+		total_year_2 = 0.00
+		total_year_3 = 0.00
+		total_year_4 = 0.00
+		total_year_5 = 0.00
+		total_tax = 0.00
+		total_extended_price = 0.00
+		total_model_price = 0.00
+		items_data = {}
+		get_billing_matrix_year =[]
+		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
+		if items_obj:
+			for item_obj in items_obj:
+				#getdecimalplacecurr = item_obj.CURRENCY
+				items_data[int(float(item_obj.LINE_ITEM_ID))] = {'TOTAL_COST':item_obj.TOTAL_COST_WOSEEDSTOCK, 'TARGET_PRICE':item_obj.TARGET_PRICE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'YEAR_3':item_obj.YEAR_3, 'YEAR_4':item_obj.YEAR_4, 'YEAR_5':item_obj.YEAR_5, 'YEAR_OVER_YEAR':item_obj.YEAR_OVER_YEAR, 'OBJECT_QUANTITY':item_obj.OBJECT_QUANTITY}
+		for item in Quote.MainItems:
+			item_number = int(item.RolledUpQuoteItem)
+			if item_number in items_data.keys():
+				if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
+					item_data = items_data.get(item_number)
+					item.TOTAL_COST.Value = float(item_data.get('TOTAL_COST'))					
+					total_cost += float(item_data.get('TOTAL_COST'))
+					item.TARGET_PRICE.Value = item_data.get('TARGET_PRICE')
+					total_target_price += item.TARGET_PRICE.Value
+					total_ceiling_price += item.CEILING_PRICE.Value
+					total_sls_discount_price += item.SALES_DISCOUNT_PRICE.Value
+					total_bd_margin += item.BD_PRICE_MARGIN.Value
+					total_bd_price += item.BD_PRICE.Value
+					total_sales_price += item.NET_PRICE.Value
+					item.YEAR_OVER_YEAR.Value = item_data.get('YEAR_OVER_YEAR')
+					total_yoy += item.YEAR_OVER_YEAR.Value
+					item.YEAR_1.Value = item_data.get('YEAR_1')
+					total_year_1 += item.YEAR_1.Value
+					item.YEAR_2.Value = item_data.get('YEAR_2')
+					total_year_2 += item.YEAR_2.Value
+					item.YEAR_3.Value = item_data.get('YEAR_3')
+					total_year_3 += item.YEAR_3.Value
+					item.YEAR_4.Value = item_data.get('YEAR_4')
+					total_year_4 += item.YEAR_4.Value
+					item.YEAR_5.Value = item_data.get('YEAR_5')
+					total_year_5 += item.YEAR_5.Value
+					total_tax += item.TAX.Value
+					item.NET_VALUE.Value = item_data.get('TARGET_PRICE')
+					total_extended_price += item.NET_VALUE.Value	
+					item.OBJECT_QUANTITY.Value = item_data.get('OBJECT_QUANTITY')
+		##controlling decimal based on currency
+		if get_curr:
+			get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(get_curr))
+			if get_decimal_place:
+				decimal_value = get_decimal_place.DISPLAY_DECIMAL_PLACES
+				formatting_string = "{0:." + str(decimal_value) + "f}"
+				
+				total_cost =formatting_string.format(total_cost)
+				total_target_price =formatting_string.format(total_target_price)
+				total_ceiling_price =formatting_string.format(total_ceiling_price)
+				total_sls_discount_price =formatting_string.format(total_sls_discount_price)
+				total_sales_price =formatting_string.format(total_sales_price)
+				total_year_1 =formatting_string.format(total_year_1)
+				total_year_2 =formatting_string.format(total_year_2)
+				total_year_3 =formatting_string.format(total_year_3)
+				total_year_4 =formatting_string.format(total_year_4)
+				total_year_5 =formatting_string.format(total_year_5)
+				total_tax =formatting_string.format(total_tax)
+				total_extended_price =formatting_string.format(total_extended_price)
+				total_model_price =formatting_string.format(total_model_price)
+				total_bd_price =formatting_string.format(total_bd_price)
+		
+		Quote.GetCustomField('TOTAL_COST').Content = str(total_cost) + " " + get_curr
+		Quote.GetCustomField('TARGET_PRICE').Content = str(total_target_price) + " " + get_curr
+		Quote.GetCustomField('CEILING_PRICE').Content = str(total_ceiling_price) + " " + get_curr
+		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = str(total_sls_discount_price) + " " + get_curr
+		Quote.GetCustomField('BD_PRICE_MARGIN').Content =str(total_bd_margin) + " %"
+		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = str(total_bd_price) + " %"
+		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_sales_price) + " " + get_curr
+		Quote.GetCustomField('YEAR_OVER_YEAR').Content =str(total_yoy) + " %"
+		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + get_curr
+		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + get_curr
+		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + get_curr
+		Quote.GetCustomField('TAX').Content = str(total_tax) + " " + get_curr
+		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_extended_price) + " " + get_curr
+		Quote.Save()
+		
+		Sql.RunQuery("""UPDATE SAQTRV SET TARGET_PRICE_INGL_CURR = {total_target}, BD_PRICE_INGL_CURR = {bd_price}, CEILING_PRICE_INGL_CURR = {ceiling_price}, NET_PRICE_INGL_CURR = {net_price}, TAX_AMOUNT_INGL_CURR = {tax_amt}, NET_VALUE = {net_val}, SLSDIS_PRICE_INGL_CURR = {sls_price}, YEAR_1_INGL_CURR = {total_year_1}, YEAR_2_INGL_CURR = {total_year_2}, YEAR_3_INGL_CURR = {total_year_3}, YEAR_4_INGL_CURR = {total_year_4}, YEAR_5_INGL_CURR = {total_year_5}  WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(total_target= total_target_price, bd_price = total_bd_price, ceiling_price = total_ceiling_price, net_price = total_sales_price, tax_amt = total_tax, net_val = total_extended_price, sls_price = total_sls_discount_price, total_year_1 = total_year_1, total_year_2 = total_year_2,total_year_3 = total_year_3, total_year_4 = total_year_4, total_year_5 = total_year_5, quote_rec_id = self.contract_quote_record_id,quote_revision_rec_id = self.contract_quote_revision_record_id ) )
+		#assigning value to custom fields(quote summary section) in quote items node ends
+
+		##calling the iflow for pricing..
+		'''try:
+			entries = str(self.contract_quote_id)
+			user = self.user_name
+			CQPARTIFLW.iflow_pricing_call(user,entries)
+		except:
+			Log.Info("PART PRICING IFLOW ERROR!")'''
+
+		##User story 4432 ends..
+
+ 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":
 			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..				
 				self._insert_quote_item_forecast_parts() ##User story 4432 ends..
