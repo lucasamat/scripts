@@ -2158,7 +2158,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 						+ "</td>"
 					)
 				else:	
-					Trace.Write('2032---'+ str(current_obj_api_name))
+					Trace.Write('2032---'+ str(current_obj_api_name) +str(MODE))
 					if str(MODE) == "EDIT":				
 						sec_str += (
 							'<td><input id="'
