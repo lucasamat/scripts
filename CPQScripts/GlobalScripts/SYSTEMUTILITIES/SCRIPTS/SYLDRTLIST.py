@@ -3174,15 +3174,12 @@ class SYLDRTLIST:
                                                             new_dict[value123] = ('<abbr title="{value}">{value}</abbr>'.format(value= value1234))
                                                         #new_dict[value123] = value1234
                                                 
-                        #if str(pop_val).startswith("{<System"):
-                        #    pop_val = ""
                         new_dict["ACTIONS"] = Action_str   
                         new_dict["ids"] = ids
                         new_dict["seg_pric"] = seg_pric
                         new_dict["pop_val"] = pop_val
                         new_dict["primary"] = primary
                         list_lineup.append(value123)
-                        # del new_dict['pop_val']
                     table_list.append(new_dict)
                 table_header += "<tr id='getbannername'>"
             #A055S000P01-682 start to hide the Actions column for related list
@@ -8034,9 +8031,6 @@ class SYLDRTLIST:
                                     lookup_val = str(lookup_obj.LOOKUP_OBJECT)
                                     if key:
                                         pop_val[key] = str(value1234) + "|" + lookup_val
-                                    #if str(pop_val).startswith("{<System"):
-                                    #    pop_val = ""
-                                    #Trace.Write("POP_1_J "+" - "+str(pop_val)+" - "+str(value1234)+" - "+str(lookup_val))
                     elif value123 == objRecName:
                         key_value = str(value1234)
                         if str(ObjectName) == "USERS":                            
@@ -8200,16 +8194,12 @@ class SYLDRTLIST:
 
 
                     
-                    #if str(pop_val).startswith("{<System"):
-                    #    pop_val = ""
-                    #Trace.Write("pop_val_J "+str(pop_val))
                     new_dict["ACTIONS"] = Action_str       
                     new_dict["ids"] = ids
                     new_dict["seg_pric"] = seg_pric
                     new_dict["pop_val"] = pop_val
                     new_dict["primary"] = primary
                 Trace.Write('new_dict-->'+str(new_dict))
-                # del new_dict['pop_val']
                 table_list.append(new_dict)
                 Trace.Write('After append table_list--->'+str(table_list))
                 footer_str, footer = "", ""
