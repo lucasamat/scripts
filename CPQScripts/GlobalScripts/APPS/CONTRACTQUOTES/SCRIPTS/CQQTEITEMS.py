@@ -23,11 +23,25 @@ def LoadSummary():
     sec_str += "</tbody></table></div>"
     sec_str += "</div>"
     Trace.Write("sec_str --->"+str(sec_str))
-    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TOTAL_AMOUNT_INGL_CURR,0) AS TOTAL_AMOUNT_INGL_CURR,BD_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,CEILING_PRICE_INGL_CURR,NET_PRICE_INGL_CURR,NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    
+    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TOTAL_AMOUNT_INGL_CURR,0) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    TotalCost = 0.00
+    BDPrice = 0.00
+    CeilingPrice = 0.00
+    TargetPrice = 0.00
+    NetPrice = 0.00
+    NetValue = 0.00
     if getRevisionDetails:
         TotalCost = getRevisionDetails.TOTAL_AMOUNT_INGL_CURR
-    
+        BDPrice = getRevisionDetails.BD_PRICE_INGL_CURR
+        CeilingPrice = getRevisionDetails.CEILING_PRICE_INGL_CURR
+        NetPrice = getRevisionDetails.NET_PRICE_INGL_CURR
+        NetValue = getRevisionDetails.NET_VALUE
+        TargetPrice = getRevisionDetails.TARGET_PRICE_INGL_CURR
     return str(sec_str),TotalCost,BDPrice,CeilingPrice,TargetPrice,NetPrice,NetValue
+
+quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 SubtabName = Param.SUBTAB
 if SubtabName == "Summary":
