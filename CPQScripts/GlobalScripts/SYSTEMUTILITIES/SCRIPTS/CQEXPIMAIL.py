@@ -24,8 +24,9 @@ class qt_expiration_mail_trigger:
     def mailtrigger(self,expired_quotes):
         # custom_fields_detail = self._get_custom_fields_detail()
         # Trace.Write("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))
+        Trace.Write("Mail Sending Function"+str(expired_quotes))
         for quotes in expired_quotes:
-            getting_quotes = Sql.GetList("SELECT OWNER_NAME,QUOTE_ID,CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
+            getting_quotes = Sql.GetList("SELECT OWNER_NAME,QUOTE_ID,CONTRACT_VALID_TO,QUOTE_EXPIRE_DATE FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '"+str(quotes)+"'")
             for quote in getting_quotes:
                 employee_table = Sql.GetFirst("SELECT EMAIL FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_NAME = '"+str(quote.OWNER_NAME)+"'")
                 expiration_date = str(quote.QUOTE_EXPIRE_DATE).split(" ")[0].strip()
@@ -40,8 +41,7 @@ class qt_expiration_mail_trigger:
                     recepient = str(employee_table.EMAIL)
                 except:
                     Trace.Write("Mail not sent to "+str(quote.OWNER_NAME))
-                #joe.ebenezer@bostonharborconsulting.com
-                # str(employee_table.EMAIL)
+                Trace.Write("Mail sent to "+str(quote.OWNER_NAME))
                 try:
                     LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
                     mailClient = SmtpClient()
@@ -105,47 +105,17 @@ target_mail_date_obj = today_date_obj + timedelta(days=7)
 target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
-# target_mail_date = "19/4/2022"
+#target_mail_date = "10/15/2022"
 
 
-# mail_trigger_date = quote_expiration_date_obj - timedelta(days=14)
-# mail_trigger_date = str(mail_trigger_date).split(" ")[0].strip()
-
-expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE CONTRACT_VALID_TO = '"+str(target_mail_date)+"' ")
+expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE != ''")
 
 # if today_date_string == mail_trigger_date:
 expired_quotes = []
 for quotes in expired_quotes_query:   
     expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
-    Trace.Write("expire_date_CHK_J "+str(expire_date))
-    if target_mail_date == expire_date:
+    # Trace.Write("expire_date_CHK_J "+str(target_mail_date)+" - "+str(expire_date) + " - " +  str(quotes.QUOTE_EXPIRE_DATE))
+    if str(target_mail_date) == str(expire_date):
         expired_quotes.append(quotes.QUOTE_ID)
     if expired_quotes is not None:
         expiration_obj.mailtrigger(expired_quotes)
-# expired_quotes = []
-# for quotes in expired_quotes_query:
-#     expired_quotes.append(quotes.QUOTE_ID)
-# if expired_quotes is not None:
-#     expiration_obj.mailtrigger(expired_quotes)
-
-
-
-# try:
-# 	if quote_expiration_mail:
-# 		quote_expiration_mail = quote_expiration_mail
-# 	else:
-# 		quote_expiration_mail = "TRUE"
-# except:
-# 	Trace.Write("EXCEPT: quote_expiration_mail")
-# 	quote_expiration_mail = "FALSE"
-# try:
-#     if Quote.GetCustomField("quote_expiration_mail").Content != "":
-#         quote_expiration_mail = Quote.GetCustomField("quote_expiration_mail").Content
-#     else:
-#         quote_expiration_mail = "TRUE"
-# except:
-#     quote_expiration_mail = "TRUE"
-# Trace.Write("quote_expiration_mail "+str(Quote.GetCustomField("quote_expiration_mail").Content)+" chkz "+str(quote_expiration_mail))
-# if str(today_date_string) == str(mail_trigger_date):
-#     if quote_expiration_mail == "TRUE":
-#         expiration_obj.mailtrigger()
