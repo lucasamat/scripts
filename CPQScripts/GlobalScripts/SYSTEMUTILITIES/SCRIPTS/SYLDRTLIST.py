@@ -1666,7 +1666,7 @@ class SYLDRTLIST:
                                 + str(Wh_API_NAMEs)
                                 + ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID "
                                 + str(Qustr)
-                                + " ) m where m.ROW BETWEEN "
+                                + " and M.VISIBLE_INCONFIG = 'TRUE') m where m.ROW BETWEEN "
                                 + str(Page_start)
                                 + " and "
                                 + str(Page_End)
@@ -5940,7 +5940,7 @@ class SYLDRTLIST:
                             + str(Wh_API_NAMEs)
                             + ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID "
                             + str(Qustr)
-                            + " ) m where m.ROW BETWEEN "
+                            + " and M.VISIBLE_INCONFIG = 'TRUE') m where m.ROW BETWEEN "
                             + str(Page_start)
                             + " and "
                             + str(Page_End)
@@ -7338,7 +7338,7 @@ class SYLDRTLIST:
                                 + str(Wh_API_NAMEs)
                                 + ") AS ROW, S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID "
                                 + str(Qustr)
-                                + " ) m where m.ROW BETWEEN "
+                                + " and M.VISIBLE_INCONFIG = 'TRUE') m where m.ROW BETWEEN "
                                 + str(Page_start)
                                 + " and "
                                 + str(Page_End)
