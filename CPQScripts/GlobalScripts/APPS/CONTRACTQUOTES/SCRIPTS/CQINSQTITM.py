@@ -1279,12 +1279,12 @@ class ContractQuoteItem:
 		#assigning value to custom fields(quote summary section) in quote items node ends
 
 		##calling the iflow for pricing..
-		'''try:
+		try:
 			entries = str(self.contract_quote_id)
 			user = self.user_name
 			CQPARTIFLW.iflow_pricing_call(user,entries)
 		except:
-			Log.Info("PART PRICING IFLOW ERROR!")'''
+			Log.Info("PART PRICING IFLOW ERROR!")
 
 		##User story 4432 ends..
 
