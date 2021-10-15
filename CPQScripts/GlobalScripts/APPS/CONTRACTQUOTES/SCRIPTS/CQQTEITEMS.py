@@ -27,7 +27,7 @@ def LoadSummary():
     getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
-        TotalCost = float(getRevisionDetails.TOTAL_AMOUNT) + " USD"
+        TotalCost = str(float(getRevisionDetails.TOTAL_AMOUNT))+ " USD"
         BDPrice = getRevisionDetails.BD_PRICE_INGL_CURR
         CeilingPrice = getRevisionDetails.CEILING_PRICE_INGL_CURR
         NetPrice = getRevisionDetails.NET_PRICE_INGL_CURR
