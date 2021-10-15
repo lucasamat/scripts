@@ -2695,6 +2695,7 @@ class SYLDRTLIST:
                             #if ObjectName == "SAQSAO":
                             #Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             if ObjectName != "SAQIBP" :
+                                Trace.Write('VIEw 2698')
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             elif ObjectName == "SAQSAO":
                                 Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
