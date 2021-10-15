@@ -958,14 +958,14 @@ class ContractQuoteItem:
 			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
 					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, WhereCondition='',
 				)
-			self._process_query(delete_query)
+			Sql.RunQuery(delete_query)
 		##Deleteing the tables before insert the data ends..
 		##Delete the native product before adding the product starts..
 		for item in Quote.MainItems:
 			item.Delete()
 		##Delete the native product before adding the product ends..
 		##quote item insert starts..
-		self._process_query("""
+		Sql.RunQuery("""
 					INSERT SAQITM (
 					QUOTE_ITEM_RECORD_ID,
 					QUOTE_RECORD_ID,
@@ -1080,7 +1080,7 @@ class ContractQuoteItem:
 			))
 		##quote item insert ends..
 		##quote item spare parts insert starts..
-		self._process_query(
+		Sql.RunQuery(
 					"""
 					INSERT SAQIFP (
 						QUOTE_ITEM_FORECAST_PART_RECORD_ID,
@@ -1288,7 +1288,7 @@ class ContractQuoteItem:
 
 		##User story 4432 ends..
 
- 	def _do_opertion(self):		
+	def _do_opertion(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
 			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..				
 				self._insert_quote_item_forecast_parts() ##User story 4432 ends..
