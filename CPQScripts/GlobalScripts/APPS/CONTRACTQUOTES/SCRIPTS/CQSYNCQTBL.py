@@ -892,22 +892,22 @@ class SyncQuoteAndCustomTables:
 								quote_opportunity_table_info.AddRow(opportunity_quote_data)
 					# A055S000P01-6618 - Starts
 					if custom_fields_detail.get("PrimaryContactName"):
-						primary_contact_update = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": "",
-							"EMAIL": "",
-							"IS_MAIN": "",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("PrimaryContactId"),
-							"PARTY_NAME": custom_fields_detail.get("PrimaryContactName"),
-							"PARTY_ROLE": "PRIMARY CONTACT",
-							"PHONE": "",
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(primary_contact_update)
+						# primary_contact_update = {
+						# 	"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+						# 	"ADDRESS": "",
+						# 	"EMAIL": "",
+						# 	"IS_MAIN": "",
+						# 	"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+						# 	"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+						# 	"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+						# 	"PARTY_ID": custom_fields_detail.get("PrimaryContactId"),
+						# 	"PARTY_NAME": custom_fields_detail.get("PrimaryContactName"),
+						# 	"PARTY_ROLE": "PRIMARY CONTACT",
+						# 	"PHONE": "",
+						# 	"QTEREV_RECORD_ID":quote_revision_id,
+						# 	"QTEREV_ID":quote_rev_id
+						# }
+						# quote_involved_party_table_info.AddRow(primary_contact_update)
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
