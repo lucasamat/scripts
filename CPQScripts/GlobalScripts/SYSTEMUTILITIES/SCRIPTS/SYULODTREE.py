@@ -2030,7 +2030,8 @@ class TreeView:
 										if ObjName == 'SAQITM':
 											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
 										else:
-											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
+											NodeText_temp = NodeText
+											#NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
