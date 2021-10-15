@@ -2671,7 +2671,7 @@ class SYLDRTLIST:
                                 Action_str += '<li><a class="dropdown-item" href="#" style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'    
 
                     else:                        
-                        if str(current_tab).upper() == "PROFILE") and (ObjectName == "SYPROF"):
+                        if str(current_tab).upper() == "PROFILE" and (ObjectName == "SYPROF"):
                             Action_str += '<li><a class="dropdown-item" href="#" onclick="profileObjSet(this)" data-target="#viewProfileRelatedList" data-toggle="modal">VIEW<a><li>'
                         elif str(current_tab).upper() == "PROFILE" and (ObjectName != "SYPROF"):
                             
