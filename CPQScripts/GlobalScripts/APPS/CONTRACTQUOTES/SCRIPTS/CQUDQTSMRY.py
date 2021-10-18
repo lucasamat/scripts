@@ -137,15 +137,37 @@ class ContractQuoteSummaryUpdate:
 					item.DISCOUNT.Value = str(self.discount)
 		##Added the percentage symbol for discount custom field...
 		Percentage = '%'
-		Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
+		# Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
 		#discount_value = Quote.GetCustomField('DISCOUNT').Content
 		#Trace.Write("discount"+str(discount_value))
-		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
-		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency    
-		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency     
-		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+		# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency    
+		# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency     
+		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 		Quote.Save()
+		Sql.RunQuery("""UPDATE SAQTRV
+						SET 									
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
+						SAQTRV.YEAR_1_INGL_CURR = IQ.YEAR_1,
+						SAQTRV.YEAR_2_INGL_CURR = IQ.YEAR_2,
+						SAQTRV.YEAR_3_INGL_CURR = IQ.YEAR_3,
+						SAQTRV.YEAR_4_INGL_CURR = IQ.YEAR_4,
+						SAQTRV.YEAR_5_INGL_CURR = IQ.YEAR_5,
+						SAQTRV.DISCOUNT_PERCENT = '{discount}'
+						
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQITM.QUOTE_RECORD_ID, SAQITM.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQITM.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQITM.TOTAL_AMOUNT_INGL_CURR, 0)) as NET_VALUE,
+									SUM(ISNULL(SAQITM.YEAR_1_INGL_CURR, 0)) as YEAR_1,
+									SUM(ISNULL(SAQITM.YEAR_2_INGL_CURR, 0)) as YEAR_2,
+									SUM(ISNULL(SAQITM.YEAR_3_INGL_CURR, 0)) as YEAR_3,
+									SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4,
+									SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5
+									FROM SAQITM (NOLOCK) WHERE SAQITM.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
 
 	def update_summary(self):
 		if self.contract_quote_record_id:
@@ -339,16 +361,39 @@ class ContractQuoteSummaryUpdate:
 					item.DISCOUNT.Value = str(self.discount)
 		##Added the percentage symbol for discount custom field...
 		Percentage = '%'
-		Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
+		# Quote.GetCustomField('DISCOUNT').Content = str(self.discount)+ " " + Percentage
 		#discount_value = Quote.GetCustomField('DISCOUNT').Content
 		#Trace.Write("discount"+str(discount_value))
-		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
-		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
-		Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency     
-		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+		# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency     
+		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 		Quote.Save()
-	
+		Sql.RunQuery("""UPDATE SAQTRV
+						SET 									
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
+						SAQTRV.YEAR_1_INGL_CURR = IQ.YEAR_1,
+						SAQTRV.YEAR_2_INGL_CURR = IQ.YEAR_2,
+						SAQTRV.YEAR_3_INGL_CURR = IQ.YEAR_3,
+						SAQTRV.YEAR_4_INGL_CURR = IQ.YEAR_4,
+						SAQTRV.YEAR_5_INGL_CURR = IQ.YEAR_5,
+						SAQTRV.DISCOUNT_PERCENT = '{discount}'
+						
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQITM.QUOTE_RECORD_ID, SAQITM.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQITM.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQITM.TOTAL_AMOUNT_INGL_CURR, 0)) as NET_VALUE,
+									SUM(ISNULL(SAQITM.YEAR_1_INGL_CURR, 0)) as YEAR_1,
+									SUM(ISNULL(SAQITM.YEAR_2_INGL_CURR, 0)) as YEAR_2,
+									SUM(ISNULL(SAQITM.YEAR_3_INGL_CURR, 0)) as YEAR_3,
+									SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4,
+									SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5
+									FROM SAQITM (NOLOCK) WHERE SAQITM.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
+
+
 		#self._quote_item_update()
 		#self._update_quote_summary()
 	def CalculateMinusDiscount(self):
@@ -453,7 +498,7 @@ class ContractQuoteSummaryUpdate:
 					item.DISCOUNT.Value = "+"+str(self.discount)
 		##Added the percentage symbol for discount custom field...
 		Percentage = '%'
-		Quote.GetCustomField('DISCOUNT').Content = "-"+str(self.discount)+ " " + Percentage
+		# Quote.GetCustomField('DISCOUNT').Content = "-"+str(self.discount)+ " " + Percentage
 		##controlling decimal based on currency
 		if quote_currency:
 			get_decimal_place = Sql.GetFirst("SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY ='{}'".format(quote_currency))
@@ -467,12 +512,37 @@ class ContractQuoteSummaryUpdate:
 				total_net_value =formatting_string.format(total_net_value)
 		#discount_value = Quote.GetCustomField('DISCOUNT').Content
 		#Trace.Write("discount"+str(discount_value))
-		Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
-		Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-		Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
-		Quote.GetCustomField('YEAR_3').Content = str(total_year_2) + " " + quote_currency     
-		Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+		# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+		# Quote.GetCustomField('YEAR_3').Content = str(total_year_2) + " " + quote_currency     
+		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 		Quote.Save()
+
+		Sql.RunQuery("""UPDATE SAQTRV
+						SET 									
+						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
+						SAQTRV.YEAR_1_INGL_CURR = IQ.YEAR_1,
+						SAQTRV.YEAR_2_INGL_CURR = IQ.YEAR_2,
+						SAQTRV.YEAR_3_INGL_CURR = IQ.YEAR_3,
+						SAQTRV.YEAR_4_INGL_CURR = IQ.YEAR_4,
+						SAQTRV.YEAR_5_INGL_CURR = IQ.YEAR_5,
+						SAQTRV.DISCOUNT_PERCENT = '{discount}'
+						
+						FROM SAQTRV (NOLOCK)
+						INNER JOIN (SELECT SAQITM.QUOTE_RECORD_ID, SAQITM.QTEREV_RECORD_ID,
+									SUM(ISNULL(SAQITM.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQITM.TOTAL_AMOUNT_INGL_CURR, 0)) as NET_VALUE,
+									SUM(ISNULL(SAQITM.YEAR_1_INGL_CURR, 0)) as YEAR_1,
+									SUM(ISNULL(SAQITM.YEAR_2_INGL_CURR, 0)) as YEAR_2,
+									SUM(ISNULL(SAQITM.YEAR_3_INGL_CURR, 0)) as YEAR_3,
+									SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4,
+									SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5
+									FROM SAQITM (NOLOCK) WHERE SAQITM.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
+
+
 
 discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
