@@ -41,7 +41,7 @@ def LoadSummary():
         TargetPrice = 0.00
         NetPrice = 0.00
         NetValue = 0.00
-    return str(sec_str),str(TotalCost),str(BDPrice)+curr,str(CeilingPrice)+curr,str(TargetPrice)+curr,str(NetPrice)+curr,str(NetValue)+curr
+    return str(sec_str),str(TotalCost),str(BDPrice)+ " " +curr,str(CeilingPrice)+ " " +curr,str(TargetPrice)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
