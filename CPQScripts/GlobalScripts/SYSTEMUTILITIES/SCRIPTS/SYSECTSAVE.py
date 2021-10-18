@@ -13,6 +13,7 @@ import System.Net
 from datetime import datetime,date
 #import datetime
 from SYDATABASE import SQL
+import CQCPQC4CWB
 
 Sql = SQL()
 #from PAUPDDRYFG import DirtyFlag
@@ -150,7 +151,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 	billstart = ""
 	constartdt = ""
 	conenddt = ""
-		
+	contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	TreeParam = Product.GetGlobal("TreeParam")
 	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
 		ObjectName = "SAQIGB"
@@ -773,6 +775,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								Sql.RunQuery("UPDATE SAQTRV SET REV_APPROVE_DATE = '{RevisionApprovedDate}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(RevisionApprovedDate = RevisionApprovedDate,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 							##Updating the Revision Approved Date while changing the status to Approved...
 							crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(newdict.get("QUOTE_ID")),'REVISION_ID':str(get_rev_val),'Fun_type':'cpq_to_crm'})
+							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+							CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+							CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 					#A055S000P01-4288 end
 					elif TableName == "SAQIGB":
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}

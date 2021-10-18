@@ -18,6 +18,7 @@ import re
 from datetime import datetime, timedelta
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
+import CQCPQC4CWB
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -143,9 +144,15 @@ def create_new_revision(Opertion,cartrev):
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
-		Sql.Upsert(quote_revision_table_info)
+		#Sql.Upsert(quote_revision_table_info)
+		val = Sql.Upsert(quote_revision_table_info)
+		Trace.Write("cal===="+str(val))
 		#create new revision -SAQTRV - update-end
-
+  
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 		#get quote data for update in SAQTMT start
 		
 		quote_table_info = Sql.GetTable("SAQTMT")
