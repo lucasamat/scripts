@@ -106,8 +106,7 @@ class SyncQuoteAndCustomTables:
 			'SourceAccountName':self.quote.GetCustomField('SourceAccountName').Content,
 			'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
 			'POES':self.quote.GetCustomField('POES').Content,#A055S000P01-9777 code starts..
-			'LOW':self.quote.GetCustomField('LOW').Content,
-			'C4C_Opportunity_Object_ID':self.quote.GetCustomField('C4C_Opportunity_Object_ID').Content,
+			'LOW':self.quote.GetCustomField('LOW').Content,			
 			'C4C_Quote_Object_ID':self.quote.GetCustomField('C4C_Quote_Object_ID').Content,
 		}
 
@@ -864,8 +863,7 @@ class SyncQuoteAndCustomTables:
 										"SALE_TYPE": "NEW",
 										"OPPORTUNITY_STAGE": Opportunitystagedict.get(custom_fields_detail.get("OpportunityStage")),
 										"ACCOUNT_TYPE": "Sold to Party",
-										"OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
-										"C4C_OPPOBJ_ID": custom_fields_detail.get("C4C_Opportunity_Object_ID"),
+										"OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),									
 									}
 									#Log.Info("master_opportunity_data ===>" + str(master_opportunity_data))
 									master_opportunity_table_info.AddRow(master_opportunity_data)
