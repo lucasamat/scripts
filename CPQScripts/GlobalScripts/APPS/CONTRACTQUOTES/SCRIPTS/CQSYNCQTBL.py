@@ -107,6 +107,8 @@ class SyncQuoteAndCustomTables:
 			'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
 			'POES':self.quote.GetCustomField('POES').Content,#A055S000P01-9777 code starts..
 			'LOW':self.quote.GetCustomField('LOW').Content,
+			'C4C_Opportunity_Object_ID':self.quote.GetCustomField('C4C_Opportunity_Object_ID').Content,
+			'C4C_Quote_Object_ID':self.quote.GetCustomField('C4C_Quote_Object_ID').Content,
 		}
 
 	@staticmethod
