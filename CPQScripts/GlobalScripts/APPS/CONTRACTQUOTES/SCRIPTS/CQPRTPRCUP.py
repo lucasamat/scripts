@@ -81,8 +81,9 @@ Sql.RunQuery(update_SAQIFP) """
 """ except:
     Trace.Write("EXCEPT ERROR FOR PRC PROCEDURE UPDATE") """
 
+STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
 
-STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
+#STPObj=Sql.GetFirst("SELECT ACCOUNT_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_ID ='{quote}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(quote=QUOTE, revision_rec_id = revision))
 #SAQTSOObj=SqlHelper.GetFirst("SELECT SALESORG_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,DOC_CURRENCY FROM SAQTSO (NOLOCK) WHERE QUOTE_ID ='{quote}'".format(quote=QUOTE))
 stp_account_id = ""
 if STPObj:
