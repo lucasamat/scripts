@@ -1211,9 +1211,10 @@ class SyncQuoteAndCustomTables:
 							Log.Info("""SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'""".format(contract_quote_data.get('C4C_QUOTE_ID')))
 						if payload_json.get('C4C_Opportunity_Object_ID'):
 							c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')
+							Log.Info("c4c_opppbj_id====="+str(c4c_opppbj_id))
 							c4c_Opportunity_obj = "UPDATE SAOPPR SET C4C_OPPOBJ_ID = '{c4c_opppbj_id}' where OPPORTUNITY_ID = '{OpportunityId}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID'),OpportunityId = custom_fields_detail.get("OpportunityId"))
 							Sql.RunQuery(c4c_Opportunity_obj)
-							Log.Info("""SELECT C4C_OPPOBJ_ID FROM SAOPPR (NOLOCK) WHERE OPPORTUNITY_ID = '{}'""".format(OpportunityId = custom_fields_detail.get("OpportunityId")))	
+							#Log.Info("""SELECT C4C_OPPOBJ_ID FROM SAOPPR (NOLOCK) WHERE OPPORTUNITY_ID = '{}'""".format(OpportunityId = custom_fields_detail.get("OpportunityId")))	
 						if payload_json.get('FAB_LOCATION_IDS'):
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
 						if payload_json.get('SERVICE_IDS'):
