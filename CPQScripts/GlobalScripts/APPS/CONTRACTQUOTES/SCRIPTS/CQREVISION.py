@@ -288,6 +288,10 @@ def set_active_revision(Opertion,cartrev):
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.SetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...		
 	return True
 #set active revision  from grid- end
 
