@@ -3956,24 +3956,30 @@ def POPUPLISTVALUEADDNEW(
 					if value.strip():
 						if where_string:
 							where_string += " AND "
-						if key=="MATERIAL_RECORD_ID":
-							key="MAMTRL.CpqTableEntryId"
+						if key=="CONTACT_RECORD_ID":
+							key="SACONT.CpqTableEntryId"
 						where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
 			DIVNAME = "VIEW_DIV_ID"
 			new_value_dict = {}
-			ObjectName = "MAMTRL"
-			table_id = "parts-addnew-model"
+			ObjectName = "SACONT"
+			table_id = "contact-replace"
 			Header_details = {
-				"MATERIAL_RECORD_ID": "KEY",
-				"SAP_PART_NUMBER": "PART NUMBER",
-				"SAP_DESCRIPTION": "PARTS NAME",
-				"MATERIALGROUP_ID":"MATERIAL GROUP ID"
-			}
+				"CONTACT_RECORD_ID": "KEY",
+				"CONTACT_NAME": "CONTACT NAME",
+				"EMAIL": "EMAIL",
+				"PHONE":"PHONE",
+				"FUNCTION":"ECC FUNCTION",
+				"CONTACT_ID":"ACCOUNT_ID",
+				"CONTACT_NAME":"ACCOUNT_NAME"
+				}
 			ordered_keys = [
-				"MATERIAL_RECORD_ID",
-				"SAP_PART_NUMBER",
-				"SAP_DESCRIPTION",
-				"MATERIALGROUP_ID"
+				"CONTACT_RECORD_ID",
+				"CONTACT_NAME",
+				"EMAIL",
+				"PHONE",
+				"FUNCTION",
+				"CONTACT_ID",
+				"CONTACT_NAME"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
