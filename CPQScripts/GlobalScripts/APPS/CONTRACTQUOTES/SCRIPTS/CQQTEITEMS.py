@@ -24,15 +24,16 @@ def LoadSummary():
     sec_str += "</div>"
     Trace.Write("sec_str --->"+str(sec_str))
     
-    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    getRevisionDetails = Sql.GetFirst("SELECT GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
-        TotalCost = str(float(getRevisionDetails.TOTAL_AMOUNT))+ " USD"
-        BDPrice = getRevisionDetails.BD_PRICE_INGL_CURR+ " USD"
-        CeilingPrice = getRevisionDetails.CEILING_PRICE_INGL_CURR+ " USD"
-        NetPrice = getRevisionDetails.NET_PRICE_INGL_CURR+ " USD"
-        NetValue = getRevisionDetails.NET_VALUE+ " USD"
-        TargetPrice = getRevisionDetails.TARGET_PRICE_INGL_CURR+ " USD"
+        curr = str(getRevisionDetails.GLOBAL_CURRENCY)
+        TotalCost = str(float(getRevisionDetails.TOTAL_AMOUNT))+ " " + curr
+        BDPrice = str(float(getRevisionDetails.BD_PRICE_INGL_CURR))+ " " + curr
+        CeilingPrice = str(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))+ " " + curr
+        NetPrice = str(float(getRevisionDetails.NET_PRICE_INGL_CURR))+ " " + curr
+        NetValue = str(float(getRevisionDetails.NET_VALUE))+ " " + curr
+        TargetPrice = str(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " "+ curr
     else:
         TotalCost = 0.00
         BDPrice = 0.00
