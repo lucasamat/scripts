@@ -706,14 +706,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 										item.DISCOUNT.Value = "+"+str(VALUE)
 							##Added the percentage symbol for discount custom field...
 							Percentage = '%'
-							Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
+							# Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
 							#discount_value = Quote.GetCustomField('DISCOUNT').Content
 							#Trace.Write("discount"+str(discount_value))
-							Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
-							Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-							Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
-							Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
-							Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+							# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+							# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+							# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+							# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
+							# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
 							Quote.Save()
 
 							Sql.RunQuery("""UPDATE SAQTRV
@@ -737,7 +737,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 														SUM(ISNULL(SAQITM.YEAR_4_INGL_CURR, 0)) as YEAR_4,
 														SUM(ISNULL(SAQITM.YEAR_5_INGL_CURR, 0)) as YEAR_5
 														FROM SAQITM (NOLOCK) WHERE SAQITM.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
-											WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(quote_rec_id = contract_quote_record_id,quote_revision_rec_id = quote_revision_record_id))
+											WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(discount = str(VALUE),quote_rec_id = contract_quote_record_id,quote_revision_rec_id = quote_revision_record_id))
 
 
 
