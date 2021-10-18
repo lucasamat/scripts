@@ -942,7 +942,7 @@ class SyncQuoteAndCustomTables:
 								"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 							}
 							quote_involved_party_contact_table_info.AddRow(contact_info_update)
-						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
+						#Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
