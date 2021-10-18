@@ -2024,14 +2024,14 @@ class TreeView:
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-								# elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
-								# 	get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(ObjName, where_string ) )
-								# 	if get_service_name:
-								# 		if ObjName == 'SAQITM':
-								# 			NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
-								# 		else:
-								# 			NodeText_temp = NodeText
-								#			NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
+								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
+									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {}".format(ObjName, where_string ) )
+									if get_service_name:
+										if ObjName == 'SAQITM':
+											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
+										else:
+											NodeText_temp = NodeText
+											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
