@@ -4090,8 +4090,9 @@ def POPUPLISTVALUEADDNEW(
 			inner_join = ""
 			additional_where = ""
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ".format(
-					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "")
+				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) ".format(
+					ObjectName,ObjectName
+				)
 			)
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
