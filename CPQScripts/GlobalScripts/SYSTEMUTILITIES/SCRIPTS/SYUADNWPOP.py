@@ -3969,8 +3969,7 @@ def POPUPLISTVALUEADDNEW(
 				"EMAIL": "EMAIL",
 				"PHONE":"PHONE",
 				"FUNCTION":"ECC FUNCTION",
-				"CONTACT_ID":"ACCOUNT_ID",
-				"CONTACT_NAME":"ACCOUNT_NAME"
+				"CONTACT_ID":"ACCOUNT_ID"
 				}
 			ordered_keys = [
 				"CONTACT_RECORD_ID",
@@ -4118,19 +4117,13 @@ def POPUPLISTVALUEADDNEW(
 				"CONTACT_RECORD_ID",
 				"CONTACT_NAME",
 				"EMAIL",
-				"PHONE",
-				"FUNCTION",
-				"CONTACT_ID",
-				"CONTACT_NAME"
+				"PHONE"
 				]
 			ordered_keys_ict = [
 				"SACONT.CONTACT_RECORD_ID",
 				"SACONT.CONTACT_NAME",
 				"SACONT.EMAIL",
-				"SACONT.PHONE",
-				"SACONT.FUNCTION",
-				"SACONT.CONTACT_ID",
-				"SACONT.CONTACT_NAME"
+				"SACONT.PHONE"
 				]
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
