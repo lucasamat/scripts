@@ -1206,8 +1206,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 
 						greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
+
+						equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+
+
 						Sql.RunQuery(fab_contract_update)
 						Sql.RunQuery(greenbook_contract_update)
+						Sql.RunQuery(equipment_contract_update)
 
 
 				if TableName == 'SAQTBP' and old_billing_matrix_obj:                    
