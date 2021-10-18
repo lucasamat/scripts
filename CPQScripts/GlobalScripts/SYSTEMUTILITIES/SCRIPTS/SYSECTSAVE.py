@@ -160,7 +160,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		ObjectName = "SAQITM"
 		sect_name = RECORD.get("SECTION_ID")
 		Trace.Write("section name = "+str(sect_name))
-	elif Product.GetGlobal("TreeParentLevel1") == "ProductOfferings":
+	elif Product.GetGlobal("TreeParentLevel1") == "Product Offerings":
 		ObjectName = "SAQTSV"
 	if str(ObjectName) == "SYPRSN":
 		
