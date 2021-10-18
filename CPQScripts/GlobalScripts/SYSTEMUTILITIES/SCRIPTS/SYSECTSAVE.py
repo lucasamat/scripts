@@ -768,6 +768,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 						get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 						Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						if get_status.upper() == "APPROVED":
 							##Updating the Revision Approved Date while changing the status to Approved...
 							if get_approved_date == "":
@@ -775,9 +778,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 								Sql.RunQuery("UPDATE SAQTRV SET REV_APPROVE_DATE = '{RevisionApprovedDate}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(RevisionApprovedDate = RevisionApprovedDate,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 							##Updating the Revision Approved Date while changing the status to Approved...
 							crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(newdict.get("QUOTE_ID")),'REVISION_ID':str(get_rev_val),'Fun_type':'cpq_to_crm'})
-							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
-							CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
-							CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 					#A055S000P01-4288 end
 					elif TableName == "SAQIGB":
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
