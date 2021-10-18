@@ -28,11 +28,11 @@ def LoadSummary():
     
     if getRevisionDetails:
         TotalCost = str(float(getRevisionDetails.TOTAL_AMOUNT))+ " USD"
-        BDPrice = getRevisionDetails.BD_PRICE_INGL_CURR
-        CeilingPrice = getRevisionDetails.CEILING_PRICE_INGL_CURR
-        NetPrice = getRevisionDetails.NET_PRICE_INGL_CURR
-        NetValue = getRevisionDetails.NET_VALUE
-        TargetPrice = getRevisionDetails.TARGET_PRICE_INGL_CURR
+        BDPrice = getRevisionDetails.BD_PRICE_INGL_CURR+ " USD"
+        CeilingPrice = getRevisionDetails.CEILING_PRICE_INGL_CURR+ " USD"
+        NetPrice = getRevisionDetails.NET_PRICE_INGL_CURR+ " USD"
+        NetValue = getRevisionDetails.NET_VALUE+ " USD"
+        TargetPrice = getRevisionDetails.TARGET_PRICE_INGL_CURR+ " USD"
     else:
         TotalCost = 0.00
         BDPrice = 0.00
