@@ -144,15 +144,8 @@ def create_new_revision(Opertion,cartrev):
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
-		#Sql.Upsert(quote_revision_table_info)
-		val = Sql.Upsert(quote_revision_table_info)
-		Trace.Write("cal===="+str(val))
+		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
-  
-		##Calling the iflow for quote header writeback to cpq to c4c code starts..
-		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
-		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
-		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 		#get quote data for update in SAQTMT start
 		
 		quote_table_info = Sql.GetTable("SAQTMT")
@@ -161,7 +154,12 @@ def create_new_revision(Opertion,cartrev):
 			#update SAQTMT start
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 			#update SAQTMT end
-
+			
+			##Calling the iflow for quote header writeback to cpq to c4c code starts..
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+			##Calling the iflow for quote header writeback to cpq to c4c code ends...
+			
 			#update SAQTIP start
 			Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#update SAQTIP end
