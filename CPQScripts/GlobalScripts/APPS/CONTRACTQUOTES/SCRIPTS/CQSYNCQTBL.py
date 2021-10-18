@@ -865,6 +865,7 @@ class SyncQuoteAndCustomTables:
 										"OPPORTUNITY_STAGE": Opportunitystagedict.get(custom_fields_detail.get("OpportunityStage")),
 										"ACCOUNT_TYPE": "Sold to Party",
 										"OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
+										"C4C_OPPOBJ_ID": custom_fields_detail.get("C4C_Opportunity_Object_ID"),
 									}
 									#Log.Info("master_opportunity_data ===>" + str(master_opportunity_data))
 									master_opportunity_table_info.AddRow(master_opportunity_data)
@@ -890,6 +891,7 @@ class SyncQuoteAndCustomTables:
 									"ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
 									"ACCOUNT_NAME": custom_fields_detail.get("STPAccountName"),
 									"ACCOUNT_TYPE": account_obj.ACCOUNT_TYPE,
+									"C4C_QTEOBJ_ID": custom_fields_detail.get("C4C_Quote_Object_ID"),
 								}
 								quote_opportunity_table_info.AddRow(opportunity_quote_data)
 					# A055S000P01-6618 - Starts
