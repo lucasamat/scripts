@@ -1118,6 +1118,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							Trace.Write('533-----------'+str(TableName))
 							Sql.Upsert(tableInfo)
 						# sectional edit error message - ends
+						
+						product_offering_contract_validity = Sql.GetFirst("SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QUOTE_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(Quote_rec_id= str(quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(TreeParam)))
 				
 				if TableName == 'SAQTBP' and old_billing_matrix_obj:                    
 					billing_matrix_obj = Sql.GetFirst("""SELECT BILLING_START_DATE, 
