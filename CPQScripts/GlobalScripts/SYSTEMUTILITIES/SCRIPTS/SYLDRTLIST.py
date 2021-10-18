@@ -2767,7 +2767,7 @@ class SYLDRTLIST:
                                 elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
                                     if ObjectName =='SAQICT':
                                         Trace.Write("SAQICT")
-                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">REPLACE CONTACT</a></li>')
+                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)">REPLACE CONTACT</a></li>')
                                     else:
                                         Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
                                 elif str(current_tab).upper() == "PROFILE":
