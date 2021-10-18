@@ -52,7 +52,7 @@ all_count = 0
 loop_count = 0
 #GET PRICING PROCEDURE
 contract_quote_record_id = None
-GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
+GetPricingProcedure = Sql.GetFirst("SELECT DIVISION_ID, DISTRIBUTIONCHANNEL_ID, SALESORG_ID, DOC_CURRENCY, PRICINGPROCEDURE_ID, QUOTE_RECORD_ID,EXCHANGE_RATE_TYPE FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}' AND QTEREV_RECORD_ID='{}' ".format(QUOTE,revision))
 if GetPricingProcedure is not None:
     #PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
     PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
