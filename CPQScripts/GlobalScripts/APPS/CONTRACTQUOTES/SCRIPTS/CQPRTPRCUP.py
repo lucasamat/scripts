@@ -65,11 +65,11 @@ if GetPricingProcedure is not None:
     #taxk1 = GetPricingProcedure.CUSTAXCLA_ID
     taxk1 = "1"
 #else:
-#PricingProcedure = 'RVCEU1'
-"""curr = 'USD'
+PricingProcedure = 'ZZNA05'
+curr = 'USD'
 dis = '01'
-salesorg = '2044'
-div = '98' """
+salesorg = '2034'
+div = '98'
 
 #UPDATE PRICING PROCEDURE TO SAQITM
 
