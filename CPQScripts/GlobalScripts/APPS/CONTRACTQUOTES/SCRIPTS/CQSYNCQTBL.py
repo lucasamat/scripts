@@ -48,6 +48,9 @@ class SyncQuoteAndCustomTables:
 			'Division':self.quote.GetCustomField('Division').Content,
 			'PrimaryContactName' : self.quote.GetCustomField('PrimaryContactName').Content,
 			'PrimaryContactId' : self.quote.GetCustomField('PrimaryContactId').Content,
+			'SoldToAddress' : self.quote.GetCustomField('SoldToAddress').Content,
+			'SoldToPhone' : self.quote.GetCustomField('SoldToPhone').Content,
+			'SoldToEmail' : self.quote.GetCustomField('SoldToEmail').Content,
 			'SalesOfficeID':self.quote.GetCustomField('SalesOfficeID').Content,            
 			'SalesPerson':self.quote.GetCustomField('SalesPerson').Content,
 			'PaymentTerms':self.quote.GetCustomField('PaymentTerms').Content,
@@ -942,6 +945,23 @@ class SyncQuoteAndCustomTables:
 							quote_involved_party_contact_table_info.AddRow(contact_info_update)
 						#Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
+					if custom_fields_detail.get("STPAccountID"):
+						sold_to_update = {
+							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+							"ADDRESS": custom_fields_detail.get("SoldToAddress"),
+							"EMAIL": custom_fields_detail.get("SoldToEmail"),
+							"IS_MAIN": "1",
+							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+							"PARTY_ID": custom_fields_detail.get("STPAccountID"),
+							"PARTY_NAME": custom_fields_detail.get("STPAccountName"),
+							"PARTY_ROLE": "SOLD TO",
+							"PHONE": custom_fields_detail.get("SoldToPhone"),
+							"QTEREV_RECORD_ID":quote_revision_id,
+							"QTEREV_ID":quote_rev_id
+						}
+						quote_involved_party_table_info.AddRow(sold_to_update)
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
 						billtocustomer_quote_data = {
