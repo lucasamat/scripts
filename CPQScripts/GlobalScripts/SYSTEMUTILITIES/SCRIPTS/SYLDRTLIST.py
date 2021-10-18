@@ -2756,7 +2756,12 @@ class SYLDRTLIST:
                                     Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
                                 else:
                                     Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'     
-                               
+                            elif ObjectName == 'SAQTIP':
+                                get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'BILL TO'")
+                                if get_role_name:
+                                   Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
+                                else:
+                                    Action_str += ('<li><a class="dropdown-item" href="#" style="display: none;" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>') 
                             else:
                                 if str(current_tab).upper() == "PROFILE":
                                     Action_str += (
@@ -2766,9 +2771,7 @@ class SYLDRTLIST:
                                 elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
                                     if ObjectName =='SAQICT':
                                         Trace.Write("SAQICT")
-                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'' id="ADDNEW__SYOBJR_98871_SYOBJ_002649")">REPLACE CONTACT</a></li>')
-                                    elif ObjectName =='SAQTIP':
-                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
+                                        Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE CONTACT</a></li>')
                                     else:
                                         Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
                                 elif str(current_tab).upper() == "PROFILE":
