@@ -4087,15 +4087,11 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 			TreeParam = Product.GetGlobal("TreeParam")
-			inner_join = "INNER JOIN MAMSOP MAMSOP (NOLOCK)  on MAMTRL.SAP_PART_NUMBER = MAMSOP.SAP_PART_NUMBER"
+			inner_join = ""
 			additional_where = ""
-			if where_string and 'SAP_PART_NUMBER' in where_string:
-				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
-			#Trace.Write('where_string--3680---'+str(where_string))
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND {}.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
-					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName, ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
-				)
+				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} ".format(
+					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "")
 			)
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
@@ -4111,58 +4107,33 @@ def POPUPLISTVALUEADDNEW(
 			if SortColumn != '' and SortColumnOrder !='':
 				order_by = "order by "+SortColumn + " " + SortColumnOrder
 			else:
-				order_by = "order by MAMTRL.SAP_PART_NUMBER ASC"
+				order_by = "order by SACONT.CONTACT_NAME"
 
 			pop_val = {}
 			
 			if where_string:
 				where_string += " AND"
 			ordered_keys = [
-				"MATERIAL_RECORD_ID",
-				"SAP_PART_NUMBER",
-				"SAP_DESCRIPTION",
-				"MATERIALGROUP_ID"
+				"CONTACT_RECORD_ID",
+				"CONTACT_NAME",
+				"EMAIL",
+				"PHONE",
+				"FUNCTION",
+				"CONTACT_ID",
+				"CONTACT_NAME"
 				]
-			ordered_keys_mam = [
-				"MAMTRL.MATERIAL_RECORD_ID",
-				"MAMTRL.SAP_PART_NUMBER",
-				"MAMTRL.SAP_DESCRIPTION",
-				"MAMTRL.MATERIALGROUP_ID"
+			ordered_keys_ict = [
+				"SACONT.CONTACT_RECORD_ID",
+				"SACONT.CONTACT_NAME",
+				"SACONT.EMAIL",
+				"SACONT.PHONE",
+				"SACONT.FUNCTION",
+				"SACONT.CONTACT_ID",
+				"SACONT.CONTACT_NAME"
 				]
-			#get consumable and non consumable values from XML start
-			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
-			iclusions_val_list = []
-			get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions')")
-			non_consumable_val_mamsop = consumable_value_mamsop = ''
-			for val in get_xml_val:
-				#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
-				if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
-					consumable_value_mamsop = 'N'
-				elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
-					consumable_value_mamsop  = 'C'
-				iclusions_val_list.append(consumable_value_mamsop)
-			#Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
-			#get consumable and non consumable values from XML end
-			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
-			#Trace.Write('iclusions_val---'+str(iclusions_val))
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}')""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
-			#Trace.Write('inner_join----'+str(inner_join))
-			#Trace.Write('ordered_keys----'+str(ordered_keys))
-			#Trace.Write('additional_where----'+str(additional_where))
-			# table_data = Sql.GetList(
-			# 	"select {} from {} (NOLOCK) {} {} {} {} {}".format(
-			# 		", ".join(ordered_keys),
-			# 		ObjectName
-			# 		,inner_join if inner_join else "",
-			# 		"WHERE " + where_string if where_string else "" ,
-			# 		additional_where,
-			# 		order_by,pagination_condition
-			# 	)
-			# )
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
-					", ".join(ordered_keys_mam),
+					", ".join(ordered_keys_ict),
 					ObjectName
 					,inner_join if inner_join else "",
 					"WHERE " + where_string if where_string else "" ,
@@ -4170,7 +4141,7 @@ def POPUPLISTVALUEADDNEW(
 					order_by,pagination_condition
 				)
 			)
-			Trace.Write('3721-----')
+			Trace.Write('4144-----')
 			QueryCountObj = Sql.GetFirst(
 					"select count(*) as cnt from {} (NOLOCK) {} {} {} ".format(
 					ObjectName,
@@ -4187,7 +4158,7 @@ def POPUPLISTVALUEADDNEW(
 					data_id = str(ObjectName)
 					new_value_dict = {}
 					for data in row_data:
-						if str(data.Key) == "MATERIAL_RECORD_ID":
+						if str(data.Key) == "CONTACT_RECORD_ID":
 							pop_val = str(data.Value) + "|Parts"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
@@ -4354,6 +4325,9 @@ def POPUPLISTVALUEADDNEW(
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
+		
+		
+		
 		else:
 			#Trace.Write("===============> Else")
 			overflow_val = ""
