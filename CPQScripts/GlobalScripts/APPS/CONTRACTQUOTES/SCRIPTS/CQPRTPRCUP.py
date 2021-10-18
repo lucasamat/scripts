@@ -144,6 +144,7 @@ if part_query:
             #Log.Info("Looping Count ==> ")
             
             response1 = webclient.UploadString("https://e250404-iflmap.hcisbt.us3.hana.ondemand.com/cxf/CPQ_CPS",str(requestdata))
+            Trace.Write(response1)
             end_time = time.time()
             #Log.Info("QUOTE ID---> "+str(QUOTE)+"loop---"+str(loop_count)+ "---time"+str(end_time - start_time))
         else:
