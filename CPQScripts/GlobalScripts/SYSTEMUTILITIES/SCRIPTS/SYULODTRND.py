@@ -1582,7 +1582,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}'""".format(quote_record_id,quote_r
 								+ current_obj_value
 								+ '" type="text"  onclick="'
 								+ str(datepicker)
-								+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
+								+ '"  class="form-control datePickerField wth157fltltbrdbt light_yellow"   '
 								+ disable
 								+ " ></td>"
 							)
