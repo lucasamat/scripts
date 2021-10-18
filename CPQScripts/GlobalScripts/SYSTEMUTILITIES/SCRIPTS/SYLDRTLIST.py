@@ -2757,6 +2757,7 @@ class SYLDRTLIST:
                                 else:
                                     Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'     
                             elif ObjectName == 'SAQTIP':
+                                quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
                                 get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'BILL TO'")
                                 if get_role_name:
                                    Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
