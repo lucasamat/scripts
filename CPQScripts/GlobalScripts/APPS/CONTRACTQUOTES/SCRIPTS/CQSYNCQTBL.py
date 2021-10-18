@@ -1048,40 +1048,40 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SalesUnitDetails)
-					if custom_fields_detail.get("SalesEmployeeID"):
-						SalesEmployeeDetails = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": custom_fields_detail.get("SalesEmployeeAddress"),
-							"EMAIL": custom_fields_detail.get("SalesEmployeeEmail"),
-							"IS_MAIN": "1",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
-							"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
-							"PARTY_ROLE": "SALES EMPLOYEE",
-							"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(SalesEmployeeDetails)
-					if custom_fields_detail.get("EmployeeResponsibleID"):
-						EmployeeResponsibleDetails = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": custom_fields_detail.get("EmployeeResponsibleAddress"),
-							"EMAIL": custom_fields_detail.get("EmployeeResponsibleEmail"),
-							"IS_MAIN": "1",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
-							"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
-							"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
-							"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails)
+					# if custom_fields_detail.get("SalesEmployeeID"):
+					# 	SalesEmployeeDetails = {
+					# 		"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"ADDRESS": custom_fields_detail.get("SalesEmployeeAddress"),
+					# 		"EMAIL": custom_fields_detail.get("SalesEmployeeEmail"),
+					# 		"IS_MAIN": "1",
+					# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+					# 		"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
+					# 		"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
+					# 		"PARTY_ROLE": "SALES EMPLOYEE",
+					# 		"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id
+					# 	}
+					# 	quote_involved_party_table_info.AddRow(SalesEmployeeDetails)
+					# if custom_fields_detail.get("EmployeeResponsibleID"):
+					# 	EmployeeResponsibleDetails = {
+					# 		"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"ADDRESS": custom_fields_detail.get("EmployeeResponsibleAddress"),
+					# 		"EMAIL": custom_fields_detail.get("EmployeeResponsibleEmail"),
+					# 		"IS_MAIN": "1",
+					# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+					# 		"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
+					# 		"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
+					# 		"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
+					# 		"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id
+					# 	}
+					# 	quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails)
 					if custom_fields_detail.get("SourceAccountID"):
 						SourceAccountDetails = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
