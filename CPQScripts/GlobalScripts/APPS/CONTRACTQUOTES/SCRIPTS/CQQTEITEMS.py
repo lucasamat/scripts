@@ -24,16 +24,16 @@ def LoadSummary():
     sec_str += "</div>"
     Trace.Write("sec_str --->"+str(sec_str))
     
-    getRevisionDetails = Sql.GetFirst("SELECT GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    getRevisionDetails = Sql.GetFirst("SELECT GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
         curr = str(getRevisionDetails.GLOBAL_CURRENCY)
-        TotalCost = str(float(getRevisionDetails.TOTAL_AMOUNT))+ " " + curr
-        BDPrice = str(float(getRevisionDetails.BD_PRICE_INGL_CURR))+ " " + curr
-        CeilingPrice = str(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))+ " " + curr
-        NetPrice = str(float(getRevisionDetails.NET_PRICE_INGL_CURR))+ " " + curr
-        NetValue = str(float(getRevisionDetails.NET_VALUE))+ " " + curr
-        TargetPrice = str(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " "+ curr
+        TotalCost = ""
+        BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
+        CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
+        NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
+        NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
+        TargetPrice = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
     else:
         TotalCost = 0.00
         BDPrice = 0.00
@@ -41,7 +41,7 @@ def LoadSummary():
         TargetPrice = 0.00
         NetPrice = 0.00
         NetValue = 0.00
-    return str(sec_str),str(TotalCost),str(BDPrice),str(CeilingPrice),str(TargetPrice),str(NetPrice),str(NetValue)
+    return str(sec_str),str(TotalCost),str(BDPrice)+curr,str(CeilingPrice)+curr,str(TargetPrice)+curr,str(NetPrice)+curr,str(NetValue)+curr
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
