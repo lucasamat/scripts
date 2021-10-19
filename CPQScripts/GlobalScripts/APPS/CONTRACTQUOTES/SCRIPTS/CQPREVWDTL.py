@@ -455,8 +455,14 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	for value in checklist_vals:
 		sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" ></td>')
 		sec_str += ('<td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+str(value.CHECKLIST_DESCRIPTION)+'" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<td><input id="SERVICE_CONTRACT" type="text" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<td><input id="SPECIALIST_REVIEW" type="text" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="form-control related_popup_css fltlt" ></td>')
+		if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1":
+			sec_str += ('<td><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" checked><span class="lbl"></span></td>')
+		else:
+			sec_str += ('<td><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom"><span class="lbl"></span></td>')
+		if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1":
+			sec_str += ('<td><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" checked><span class="lbl"></span></td>')
+		else:
+			sec_str += ('<td><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom"><span class="lbl"></span></td>')
 		sec_str += ('<td><input id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" ></td>')
 	
 	sec_str += (
@@ -476,7 +482,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		
 						
 	return sec_str
-        
+		
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
