@@ -409,6 +409,74 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 
 def constructCBC(Qt_rec_id, Quote, MODE):
 	Trace.Write('Constructing Clean Book Checklist')
+	sec_str = ""      
+	new_value_dict = {}
+	ObjectName = "SAQCBC"
+	table_id = "clean_booking_checklist"
+	Header_details = {
+		"CHECKLIST_ID": "ID",
+		"CHECKLIST_DESCRIPTION":"CHECKLIST",
+		"SERVICE_CONTRACT": "SERVICE CONTRACT",
+		"SPECIALIST_REVIEW": "SPECIALIST REVIEW(N/A)",
+		"COMMENT": "COMMENT",    
+	}
+	ordered_keys = [
+		"CHECKLIST_ID",
+		"CHECKLIST_DESCRIPTION",
+		"SERVICE_CONTRACT",
+		"SPECIALIST_REVIEW",
+		"COMMENT",    
+	]            
+
+	sec_str = '<div id="container" class="g4 pad-10 brdr except_sec">'
+	sec_str += (
+		'<table id="'
+		+ str(table_id)
+		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
+	)
+	
+	for key, invs in enumerate(list(ordered_keys)):
+
+		invs = str(invs).strip()
+		qstring = Header_details.get(str(invs)) or ""    
+		sec_str += (
+			'<th data-field="'
+			+ invs
+			+ '" data-title-tooltip="'
+			+ str(qstring)
+			+ '" data-sortable="true" data-filter-control="input">'
+			+ str(qstring)
+			+ "</th>"
+		)
+		
+	sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
+	current_obj_value = ""
+	checklist_vals = Sql.GetList("select CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ".format(quote_recid=Quote,quote_revision_record_id=quote_revision_record_id))
+	for value in checklist_vals:
+		sec_str += ('<tr><td><input id="CHECKLIST_ID" type="text" value="'+value.CHECKLIST_ID+'" title="'+value.CHECKLIST_ID+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+value.CHECKLIST_DESCRIPTION+'" title="'+value.CHECKLIST_DESCRIPTION+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="SERVICE_CONTRACT" type="text" value="'+value.SERVICE_CONTRACT+'" title="'+value.SERVICE_CONTRACT+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="SPECIALIST_REVIEW" type="text" value="'+value.SPECIALIST_REVIEW+'" title="'+value.SPECIALIST_REVIEW+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="COMMENT" type="text" value="'+value.COMMENT+'" title="'+value.COMMENT+'" class="form-control related_popup_css fltlt" ></td>')
+	
+	sec_str += (
+			'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>'
+		)           
+	sec_str += '</tr>'
+
+	sec_str += '</tbody></table>'
+	values_lists = ""
+	a_test = []
+	for invsk in list(Header_details):
+		table_ids = "#" + str(table_id)
+		filter_class = table_ids + " .bootstrap-table-filter-control-" + str(invsk)
+		values_lists += "var " + str(invsk) + ' = $("' + str(filter_class) + '").val(); '
+		values_lists += " ATTRIBUTE_VALUEList.push(" + str(invsk) + "); "
+		a_test.append(invsk)
+		
+						
+	return sec_str
+        
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
