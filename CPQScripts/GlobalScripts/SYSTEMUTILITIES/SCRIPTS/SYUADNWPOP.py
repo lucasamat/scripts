@@ -1649,10 +1649,8 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-				sec_str = '<div class="row modulebnr brdr ma_mar_btm">INSTALLED BASE EQUIPMENT LIST<button type="button" id = "involved_parties_equipment" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-				sec_str += '<div class="col-md-12 padlftrhtnone" id="btnhide"><div class="row pad-10 bg-lt-wt brdr"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Source Account ID">Source Account ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Source Account Name">Source Account Name</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="{}">{}</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Source Fab Location ID">Source Fab Location ID</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Equipment">Equipment</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="All">All</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" id = "involved_parties_equipment" onclick="closepopup_scrl(this)">CANCEL</button><button type="button" id="add-equipment" class="btnconfig" onclick="addtoolrelocationequipment()" data-dismiss="modal">ADD</button></div></div>'.format(
-				Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_Id"), Product.GetGlobal("stp_account_name"), Product.GetGlobal("stp_account_name")
-			)
+				sec_str = '<div class="row modulebnr brdr ma_mar_btm">REPLACE ACCOUNT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
+				
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += (
@@ -1660,7 +1658,7 @@ def POPUPLISTVALUEADDNEW(
 				+ str(table_id)
 				+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
 			)
-			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+			#sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
 			for key, invs in enumerate(list(ordered_keys)):
 
