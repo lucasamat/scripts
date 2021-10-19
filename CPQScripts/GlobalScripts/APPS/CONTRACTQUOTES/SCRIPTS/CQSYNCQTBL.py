@@ -422,7 +422,7 @@ class SyncQuoteAndCustomTables:
 				if not quote_obj:					
 					if custom_fields_detail.get("SalesOrgID"):
 						salesorg_obj = Sql.GetFirst(
-							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID,COMPANY_ID,COMPANY_NAME,COMPANY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
 								custom_fields_detail.get("SalesOrgID")
 							)
 						)
@@ -521,42 +521,8 @@ class SyncQuoteAndCustomTables:
 					expired_date_val = datetime.datetime.strptime(end_date, '%m/%d/%Y').date()
 					expired_date_val = expired_date_val + timedelta(days=365)
 					#Trace.Write(str(expired_date_val)+'571----expired_date_val---'+str(type(end_date)))
-					#quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
-					# if salesorg_obj and get_rev_details:
-					# 	quote_rev_data = {
-					# 		"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
-					# 		"QUOTE_ID": quote_id,
-					# 		"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
-					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-					# 		"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
-					# 		"COUNTRY": salesorg_country.COUNTRY,
-					# 		"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
-					# 		"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-					# 		"REGION":salesorg_obj.REGION,
-					# 		"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
-					# 		"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
-					# 		"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
-					# 		"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
-					# 		"QTEREV_RECORD_ID":quote_revision_id,
-					# 		"QTEREV_ID":quote_rev_id,
-					# 		"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
-					# 		"ACTIVE":get_rev_details.ACTIVE_REV,
-					# 		"REV_CREATE_DATE":str(created_date),
-					# 		"REV_EXPIRE_DATE":str(expired_date),
-					# 		"REVISION_STATUS":"IN-PROGRESS",
-					# 		"REV_APPROVE_DATE":'',
-					# 		"CART_ID":get_rev_details.CART_ID
-					# 	}
-					# 	#quote_revision_table_info.AddRow(quote_rev_data)
-					# 	# UPDATE REVISION DETAILS TO SAQTMT
-					# 	contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
-					# 								"QTEREV_ID":quote_rev_id })
-					# 	Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
-					# 	Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
-					# 	#Sql.Upsert(quote_revision_table_info)
-					# 	Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
 					
-					#insert in revision table while creating quote end
+					
 					if custom_fields_detail.get('Currency'):
 							Currency_obj = Sql.GetFirst(
 								"SELECT CURRENCY,CURRENCY_NAME, CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '{}'".format(
@@ -584,6 +550,7 @@ class SyncQuoteAndCustomTables:
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})								
+					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
@@ -617,7 +584,10 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-							"CANCELLATION_PERIOD":"90 DAYS"
+							"CANCELLATION_PERIOD":"90 DAYS",
+							"COMPANY_ID":salesorg_obj.COMPANY_ID,
+							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
+							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
