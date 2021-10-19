@@ -407,7 +407,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 	return sec_str
 
 
-
+def constructCBC(Qt_rec_id, Quote, MODE):
+	Trace.Write('Constructing Clean Book Checklist')
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -1152,6 +1153,11 @@ elif ACTION == "LEGALSOW_VIEW":
 	Trace.Write("Quote---->" + str(Quote))
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructlegalsow(Qt_rec_id, Quote, MODE))
+elif ACTION == "CBC_VIEW":
+	if TreeParam == "Quote Information":
+		Quote = Quote.GetGlobal("contract_quote_record_id")
+	MODE = "VIEW"
+	ApiResponse = ApiResponseFactory.JsonResponse(constructCBC(Qt_rec_id, Quote, MODE))
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
