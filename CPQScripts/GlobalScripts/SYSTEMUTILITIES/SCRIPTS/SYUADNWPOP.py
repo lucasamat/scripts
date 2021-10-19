@@ -4318,13 +4318,15 @@ def POPUPLISTVALUEADDNEW(
 				"CONTACT_RECORD_ID": "KEY",
 				"CONTACT_NAME": "CONTACT NAME",
 				"EMAIL": "EMAIL",
-				"PHONE":"PHONE"
+				"PHONE":"PHONE",
+				"FUNCTION":"ECC FUNCTION"			
 				}
 			ordered_keys = [
 				"CONTACT_RECORD_ID",
 				"CONTACT_NAME",
 				"EMAIL",
-				"PHONE"
+				"PHONE",
+				"FUNCTION"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -4352,8 +4354,7 @@ def POPUPLISTVALUEADDNEW(
 				+ str(table_id)
 				+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
 			)
-			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
-
+			
 			for key, invs in enumerate(list(ordered_keys)):
 
 				invs = str(invs).strip()
