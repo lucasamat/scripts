@@ -186,14 +186,17 @@ class CONTAINER:
             active_tab = x_tabs = active_tab_name
         except:
             active_tab = x_tabs = "Quotes"
-        for tab in Product.Tabs:            
-            if tab.IsSelected == True:
-                x_tabs = tab.Name
-                active_tab = x_tabs
-            if Session[str(x_tabs)] is None:
-                Session[str(x_tabs)] = "20"
-            elif Param.ACTION == "SECOND":
-                Session[str(x_tabs)] = PerPage
+        try:
+            for tab in Product.Tabs:            
+                if tab.IsSelected == True:
+                    x_tabs = tab.Name
+                    active_tab = x_tabs
+                if Session[str(x_tabs)] is None:
+                    Session[str(x_tabs)] = "20"
+                elif Param.ACTION == "SECOND":
+                    Session[str(x_tabs)] = PerPage
+        except Exception:
+            pass
         if not active_tab:
             active_tab = "Quotes"
         #x_tabs = active_tab_name
