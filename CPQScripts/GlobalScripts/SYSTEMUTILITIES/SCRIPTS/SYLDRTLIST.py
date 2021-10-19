@@ -2759,8 +2759,11 @@ class SYLDRTLIST:
                             elif ObjectName == 'SAQTIP':
                                 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
                                 get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'BILL TO' and CpqTableEntryId = '"+str(value1234)+"'")
+                                get_role_name_ship = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SHIP TO' and CpqTableEntryId = '"+str(value1234)+"'")
                                 if get_role_name:
-                                   Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
+                                    Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
+                                elif get_role_name_ship:
+                                    Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
                                 else:
                                     Action_str += ('<li><a class="dropdown-item" href="#" style="display: none;" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>') 
                             else:
