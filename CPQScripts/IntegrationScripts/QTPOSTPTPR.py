@@ -108,7 +108,7 @@ try:
 			#Log.Info("456789 type(price) --->"+str(type(price)))
 			for i in price:		
 				Itemidinfo = str(i["itemId"]).split(";")
-				#Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
+				Log.Info("456 Itemidinfo --->"+str(Itemidinfo))
 				QUOTE = str(Itemidinfo[1])	
 				contract_quote_record_id = None		
 				Taxrate = ''
@@ -172,7 +172,7 @@ try:
 			getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			if getpartsdata:
 				Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
-			
+				Log.Info('getpartsdata')
 			
 				Sql.RunQuery("""UPDATE SAQIFP
 						SET PRICING_STATUS = 'ACQUIRED',TAX = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),TAX_PERCENTAGE = convert(decimal(13,5),CASE WHEN ISNULL(SYSPBT.TAXRATE,'')='' THEN NULL ELSE SYSPBT.TAXRATE END) ,EXTENDED_PRICE = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY,UNIT_PRICE = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
