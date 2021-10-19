@@ -18,13 +18,15 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
-def replace_account(Values):
+def replace_account(Values,acctid):
     Trace.Write("q"+str(Values))
+    Trace.Write("q2"+str(acctid))
 
 
 try:
     Values = Param.Values
-    
+    acctid = Param.acctid
 except:
-    Values =''   
-update_document_type(Values)
+    Values ='' 
+    acctid = ''  
+update_document_type(Values,acctid)
