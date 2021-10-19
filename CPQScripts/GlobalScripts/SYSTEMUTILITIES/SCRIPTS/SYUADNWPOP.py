@@ -4464,13 +4464,15 @@ def POPUPLISTVALUEADDNEW(
 				"CONTACT_RECORD_ID",
 				"CONTACT_NAME",
 				"EMAIL",
-				"PHONE"
+				"PHONE",
+				"FUNCTION"
 				]
 			ordered_keys_ict = [
 				"SACONT.CONTACT_RECORD_ID",
 				"SACONT.CONTACT_NAME",
 				"SACONT.EMAIL",
-				"SACONT.PHONE"
+				"SACONT.PHONE",
+				"SACONT.FUNCTION"
 				]
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
