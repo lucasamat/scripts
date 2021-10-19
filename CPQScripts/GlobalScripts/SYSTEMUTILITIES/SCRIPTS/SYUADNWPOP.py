@@ -1790,7 +1790,7 @@ def POPUPLISTVALUEADDNEW(
 
 					for data in row_data:
 						if str(data.Key) == "ACCOUNT_RECORD_ID":
-							pop_val = str(data.Value) + "|accounts"
+							pop_val = str(data.Value)
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
 						else:
