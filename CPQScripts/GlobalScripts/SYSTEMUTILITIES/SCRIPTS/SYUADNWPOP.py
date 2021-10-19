@@ -1651,7 +1651,7 @@ def POPUPLISTVALUEADDNEW(
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 				sec_str = '<div class="row modulebnr brdr ma_mar_btm">REPLACE ACCOUNT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-				
+				sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/Secondary Icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Accounts</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">Select a valid Account record below to add it to the list of Accounts associated with your Quote</abbr></div></div></div></div>'
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += (
