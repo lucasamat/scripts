@@ -4314,7 +4314,7 @@ def POPUPLISTVALUEADDNEW(
 			DIVNAME = "VIEW_DIV_ID"
 			new_value_dict = {}
 			ObjectName = "SACONT"
-			table_id = "contact-replace"
+			table_id = "contact-replace-addnew-model"
 			Header_details = {
 				"CONTACT_RECORD_ID": "KEY",
 				"CONTACT_NAME": "CONTACT NAME",
@@ -4381,7 +4381,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="contacts-model-footer"></div>'
+			sec_str += '<div id="add-contact-model-footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
