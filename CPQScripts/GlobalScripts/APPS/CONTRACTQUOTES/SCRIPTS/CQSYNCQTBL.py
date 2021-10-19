@@ -1164,8 +1164,7 @@ class SyncQuoteAndCustomTables:
 					Sql.Upsert(quote_involved_party_table_info)
 					Sql.Upsert(quote_involved_party_contact_table_info)
 					#Sql.Upsert(quote_fab_table_info)
-					Sql.RunQuery("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'','','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID")))
-					Log.Info("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'','','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID")))
+
 					cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
 					if cart_obj:
 						Sql.RunQuery("""INSERT INTO QT__QTQTMT (QUOTE_ID, QUOTE_NAME, MASTER_TABLE_QUOTE_RECORD_ID, ownerId, cartId) 
@@ -1790,7 +1789,7 @@ sync_obj.create_custom_table_record()
 #A055S000P01-9608 START
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
+getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
 if getService is None:
 	getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 
