@@ -190,7 +190,7 @@ try:
 				end_time = time.time() 
 				Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
 				'''
-    			#UPDATE QUOTE TABLE SAQIFP
+				#UPDATE QUOTE TABLE SAQIFP
 				try:
 					update_quote = """UPDATE QT__QTQIFP SET UNIT_PRICE = SAQIFP.UNIT_PRICE, EXTENDED_UNIT_PRICE = SAQIFP.EXTENDED_PRICE,TAX =SAQIFP.TAX  FROM SAQIFP INNER JOIN QT__QTQIFP ON  SAQIFP.PART_NUMBER = QT__QTQIFP.PART_NUMBER AND SAQIFP.QUOTE_ID = QT__QTQIFP.QUOTE_ID WHERE SAQIFP.QUOTE_ID = '{quote}'""".format(quote=QUOTE)
 					Sql.RunQuery(update_quote)
@@ -206,18 +206,19 @@ try:
 				GetQuoteType = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT WHERE QUOTE_ID = '{}'".format(QUOTE))
 				if  "TOOL" in str(GetQuoteType.QUOTE_TYPE):
 					
-					GetSum = SqlHelper.GetFirst( "SELECT SUM(EXTENDED_PRICE) AS PRICE FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0100'".format(QUOTE))
+					GetSum = SqlHelper.GetFirst( "SELECT SUM(EXTENDED_PRICE) AS PRICE FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
 					
 					GetTax = SqlHelper.GetFirst("SELECT SUM(TAX) AS TAX FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0100'".format(QUOTE))
 					
-					Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0100%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
+					Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0091%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
 				Obj_Qty_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE  QUOTE_ID = '"+str(QUOTE)+"' ")
 
 
 				sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.EXTENDED_PRICE) AS TOTAL, SAQITM.ONSITE_PURCHASE_COMMIT, SUM(ISNULL(SAQIFP.TAX,0)) as TAX FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}' GROUP BY SAQITM.ONSITE_PURCHASE_COMMIT".format(QUOTE))
 				if sum_query:
 					total = float(sum_query.TOTAL)
-					onsite = float(str(sum_query.ONSITE_PURCHASE_COMMIT).strip('%'))
+					#onsite = float(str(sum_query.ONSITE_PURCHASE_COMMIT).strip('%'))
+					onsite = 1
 					ext_itm = (total *onsite)/100  
 					tax = float(sum_query.TAX)
 
