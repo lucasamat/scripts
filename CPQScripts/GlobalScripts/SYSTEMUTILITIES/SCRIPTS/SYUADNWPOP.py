@@ -1669,7 +1669,7 @@ def POPUPLISTVALUEADDNEW(
 					sec_str += (
 						'<th data-field="'
 						+ str(invs)
-						+ '" data-formatter="toolrelocationKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ '" data-formatter="accountreplaceKeyHyperLink" data-sortable="true" data-title-tooltip="'
 						+ str(qstring)
 						+ '" data-filter-control="input">'
 						+ str(qstring)
@@ -1790,7 +1790,7 @@ def POPUPLISTVALUEADDNEW(
 
 					for data in row_data:
 						if str(data.Key) == "ACCOUNT_RECORD_ID":
-							pop_val = str(data.Value) + "|equipments"
+							pop_val = str(data.Value) + "|accounts"
 							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
 							new_value_dict[data.Key] = cpqidval
 						else:
