@@ -1692,194 +1692,194 @@ class Entitlements:
 				#update SAQICO
 				#updateSAQICO = " UPDATE {} SET ENTITLEMENT_COST_IMPACT={},ENTITLEMENT_PRICE_IMPACT={} WHERE  PRICING_STATUS IN ('PARTIALLY PRICED','ACQUIRED') AND {}  ".format('SAQICO',costimpact,priceimapct, whereReq)
 				getsaletypeloc = Sql.GetFirst("select SALE_TYPE from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,self.revision_recordid))
-				if getsaletypeloc:					
-					if getsaletypeloc.SALE_TYPE == "TOOL RELOCATION":
-						updateSAQICO = Sql.RunQuery("""UPDATE SAQICO 
-										SET ENTITLEMENT_PRICE_IMPACT = CASE
-													WHEN EXCHANGE_RATE > 0 THEN ISNULL({priceimp}, 0) * ISNULL(EXCHANGE_RATE,0)
-													ELSE {priceimp}
-													END,
-										ENTITLEMENT_COST_IMPACT = '{costimp}' where {WhereCondition}""".format(costimp=totalcostent,priceimp=totalpriceimpact,WhereCondition=whereReq))
-						QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.ENTITLEMENT_PRICE_IMPACT,a.YEAR_1 = b.ENTITLEMENT_PRICE_IMPACT FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						'''QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (a.TARGET_PRICE) * (a.TAX_PERCENTAGE/100) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)'''
-						QueryStatement ="""UPDATE A SET A.EXTENDED_PRICE = B.TARGET_PRICE FROM SAQICO A INNER JOIN SAQICO B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_ID = B.QUOTE_ID where A.QUOTE_RECORD_ID = '{QuoteRecordId}' AND A.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						'''QueryStatement = """UPDATE A  SET A.TOTAL_COST = B.TOTAL_COST FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TOTAL_COST) AS TOTAL_COST,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)'''
-						QueryStatement = """UPDATE A  SET A.TARGET_PRICE = B.TARGET_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						QueryStatement = """UPDATE A  SET A.YEAR_1 = B.YEAR_1 FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(YEAR_1) AS YEAR_1,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						'''QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)'''
-						QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement) 
-						QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-						QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
-						Sql.RunQuery(QueryStatement)
-					else:						
-						updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
-								SET ENTITLEMENT_PRICE_IMPACT = CASE
-														WHEN EXCHANGE_RATE > 0 THEN ISNULL({price_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
-														ELSE {price_impact}
-														END,
-								ENTITLEMENT_COST_IMPACT = CASE
-														WHEN EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
-														ELSE {cost_impact}
-														END,
-								TARGET_PRICE = CASE  
-														WHEN TARGET_PRICE > 0 THEN TARGET_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-														ELSE TARGET_PRICE
-													END,
-								BD_PRICE = CASE  
-													WHEN BD_PRICE > 0 THEN BD_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE BD_PRICE
-												END,  
-								SALES_PRICE = CASE  
-														WHEN SALES_PRICE > 0 THEN SALES_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-														ELSE SALES_PRICE
-													END,
-								SALES_DISCOUNT_PRICE = CASE  
-														WHEN SALES_DISCOUNT_PRICE > 0 THEN SALES_DISCOUNT_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-														ELSE SALES_DISCOUNT_PRICE
-													END,
-								YEAR_1 = CASE  
-													WHEN YEAR_1 > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE ISNULL(YEAR_1, 0)
-												END,
-								YEAR_2 = CASE  
-													WHEN YEAR_2 > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE ISNULL(YEAR_2,0)
-												END,
-								YEAR_3 = CASE  
-													WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE ISNULL(YEAR_3,0)
-												END,
-								YEAR_4 = CASE  
-													WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE ISNULL(YEAR_4,0)
-												END,
-								YEAR_5 = CASE  
-													WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE ISNULL(YEAR_5,0)
-												END,
-								EXTENDED_PRICE = CASE 
-															WHEN ISNULL(EXTENDED_PRICE,0) > 0 THEN
-																								CASE  
-																									WHEN ISNULL(YEAR_1, 0) > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																									ELSE ISNULL(YEAR_1, 0)
-																								END +
-																								CASE  
-																									WHEN ISNULL(YEAR_2, 0) > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																									ELSE ISNULL(YEAR_2, 0)
-																								END +
-																								CASE  
-																									WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																									ELSE ISNULL(YEAR_3,0)
-																								END +
-																								CASE  
-																									WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																									ELSE ISNULL(YEAR_4,0)
-																								END +
-																								CASE  
-																									WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																									ELSE ISNULL(YEAR_5,0)
-																								END
-															ELSE ISNULL(EXTENDED_PRICE,0)
-														END,
-								STATUS = CASE
-														WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
-														ELSE STATUS
-														END
-								FROM SAQICO where
-								{WhereCondition}
-							AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
-						#Sql.RunQuery(updateSAQICO)
-				else:					
-					updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
-							SET ENTITLEMENT_PRICE_IMPACT = CASE
-													WHEN EXCHANGE_RATE > 0 THEN ISNULL({price_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
-													ELSE {price_impact}
-													END,
-							ENTITLEMENT_COST_IMPACT = CASE
-													WHEN EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
-													ELSE {cost_impact}
-													END,
-							TARGET_PRICE = CASE  
-													WHEN TARGET_PRICE > 0 THEN TARGET_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE TARGET_PRICE
-												END,
-							BD_PRICE = CASE  
-												WHEN BD_PRICE > 0 THEN BD_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE BD_PRICE
-											END,  
-							SALES_PRICE = CASE  
-													WHEN SALES_PRICE > 0 THEN SALES_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE SALES_PRICE
-												END,
-							SALES_DISCOUNT_PRICE = CASE  
-													WHEN SALES_DISCOUNT_PRICE > 0 THEN SALES_DISCOUNT_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-													ELSE SALES_DISCOUNT_PRICE
-												END,
-							YEAR_1 = CASE  
-												WHEN YEAR_1 > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE ISNULL(YEAR_1, 0)
-											END,
-							YEAR_2 = CASE  
-												WHEN YEAR_2 > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE ISNULL(YEAR_2,0)
-											END,
-							YEAR_3 = CASE  
-												WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE ISNULL(YEAR_3,0)
-											END,
-							YEAR_4 = CASE  
-												WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE ISNULL(YEAR_4,0)
-											END,
-							YEAR_5 = CASE  
-												WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-												ELSE ISNULL(YEAR_5,0)
-											END,
-							EXTENDED_PRICE = CASE 
-														WHEN ISNULL(EXTENDED_PRICE,0) > 0 THEN
-																							CASE  
-																								WHEN ISNULL(YEAR_1, 0) > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																								ELSE ISNULL(YEAR_1, 0)
-																							END +
-																							CASE  
-																								WHEN ISNULL(YEAR_2, 0) > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																								ELSE ISNULL(YEAR_2, 0)
-																							END +
-																							CASE  
-																								WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																								ELSE ISNULL(YEAR_3,0)
-																							END +
-																							CASE  
-																								WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																								ELSE ISNULL(YEAR_4,0)
-																							END +
-																							CASE  
-																								WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
-																								ELSE ISNULL(YEAR_5,0)
-																							END
-														ELSE ISNULL(EXTENDED_PRICE,0)
-													END,
-							STATUS = CASE
-													WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
-													ELSE STATUS
-													END
-							FROM SAQICO where
-							{WhereCondition}
-						AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
-					#Sql.RunQuery(updateSAQICO)
+				# if getsaletypeloc:					
+				# 	if getsaletypeloc.SALE_TYPE == "TOOL RELOCATION":
+				# 		updateSAQICO = Sql.RunQuery("""UPDATE SAQICO 
+				# 						SET ENTITLEMENT_PRICE_IMPACT = CASE
+				# 									WHEN EXCHANGE_RATE > 0 THEN ISNULL({priceimp}, 0) * ISNULL(EXCHANGE_RATE,0)
+				# 									ELSE {priceimp}
+				# 									END,
+				# 						ENTITLEMENT_COST_IMPACT = '{costimp}' where {WhereCondition}""".format(costimp=totalcostent,priceimp=totalpriceimpact,WhereCondition=whereReq))
+				# 		QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.ENTITLEMENT_PRICE_IMPACT,a.YEAR_1 = b.ENTITLEMENT_PRICE_IMPACT FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		'''QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (a.TARGET_PRICE) * (a.TAX_PERCENTAGE/100) ELSE a.TAX END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)'''
+				# 		QueryStatement ="""UPDATE A SET A.EXTENDED_PRICE = B.TARGET_PRICE FROM SAQICO A INNER JOIN SAQICO B on A.EQUIPMENT_ID = B.EQUIPMENT_ID and A.QUOTE_ID = B.QUOTE_ID where A.QUOTE_RECORD_ID = '{QuoteRecordId}' AND A.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		'''QueryStatement = """UPDATE A  SET A.TOTAL_COST = B.TOTAL_COST FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TOTAL_COST) AS TOTAL_COST,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)'''
+				# 		QueryStatement = """UPDATE A  SET A.TARGET_PRICE = B.TARGET_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		QueryStatement = """UPDATE A  SET A.EXTENDED_PRICE = B.EXTENDED_PRICE FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		QueryStatement = """UPDATE A  SET A.YEAR_1 = B.YEAR_1 FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(YEAR_1) AS YEAR_1,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		'''QueryStatement = """UPDATE A  SET A.TAX = B.TAX FROM SAQITM A(NOLOCK) JOIN (SELECT SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID from SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY QUOTE_RECORD_ID,SERVICE_ID,QTEREV_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID AND A.SERVICE_ID=B.SERVICE_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID""".format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)'''
+				# 		QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		QueryStatement ="""UPDATE a SET a.STATUS = 'ACQUIRED' FROM SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement) 
+				# 		QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 		QueryStatement ="""UPDATE a SET a.TARGET_PRICE = b.TARGET_PRICE,a.YEAR_1 = b.YEAR_1,a.TAX = b.TAX,a.EXTENDED_PRICE = b.EXTENDED_PRICE FROM QT__SAQITM a INNER JOIN SAQITM b on a.SERVICE_ID = b.SERVICE_ID and a.QUOTE_ID = b.QUOTE_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' AND a.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId= self.ContractRecordId,RevisionRecordId = self.revision_recordid)
+				# 		Sql.RunQuery(QueryStatement)
+				# 	else:						
+				# 		updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
+				# 				SET ENTITLEMENT_PRICE_IMPACT = CASE
+				# 										WHEN EXCHANGE_RATE > 0 THEN ISNULL({price_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
+				# 										ELSE {price_impact}
+				# 										END,
+				# 				ENTITLEMENT_COST_IMPACT = CASE
+				# 										WHEN EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
+				# 										ELSE {cost_impact}
+				# 										END,
+				# 				TARGET_PRICE = CASE  
+				# 										WHEN TARGET_PRICE > 0 THEN TARGET_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 										ELSE TARGET_PRICE
+				# 									END,
+				# 				BD_PRICE = CASE  
+				# 									WHEN BD_PRICE > 0 THEN BD_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE BD_PRICE
+				# 								END,  
+				# 				SALES_PRICE = CASE  
+				# 										WHEN SALES_PRICE > 0 THEN SALES_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 										ELSE SALES_PRICE
+				# 									END,
+				# 				SALES_DISCOUNT_PRICE = CASE  
+				# 										WHEN SALES_DISCOUNT_PRICE > 0 THEN SALES_DISCOUNT_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 										ELSE SALES_DISCOUNT_PRICE
+				# 									END,
+				# 				YEAR_1 = CASE  
+				# 									WHEN YEAR_1 > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE ISNULL(YEAR_1, 0)
+				# 								END,
+				# 				YEAR_2 = CASE  
+				# 									WHEN YEAR_2 > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE ISNULL(YEAR_2,0)
+				# 								END,
+				# 				YEAR_3 = CASE  
+				# 									WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE ISNULL(YEAR_3,0)
+				# 								END,
+				# 				YEAR_4 = CASE  
+				# 									WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE ISNULL(YEAR_4,0)
+				# 								END,
+				# 				YEAR_5 = CASE  
+				# 									WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE ISNULL(YEAR_5,0)
+				# 								END,
+				# 				EXTENDED_PRICE = CASE 
+				# 											WHEN ISNULL(EXTENDED_PRICE,0) > 0 THEN
+				# 																				CASE  
+				# 																					WHEN ISNULL(YEAR_1, 0) > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																					ELSE ISNULL(YEAR_1, 0)
+				# 																				END +
+				# 																				CASE  
+				# 																					WHEN ISNULL(YEAR_2, 0) > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																					ELSE ISNULL(YEAR_2, 0)
+				# 																				END +
+				# 																				CASE  
+				# 																					WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																					ELSE ISNULL(YEAR_3,0)
+				# 																				END +
+				# 																				CASE  
+				# 																					WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																					ELSE ISNULL(YEAR_4,0)
+				# 																				END +
+				# 																				CASE  
+				# 																					WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																					ELSE ISNULL(YEAR_5,0)
+				# 																				END
+				# 											ELSE ISNULL(EXTENDED_PRICE,0)
+				# 										END,
+				# 				STATUS = CASE
+				# 										WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
+				# 										ELSE STATUS
+				# 										END
+				# 				FROM SAQICO where
+				# 				{WhereCondition}
+				# 			AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
+				# 		#Sql.RunQuery(updateSAQICO)
+				# else:					
+				# 	updateSAQICO = Sql.RunQuery("""UPDATE SAQICO
+				# 			SET ENTITLEMENT_PRICE_IMPACT = CASE
+				# 									WHEN EXCHANGE_RATE > 0 THEN ISNULL({price_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
+				# 									ELSE {price_impact}
+				# 									END,
+				# 			ENTITLEMENT_COST_IMPACT = CASE
+				# 									WHEN EXCHANGE_RATE > 0 THEN ISNULL({cost_impact}, 0) * ISNULL(EXCHANGE_RATE,0)
+				# 									ELSE {cost_impact}
+				# 									END,
+				# 			TARGET_PRICE = CASE  
+				# 									WHEN TARGET_PRICE > 0 THEN TARGET_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE TARGET_PRICE
+				# 								END,
+				# 			BD_PRICE = CASE  
+				# 								WHEN BD_PRICE > 0 THEN BD_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE BD_PRICE
+				# 							END,  
+				# 			SALES_PRICE = CASE  
+				# 									WHEN SALES_PRICE > 0 THEN SALES_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE SALES_PRICE
+				# 								END,
+				# 			SALES_DISCOUNT_PRICE = CASE  
+				# 									WHEN SALES_DISCOUNT_PRICE > 0 THEN SALES_DISCOUNT_PRICE + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 									ELSE SALES_DISCOUNT_PRICE
+				# 								END,
+				# 			YEAR_1 = CASE  
+				# 								WHEN YEAR_1 > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE ISNULL(YEAR_1, 0)
+				# 							END,
+				# 			YEAR_2 = CASE  
+				# 								WHEN YEAR_2 > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE ISNULL(YEAR_2,0)
+				# 							END,
+				# 			YEAR_3 = CASE  
+				# 								WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE ISNULL(YEAR_3,0)
+				# 							END,
+				# 			YEAR_4 = CASE  
+				# 								WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE ISNULL(YEAR_4,0)
+				# 							END,
+				# 			YEAR_5 = CASE  
+				# 								WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 								ELSE ISNULL(YEAR_5,0)
+				# 							END,
+				# 			EXTENDED_PRICE = CASE 
+				# 										WHEN ISNULL(EXTENDED_PRICE,0) > 0 THEN
+				# 																			CASE  
+				# 																				WHEN ISNULL(YEAR_1, 0) > 0 THEN YEAR_1 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																				ELSE ISNULL(YEAR_1, 0)
+				# 																			END +
+				# 																			CASE  
+				# 																				WHEN ISNULL(YEAR_2, 0) > 0 THEN YEAR_2 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																				ELSE ISNULL(YEAR_2, 0)
+				# 																			END +
+				# 																			CASE  
+				# 																				WHEN ISNULL(YEAR_3,0) > 0 THEN YEAR_3 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																				ELSE ISNULL(YEAR_3,0)
+				# 																			END +
+				# 																			CASE  
+				# 																				WHEN ISNULL(YEAR_4,0) > 0 THEN YEAR_4 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																				ELSE ISNULL(YEAR_4,0)
+				# 																			END +
+				# 																			CASE  
+				# 																				WHEN ISNULL(YEAR_5,0) > 0 THEN YEAR_5 + (ISNULL(EXCHANGE_RATE, 0) * ISNULL({price_impact}, 0))
+				# 																				ELSE ISNULL(YEAR_5,0)
+				# 																			END
+				# 										ELSE ISNULL(EXTENDED_PRICE,0)
+				# 									END,
+				# 			STATUS = CASE
+				# 									WHEN {price_impact} > 0 OR {cost_impact} > 0 THEN 'ACQUIRED'
+				# 									ELSE STATUS
+				# 									END
+				# 			FROM SAQICO where
+				# 			{WhereCondition}
+				# 		AND STATUS IN ('PARTIALLY PRICED','ACQUIRED') """.format(WhereCondition=whereReq,price_impact=totalpriceimpact,cost_impact=totalcostent))
+				# 	#Sql.RunQuery(updateSAQICO)
 
 				'''UpdateEntitlement = " UPDATE {} SET CALCULATION_FACTOR={},ENTITLEMENT_COST_IMPACT={},ENTITLEMENT_PRICE_IMPACT={} WHERE ENTITLEMENT_NAME = '{}' AND {}  ".format(tableName,calc_factor,costimpact,priceimapct,AttributeID, whereReq)
 				Sql.RunQuery(UpdateEntitlement)
