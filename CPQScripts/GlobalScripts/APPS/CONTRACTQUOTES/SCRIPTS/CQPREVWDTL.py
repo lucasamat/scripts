@@ -461,7 +461,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		else:
 			sec_str += ('<td><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" disabled><span class="lbl"></span></td>')
 		if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1":
-			sec_str += ('<td><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabledchecked><span class="lbl"></span></td>')
+			sec_str += ('<td><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabled checked><span class="lbl"></span></td>')
 		else:
 			sec_str += ('<td><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabled><span class="lbl"></span></td>')
 		sec_str += ('<td><input id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled></td>')
