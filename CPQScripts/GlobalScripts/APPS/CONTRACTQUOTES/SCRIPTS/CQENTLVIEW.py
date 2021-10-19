@@ -960,7 +960,7 @@ class EntitlementView():
 									
 									if DType == "Drop Down" :
 										
-										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
+										#Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 										STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -998,7 +998,7 @@ class EntitlementView():
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in STDVALUES:
 												if value.SYSTEM_ID in dropdowndisallowlist:
-													Trace.Write(str(attrName)+'--dhurga--3179--1001---'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
+													#Trace.Write(str(attrName)+'--dhurga--3179--1001---'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
 													disallow_style = "style = 'display:none'"
 												else:	
 													disallow_style = ""
@@ -1022,7 +1022,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 													else:
-														Trace.Write(str(disallow_style)+'--disallow_style----'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
+														#Trace.Write(str(disallow_style)+'--disallow_style----'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
@@ -1033,7 +1033,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 												except:
-													Trace.Write(str(default)+'except dropdown ---durga--'+str(attrName))
+													#Trace.Write(str(default)+'except dropdown ---durga--'+str(attrName))
 													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
@@ -1323,7 +1323,7 @@ class EntitlementView():
 									attributesdisallowedlst.append(attrSysId)
 								add_style = "display:none"							
 								if DType == "Drop Down":
-									Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
+									#Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
@@ -1476,7 +1476,7 @@ class EntitlementView():
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 								new_value_dicta["VALIDATION"] = ""
 								new_value_dicta["CALCULATION FACTOR"] = ""	
-							Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
+							#Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 							totaldisallowlist = [item for item in attributesdisallowedlst]
 							
 							if new_value_dicta:
