@@ -2696,6 +2696,8 @@ class SYLDRTLIST:
                             #Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
                             if ObjectName== "SAQICT" :
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW CONTACT</a></li>'
+                            elif ObjectName== "SAQTIP":
+                                Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW ACCOUNT</a></li>'
                             elif ObjectName != "SAQIBP" :
                                 Trace.Write('VIEw 2698')
                                 Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
