@@ -1735,13 +1735,14 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
 
-			Pagination_M = Sql.GetFirst(
-				"select count(MAEQUP.CpqTableEntryId) as count from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' WHERE MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(
-				contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
-				)
-			)
+			# Pagination_M = Sql.GetFirst(
+			# 	"select count(MAEQUP.CpqTableEntryId) as count from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' WHERE MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')".format(
+			# 	contract_quote_record_id,quote_revision_record_id, contract_quote_record_id,quote_revision_record_id
+			# 	)
+			# )
+			Pagination_M = SqlHelper.GetFirst("""select count(SAACNT.CpqTableEntryId) as count from SAACNT (NOLOCK) WHERE SAACNT.ACCOUNT_ID  NOT IN (SELECT PARTY_ID FROM SAQTIP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PARTY_ROLE = '{}')""".format(contract_quote_record_id,quote_revision_record_id,ROLE))
 
-			order_by = "order by MAEQUP.FABLOCATION_NAME ASC"
+			order_by = "order by SAACNT.ACCOUNT_ID ASC"
 
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
