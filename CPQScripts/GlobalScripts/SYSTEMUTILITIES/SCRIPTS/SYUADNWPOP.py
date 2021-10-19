@@ -1774,7 +1774,7 @@ def POPUPLISTVALUEADDNEW(
 			# )
 			table_data = Sql.GetList("Select {} FROM SAACNT".format(", ".join(ordered_keys)))
 			QueryCountObj = Sql.GetFirst(
-				"select count(*) as cnt from SAACNT (NOLOCK) {}".format(
+				"select count(*) as cnt from SAACNT (NOLOCK)".format(
 				contract_quote_record_id, "WHERE " +where_string if where_string else ""
 				)
 			)
