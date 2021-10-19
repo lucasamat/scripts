@@ -699,7 +699,14 @@ class ContractQuoteItem:
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
 			item_line_join_condition_string = "AND SAQITM.LINE_ITEM_ID = CAST(ISNULL(SAQSCE.ENTITLEMENT_GROUP_ID,'1.1') AS DECIMAL(5,1))"
-			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string=item_line_join_condition_string)
+			
+			# Update - Start
+			item_line_join_string = ""			
+			if not self.service_id == 'Z0016':
+				item_line_where_string += " AND ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = '' "
+				item_line_join_string = "LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
+			# Update - end
+			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string=item_line_join_condition_string, join_string=item_line_join_string)
 			# Insert Quote Items Covered Object - End
 		
 		# Tool base quote item insert
@@ -720,7 +727,13 @@ class ContractQuoteItem:
 			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
-			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string= '', join_string='')
+			# Update - Start
+			item_line_join_string = ""			
+			if not self.service_id == 'Z0016':
+				item_line_where_string += " AND ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = '' "
+				item_line_join_string = "LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
+			# Update - end
+			self._quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string= '', join_string=item_line_join_string)
 			# Insert Quote Items Covered Object - End
 		
 		# Z0016 - Start		
