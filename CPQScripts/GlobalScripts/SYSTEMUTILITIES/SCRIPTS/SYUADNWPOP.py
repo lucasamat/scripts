@@ -1758,7 +1758,7 @@ def POPUPLISTVALUEADDNEW(
 			if SortColumn != '' and SortColumnOrder !='':
 				order_by = "order by "+SortColumn + " " + SortColumnOrder
 			else:
-				order_by = "order by ACCOUNT_NAME ASC"
+				order_by = "order by ACCOUNT_ID ASC"
 
 			pop_val = {}
 			if where_string:
@@ -1774,7 +1774,7 @@ def POPUPLISTVALUEADDNEW(
 			# )
 			table_data = Sql.GetList("Select {} FROM SAACNT".format(", ".join(ordered_keys)))
 			QueryCountObj = Sql.GetFirst(
-				"select count(*) as cnt from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID is null AND SAQSCF.QUOTE_RECORD_ID = '{}' {}".format(
+				"select count(*) as cnt from SAACNT (NOLOCK) {}".format(
 				contract_quote_record_id, "WHERE " +where_string if where_string else ""
 				)
 			)
