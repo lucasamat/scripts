@@ -369,6 +369,7 @@ class SyncQuoteAndCustomTables:
 				quote_involved_party_table_info = Sql.GetTable("SAQTIP")
 				quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 				quote_opportunity_table_info = Sql.GetTable("SAOPQT")
+				quote_contact_master_table_info = Sql.GetTable("SACONT")
 				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
 				Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
@@ -913,10 +914,29 @@ class SyncQuoteAndCustomTables:
 						# 	"QTEREV_ID":quote_rev_id
 						# }
 						# quote_involved_party_table_info.AddRow(primary_contact_update)
+
+
+						contact_query = Sql.GetFirst("SELECT * FROM SACONT WHERE CONTACT_ID = '53124906'")
+						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+						if len(contact_query) == 0:
+							contact_master_entry = {
+								"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+								"ADDRESS": "",
+								"CITY": "",
+								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+								"EXTERNAL_ID": "",
+								"PHONE": employee_obj.PHONE,
+							}
+							quote_contact_master_table_info.AddRow(contact_master_entry)
+							Sql.Upsert(quote_contact_master_table_info)
+
 						Log.Info("CONTACT_INFO INSERT STARTS----> ")
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
-						if employee_obj:
+						contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+						if employee_obj and contact_master_table:
 							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 							contact_info_update = {
 								"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
@@ -925,6 +945,7 @@ class SyncQuoteAndCustomTables:
 								"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
 								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+								"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
 								"PRIMARY": "",
 								"PHONE": employee_obj.PHONE,
 								"QTEREV_RECORD_ID":quote_revision_id,
