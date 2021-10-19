@@ -1603,6 +1603,8 @@ def POPUPLISTVALUEADDNEW(
 			
 
 		##involved party equipment ends
+		elif str(ObjectName) =="SAQTIP" and str(CurrentTab) == "Quotes":
+			Trace.Write("1607----------condition inside")
 		elif str(ObjectName) == "SAQSAO" and str(CurrentTab) == "Quotes":
 			where_string = ""
 			TreeParam = Product.GetGlobal("TreeParam")
