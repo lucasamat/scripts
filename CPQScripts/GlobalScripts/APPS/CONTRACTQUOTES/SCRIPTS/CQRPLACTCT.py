@@ -18,15 +18,18 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
-def replace_account(Values,acctid):
-    Trace.Write("q"+str(Values))
-    Trace.Write("q2"+str(acctid))
+def replace_account(repalce_values,acct_rec_id,table_name):
+    Trace.Write("repalce_values===="+str(repalce_values))
+    Trace.Write("acct_rec_id===="+str(acct_rec_id))
+    Trace.Write("table_name===="+str(table_name))
 
 
 try:
-    Values = Param.Values
-    acctid = Param.acctid
+    repalce_values = Param.repalce_values
+    acct_rec_id = Param.acct_rec_id
+    table_name = Param.table_name
 except:
-    Values ='' 
-    acctid = ''  
-replace_account(Values,acctid)
+    repalce_values ='' 
+    acct_rec_id = '' 
+    table_name = '' 
+replace_account(repalce_values,acct_rec_id,table_name)
