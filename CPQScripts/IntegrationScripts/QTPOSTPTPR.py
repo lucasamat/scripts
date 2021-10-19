@@ -181,13 +181,12 @@ try:
 						WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 					""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
 							
-				'''
+				
 				Sql.RunQuery(
 							"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
 								BatchGroupRecordId=batch_group_record_id
 							)
 						)
-				'''
 				end_time = time.time() 
 				Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
 				'''
