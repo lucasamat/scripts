@@ -4380,7 +4380,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="user_id" ></tbody></table>'
-			sec_str += '<div id="add-parts-model-footer"></div>'
+			sec_str += '<div id="contacts-model-footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
