@@ -12,7 +12,7 @@ import re
 import time
 import datetime
 from SYDATABASE import SQL
-
+import CQPARTIFLW
 Sql = SQL()
 
 
