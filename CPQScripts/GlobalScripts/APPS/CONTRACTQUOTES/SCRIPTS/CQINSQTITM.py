@@ -1369,9 +1369,7 @@ class ContractQuoteItem:
 		##calling the iflow for pricing..
 		try:
 			Log.Info("PART PRICING IFLOW STARTED!")
-			entries = str(self.contract_quote_id)
-			user = self.user_name
-			CQPARTIFLW.iflow_pricing_call(user,entries)
+			CQPARTIFLW.iflow_pricing_call(self.user_name,self.contract_quote_id,self.contract_quote_revision_record_id)
 		except:
 			Log.Info("PART PRICING IFLOW ERROR!")
 
