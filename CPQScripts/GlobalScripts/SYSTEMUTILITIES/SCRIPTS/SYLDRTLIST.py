@@ -1325,7 +1325,7 @@ class SYLDRTLIST:
                             if TreeParentParam == "Quote Items": 
                                 try:
                                     if str(TreeParam.split("-")[3]):
-                                        LineAndEquipIDList = TreeParam.split(' - ')[-2].strip()
+                                        LineAndEquipIDList = TreeParam.split(' - ')[1].strip()
                                     else:
                                         LineAndEquipIDList = TreeParam.split(' - ')[1].strip() 
                                 except:
