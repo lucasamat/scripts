@@ -523,7 +523,7 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 			sec_str += "<div style='height:30px;border-left: 0;border-right: 0;border-bottom:1px solid  #dcdcdc;' data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr' : 'g1 except_sec removeHorLine iconhvr' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
 			if sefl.REQUIRED == "True" or sefl.REQUIRED == "1" or sefl.REQUIRED == True:
 				mandatory = '<span class="req-field mrg3fltltmt7"  >*</span>'
-				Trace.Write('sefl.FIELD_LABEL---457--'+str(sefl.sefl.FIELD_LABEL))
+				Trace.Write('sefl.FIELD_LABEL---457--'+str(sefl.FIELD_LABEL))
 				sec_str += (
 					"<div class='col-md-5'>	<abbr data-bind='attr:{'title':label}' title='"
 					+ str(sefl.FIELD_LABEL)
