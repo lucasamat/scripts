@@ -4473,7 +4473,7 @@ def POPUPLISTVALUEADDNEW(
 				"SACONT.CONTACT_NAME",
 				"SACONT.EMAIL",
 				"SACONT.PHONE",
-				"SACONT.FUNCTION"
+				"SACONT.[FUNCTION]"
 				]
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
