@@ -2801,7 +2801,7 @@ class SYLDRTLIST:
                                 Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
-                                    + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT/a></li>'
+                                    + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>'
                                 )
 
                             else:
