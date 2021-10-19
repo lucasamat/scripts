@@ -916,7 +916,7 @@ class SyncQuoteAndCustomTables:
 						# quote_involved_party_table_info.AddRow(primary_contact_update)
 
 						Log.Info("PrimaryContactId----->  "+str(custom_fields_detail.get("PrimaryContactId")))
-						contact_query = Sql.GetFirst("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+						contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						if len(contact_query) == 0:
