@@ -286,7 +286,7 @@ try:
 							primaryQueryItems = SqlHelper.GetFirst("sp_executesql @t=N'UPDATE A SET ENTITLEMENT_XML = replace(replace(entitlement_xml,''	'',''''),''\n'','''')  FROM SAQSCE(NOLOCK) A JOIN (SELECT DISTINCT QUOTE_ID ,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND B(NOLOCK) JOIN "+str(CRMTMP)+" C ON B.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' ) B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID  = B.EQUIPMENT_ID AND A.QTEREV_ID = B.REVISION_ID  WHERE A.QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND A.QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' '")
 							
 							#SAQIEN
-							primaryQueryItems = SqlHelper.GetFirst("sp_executesql @t=N'UPDATE A SET ENTITLEMENT_XML = replace(replace(entitlement_xml,''	'',''''),''\n'','''')  FROM SAQIEN(NOLOCK) A JOIN (SELECT DISTINCT QUOTE_ID ,SERVICE_ID,EQUIPMENT_ID,REVISION_ID FROM SAQICO_INBOUND B(NOLOCK) JOIN "+str(CRMTMP)+" C ON B.EQUIPMENT_ID = C.EQUIPMENT_IDD WHERE ISNULL(PROCESS_STATUS,'''')=''INPROGRESS'' AND TIMESTAMP = '"+str(timestamp_sessionid)+"' ) B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID  = B.EQUIPMENT_ID AND A.QTEREV_ID = B.REVISION_ID  WHERE A.QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND A.QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' '")
+							primaryQueryItems = SqlHelper.GetFirst("sp_executesql @t=N'UPDATE A SET ENTITLEMENT_XML = replace(replace(entitlement_xml,''	'',''''),''\n'','''')  FROM SAQIEN(NOLOCK) A JOIN "+str(CRMTMP)+" C ON A.EQUIPMENT_ID = C.EQUIPMENT_IDD  WHERE A.QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND A.QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' '")
 							
 							#SAQSCE NPI
 							#Z0091
