@@ -127,11 +127,12 @@ try:
 				#Log.Info("123 i[conditions] -->"+str(type(i['conditions'])))
 				Taxrate = '0.00'
 				getuomrec_val =''
+				'''
 				QuoteItemList = Quote.QuoteTables["SAQICD"]
 				if str(type(i['conditions'])) == "<type 'ArrayList'>":
 					for cond_info in i['conditions']:
 						Log.Info("333 cond_info['conditionType'] --->")
-						'''getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
+						getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
 						newRow = QuoteItemList.AddNewRow()
 						newRow['CONDITION_COUNTER'] = cond_info['conditionCounter']
 						newRow['CONDITION_DATA_TYPE'] =  cond_info['conditionType']
@@ -150,7 +151,7 @@ try:
 						newRow['STEP_NUMBER'] = cond_info['stepNo']
 						newRow['SERVICE_RECORD_ID'] = getservicerecord.SERVICE_RECORD_ID
 						newRow['QUOTE_RECORD_ID'] = contract_quote_record_id
-						newRow['QUOTE_ID'] = QUOTE'''
+						newRow['QUOTE_ID'] = QUOTE
 						getuomrec = Sql.GetFirst("select UOM_RECORD_ID from MAMTRL where UNIT_OF_MEASURE = '"+str(cond_info['conditionUnit'])+"'")
 						if getuomrec:
 							getuomrec_val = getuomrec.UOM_RECORD_ID
@@ -165,7 +166,7 @@ try:
 				
 				
 				insert_data.append((str(Guid.NewGuid()).upper(), Itemidinfo[0], Itemidinfo[-1], i["netPrice"], 'IN PROGRESS', QUOTE, contract_quote_record_id, batch_group_record_id,str(Taxrate)))
-			
+			'''
 			#Log.Info("4521 batch_group_record_id --->"+str(batch_group_record_id))
 			#Log.Info("4521 contract_quote_record_id --->"+str(contract_quote_record_id))
 			getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
@@ -188,14 +189,15 @@ try:
 						)
 				end_time = time.time() 
 				Log.Info("CPS PRICING end==> "+str(end_time - start_time) +" QUOTE REC ID----"+str(contract_quote_record_id))
-				#UPDATE QUOTE TABLE SAQIFP
+				'''
+    			#UPDATE QUOTE TABLE SAQIFP
 				try:
 					update_quote = """UPDATE QT__QTQIFP SET UNIT_PRICE = SAQIFP.UNIT_PRICE, EXTENDED_UNIT_PRICE = SAQIFP.EXTENDED_PRICE,TAX =SAQIFP.TAX  FROM SAQIFP INNER JOIN QT__QTQIFP ON  SAQIFP.PART_NUMBER = QT__QTQIFP.PART_NUMBER AND SAQIFP.QUOTE_ID = QT__QTQIFP.QUOTE_ID WHERE SAQIFP.QUOTE_ID = '{quote}'""".format(quote=QUOTE)
 					Sql.RunQuery(update_quote)
 				except:
 					Log.Info("EXCEPT ERROR QUOTE TABLE UPDATE")
 				#UPDATE SAQITM
-
+				'''
 			try:
 				total = 0.00
 				onsite = 0.00
@@ -227,6 +229,7 @@ try:
 					Obj_Quantity = Obj_Qty_query.cnt
 					)
 				Sql.RunQuery(update_price)
+				'''
 				#Log.Info('03-03-2021---QT_SAQITM---')
 				update_quote_price = "UPDATE QT__QTQITM SET FORECAST_VALUE = {total}, EXTENDED_UNIT_PRICE = {ext},TAX = {tax} WHERE QT__QTQITM.QUOTE_ID ='{quote}'".format(
 					total=total,
@@ -235,7 +238,7 @@ try:
 					tax = tax
 						)
 				Sql.RunQuery(update_quote_price) 
-
+				'''
 				Status_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE PRICING_STATUS = 'ACQUIRING...'  AND QUOTE_ID = '"+str(QUOTE)+"' ")
 
 				if str(Status_query.cnt) == '0':
