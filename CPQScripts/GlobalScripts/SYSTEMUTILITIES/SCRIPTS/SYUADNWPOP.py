@@ -1767,11 +1767,12 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParam == "Customer Information":
 				where_string += """ MAEQUP.GREENBOOK_RECORD_ID != '' AND MAEQUP.GREENBOOK_RECORD_ID is not null AND MAEQUP.EQUIPMENT_ID  NOT IN (SELECT EQUIPMENT_ID FROM SAQSTE (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
 			
-			table_data = Sql.GetList(
-				"select {} from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' {} {} {}".format(", ".join(ordered_keys),contract_quote_record_id,"WHERE " +where_string if where_string else "",order_by,
-					pagination_condition,
-				)
-			)
+			# table_data = Sql.GetList(
+			# 	"select {} from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID = '' AND SAQSCF.QUOTE_RECORD_ID = '{}' {} {} {}".format(", ".join(ordered_keys),contract_quote_record_id,"WHERE " +where_string if where_string else "",order_by,
+			# 		pagination_condition,
+			# 	)
+			# )
+			table_data = Sql.GetList("Select {} FROM SAACNT".format(", ".join(ordered_keys)))
 			QueryCountObj = Sql.GetFirst(
 				"select count(*) as cnt from MAEQUP (NOLOCK) inner join SAQSCF (NOLOCK) on MAEQUP.FABLOCATION_RECORD_ID = SAQSCF.SRCFBL_RECORD_ID and MAEQUP.ACCOUNT_RECORD_ID = SAQSCF.SRCACC_RECORD_ID and MAEQUP.FABLOCATION_ID = SAQSCF.SRCFBL_ID inner join  MAFBLC (nolock) on MAFBLC.FAB_LOCATION_ID = SAQSCF.SRCFBL_ID AND MAFBLC.ACCOUNT_ID = SAQSCF.SRCACC_ID AND MAEQUP.PAR_EQUIPMENT_ID is null AND SAQSCF.QUOTE_RECORD_ID = '{}' {}".format(
 				contract_quote_record_id, "WHERE " +where_string if where_string else ""
