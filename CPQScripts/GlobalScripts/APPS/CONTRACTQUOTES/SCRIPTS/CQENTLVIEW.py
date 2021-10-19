@@ -117,7 +117,7 @@ class EntitlementView():
 		if getslaes_value:
 			getquote_sales_val = getslaes_value.SALESORG_ID
 		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
-		get_il_sales = SqlHelper.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
@@ -383,12 +383,12 @@ class EntitlementView():
 						Section_desc = sysectObj.SECTION_DESC.split('_')
 						Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
 					else:
-						get_last_secid = SqlHelper.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
+						get_last_secid = Sql.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
 						if get_last_secid:
 							get_last_secid = get_last_secid.saprec_id.split('-')[2]
 							get_last_secid = int(int(get_last_secid)) + 1
 							get_lastsection_val = 'SYSECT-SA-'+ str(get_last_secid)
-							getsect_tab = SqlHelper.GetTable("SYSECT")
+							getsect_tab = Sql.GetTable("SYSECT")
 							tbrowsect = {}
 							tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
 							tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
@@ -779,7 +779,7 @@ class EntitlementView():
 			#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
-			previous_entitlement_xml  = SqlHelper.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
+			previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
 			#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
 			Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
@@ -816,7 +816,7 @@ class EntitlementView():
 							get_last_secid = get_last_secid.saprec_id.split('-')[2]
 							get_last_secid = int(int(get_last_secid)) + 1
 							get_lastsection_val = 'SYSECT-QT-'+ str(get_last_secid)
-							getsect_tab = SqlHelper.GetTable("SYSECT")
+							getsect_tab = Sql.GetTable("SYSECT")
 							tbrowsect = {}
 							Section_id = tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
 							tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
@@ -885,7 +885,7 @@ class EntitlementView():
 							attribute_code = attribute['attribute_code']
 
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId))
-							STDVALUES = SqlHelper.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+							STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 							, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -962,7 +962,7 @@ class EntitlementView():
 										
 										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-										STDVALUES = SqlHelper.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+										STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -1006,7 +1006,7 @@ class EntitlementView():
 													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
 														#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-														approval_status = SqlHelper.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															#Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
 															if approval_status.APPROVAL_REQUIRED == True:
@@ -1037,7 +1037,7 @@ class EntitlementView():
 													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
-														approval_status = SqlHelper.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
@@ -1104,7 +1104,7 @@ class EntitlementView():
 
 									elif DType == "Check Box" :
 										#Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
-										STDVALUES = SqlHelper.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+										STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -1325,7 +1325,7 @@ class EntitlementView():
 								if DType == "Drop Down":
 									Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-									STDVALUES = SqlHelper.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+									STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -1402,7 +1402,7 @@ class EntitlementView():
 								elif DType == "Check Box":
 									#Trace.Write('attrSysId--2324---'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-									STDVALUES = SqlHelper.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -1439,7 +1439,7 @@ class EntitlementView():
 									)
 										
 								elif DType == "Free Input, no Matching":
-									STDVALUES =  SqlHelper.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
 									
 									if attrValue == "DefaultValue":
@@ -1514,13 +1514,13 @@ class EntitlementView():
 				
 		##Adding Audit information section in Entitlement starts...
 		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS"):
-			get_sec = SqlHelper.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
+			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
 				section_id = get_sec.RECORD_ID
 				section_desc = get_sec.SECTION_NAME
 				
 				sec_str_boot += ('<div id="container" class="wdth100 margtop10"><div id="sec_'+str(section_id)+ '" class="dyn_main_head master_manufac glyphicon pointer   glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)" data-target="#sc_'+ str(section_id)+ '" data-toggle="collapse" <label class="onlytext"><label class="onlytext"><div>'+ str(section_desc).upper()+ '</div></label></div><div id="sc_'+str(section_id)+ '" class="collapse in "><table id="' + str(section_id)+ '" class= "wth100mrg8"  > <tbody>')
-				get_sefl = SqlHelper.GetList(
+				get_sefl = Sql.GetList(
 					"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(section_id) + "' ORDER BY DISPLAY_ORDER"
 				)
 				col_name = Sql.GetFirst("SELECT * FROM "+str(ObjectName)+" WHERE "+str(where)+" ")
