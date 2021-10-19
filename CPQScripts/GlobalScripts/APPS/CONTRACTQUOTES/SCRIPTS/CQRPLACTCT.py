@@ -29,4 +29,4 @@ try:
 except:
     Values ='' 
     acctid = ''  
-update_document_type(Values,acctid)
+replace_account(Values,acctid)
