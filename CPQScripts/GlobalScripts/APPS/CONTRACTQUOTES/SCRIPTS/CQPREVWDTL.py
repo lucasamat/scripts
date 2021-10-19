@@ -428,7 +428,8 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		"COMMENT",    
 	]            
 
-	sec_str = '<div id="container" class="g4 pad-10 brdr except_sec">'
+	sec_str = '<div id="container" class="g4 pad-10 brdr except_sec"><div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)"  data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>CLEAN BOOKING CHECKLIST INFORMATION</div></label></label></div>'
+	
 	sec_str += (
 		'<table id="'
 		+ str(table_id)
