@@ -46,7 +46,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         )
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
-        revision_obj = Sql.GetFirst("select DOC_CURRENCY,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select DOC_CURRENCY,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         
         ##opportunity header write back details starts...
         opportunity_header_data = '{\"ExpectedRevenueAmount\":'+str(revision_obj.NET_VALUE)+', \"ExpectedRevenueAmountCurrencyCode\":USD, \"ExpectedProcessingStartDate\":"", \"ExpectedRevenueStartDate\":'+str(revision_obj.CONTRACT_VALID_FROM)+', \"ExpectedRevenueEndDate\":'+str(revision_obj.CONTRACT_VALID_TO)+'}'
