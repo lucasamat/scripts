@@ -218,10 +218,10 @@ try:
 				if sum_query:
 					total = float(sum_query.TOTAL)
 					#onsite = float(str(sum_query.ONSITE_PURCHASE_COMMIT).strip('%'))
-					onsite = 1
-					ext_itm = (total *onsite)/100  
-					tax = float(sum_query.TAX)
-
+					#onsite = 1
+					#ext_itm = (total *onsite)/100  
+					#tax = float(sum_query.TAX)
+				'''
 				update_price = "UPDATE SAQITM SET TOTAL_COST = {total}, EXTENDED_PRICE = {ext}, TAX = {tax},OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
 					total=total,
 					ext=ext_itm,
@@ -229,6 +229,13 @@ try:
 					quote = QUOTE,
 					Obj_Quantity = Obj_Qty_query.cnt
 					)
+				'''
+				update_price = "UPDATE SAQITM SET  NET_VALUE = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
+					total=total,
+					quote = QUOTE,
+					Obj_Quantity = Obj_Qty_query.cnt
+					)
+				
 				Sql.RunQuery(update_price)
 				'''
 				#Log.Info('03-03-2021---QT_SAQITM---')
