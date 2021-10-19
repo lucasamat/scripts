@@ -118,7 +118,7 @@ try:
 				if GetPricingProcedure is not None:
 					#PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
 					PricingProcedure = GetPricingProcedure.PRICINGPROCEDURE_ID
-					curr = GetPricingProcedure.SORG_CURRENCY
+					curr = GetPricingProcedure.GLOBAL_CURRENCY
 					dis = GetPricingProcedure.DISTRIBUTIONCHANNEL_ID
 					salesorg = GetPricingProcedure.SALESORG_ID
 					div = GetPricingProcedure.DIVISION_ID
