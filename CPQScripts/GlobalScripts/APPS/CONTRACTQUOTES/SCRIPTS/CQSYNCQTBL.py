@@ -929,6 +929,7 @@ class SyncQuoteAndCustomTables:
 								"EXTERNAL_ID": "",
 								"PHONE": employee_obj.PHONE,
 							}
+							Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
 							quote_contact_master_table_info.AddRow(contact_master_entry)
 							Sql.Upsert(quote_contact_master_table_info)
 
