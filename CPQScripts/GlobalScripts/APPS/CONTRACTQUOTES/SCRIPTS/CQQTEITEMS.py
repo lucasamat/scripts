@@ -73,7 +73,18 @@ def LoadSummary():
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-SubtabName = Param.SUBTAB
-if SubtabName == "Summary":
-    ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
+def EditToolIdling(option):
+    if option == "Yes":
+        #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK)")
+        secstr = ""
+        secstr += '<td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td>'
 
+SubtabName = Param.SUBTAB
+
+Action = "VIEW"
+
+if SubtabName == "Summary" and Action == "VIEW":
+    ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
+elif SubtabName == "Summary" and Action == "EDIT":
+    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling(option))
