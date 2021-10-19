@@ -452,11 +452,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 	checklist_vals = Sql.GetList("select CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 	for value in checklist_vals:
-		sec_str += ('<tr><td><input id="CHECKLIST_ID" type="text" value="'+value.CHECKLIST_ID+'" title="'+value.CHECKLIST_ID+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<tr><td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+value.CHECKLIST_DESCRIPTION+'" title="'+value.CHECKLIST_DESCRIPTION+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<tr><td><input id="SERVICE_CONTRACT" type="text" value="'+value.SERVICE_CONTRACT+'" title="'+value.SERVICE_CONTRACT+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<tr><td><input id="SPECIALIST_REVIEW" type="text" value="'+value.SPECIALIST_REVIEW+'" title="'+value.SPECIALIST_REVIEW+'" class="form-control related_popup_css fltlt" ></td>')
-		sec_str += ('<tr><td><input id="COMMENT" type="text" value="'+value.COMMENT+'" title="'+value.COMMENT+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+str(value.CHECKLIST_DESCRIPTION)+'" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="SERVICE_CONTRACT" type="text" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="SPECIALIST_REVIEW" type="text" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="form-control related_popup_css fltlt" ></td>')
+		sec_str += ('<tr><td><input id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" ></td>')
 	
 	sec_str += (
 			'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>'
