@@ -18,7 +18,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
-def replace_account(Values)
+def replace_account(Values):
     Trace.Write("q"+str(Values))
 
 
