@@ -18,4 +18,13 @@ from SYDATABASE import SQL
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 
+def replace_account(Values)
+    Trace.Write("q"+str(Values))
 
+
+try:
+    Values = Param.Values
+    
+except:
+    Values =''   
+update_document_type(Values)
