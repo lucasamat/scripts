@@ -73,7 +73,7 @@ def LoadSummary():
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-def EditToolIdling(option):
+def EditToolIdlingOnChange(option):
     if option == "Yes":
         ent_value = Quote.GetGlobal("IdlingAllowed")
         if ent_value == "Yes":
@@ -111,12 +111,16 @@ def EditToolIdling(option):
         secstr += "</tbody></table>"
         secstr += '<div id="quotesummarysavecancel" class="col-md-12 text-center"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="QuoteItemsIdlingSave()">SAVE</button></div>'
     return secstr
+def EditToolIdling():
+    pass
 SubtabName = Param.SUBTAB
 
 Action = Param.ACTION
-if Action == "EDIT":
+if Action == "ONCHANGE":
     option = Param.OPTION
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
+elif SubtabName == "Summary" and Action == "ONCHANGE":
+    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdlingOnChange(option))
 elif SubtabName == "Summary" and Action == "EDIT":
-    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling(option))
+    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
