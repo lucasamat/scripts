@@ -1558,7 +1558,8 @@ class approvalCenter:
 					)
 				)
 				my_queue_obj = Sql.GetFirst("""select APRTRXOBJ_RECORD_ID from ACAPMA where APPROVAL_RECORD_ID = '{QuoteNumber}'""".format(QuoteNumber=recid,revision_rec_id=  self.quote_revision_record_id))
-				my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{quote_rec_id}'  AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID,revision_rec_id=  self.quote_revision_record_id))
+				#my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{quote_rec_id}'  AND QTEREV_RECORD_ID='{revision_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID,revision_rec_id=  self.quote_revision_record_id))
+				my_approval_queue_obj = Sql.GetFirst("""select OWNER_NAME from SAQTMT where QTEREV_RECORD_ID='{quote_rec_id}'""".format(quote_rec_id = my_queue_obj.APRTRXOBJ_RECORD_ID))
 			if CurrentTabName == 'Quotes' or CurrentTabName == 'Quote':
 				my_approval_queue_obj = Sql.GetFirst("select QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID,OWNER_NAME from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),revision_rec_id=  self.quote_revision_record_id))
 				quote_record_id = my_approval_queue_obj.MASTER_TABLE_QUOTE_RECORD_ID
