@@ -1487,18 +1487,18 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 								+ str(edit_warn_icon)
 								+ "</td>"
 							)
-						elif current_obj_api_name in ["CONTRACT_VALID_FROM","CONTRACT_VALID_TO"] and ObjectName == "SAQSCO":
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" value="'
-								+ current_obj_value
-								+ '" type="text"  onclick="'
-								+ str(datepicker)
-								+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
-								+ disable
-								+ " ></td>"
-							)
+						# elif current_obj_api_name in ["CONTRACT_VALID_FROM","CONTRACT_VALID_TO"] and ObjectName == "SAQSCO":
+						# 	sec_str += (
+						# 		'<td><input id="'
+						# 		+ str(current_obj_api_name)
+						# 		+ '" value="'
+						# 		+ current_obj_value
+						# 		+ '" type="text"  onclick="'
+						# 		+ str(datepicker)
+						# 		+ '"  class="form-control datePickerField wth157fltltbrdbt"   '
+						# 		+ disable
+						# 		+ " ></td>"
+						# 	)
 						elif (
 							str(current_obj_api_name) == "MESSAGE_HEADERVALUE"
 							or str(current_obj_api_name) == "MESSAGE_BODYVALUE"
