@@ -262,7 +262,7 @@ class Entitlements:
 					
 			
 		except Exception:
-			#Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
+			Trace.Write("Patch Error---176----"+str(sys.exc_info()[1]))
 			cpsmatc_incr = cpsmatchID
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
