@@ -166,6 +166,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		ObjectName = "SAQTSV"
 	elif Product.GetGlobal("TreeParentLevel2") == "Product Offerings":
 		ObjectName = "SAQSFB"
+	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
+		ObjectName = "SAQSGB"
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
