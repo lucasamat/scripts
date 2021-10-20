@@ -471,7 +471,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		sec_str += '</tr>'
 
 	sec_str += '</tbody></table></div>'
-	sec_str +='<div class="g4 collapse in except_sec removeHorLine iconhvr sec_edit_sty"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcCancel(this)">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcSAVE(this)">SAVE</button></div>'
+	sec_str +='<div class="g4 collapse in except_sec removeHorLine iconhvr sec_edit_sty" id="cbc_savecancel"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcCancel(this)">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcSAVE(this)">SAVE</button></div>'
 	values_lists = ""
 	a_test = []
 	for invsk in list(Header_details):
