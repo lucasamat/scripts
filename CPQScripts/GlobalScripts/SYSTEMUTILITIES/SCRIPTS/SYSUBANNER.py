@@ -2767,7 +2767,7 @@ def Related_Sub_Banner(
             Trace.Write("TabName-->"+str(TabName))
             Trace.Write("subTabName-->"+str(subTabName))
             Trace.Write("Involved Parties button")
-            if str(multi_buttons) != "":
+            if str(multi_buttons) != "" and  len(multi_buttons) > 1:
                 Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
                     if quote_status.QUOTE_STATUS != 'APPROVED':
