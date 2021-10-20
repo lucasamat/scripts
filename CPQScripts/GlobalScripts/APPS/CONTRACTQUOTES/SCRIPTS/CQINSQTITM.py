@@ -653,12 +653,16 @@ class ContractQuoteItem:
 	
 	def _delete_quote_items(self):		
 		## Delete SAQICO, SAQITM  and native quote items - Start
-		Sql.RunQuery("DELETE FROM SAQICO WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
+		for table in ('SAQIAE','SAQICA','SAQIGB','SAQIFL','SAQIEN','SAQICO','SAQITM'):
+			if table=='SAQITM':
+				Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
 					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
 				))
-		Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
-					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
-				))
+			else:
+				Sql.RunQuery("DELETE FROM {TableName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(TableName=table,
+							ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
+						))
+		
 		for item in Quote.MainItems:
 			item.Delete()
 		## Delete SAQICO, SAQITM  and native quote items - End
