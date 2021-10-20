@@ -1064,6 +1064,9 @@ class ContractQuoteItem:
 			self._insert_quote_item_greenbook()	
 		else:
 			self._quote_item_delete_process()
+			self._quote_items_insert()				
+			self._insert_quote_item_fab_location()
+			self._insert_quote_item_greenbook()	
 		return True
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
