@@ -1573,7 +1573,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 								+ '" ><i class="glyphicon glyphicon-triangle-bottom"></i> </button> </div></div></div></td>'
 							)
 						
-						elif current_obj_api_name in ["CONTRACT_VALID_FROM","CONTRACT_VALID_TO"] and ObjectName == "SAQTSV":
+						elif current_obj_api_name in ["CONTRACT_VALID_FROM","CONTRACT_VALID_TO"]:
 							Trace.Write("Quote_Items_CONTRACT_EDITABILTY")
 							sec_str += (
 								'<td><input id="'
