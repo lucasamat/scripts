@@ -99,8 +99,9 @@ def EditToolIdling(option):
     return secstr
 SubtabName = Param.SUBTAB
 
-Action = "VIEW"
-
+Action = Param.ACTION
+if Action:
+    Option = Param.OPTION
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "EDIT":
