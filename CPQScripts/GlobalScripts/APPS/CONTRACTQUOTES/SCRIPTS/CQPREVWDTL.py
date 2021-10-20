@@ -428,12 +428,12 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		"COMMENT",    
 	]            
 
-	sec_str = '<div id="container" class="g4 pad-10 brdr except_sec"><div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)"  data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>CLEAN BOOKING CHECKLIST INFORMATION</div></label></label></div>'
+	sec_str = '<div id="container"><div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)"  data-toggle="collapse"><label class="onlytext"><label class="onlytext"><div>CLEAN BOOKING CHECKLIST INFORMATION</div></label></label></div><div class="bootstrap-table">'
 	
 	sec_str += (
 		'<table id="'
 		+ str(table_id)
-		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>'
+		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true" class="table table-hover JColResizer"> <thead><tr>'
 	)
 	
 	for key, invs in enumerate(list(ordered_keys)):
@@ -470,7 +470,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 			)           
 		sec_str += '</tr>'
 
-	sec_str += '</tbody></table>'
+	sec_str += '</tbody></table></div>'
 	values_lists = ""
 	a_test = []
 	for invsk in list(Header_details):
