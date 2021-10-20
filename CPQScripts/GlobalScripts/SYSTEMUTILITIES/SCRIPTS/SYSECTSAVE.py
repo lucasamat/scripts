@@ -168,6 +168,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		ObjectName = "SAQSFB"
 	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
 		ObjectName = "SAQSGB"
+	Trace.Write("SubTab_Name "+str(subtab_name))
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
@@ -1588,6 +1589,11 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
+
+try:
+	subtab_name = Param.subtab_name
+except:
+	subtab_name = ""
 
 TableId = Param.TableId
 Trace.Write(RECORD)
