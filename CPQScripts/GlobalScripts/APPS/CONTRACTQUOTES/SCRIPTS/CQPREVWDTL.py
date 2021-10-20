@@ -428,7 +428,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		"COMMENT",    
 	]            
 
-	sec_str = '<div id="container"><div class="dyn_main_head master_manufac glyphicon pointer glyphicon-chevron-down" onclick="dyn_main_sec_collapse_arrow(this)"  data-toggle="collapse"><label data-bind="html: hint" class="onlytext"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle" aria-expanded="false"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a class="dropdown-item" href="#" onclick="cbcEDIT(this)">EDIT</a></li></ul></div></div>CLEAN BOOKING CHECKLIST INFORMATION</div></label></div><div class="bootstrap-table">'
+	sec_str = '<div id="container"><div class="bootstrap-table">'
 	
 	sec_str += (
 		'<table id="'
