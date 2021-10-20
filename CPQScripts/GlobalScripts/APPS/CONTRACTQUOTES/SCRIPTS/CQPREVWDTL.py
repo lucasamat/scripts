@@ -483,7 +483,13 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		
 						
 	return sec_str
-		
+
+def EditCBC(Qt_rec_id, Quote, MODE):		
+	Trace.Write('CBC Update')
+	for val in values:
+		Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(service_contract = val.SERVICE_CONTRACT,specialist_review = val.SPECIALIST_REVIEW,comment = val.COMMENT,quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	
+
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
 	sec_str = ""
@@ -1203,7 +1209,10 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
-
+try:
+	values = Param.VALUES
+except:
+	values = ""
 if ACTION == 'QIPOPUPSER':
 	#ApiResponse = ApiResponseFactory.JsonResponse(popupuser())
 	pass
@@ -1233,6 +1242,9 @@ elif ACTION == "CBC_VIEW":
 		Quote = Quote.GetGlobal("contract_quote_record_id")
 	MODE = "VIEW"
 	ApiResponse = ApiResponseFactory.JsonResponse(constructCBC(Qt_rec_id, Quote, MODE))
+elif ACTION == "CBC_EDIT":
+	MODE = "EDIT"
+	ApiResponse = ApiResponseFactory.JsonResponse(EditCBC(Qt_rec_id, Quote, MODE))
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
