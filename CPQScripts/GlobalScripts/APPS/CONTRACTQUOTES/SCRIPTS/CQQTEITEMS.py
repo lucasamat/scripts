@@ -34,6 +34,7 @@ def LoadSummary():
             
     
     sec_str = ""
+    Quote.SetGlobal("IdlingAllowed",ent_value)
     if ent_value == "Yes":
         yes_selected = ' selected=""'
         no_selected = ""
@@ -41,7 +42,6 @@ def LoadSummary():
         yes_selected = ""
         no_selected =  ' selected=""'
     sec_str += ('<table id="63FE9099-59CD-4CF2-BC6D-DD85CB96395B" class="getentdata table table-hover" data-filter-control="true" data-maintain-selected="true" data-locale="en-US" data-escape="true" data-html="true" data-show-header="true" onmouseup="relatedmouseup(this)"> <thead><tr><th title="TOOL IDLING" style="" data-field="TOOL IDLING"><div class="th-inner sortable both">TOOL IDLING</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="DESCRIPTION" style="" data-field="DESCRIPTION"><div class="th-inner ">DESCRIPTION</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="*" class="required_symbol" style="" data-field="REQUIRED"><div class="th-inner ">*</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="VALUE" style="" data-field="VALUE"><div class="th-inner ">VALUE</div></tr></thead><tbody onclick="Table_Onclick_Scroll(this)"><tr data-index="0" class="hovergreyent" ><td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td></tr></tbody></table>')
-    
     edit_lock_icon = "fa fa-lock"
     sec_str += "</div>"
     sec_str += "</div>"
@@ -75,11 +75,28 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 def EditToolIdling(option):
     if option == "Yes":
+        ent_value = Quote.GetGlobal("IdlingAllowed")
+        if ent_value == "Yes":
+            yes_selected = ' selected=""'
+            no_selected = ""
+        elif ent_value == "No":
+            yes_selected = ""
+            no_selected =  ' selected=""'
+        ToolId = {}
+
         #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
         getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK)")
-        secstr = ""
+        
+        for x in getPRTIAV:
+            ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
+
+        secstr = '<table id="63FE9099-59CD-4CF2-BC6D-DD85CB96395B" class="getentdata table table-hover" data-filter-control="true" data-maintain-selected="true" data-locale="en-US" data-escape="true" data-html="true" data-show-header="true" onmouseup="relatedmouseup(this)"> <thead><tr><th title="TOOL IDLING" style="" data-field="TOOL IDLING"><div class="th-inner sortable both">TOOL IDLING</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="DESCRIPTION" style="" data-field="DESCRIPTION"><div class="th-inner ">DESCRIPTION</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="*" class="required_symbol" style="" data-field="REQUIRED"><div class="th-inner ">*</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="VALUE" style="" data-field="VALUE"><div class="th-inner ">VALUE</div></tr></thead><tbody onclick="Table_Onclick_Scroll(this)"><tr data-index="0" class="hovergreyent" >'
+
         secstr += '<td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td>'
 
+        for x,y in ToolId.items():
+            secstr += '<td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td>'
+    return secstr
 SubtabName = Param.SUBTAB
 
 Action = "VIEW"
