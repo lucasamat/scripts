@@ -2790,6 +2790,7 @@ class SYLDRTLIST:
                                 )
                             elif str(ObjectName)=="SAQTIP":
                                 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
+                                quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
                                 get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SOLD TO' and CpqTableEntryId = '"+str(value1234)+"'")
                                 if get_role_name:
                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')  
