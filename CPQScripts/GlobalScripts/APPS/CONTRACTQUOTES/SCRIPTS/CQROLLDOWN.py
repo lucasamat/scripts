@@ -204,6 +204,7 @@ def CoveredObjEntitlement():
 	except Exception:
 		Log.Info("Exception in Quote Edit") 
 	try:
+		Log.Info("Called CQINSQTITM ==> ")
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
