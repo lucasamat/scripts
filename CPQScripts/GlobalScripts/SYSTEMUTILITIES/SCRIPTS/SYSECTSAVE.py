@@ -164,6 +164,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		Trace.Write("section name = "+str(sect_name))
 	elif Product.GetGlobal("TreeParentLevel1") == "Product Offerings":
 		ObjectName = "SAQTSV"
+	elif Product.GetGlobal("TreeParentLevel2") == "Product Offerings":
+		ObjectName = "SAQSFB"
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
