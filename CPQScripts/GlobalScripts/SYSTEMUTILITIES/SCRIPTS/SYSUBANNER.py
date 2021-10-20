@@ -162,7 +162,7 @@ def Related_Sub_Banner(
                                     add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
                             else:
                                 add_button =  str(btn.HTML_CONTENT).format(button_id = str(button_id))
-                            
+                            Trace.Write("add_buttonadd_buttonadd_button"+str(add_button))
                         else:
                             Trace.Write("Billing matrix 146-------")
                             add_button = btn.HTML_CONTENT
