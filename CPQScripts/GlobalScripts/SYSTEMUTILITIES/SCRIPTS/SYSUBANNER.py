@@ -2768,6 +2768,7 @@ def Related_Sub_Banner(
             Trace.Write("subTabName-->"+str(subTabName))
             Trace.Write("Involved Parties button")
             if str(multi_buttons) != "":
+                Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         sec_rel_sub_bnr += (btn)
