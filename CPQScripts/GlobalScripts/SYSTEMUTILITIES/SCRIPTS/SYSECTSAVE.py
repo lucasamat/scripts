@@ -166,8 +166,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 		ObjectName = "SAQTSV"
 	elif Product.GetGlobal("TreeParentLevel2") == "Product Offerings":
 		ObjectName = "SAQSFB"
-	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
+	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Details":
 		ObjectName = "SAQSGB"
+	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Equipment Details":
+		ObjectName = "SAQSCO"
 	Trace.Write("SubTab_Name "+str(subtab_name))
 	if str(ObjectName) == "SYPRSN":
 		
@@ -1257,7 +1259,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 							Sql.RunQuery(equipment_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
-						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
+						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Details":
 							contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
