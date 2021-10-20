@@ -433,7 +433,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	sec_str += (
 		'<table id="'
 		+ str(table_id)
-		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true" class="table table-hover JColResizer"> <thead><tr>'
+		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true" class="table table-hover JColResizer" ondblclick="cbcEDIT(this)"> <thead><tr>'
 	)
 	
 	for key, invs in enumerate(list(ordered_keys)):
