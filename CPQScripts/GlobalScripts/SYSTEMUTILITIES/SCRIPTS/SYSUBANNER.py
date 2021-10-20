@@ -1410,6 +1410,7 @@ def Related_Sub_Banner(
                         FourthLable = "Equipment"
                         FourthValue = "ALL"
                     elif subTabName == "Fab Value Drivers" and TreeParentParam.startswith("Sending"):
+                        TreeParam = str(TreeParam).split("-")[0].strip()
                         getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
                         PrimaryLable = "Sending Account ID"
                         PrimaryValue = str(TreeParentParam).split("-")[1].strip()
@@ -1420,6 +1421,7 @@ def Related_Sub_Banner(
                         FourthLable = "Equipment"
                         FourthValue = "ALL"
                     elif subTabName == "Fab Value Drivers" and TreeParentParam.startswith("Receiving"):
+                        TreeParam = str(TreeParam).split("-")[0].strip()
                         getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
                         PrimaryLable = "Receiving Account ID"
                         PrimaryValue = str(TreeParentParam).split("-")[1].strip()
@@ -1765,6 +1767,7 @@ def Related_Sub_Banner(
             #FourthValue = "ALL"
     elif (TreeTopSuperParentParam == "Fab Locations" or TreeSuperParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Equipment Details' or subTabName == 'Customer Value Drivers' or subTabName == 'Details'  or subTabName == 'Equipment Fab Value Drivers')) and ("Sending" not in TreeParam or "Receiving" not in TreeParam):
         if ("Sending" not in TreeParam and "Receiving" not in TreeParam) and ("Sending" not in TreeParentParam and "Receiving" not in TreeParentParam):
+            TreeParentParam = str(TreeParentParam).split("-")[0].strip()
             getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")
             if (subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details") and TreeSuperParentParam.startswith("Sending"):
                 PrimaryLable = "Sending Account ID"
@@ -1816,7 +1819,8 @@ def Related_Sub_Banner(
                 FifthLable = ""
                 FifthValue = ""
             Trace.Write("4 th "+str(FourthLable) + "4 th val" +str(FourthValue) + " 5 th " +str(FifthLable) + "5 th val" +str(FifthValue))'''
-        elif ("Sending" in TreeParam and "Receiving" in TreeParam) or ("Sending" in TreeParentParam and "Receiving" in TreeParentParam):			
+        elif ("Sending" in TreeParam and "Receiving" in TreeParam) or ("Sending" in TreeParentParam and "Receiving" in TreeParentParam):
+            TreeParam = str(TreeParam).split("-")[0].strip()		
             getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")
             if subTabName == 'Equipment Fab Value Drivers' or subTabName == "Equipment Details":
                 PrimaryLable = "Fab Location ID"
@@ -1866,6 +1870,7 @@ def Related_Sub_Banner(
         FourthLable = "Equipment"
         FourthValue = "All"
     elif (TreeParentParam == "Fab Locations" and (subTabName == 'Equipment' or subTabName == 'Details' or subTabName == 'Customer Value Drivers')) and ("Sending" not in TreeParam and "Receiving" not in TreeParam):
+        TreeParam = str(TreeParam).split("-")[0].strip()
         getFab = Sql.GetFirst("select FABLOCATION_NAME from SAQFBL(nolock) where FABLOCATION_ID = '"+str(TreeParam)+"'")        
         PrimaryLable = "Fab Location ID"
         PrimaryValue = str(TreeParam)
