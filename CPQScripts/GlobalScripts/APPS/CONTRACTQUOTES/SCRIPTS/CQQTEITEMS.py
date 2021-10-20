@@ -101,7 +101,7 @@ SubtabName = Param.SUBTAB
 
 Action = Param.ACTION
 if Action == "EDIT":
-    Option = Param.OPTION
+    option = Param.OPTION
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "EDIT":
