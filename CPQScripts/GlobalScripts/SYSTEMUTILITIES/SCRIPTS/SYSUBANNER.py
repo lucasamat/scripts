@@ -2767,6 +2767,7 @@ def Related_Sub_Banner(
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         sec_rel_sub_bnr += (btn)
             else:
+                Trace.Write("add_button_else"+str(add_button))
                 sec_rel_sub_bnr += (add_button)
         Trace.Write('sec_rel_sub_bnr----'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
