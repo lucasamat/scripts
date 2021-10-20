@@ -412,7 +412,7 @@ class CONTAINER:
                             lookup_str = ",".join(list(lookup_disply_list))
                             ##A055S000P01-8871 Code starts..
                             if PRIMARY_OBJECT_NAMes == "SAQTMT":
-                                NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO']
+                                NAME = ['MASTER_TABLE_QUOTE_RECORD_ID', 'QUOTE_ID', 'QTEREV_ID','REVISION_STATUS','REVISION_DESCRIPTION', 'ACCOUNT_ID', 'ACCOUNT_NAME', 'SALESORG_ID','OWNER_NAME','OPPORTUNITY_NAME','CONTRACT_VALID_FROM', 'CONTRACT_VALID_TO','NET_VALUE']
                             else:
                                 NAME = eval(data_obj.COLUMNS)
                             ##A055S000P01-8871 Code ends..
