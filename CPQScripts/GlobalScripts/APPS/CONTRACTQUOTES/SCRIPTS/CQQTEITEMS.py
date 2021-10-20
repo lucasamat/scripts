@@ -96,7 +96,8 @@ def EditToolIdling(option):
         i = 1
         for x,y in ToolId.items():
             
-            secstr += '<tr data-index="'+i+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td></tr>'
+            secstr += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td></tr>'
+            i = int(i)
             i += 1
         secstr += "</tbody></table>"
     return secstr
