@@ -1249,7 +1249,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
 
 							saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{min_validity_date}' , CONTRACT_VALID_TO = '{max_validity_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(max_validity_date= max_validity_date.CONTRACT_VALID_FROM, min_validity_date =   min_validity_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						
+							Sql.RunQuery(service_contract_update)
+							Sql.RunQuery(greenbook_contract_update)
+							Sql.RunQuery(equipment_contract_update)
+							Sql.RunQuery(saqico_contract_update)
+							Sql.RunQuery(saqtrv_contract_update)
 						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
 							Trace.Write("GB LEVEL")
 
