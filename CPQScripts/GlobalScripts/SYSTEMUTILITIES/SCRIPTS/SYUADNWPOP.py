@@ -31,8 +31,7 @@ def POPUPLISTVALUEADDNEW(
 	AwdRecordID,
 	TreeParentParam,
 	PerPage,
-	PageInform,
-	ROLE
+	PageInform
 	
 ):
 	api_name = ""
@@ -5485,11 +5484,7 @@ try:
 except:    
 	PerPage = ''
 	PageInform = ''
-try:
-	ROLE = Param.ROLE
-	Trace.Write("arole"+str(ROLE))
-except:
-	ROLE = '' 
+
 
 Trace.Write("PerPage-----"+str(PerPage))
 Trace.Write("PageInform -----"+str(PageInform))
@@ -5513,7 +5508,6 @@ ApiResponse = ApiResponseFactory.JsonResponse(
 		AwdRecordID,
 		TreeParentParam,
 		PerPage,
-		PageInform,
-		ROLE     
+		PageInform     
 	)
 )

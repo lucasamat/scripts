@@ -2758,16 +2758,7 @@ class SYLDRTLIST:
                                     Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
                                 else:
                                     Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'     
-                            elif ObjectName == 'SAQTIP':
-                                quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
-                                get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'BILL TO' and CpqTableEntryId = '"+str(value1234)+"'")
-                                get_role_name_ship = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SHIP TO' and CpqTableEntryId = '"+str(value1234)+"'")
-                                if get_role_name:
-                                    Action_str += ('<li><a class="dropdown-item" href="#" id="ADDNEW__SYOBJR_98798_SYOBJ_00910" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
-                                elif get_role_name_ship:
-                                    Action_str += ('<li><a class="dropdown-item" href="#" id="ADDNEW__SYOBJR_98798_SYOBJ_00910" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>')
-                                else:
-                                    Action_str += ('<li><a class="dropdown-item" href="#" style="display: none;" onclick="cont_openaddnew(this,'')">REPLACE ACCOUNT</a></li>') 
+                            
                             else:
                                 if str(current_tab).upper() == "PROFILE":
                                     Action_str += (
@@ -2801,9 +2792,9 @@ class SYLDRTLIST:
                                 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
                                 get_role_name = Sql.GetFirst("select * from SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SOLD TO' and CpqTableEntryId = '"+str(value1234)+"'")
                                 if get_role_name:
-                                   Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')  
+                                   Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')  
                                 else:
-                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
+                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
                             elif str(ObjectName)=="SAQICT":
                                 Trace.write("SAQICT DEL")
                                 Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE CONTACT</a></li>')  
