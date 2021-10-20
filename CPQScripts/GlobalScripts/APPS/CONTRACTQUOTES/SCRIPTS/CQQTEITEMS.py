@@ -96,9 +96,18 @@ def EditToolIdling(option):
         i = 1
         for x,y in ToolId.items():
             
-            secstr += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+ent_value+'" disabled=""><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td></tr>'
+            secstr += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
             i = int(i)
             i += 1
+            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND DEFAULT = 1".format(x))
+            if getDefaultValue:
+                secstr += '<select class="form-control light_yellow" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'" ><option value="select" style="display:none;"> </option><option id="AGS_'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" value="'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'" selected = "">'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'</option>'
+                
+                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND DEFAULT = 0".format(x))
+                if getAllValues:
+                    for val in getAllValues:
+                        secstr += '<option id="AGS_'+str(val.getAllValues)+'" value="'+str(val.getAllValues)+'" >'+str(val.getAllValues)+'</option>'
+                secstr += '</select></td></tr>'
         secstr += "</tbody></table>"
     return secstr
 SubtabName = Param.SUBTAB
