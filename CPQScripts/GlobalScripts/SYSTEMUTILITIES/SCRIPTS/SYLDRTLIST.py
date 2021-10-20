@@ -2805,7 +2805,8 @@ class SYLDRTLIST:
                                 else:
                                     Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
                             elif str(ObjectName)=="SAQICT":
-                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE CONTACT</a></li>')  
+                                Trace.write("SAQICT DEL")
+                                Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE CONTACT</a></li>')  
                                 
                             else:
                                 Action_str += (
