@@ -463,8 +463,8 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1":
 			sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabled checked><span class="lbl"></span></td>')
 		else:
-			sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabled><span class="lbl"></span><div class="col-md-12 editiconright"><a href="#" onclick="cbcEDIT(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
-		sec_str += ('<td class="wid_90"><input id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled></td>')
+			sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" disabled><span class="lbl"></span></td>')
+		sec_str += ('<td class="wid_90"><input id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled><div class="col-md-12 editiconright"><a href="#" onclick="cbcEDIT(this)" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 		sec_str += '</tr>'
 
 	sec_str += '</tbody></table></div>'
