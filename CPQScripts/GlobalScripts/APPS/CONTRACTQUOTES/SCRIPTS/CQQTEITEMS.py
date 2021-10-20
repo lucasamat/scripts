@@ -99,11 +99,11 @@ def EditToolIdling(option):
             secstr += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style=""><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
             i = int(i)
             i += 1
-            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND DEFAULT = 1".format(x))
+            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 1".format(x))
             if getDefaultValue:
                 secstr += '<select class="form-control light_yellow" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_'+x.strip()+'" onchange="editent_bt(this)" title="'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'" ><option value="select" style="display:none;"> </option><option id="AGS_'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" value="'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'" selected = "">'+str(getDefaultValue.TOOLIDLING_VALUE_CODE)+'</option>'
                 
-                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND DEFAULT = 0".format(x))
+                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0".format(x))
                 if getAllValues:
                     for val in getAllValues:
                         secstr += '<option id="AGS_'+str(val.getAllValues)+'" value="'+str(val.getAllValues)+'" >'+str(val.getAllValues)+'</option>'
