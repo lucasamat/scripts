@@ -1244,6 +1244,7 @@ elif ACTION == "CBC_VIEW":
 	ApiResponse = ApiResponseFactory.JsonResponse(constructCBC(Qt_rec_id, Quote, MODE))
 elif ACTION == "CBC_EDIT":
 	MODE = "EDIT"
+	Quote = Quote.GetGlobal("contract_quote_record_id")
 	ApiResponse = ApiResponseFactory.JsonResponse(EditCBC(Qt_rec_id, Quote, MODE))
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
