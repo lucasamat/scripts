@@ -76,8 +76,8 @@ if GetPricingProcedure is not None:
 
 update_SAQITM = "UPDATE SAQITM SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQITM.QUOTE_ID = '{quote}' AND SAQITM.QTEREV_RECORD_ID='{revision_rec_id}'".format(prc=str(PricingProcedure), quote=QUOTE, revision_rec_id = revision)
 Sql.RunQuery(update_SAQITM)
-""" update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
-Sql.RunQuery(update_SAQIFP) """
+update_SAQIFP = "UPDATE SAQIFP SET PRICINGPROCEDURE_ID = '{prc}' WHERE SAQIFP.QUOTE_ID = '{quote}'".format(prc=str(PricingProcedure), quote=QUOTE)
+Sql.RunQuery(update_SAQIFP)
 """ except:
     Trace.Write("EXCEPT ERROR FOR PRC PROCEDURE UPDATE") """
 
