@@ -334,7 +334,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea remove_yellow bor-left bor-right' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''></textarea></div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea remove_yellow bor-left bor-right' style='height: 28px;border-top: 0 !important;border-bottom: 1px solid #ddd !important;' id='' title='' tabindex='' disabled=''></textarea></div>"
 					)      
 					# else:
 					# 	sec_str += (
