@@ -334,13 +334,11 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
 							'<td><textarea title="'
-							+ str(current_obj_value)
 							+ '" class="form-control related_popup_css txtArea" id="'
-							+ str(current_obj_api_name)
+							+ str(sefl_api)
 							+ '" rows="1" cols="100" '
 							+ disable
 							+ ">"
-							+ current_obj_value
 							+ "</textarea></td>"
 						)	
 					# else:
