@@ -332,9 +332,9 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					Trace.Write('At line 289-->'+str(sefl_api))
 					sec_str += (
-						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''></textarea></div>"
 					)      
 					# else:
 					# 	sec_str += (
