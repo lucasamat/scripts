@@ -72,7 +72,7 @@ class ContractQuoteItem:
 			self._native_quote_item_update()
 		return True
 
-	def _quote_item_insert_process(self, where_string='', join_string='', max_quote_item_count=0):
+	def _quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
 		# Insert SAQITM - Start
 		Sql.RunQuery("""
 					INSERT SAQITM (
@@ -178,7 +178,7 @@ class ContractQuoteItem:
 					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
 					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'		
 					{JoinString}			
-					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString}
+					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} {OuterWhereString}
 			""".format(
 				QuoteRecordId=self.contract_quote_record_id,
 				RevisionRecordId=self.contract_quote_revision_record_id,
@@ -186,7 +186,8 @@ class ContractQuoteItem:
 				UserName=self.user_name,
 				WhereString=where_string,
 				ExistingCount=max_quote_item_count,
-				JoinString=join_string
+				JoinString=join_string,
+				OuterWhereString=outer_where_string
 			))
 		# Insert SAQITM - End
 		return True
@@ -691,12 +692,13 @@ class ContractQuoteItem:
 			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Update - Start
 			item_join_string = ""			
+			item_outer_where_string = ""
 			if not self.service_id == 'Z0016':
-				item_where_string += " AND ISNULL(SAQITM.SERVICE_RECORD_ID,'') = '' "
+				item_outer_where_string += " AND ISNULL(SAQITM.SERVICE_RECORD_ID,'') = '' "
 				item_join_string = "LEFT JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQITM.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID"
 			# Update - end
 			# Insert SAQITM - Start
-			self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string)
+			self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
 			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
@@ -720,12 +722,13 @@ class ContractQuoteItem:
 			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Update - Start
 			item_join_string = ""			
+			item_outer_where_string = ""
 			if not self.service_id == 'Z0016':
-				item_where_string += " AND ISNULL(SAQITM.SERVICE_RECORD_ID,'') = '' "
+				item_outer_where_string += " AND ISNULL(SAQITM.SERVICE_RECORD_ID,'') = '' "
 				item_join_string = "LEFT JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQITM.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID"
 			# Update - end
 			# Insert SAQITM - Start
-			self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
+			self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
 			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
