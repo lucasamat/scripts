@@ -83,7 +83,6 @@ class Entitlements:
 		Trace.Write(response["access_token"])
 		Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
-		#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
 		Trace.Write(str(cpsmatchID)+"Request_URL--"+Request_URL)
 		ProductPartnumber = serviceId#'Z0035'
 		try:        
@@ -124,7 +123,8 @@ class Entitlements:
 						webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 							
 						#webclient.Headers.Add("If-Match", "111")
-						webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+						#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+						webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
 							
 						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
 							#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
@@ -171,9 +171,9 @@ class Entitlements:
 		Trace.Write(response["access_token"])
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-		#webclient.Headers.Add("If-Match", "111")
 		Trace.Write('cpsmatchID------'+str(cpsmatchID))
-		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
+		#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
+		webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
 		try:
@@ -1067,316 +1067,334 @@ class Entitlements:
 					getvalue = str((dict_val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
 					#if str(self.treeparam) in "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
-					if ( ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions") and str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") ) or ("TSC_CUOWPN" in key and str((dict_val).split("||")[0]).strip().upper() == "YES" and serviceId in ("Z0091",'Z0092','Z0004')and tableName == 'SAQSGE') :
-						ancillary_object =''
-						if "TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key:
-							ancillary_object = 'Z0101'
-						elif "TSC_CUOWPN" in key:
-							ancillary_object = 'A6200'
-
-						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(ancillary_object, self.ContractRecordId,self.revision_recordid))
-						material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ancillary_object))
-						if ancillary_object_qry is None:
-							if material_obj:
-								description = material_obj.SAP_DESCRIPTION
-								material_record_id = material_obj.MATERIAL_RECORD_ID
-							else:
-								description = material_record_id = ''
-
-							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, PAR_SERVICE_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_RECORD_ID,SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-							SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-							SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID,UOM_RECORD_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, '{ancillary_object}' AS SERVICE_ID,SERVICE_ID as PAR_SERVICE_ID,SERVICE_DESCRIPTION AS PAR_SERVICE_DESCRIPTION,QUOTE_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID, '{material_record_id}' AS SERVICE_RECORD_ID, '' AS SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
-							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
-							) A""".format(description=description,service_id = serviceId,material_record_id=material_record_id,QuoteRecordId=self.ContractRecordId,RevisionRecordId= self.revision_recordid,UserName=User.UserName,UserId=User.Id,ancillary_object = ancillary_object ))
-					##A055S000P01-9646  code ends..
-					if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
-						tbrow={}
-						#Trace.Write("YES to Bonus & Penalty Tied to KPI")
-						Quote.SetGlobal("KPI","YES")
-						getAddOn = Sql.GetFirst("SELECT * FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
-						GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
-						if getAddOn is None:
-							
-							if GetMaterial:
-								sap_desc = GetMaterial.SAP_DESCRIPTION
-								sap_matid = GetMaterial.MATERIAL_RECORD_ID
-							else:
-								sap_matid = sap_desc = ''
-
-							Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, UOM_RECORD_ID,SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-										SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-											SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0046' AS SERVICE_ID, '{recordid}' AS SERVICE_RECORD_ID,SERVICE_ID as PAR_SERVICE_ID,SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,'' as SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,UOM_RECORD_ID,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
-											WHERE SERVICE_ID = 'Z0091' AND QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{revision}'
-											) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
-							#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
-							#Trace.Write("@@@727-----attributes_service_sublist-----"+str(attributes_service_sublist))
-							ent_disp_val = ent_val_code = ''
-							get_tooltip = ''
-							z0046_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
-				
-							z0046_fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'Z0046','request_url':z0046_request_url,'request_type':"New"})
-							z0046_fullresponse=str(z0046_fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
-							z0046_fullresponse= eval(z0046_fullresponse)
-							##getting configuration_status status
-							if z0046_fullresponse['complete'] == 'true':
-								z0046_configuration_status = 'COMPLETE'
-							elif z0046_fullresponse['complete'] == 'false':
-								z0046_configuration_status = 'INCOMPLETE'
-							else:
-								z0046_configuration_status = 'ERROR'
-							attributesdisallowedlst=[]
-							attributeReadonlylst=[]
-							attributesallowedlst=[]
-							attributedefaultvalue = []
-							overall_att_list_sub =[]
-							overallattributeslist =[]
-							attributevalues={}
-							get_toolptip= ''
-							#getquote_sales_val = AttributeID_Pass = ''
-							for rootattribute, rootvalue in z0046_fullresponse.items():
-								if rootattribute=="rootItem":
-									for Productattribute, Productvalue in rootvalue.items():
-										if Productattribute=="characteristics":
-											for prdvalue in Productvalue:
-												overallattributeslist.append(prdvalue['id'])
-												if prdvalue['id'].startswith('AGS_Z0046_'):
-													overall_att_list_sub.append(prdvalue['id'])
-												if prdvalue['visible'] =='false':
-													attributesdisallowedlst.append(prdvalue['id'])
-												else:								
-													attributesallowedlst.append(prdvalue['id'])
-												if prdvalue['readOnly'] =='true':
-													attributeReadonlylst.append(prdvalue['id'])
-												for attribute in prdvalue['values']:								
-													attributevalues[str(prdvalue['id'])]=attribute['value']
-													if attribute["author"] in ('Default','System'):
-														#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
-														attributedefaultvalue.append(prdvalue["id"])
-							attributesallowedlst = list(set(attributesallowedlst))
-							overallattributeslist = list(set(overallattributeslist))
-							#if z0046_fullresponse:
-							
-							#ProductVersionObj = Sql.GetFirst("""SELECT 
-											# 	MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
-											# FROM PRODUCTS PDS 
-											# INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
-											# WHERE SYSTEM_ID ='{SystemId}'
-											# GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
-							ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(z0046_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(z0046_fullresponse['kbKey']['version'])+"'")
-							HasDefaultvalue=False
-							if ProductVersionObj:
-								for attrs in overallattributeslist:
-									if attrs in attributevalues:
-										HasDefaultvalue=True					
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
-										ent_disp_val = attributevalues[attrs]
-										ent_val_code = attributevalues[attrs]
-										#Trace.Write("ent_disp_val----"+str(ent_disp_val))
-									else:					
-										HasDefaultvalue=False
-										ent_disp_val = ""
-										ent_val_code = ""
-										STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
-									ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
-									PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC,P.ATTRDESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
-									if PRODUCT_ATTRIBUTES:
-										if PRODUCT_ATTRIBUTES.ATTRDESC:
-											get_tooltip = PRODUCT_ATTRIBUTES.ATTRDESC
-										if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
-											get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
-											ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
-											
-											getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
-											if getslaes_value:
-												getquote_sales_val = getslaes_value.SALESORG_ID
-											get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
-											get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
-									DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
-									if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
-										ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
-									else:
-										ent_desc = ''
-									insertservice += """<QUOTE_ITEM_ENTITLEMENT>
-									<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-									<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-									<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
-									<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-									<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-									<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-									<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-									<IS_DEFAULT>{is_default}</IS_DEFAULT>
-									<PRICE_METHOD>{pm}</PRICE_METHOD>
-									<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-									<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-									</QUOTE_ITEM_ENTITLEMENT>
-									""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
-								get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
-								tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
-								tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
-								tbrow["ENTITLEMENT_XML"]=insertservice
-								tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
-								tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
-								tbrow["QTESRV_RECORD_ID"]=sap_matid
-								tbrow["SERVICE_RECORD_ID"]=sap_matid
-								tbrow["SERVICE_ID"]='Z0046'
-								tbrow["SERVICE_DESCRIPTION"]=sap_desc
-								tbrow["CPS_CONFIGURATION_ID"]= z0046_fullresponse['id']
-								tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
-								tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
-								tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
-								tbrow["CPS_MATCH_ID"] = 11
-								tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
-								tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-								tbrow["QTEREV_RECORD_ID"] = self.revision_recordid
-								tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
-								tbrow["CONFIGURATION_STATUS"] = z0046_configuration_status
-								columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
-								values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
-								insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
-								Sql.RunQuery(insert_qtqtse_query)
 					
-						if self.treeparam == "Z0091":
-							where = ""
-						elif self.treeparentparam == "Z0091":
-							where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
-						elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
-							where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
-						elif tableName == 'SAQSCE':
-							where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'".format(self.treeparam,self.treeparentparam,EquipmentId)
-						Sql.RunQuery(
-						"""
-						INSERT SAQSCO (
-							QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-							EQUIPMENT_ID,
-							EQUIPMENT_RECORD_ID,
-							EQUIPMENT_DESCRIPTION,                            
-							FABLOCATION_ID,
-							FABLOCATION_NAME,
-							FABLOCATION_RECORD_ID,
-							WAFER_SIZE,
-							SALESORG_ID,
-							SALESORG_NAME,
-							SALESORG_RECORD_ID,
-							SERIAL_NO,
-							QUOTE_RECORD_ID,
-							QUOTE_ID,
-							QUOTE_NAME,
-							RELOCATION_EQUIPMENT_TYPE,
-							SERVICE_ID,
-							SERVICE_TYPE,
-							SERVICE_DESCRIPTION,
-							SERVICE_RECORD_ID,
-							EQUIPMENT_STATUS,
-							EQUIPMENTCATEGORY_ID,
-							EQUIPMENTCATEGORY_DESCRIPTION,
-							EQUIPMENTCATEGORY_RECORD_ID,
-							PLATFORM,
-							GREENBOOK,
-							GREENBOOK_RECORD_ID,
-							MNT_PLANT_RECORD_ID,
-							MNT_PLANT_NAME,
-							MNT_PLANT_ID,
-							WARRANTY_START_DATE,
-							WARRANTY_END_DATE,
-							CUSTOMER_TOOL_ID,
-							PAR_SERVICE_DESCRIPTION,
-							PAR_SERVICE_ID,
-							PAR_SERVICE_RECORD_ID,
-							TECHNOLOGY,
-							CPQTABLEENTRYADDEDBY,
-							CPQTABLEENTRYDATEADDED,
-							CpqTableEntryModifiedBy,
-							CpqTableEntryDateModified,
-							QTEREV_RECORD_ID,
-							KPU,
-							QTEREV_ID
-													
-							) SELECT
-								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-								EQUIPMENT_ID,
-								EQUIPMENT_RECORD_ID,
-								EQUIPMENT_DESCRIPTION,                                
-								FABLOCATION_ID,
-								FABLOCATION_NAME,
-								FABLOCATION_RECORD_ID,
-								WAFER_SIZE,
-								SALESORG_ID,
-								SALESORG_NAME,
-								SALESORG_RECORD_ID,
-								SERIAL_NO,
-								QUOTE_RECORD_ID,
-								QUOTE_ID,
-								QUOTE_NAME,
-								RELOCATION_EQUIPMENT_TYPE,
-								'{TreeParam}',
-								'{TreeParentParam}',
-								'{desc}',
-								'{rec}',
-								EQUIPMENT_STATUS,
-								EQUIPMENTCATEGORY_ID,
-								EQUIPMENTCATEGORY_DESCRIPTION,
-								EQUIPMENTCATEGORY_RECORD_ID,
-								PLATFORM,
-								GREENBOOK,
-								GREENBOOK_RECORD_ID,
-								MNT_PLANT_RECORD_ID,
-								MNT_PLANT_NAME,
-								MNT_PLANT_ID,
-								WARRANTY_START_DATE,
-								WARRANTY_END_DATE,
-								CUSTOMER_TOOL_ID,
-								PAR_SERVICE_DESCRIPTION,
-								PAR_SERVICE_ID,
-								PAR_SERVICE_RECORD_ID,
-								TECHNOLOGY,
-								'{UserName}',
-								GETDATE(),
-								{UserId},
-								GETDATE(),
-								QTEREV_RECORD_ID,
-								KPU,
-								QTEREV_ID
-								FROM SAQSCO (NOLOCK)
-								WHERE 
-								QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='Z0046')
-														
-							""".format(
-								TreeParam="Z0046",
-								TreeParentParam="Add-On Products",
-								QuoteRecordId=self.ContractRecordId,
-								RevisionRecordId = self.revision_recordid,
-								desc=GetMaterial.SAP_DESCRIPTION,
-								rec=GetMaterial.MATERIAL_RECORD_ID,
-								UserName=User.UserName,
-								UserId=User.Id,
-								where=where
-								
-							)
-							)
-				
-					elif key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "No":
-						Quote.SetGlobal("KPI","NO")
-						#Trace.Write("NO to Bonus & Penalty Tied to KPI")
-						if self.treeparam == 'Z0091':
-							
-							Sql.RunQuery("DELETE FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-							Sql.RunQuery("DELETE FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-							Sql.RunQuery("DELETE FROM SAQSFE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-							try:
-								Sql.RunQuery("DELETE FROM SAQSGE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-								Sql.RunQuery("DELETE FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-								Sql.RunQuery("DELETE FROM SAQSAE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
-							except:
-								Trace.Write('error--1064---')
+					##Ancillary Object auto insert based on conditions
+					ancillary_flag = "False"
+					ancillary_object = ''
+					if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") :
+						ancillary_object = 'Z0101' 
+						if (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions"):
+							ancillary_flag = "INSERT"
 						else:
-							if self.treeparentparam == "Z0091":
-								where = " AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam)
-							elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
-								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam)
-							elif tableName == 'SAQSCE':
-								where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam,EquipmentId)
-							Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {}".format(self.ContractRecordId,self.revision_recordid,where))
+							ancillary_flag = "DELETE"
+
+					elif ("TSC_CUOWPN" in key and serviceId in ("Z0091",'Z0092','Z0004')and tableName == 'SAQSGE'):
+						ancillary_object = 'A6200'
+						if str((dict_val).split("||")[0]).strip().upper() == "YES":
+							ancillary_flag = "INSERT"
+						else:
+							ancillary_flag = "DELETE"
+					elif key == "AGS_Z0091_KPI_BPTKPI":
+						ancillary_object = 'Z0046'
+						if str((dict_val).split("||")[0]).strip() == "Yes":
+							Quote.SetGlobal("ANCILLARY","YES")
+							ancillary_flag = "INSERT"
+						else:
+							Quote.SetGlobal("ANCILLARY","NO")
+							ancillary_flag = "DELETE"
+						
+						
+					##calling script ancillary insert	
+					if ancillary_flag != "False" and ancillary_object:
+						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(ancillary_object, self.ContractRecordId,self.revision_recordid))
+						
+						if ancillary_object_qry is None:
+
+							ActionType = "{}_SERVICE".format(ancillary_flag)
+							#ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+
+					
+
+							
+					# ##A055S000P01-9646  code ends..
+					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
+					# 	tbrow={}
+					# 	#Trace.Write("YES to Bonus & Penalty Tied to KPI")
+					# 	Quote.SetGlobal("KPI","YES")
+					# 	getAddOn = Sql.GetFirst("SELECT * FROM SAQTSV WHERE SERVICE_ID = 'Z0046' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid))
+					# 	GetMaterial = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = 'Z0046'")
+					# 	if getAddOn is None:
+							
+					# 		if GetMaterial:
+					# 			sap_desc = GetMaterial.SAP_DESCRIPTION
+					# 			sap_matid = GetMaterial.MATERIAL_RECORD_ID
+					# 		else:
+					# 			sap_matid = sap_desc = ''
+
+					# 		Sql.RunQuery("""INSERT SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID,PAR_SERVICE_ID,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, UOM_RECORD_ID,SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+					# 					SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+					# 						SELECT DISTINCT QTEREV_RECORD_ID, QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, '{description}' AS SERVICE_DESCRIPTION, 'Z0046' AS SERVICE_ID, '{recordid}' AS SERVICE_RECORD_ID,SERVICE_ID as PAR_SERVICE_ID,SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,'' as SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME,UOM_RECORD_ID,SALESORG_RECORD_ID FROM SAQTSV (NOLOCK)
+					# 						WHERE SERVICE_ID = 'Z0091' AND QUOTE_RECORD_ID = '{QuoteId}' AND QTEREV_RECORD_ID = '{revision}'
+					# 						) A""".format(description=sap_desc,recordid=sap_matid,QuoteId=self.ContractRecordId,revision= self.revision_recordid,UserName=User.UserName,UserId=User.Id))
+					# 		#Trace.Write("@@@726---------->TABLE NAME"+str(tableName))
+					# 		#Trace.Write("@@@727-----attributes_service_sublist-----"+str(attributes_service_sublist))
+					# 		ent_disp_val = ent_val_code = ''
+					# 		get_tooltip = ''
+					# 		z0046_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
+				
+					# 		z0046_fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':'Z0046','request_url':z0046_request_url,'request_type':"New"})
+					# 		z0046_fullresponse=str(z0046_fullresponse).replace(": true",": \"true\"").replace(": false",": \"false\"")
+					# 		z0046_fullresponse= eval(z0046_fullresponse)
+					# 		##getting configuration_status status
+					# 		if z0046_fullresponse['complete'] == 'true':
+					# 			z0046_configuration_status = 'COMPLETE'
+					# 		elif z0046_fullresponse['complete'] == 'false':
+					# 			z0046_configuration_status = 'INCOMPLETE'
+					# 		else:
+					# 			z0046_configuration_status = 'ERROR'
+					# 		attributesdisallowedlst=[]
+					# 		attributeReadonlylst=[]
+					# 		attributesallowedlst=[]
+					# 		attributedefaultvalue = []
+					# 		overall_att_list_sub =[]
+					# 		overallattributeslist =[]
+					# 		attributevalues={}
+					# 		get_toolptip= ''
+					# 		#getquote_sales_val = AttributeID_Pass = ''
+					# 		for rootattribute, rootvalue in z0046_fullresponse.items():
+					# 			if rootattribute=="rootItem":
+					# 				for Productattribute, Productvalue in rootvalue.items():
+					# 					if Productattribute=="characteristics":
+					# 						for prdvalue in Productvalue:
+					# 							overallattributeslist.append(prdvalue['id'])
+					# 							if prdvalue['id'].startswith('AGS_Z0046_'):
+					# 								overall_att_list_sub.append(prdvalue['id'])
+					# 							if prdvalue['visible'] =='false':
+					# 								attributesdisallowedlst.append(prdvalue['id'])
+					# 							else:								
+					# 								attributesallowedlst.append(prdvalue['id'])
+					# 							if prdvalue['readOnly'] =='true':
+					# 								attributeReadonlylst.append(prdvalue['id'])
+					# 							for attribute in prdvalue['values']:								
+					# 								attributevalues[str(prdvalue['id'])]=attribute['value']
+					# 								if attribute["author"] in ('Default','System'):
+					# 									#Trace.Write('prdvalue---1554-----'+str(prdvalue['id']))
+					# 									attributedefaultvalue.append(prdvalue["id"])
+					# 		attributesallowedlst = list(set(attributesallowedlst))
+					# 		overallattributeslist = list(set(overallattributeslist))
+					# 		#if z0046_fullresponse:
+							
+					# 		#ProductVersionObj = Sql.GetFirst("""SELECT 
+					# 						# 	MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+					# 						# FROM PRODUCTS PDS 
+					# 						# INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+					# 						# WHERE SYSTEM_ID ='{SystemId}'
+					# 						# GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = 'Z0046' ))
+					# 		ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(z0046_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(z0046_fullresponse['kbKey']['version'])+"'")
+					# 		HasDefaultvalue=False
+					# 		if ProductVersionObj:
+					# 			for attrs in overallattributeslist:
+					# 				if attrs in attributevalues:
+					# 					HasDefaultvalue=True					
+					# 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_DISPLAY_VAL,S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(attrs))
+					# 					ent_disp_val = attributevalues[attrs]
+					# 					ent_val_code = attributevalues[attrs]
+					# 					#Trace.Write("ent_disp_val----"+str(ent_disp_val))
+					# 				else:					
+					# 					HasDefaultvalue=False
+					# 					ent_disp_val = ""
+					# 					ent_val_code = ""
+					# 					STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_CODE FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}'".format(attrs))
+					# 				ATTRIBUTE_DEFN=Sql.GetFirst("SELECT * FROM ATTRIBUTE_DEFN (NOLOCK) WHERE SYSTEM_ID='{}'".format(attrs))
+					# 				PRODUCT_ATTRIBUTES=Sql.GetFirst("SELECT A.ATT_DISPLAY_DESC,P.ATTRDESC FROM ATT_DISPLAY_DEFN (NOLOCK) A INNER JOIN PRODUCT_ATTRIBUTES (NOLOCK) P ON A.ATT_DISPLAY=P.ATT_DISPLAY WHERE P.PRODUCT_ID={} AND P.STANDARD_ATTRIBUTE_CODE={}".format(ProductVersionObj.PRD_ID,STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE))
+					# 				if PRODUCT_ATTRIBUTES:
+					# 					if PRODUCT_ATTRIBUTES.ATTRDESC:
+					# 						get_tooltip = PRODUCT_ATTRIBUTES.ATTRDESC
+					# 					if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','Check Box') and ent_disp_val:
+					# 						get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
+					# 						ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
+											
+					# 						getslaes_value  = Sql.GetFirst("SELECT SALESORG_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"'")
+					# 						if getslaes_value:
+					# 							getquote_sales_val = getslaes_value.SALESORG_ID
+					# 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+					# 						get_il_sales_list = [value.SALESORG_ID for value in get_il_sales]
+					# 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"CheckBox"}
+					# 				if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME:
+					# 					ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
+					# 				else:
+					# 					ent_desc = ''
+					# 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
+					# 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+					# 				<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+					# 				<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
+					# 				<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+					# 				<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+					# 				<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+					# 				<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+					# 				<IS_DEFAULT>{is_default}</IS_DEFAULT>
+					# 				<PRICE_METHOD>{pm}</PRICE_METHOD>
+					# 				<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+					# 				<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+					# 				</QUOTE_ITEM_ENTITLEMENT>
+					# 				""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ent_desc, tool_desc = get_tooltip.replace("'","''") if "'" in get_tooltip else get_tooltip,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = '1' if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '')
+					# 			get_service_data = Sql.GetFirst("select * from SAQTSE where QUOTE_RECORD_ID = '"+str(self.ContractRecordId)+"' and QTEREV_RECORD_ID='"+str(self.revision_recordid)+"' and SERVICE_ID ='Z0091'")
+					# 			tbrow["QUOTE_SERVICE_ENTITLEMENT_RECORD_ID"]=str(Guid.NewGuid()).upper()
+					# 			tbrow["QUOTE_ID"]=get_service_data.QUOTE_ID
+					# 			tbrow["ENTITLEMENT_XML"]=insertservice
+					# 			tbrow["QUOTE_NAME"]=get_service_data.QUOTE_NAME
+					# 			tbrow["QUOTE_RECORD_ID"]=get_service_data.QUOTE_RECORD_ID
+					# 			tbrow["QTESRV_RECORD_ID"]=sap_matid
+					# 			tbrow["SERVICE_RECORD_ID"]=sap_matid
+					# 			tbrow["SERVICE_ID"]='Z0046'
+					# 			tbrow["SERVICE_DESCRIPTION"]=sap_desc
+					# 			tbrow["CPS_CONFIGURATION_ID"]= z0046_fullresponse['id']
+					# 			tbrow["SALESORG_RECORD_ID"]=get_service_data.SALESORG_RECORD_ID
+					# 			tbrow["SALESORG_ID"]=get_service_data.SALESORG_ID
+					# 			tbrow["SALESORG_NAME"]=get_service_data.SALESORG_NAME
+					# 			tbrow["CPS_MATCH_ID"] = 11
+					# 			tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
+					# 			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+					# 			tbrow["QTEREV_RECORD_ID"] = self.revision_recordid
+					# 			tbrow["QTEREV_ID"] = Quote.GetGlobal("quote_revision_id")
+					# 			tbrow["CONFIGURATION_STATUS"] = z0046_configuration_status
+					# 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
+					# 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
+					# 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
+					# 			Sql.RunQuery(insert_qtqtse_query)
+					
+					# 	if self.treeparam == "Z0091":
+					# 		where = ""
+					# 	elif self.treeparentparam == "Z0091":
+					# 		where = " AND FABLOCATION_ID = '{}'".format(self.treeparam)
+					# 	elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
+					# 		where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'".format(self.treeparam,self.treeparentparam)
+					# 	elif tableName == 'SAQSCE':
+					# 		where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'".format(self.treeparam,self.treeparentparam,EquipmentId)
+					# 	Sql.RunQuery(
+					# 	"""
+					# 	INSERT SAQSCO (
+					# 		QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+					# 		EQUIPMENT_ID,
+					# 		EQUIPMENT_RECORD_ID,
+					# 		EQUIPMENT_DESCRIPTION,                            
+					# 		FABLOCATION_ID,
+					# 		FABLOCATION_NAME,
+					# 		FABLOCATION_RECORD_ID,
+					# 		WAFER_SIZE,
+					# 		SALESORG_ID,
+					# 		SALESORG_NAME,
+					# 		SALESORG_RECORD_ID,
+					# 		SERIAL_NO,
+					# 		QUOTE_RECORD_ID,
+					# 		QUOTE_ID,
+					# 		QUOTE_NAME,
+					# 		RELOCATION_EQUIPMENT_TYPE,
+					# 		SERVICE_ID,
+					# 		SERVICE_TYPE,
+					# 		SERVICE_DESCRIPTION,
+					# 		SERVICE_RECORD_ID,
+					# 		EQUIPMENT_STATUS,
+					# 		EQUIPMENTCATEGORY_ID,
+					# 		EQUIPMENTCATEGORY_DESCRIPTION,
+					# 		EQUIPMENTCATEGORY_RECORD_ID,
+					# 		PLATFORM,
+					# 		GREENBOOK,
+					# 		GREENBOOK_RECORD_ID,
+					# 		MNT_PLANT_RECORD_ID,
+					# 		MNT_PLANT_NAME,
+					# 		MNT_PLANT_ID,
+					# 		WARRANTY_START_DATE,
+					# 		WARRANTY_END_DATE,
+					# 		CUSTOMER_TOOL_ID,
+					# 		PAR_SERVICE_DESCRIPTION,
+					# 		PAR_SERVICE_ID,
+					# 		PAR_SERVICE_RECORD_ID,
+					# 		TECHNOLOGY,
+					# 		CPQTABLEENTRYADDEDBY,
+					# 		CPQTABLEENTRYDATEADDED,
+					# 		CpqTableEntryModifiedBy,
+					# 		CpqTableEntryDateModified,
+					# 		QTEREV_RECORD_ID,
+					# 		KPU,
+					# 		QTEREV_ID
+													
+					# 		) SELECT
+					# 			CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+					# 			EQUIPMENT_ID,
+					# 			EQUIPMENT_RECORD_ID,
+					# 			EQUIPMENT_DESCRIPTION,                                
+					# 			FABLOCATION_ID,
+					# 			FABLOCATION_NAME,
+					# 			FABLOCATION_RECORD_ID,
+					# 			WAFER_SIZE,
+					# 			SALESORG_ID,
+					# 			SALESORG_NAME,
+					# 			SALESORG_RECORD_ID,
+					# 			SERIAL_NO,
+					# 			QUOTE_RECORD_ID,
+					# 			QUOTE_ID,
+					# 			QUOTE_NAME,
+					# 			RELOCATION_EQUIPMENT_TYPE,
+					# 			'{TreeParam}',
+					# 			'{TreeParentParam}',
+					# 			'{desc}',
+					# 			'{rec}',
+					# 			EQUIPMENT_STATUS,
+					# 			EQUIPMENTCATEGORY_ID,
+					# 			EQUIPMENTCATEGORY_DESCRIPTION,
+					# 			EQUIPMENTCATEGORY_RECORD_ID,
+					# 			PLATFORM,
+					# 			GREENBOOK,
+					# 			GREENBOOK_RECORD_ID,
+					# 			MNT_PLANT_RECORD_ID,
+					# 			MNT_PLANT_NAME,
+					# 			MNT_PLANT_ID,
+					# 			WARRANTY_START_DATE,
+					# 			WARRANTY_END_DATE,
+					# 			CUSTOMER_TOOL_ID,
+					# 			PAR_SERVICE_DESCRIPTION,
+					# 			PAR_SERVICE_ID,
+					# 			PAR_SERVICE_RECORD_ID,
+					# 			TECHNOLOGY,
+					# 			'{UserName}',
+					# 			GETDATE(),
+					# 			{UserId},
+					# 			GETDATE(),
+					# 			QTEREV_RECORD_ID,
+					# 			KPU,
+					# 			QTEREV_ID
+					# 			FROM SAQSCO (NOLOCK)
+					# 			WHERE 
+					# 			QUOTE_RECORD_ID = '{QuoteRecordId}'AND QTEREV_RECORD_ID = '{RevisionRecordId}' {where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='Z0046')
+														
+					# 		""".format(
+					# 			TreeParam="Z0046",
+					# 			TreeParentParam="Add-On Products",
+					# 			QuoteRecordId=self.ContractRecordId,
+					# 			RevisionRecordId = self.revision_recordid,
+					# 			desc=GetMaterial.SAP_DESCRIPTION,
+					# 			rec=GetMaterial.MATERIAL_RECORD_ID,
+					# 			UserName=User.UserName,
+					# 			UserId=User.Id,
+					# 			where=where
+								
+					# 		)
+					# 		)
+				
+					# elif key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "No":
+					# 	Quote.SetGlobal("KPI","NO")
+					# 	#Trace.Write("NO to Bonus & Penalty Tied to KPI")
+					# 	if self.treeparam == 'Z0091':
+							
+					# 		Sql.RunQuery("DELETE FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 		Sql.RunQuery("DELETE FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 		Sql.RunQuery("DELETE FROM SAQSFE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 		Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 		try:
+					# 			Sql.RunQuery("DELETE FROM SAQSGE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 			Sql.RunQuery("DELETE FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 			Sql.RunQuery("DELETE FROM SAQSAE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046'".format(self.ContractRecordId,self.revision_recordid))
+					# 		except:
+					# 			Trace.Write('error--1064---')
+					# 	else:
+					# 		if self.treeparentparam == "Z0091":
+					# 			where = " AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam)
+					# 		elif self.treesuperparentparam == "Z0091" and tableName!= 'SAQSCE':
+					# 			where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam)
+					# 		elif tableName == 'SAQSCE':
+					# 			where = " AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND EQUIPMENT_ID = '{}'  AND SERVICE_ID = 'Z0046'".format(self.treeparam,self.treeparentparam,EquipmentId)
+					# 		Sql.RunQuery("DELETE FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = 'Z0046' {}".format(self.ContractRecordId,self.revision_recordid,where))
 							
 
 					totalpriceent = ""					
@@ -2386,7 +2404,7 @@ class Entitlements:
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
 	
 		if ENT_IP_DICT != '':
-			ancillary_flag = Quote.GetGlobal("KPI")
+			ancillary_flag = Quote.GetGlobal("ANCILLARY")
 			Trace.Write("ancillary_flag--"+str(ancillary_flag))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)+','+str(ancillary_flag)
