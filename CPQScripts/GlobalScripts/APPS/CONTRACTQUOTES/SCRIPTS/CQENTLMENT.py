@@ -1104,7 +1104,10 @@ class Entitlements:
 						if ancillary_object_qry is None:
 
 							ActionType = "{}_SERVICE".format(ancillary_flag)
-							ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+							Trace.Write("ActionType--"+str(ActionType))
+							Trace.Write("whereReq---"+str(whereReq))
+							Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
+							#ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
 
 					
 
