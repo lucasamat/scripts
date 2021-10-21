@@ -897,7 +897,7 @@ class SyncQuoteAndCustomTables:
 								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
 								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
 								"EXTERNAL_ID": "",
-								"PHONE": employee_obj.PHONE,
+								"PHONE": employee_obj.PHONE if employee_obj else ""
 							}
 							Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
 							quote_contact_master_table_info.AddRow(contact_master_entry)
