@@ -693,7 +693,7 @@ class EntitlementView():
 					tbrow["SALESORG_RECORD_ID"] = SALESORG_RECORD_ID
 					tbrow["SALESORG_ID"] = SALESORG_ID
 					tbrow["SALESORG_NAME"] = SALESORG_NAME
-					tbrow["CPS_MATCH_ID"] = 11
+					tbrow["CPS_MATCH_ID"] = 1
 					
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 					tbrow["CPQTABLEENTRYADDEDBY"] = userId

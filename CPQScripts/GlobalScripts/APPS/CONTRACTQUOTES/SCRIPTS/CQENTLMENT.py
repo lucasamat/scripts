@@ -257,7 +257,7 @@ class Entitlements:
 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 			Trace.Write("patch response1---170---" + str(response1))
 			
-			cpsmatc_incr = int(cpsmatchID) + 10
+			cpsmatc_incr = int(cpsmatchID) + 1
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
 					
 			
