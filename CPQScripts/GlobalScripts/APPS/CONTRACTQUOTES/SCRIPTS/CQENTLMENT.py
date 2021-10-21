@@ -1081,7 +1081,7 @@ class Entitlements:
 						else:
 							ancillary_flag = "DELETE"
 
-					elif ("TSC_CUOWPN" in key and serviceId in ("Z0091",'Z0092','Z0004')and tableName == 'SAQSGE'):
+					elif ("TSC_CUOWPN" in key and serviceId in ("Z0091",'Z0092','Z0004') and tableName == 'SAQSGE'):
 						ancillary_object = 'A6200'
 						if str((dict_val).split("||")[0]).strip().upper() == "YES":
 							ancillary_flag = "INSERT"
@@ -1090,10 +1090,10 @@ class Entitlements:
 					elif key == "AGS_Z0091_KPI_BPTKPI":
 						ancillary_object = 'Z0046'
 						if str((dict_val).split("||")[0]).strip() == "Yes":
-							Quote.SetGlobal("ANCILLARY","YES")
+							#Quote.SetGlobal("ANCILLARY","YES")
 							ancillary_flag = "INSERT"
 						else:
-							Quote.SetGlobal("ANCILLARY","NO")
+							#Quote.SetGlobal("ANCILLARY","NO")
 							ancillary_flag = "DELETE"
 						
 						
