@@ -1064,7 +1064,7 @@ class Entitlements:
 					getpriceimpact = ""
 					calculation_factor =""
 					pricemethodupdate = ""
-					Trace.Write("val---"+str(dict_val))
+					#Trace.Write("val---"+str(dict_val))
 					#Trace.Write("key---"+str(key))
 					#getregionvalq = "AMT"
 					getvalue = str((dict_val).split("||")[4]).strip()
@@ -1456,7 +1456,7 @@ class Entitlements:
 						calculation_factor =  attr_level_pricing[key]['factor']
 						pricemethodupdate =  attr_level_pricing[key]['currency']
 					else:	
-						Trace.Write("attr_level_pricing"+str(dict_val))
+						#Trace.Write("attr_level_pricing"+str(dict_val))
 						if str((dict_val).split("||")[5]).strip() and str((dict_val).split("||")[5]).strip() not in ('undefined','NULL'):
 							getcostbaborimpact = str((dict_val).split("||")[5]).replace(',','').strip()
 							try:
