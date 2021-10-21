@@ -5994,7 +5994,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
-			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
+			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 			if spare_parts_count_object.COUNT > 0: ##User story 4432 starts..				
 				self._insert_quote_item_forecast_parts() ##User story 4432 ends..
 			#get_billing_matrix_year = self._quote_items_insert()
