@@ -329,7 +329,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ '" class="custom" '
 						+ 'disabled checked><span class="lbl"></span></div>'
 					)
-				elif sefl_api == "LONG TEXT AREA":
+				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					Trace.Write("Internal_notes"+str(sefl_api))
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
