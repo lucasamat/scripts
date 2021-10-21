@@ -5072,8 +5072,10 @@ class SYLDRTLIST:
                 #Contract valid start date & End date Calculation--START
                 try:
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+                    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
                 except:
-                    contract_quote_record_id = ''    
+                    contract_quote_record_id = '' 
+                    quote_revision_record_id = ''   
                 Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
                 
                 if Getyear:
