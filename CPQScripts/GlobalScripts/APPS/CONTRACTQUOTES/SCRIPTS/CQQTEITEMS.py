@@ -160,7 +160,7 @@ def SaveToolIdling(VALUES):
         QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
         QuoteRevisionId = getQuoteDetails.QTEREV_ID
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-    for x,y in VALUES.items:
+    for x,y in VALUES.items():
         Sql.RunQuery(""" INSERT SAQTDA(
             QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
             QUOTE_ID,
