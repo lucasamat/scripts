@@ -330,6 +330,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ 'disabled checked><span class="lbl"></span></div>'
 					)
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
+					Trace.Write('At line 289-->'+str(sefl_api))
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
 							'<div class="col-md-3"><textarea title="'
