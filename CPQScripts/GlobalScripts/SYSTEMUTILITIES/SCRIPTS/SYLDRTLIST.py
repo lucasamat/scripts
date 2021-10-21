@@ -212,7 +212,8 @@ class SYLDRTLIST:
             #Hide columns in Related list based on Quote type start
             if Currenttab == 'Quotes':
                 quote_rec_id = Product.GetGlobal("contract_quote_record_id")
-                if  quote_rec_id:                
+                quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                if  quote_rec_id:                  
                     getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
                     if getQuote:
                         getQuotetype = getQuote.QUOTE_TYPE
