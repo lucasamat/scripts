@@ -333,12 +333,12 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					Trace.Write("Internal_notes"+str(sefl_api))
 					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
 						sec_str += (
-							'<td><textarea title="'
+							'<td>'<div class="col-md-3"><textarea title="'
 							+ '" class="form-control related_popup_css txtArea" id="'
 							+ str(sefl_api)
 							+ '" rows="1" cols="100" '
 							+ ">"
-							+ "</textarea></td>"
+							+ "</textarea></div></td>"
 						)	
 					# else:
 					# 	sec_str += (
