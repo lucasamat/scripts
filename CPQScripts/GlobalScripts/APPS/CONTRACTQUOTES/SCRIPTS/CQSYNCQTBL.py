@@ -887,7 +887,7 @@ class SyncQuoteAndCustomTables:
 
 						Log.Info("PrimaryContactId----->  "+str(custom_fields_detail.get("PrimaryContactId")))
 						contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						if len(contact_query) == 0:
 							contact_master_entry = {
@@ -897,7 +897,7 @@ class SyncQuoteAndCustomTables:
 								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
 								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
 								"EXTERNAL_ID": "",
-								"PHONE": employee_obj.PHONE if employee_obj else ""
+								"PHONE": employee_obj.PHONE if employee_obj is not None else ""
 							}
 							Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
 							quote_contact_master_table_info.AddRow(contact_master_entry)
