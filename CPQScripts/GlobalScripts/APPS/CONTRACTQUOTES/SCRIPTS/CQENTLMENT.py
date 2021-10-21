@@ -173,7 +173,7 @@ class Entitlements:
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		Trace.Write('cpsmatchID------'+str(cpsmatchID))
 		#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
-		webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
+		webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 		Trace.Write(str(cpsmatchID)+"--Request_UR-L--"+Request_URL+"---cpsConfigID---: "+str(cpsConfigID))
 		#AttributeValCode = ''
 		try:

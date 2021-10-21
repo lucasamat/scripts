@@ -1020,7 +1020,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 			tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.get("SALESORG_RECORD_ID")
 			tbrow["SALESORG_ID"]=OfferingRow_detail.get("SALESORG_ID")
 			tbrow["SALESORG_NAME"]=OfferingRow_detail.get("SALESORG_NAME")
-			tbrow["CPS_MATCH_ID"] = 11
+			tbrow["CPS_MATCH_ID"] = 1
 			tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
 			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")  
 			tbrow["QTEREV_RECORD_ID"] = self.quote_revision_record_id
@@ -1640,7 +1640,7 @@ class ContractQuoteFabModel(ContractQuoteCrudOpertion):
 					tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.SALESORG_RECORD_ID
 					tbrow["SALESORG_ID"]=OfferingRow_detail.SALESORG_ID
 					tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
-					tbrow["CPS_MATCH_ID"] = 11
+					tbrow["CPS_MATCH_ID"] = 1
 					tbrow["PAR_SERVICE_RECORD_ID"]=OfferingRow_detail.SERVICE_RECORD_ID
 					tbrow["PAR_SERVICE_ID"]=OfferingRow_detail.get("SERVICE_ID")
 					tbrow["PAR_SERVICE_DESCRIPTION"]=OfferingRow_detail.SERVICE_DESCRIPTION
