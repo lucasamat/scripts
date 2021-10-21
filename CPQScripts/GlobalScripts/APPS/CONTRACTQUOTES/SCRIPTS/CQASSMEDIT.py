@@ -14,6 +14,7 @@ Sql = SQL()
 import SYCNGEGUID as CPQID
 import System.Net
 import sys
+import re
 
 
 
@@ -190,6 +191,7 @@ def child_ent_request(tableName,where,serviceId):
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1			
 							cpsmatchID = webclient.ResponseHeaders["Etag"]
+							cpsmatchID = re.sub('"',"",cpsmatchID)
 						except Exception:
 							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
@@ -240,7 +242,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
 		Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-		
+		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
+		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		#Log.Info("requestdata---180--265----" + str(requestdata))
@@ -375,7 +378,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 				</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(attrs),ent_val_code = ent_val_code,ent_type = DTypeset[PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC] if PRODUCT_ATTRIBUTES else  '',ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME,ent_disp_val = ent_disp_val if HasDefaultvalue==True else '',ct = '',pi = '',is_default = 1 if str(attrs) in attributedefaultvalue else '0',pm = '',cf = '',tool_desc =get_tooltip_desc.replace("'","''") if "'" in get_tooltip_desc else get_tooltip_desc)
 				insertservice = insertservice.encode('ascii', 'ignore').decode('ascii')
-				cpsmatc_incr = int(cpsmatchID) + 1
+				#cpsmatc_incr = int(cpsmatchID) + 1
 				#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE(),CONFIGURATION_STATUS = '{}' WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,configuration_status,whereReq)
 			Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
