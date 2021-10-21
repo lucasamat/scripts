@@ -140,7 +140,7 @@ def get_config_id():
 def ChildEntRequest(config_id,tableName,where):	
 	#attribute_id,value_code,attr_type,display_name,config_id,cpsmatchID,isdefault	
 	ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
-	cpsmatchID = 11
+	cpsmatchID = 1
 	try:
 		if tableName :
 			#ent_child_temp = "ENT_SAVE_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
