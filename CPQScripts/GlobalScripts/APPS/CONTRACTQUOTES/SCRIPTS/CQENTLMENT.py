@@ -1103,7 +1103,9 @@ class Entitlements:
 						
 						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
 							if ancillary_flag == "INSERT":
-								Quote.SetGlobal("ANCILLARY","YES")
+								##commented fot now
+								#Quote.SetGlobal("ANCILLARY","YES")
+								pass
 							else:
 								Quote.SetGlobal("ANCILLARY","NO")
 							ActionType = "{}_SERVICE".format(ancillary_flag)
