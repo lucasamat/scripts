@@ -337,7 +337,6 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 							+ '" class="form-control related_popup_css txtArea" id="'
 							+ str(sefl_api)
 							+ '" rows="1" cols="100" '
-							+ disable
 							+ ">"
 							+ "</textarea></td>"
 						)	
