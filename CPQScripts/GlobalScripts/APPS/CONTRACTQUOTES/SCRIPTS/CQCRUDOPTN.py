@@ -5994,16 +5994,15 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 	def _create(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
-			if self.quote_type == "ZWK1 - SPARES": ##User story 4432 starts..
-				get_billing_matrix_year = ""
+			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
+			if spare_parts_count_object.COUNT > 0: ##User story 4432 starts..				
 				self._insert_quote_item_forecast_parts() ##User story 4432 ends..
-			else:
-				get_billing_matrix_year = self._quote_items_insert()
-				batch_group_record_id = str(Guid.NewGuid()).upper()
-				self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
-				self._insert_quote_item_greenbook(batch_group_record_id=batch_group_record_id)
+			#get_billing_matrix_year = self._quote_items_insert()
+			self._quote_items_insert()
+			batch_group_record_id = str(Guid.NewGuid()).upper()
+			self._insert_quote_item_fab_location(batch_group_record_id=batch_group_record_id)
+			self._insert_quote_item_greenbook(batch_group_record_id=batch_group_record_id)
 			#self._insert_quote_item_greenbook()
-			return get_billing_matrix_year
 	
 	def _update(self):
 		pass
