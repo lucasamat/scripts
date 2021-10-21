@@ -2072,7 +2072,7 @@ class TreeView:
 									elif subTabName == 'Spare Parts':
 										subTabName = ""
 										service_id = 'Z0101'
-										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),str(service_id),quote_revision_record_id))
+										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),str(service_id),quote_revision_record_id))
 										if spare_parts_object.cnt > 0:
 											subTabName = str(getRightView.SUBTAB_NAME)
 									else:
