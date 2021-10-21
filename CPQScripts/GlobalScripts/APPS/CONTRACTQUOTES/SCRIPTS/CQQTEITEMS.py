@@ -108,7 +108,7 @@ def EditToolIdlingOnChange(option):
         ToolId = {}
 
         #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
-        getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK)")
+        getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID != 'Idling Allowed'")
         
         for x in getPRTIAV:
             ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
@@ -122,11 +122,11 @@ def EditToolIdlingOnChange(option):
             secstr += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
             i = int(i)
             i += 1
-            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 1".format(x))
+            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 1 AND TOOLIDLING_ID != 'Idling Allowed'".format(x))
             if getDefaultValue:
                 secstr += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" data-content="'+x.strip()+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                 
-                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0".format(x))
+                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0 AND TOOLIDLING_ID != 'Idling Allowed'".format(x))
                 if getAllValues:
                     for val in getAllValues:
                         secstr += '<option id="AGS_'+str(val.TOOLIDLING_VALUE_CODE)+'" value="'+str(val.TOOLIDLING_VALUE_CODE)+'" >'+str(val.TOOLIDLING_VALUE_CODE)+'</option>'
@@ -160,7 +160,7 @@ def SaveToolIdling(VALUES):
         QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
         QuoteRevisionId = getQuoteDetails.QTEREV_ID
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-    for val in VALUES:
+    for x,y in VALUES.items:
         Sql.RunQuery(""" INSERT SAQTDA(
             QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
             QUOTE_ID,
@@ -189,8 +189,8 @@ def SaveToolIdling(VALUES):
             PRTIAV.TOOLIDLING_VALUE_CODE,
             '{}' AS CPQTABLEENTRYADDEDBY,
             GETDATE() AS CPQTABLEENTRYDATEADDED
-            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}'
-            """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,val))
+            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+            """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,x,y))
 
 SubtabName = Param.SUBTAB
 
