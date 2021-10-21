@@ -107,7 +107,7 @@ class Entitlements:
 					response = self.Request_access_token()					
 					Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(newConfigurationid)+"/items/1"
 					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-					cpsmatchID=11
+					cpsmatchID=1
 					#response = self.Request_access_token()
 					#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 					for row in Parentgetdata:
@@ -124,7 +124,7 @@ class Entitlements:
 							
 						#webclient.Headers.Add("If-Match", "111")
 						#webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
-						webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
+						webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 							
 						if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
 							#Trace.Write('row--'+str(row.ENTITLEMENT_ID))
