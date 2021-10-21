@@ -2790,7 +2790,7 @@ class SYLDRTLIST:
                                 )
                             elif str(ObjectName)=="SAQTIP":
                                 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
-                                get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SHIP TO'")
+                                get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SHIP TO' and CpqTableEntryId = '"+str(value1234)+"'")
                                 if get_role_name.COUNT >1:
                                    Trace.Write("Count if")
                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')  
