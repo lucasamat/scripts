@@ -204,6 +204,6 @@ elif SubtabName == "Summary" and Action == "ONCHANGE":
 elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
 elif SubtabName == "Summary" and Action == "SAVE":
-    VALUES = Param.VALUES
+    VALUES = dict(Param.VALUES)
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
