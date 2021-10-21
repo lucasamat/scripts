@@ -3106,7 +3106,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							RelocationEqType=self.tree_param if self.tree_parent_level_1 == 'Complementary Products' else ''
 						)
 			)
-			if Quote.GetGlobal("KPI") == "YES" and self.tree_param == "Z0091":
+			if Quote.GetGlobal("ANCILLARY") == "YES":
 				self._process_query(
 				"""
 					INSERT SAQSCO (
@@ -3182,10 +3182,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQSCO.QTEREV_RECORD_ID,
 								SAQSCO.KPU,
 								SAQSCO.RELOCATION_EQUIPMENT_TYPE,
-								'{TreeParam}',
-								'{TreeParentParam}',
-								'{desc}',
-								'{rec}',
+								SAQTSV.SERVICE_ID,
+								SAQTSV.SERVICE_TYPE,
+								SAQTSV.SERVICE_DESCRIPTION,
+								SAQTSV.SERVICE_RECORD_ID,
 								SAQSCO.EQUIPMENT_STATUS,
 								SAQSCO.EQUIPMENTCATEGORY_ID,
 								SAQSCO.EQUIPMENTCATEGORY_DESCRIPTION,
@@ -3199,9 +3199,9 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								SAQSCO.WARRANTY_START_DATE,
 								SAQSCO.WARRANTY_END_DATE,
 								SAQSCO.CUSTOMER_TOOL_ID,
-								SAQSCO.PAR_SERVICE_DESCRIPTION,
-								SAQSCO.PAR_SERVICE_ID,
-								SAQSCO.PAR_SERVICE_RECORD_ID,
+								SAQTSV.PAR_SERVICE_DESCRIPTION,
+								SAQTSV.PAR_SERVICE_ID,
+								SAQTSV.PAR_SERVICE_RECORD_ID,
 								SAQSCO.TECHNOLOGY,
 								SAQSCO.CONTRACT_VALID_FROM,
 								SAQSCO.CONTRACT_VALID_TO,
@@ -3212,16 +3212,15 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								FROM SAQSCO (NOLOCK) JOIN SYSPBT (NOLOCK) ON
 								SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND
 								SYSPBT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
+								INNER JOIN SAQTSV (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSCO.SERVICE_ID = SAQTSV.PAR_SERVICE_ID
 								WHERE 
-								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = 'Z0046')
+								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT EQUIPMENT_ID FROM SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = SAQTSV.)
 														
 							""".format(
-								TreeParam="Z0046",
-								TreeParentParam="Add-On Products",
+								
 								QuoteRecordId=self.contract_quote_record_id,
 								RevisionRecordId=self.quote_revision_record_id,
-								desc="COMP SA VARIABLE",
-								rec="CA6BB39A-947F-401B-830B-9D8B8942303D",
+								
 								UserName=self.user_name,
 								account_id=self.account_id,
 								account_name=self.account_name,
@@ -3231,7 +3230,13 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 								
 							)
 							)
-				Quote.SetGlobal("KPI","NO")
+				get_count = Sql.GetList("""SELECT SAQTSV.SERVICE_ID FROM SAQSCO (NOLOCK) JOIN SYSPBT (NOLOCK) ON
+								SYSPBT.BATCH_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID AND
+								SYSPBT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
+								INNER JOIN SAQTSV (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSCO.SERVICE_ID = SAQTSV.PAR_SERVICE_ID""")
+				get_count_list = [i for i in get_count.SERVICE_ID]
+				Trace.Write("get_count---"+str(get_count_list))
+				Quote.SetGlobal("ANCILLARY","NO")
 
 
 			#4393 start
