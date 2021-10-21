@@ -2791,6 +2791,7 @@ class SYLDRTLIST:
                                     + str(onclick)
                                     + '" data-target="#cont_CommonModalDelete" data-toggle="modal">DROP</a></li>'
                                 )
+                            ##A055S000P01-10136
                             elif str(ObjectName)=="SAQTIP":
                                 if ik.PARTY_ROLE == "SHIP TO":
                                     quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
@@ -2802,6 +2803,7 @@ class SYLDRTLIST:
                                     else:
                                         Trace.Write("Count else")
                                         Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
+                            ##A055S000P01-10136
                             elif str(ObjectName)=="SAQICT":
                                 Trace.write("SAQICT DEL")
                                 Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE CONTACT</a></li>')  
