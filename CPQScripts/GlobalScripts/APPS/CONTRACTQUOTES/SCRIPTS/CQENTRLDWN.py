@@ -181,7 +181,7 @@ def ChildEntRequest(config_id,tableName,where):
 							requestdata = requestdata.replace('},]','}]')
 							Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							cpsmatchID = cpsmatchID + 10			
+							cpsmatchID = cpsmatchID + 1			
 							
 						except Exception:
 							Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))
