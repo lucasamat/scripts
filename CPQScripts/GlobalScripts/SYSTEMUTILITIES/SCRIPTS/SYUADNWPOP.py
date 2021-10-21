@@ -3684,11 +3684,6 @@ def POPUPLISTVALUEADDNEW(
 			Trace.Write("SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
 					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
 				))
-			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
-					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
-				)
-			)
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
 				Page_End = fetch_count
@@ -3771,6 +3766,11 @@ def POPUPLISTVALUEADDNEW(
 					additional_where
 				)
 				)
+			Pagination_M = Sql.GetFirst(
+				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}') {} ".format(
+					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
+				)
+			)
 			if QueryCountObj is not None:
 				QryCount = QueryCountObj.cnt
 
