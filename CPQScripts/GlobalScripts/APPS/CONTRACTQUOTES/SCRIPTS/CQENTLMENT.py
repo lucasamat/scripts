@@ -146,6 +146,7 @@ class Entitlements:
 								response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 								#cpsmatchID = cpsmatchID + 1			
 								cpsmatchID = webclient.ResponseHeaders["Etag"]
+								cpsmatchID = re.sub('"',"",cpsmatchID)
 							except Exception:
 								Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 								cpsmatchID = cpsmatchID
@@ -259,6 +260,7 @@ class Entitlements:
 			
 			#cpsmatc_incr = int(cpsmatchID) + 1
 			cpsmatc_incr = webclient.ResponseHeaders["Etag"]
+			cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
 					
 			
