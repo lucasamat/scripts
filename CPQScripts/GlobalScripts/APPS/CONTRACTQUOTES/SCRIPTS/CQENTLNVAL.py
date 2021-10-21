@@ -8,7 +8,6 @@
 import Webcom
 from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
-import time
 from SYDATABASE import SQL
 Sql = SQL()
 
