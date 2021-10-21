@@ -152,6 +152,46 @@ def EditToolIdling():
     sec_str = ""
     sec_str += ('<table id="63FE9099-59CD-4CF2-BC6D-DD85CB96395B" class="getentdata table table-hover" data-filter-control="true" data-maintain-selected="true" data-locale="en-US" data-escape="true" data-html="true" data-show-header="true" onmouseup="relatedmouseup(this)"> <thead><tr><th title="TOOL IDLING" style="" data-field="TOOL IDLING"><div class="th-inner sortable both">TOOL IDLING</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="DESCRIPTION" style="" data-field="DESCRIPTION"><div class="th-inner ">DESCRIPTION</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="*" class="required_symbol" style="" data-field="REQUIRED"><div class="th-inner ">*</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="VALUE" style="" data-field="VALUE"><div class="th-inner ">VALUE</div></tr></thead><tbody onclick="Table_Onclick_Scroll(this)"><tr data-index="0" class="hovergreyent" ><td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control light_yellow" style="" id="AGS_Z0091_KPI_PRPFGT" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="QuoteItemsIdlingOnChange()" title="'+ent_value+'" ><option value="select" style="display:none;"> </option><option id="AGS_Z0091_GEN_IDLALW_001" value="Yes" '+yes_selected+'>Yes</option><option id="AGS_Z0091_GEN_IDLALW_002" value="No" '+no_selected+'>No</option></select></td></tr></tbody></table>')
     return sec_str
+
+def SaveToolIdling(VALUES):
+    getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID,QUOTE_RECORD_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+    if getQuoteDetails:
+        QuoteId = getQuoteDetails.QUOTE_ID
+        QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
+        QuoteRevisionId = getQuoteDetails.QTEREV_ID
+        QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
+    for val in VALUES:
+        Sql.RunQuery(""" INSERT SAQTDA(
+            QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+            QUOTE_ID,
+            QUOTE_RECORD_ID,
+            QTEREV_ID,
+            QTEREV_RECORD_ID,
+            TOLIDLVAL_RECORD_ID,
+            TOOLIDLING_DISPLAY_VALUE,
+            TOOLIDLING_ID,
+            TOOLIDLING_NAME,
+            TOOLIDLING_RECORD_ID,
+            TOOLIDLING_VALUE_CODE,
+            CPQTABLEENTRYADDEDBY,
+            CPQTABLEENTRYDATEADDED
+            ) SELECT 
+            CONVERT(VARCHAR(4000),NEWID()),
+            '{}' AS QUOTE_ID,
+            '{}' AS QUOTE_RECORD_ID,
+            '{}' AS QTEREV_ID,
+            '{}' AS QTEREV_RECORD_ID,
+            PRTIAV.TOLIDLATTVAL_RECORD_ID,
+            PRTIAV.TOOLIDLING_DISPLAY_VALUE,
+            PRTIDA.TOOLIDLING_ID,
+            PRTIAV.TOOLIDLING_NAME,
+            PRTIAV.TOOLIDLING_RECORD_ID,
+            PRTIAV.TOOLIDLING_VALUE_CODE,
+            '{}' AS CPQTABLEENTRYADDEDBY,
+            GETDATE() AS CPQTABLEENTRYDATEADDED
+            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}'
+            """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,val))
+
 SubtabName = Param.SUBTAB
 
 Action = Param.ACTION
@@ -163,3 +203,6 @@ elif SubtabName == "Summary" and Action == "ONCHANGE":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdlingOnChange(option))
 elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
+elif SubtabName == "Summary" and Action == "SAVE":
+    VALUES = Param.VALUES
+    ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
