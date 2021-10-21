@@ -188,14 +188,14 @@ def child_ent_request(tableName,where,serviceId):
 							requestdata = requestdata.replace('},]','}]')
 							Trace.Write("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							cpsmatchID = cpsmatchID + 1			
-							
+							#cpsmatchID = cpsmatchID + 1			
+							cpsmatchID = webclient.ResponseHeaders["Etag"]
 						except Exception:
 							Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 							cpsmatchID = cpsmatchID
 
 		getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
-		cpsmatc_incr = cpsmatchID + 1
+		#cpsmatc_incr = cpsmatchID + 1
 		for data in getdata:
 			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 	except Exception:
@@ -229,7 +229,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 
-		webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')
+		webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')
 				
 		#AttributeID = 'AGS_QUO_QUO_TYP'
 		#NewValue = 'Chamber based'

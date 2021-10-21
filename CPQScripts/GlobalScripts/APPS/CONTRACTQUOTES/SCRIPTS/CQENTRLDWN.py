@@ -154,7 +154,7 @@ def ChildEntRequest(config_id,tableName,where):
 				response = Request_access_token()					
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
 				#webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-				cpsmatchID=11
+				cpsmatchID = 1
 				
 				for row in Parentgetdata:
 					webclient = System.Net.WebClient()
@@ -162,7 +162,7 @@ def ChildEntRequest(config_id,tableName,where):
 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 						
 					#webclient.Headers.Add("If-Match", "111")
-					webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
+					webclient.Headers.Add("If-Match", '"'+str(cpsmatchID)+'"')	
 					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(get_serviceid)+"'")	
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 						try:
@@ -181,7 +181,8 @@ def ChildEntRequest(config_id,tableName,where):
 							requestdata = requestdata.replace('},]','}]')
 							Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-							cpsmatchID = cpsmatchID + 1			
+							#cpsmatchID = cpsmatchID + 1
+							cpsmatchID = webclient.ResponseHeaders["Etag"]			
 							
 						except Exception:
 							Log.Info("Patch Error-1-"+str(sys.exc_info()[1]))

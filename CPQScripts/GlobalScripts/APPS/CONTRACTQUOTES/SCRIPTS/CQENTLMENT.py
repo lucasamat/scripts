@@ -144,14 +144,14 @@ class Entitlements:
 								requestdata = requestdata.replace('},]','}]')
 								#Trace.Write("requestdata--child-- " + str(requestdata))
 								response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
-								cpsmatchID = cpsmatchID + 1			
-								
+								#cpsmatchID = cpsmatchID + 1			
+								cpsmatchID = webclient.ResponseHeaders["Etag"]
 							except Exception:
 								Trace.Write("Patch Error-1-"+str(sys.exc_info()[1]))
 								cpsmatchID = cpsmatchID
 
 			getdata=Sql.GetList("SELECT * FROM {} WHERE {}".format(tableName,where))
-			cpsmatc_incr = cpsmatchID + 1
+			#cpsmatc_incr = cpsmatchID + 1
 			for data in getdata:
 				updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 		except Exception:
@@ -257,7 +257,8 @@ class Entitlements:
 			response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 			Trace.Write("patch response1---170---" + str(response1))
 			
-			cpsmatc_incr = int(cpsmatchID) + 1
+			#cpsmatc_incr = int(cpsmatchID) + 1
+			cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 			Trace.Write("new cps match Id: "+str(cpsmatc_incr))
 					
 			
