@@ -128,6 +128,7 @@ def constructopportunity(Qt_rec_id, Quote, MODE):
 							+ '" class="custom" '
 							+ 'disabled checked><span class="lbl"></span></div>'
 						)
+
 					else:
 						sec_str += (
 							'<div class="col-md-3 padtop5 padleft10"><input id="'
@@ -327,7 +328,21 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ str(act_status)
 						+ '" class="custom" '
 						+ 'disabled checked><span class="lbl"></span></div>'
-					)	
+					)
+				elif data_type == "LONG TEXT AREA":
+					Trace.Write("Internal_notes"+str(sefl_api))
+					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
+						sec_str += (
+							'<td><textarea title="'
+							+ str(current_obj_value)
+							+ '" class="form-control related_popup_css txtArea" id="'
+							+ str(current_obj_api_name)
+							+ '" rows="1" cols="100" '
+							+ disable
+							+ ">"
+							+ current_obj_value
+							+ "</textarea></td>"
+						)	
 					# else:
 					# 	sec_str += (
 					# 		'<td><input id="'
