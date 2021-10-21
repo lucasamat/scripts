@@ -2780,6 +2780,8 @@ class SYLDRTLIST:
                                 else:
                                     Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
                     if str(Action_permission.get("Delete")).upper() == "TRUE":
+                        Trace.Write("ooooooooo"+str(ik))
+                        Trace.Write("oooooqqqqqqoooo"+str(inm))
                         if related_list_delete_permission:
                             onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
                             if str(ObjectName) == "SYOBJC":
@@ -2793,9 +2795,7 @@ class SYLDRTLIST:
                                 get_role_name = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTIP where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' and PARTY_ROLE = 'SHIP TO' ")
                                 if get_role_name.COUNT >1:
                                    Trace.Write("Count if")
-                                   Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')  
-                                elif get_role_name.COUNT ==1:
-                                    Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
+                                   Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
                                 else:
                                     Trace.Write("Count else")
                                     Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
