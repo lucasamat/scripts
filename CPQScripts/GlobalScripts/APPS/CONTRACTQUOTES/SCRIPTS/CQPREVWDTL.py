@@ -331,15 +331,11 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					)
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
 					Trace.Write('At line 289-->'+str(sefl_api))
-					if str(MODE)=="VIEW" or str(MODE)=="CANCEL":							
-						sec_str += (
-							'<div class="col-md-3"><textarea title="'
-							+ '" class="form-control related_popup_css txtArea" id="'
-							+ str(sefl_api)
-							+ '" rows="1" cols="100" '
-							+ ">"
-							+ "</textarea></div>'
-						)	
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+						+ str(eval("col_name." + str(sefl_api)))
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					)      
 					# else:
 					# 	sec_str += (
 					# 		'<td><input id="'
