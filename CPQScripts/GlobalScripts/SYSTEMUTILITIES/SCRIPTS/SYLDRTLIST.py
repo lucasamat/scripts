@@ -2060,6 +2060,10 @@ class SYLDRTLIST:
                         elif str(RECORD_ID) == "SYOBJR-98868":
                             Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
                         elif str(RECORD_ID) == "SYOBJR-98870":
+                            quote_rec_id = Product.GetGlobal("contract_quote_record_id")
+                            quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                            service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = {}''".format(quote_rec_id,quote_revision_record_id,TreeParam))
+                            service_id = service_object.SERVICE_ID
                             Qustr += " AND SERVICE_ID = '"+str(TreeParam)+"'"
                         Trace.Write('In 1958---*'+str(Qustr))
                         if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825"):
@@ -6563,7 +6567,11 @@ class SYLDRTLIST:
                         RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                         Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                     elif str(RECORD_ID) == "SYOBJR-98870":
-                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(TreeParam)+"' "
+                        quote_rec_id = Product.GetGlobal("contract_quote_record_id")
+                        quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                        service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = {}''".format(quote_rec_id,quote_revision_record_id,TreeParam))
+                        service_id = service_object.SERVICE_ID
+                        Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND SERVICE_ID = '"+str(service_id)+"' "
                     else:    
                         Trace.Write('Record Id -->'+str(RECORD_ID))
                         Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
@@ -7731,7 +7739,11 @@ class SYLDRTLIST:
                             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
                         elif str(RECORD_ID) == "SYOBJR-98870":
-                            Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND SERVICE_ID = '"+str(TreeParam)+"' "
+                            quote_rec_id = Product.GetGlobal("contract_quote_record_id")
+                            quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+                            service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = {}''".format(quote_rec_id,quote_revision_record_id,TreeParam))
+                            service_id = service_object.SERVICE_ID
+                            Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND SERVICE_ID = '"+str(service_id)+"' "
                         elif str(RECORD_ID) == "SYOBJR-00013":
                             RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
                             Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
