@@ -168,7 +168,7 @@ def child_ent_request(tableName,where,serviceId):
 						
 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 						
-					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+					webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
 						
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0':
 						Trace.Write('row--'+str(row.ENTITLEMENT_ID))
@@ -229,7 +229,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)+"/items/1"
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 
-		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))
+		webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')
 				
 		#AttributeID = 'AGS_QUO_QUO_TYP'
 		#NewValue = 'Chamber based'

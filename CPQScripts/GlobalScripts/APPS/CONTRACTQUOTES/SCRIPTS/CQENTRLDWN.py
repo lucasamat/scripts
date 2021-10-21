@@ -162,7 +162,7 @@ def ChildEntRequest(config_id,tableName,where):
 					webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 						
 					#webclient.Headers.Add("If-Match", "111")
-					webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+					webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
 					get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(row.ENTITLEMENT_ID)+"' and SERVICE_ID = '"+str(get_serviceid)+"'")	
 					if row.ENTITLEMENT_VALUE_CODE and row.ENTITLEMENT_VALUE_CODE not in ('undefined','None') and   row.ENTITLEMENT_ID !='undefined' and row.ENTITLEMENT_DISPLAY_VALUE !='select' and row.IS_DEFAULT =='0' and str(get_ent_type.ENTITLEMENT_TYPE).upper() not in ["VALUE DRIVER","VALUE DRIVER COEFFICIENT"]:
 						try:
@@ -198,7 +198,7 @@ def ChildEntRequest(config_id,tableName,where):
 		# 	webclient = System.Net.WebClient()
 		# 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
 		# 	if value_code and value_code not in ('undefined','None') and attribute_id !='undefined' and display_name !='select' and isdefault =='0':	
-		# 		webclient.Headers.Add("If-Match", "1"+str(cpsmatchID))	
+		# 		webclient.Headers.Add("If-Match", '"1'+str(cpsmatchID)+'"')	
 		# 		try:
 		# 			requestdata = '{"characteristics":['
 		# 			requestdata +='{"id":"'+ str(attribute_id) + '","values":[' 
