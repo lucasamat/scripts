@@ -1099,10 +1099,13 @@ class Entitlements:
 						
 					##calling script ancillary insert	
 					if ancillary_flag != "False" and ancillary_object:
-						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(ancillary_object, self.ContractRecordId,self.revision_recordid))
+						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
 						
-						if ancillary_object_qry is None:
-
+						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
+							if ancillary_flag == "INSERT":
+								Quote.SetGlobal("ANCILLARY","YES")
+							else:
+								Quote.SetGlobal("ANCILLARY","NO")
 							ActionType = "{}_SERVICE".format(ancillary_flag)
 							Trace.Write("ActionType--"+str(ActionType))
 							Trace.Write("whereReq---"+str(whereReq))
