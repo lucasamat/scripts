@@ -596,8 +596,9 @@ class TreeView:
 									Trace.Write("Build Spare Parts line item details condition")
 									subTabName = ""
 									doc_type = Sql.GetFirst("select DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id))
-									if doc_type.DOCTYP_ID =="ZWK1":
-										subTabName = str(getRightView.SUBTAB_NAME)
+									if doc_type is not None:
+										if doc_type.DOCTYP_ID =="ZWK1":
+											subTabName = str(getRightView.SUBTAB_NAME)
 								SubTabList.append(
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
