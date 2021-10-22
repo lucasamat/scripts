@@ -49,11 +49,11 @@ try :
 									
 								for record_dict in Tbl_data:	
 
-									for col in ['ACCOUNT_ID','ACCOUNT_NAME','ADDRESS_1','CITY','COUNTRY','POSTAL_CODE','STATE','ACCOUNTGROUP_ID','TAX_CODE','PAR_ACCOUNT_ID']:
+									for col in ['ACCOUNT_ID','ACCOUNT_NAME','ADDRESS_1','CITY','COUNTRY','POSTAL_CODE','STATE','ACCOUNTGROUP_ID','TAX_CODE','PAR_ACCOUNT_ID','LEGACY_FABLOC_ID']:
 										if col not in record_dict:
 											record_dict[col] = ''	
 									
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CITY,POSTAL_CODE,ACCOUNT_NAME,COUNTRY,STATE,ACCOUNT_ID,ADDRESS_1,ACCOUNTGROUP_ID,TAX_CODE,PAR_ACCOUNT_ID,cpqtableentrydatemodified,SESSION_ID)  select  N''"+record_dict['CITY']+ "'',''"+record_dict['POSTAL_CODE']+ "'',N''"+record_dict['ACCOUNT_NAME']+ "'',N''"+record_dict['COUNTRY']+ "'',N''"+record_dict['STATE']+ "'',N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['ADDRESS_1']+"'',N''"+record_dict['ACCOUNTGROUP_ID']+"'',N''"+record_dict['TAX_CODE']+ "'',N''"+record_dict['PAR_ACCOUNT_ID']+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")		
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SAACNT_INBOUND (CITY,POSTAL_CODE,ACCOUNT_NAME,COUNTRY,STATE,ACCOUNT_ID,ADDRESS_1,ACCOUNTGROUP_ID,TAX_CODE,PAR_ACCOUNT_ID,	LEGACY_FBL_ID,cpqtableentrydatemodified,SESSION_ID)  select  N''"+record_dict['CITY']+ "'',''"+record_dict['POSTAL_CODE']+ "'',N''"+record_dict['ACCOUNT_NAME']+ "'',N''"+record_dict['COUNTRY']+ "'',N''"+record_dict['STATE']+ "'',N''"+record_dict['ACCOUNT_ID']+ "'',N''"+record_dict['ADDRESS_1']+"'',N''"+record_dict['ACCOUNTGROUP_ID']+"'',N''"+record_dict['TAX_CODE']+ "'',N''"+record_dict['PAR_ACCOUNT_ID']+ "'',N''"+record_dict['LEGACY_FABLOC_ID']+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")		
 							
 							elif str(tn).upper() == "SAACCT":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -126,7 +126,7 @@ try :
 		ApiResponse = ApiResponseFactory.JsonResponse(str(resp))
 	
 except:
-	##Log.Info("SGPOSTINBD cpqentryid ---->:" + str(cpqentryid))
+	#Log.Info("SGPOSTINBD cpqentryid ---->:" + str(cpqentryid))
 	Log.Info("SGPOSTINBD ERROR---->:" + str(sys.exc_info()[1]))
 	Log.Info("SGPOSTINBD ERROR LINE NO---->:" + str(sys.exc_info()[-1].tb_lineno))
 	ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "400", "Message": str(sys.exc_info()[1])}]})
