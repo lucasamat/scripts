@@ -136,7 +136,7 @@ def generate_year_based_billing_matrix(billing_plan_data=None):
 
 
 
-def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None):
+def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name):
 	row = ""
 	result = ""
 	RecordId = ""
@@ -1692,5 +1692,5 @@ elif TableId is not None:
 
 
 
-ApiResponse = ApiResponseFactory.JsonResponse(MaterialSave(ObjectName, RECORD, warning_msg, SecRecId))
+ApiResponse = ApiResponseFactory.JsonResponse(MaterialSave(ObjectName, RECORD, warning_msg, SecRecId,subtab_name))
 
