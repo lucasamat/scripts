@@ -187,8 +187,8 @@ class AncillaryProductOperation:
 			tbrow["CPS_MATCH_ID"] = 1
 			tbrow["CPQTABLEENTRYADDEDBY"] = self.user_id
 			tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-			tbrow["QTEREV_RECORD_ID"] = get_service_details.QTEREV_ID
-			tbrow["QTEREV_ID"] = self.contract_quote_revision_record_id
+			tbrow["QTEREV_RECORD_ID"] = self.contract_quote_revision_record_id 
+			tbrow["QTEREV_ID"] = get_service_details.QTEREV_ID
 			tbrow["CONFIGURATION_STATUS"] = anc_configuration_status
 			tbrow["PAR_SERVICE_ID"] = get_service_details.PAR_SERVICE_ID
 			tbrow["PAR_SERVICE_RECORD_ID"] = get_service_details.PAR_SERVICE_RECORD_ID
