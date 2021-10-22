@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO LOAD SUMMARY IN QUOTE ITEMS
 #   __primary_author__ : NAMRATA SIVAKUMAR
 #   __create_date : 12/10/2021
-#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Ã‚Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import re
 import SYTABACTIN as Table
@@ -221,8 +221,8 @@ def SaveToolIdling(VALUES):
         QuoteRevisionId = getQuoteDetails.QTEREV_ID
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     for x,y in VALUES.items():
-        if '22'
-        Sql.RunQuery(""" INSERT SAQTDA(
+        if x.replace("_"," ") == "Idle Notice" or x.replace("_"," ") == "Idle Duration":
+            Sql.RunQuery(""" INSERT SAQTDA(
             QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
             QUOTE_ID,
             QUOTE_RECORD_ID,
@@ -250,8 +250,39 @@ def SaveToolIdling(VALUES):
             PRTIAV.TOOLIDLING_VALUE_CODE,
             '{}' AS CPQTABLEENTRYADDEDBY,
             GETDATE() AS CPQTABLEENTRYDATEADDED
-            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N'{}' AND TOOLIDLING_ID = '{}'
             """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
+        else:    
+            Sql.RunQuery(""" INSERT SAQTDA(
+                QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+                QUOTE_ID,
+                QUOTE_RECORD_ID,
+                QTEREV_ID,
+                QTEREV_RECORD_ID,
+                TOLIDLVAL_RECORD_ID,
+                TOOLIDLING_DISPLAY_VALUE,
+                TOOLIDLING_ID,
+                TOOLIDLING_NAME,
+                TOOLIDLING_RECORD_ID,
+                TOOLIDLING_VALUE_CODE,
+                CPQTABLEENTRYADDEDBY,
+                CPQTABLEENTRYDATEADDED
+                ) SELECT 
+                CONVERT(VARCHAR(4000),NEWID()),
+                '{}' AS QUOTE_ID,
+                '{}' AS QUOTE_RECORD_ID,
+                '{}' AS QTEREV_ID,
+                '{}' AS QTEREV_RECORD_ID,
+                PRTIAV.TOLIDLATTVAL_RECORD_ID,
+                PRTIAV.TOOLIDLING_DISPLAY_VALUE,
+                PRTIAV.TOOLIDLING_ID,
+                PRTIAV.TOOLIDLING_NAME,
+                PRTIAV.TOOLIDLING_RECORD_ID,
+                PRTIAV.TOOLIDLING_VALUE_CODE,
+                '{}' AS CPQTABLEENTRYADDEDBY,
+                GETDATE() AS CPQTABLEENTRYDATEADDED
+                FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+                """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
 
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -266,9 +297,5 @@ elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
 elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
-    for key in VALUES:
-        if "2265" in VALUES[key]:
-            import unicodedata
-            unicodedata.normalize('NFKD', VALUES[key]).encode('ascii', 'ignore')
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
