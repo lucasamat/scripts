@@ -2436,7 +2436,7 @@ class Entitlements:
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			Trace.Write("where---"+str(where))
-			# Trace.Write("objName-ent"+str(objName))
+			Trace.Write("objName-ent"+str(objName))
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
 			# Trace.Write("tableName---"+str(tableName))
