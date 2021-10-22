@@ -1801,7 +1801,7 @@ class SyncQuoteAndCustomTables:
 		
 		Log.Info("SALES TEAM CREATED BY INSERT STARTS")
 		created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
-		saempl_data = Sql.getfirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = employee.get("EMPLOYEE_ID")))
+		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = employee.get("EMPLOYEE_ID")))
 		
 		sales_team_table = Sql.GetTable("SAQDLT")
 		sales_team_createdby_insert ={
