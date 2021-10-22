@@ -446,14 +446,60 @@ class AncillaryProductOperation:
 
 
 	def _equipment_insert(self):
-		
+		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 		Sql.RunQuery(
 				"""
-					INSERT SAQSCO (
-						QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+				INSERT SAQSCO (
+					QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+					EQUIPMENT_ID,
+					EQUIPMENT_RECORD_ID,
+					EQUIPMENT_DESCRIPTION,                            
+					FABLOCATION_ID,
+					FABLOCATION_NAME,
+					FABLOCATION_RECORD_ID,
+					WAFER_SIZE,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					SERIAL_NO,
+					QUOTE_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_NAME,
+					RELOCATION_EQUIPMENT_TYPE,
+					SERVICE_ID,
+					SERVICE_TYPE,
+					SERVICE_DESCRIPTION,
+					SERVICE_RECORD_ID,
+					EQUIPMENT_STATUS,
+					EQUIPMENTCATEGORY_ID,
+					EQUIPMENTCATEGORY_DESCRIPTION,
+					EQUIPMENTCATEGORY_RECORD_ID,
+					PLATFORM,
+					GREENBOOK,
+					GREENBOOK_RECORD_ID,
+					MNT_PLANT_RECORD_ID,
+					MNT_PLANT_NAME,
+					MNT_PLANT_ID,
+					WARRANTY_START_DATE,
+					WARRANTY_END_DATE,
+					CUSTOMER_TOOL_ID,
+					PAR_SERVICE_DESCRIPTION,
+					PAR_SERVICE_ID,
+					PAR_SERVICE_RECORD_ID,
+					TECHNOLOGY,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED,
+					CpqTableEntryModifiedBy,
+					CpqTableEntryDateModified,
+					QTEREV_RECORD_ID,
+					KPU,
+					QTEREV_ID
+											
+					) SELECT
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 						EQUIPMENT_ID,
 						EQUIPMENT_RECORD_ID,
-						EQUIPMENT_DESCRIPTION,
+						EQUIPMENT_DESCRIPTION,                                
 						FABLOCATION_ID,
 						FABLOCATION_NAME,
 						FABLOCATION_RECORD_ID,
@@ -465,17 +511,11 @@ class AncillaryProductOperation:
 						QUOTE_RECORD_ID,
 						QUOTE_ID,
 						QUOTE_NAME,
-						ACCOUNT_ID,
-						ACCOUNT_NAME,
-						ACCOUNT_RECORD_ID,
-						QTEREV_ID,
-						QTEREV_RECORD_ID,
-						KPU,
 						RELOCATION_EQUIPMENT_TYPE,
-						SERVICE_ID,
-						SERVICE_TYPE,
-						SERVICE_DESCRIPTION,
-						SERVICE_RECORD_ID,
+						'{serviceid}',
+						'{service_type}',
+						'{desc}',
+						'{rec}',
 						EQUIPMENT_STATUS,
 						EQUIPMENTCATEGORY_ID,
 						EQUIPMENTCATEGORY_DESCRIPTION,
@@ -493,80 +533,32 @@ class AncillaryProductOperation:
 						PAR_SERVICE_ID,
 						PAR_SERVICE_RECORD_ID,
 						TECHNOLOGY,
-						CONTRACT_VALID_FROM,
-						CONTRACT_VALID_TO,
-						CPQTABLEENTRYADDEDBY,
-						CPQTABLEENTRYDATEADDED,
-						CpqTableEntryModifiedBy,
-						CpqTableEntryDateModified
-						) SELECT
-							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-								SAQSCO.EQUIPMENT_ID,
-								SAQSCO.EQUIPMENT_RECORD_ID,
-								SAQSCO.EQUIPMENT_DESCRIPTION,                                
-								SAQSCO.FABLOCATION_ID,
-								SAQSCO.FABLOCATION_NAME,
-								SAQSCO.FABLOCATION_RECORD_ID,
-								SAQSCO.WAFER_SIZE,
-								SAQSCO.SALESORG_ID,
-								SAQSCO.SALESORG_NAME,
-								SAQSCO.SALESORG_RECORD_ID,
-								SAQSCO.SERIAL_NO,
-								SAQSCO.QUOTE_RECORD_ID,
-								SAQSCO.QUOTE_ID,
-								SAQSCO.QUOTE_NAME,
-								SAQSCO.ACCOUNT_ID,
-								SAQSCO.ACCOUNT_NAME,
-								SAQSCO.ACCOUNT_RECORD_ID,
-								SAQSCO.QTEREV_ID,
-								SAQSCO.QTEREV_RECORD_ID,
-								SAQSCO.KPU,
-								SAQSCO.RELOCATION_EQUIPMENT_TYPE,
-								SAQTSV.SERVICE_ID,
-								SAQTSV.SERVICE_TYPE,
-								SAQTSV.SERVICE_DESCRIPTION,
-								SAQTSV.SERVICE_RECORD_ID,
-								SAQSCO.EQUIPMENT_STATUS,
-								SAQSCO.EQUIPMENTCATEGORY_ID,
-								SAQSCO.EQUIPMENTCATEGORY_DESCRIPTION,
-								SAQSCO.EQUIPMENTCATEGORY_RECORD_ID,
-								SAQSCO.PLATFORM,
-								SAQSCO.GREENBOOK,
-								SAQSCO.GREENBOOK_RECORD_ID,
-								SAQSCO.MNT_PLANT_RECORD_ID,
-								SAQSCO.MNT_PLANT_NAME,
-								SAQSCO.MNT_PLANT_ID,
-								SAQSCO.WARRANTY_START_DATE,
-								SAQSCO.WARRANTY_END_DATE,
-								SAQSCO.CUSTOMER_TOOL_ID,
-								SAQTSV.PAR_SERVICE_DESCRIPTION,
-								SAQTSV.PAR_SERVICE_ID,
-								SAQTSV.PAR_SERVICE_RECORD_ID,
-								SAQSCO.TECHNOLOGY,
-								SAQSCO.CONTRACT_VALID_FROM,
-								SAQSCO.CONTRACT_VALID_TO,
-								'{UserName}',
-								GETDATE(),
-								{UserId},
-								GETDATE()
-								FROM SAQSCO (NOLOCK) 
-								INNER JOIN SAQTSV (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSCO.SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQTSV.PAR_SERVICE_ID = '{par_service_id}'
-								WHERE 
-								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT M.EQUIPMENT_ID FROM SAQSCO M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSV.SERVICE_ID)
-														
-							""".format(
-								par_service_id = self.service_id,
-								QuoteRecordId=self.contract_quote_record_id,
-								RevisionRecordId=self.contract_quote_revision_record_id,
-								
-								UserName=self.user_name,
-								
-								UserId=self.user_id
-								
-								
-							)
-				)
-				
+						'{UserName}',
+						GETDATE(),
+						{UserId},
+						GETDATE(),
+						QTEREV_RECORD_ID,
+						KPU,
+						QTEREV_ID
+						FROM SAQSCO (NOLOCK)
+						WHERE 
+						{where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}')
+												
+					""".format(
+						par_service_id = self.service_id,
+						serviceid = self.ancillary_obj ,
+						service_type ="Add-On Products",
+						QuoteRecordId = self.contract_quote_record_id,
+						RevisionRecordId = self.contract_quote_revision_record_id,
+						desc = get_service_details.SERVICE_DESCRIPTION,
+						rec = get_service_details.SERVICE_RECORD_ID,
+						UserName = self.user_name,
+						UserId = self.user_id,
+						where= self.where_string
+						
+					)
+					)
+	
 	
 	def _entitlement_rolldown(self):
 		try:
