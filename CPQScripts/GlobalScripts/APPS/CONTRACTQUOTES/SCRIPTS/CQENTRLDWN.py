@@ -577,7 +577,7 @@ def ancillary_service_call():
 			#Trace.Write("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, quote,revision,get_serviceid ))
 			
-			if (ancillary_object_qry is None and anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
+			if (anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
 				
 				ActionType = "{}_SERVICE".format(anc_val)
 				
