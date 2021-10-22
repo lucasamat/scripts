@@ -2288,6 +2288,7 @@ class TreeView:
 											temp_node =[]
 											if "-" in  NodeText:
 												temp_node = NodeText.split("-")
+												Trace.Write("NodeText----temp_node-->"+str(NodeText))
 												if str(len(temp_node)) == "4":
 													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[-2].strip())
 												else:
