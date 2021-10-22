@@ -1051,7 +1051,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
-		ancillary_service_call(get_serviceid)
+		ancillary_service_call()
 		sendEmail(level)
 
 	except Exception as e:
