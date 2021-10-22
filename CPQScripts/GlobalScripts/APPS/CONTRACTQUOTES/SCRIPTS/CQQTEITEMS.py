@@ -222,37 +222,8 @@ def SaveToolIdling(VALUES):
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     for x,y in VALUES.items():
         if "2265" in y:
-            y = ord(y)
-            Sql.RunQuery(""" INSERT SAQTDA(
-            QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
-            QUOTE_ID,
-            QUOTE_RECORD_ID,
-            QTEREV_ID,
-            QTEREV_RECORD_ID,
-            TOLIDLVAL_RECORD_ID,
-            TOOLIDLING_DISPLAY_VALUE,
-            TOOLIDLING_ID,
-            TOOLIDLING_NAME,
-            TOOLIDLING_RECORD_ID,
-            TOOLIDLING_VALUE_CODE,
-            CPQTABLEENTRYADDEDBY,
-            CPQTABLEENTRYDATEADDED
-            ) SELECT 
-            CONVERT(VARCHAR(4000),NEWID()),
-            '{}' AS QUOTE_ID,
-            '{}' AS QUOTE_RECORD_ID,
-            '{}' AS QTEREV_ID,
-            '{}' AS QTEREV_RECORD_ID,
-            PRTIAV.TOLIDLATTVAL_RECORD_ID,
-            PRTIAV.TOOLIDLING_DISPLAY_VALUE,
-            PRTIAV.TOOLIDLING_ID,
-            PRTIAV.TOOLIDLING_NAME,
-            PRTIAV.TOOLIDLING_RECORD_ID,
-            PRTIAV.TOOLIDLING_VALUE_CODE,
-            '{}' AS CPQTABLEENTRYADDEDBY,
-            GETDATE() AS CPQTABLEENTRYDATEADDED
-            FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N'{}' AND TOOLIDLING_ID = '{}'
-            """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
+            #y = ord(y)
+            a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(ord(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,ord(y),x.replace("_"," "))))
         else:    
             Sql.RunQuery(""" INSERT SAQTDA(
                 QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
