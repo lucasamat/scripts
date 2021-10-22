@@ -943,14 +943,14 @@ def Related_Sub_Banner(
                     #SecondLable = "Name"
                     #SecondValue = str(TreeParam)
                 ##commented the below code taking all the values in dynamic way...
-                # elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Line Item Details":
-                #     Trace.Write("663")
-                #     getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                #     TreeParam = TreeParam.split('-')
-                #     PrimaryLable = "Line"
-                #     PrimaryValue = TreeParam[0].strip()
-                #     SecondLable = "Product Offering ID"
-                #     SecondValue = TreeParam[1].strip()
+                elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Line Item Details":
+                    Trace.Write("663")
+                    getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    TreeParam = TreeParam.split('-')
+                    PrimaryLable = "Line"
+                    PrimaryValue = TreeParam[0].strip()
+                    SecondLable = "Product Offering ID"
+                    SecondValue = TreeParam[1].strip()
                 elif ObjName == "SAQIFL" and TreeSuperParentParam == "Quote Items" and subTabName == "Details":
                     Trace.Write("Quote Items")
                     get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
@@ -1943,11 +1943,11 @@ def Related_Sub_Banner(
         ThirdLable = ""
         ThirdValue = ""
     elif TreeParentParam == 'Quote Items' and (subTabName == 'Equipment' or subTabName == 'Quote Item Fab Value Drivers' or subTabName == 'Quote Item Cost and Value Drivers' or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-        # TreeParam = TreeParam.split('-')
-        # PrimaryLable = "Line"
-        # PrimaryValue = TreeParam[0].strip()
-        # SecondLable = "Product Offering ID"
-        # SecondValue = TreeParam[1].strip()
+        TreeParam = TreeParam.split('-')
+        PrimaryLable = "Line"
+        PrimaryValue = TreeParam[0].strip()
+        SecondLable = "Product Offering ID"
+        SecondValue = TreeParam[1].strip()
         FifthLable = "Greenbooks"
         FifthValue = "All"
         SixthLable = "Equipment"
