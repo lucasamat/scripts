@@ -154,6 +154,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name)
 	contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	TreeParam = Product.GetGlobal("TreeParam")
+	if subtab_name =="Legal SoW":
+		RECORD.update{"QUOTE_REVISION_RECORD_ID":quote_revision_record_id}
+	 
 	if Product.GetGlobal("TreeParentLevel2") == "Quote Items":
 		ObjectName = "SAQIGB"
 	elif Product.GetGlobal("TreeParentLevel1") == "Quote Items":
