@@ -136,7 +136,7 @@ def generate_year_based_billing_matrix(billing_plan_data=None):
 
 
 
-def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name):
+def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=None):
 	row = ""
 	result = ""
 	RecordId = ""
