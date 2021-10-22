@@ -777,21 +777,21 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							for data, datas in tablerow.items():
 								Trace.Write("data_chk_j---"+str(data)+" datas_chk_j---"+str(datas))
 								if data in required_val:
+									count=0
 									for req in required_val:
 										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
-										count=0
 										if tablerow[req] == "":
 											count+= 1
-										if count>0:
-											Trace.Write("if--saqtrv")
-											Req_Flag = 1
-											field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
-											warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
-										else:
-											Trace.Write("else_-SAQTRV-")
-											Req_Flag = 0
-											warning_msg = ""
-											Sql.Upsert(tableInfo)
+									if count>0:
+										Trace.Write("if--saqtrv")
+										Req_Flag = 1
+										field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
+										warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
+									else:
+										Trace.Write("else_-SAQTRV-")
+										Req_Flag = 0
+										warning_msg = ""
+										Sql.Upsert(tableInfo)
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
 						get_rev_val =  newdict.get("QTEREV_ID")
