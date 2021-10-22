@@ -1819,6 +1819,7 @@ class SyncQuoteAndCustomTables:
 			"QTEREV_ID": quote_rev_id,
 			"QTEREV_RECORD_ID": quote_revision_id,
 		}
+		sales_team_table.AddRow(sales_team_createdby_insert)
 		Sql.Upsert(sales_team_table)
 		Log.Info("sales_team_createdby_insert "+str(sales_team_createdby_insert))
 		Log.Info("SALES TEAM CREATED BY INSERT ENDS")
