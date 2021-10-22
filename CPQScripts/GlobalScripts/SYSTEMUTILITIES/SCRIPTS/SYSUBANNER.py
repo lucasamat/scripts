@@ -259,9 +259,9 @@ def Related_Sub_Banner(
                         FourthValue = rev_quote.REVISION_STATUS
                         #ThirdLable = 'Status'
                         #ThirdValue = rev_quote.REVISION_STATUS
-            if str(CurrentRecordId) == 'SYOBJR-98799' and str(ObjName) == 'SAQDOC':                
-                PrimaryLable = "Documents"
-                PrimaryValue = "All"
+            # if str(CurrentRecordId) == 'SYOBJR-98799' and str(ObjName) == 'SAQDOC':                
+            #     PrimaryLable = "Documents"
+            #     PrimaryValue = "All"
             if str(CurrentRecordId) == 'SYOBJR-00014' and str(TreeParentParam) == 'Approval Chain Steps':                
                 PrimaryLable = "Approval Chain Step Number"
                 PrimaryValue = str(TreeParentParam)
@@ -374,11 +374,11 @@ def Related_Sub_Banner(
                     SecondValue = str(TreeParam)
             
                     
-            elif (
-                CurrentRecordId.startswith("SYOBJR", 0) == True and str(TreeParentNodeRecId) != ""
-            ) and TreeParam == 'Documents' and TabName == "Quote":                
-                PrimaryLable = str(TreeParam)
-                PrimaryValue = "ALL"
+            # elif (
+            #     CurrentRecordId.startswith("SYOBJR", 0) == True and str(TreeParentNodeRecId) != ""
+            # ) and TreeParam == 'Documents' and TabName == "Quote":                
+            #     PrimaryLable = str(TreeParam)
+            #     PrimaryValue = "ALL"
             elif (
                 CurrentRecordId.startswith("SYOBJR", 0) == True and str(TreeParentNodeRecId) != ""
             ) and TabName == "Invoice":
@@ -542,7 +542,10 @@ def Related_Sub_Banner(
                 PrimaryValue = "Use the Customer Information functionality to manage your quote Accounts Contacts..."    
             elif TreeParam =="Sales Team":
                 PrimaryLable = "Sales Team"
-                PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."  
+                PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
+            elif TreeParam =="Quote Documents":
+                PrimaryLable = "Dynamic Document Generator"
+                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"      
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
