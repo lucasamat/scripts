@@ -779,19 +779,16 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								if data in required_val:
 									for req in required_val:
 										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
+										count=0
 										if tablerow[req] == "":
-											Trace.Write("955---------------------------"
-												+ str(datas)
-												+ "--required_val--"
-												+ str(required_val)
-												+ "--data--"
-												+ str(data)
-											)
+											count+= 1
+										if count>0:
+											Trace.Write("if--saqtrv")
 											Req_Flag = 1
 											field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
 											warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
 										else:
-											Trace.Write("else_chk_j--SAQTRV-")
+											Trace.Write("else_-SAQTRV-")
 											Req_Flag = 0
 											warning_msg = ""
 											Sql.Upsert(tableInfo)
