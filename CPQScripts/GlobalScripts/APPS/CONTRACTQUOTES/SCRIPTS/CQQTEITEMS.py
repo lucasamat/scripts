@@ -221,7 +221,8 @@ def SaveToolIdling(VALUES):
         QuoteRevisionId = getQuoteDetails.QTEREV_ID
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     for x,y in VALUES.items():
-        if x.replace("_"," ") == "Idle Notice" or x.replace("_"," ") == "Idle Duration":
+        if "2265" in y:
+            y = ord(y)
             Sql.RunQuery(""" INSERT SAQTDA(
             QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
             QUOTE_ID,
