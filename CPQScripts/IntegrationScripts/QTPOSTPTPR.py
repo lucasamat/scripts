@@ -184,7 +184,7 @@ try:
 						""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
 				else:
 					Sql.RunQuery("""UPDATE SAQIFP
-							SET PRICING_STATUS = 'ACQUIRED',TAX_AMOUNT_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),UNIT_PRICE_INGL_CURR = SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY,UNIT_PRICE = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
+							SET PRICING_STATUS = 'ACQUIRED',TAX_AMOUNT_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)- ((SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))),UNIT_PRICE_INGL_CURR = (SYSPBT.UNIT_PRICE * SYSPBT.QUANTITY)/(1 +(convert(decimal(13,5),SYSPBT.TAXRATE)/100))
 							FROM SAQIFP 				
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.SAP_PART_NUMBER = SAQIFP.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID
 							WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
@@ -249,9 +249,8 @@ try:
 				else:
 					sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}'".format(QUOTE))
 					if sum_query:
-						#total = float(sum_query.TOTAL) if sum_query.TOTAL != '' else 0
-						total = 0
-						
+						total = float(sum_query.TOTAL)
+												
 					update_price = "UPDATE SAQITM SET TOTAL_AMOUNT_INGL_CURR = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
 						total=total,
 						quote = QUOTE,
