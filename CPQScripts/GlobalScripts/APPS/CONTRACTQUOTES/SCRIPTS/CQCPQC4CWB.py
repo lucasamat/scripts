@@ -51,7 +51,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##To Fetch the values from revision table....
         revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         
-        opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+        opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
         ##Fetch the code according to the revision status..code starts...
