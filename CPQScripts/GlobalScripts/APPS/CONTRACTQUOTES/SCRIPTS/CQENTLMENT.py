@@ -1070,27 +1070,28 @@ class Entitlements:
 					getvalue = str((dict_val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
 					#if str(self.treeparam) in "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
-					
+					entitlement_value = str((dict_val).split("||")[0]).strip()
 					##Ancillary Object auto insert based on conditions
 					ancillary_flag = "False"
 					ancillary_object = ''
+					Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
 					if str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId) ):
 						ancillary_object = 'Z0101' 
-						if (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions"):
+						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_flag = "INSERT"
-						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) :
+						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) :
 
 							ancillary_flag = "DELETE"
 
 					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
 						ancillary_object = 'A6200'
-						if str((dict_val).split("||")[0]).strip().upper() == "YES":
+						if entitlement_value.upper() == "YES":
 							ancillary_flag = "INSERT"
 						else:
 							ancillary_flag = "DELETE"
 					elif key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091":
 						ancillary_object = 'Z0046'
-						if str((dict_val).split("||")[0]).strip() == "Yes":
+						if entitlement_value == "Yes":
 							#Quote.SetGlobal("ANCILLARY","YES")
 							ancillary_flag = "INSERT"
 						else:
@@ -1100,7 +1101,7 @@ class Entitlements:
 						
 					##calling script ancillary insert	
 					if ancillary_flag != "False" and ancillary_object:
-						Trace.Write("vall--"+str(key)+'--'+str((dict_val).split("||")[0]).strip())  
+						Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
 						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
 						
 						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
