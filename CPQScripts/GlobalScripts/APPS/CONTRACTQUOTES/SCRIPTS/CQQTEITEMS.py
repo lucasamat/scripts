@@ -178,7 +178,7 @@ def EditToolIdling():
                     getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND TOOLIDLING_VALUE_CODE != '{}'".format(x,getDefaultValue.TOOLIDLING_VALUE_CODE))
                     if getAllValues:
                         for val in getAllValues:
-                            sec_str += '<option id="'+x.replace(" ","_")+'" value="'+str(val.TOOLIDLING_VALUE_CODE)+'" >'+str(val.TOOLIDLING_VALUE_CODE)+'</option>'
+                            sec_str += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
                     sec_str += '</select></td></tr>'
             sec_str += "</tbody></table>"
         else:
