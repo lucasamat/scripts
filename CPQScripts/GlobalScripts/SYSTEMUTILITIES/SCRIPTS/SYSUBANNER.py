@@ -2510,7 +2510,7 @@ def Related_Sub_Banner(
 
         elif TreeParam == "Quote Documents":
             Trace.Write("QD----")
-            sec_rel_sub_bnr += add_button
+            sec_rel_sub_bnr += dynamic_Button
             Trace.Write("QDDD----"+str(sec_rel_sub_bnr))
 
         
