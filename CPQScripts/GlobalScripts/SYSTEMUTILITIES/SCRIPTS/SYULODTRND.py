@@ -570,6 +570,7 @@ def CommonTreeViewHTMLDetail(
 			sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"		
 		else:			
 			Trace.Write("astrl"+str(TreeParam))
+			Trace.Write("astrl2"+str(sec.SECTION_NAME))
 			if sec.SECTION_NAME =="BASIC INFORMATION" and Product.GetGlobal("TreeParentLevel0") == "Field Dependencies":
 				'''sec_str += (
 					'<div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"><a id="'
@@ -588,7 +589,7 @@ def CommonTreeViewHTMLDetail(
 				)
 				#sec_str += str(sec.SECTION_NAME) + "</div> </label> </div>"
 			elif sec.SECTION_NAME =="RELOCATION INFORMATION" and (TreeParam != 'Z0007' or TreeParam != 'Z0007_AG'):	
-				Trace.Write("astrl2"+str(sec.SECTION_NAME))
+				#Trace.Write("astrl2"+str(sec.SECTION_NAME))
 				sec_str += ("") 		
 			else:				
 				sec_str += (
