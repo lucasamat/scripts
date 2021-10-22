@@ -183,7 +183,7 @@ def EditToolIdling():
             sec_str += "</tbody></table>"
         else:
             #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
-            getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) AND TOOLIDLING_ID != 'Idling Allowed'")
+            getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID != 'Idling Allowed'")
             
             for x in getPRTIAV:
                 ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
