@@ -282,7 +282,8 @@ class AncillaryProductOperation:
 									serviceid = self.ancillary_obj ,
 									desc = get_service_details.SERVICE_DESCRIPTION,
 									rec = get_service_details.SERVICE_RECORD_ID,
-									addtional_where = " AND FABLOCATION_ID = '{}'".format(self.fab) if self.fab else ""
+									addtional_where = " AND FABLOCATION_ID = '{}'".format(self.fab) if self.fab else "",
+									service_type = ""
 								)
 				)
 				
