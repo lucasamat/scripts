@@ -780,8 +780,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 									for req in required_val:
 										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
 										if tablerow[req] == "":
-											Trace.Write(
-												"955---------------------------"
+											Trace.Write("955---------------------------"
 												+ str(datas)
 												+ "--required_val--"
 												+ str(required_val)
@@ -792,7 +791,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 											field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
 											warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
 										else:
-											Trace.Write("else_chk_j---")
+											Trace.Write("else_chk_j--SAQTRV-")
 											Req_Flag = 0
 											warning_msg = ""
 											Sql.Upsert(tableInfo)
@@ -1467,7 +1466,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					tableInfo = Sql.GetTable(str(TableName))
 					tablerow = newdict
 					tableInfo.AddRow(tablerow)
-					
+					Trace.Write("else1469")
 					Sql.Upsert(tableInfo)
 		
 		##calling QTPOSTACRM script for CRM Contract idoc
