@@ -18,7 +18,7 @@ Sql = SQL()
 userId = str(User.Id)
 userName = str(User.UserName)
 
-
+ancillary_flag = ""
 try:
 	objs = Param.CPQ_Columns['objectName']    
 	wherecon = Param.CPQ_Columns['where']
@@ -571,7 +571,7 @@ def ancillary_service_call():
 	if ancillary_dict:
 		
 		for anc_key,anc_val in ancillary_dict.items():
-			Trace.Write("vall--"+str(anc_key)  )
+			#Trace.Write("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, quote,revision,get_serviceid ))
 			
 			if (ancillary_object_qry is None and anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
@@ -1050,8 +1050,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		if 'Z0016' in get_serviceid and objectName != 'SAQTSE':
 			entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
-		if 'Z0091' in get_serviceid and ancillary_flag == 'YES':
-			ancillary_service_call(get_serviceid)
+		#if 'Z0091' in get_serviceid :
+		ancillary_service_call(get_serviceid)
 		sendEmail(level)
 
 	except Exception as e:
