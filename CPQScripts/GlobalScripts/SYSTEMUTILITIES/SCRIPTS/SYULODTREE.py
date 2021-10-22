@@ -2069,7 +2069,7 @@ class TreeView:
 										entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_DISPLAY_VALUE IN ('Some Exclusions','Some Inclusions') AND ( ENTITLEMENT_ID like 'AGS_%TSC_NONCNS' OR ENTITLEMENT_ID like 'AGS_%TSC_CONSUM' OR ENTITLEMENT_ID like 'AGS_%NON_CONSUMABLE')".format(table_name = table_name ,contract_quote_record_id = contract_quote_record_id,quote_revision_record_id = quote_revision_record_id,service_id = service_id))
 										if entitlement_obj is not None and entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == "Some Exclusions":
 											subTabName = str(getRightView.SUBTAB_NAME)
-										Trace.Write("**2045 Subtab-->"+str(subTabName))
+										#Trace.Write("**2045 Subtab-->"+str(subTabName))
 									elif subTabName == 'Spare Parts':
 										subTabName = ""
 										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -2086,7 +2086,7 @@ class TreeView:
 										SubTabList.append(
 											self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 										)
-										Trace.Write("SubTabList --->"+str(SubTabList))
+										#Trace.Write("SubTabList --->"+str(SubTabList))
 									if str(ObjRecId) == "01C264E8-9B64-4F99-B05C-D61ECD2C4D27":
 										Trace.Write(str(ObjRecId)+"---1949---"+str(subTabName)+'--1947---'+str(NodeText))
 										item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID".format(Product.GetGlobal("contract_quote_record_id"),str(NodeText),quote_revision_record_id))
