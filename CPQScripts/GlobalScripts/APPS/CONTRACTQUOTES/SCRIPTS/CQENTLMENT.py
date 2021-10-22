@@ -1059,6 +1059,7 @@ class Entitlements:
 						curr = GetRegion.GLOBAL_CURRENCY if GetRegion else "" """
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
+				ancillary_object_dict = {}
 				for key,dict_val in ENT_IP_DICT.items():	
 					getcostbaborimpact =""
 					getpriceimpact = ""
@@ -1073,47 +1074,53 @@ class Entitlements:
 					entitlement_value = str((dict_val).split("||")[0]).strip()
 					##Ancillary Object auto insert based on conditions
 					ancillary_flag = "False"
-					ancillary_object = ''
+					
 					#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
 					if str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId) ):
-						ancillary_object = 'Z0101' 
+						#ancillary_object = 'Z0101' 
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
-							ancillary_flag = "INSERT"
+							ancillary_object_dict['Z0101'] = "INSERT"
+							#ancillary_flag = "INSERT"
 						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) :
 							#Trace.Write('else')
-							ancillary_flag = "DELETE"
+							ancillary_object_dict['Z0101'] = "DELETE"
+							#ancillary_flag = "DELETE"
 
 					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
-						ancillary_object = 'A6200'
+						#ancillary_object = 'A6200'
 						if entitlement_value.upper() == "YES":
-							ancillary_flag = "INSERT"
+							ancillary_object_dict['A6200'] = "INSERT"
+							#ancillary_flag = "INSERT"
 						else:
-							ancillary_flag = "DELETE"
+							ancillary_object_dict['A6200'] = "DELETE"
+							#ancillary_flag = "DELETE"
 					elif key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091":
 						ancillary_object = 'Z0046'
 						if entitlement_value == "Yes":
+							ancillary_object_dict['Z0046'] = "INSERT"
 							#Quote.SetGlobal("ANCILLARY","YES")
-							ancillary_flag = "INSERT"
+							#ancillary_flag = "INSERT"
 						else:
+							ancillary_object_dict['Z0046'] = "DELETE"
 							#Quote.SetGlobal("ANCILLARY","NO")
 							ancillary_flag = "DELETE"
 						
 						
-					##calling script ancillary insert	
-					if ancillary_flag != "False" and ancillary_object:
-						Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
-						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
+					# ##calling script ancillary insert	
+					# if ancillary_flag != "False" and ancillary_object:
+					# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
+					# 	ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
 						
-						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
-							if ancillary_flag == "INSERT":
-								Quote.SetGlobal("ANCILLARY","YES")
-							else:
-								Quote.SetGlobal("ANCILLARY","NO")
-							ActionType = "{}_SERVICE".format(ancillary_flag)
-							Trace.Write("ActionType--"+str(ActionType))
-							Trace.Write("whereReq---"+str(whereReq))
-							Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
-							ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+					# 	if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
+					# 		if ancillary_flag == "INSERT":
+					# 			Quote.SetGlobal("ANCILLARY","YES")
+					# 		else:
+					# 			Quote.SetGlobal("ANCILLARY","NO")
+					# 		ActionType = "{}_SERVICE".format(ancillary_flag)
+					# 		Trace.Write("ActionType--"+str(ActionType))
+					# 		Trace.Write("whereReq---"+str(whereReq))
+					# 		Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
+					# 		#ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId , "tablename":tablename})
 
 					
 
@@ -1578,6 +1585,8 @@ class Entitlements:
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
 					#Trace.Write("updateentXML-970------"+str(updateentXML))
+				
+				Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				#Trace.Write('configuration_status----'+str(configuration_status))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
@@ -2416,10 +2425,12 @@ class Entitlements:
 			get_service_driver_onchange = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": responsive_where,"quote_rec_id": self.ContractRecordId,"level":"ONCHNGAE_DRIVERS", "treeparam":objName,"user_id": User.Id,"quote_rev_id":self.revision_recordid,'serviceId':serviceId,'get_selected_value':get_selected_dict,'uptime_list':uptime_list,'get_ent_type_val':get_ent_type_val})
 	
 		if ENT_IP_DICT != '':
-			ancillary_flag = Quote.GetGlobal("ANCILLARY")
-			Trace.Write("ancillary_flag--"+str(ancillary_flag))
+			
+			ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
+			Quote.SetGlobal("ancillary_object_dict","")
+			Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
-			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)+','+str(ancillary_flag)
+			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)+','+str(ancillary_dict)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")

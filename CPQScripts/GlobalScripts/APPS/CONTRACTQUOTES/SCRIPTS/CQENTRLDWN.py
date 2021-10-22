@@ -35,7 +35,10 @@ quote = objItems[2].split(",")[1]
 revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
-ancillary_flag = objItems[2].split(",")[3]
+try:
+	ancillary_dict = eval(objItems[2].split(",")[3])
+except:
+	ancillary_dict = objItems[2].split(",")[3]
 try: 
 	attributeList = objItems[1].split(",")
 except:
@@ -563,6 +566,21 @@ def ancillary_service_Z0046(get_serviceid):
 	except Exception as e:
 		Log.Info("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
+def ancillary_service_call():
+	##calling script ancillary insert	where_condition = where.replace('SRC.','')
+	if ancillary_dict:
+		
+		for anc_key,anc_val in ancillary_dict.items():
+			Trace.Write("vall--"+str(anc_key)  )
+			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, quote,revision,get_serviceid ))
+			
+			if (ancillary_object_qry is None and anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
+				
+				ActionType = "{}_SERVICE".format(anc_val)
+				
+				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":ActionType,   "ancillary_obj": anc_key, "service_id" : get_serviceid , "tablename":objectName})
+
+						
 
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
@@ -1033,7 +1051,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
 		if 'Z0091' in get_serviceid and ancillary_flag == 'YES':
-			ancillary_service_Z0046(get_serviceid)
+			ancillary_service_call(get_serviceid)
 		sendEmail(level)
 
 	except Exception as e:
