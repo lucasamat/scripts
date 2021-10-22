@@ -1080,7 +1080,7 @@ class Entitlements:
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_flag = "INSERT"
 						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) :
-
+							Trace.Write('else')
 							ancillary_flag = "DELETE"
 
 					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
