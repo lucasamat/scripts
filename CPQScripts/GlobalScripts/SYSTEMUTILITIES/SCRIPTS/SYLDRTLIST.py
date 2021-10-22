@@ -298,33 +298,33 @@ class SYLDRTLIST:
                 Wh_API_NAME = objd_where_obj.API_NAME
                 Wh_OBJECT_NAME = objd_where_obj.OBJECT_NAME
             #Contract valid start date & End date Calculation--START
-            
-            Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
-            if Getyear:
-                start_date = datetime(Getyear.CONTRACT_VALID_FROM)
-                end_date = datetime(Getyear.CONTRACT_VALID_TO)
-                mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
-                quotient, remainder = divmod(mm, 12)
-                getyears = quotient + (1 if remainder > 0 else 0)
-                
-                if not getyears:
-                    getyears = 1
-                if Quote is not None:
-                    Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
-                if getyears == 1:
-                    rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
-                    Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp]) 
-                elif getyears == 2:
-                    rem_list_sp = ["YEAR_3","YEAR_4","YEAR_5"]
-                    Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-                elif getyears == 3:
-                    rem_list_sp = ["YEAR_4","YEAR_5"]
-                    Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-                elif getyears == 4:
-                    rem_list_sp = ["YEAR_5"]
-                    Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
-                else:
-                    Columns
+            if Currenttab == 'Quotes':
+                Getyear = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+                if Getyear:
+                    start_date = datetime(Getyear.CONTRACT_VALID_FROM)
+                    end_date = datetime(Getyear.CONTRACT_VALID_TO)
+                    mm = (end_date. year - start_date. year) * 12 + (end_date. month - start_date. month)
+                    quotient, remainder = divmod(mm, 12)
+                    getyears = quotient + (1 if remainder > 0 else 0)
+                    
+                    if not getyears:
+                        getyears = 1
+                    if Quote is not None:
+                        Quote.GetCustomField('GetBillingMatrix_Year').Content = str(getyears)
+                    if getyears == 1:
+                        rem_list_sp = ["YEAR_2","YEAR_3","YEAR_4","YEAR_5"]
+                        Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp]) 
+                    elif getyears == 2:
+                        rem_list_sp = ["YEAR_3","YEAR_4","YEAR_5"]
+                        Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+                    elif getyears == 3:
+                        rem_list_sp = ["YEAR_4","YEAR_5"]
+                        Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+                    elif getyears == 4:
+                        rem_list_sp = ["YEAR_5"]
+                        Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+                    else:
+                        Columns
             #Contract valid start date & End date Calculation--END
             #Quote items column based on pricing picklist strts A055S000P01-4578
             if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Global Currency':
