@@ -2480,11 +2480,11 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                        elif TreeParam == "Quote Documents":
-                            Trace.Write("Qd----")
-                            for btn in multi_buttons:
-                                sec_rel_sub_bnr += (btn)
-                            Trace.Write("Qddd----"+str(sec_rel_sub_bnr))                
+                    elif TreeParam == "Quote Documents":
+                        Trace.Write("Qd----")
+                        for btn in multi_buttons:
+                            sec_rel_sub_bnr += (btn)
+                        Trace.Write("Qddd----"+str(sec_rel_sub_bnr))                
 
 
 
