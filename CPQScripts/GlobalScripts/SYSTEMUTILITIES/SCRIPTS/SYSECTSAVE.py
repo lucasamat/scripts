@@ -763,7 +763,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
 						tablerow = newdict
+						Trace.Write("SAQTRV UPSERT"+str(tablerow))
 						tableInfo.AddRow(tablerow)
+						
 						Sql.Upsert(tableInfo)
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
