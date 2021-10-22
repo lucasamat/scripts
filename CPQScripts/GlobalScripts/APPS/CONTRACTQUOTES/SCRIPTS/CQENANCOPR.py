@@ -36,7 +36,7 @@ class AncillaryProductOperation:
 			self._delete_operation()
 	
 	def _insert_service_offering(self):
-		material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(self.ancillary_obj))
+		material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(self.ancillary_obj))
 		if material_obj:
 			description = material_obj.SAP_DESCRIPTION
 			material_record_id = material_obj.MATERIAL_RECORD_ID
@@ -46,8 +46,9 @@ class AncillaryProductOperation:
 							WHERE SERVICE_ID = '{service_id}' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
 							) A""".format(description=description, service_id = self.service_id, material_record_id = material_record_id,QuoteRecordId = self.contract_quote_record_id, RevisionRecordId = self.contract_quote_revision_record_id ,UserName = self.user_name, UserId = self.user_id, ancillary_object = self.ancillary_obj ))
 			
-			##calling fn for service insert
-			self._insert_service_ent()
+			##calling fn for service insert MATERIALCONFIG_TYPE
+			if material_obj.MATERIALCONFIG_TYPE != "SIMPLE MATERIAL":
+				self._insert_service_ent()
 
 			##calling fn for equipment insert
 			self._equipment_insert()
