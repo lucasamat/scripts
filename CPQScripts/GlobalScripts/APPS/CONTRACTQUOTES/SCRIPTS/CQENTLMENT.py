@@ -1121,7 +1121,58 @@ class Entitlements:
 							Trace.Write("whereReq---"+str(whereReq))
 							Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
 							ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
-					
+					if 'AGS_Z0091_GEN_IDLALW' in key and str((dict_val).split("||")[0]).strip() == "No":
+						Quote.SetGlobal("IdlingAllowed","No")
+					if 'AGS_Z0091_GEN_IDLALW' in key and str((dict_val).split("||")[0]).strip() == "Yes":
+						Quote.SetGlobal("IdlingAllowed","Yes")
+						GetSAQTDA = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID= '{}'".format(self.revision_recordid))
+                        getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(self.revision_recordid))
+                        if getQuoteDetails:
+                            QuoteId = getQuoteDetails.QUOTE_ID
+                            #QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
+                            QuoteRevisionId = getQuoteDetails.QTEREV_ID
+                        if GetSAQTDA:
+                            Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+                        getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID != 'Idling Allowed' AND [DEFAULT] = 1")
+                        VALUES = {}
+                        VALUES["Idling Allowed"] = "Yes"
+                        for x in getPRTIAV:
+                            VALUES[x.TOOLIDLING_ID] = x.TOOLIDLING_VALUE_CODE
+                        for x,y in VALUES.items():
+                            if "28 Days" in y or "30 Days" in y:
+                                #y = ord(y)
+                                a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y.encode('utf-8').decode('utf-8'),x))
+                            else:    
+                                Sql.RunQuery(""" INSERT SAQTDA(
+                                    QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+                                    QUOTE_ID,
+                                    QUOTE_RECORD_ID,
+                                    QTEREV_ID,
+                                    QTEREV_RECORD_ID,
+                                    TOLIDLVAL_RECORD_ID,
+                                    TOOLIDLING_DISPLAY_VALUE,
+                                    TOOLIDLING_ID,
+                                    TOOLIDLING_NAME,
+                                    TOOLIDLING_RECORD_ID,
+                                    TOOLIDLING_VALUE_CODE,
+                                    CPQTABLEENTRYADDEDBY,
+                                    CPQTABLEENTRYDATEADDED
+                                    ) SELECT 
+                                    CONVERT(VARCHAR(4000),NEWID()),
+                                    '{}' AS QUOTE_ID,
+                                    '{}' AS QUOTE_RECORD_ID,
+                                    '{}' AS QTEREV_ID,
+                                    '{}' AS QTEREV_RECORD_ID,
+                                    PRTIAV.TOLIDLATTVAL_RECORD_ID,
+                                    PRTIAV.TOOLIDLING_DISPLAY_VALUE,
+                                    PRTIAV.TOOLIDLING_ID,
+                                    PRTIAV.TOOLIDLING_NAME,
+                                    PRTIAV.TOOLIDLING_RECORD_ID,
+                                    PRTIAV.TOOLIDLING_VALUE_CODE,
+                                    '{}' AS CPQTABLEENTRYADDEDBY,
+                                    GETDATE() AS CPQTABLEENTRYDATEADDED
+                                    FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+                                    """.format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
 					# ##A055S000P01-9646  code ends..
 					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 					# 	tbrow={}
