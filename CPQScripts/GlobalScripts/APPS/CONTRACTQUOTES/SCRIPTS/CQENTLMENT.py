@@ -2430,7 +2430,7 @@ class Entitlements:
 			Quote.SetGlobal("ancillary_object_dict","")
 			Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
-			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)+','+str(ancillary_dict)
+			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
@@ -2443,7 +2443,7 @@ class Entitlements:
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			
 			try:			
-				CQENTIFLOW.iflow_entitlement(tableName,where)
+				CQENTIFLOW.iflow_entitlement(tableName,where,ancillary_dict)
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
