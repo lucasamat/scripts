@@ -2435,16 +2435,13 @@ class Entitlements:
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
-			#Trace.Write("where---"+str(where))
-			#Trace.Write("Getprevdict---"+str(Getprevdict))
-			Trace.Write("objName-ent"+str(objName))
-			Trace.Write("attributemy"+str(AttributeList))
-			Trace.Write("attributemywhere"+str(responsive_where))
-			Trace.Write("tableName---"+str(tableName))
+			Trace.Write("where---"+str(where))
+			# Trace.Write("objName-ent"+str(objName))
+			# Trace.Write("attributemy"+str(AttributeList))
+			# Trace.Write("attributemywhere"+str(responsive_where))
+			# Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
-			Log.Info('where---'+str(responsive_where))
-			Log.Info('where-2--'+str(Coverage_where))
-			Log.Info('tableName---'+str(objName))
+			
 			try:			
 				CQENTIFLOW.iflow_entitlement(tableName,where)
 			except Exception as e:
