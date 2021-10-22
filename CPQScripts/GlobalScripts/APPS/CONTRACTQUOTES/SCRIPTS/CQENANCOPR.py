@@ -681,7 +681,18 @@ class AncillaryProductOperation:
 			Log.Info("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
 	def _delete_operation(self):
-		delete_obj_list = ["SAQTSV","SAQTSE","SAQSCO"]
+		delete_obj_list = []
+		if self.tablename == "SAQTSE": 
+			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSFE":
+			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSGE":
+			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE"] 
+		elif self.tablename == "SAQSCE":
+			delete_obj_list = ["SAQSCO","SAQSCA","SAQSCE","SAQSAE"] 
+		elif self.tablename == "SAQSAE":
+			delete_obj_list = ["SAQSCA","SAQSAE"]
+		
 		if self.action_type == "DELETE_ENT_EQUIPMENT":
 			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
 		for obj in delete_obj_list:
