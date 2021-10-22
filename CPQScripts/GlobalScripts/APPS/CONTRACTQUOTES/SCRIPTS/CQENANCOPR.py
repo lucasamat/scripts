@@ -60,7 +60,7 @@ class AncillaryProductOperation:
 		elif self.action_type == "DELETE_ENT_EQUIPMENT":
 			self._delete_operation()
 
-	
+
 	def _insert_service_offering(self):
 		material_obj = Sql.GetFirst("SELECT MATERIAL_RECORD_ID,SAP_DESCRIPTION,MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(self.ancillary_obj))
 		get_existing_record = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
@@ -512,6 +512,7 @@ class AncillaryProductOperation:
 		overallattributeslist =[]
 		attributevalues={}
 		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
+		
 		##getting count of complete equipment count
 		get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
 		get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
@@ -625,7 +626,11 @@ class AncillaryProductOperation:
 			ancillary_where += " AND SERVICE_ID = '{}'".format(self.ancillary_obj)
 			
 			get_ancillaryservice = Sql.GetFirst("select * from SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
-			if get_ancillaryservice :
+			##getting count of complete equipment count
+			get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
+			get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
+		
+			if get_ancillaryservice and get_par_equp_ent.cnt == get_par_equp.cnt and get_par_equp.cnt != 0 :
 				 
 				get_ancillary_fab = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSFE WHERE {}".format(ancillary_where))
 				if get_ancillary_fab:
