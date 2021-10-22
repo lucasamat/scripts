@@ -2507,6 +2507,12 @@ def Related_Sub_Banner(
             for btn in multi_buttons:
                 sec_rel_sub_bnr += (btn)
             Trace.Write(sec_rel_sub_bnr)
+
+        elif TreeParam == "Quote Documents":
+            Trace.Write("QD----")
+            sec_rel_sub_bnr += add_button
+            Trace.Write("QDDD----"+str(sec_rel_sub_bnr))
+
         
 
     elif TreeParam == 'Approvals' and (TabName == "Quotes" or TabName == "Quote"):
