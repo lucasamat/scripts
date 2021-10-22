@@ -27,7 +27,7 @@ class AncillaryProductOperation:
 		self.action_type = str(action_type)
 		self.service_id = str(service_id)
 		self.ancillary_obj = str(ancillary_obj)
-		self.where_string = where_string
+		self.where_string = where_string.replace("WHERE","")
 		self.tablename = tablename
 		if self.tablename in ("SAQSFE","SAQSGE","SAQSCE","SAQSAE"):
 			pattern = re.compile(r''+str('FABLOCATION_ID')+'\s*\=\s*\'([^>]*?)\'')
@@ -485,7 +485,7 @@ class AncillaryProductOperation:
 						rec = get_service_details.SERVICE_RECORD_ID,
 						UserName = self.user_name,
 						UserId = self.user_id,
-						where= self.where_string,
+						
 						addtional_where = addtional_where 
 			)
 		) 
@@ -607,7 +607,7 @@ class AncillaryProductOperation:
 						rec = get_service_details.SERVICE_RECORD_ID,
 						UserName = self.user_name,
 						UserId = self.user_id,
-						where= self.where_string,
+						
 						addtional_where = addtional_where 
 					)
 					)
