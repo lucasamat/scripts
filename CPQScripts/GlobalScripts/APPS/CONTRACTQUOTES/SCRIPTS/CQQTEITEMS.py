@@ -266,5 +266,9 @@ elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
 elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
+    for key in VALUES:
+        if "2265" in VALUES[key]:
+            import unicodedata
+            unicodedata.normalize('NFKD', VALUES[key]).encode('ascii', 'ignore')
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
