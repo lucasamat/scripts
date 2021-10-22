@@ -249,7 +249,7 @@ try:
 				else:
 					sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}'".format(QUOTE))
 					if sum_query:
-						total = float(sum_query.TOTAL)
+						total = float(sum_query.TOTAL) if sum_query.TOTAL != '' else 0  
 						
 					update_price = "UPDATE SAQITM SET TOTAL_AMOUNT_INGL_CURR = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
 						total=total,
