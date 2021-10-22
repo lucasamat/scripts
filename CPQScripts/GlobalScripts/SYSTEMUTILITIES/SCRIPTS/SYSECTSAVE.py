@@ -765,8 +765,37 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						tablerow = newdict
 						Trace.Write("SAQTRV UPSERT"+str(tablerow))
 						tableInfo.AddRow(tablerow)
-						
-						Sql.Upsert(tableInfo)
+						Trace.Write("TEZTZ--475---"+str(tablerow))
+						# sectional edit error message - starts
+						req_obj = Sql.GetList(
+							"select API_NAME from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' and REQUIRED = 1 "
+						)
+						Trace.Write("select API_NAME from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' and REQUIRED = 1 ")
+
+						if req_obj is not None and len(req_obj) > 0:
+							required_val = [str(i.API_NAME) for i in req_obj]
+							for data, datas in tablerow.items():
+								Trace.Write("data_chk_j---"+str(data)+" datas_chk_j---"+str(datas))
+								if data in required_val:
+									for req in required_val:
+										Trace.Write("req_chk_j---"+str(req)+" tablerow_chk_j---"+str(tablerow))
+										if tablerow[req] == "":
+											Trace.Write(
+												"955---------------------------"
+												+ str(datas)
+												+ "--required_val--"
+												+ str(required_val)
+												+ "--data--"
+												+ str(data)
+											)
+											Req_Flag = 1
+											field_label = Sql.GetFirst("select FIELD_LABEL from  SYOBJD(NOLOCK) where OBJECT_NAME = '" + str(TableName) + "' AND API_NAME = '"+str(data)+"' ")
+											warning_msg = ' ERROR : "{}" is a required field'.format(field_label.FIELD_LABEL)
+										else:
+											Trace.Write("else_chk_j---")
+											Req_Flag = 0
+											warning_msg = ""
+											Sql.Upsert(tableInfo)
 						getactive = newdict.get("ACTIVE")
 						get_record_val =  newdict.get("QUOTE_REVISION_RECORD_ID")
 						get_rev_val =  newdict.get("QTEREV_ID")
