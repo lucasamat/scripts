@@ -2294,7 +2294,7 @@ class TreeView:
 													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[-2].strip())
 												else:
 													Trace.Write("temp_node temp_node temp_node")
-													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'  AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(quote_revision_record_id,temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
+													Subwhere_string += " AND QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"'  AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND SERVICE_ID != 'Z0101'".format(quote_revision_record_id,temp_node[1].strip())+" AND LINE_ITEM_ID = '{}'".format(temp_node[0].strip())
 										if parObjName == "ACACST" and str(ProductName).upper() == "APPROVAL CENTER":
 											Chain_step = Sql.GetFirst("SELECT APRCHNSTP_NUMBER FROM ACACST (NOLOCK) WHERE APRCHNSTP_NAME = '"+str(NodeText)+"' AND APRCHN_RECORD_ID = '"+Product.Attributes.GetByName('QSTN_SYSEFL_AC_00001').GetValue()+"'")
 											Subwhere_string += " AND APRCHNSTP = '"+str(Chain_step.APRCHNSTP_NUMBER)+"'"
