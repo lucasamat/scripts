@@ -658,7 +658,10 @@ action_type = Param.ActionType
 quote_record_id = Param.quote_record_id
 revision_rec_id = Param.revision_rec_id
 service_id  = Param.service_id
-where_string = Param.where_string
+try:
+	where_string = Param.where_string
+except:
+	where_string = '' 
 
 auto_ancillary_obj = AncillaryProductOperation()
 auto_ancillary_obj._do_opertion()
