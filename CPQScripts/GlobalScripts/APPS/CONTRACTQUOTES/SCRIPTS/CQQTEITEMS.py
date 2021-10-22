@@ -221,6 +221,7 @@ def SaveToolIdling(VALUES):
         QuoteRevisionId = getQuoteDetails.QTEREV_ID
         QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     for x,y in VALUES.items():
+        if '22'
         Sql.RunQuery(""" INSERT SAQTDA(
             QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
             QUOTE_ID,
@@ -251,7 +252,6 @@ def SaveToolIdling(VALUES):
             GETDATE() AS CPQTABLEENTRYDATEADDED
             FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
             """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
-    LoadSummary()
 
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
