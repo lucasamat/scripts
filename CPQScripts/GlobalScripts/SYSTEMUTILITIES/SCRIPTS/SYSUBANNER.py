@@ -1943,11 +1943,11 @@ def Related_Sub_Banner(
         ThirdLable = ""
         ThirdValue = ""
     elif TreeParentParam == 'Quote Items' and (subTabName == 'Equipment' or subTabName == 'Quote Item Fab Value Drivers' or subTabName == 'Quote Item Cost and Value Drivers' or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
-        TreeParam = TreeParam.split('-')
-        PrimaryLable = "Line"
-        PrimaryValue = TreeParam[0].strip()
-        SecondLable = "Product Offering ID"
-        SecondValue = TreeParam[1].strip()
+        # TreeParam = TreeParam.split('-')
+        # PrimaryLable = "Line"
+        # PrimaryValue = TreeParam[0].strip()
+        # SecondLable = "Product Offering ID"
+        # SecondValue = TreeParam[1].strip()
         FifthLable = "Greenbooks"
         FifthValue = "All"
         SixthLable = "Equipment"
