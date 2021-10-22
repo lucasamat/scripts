@@ -2228,12 +2228,12 @@ def Related_Sub_Banner(
             + str(CurrentRecordId)
             + "' "
         )		
-        if CurrentRecordId == "SYOBJR-98799":
-            get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-            if str(get_quote_status.QUOTE_STATUS).upper() in  ["APPROVED","BOOKING SUBMITTED"]:			
-                sec_rel_sub_bnr += (
-                    '<button class="btnconfig cust_def_btn" id="Generate_Documents" onclick="btn_banner_content(this)" style="display: block;">GENERATE DOCUMENTS</button>'
-                )
+        # if CurrentRecordId == "SYOBJR-98799":
+        #     get_quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        #     if str(get_quote_status.QUOTE_STATUS).upper() in  ["APPROVED","BOOKING SUBMITTED"]:			
+        #         sec_rel_sub_bnr += (
+        #             '<button class="btnconfig cust_def_btn" id="Generate_Documents" onclick="btn_banner_content(this)" style="display: block;">GENERATE DOCUMENTS</button>'
+        #         )
         # elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Source Fab Location" and TabName == "Quote":
         #     sec_rel_sub_bnr += (
         #         '<button id="ADDNEW__SYOBJR_98857_SYOBJ_01033" onclick="cont_openaddnew(this, \'div_CTR_Source_Fab_Locations\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
@@ -2510,7 +2510,8 @@ def Related_Sub_Banner(
 
         elif TreeParam == "Quote Documents":
             Trace.Write("QD----")
-            sec_rel_sub_bnr += dynamic_Button
+            for btn in multi_buttons:
+                sec_rel_sub_bnr += (btn)
             Trace.Write("QDDD----"+str(sec_rel_sub_bnr))
 
         
