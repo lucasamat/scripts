@@ -1078,7 +1078,7 @@ class Entitlements:
 						ancillary_object = 'Z0101' 
 						if (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions"):
 							ancillary_flag = "INSERT"
-						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) ):
+						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) :
 
 							ancillary_flag = "DELETE"
 
