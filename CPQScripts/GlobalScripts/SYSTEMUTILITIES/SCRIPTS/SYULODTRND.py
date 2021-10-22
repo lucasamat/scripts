@@ -532,9 +532,10 @@ def CommonTreeViewHTMLDetail(
 					
 
 					if Product.GetGlobal("TreeParentLevel0") == 'Quote Items':
-						if TreeParam.split('-')[1].strip() == 'Z0100':
-							if sec.SECTION_NAME == "PRICING INFORMATION":
-								sec.SECTION_NAME = "FPM INFORMATION"	
+						if (' - ' ) in TreeParam: 
+							if TreeParam.split('-')[1].strip() == 'Z0100':
+								if sec.SECTION_NAME == "PRICING INFORMATION":
+									sec.SECTION_NAME = "FPM INFORMATION"	
 					# sec_html_btn = Sql.GetFirst("SELECT HTML_CONTENT FROM SYPSAC (NOLOCK) WHERE ACTION_NAME = 'EDIT' AND SECTION_RECORD_ID = '"+str(sec.RECORD_ID)+"'")
 
 
