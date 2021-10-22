@@ -1074,20 +1074,21 @@ class Entitlements:
 					##Ancillary Object auto insert based on conditions
 					ancillary_flag = "False"
 					ancillary_object = ''
-					if ("TSC_CONSUM" in key or "TSC_NONCNS" in key or "NON_CONSUMABLE" in key) and str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") :
+					if str(self.treeparam) in ("Z0091", "Z0004","Z0007","Z0006","Z0092") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId) ):
 						ancillary_object = 'Z0101' 
 						if (str((dict_val).split("||")[0]).strip() == "Some Exclusions" or str((dict_val).split("||")[0]).strip() == "Some Inclusions"):
 							ancillary_flag = "INSERT"
-						else:
+						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_NON_CONSUMABLE".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and str((dict_val).split("||")[0]).strip() not in ("Some Exclusions", "Some Inclusions") ) ):
+
 							ancillary_flag = "DELETE"
 
-					elif ("TSC_CUOWPN" in key and serviceId in ("Z0091",'Z0092','Z0004') and tableName == 'SAQSGE'):
+					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
 						ancillary_object = 'A6200'
 						if str((dict_val).split("||")[0]).strip().upper() == "YES":
 							ancillary_flag = "INSERT"
 						else:
 							ancillary_flag = "DELETE"
-					elif key == "AGS_Z0091_KPI_BPTKPI":
+					elif key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091":
 						ancillary_object = 'Z0046'
 						if str((dict_val).split("||")[0]).strip() == "Yes":
 							#Quote.SetGlobal("ANCILLARY","YES")
@@ -1099,15 +1100,14 @@ class Entitlements:
 						
 					##calling script ancillary insert	
 					if ancillary_flag != "False" and ancillary_object:
+						Trace.Write("vall--"+str(key)+'--'+str((dict_val).split("||")[0]).strip())  
 						ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
 						
 						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
-							if ancillary_flag == "INSERT":
-								##commented fot now
-								#Quote.SetGlobal("ANCILLARY","YES")
-								pass
-							else:
-								Quote.SetGlobal("ANCILLARY","NO")
+							# if ancillary_flag == "INSERT":
+							# 	Quote.SetGlobal("ANCILLARY","YES")
+							# else:
+							# 	Quote.SetGlobal("ANCILLARY","NO")
 							ActionType = "{}_SERVICE".format(ancillary_flag)
 							Trace.Write("ActionType--"+str(ActionType))
 							Trace.Write("whereReq---"+str(whereReq))
