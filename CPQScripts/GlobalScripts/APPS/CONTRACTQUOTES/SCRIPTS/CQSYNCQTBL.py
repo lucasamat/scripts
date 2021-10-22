@@ -1805,7 +1805,7 @@ class SyncQuoteAndCustomTables:
 		
 		sales_team_table = Sql.GetTable("SAQDLT")
 		sales_team_createdby_insert ={
-			"QUOTE_REV_DEAL_TEAM_MEMBER_ID": "",
+			"QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
 			"C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
 			"PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
 			"PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
