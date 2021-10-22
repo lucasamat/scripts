@@ -46,6 +46,10 @@ class AncillaryProductOperation:
 	def _do_opertion(self):
 		if self.action_type == "INSERT_SERVICE":
 			self._insert_service_offering()
+			self._insert_fab()
+			self._insert_grn()
+			self._equipment_insert()
+			self._insert_assembly()
 		elif self.action_type == "DELETE_SERVICE":
 			self._delete_operation()
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
@@ -68,8 +72,7 @@ class AncillaryProductOperation:
 			if material_obj.MATERIALCONFIG_TYPE != "SIMPLE MATERIAL":
 				self._insert_service_ent()
 
-			##calling fn for equipment insert
-			#self._equipment_insert()
+			
 
 
 	def _insert_service_ent(self):
