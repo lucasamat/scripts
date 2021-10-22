@@ -650,8 +650,10 @@ class AncillaryProductOperation:
 
 	
 	
-			
-ancillary_obj = Param.ancillary_obj
+try:			
+	ancillary_obj = Param.ancillary_obj
+except :
+	ancillary_obj ='' 
 action_type = Param.ActionType
 quote_record_id = Param.quote_record_id
 revision_rec_id = Param.revision_rec_id
