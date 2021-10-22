@@ -176,6 +176,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 	elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Equipment Details":
 		ObjectName = "SAQSCO"
 	Trace.Write("SubTab_Name "+str(subtab_name))
+	Trace.Write("RECORD_RECORD "+str(RECORD))
 	if str(ObjectName) == "SYPRSN":
 		
 		permissions_id_val = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
