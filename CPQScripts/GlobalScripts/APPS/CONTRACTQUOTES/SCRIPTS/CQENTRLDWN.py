@@ -22,9 +22,11 @@ ancillary_flag = ""
 try:
 	objs = Param.CPQ_Columns['objectName']    
 	wherecon = Param.CPQ_Columns['where']
+	ancillary_dict =  Param.CPQ_Columns['ancillary_dict']
 except:
 	objectName = Param.objectName
 	wherecon = Param.where
+	ancillary_dict = Param.ancillary_dict
 wherecon = wherecon.replace("&#39;","'")
 objItems = objs.split('=')
 where = wherecon.split(",")[0]
@@ -36,9 +38,9 @@ revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
 try:
-	ancillary_dict = eval(objItems[2].split(",")[3])
+	ancillary_dict = eval(ancillary_dict)
 except:
-	ancillary_dict = objItems[2].split(",")[3]
+	ancillary_dict = ""
 try: 
 	attributeList = objItems[1].split(",")
 except:
@@ -46,6 +48,7 @@ except:
 get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
 Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"------ "+str(attributeList)+'--'+str(get_serviceid))
+Log.Info("ancillary_dict--"+str(ancillary_dict))
 
 def sendEmail(level):
 	Log.Info('284-----entitlement email started-----')
