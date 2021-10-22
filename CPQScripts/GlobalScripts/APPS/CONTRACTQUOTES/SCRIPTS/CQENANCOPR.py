@@ -248,7 +248,7 @@ class AncillaryProductOperation:
 					'{service_type}',
 					'{desc}',
 					'{rec}',
-					STATUS,
+					FABLOCATION_STATUS,
 					QUOTE_ID,
 					QUOTE_NAME,
 					QUOTE_RECORD_ID,
@@ -354,7 +354,7 @@ class AncillaryProductOperation:
 							GETDATE() as CpqTableEntryDateModified
 							FROM SAQSGB (NOLOCK) 
 							 
-							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' {addtional_where} AND GREENBOOK NOT IN (SELECT M.GREENBOOK FROM SAQSGB M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' )               
+							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' {addtional_where} AND GREENBOOK NOT IN (SELECT M.GREENBOOK FROM SAQSGB M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' )   )A             
 					
 					
 					""".format(
@@ -384,7 +384,7 @@ class AncillaryProductOperation:
 			addtional_where += " AND ASSEMBLY_ID = '{}'".format(self.assembly)
 		Sql.RunQuery(
 			"""
-				INSERT (
+				INSERT SAQSCA (
 					QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
 					CPQTABLEENTRYADDEDBY,
 					CPQTABLEENTRYDATEADDED,
