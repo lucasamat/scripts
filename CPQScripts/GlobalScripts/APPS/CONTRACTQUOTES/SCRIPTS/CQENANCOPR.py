@@ -51,7 +51,7 @@ class AncillaryProductOperation:
 				self._insert_service_ent()
 
 			##calling fn for equipment insert
-			self._equipment_insert()
+			#self._equipment_insert()
 
 
 	def _insert_service_ent(self):
@@ -177,78 +177,283 @@ class AncillaryProductOperation:
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 			Sql.RunQuery(insert_qtqtse_query)
 					
-	def _insert_grn(self):
-		pass
 	def _insert_fab(self):
-		pass
-	def _insert_assembly(self):
-		pass
-	def _delete_operation(self):
-		delete_obj_list = ["SAQTSV","SAQTSE","SAQSCO"]
-		if self.action_type == "DELETE_ENT_EQUIPMENT":
-			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
-		for obj in delete_obj_list:
-			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
-			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
-			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
-
-	
-	
-	def _equipment_insert(self):
-		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 		Sql.RunQuery(
-				"""
-				INSERT SAQSCO (
-					QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
-					EQUIPMENT_ID,
-					EQUIPMENT_RECORD_ID,
-					EQUIPMENT_DESCRIPTION,                            
+				"""INSERT SAQSFB(
 					FABLOCATION_ID,
 					FABLOCATION_NAME,
 					FABLOCATION_RECORD_ID,
-					WAFER_SIZE,
-					SALESORG_ID,
-					SALESORG_NAME,
-					SALESORG_RECORD_ID,
-					SERIAL_NO,
-					QUOTE_RECORD_ID,
-					QUOTE_ID,
-					QUOTE_NAME,
-					RELOCATION_EQUIPMENT_TYPE,
 					SERVICE_ID,
 					SERVICE_TYPE,
 					SERVICE_DESCRIPTION,
 					SERVICE_RECORD_ID,
-					EQUIPMENT_STATUS,
-					EQUIPMENTCATEGORY_ID,
-					EQUIPMENTCATEGORY_DESCRIPTION,
-					EQUIPMENTCATEGORY_RECORD_ID,
-					PLATFORM,
-					GREENBOOK,
-					GREENBOOK_RECORD_ID,
-					MNT_PLANT_RECORD_ID,
-					MNT_PLANT_NAME,
+					FABLOCATION_STATUS,
+					QUOTE_ID,
+					QUOTE_NAME,
+					QUOTE_RECORD_ID,
+					QTEREV_ID,
+					QTEREV_RECORD_ID,
 					MNT_PLANT_ID,
-					WARRANTY_START_DATE,
-					WARRANTY_END_DATE,
-					CUSTOMER_TOOL_ID,
+					MNT_PLANT_NAME,
+					MNT_PLANT_RECORD_ID,
+					ADDRESS_1,
+					ADDRESS_2,
+					CITY,
+					COUNTRY,
+					COUNTRY_RECORD_ID,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					CONTRACT_VALID_FROM,
+					CONTRACT_VALID_TO,
 					PAR_SERVICE_DESCRIPTION,
 					PAR_SERVICE_ID,
 					PAR_SERVICE_RECORD_ID,
-					TECHNOLOGY,
+					QUOTE_SERVICE_FAB_LOCATION_RECORD_ID,
+					CPQTABLEENTRYADDEDBY,
+					CPQTABLEENTRYDATEADDED,
+					CpqTableEntryModifiedBy,
+					CpqTableEntryDateModified
+					) SELECT FB.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_FAB_LOCATION_RECORD_ID,
+					'{UserName}' AS CPQTABLEENTRYADDEDBY,
+					GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy,
+					GETDATE() as CpqTableEntryDateModified FROM (
+					SELECT DISTINCT
+					SAQSFB.FABLOCATION_ID,
+					SAQSFB.FABLOCATION_NAME,
+					SAQSFB.FABLOCATION_RECORD_ID,
+					SAQTSV.SERVICE_ID,
+					SAQTSV.SERVICE_TYPE,
+					SAQTSV.SERVICE_DESCRIPTION,
+					SAQTSV.SERVICE_RECORD_ID,
+					SAQSFB.STATUS,
+					SAQSFB.QUOTE_ID,
+					SAQSFB.QUOTE_NAME,
+					SAQSFB.QUOTE_RECORD_ID,
+					SAQSFB.QTEREV_ID,
+					SAQSFB.QTEREV_RECORD_ID,
+					SAQSFB.MNT_PLANT_ID,
+					SAQSFB.MNT_PLANT_NAME,
+					SAQSFB.MNT_PLANT_RECORD_ID,
+					SAQSFB.ADDRESS_1,
+					SAQSFB.ADDRESS_2,
+					SAQSFB.CITY,
+					SAQSFB.COUNTRY,
+					SAQSFB.COUNTRY_RECORD_ID,
+					SAQSFB.SALESORG_ID,
+					SAQSFB.SALESORG_NAME,
+					SAQSFB.SALESORG_RECORD_ID,
+					SAQSFB.CONTRACT_VALID_FROM,
+					SAQSFB.CONTRACT_VALID_TO,
+					SAQTSV.PAR_SERVICE_DESCRIPTION,
+					SAQTSV.PAR_SERVICE_ID,
+					SAQTSV.PAR_SERVICE_RECORD_ID
+					FROM SAQSFB (NOLOCK)
+					INNER JOIN SAQTSV (NOLOCK) ON SAQSFB.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSFB.SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQTSV.PAR_SERVICE_ID = '{par_service_id}'
+
+					WHERE 
+							SAQSFB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSFB.SERVICE_ID = '{par_service_id}' AND SAQSFB.QTEREV_RECORD_ID = '{RevisionRecordId}' AND  AND SAQSFB.FABLOCATION_ID NOT IN (SELECT M.FABLOCATION_ID FROM SAQSFB M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSV.SERVICE_ID) 
+					) FB""".format(
+									par_service_id = self.service_id,
+									QuoteRecordId=self.contract_quote_record_id,
+									RevisionRecordId=self.contract_quote_revision_record_id,
+									UserId=self.user_id,
+									UserName=self.user_name,
+								)
+				)
+		
+	def _insert_grn(self):
+		
+		Sql.RunQuery(
+				"""
+					INSERT SAQSGB (
+						QUOTE_SERVICE_GREENBOOK_RECORD_ID,
+						FABLOCATION_ID,
+						GREENBOOK,
+						GREENBOOK_RECORD_ID,
+						QUOTE_ID,
+						QUOTE_NAME,
+						QUOTE_RECORD_ID,
+						QTEREV_ID,
+						QTEREV_RECORD_ID,
+						SALESORG_ID,
+						SALESORG_NAME,
+						SALESORG_RECORD_ID,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID,
+						EQUIPMENT_QUANTITY,
+						FABLOCATION_NAME,
+						FABLOCATION_RECORD_ID,
+						CONTRACT_VALID_FROM,
+						CONTRACT_VALID_TO,
+						PAR_SERVICE_DESCRIPTION,
+						PAR_SERVICE_ID,
+						PAR_SERVICE_RECORD_ID,
+						CPQTABLEENTRYADDEDBY,
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified
+						) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
+							SAQSGB.FABLOCATION_ID,
+							SAQSGB.GREENBOOK,
+							SAQSGB.GREENBOOK_RECORD_ID,
+							SAQSGB.QUOTE_ID,
+							SAQSGB.QUOTE_NAME,
+							SAQSGB.QUOTE_RECORD_ID,
+							SAQSGB.QTEREV_ID,
+							SAQSGB.QTEREV_RECORD_ID,
+							SAQSGB.SALESORG_ID,
+							SAQSGB.SALESORG_NAME,
+							SAQSGB.SALESORG_RECORD_ID,
+							SAQTSV.SERVICE_DESCRIPTION,
+							SAQTSV.SERVICE_ID,
+							SAQTSV.SERVICE_RECORD_ID,
+							SAQSGB.EQUIPMENT_QUANTITY,								
+							SAQSGB.FABLOCATION_NAME,
+							SAQSGB.FABLOCATION_RECORD_ID,
+							SAQSGB.CONTRACT_VALID_FROM,
+							SAQSGB.CONTRACT_VALID_TO,
+							SAQTSV.PAR_SERVICE_DESCRIPTION,
+							SAQTSV.PAR_SERVICE_ID,
+							SAQTSV.PAR_SERVICE_RECORD_ID,
+							'{UserName}' AS CPQTABLEENTRYADDEDBY,
+							GETDATE() as CPQTABLEENTRYDATEADDED,
+							{UserId} as CpqTableEntryModifiedBy,
+							GETDATE() as CpqTableEntryDateModified
+							FROM SAQSGB (NOLOCK) INNER JOIN SAQTSV (NOLOCK) ON SAQSGB.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSGB.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSGB.SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQTSV.PAR_SERVICE_ID = '{par_service_id}'
+							
+							WHERE 
+							SAQSGB.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSGB.SERVICE_ID = '{par_service_id}' AND SAQSGB.QTEREV_RECORD_ID = '{RevisionRecordId}' AND  AND SAQSGB.GREENBOOK NOT IN (SELECT M.GREENBOOK FROM SAQSGB M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSV.SERVICE_ID)               
+					
+					
+					""".format(
+							par_service_id = self.service_id,
+							QuoteRecordId=self.contract_quote_record_id,
+							RevisionRecordId=self.contract_quote_revision_record_id,
+							UserName=self.user_name,
+							UserId=self.user_id
+						)
+			)
+		
+	
+	def _insert_assembly(self):
+		Sql.RunQuery(
+			"""
+				INSERT SAQSCA (
+					QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
 					CPQTABLEENTRYADDEDBY,
 					CPQTABLEENTRYDATEADDED,
 					CpqTableEntryModifiedBy,
 					CpqTableEntryDateModified,
+					ASSEMBLY_ID,
+					ASSEMBLY_DESCRIPTION,
+					ASSEMBLY_RECORD_ID,
+					EQUIPMENT_ID,
+					EQUIPMENT_DESCRIPTION,
+					EQUIPMENT_RECORD_ID,
+					SERIAL_NUMBER,
+					GOT_CODE,
+					EQUIPMENTCATEGORY_ID,
+					EQUIPMENTCATEGORY_DESCRIPTION,
+					EQUIPMENTCATEGORY_RECORD_ID,
+					ASSEMBLY_STATUS,
+					WARRANTY_START_DATE,
+					WARRANTY_END_DATE,
+					EQUIPMENTTYPE_ID,
+					EQUIPMENTTYPE_DESCRIPTION,
+					EQUIPMENTTYPE_RECORD_ID,
+					QUOTE_ID,
+					QUOTE_NAME,
+					QUOTE_RECORD_ID,
+					QTEREV_ID,
 					QTEREV_RECORD_ID,
-					KPU,
-					QTEREV_ID
-											
+					SERVICE_ID,
+					SERVICE_DESCRIPTION,
+					SERVICE_RECORD_ID,
+					FABLOCATION_ID,
+					FABLOCATION_RECORD_ID,
+					FABLOCATION_NAME,
+					SALESORG_ID,
+					SALESORG_NAME,
+					SALESORG_RECORD_ID,
+					MNT_PLANT_ID,
+					MNT_PLANT_RECORD_ID,
+					GREENBOOK,
+					GREENBOOK_RECORD_ID,
+					PAR_SERVICE_DESCRIPTION,
+					PAR_SERVICE_ID,
+					PAR_SERVICE_RECORD_ID,
+					INCLUDED
 					) SELECT
-						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,
+					'{UserName}' AS CPQTABLEENTRYADDEDBY,
+					GETDATE() as CPQTABLEENTRYDATEADDED,
+					{UserId} as CpqTableEntryModifiedBy,
+					GETDATE() as CpqTableEntryDateModified,
+					SAQSCA.ASSEMBLY_ID,
+					SAQSCA.ASSEMBLY_DESCRIPTION,
+					SAQSCA.ASSEMBLY_RECORD_ID,
+					SAQSCA.EQUIPMENT_ID,
+					SAQSCA.EQUIPMENT_DESCRIPTION,
+					SAQSCA.EQUIPMENT_RECORD_ID,
+					SAQSCA.SERIAL_NUMBER,
+					SAQSCA.GOT_CODE,
+					SAQSCA.EQUIPMENTCATEGORY_ID,
+					SAQSCA.EQUIPMENTCATEGORY_DESCRIPTION,
+					SAQSCA.EQUIPMENTCATEGORY_RECORD_ID,
+					SAQSCA.ASSEMBLY_STATUS,
+					SAQSCA.WARRANTY_START_DATE,
+					SAQSCA.WARRANTY_END_DATE,
+					SAQSCA.EQUIPMENTTYPE_ID,
+					SAQSCA.EQUIPMENTTYPE_DESCRIPTION,
+					SAQSCA.EQUIPMENTTYPE_RECORD_ID,
+					SAQSCA.QUOTE_ID,
+					SAQSCA.QUOTE_NAME,
+					SAQSCA.QUOTE_RECORD_ID,
+					SAQSCA.QTEREV_ID,
+					SAQSCA.QTEREV_RECORD_ID,
+					SAQTSV.SERVICE_ID,
+					SAQTSV.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+					SAQTSV.SERVICE_RECORD_ID as SERVICE_RECORD_ID,
+					SAQSCA.FABLOCATION_ID,
+					SAQSCA.FABLOCATION_RECORD_ID,
+					SAQSCA.FABLOCATION_NAME,
+					SAQSCA.SALESORG_ID,
+					SAQSCA.SALESORG_NAME,
+					SAQSCA.SALESORG_RECORD_ID,
+					SAQSCA.MNT_PLANT_ID,
+					SAQSCA.MNT_PLANT_RECORD_ID,
+					SAQSCA.GREENBOOK,
+					SAQSCA.GREENBOOK_RECORD_ID,
+					SAQTSV.PAR_SERVICE_DESCRIPTION,
+					SAQTSV.PAR_SERVICE_ID,
+					SAQTSV.PAR_SERVICE_RECORD_ID,
+					SAQSCA.INCLUDED 
+					FROM SAQSCA (NOLOCK)
+					INNER JOIN SAQTSV (NOLOCK) ON SAQSCA.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSCA.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSCA.SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQTSV.PAR_SERVICE_ID = '{par_service_id}'
+
+					WHERE 
+							SAQSCA.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCA.SERVICE_ID = '{par_service_id}' AND SAQSCA.QTEREV_RECORD_ID = '{RevisionRecordId}' AND  AND SAQSCA.FABLOCATION_ID NOT IN (SELECT M.FABLOCATION_ID FROM SAQSCA M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSV.SERVICE_ID )
+				""".format(
+				UserId=self.user_id,
+				UserName=self.user_name,
+				par_service_id = self.service_id,
+				QuoteRecordId=self.contract_quote_record_id,
+				RevisionRecordId=self.contract_quote_revision_record_id,
+			)
+		)
+
+
+	def _equipment_insert(self):
+		
+		Sql.RunQuery(
+				"""
+					INSERT SAQSCO (
+						QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
 						EQUIPMENT_ID,
 						EQUIPMENT_RECORD_ID,
-						EQUIPMENT_DESCRIPTION,                                
+						EQUIPMENT_DESCRIPTION,
 						FABLOCATION_ID,
 						FABLOCATION_NAME,
 						FABLOCATION_RECORD_ID,
@@ -260,11 +465,17 @@ class AncillaryProductOperation:
 						QUOTE_RECORD_ID,
 						QUOTE_ID,
 						QUOTE_NAME,
+						ACCOUNT_ID,
+						ACCOUNT_NAME,
+						ACCOUNT_RECORD_ID,
+						QTEREV_ID,
+						QTEREV_RECORD_ID,
+						KPU,
 						RELOCATION_EQUIPMENT_TYPE,
-						'{serviceid}',
-						'{service_type}',
-						'{desc}',
-						'{rec}',
+						SERVICE_ID,
+						SERVICE_TYPE,
+						SERVICE_DESCRIPTION,
+						SERVICE_RECORD_ID,
 						EQUIPMENT_STATUS,
 						EQUIPMENTCATEGORY_ID,
 						EQUIPMENTCATEGORY_DESCRIPTION,
@@ -282,31 +493,80 @@ class AncillaryProductOperation:
 						PAR_SERVICE_ID,
 						PAR_SERVICE_RECORD_ID,
 						TECHNOLOGY,
-						'{UserName}',
-						GETDATE(),
-						{UserId},
-						GETDATE(),
-						QTEREV_RECORD_ID,
-						KPU,
-						QTEREV_ID
-						FROM SAQSCO (NOLOCK)
-						WHERE 
-						{where} AND SAQSCO.EQUIPMENT_ID not in (SELECT EQUIPMENT_ID FROM SAQSCE (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{serviceid}')
-												
-					""".format(
-						serviceid = self.ancillary_obj ,
-						service_type ="Add-On Products",
-						QuoteRecordId = self.contract_quote_record_id,
-						RevisionRecordId = self.contract_quote_revision_record_id,
-						desc = get_service_details.SERVICE_DESCRIPTION,
-						rec = get_service_details.SERVICE_RECORD_ID,
-						UserName = self.user_name,
-						UserId = self.user_id,
-						where= self.where_string
-						
-					)
-					)
-		
+						CONTRACT_VALID_FROM,
+						CONTRACT_VALID_TO,
+						CPQTABLEENTRYADDEDBY,
+						CPQTABLEENTRYDATEADDED,
+						CpqTableEntryModifiedBy,
+						CpqTableEntryDateModified
+						) SELECT
+							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,
+								SAQSCO.EQUIPMENT_ID,
+								SAQSCO.EQUIPMENT_RECORD_ID,
+								SAQSCO.EQUIPMENT_DESCRIPTION,                                
+								SAQSCO.FABLOCATION_ID,
+								SAQSCO.FABLOCATION_NAME,
+								SAQSCO.FABLOCATION_RECORD_ID,
+								SAQSCO.WAFER_SIZE,
+								SAQSCO.SALESORG_ID,
+								SAQSCO.SALESORG_NAME,
+								SAQSCO.SALESORG_RECORD_ID,
+								SAQSCO.SERIAL_NO,
+								SAQSCO.QUOTE_RECORD_ID,
+								SAQSCO.QUOTE_ID,
+								SAQSCO.QUOTE_NAME,
+								SAQSCO.ACCOUNT_ID,
+								SAQSCO.ACCOUNT_NAME,
+								SAQSCO.ACCOUNT_RECORD_ID,
+								SAQSCO.QTEREV_ID,
+								SAQSCO.QTEREV_RECORD_ID,
+								SAQSCO.KPU,
+								SAQSCO.RELOCATION_EQUIPMENT_TYPE,
+								SAQTSV.SERVICE_ID,
+								SAQTSV.SERVICE_TYPE,
+								SAQTSV.SERVICE_DESCRIPTION,
+								SAQTSV.SERVICE_RECORD_ID,
+								SAQSCO.EQUIPMENT_STATUS,
+								SAQSCO.EQUIPMENTCATEGORY_ID,
+								SAQSCO.EQUIPMENTCATEGORY_DESCRIPTION,
+								SAQSCO.EQUIPMENTCATEGORY_RECORD_ID,
+								SAQSCO.PLATFORM,
+								SAQSCO.GREENBOOK,
+								SAQSCO.GREENBOOK_RECORD_ID,
+								SAQSCO.MNT_PLANT_RECORD_ID,
+								SAQSCO.MNT_PLANT_NAME,
+								SAQSCO.MNT_PLANT_ID,
+								SAQSCO.WARRANTY_START_DATE,
+								SAQSCO.WARRANTY_END_DATE,
+								SAQSCO.CUSTOMER_TOOL_ID,
+								SAQTSV.PAR_SERVICE_DESCRIPTION,
+								SAQTSV.PAR_SERVICE_ID,
+								SAQTSV.PAR_SERVICE_RECORD_ID,
+								SAQSCO.TECHNOLOGY,
+								SAQSCO.CONTRACT_VALID_FROM,
+								SAQSCO.CONTRACT_VALID_TO,
+								'{UserName}',
+								GETDATE(),
+								{UserId},
+								GETDATE()
+								FROM SAQSCO (NOLOCK) 
+								INNER JOIN SAQTSV (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID AND SAQSCO.SERVICE_ID = SAQTSV.PAR_SERVICE_ID AND SAQTSV.PAR_SERVICE_ID = '{par_service_id}'
+								WHERE 
+								SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID = '{par_service_id}' AND SAQSCO.EQUIPMENT_ID NOT IN (SELECT M.EQUIPMENT_ID FROM SAQSCO M (NOLOCK) WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSV.SERVICE_ID)
+														
+							""".format(
+								par_service_id = self.service_id,
+								QuoteRecordId=self.contract_quote_record_id,
+								RevisionRecordId=self.contract_quote_revision_record_id,
+								
+								UserName=self.user_name,
+								
+								UserId=self.user_id
+								
+								
+							)
+				)
+				
 	
 	def _entitlement_rolldown(self):
 		try:
@@ -348,7 +608,7 @@ class AncillaryProductOperation:
 							FROM
 							SAQTSE (NOLOCK)
 							JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_ID = '{par_service_id}' AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID  AND SAQSCO.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND SAQSFE.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID 
-							WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, ServiceId=self.ancillary_obj, revision_rec_id = self.contract_quote_revision_record_id,par_service_id = self.service_id)
+							WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.PAR_SERVICE_ID = '{par_service_id}') IQ JOIN SAQSFE (NOLOCK) M ON IQ.QTSFBLENT_RECORD_ID = QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID )OQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, revision_rec_id = self.contract_quote_revision_record_id,par_service_id = self.service_id)
 						Log.Info("qtqtse_query_anc---163------"+str(qtqtse_query_anc))
 						Sql.RunQuery(qtqtse_query_anc)
 				
@@ -378,6 +638,15 @@ class AncillaryProductOperation:
 
 		except Exception as e:
 			Log.Info("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
+
+	def _delete_operation(self):
+		delete_obj_list = ["SAQTSV","SAQTSE","SAQSCO"]
+		if self.action_type == "DELETE_ENT_EQUIPMENT":
+			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		for obj in delete_obj_list:
+			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
+			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
+			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
 
 	
 	
