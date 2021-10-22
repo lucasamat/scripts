@@ -158,28 +158,51 @@ def EditToolIdling():
     ToolId = {}
     if ent_value == "Yes":
         sec_str += ('<table id="63FE9099-59CD-4CF2-BC6D-DD85CB96395B" class="getentdata table table-hover" data-filter-control="true" data-maintain-selected="true" data-locale="en-US" data-escape="true" data-html="true" data-show-header="true" onmouseup="relatedmouseup(this)"> <thead><tr><th title="TOOL IDLING" style="" data-field="TOOL IDLING"><div class="th-inner sortable both">TOOL IDLING</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="DESCRIPTION" style="" data-field="DESCRIPTION"><div class="th-inner ">DESCRIPTION</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="*" class="required_symbol" style="" data-field="REQUIRED"><div class="th-inner ">*</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="VALUE" style="" data-field="VALUE"><div class="th-inner ">VALUE</div></tr></thead><tbody onclick="Table_Onclick_Scroll(this)"><tr data-index="0" class="hovergreyent" ><td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control light_yellow" style="" id="Idling_Allowed" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="QuoteItemsIdlingOnChange()" title="'+ent_value+'" ><option value="select" style="display:none;"> </option><option id="Idling_Allowed" value="Yes" '+yes_selected+'>Yes</option><option id="Idling_Allowed" value="No" '+no_selected+'>No</option></select></td></tr>')
-        
-        #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
-        getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND TOOLIDLING_ID != 'Idling Allowed'".format(Quote.GetGlobal("quote_revision_record_id")))
-        
-        for x in getPRTIAV:
-            ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
-        i = 1
-        for x,y in ToolId.items():
+        getValueSAQTDA = Sql.GetFirst("SELECT TOOLIDLING_DISPLAY_VALUE FROM SAQTDA(NOLOCK) WHERE TOOLIDLING_ID = 'Idling Allowed' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+        if getValueSAQTDA is not None:
+            #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
+            getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND TOOLIDLING_ID != 'Idling Allowed'".format(Quote.GetGlobal("quote_revision_record_id")))
             
-            sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-            i = int(i)
-            i += 1
-            getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
-            if getDefaultValue:
-                sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" data-content="AGS_'+x.strip()+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="AGS_'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+            for x in getPRTIAV:
+                ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
+            i = 1
+            for x,y in ToolId.items():
                 
-                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0".format(x))
-                if getAllValues:
-                    for val in getAllValues:
-                        sec_str += '<option id="AGS_'+str(val.TOOLIDLING_VALUE_CODE)+'" value="'+str(val.TOOLIDLING_VALUE_CODE)+'" >'+str(val.TOOLIDLING_VALUE_CODE)+'</option>'
-                sec_str += '</select></td></tr>'
-        sec_str += "</tbody></table>"
+                sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+                i = int(i)
+                i += 1
+                getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
+                if getDefaultValue:
+                    sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" data-content="AGS_'+x.strip()+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="AGS_'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                    
+                    getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0".format(x))
+                    if getAllValues:
+                        for val in getAllValues:
+                            sec_str += '<option id="AGS_'+str(val.TOOLIDLING_VALUE_CODE)+'" value="'+str(val.TOOLIDLING_VALUE_CODE)+'" >'+str(val.TOOLIDLING_VALUE_CODE)+'</option>'
+                    sec_str += '</select></td></tr>'
+            sec_str += "</tbody></table>"
+        else:
+            #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
+            getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) AND TOOLIDLING_ID != 'Idling Allowed'")
+            
+            for x in getPRTIAV:
+                ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
+            i = 1
+            for x,y in ToolId.items():
+                
+                sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+                i = int(i)
+                i += 1
+                getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}'".format(x))
+                if getDefaultValue:
+                    sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" data-content="AGS_'+x.strip()+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="AGS_'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                    
+                    getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND [DEFAULT] = 0".format(x))
+                    if getAllValues:
+                        for val in getAllValues:
+                            sec_str += '<option id="AGS_'+str(val.TOOLIDLING_VALUE_CODE)+'" value="'+str(val.TOOLIDLING_VALUE_CODE)+'" >'+str(val.TOOLIDLING_VALUE_CODE)+'</option>'
+                    sec_str += '</select></td></tr>'
+            sec_str += "</tbody></table>"
     else:
         sec_str += ('<table id="63FE9099-59CD-4CF2-BC6D-DD85CB96395B" class="getentdata table table-hover" data-filter-control="true" data-maintain-selected="true" data-locale="en-US" data-escape="true" data-html="true" data-show-header="true" onmouseup="relatedmouseup(this)"> <thead><tr><th title="TOOL IDLING" style="" data-field="TOOL IDLING"><div class="th-inner sortable both">TOOL IDLING</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="DESCRIPTION" style="" data-field="DESCRIPTION"><div class="th-inner ">DESCRIPTION</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="*" class="required_symbol" style="" data-field="REQUIRED"><div class="th-inner ">*</div><div class="fht-cell"><div class="no-filter-control"></div></div></th><th title="VALUE" style="" data-field="VALUE"><div class="th-inner ">VALUE</div></tr></thead><tbody onclick="Table_Onclick_Scroll(this)"><tr data-index="0" class="hovergreyent" ><td style="text-align: left;"><abbr title="Idling Allowed">Idling Allowed</abbr></td><td style=""><abbr title="Option to Idle tools covered by">Option to Idle tools covered by</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="Idling Allowed">*</abbr></td><td style=""><select class="form-control light_yellow" style="" id="Idling_Allowed" type="text" data-content="AGS_Z0091_KPI_PRPFGT" onchange="QuoteItemsIdlingOnChange()" title="'+ent_value+'" ><option value="select" style="display:none;"> </option><option id="Idling_Allowed" value="Yes" '+yes_selected+'>Yes</option><option id="Idling_Allowed" value="No" '+no_selected+'>No</option></select></td></tr></tbody></table>')
 
