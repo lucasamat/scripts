@@ -155,6 +155,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	TreeParam = Product.GetGlobal("TreeParam")
 	if subtab_name =="Legal SoW":
+		Trace.Write("legalsowwwwwwwww")
 		value = {"QUOTE_REVISION_RECORD_ID":quote_revision_record_id}
 		RECORD.update(value)
 	 
