@@ -50,12 +50,11 @@ class AncillaryProductOperation:
 			self._insert_grn()
 			self._equipment_insert()
 			self._insert_assembly()
-			self._insert_service_ent()
-			self._entitlement_rolldown()
 
 		elif self.action_type == "DELETE_SERVICE":
 			self._delete_operation()
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
+			self._insert_service_ent()
 			self._entitlement_rolldown()
 		elif self.action_type == "DELETE_ENT_EQUIPMENT":
 			self._delete_operation()
@@ -512,12 +511,8 @@ class AncillaryProductOperation:
 		overallattributeslist =[]
 		attributevalues={}
 		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
-		
-		##getting count of complete equipment count
-		get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
-		get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
-		
-		if get_par_equp_ent.cnt == get_par_equp.cnt and get_service_details : 
+				
+		if get_service_details : 
 			ProductVersionObj=Sql.GetFirst("Select product_id AS PRD_ID from product_versions(nolock) where SAPKBId = '"+str(anc_fullresponse['kbId'])+"' AND SAPKBVersion='"+str(anc_fullresponse['kbKey']['version'])+"'")
 			
 			get_existing_record = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
@@ -626,11 +621,9 @@ class AncillaryProductOperation:
 			ancillary_where += " AND SERVICE_ID = '{}'".format(self.ancillary_obj)
 			
 			get_ancillaryservice = Sql.GetFirst("select * from SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
-			##getting count of complete equipment count
-			get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
-			get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
+			
 		
-			if get_ancillaryservice and get_par_equp_ent.cnt == get_par_equp.cnt and get_par_equp.cnt != 0 :
+			if get_ancillaryservice :
 				 
 				get_ancillary_fab = Sql.GetFirst("select count(CpqTableEntryId) as cnt from SAQSFE WHERE {}".format(ancillary_where))
 				if get_ancillary_fab:
@@ -710,7 +703,7 @@ class AncillaryProductOperation:
 			delete_obj_list = ["SAQSCA","SAQSAE"]
 		
 		if self.action_type == "DELETE_ENT_EQUIPMENT":
-			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+			delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
 		for obj in delete_obj_list:
 			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
