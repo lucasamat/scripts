@@ -782,8 +782,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 						Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
 						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
-						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
-						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
+						#CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+						#CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 						if get_status.upper() == "APPROVED":
 							##Updating the Revision Approved Date while changing the status to Approved...
 							if get_approved_date == "":
