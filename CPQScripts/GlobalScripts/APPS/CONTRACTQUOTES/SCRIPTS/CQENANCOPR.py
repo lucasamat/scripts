@@ -168,6 +168,9 @@ class AncillaryProductOperation:
 			tbrow["QTEREV_RECORD_ID"] = get_service_details.QTEREV_ID
 			tbrow["QTEREV_ID"] = self.contract_quote_revision_record_id
 			tbrow["CONFIGURATION_STATUS"] = anc_configuration_status
+			tbrow["PAR_SERVICE_ID"] = get_service_details.PAR_SERVICE_ID
+			tbrow["PAR_SERVICE_RECORD_ID"] = get_service_details.PAR_SERVICE_RECORD_ID
+			tbrow["PAR_SERVICE_DESCRIPTION"] = get_service_details.PAR_SERVICE_DESCRIPTION
 			columns = ', '.join("" + str(x) + "" for x in tbrow.keys())
 			values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 			insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
