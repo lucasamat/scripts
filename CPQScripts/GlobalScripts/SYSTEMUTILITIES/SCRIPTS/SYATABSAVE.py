@@ -728,10 +728,6 @@ for tab in Product.Tabs:
                                                         sectalert
                                                     )
 
-                                            elif TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
-                                                Product.Attributes.GetByName(
-                                                    "SEC_N_TAB_PAGE_ALERT"
-                                                ).HintFormula = "<div class='col-md-12' id='PageAlert' style='display':'block';  ><div class='row modulesecbnr brdr' data-toggle='collapse' data-target='#Alert13' aria-expanded='true' >NOTIFICATIONS<i class='pull-right fa fa-chevron-down '></i><i class='pull-right fa fa-chevron-up'></i></div><div  id='Alert13' class='col-md-12  alert-notification  brdr collapse in' ><div  class='col-md-12 alert-danger'><label ><img src='/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg' alt='Error'>  ERROR : Approval Chain Id should be 8 Characters</label></div></div></div>"
                                         # A043S001P01-10904 - End
                             #####EDIT SAVE ACTION
                             else:
