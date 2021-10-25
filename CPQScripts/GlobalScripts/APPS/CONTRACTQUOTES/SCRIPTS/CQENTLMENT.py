@@ -1121,6 +1121,8 @@ class Entitlements:
 							Trace.Write("whereReq---"+str(whereReq))
 							Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
 							ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+					elif key == "AGS_Z0091_GEN_IDLALW":
+						Trace.Write("1125 entvalue"+str(entitlement_value))
 					# ##A055S000P01-9646  code ends..
 					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 					# 	tbrow={}
