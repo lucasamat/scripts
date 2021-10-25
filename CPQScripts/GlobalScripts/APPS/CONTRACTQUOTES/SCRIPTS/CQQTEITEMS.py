@@ -12,7 +12,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 
 def LoadSummary():
-    ent_value = Quote.GetGlobal("IdlingAllowed")
+    #ent_value = Quote.GetGlobal("IdlingAllowed")
     if ent_value == "":
         ent_value = "No"
 
@@ -87,7 +87,7 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 def EditToolIdlingOnChange(option):
     if option == "Yes":
-        ent_value = Quote.GetGlobal("IdlingAllowed")
+        #ent_value = Quote.GetGlobal("IdlingAllowed")
         if option == "Yes":
             yes_selected = ' selected=""'
             no_selected = ""
@@ -131,7 +131,7 @@ def EditToolIdlingOnChange(option):
         secstr += '<div id="quotesummarysavecancel" class="col-md-12 text-center"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="QuoteItemsIdlingSave()">SAVE</button></div>'
     return secstr
 def EditToolIdling():
-    ent_value = Quote.GetGlobal("IdlingAllowed")
+    #ent_value = Quote.GetGlobal("IdlingAllowed")
     if ent_value == "Yes":
         yes_selected = ' selected=""'
         no_selected = ""
@@ -255,3 +255,9 @@ elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
+getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+if getRows:
+    if getRows.cnt > 1:
+        ent_value = "Yes"
+    else:
+        ent_value = "No"
