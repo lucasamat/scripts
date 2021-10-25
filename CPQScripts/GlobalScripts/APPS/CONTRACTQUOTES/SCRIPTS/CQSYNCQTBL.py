@@ -1802,25 +1802,26 @@ class SyncQuoteAndCustomTables:
 		Log.Info("SALES TEAM CREATED BY INSERT STARTS")
 		created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
 		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = employee.get("EMPLOYEE_ID")))
-		
-		sales_team_table = Sql.GetTable("SAQDLT")
-		sales_team_createdby_insert ={
-			"QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
-			"C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
-			"PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
-			"PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
-			"PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
-			"EMAIL": saempl_data.EMAIL,
-			"MEMBER_ID": saempl_data.EMPLOYEE_ID,
-			"MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
-			"MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
-			"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-			"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-			"QTEREV_ID": quote_rev_id,
-			"QTEREV_RECORD_ID": quote_revision_id,
-		}
-		sales_team_table.AddRow(sales_team_createdby_insert)
-		Sql.Upsert(sales_team_table)
+		saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
+		if not saqdlt_data:
+			sales_team_table = Sql.GetTable("SAQDLT")
+			sales_team_createdby_insert ={
+				"QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
+				"C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
+				"PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
+				"PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
+				"PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
+				"EMAIL": saempl_data.EMAIL,
+				"MEMBER_ID": saempl_data.EMPLOYEE_ID,
+				"MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
+				"MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
+				"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+				"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+				"QTEREV_ID": quote_rev_id,
+				"QTEREV_RECORD_ID": quote_revision_id,
+			}
+			sales_team_table.AddRow(sales_team_createdby_insert)
+			Sql.Upsert(sales_team_table)
 		Log.Info("sales_team_createdby_insert "+str(sales_team_createdby_insert))
 		Log.Info("SALES TEAM CREATED BY INSERT ENDS")
 
