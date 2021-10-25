@@ -1462,7 +1462,7 @@ class ContractQuoteItem:
 
 	def _simple_quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
 		# Insert SAQITM - Start
-		get_configuration_status = Sql.GetFirst("SELECT COUNT(SERVICE_ID) AS COUNT FROM SAQTSV WHERE ")
+		
 		Sql.RunQuery("""
 					INSERT SAQITM (
 					QUOTE_ITEM_RECORD_ID,
@@ -1846,28 +1846,18 @@ class ContractQuoteItem:
 					JoinConditionString=join_condition_string, JoinString=join_string, WhereString= str(where_string), EquipmentsCount=equipments_count,service_id = self.service_id)
 				)
 
-		if self.service_id == 'Z0016':
-			self._quote_item_lines_update_z0016()			
+					
 		return True
 	
-	def _simple_insert_quote_item_fab_location(self):
-		pass
-
-	def _simple_insert_quote_item_greenbook(self):
-		pass
-
+	
 	def _do_opertion(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
 			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
-			get_simple_offering = Sql.GetFirst("SELECT COUNT(SAP_PART_NUMBER) AS COUNT MAMTRL WHERE SAP_PART_NUMBER = '{}' AND MATERIALCONFIG_TYPE = 'SIMPLE MATERIAL'".format(self.service_id))
+			
 			if spare_parts_count_object:
 				if spare_parts_count_object.COUNT > 0:
 					self._insert_quote_item_forecast_parts()
-			elif get_simple_offering:
-				if get_simple_offering.COUNT > 0:
-					self._quote_items_insert()
-					self._simple_insert_quote_item_fab_location()
-					self._simple_insert_quote_item_greenbook()	
+				
 			else:
 				self._quote_items_insert()
 				#batch_group_record_id = str(Guid.NewGuid()).upper()
