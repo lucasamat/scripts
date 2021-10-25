@@ -1111,16 +1111,16 @@ class Entitlements:
 					# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
 					# 	ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
 						
-						if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
-							if ancillary_flag == "INSERT":
-								Quote.SetGlobal("ANCILLARY","YES")
-							else:
-								Quote.SetGlobal("ANCILLARY","NO")
-							ActionType = "{}_SERVICE".format(ancillary_flag)
-							Trace.Write("ActionType--"+str(ActionType))
-							Trace.Write("whereReq---"+str(whereReq))
-							Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
-							ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+						# if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
+						# 	if ancillary_flag == "INSERT":
+						# 		Quote.SetGlobal("ANCILLARY","YES")
+						# 	else:
+						# 		Quote.SetGlobal("ANCILLARY","NO")
+						# 	ActionType = "{}_SERVICE".format(ancillary_flag)
+						# 	Trace.Write("ActionType--"+str(ActionType))
+						# 	Trace.Write("whereReq---"+str(whereReq))
+						# 	Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
+						# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
 					elif key == "AGS_Z0091_GEN_IDLALW":
 						Trace.Write("1125 entvalue"+str(entitlement_value))
 						if entitlement_value == "Yes":
