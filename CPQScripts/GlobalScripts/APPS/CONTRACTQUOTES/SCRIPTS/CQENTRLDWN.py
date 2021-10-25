@@ -39,7 +39,7 @@ revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
 try:
-	ancillary_dict = eval(str(ancillary_dict))
+	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
 except Exception as e:
 	Log.Info("error on ancillary--"+str(e))
 	ancillary_dict = ""
