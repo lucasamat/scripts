@@ -2643,12 +2643,12 @@ def Related_Sub_Banner(
                             Trace.Write('No button--')
                             buttonvisibility = "Hide_button"
                         #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
-                        if len(fts_scenario_check) == 2:
-                            Trace.Write("hide PRICING for fts--2411--")
-                            if 'UPDATE LINES' in btn:
+                        #if len(fts_scenario_check) == 2:
+                        #    Trace.Write("hide PRICING for fts--2411--")
+                        #    if 'UPDATE LINES' in btn:
 
-                                if quote_status.QUOTE_STATUS != 'APPROVED':
-                                    sec_rel_sub_bnr += (btn)
+                        #        if quote_status.QUOTE_STATUS != 'APPROVED':
+                        #            sec_rel_sub_bnr += (btn)
                             
                         else:
                             Trace.Write("hide PRICING for fts")
@@ -2778,7 +2778,7 @@ def Related_Sub_Banner(
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Subtotal by Offerings":
             sec_rel_sub_bnr =''
-            sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal" style="display: none;">UPDATE PRICING</button>')
+            sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal" style="display: none;">UPDATE PRICING</button>')
         elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
             sec_rel_sub_bnr += ""
         else:
