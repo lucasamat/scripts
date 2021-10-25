@@ -422,11 +422,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	ObjectName = "SAQCBC"
 	table_id = "clean_booking_checklist"
 	Header_details = {
-		"CHECKLIST_ID": "ID",
+		"CHECKLIST_ID": "SEQ",
 		"CHECKLIST_DESCRIPTION":"CHECKLIST",
-		"SERVICE_CONTRACT": "SERVICE CONTRACT",
-		"SPECIALIST_REVIEW": "SPECIALIST REVIEW(N/A)",
-		"COMMENT": "COMMENT",    
+		"SERVICE_CONTRACT": "CM REVIEW",
+		"SPECIALIST_REVIEW": "N/A",
+		"COMMENT": "COMMENTS",    
 	}
 	ordered_keys = [
 		"CHECKLIST_ID",
