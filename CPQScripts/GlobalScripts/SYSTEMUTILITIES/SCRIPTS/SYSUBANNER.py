@@ -600,6 +600,10 @@ def Related_Sub_Banner(
                     ObjName = "SAQSTE"
                 else:
                     ObjName = "SAQTMT"
+
+            elif TreeParam =="Quote Documents":
+                PrimaryLable = "Dynamic Document Generator"
+                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"         
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
