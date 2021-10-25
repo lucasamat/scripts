@@ -1175,6 +1175,7 @@ class Entitlements:
 										""".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
 						elif entitlement_value == "No":
 							Quote.SetGlobal("IdlingAllowed","No")
+							Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 					# ##A055S000P01-9646  code ends..
 					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 					# 	tbrow={}
