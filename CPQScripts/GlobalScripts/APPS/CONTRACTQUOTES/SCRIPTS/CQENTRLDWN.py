@@ -1070,31 +1070,6 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
-		try:
-			pattern = re.compile(r'QUOTE_RECORD_ID\s*\=\s*\'([^>]*?)\'')
-			result = re.search(pattern, where).group(1)
-			quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(result))
-			if quote_obj:
-				Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)
-		except Exception:
-			Log.Info("Exception in Quote Edit")
-
-		try:
-			Log.Info('where--CQINSQTITM-'+str(where))
-			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-		except Exception:
-			Log.Info("Exception in Quote Item insert") 
-			
-		if ancillary_dict:
-			for anc_key,anc_val in ancillary_dict.items():
-				#if anc_val == 'INSERT':
-				try:
-					where = where.replace('Z0091','{}'.format(anc_key))
-					Log.Info('where-ancillary-CQINSQTITM-'+str(where))
-					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-				except Exception:
-					Log.Info("Exception in Quote Item insert")
-
 		sendEmail(level)
 
 	except Exception as e:
@@ -1123,31 +1098,31 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	# 			except Exception:
 	# 				Log.Info("Exception in Quote Item insert") 
 
-	# try:
-	# 	pattern = re.compile(r'QUOTE_RECORD_ID\s*\=\s*\'([^>]*?)\'')
-	# 	result = re.search(pattern, where).group(1)
-	# 	quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(result))
-	# 	if quote_obj:
-	# 		Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)
-	# except Exception:
-	# 	Log.Info("Exception in Quote Edit")
+	try:
+		pattern = re.compile(r'QUOTE_RECORD_ID\s*\=\s*\'([^>]*?)\'')
+		result = re.search(pattern, where).group(1)
+		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(result))
+		if quote_obj:
+			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)
+	except Exception:
+		Log.Info("Exception in Quote Edit")
 
-	# try:
-	# 	Log.Info('where--CQINSQTITM-'+str(where))
-	# 	data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-	# except Exception:
-	# 	Log.Info("Exception in Quote Item insert") 
+	try:
+		Log.Info('where--CQINSQTITM-'+str(where))
+		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+	except Exception:
+		Log.Info("Exception in Quote Item insert") 
 		
-	# if ancillary_dict:
-	# 	for anc_key,anc_val in ancillary_dict.items():
-	# 		#if anc_val == 'INSERT':
-	# 		try:
-	# 			where = where.replace('Z0091','{}'.format(anc_key))
-	# 			Log.Info('where--CQINSQTITM-'+str(where))
-	# 			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-	# 		except Exception:
-	# 			Log.Info("Exception in Quote Item insert")
-
+	if ancillary_dict:
+		for anc_key,anc_val in ancillary_dict.items():
+			if anc_val == 'INSERT':
+				try:
+					where = where.replace('Z0091','{}'.format(anc_key))
+					Log.Info('where--CQINSQTITM-'+str(where))
+					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+				except Exception:
+					Log.Info("Exception in Quote Item insert")
+	
 
 
 level = ""
