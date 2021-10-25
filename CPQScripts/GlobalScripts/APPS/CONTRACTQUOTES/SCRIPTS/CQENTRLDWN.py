@@ -1114,7 +1114,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		Log.Info("Exception in Quote Item insert") 
 		
 	if ancillary_dict:
-		Log.Info("ancillary_dict--qi-"+str(ancillary_dict))
+		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
 		for anc_key,anc_val in ancillary_dict.items():
 			#if anc_val == 'INSERT':
 			try:
