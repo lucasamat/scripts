@@ -249,6 +249,7 @@ def SaveToolIdling(VALUES):
                 GETDATE() AS CPQTABLEENTRYDATEADDED
                 FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
                 """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
+    return ""
 
 
 SubtabName = Param.SUBTAB
