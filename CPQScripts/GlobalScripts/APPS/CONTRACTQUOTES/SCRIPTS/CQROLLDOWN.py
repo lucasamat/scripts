@@ -1248,7 +1248,7 @@ Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
 try:
-	anc =Param.CPQ_Columns['Quote'].split("==")[1]
+	anc =Param.Quote.split("==")[1]
 except Exception as e:
 	Log.Info("anc--"+str(e))
 try:
