@@ -2478,7 +2478,7 @@ class Entitlements:
 		if ENT_IP_DICT != '':
 			
 			ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
-			Quote.SetGlobal("ancillary_object_dict","")
+			
 			Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)

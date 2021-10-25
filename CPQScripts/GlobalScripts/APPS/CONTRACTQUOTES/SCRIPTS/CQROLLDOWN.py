@@ -195,7 +195,25 @@ def CoveredObjEntitlement():
 
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
-	ancillary_service_Z0046()
+	#ancillary_service_Z0046()
+	if ancillary_dict:
+		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
+		for anc_key,anc_val in ancillary_dict.items():
+			Log.Info("vall--"+str(anc_key)  )
+			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, Qt_rec_id,rev_rec_id,TreeParam ))
+			
+			if anc_val == "INSERT" :
+				
+				ActionType = "{}_SERVICE".format(anc_val)
+				Log.Info("inside ancillary")
+				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":ActionType, "ancillary_obj": anc_key, "service_id" : TreeParam , "tablename":"SAQTSE"})
+	
+	##ancillary entitlement insert
+	try:
+		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : TreeParam , "tablename":"SAQTSE"})
+	except:
+		Log.Info("ancillary entitlement error")
+
 	sendEmail(level)
 	try:
 		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
@@ -1229,6 +1247,11 @@ Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
 
+try:
+	ancillary_dict = Param.CPQ_Columns['ancillary_dict']
+	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
+except:
+	ancillary_dict = {}
 
 if 'COV OBJ ENTITLEMENT' in LEVEL:
 	a = LEVEL.split(",")
