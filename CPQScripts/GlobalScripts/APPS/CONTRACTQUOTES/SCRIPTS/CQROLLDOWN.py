@@ -1242,11 +1242,15 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	Log.Info('532-CQROLLDOWN-----QT_SAQITM--insertitm-'+str(insertitm))
 	Sql.RunQuery(insertitm)
 
-Qt_rec_id = Param.CPQ_Columns['Quote']
+Log.Info("Qt_rec_id ->"+str(Param.CPQ_Columns['Quote']))
+Qt_rec_id = Param.CPQ_Columns['Quote'].split("==")[0]
 Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
-
+try:
+	anc =Param.CPQ_Columns['Quote'].split("==")[1]
+except Exception as e:
+	Log.Info("anc--"+str(e))
 try:
 	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
 	Log.Info("ancillary_dict-try-"+str(ancillary_dict))
