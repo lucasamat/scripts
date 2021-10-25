@@ -547,9 +547,7 @@ def Related_Sub_Banner(
             elif TreeParam =="Sales Team":
                 PrimaryLable = "Sales Team"
                 PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
-            elif TreeParam =="Quote Documents":
-                PrimaryLable = "Dynamic Document Generator"
-                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"      
+                  
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
@@ -2489,11 +2487,7 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                    elif TreeParam == "Quote Documents":
-                        Trace.Write("Qd----")
-                        #for btn in multi_buttons:
-                        sec_rel_sub_bnr += (add_button)
-                        Trace.Write("Qddd----"+str(sec_rel_sub_bnr))                
+                                   
 
 
 
@@ -2522,11 +2516,7 @@ def Related_Sub_Banner(
                 sec_rel_sub_bnr += (btn)
             Trace.Write(sec_rel_sub_bnr)
 
-        elif TreeParam == "Quote Documents":
-            Trace.Write("QD----")
-            for btn in multi_buttons:
-                sec_rel_sub_bnr += (btn)
-            Trace.Write("QDDD----"+str(sec_rel_sub_bnr))
+        
 
         
 
