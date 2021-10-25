@@ -2643,8 +2643,8 @@ def Related_Sub_Banner(
                             Trace.Write('No button--')
                             buttonvisibility = "Hide_button"
                         #A055S000P01-7512 end Enable/Disable the PRICE button in Quote items based on Required fields validation
-                        #if len(fts_scenario_check) == 2:
-                        #    Trace.Write("hide PRICING for fts--2411--")
+                        if len(fts_scenario_check) == 2:
+                            Trace.Write("hide PRICING for fts--2411--")
                         #    if 'UPDATE LINES' in btn:
 
                         #        if quote_status.QUOTE_STATUS != 'APPROVED':
