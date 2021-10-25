@@ -1100,6 +1100,7 @@ class ContractQuoteItem:
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()	
+		Log.Info("update completed")
 		return True
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
