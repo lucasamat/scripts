@@ -1823,7 +1823,6 @@ class SyncQuoteAndCustomTables:
 			}
 			sales_team_table.AddRow(sales_team_createdby_insert)
 			Sql.Upsert(sales_team_table)
-		Log.Info("sales_team_createdby_insert "+str(sales_team_createdby_insert))
 		Log.Info("SALES TEAM CREATED BY INSERT ENDS")
 
 								
