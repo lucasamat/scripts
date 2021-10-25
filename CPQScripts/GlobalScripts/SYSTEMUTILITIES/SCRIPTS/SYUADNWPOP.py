@@ -2159,7 +2159,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 			
 			QueryCountObj = Sql.GetFirst(
-					"select count(*) as cnt from {} (NOLOCK) {} {} {} ".format(
+					"select count(distinct MAMTRL.SAP_PART_NUMBER) as cnt from {} (NOLOCK) {} {} {} ".format(
 					ObjectName,
 					inner_join if inner_join else "",
 					"WHERE " + where_string if where_string else "",
