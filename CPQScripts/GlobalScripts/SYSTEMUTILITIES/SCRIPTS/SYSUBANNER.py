@@ -2559,6 +2559,11 @@ def Related_Sub_Banner(
                     )
         # else:
         # 	Trace.Write("elseeee")
+    elif TreeParam == "Quote Documents":
+        Trace.Write("Qdd----")
+        #for btn in multi_buttons:
+        sec_rel_sub_bnr += (add_button)
+        Trace.Write("Qddd----"+str(sec_rel_sub_bnr))    
     Trace.Write("tabNameeee"+str(TabName))
     Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
     # Added to update configure status in work flow status bar - start
