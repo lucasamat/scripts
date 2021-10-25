@@ -240,8 +240,15 @@ def SaveToolIdling(VALUES):
                 FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
                 """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
 
+
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+if getRows:
+    if getRows.cnt > 1:
+        ent_value = "Yes"
+    else:
+        ent_value = "No"
 Action = Param.ACTION
 if Action == "ONCHANGE":
     option = Param.OPTION
@@ -255,9 +262,4 @@ elif SubtabName == "Summary" and Action == "SAVE":
     VALUES = dict(Param.VALUES)
     Trace.Write("values="+str(VALUES))
     ApiResponse = ApiResponseFactory.JsonResponse(SaveToolIdling(VALUES))
-getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
-if getRows:
-    if getRows.cnt > 1:
-        ent_value = "Yes"
-    else:
-        ent_value = "No"
+
