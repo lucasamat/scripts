@@ -1367,7 +1367,6 @@ class EntitlementView():
 									#sec_str += "</select></td>"
 							
 								elif DType == "Check Box":
-									Trace.Write('attrSysId--2324---'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 									
 									VAR1 = sec_str1 = ""
@@ -1392,7 +1391,7 @@ class EntitlementView():
 									)
 										
 								elif DType == "Free Input, no Matching":
-									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+									STDVALUES =  SqlHelper.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
 									
 									if attrValue == "DefaultValue":
