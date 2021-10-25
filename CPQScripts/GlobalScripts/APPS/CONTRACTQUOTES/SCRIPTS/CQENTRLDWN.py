@@ -1119,7 +1119,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				try:
 					where = where.replace('Z0091','{}'.format(anc_key))
 					Log.Info('where--CQINSQTITM-'+str(where))
-					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'INSERT_LINE_ITEMS'})
+					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				except Exception:
 					Log.Info("Exception in Quote Item insert")
 	
