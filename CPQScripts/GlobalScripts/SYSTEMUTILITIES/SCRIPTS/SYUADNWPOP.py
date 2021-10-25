@@ -2101,7 +2101,7 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT(distinct {}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} PRODUCT_TYPE IS NOT NULL AND PRODUCT_TYPE <> '' AND  MAADPR.VISIBLE_INCONFIG = 'TRUE' AND PRODUCT_TYPE != 'Add-On Products' AND NOT EXISTS (SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' AND MAMTRL.SAP_PART_NUMBER =  SAQTSV.SERVICE_ID) {} ".format(
-						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
 			else:
