@@ -645,6 +645,7 @@ for tab in Product.Tabs:
                                                                   
                                                     elif Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT"):
                                                         Product.Attributes.GetByName("SEC_N_TAB_PAGE_ALERT").Allowed = True
+                                                        Trace.Write("TABLE_NAME_CHK_J "+str(TABLE_NAME))
 														if TABLE_NAME == "ACAPCH":
 															Product.Attributes.GetByName(
 																"SEC_N_TAB_PAGE_ALERT"
