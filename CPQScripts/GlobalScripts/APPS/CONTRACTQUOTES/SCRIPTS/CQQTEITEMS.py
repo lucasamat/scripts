@@ -13,8 +13,12 @@ Sql = SQL()
 
 def LoadSummary():
     #ent_value = Quote.GetGlobal("IdlingAllowed")
-    if ent_value == "":
-        ent_value = "No"
+    getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+    if getRows:
+        if getRows.cnt > 1:
+            ent_value = "Yes"
+        else:
+            ent_value = "No"
 
     getValueSAQTDA = Sql.GetFirst("SELECT TOOLIDLING_DISPLAY_VALUE FROM SAQTDA(NOLOCK) WHERE TOOLIDLING_ID = 'Idling Allowed' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
     if getValueSAQTDA is None:
@@ -132,6 +136,12 @@ def EditToolIdlingOnChange(option):
     return secstr
 def EditToolIdling():
     #ent_value = Quote.GetGlobal("IdlingAllowed")
+    getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+    if getRows:
+        if getRows.cnt > 1:
+            ent_value = "Yes"
+        else:
+            ent_value = "No"
     if ent_value == "Yes":
         yes_selected = ' selected=""'
         no_selected = ""
@@ -243,12 +253,7 @@ def SaveToolIdling(VALUES):
 
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
-if getRows:
-    if getRows.cnt > 1:
-        ent_value = "Yes"
-    else:
-        ent_value = "No"
+
 Action = Param.ACTION
 if Action == "ONCHANGE":
     option = Param.OPTION
