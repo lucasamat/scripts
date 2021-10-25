@@ -574,13 +574,13 @@ def ancillary_service_call():
 	if ancillary_dict:
 		
 		for anc_key,anc_val in ancillary_dict.items():
-			#Trace.Write("vall--"+str(anc_key)  )
+			Log.Info("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, quote,revision,get_serviceid ))
 			
 			if (anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
 				
 				ActionType = "{}_SERVICE".format(anc_val)
-				
+				Log.Info("inside ancillary")
 				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":ActionType,   "ancillary_obj": anc_key, "service_id" : get_serviceid , "tablename":objectName})
 	
 	##getting count of complete equipment count
