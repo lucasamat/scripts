@@ -4363,6 +4363,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						Quote.SetGlobal("ancillary_object_dict","")
 					except:
 						ancillary_dict = ""
+					Trace.Write("ancillary_dict--"+str(ancillary_dict))
 					try:
 						if self.tree_param != 'Receiving Equipment':
 							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)+","+str(self.quote_revision_record_id)

@@ -1252,7 +1252,7 @@ try:
 	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
 except:
 	ancillary_dict = {}
-
+Log.Info("ancillary_dict--"+str(ancillary_dict))
 if 'COV OBJ ENTITLEMENT' in LEVEL:
 	a = LEVEL.split(",")
 	TreeParam = a[1]
