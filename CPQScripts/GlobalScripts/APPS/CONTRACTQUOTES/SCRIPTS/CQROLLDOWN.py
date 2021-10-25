@@ -1249,8 +1249,10 @@ Log.Info("LEVEL ->"+str(LEVEL))
 
 try:
 	ancillary_dict = Param.CPQ_Columns['ancillary_dict']
+	Log.Info("ancillary_dict-try-"+str(ancillary_dict))
 	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
-except:
+except Exception as e:
+	Log.Info("ancillary_dict--"+str(e))
 	ancillary_dict = {}
 Log.Info("ancillary_dict--"+str(ancillary_dict))
 if 'COV OBJ ENTITLEMENT' in LEVEL:
