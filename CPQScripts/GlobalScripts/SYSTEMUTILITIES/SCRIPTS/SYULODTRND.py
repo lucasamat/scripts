@@ -1136,8 +1136,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					notinlistt = ["EXCHANGE_RATE_TYPE"]
 					if current_obj_api_name in notinlistt:						
 						add_style = "display: none;"			
-				if ObjectName == "SAQDOC" and TreeParam == "Documents":
-					notinlist = ["QUOTE_ID", "QUOTE_NAME", "DOCUMENT_PATH"]
+				if ObjectName == "SAQDOC" and TreeParam == "Quote Documents":
+					notinlist = ["QUOTE_ID", "QUOTE_NAME", "DOCUMENT_PATH","QUOTE_DOCUMENT_RECORD_ID"]
 					if current_obj_api_name in notinlist:
 						add_style = "display: none;"
 				if (ObjectName == "ACACST" or ObjectName == "ACAPTF" or ObjectName == "ACACSS" or ObjectName == "ACACSA" or ObjectName == "ACAPMA") and (MODE == "VIEW" or MODE == "EDIT" or MODE == "CANCEL"):	
