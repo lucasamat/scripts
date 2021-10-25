@@ -700,7 +700,6 @@ class ContractQuoteItem:
 			# Insert SAQITM - Start
 			
 			if service_obj.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
-				Trace.Write("simple")
 				item_where_string = item_where_string.replace("SAQSCE","SAQSCO")
 				item_join_string = item_join_string.replace("SAQSCE","SAQSCO")
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
@@ -721,10 +720,11 @@ class ContractQuoteItem:
 				item_line_join_string = "LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
 			# Update - end
 			if service_obj.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+				
 				# item_where_string = item_where_string.replace("SAQSCE","SAQSCO")
-				item_line_join_condition_string = item_line_join_condition_string.replace("SAQSCE","SAQSCO")
-				item_line_join_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
-				self._simple_quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string=item_line_join_condition_string, join_string=item_line_join_string)
+				item_line_join_condition_string =""
+				item_line_join_string = item_line_join_string.replace("SAQSCE","SAQSCO")
+				self._simple_quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string= item_line_join_condition_string, join_string=item_line_join_string)
 			else:
 				self._quote_item_lines_insert_process(where_string=item_line_where_string, join_condition_string=item_line_join_condition_string, join_string=item_line_join_string)
 			# Insert Quote Items Covered Object - End
@@ -1594,7 +1594,6 @@ class ContractQuoteItem:
 		return True
 	
 	def _simple_quote_item_lines_insert_process(self, where_string='', join_condition_string='', join_string=''):
-		Trace.Write("simple insert")
 		equipments_count = 0
 		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_line_item_obj:
@@ -1708,7 +1707,7 @@ class ContractQuoteItem:
 						
 					) AS IQ ON IQ.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND IQ.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID AND IQ.SERVICE_ID = SAQSCO.SERVICE_ID	AND IQ.SERVICE_ID = '{service_id}'	AND IQ.EQUIPMENT_ID	 = SAQSCO.EQUIPMENT_ID	AND IQ.SERVICE_ID = '{service_id}'	
 					
-					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID					
+					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCO.SERVICE_ID					
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID         
 					JOIN SAQTRV (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID 
 					JOIN SAQITM (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID 
@@ -1717,7 +1716,7 @@ class ContractQuoteItem:
 											{JoinConditionString}
 					{JoinString}					
 				WHERE 
-					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE'
+					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER' AND ISNULL(IQ.CONFIGURATION_STATUS,'') = 'COMPLETE'
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
 				JoinConditionString=join_condition_string, JoinString=join_string, WhereString=where_string, EquipmentsCount=equipments_count,service_id = self.service_id)
