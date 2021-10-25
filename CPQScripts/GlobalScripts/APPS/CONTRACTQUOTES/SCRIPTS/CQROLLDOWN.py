@@ -1247,10 +1247,10 @@ Qt_rec_id = Param.CPQ_Columns['Quote'].split("==")[0]
 Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
-try:
-	anc =Param.Quote.split("==")[1]
-except Exception as e:
-	Log.Info("anc--"+str(e))
+# try:
+# 	anc =Param.Quote.split("==")[1]
+# except Exception as e:
+# 	Log.Info("anc--"+str(e))
 try:
 	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
 	Log.Info("ancillary_dict-try-"+str(ancillary_dict))
