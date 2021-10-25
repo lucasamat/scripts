@@ -2125,7 +2125,7 @@ class Entitlements:
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
-		Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
+		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
 		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
 		
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list
