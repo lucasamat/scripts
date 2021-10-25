@@ -589,7 +589,10 @@ def ancillary_service_call():
 	# get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(quote, revision , get_serviceid))
 	# get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(quote, revision , get_serviceid))
 	# if get_par_equp_ent.cnt == get_par_equp.cnt and get_par_equp.cnt != 0:
-	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
+	try:
+		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
+	except:
+		Log.Info("ancillary entitlement error")
 	# elif get_par_equp_ent.cnt != 0:
 	# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"DELETE_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
 
