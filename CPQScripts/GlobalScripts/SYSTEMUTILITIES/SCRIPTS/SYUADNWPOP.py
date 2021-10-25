@@ -2096,7 +2096,7 @@ def POPUPLISTVALUEADDNEW(
 			if TreeParam in ("Comprehensive Services","Product Offerings","Complementary Products"):
 				get_sales_org = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id) )
 				if get_sales_org :
-					inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID "
+					inner_join = " INNER JOIN MAMSOP (NOLOCK) ON MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID INNER JOIN MAADPR  ON MAADPR.PRDOFR_ID =  MAMTRL.SAP_PART_NUMBER AND MAADPR.VISIBLE_INCONFIG = 'TRUE'"
 					additional_where = " AND SALESORG_ID='{}' ".format(get_sales_org.SALESORG_ID)
 			if TreeParam == "Product Offerings":
 				Pagination_M = Sql.GetFirst(
