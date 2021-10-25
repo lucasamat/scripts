@@ -903,7 +903,7 @@ class SyncQuoteAndCustomTables:
 							quote_contact_master_table_info.AddRow(contact_master_entry)
 							Sql.Upsert(quote_contact_master_table_info)
 
-						Log.Info("CONTACT_INFO INSERT STARTS----> ")
+						Log.Info("CONTACT_INFO INSERT STARTS----> " +str(custom_fields_detail.get("PrimaryContactName")))
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
