@@ -1104,6 +1104,12 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	except Exception:
 		Log.Info("Exception in Quote Edit")
 
+	try:
+		Log.Info('where--CQINSQTITM-'+str(where))
+		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+	except Exception:
+		Log.Info("Exception in Quote Item insert") 
+		
 	if ancillary_dict:
 		for anc_key,anc_val in ancillary_dict.items():
 			if anc_val == 'INSERT':
@@ -1113,12 +1119,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 				except Exception:
 					Log.Info("Exception in Quote Item insert")
-	else:
-		try:
-			Log.Info('where--CQINSQTITM-'+str(where))
-			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-		except Exception:
-			Log.Info("Exception in Quote Item insert") 
+	
 
 
 level = ""
