@@ -407,6 +407,7 @@ class SyncQuoteAndCustomTables:
 				# 	),
 				# )
 				quote_id = self.quote.CompositeNumber
+				Log.Info("quote_id_CHK "+str(quote_id))
 				quote_obj = Sql.GetFirst(
 					"SELECT * FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}' AND C4C_QUOTE_ID = '{}'".format(
 						quote_id, self.quote.CompositeNumber
@@ -867,7 +868,7 @@ class SyncQuoteAndCustomTables:
 								}
 								quote_opportunity_table_info.AddRow(opportunity_quote_data)
 					# A055S000P01-6618 - Starts
-					Trace.Write("PrimaryContactName_CHK "+str(custom_fields_detail.get("PrimaryContactName")))
+					Log.Info("PrimaryContactName_CHK "+str(custom_fields_detail.get("PrimaryContactName")))
 					if custom_fields_detail.get("PrimaryContactName"):
 						# primary_contact_update = {
 						# 	"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
