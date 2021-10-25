@@ -3560,13 +3560,13 @@ def POPUPLISTVALUEADDNEW(
 				"MATERIAL_RECORD_ID": "KEY",
 				"SAP_PART_NUMBER": "PART NUMBER",
 				"SAP_DESCRIPTION": "PARTS NAME",
-				"MATERIALGROUP_ID":"MATERIAL GROUP ID"
+				"MATPRIGRP_ID":"MATERIAL PRICING GROUP ID"
 			}
 			ordered_keys = [
 				"MATERIAL_RECORD_ID",
 				"SAP_PART_NUMBER",
 				"SAP_DESCRIPTION",
-				"MATERIALGROUP_ID"
+				"MATPRIGRP_ID"
 			]
 			Objd_Obj = Sql.GetList(
 				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
@@ -3703,13 +3703,13 @@ def POPUPLISTVALUEADDNEW(
 				"MATERIAL_RECORD_ID",
 				"SAP_PART_NUMBER",
 				"SAP_DESCRIPTION",
-				"MATERIALGROUP_ID"
+				"MATPRIGRP_ID"
 				]
 			ordered_keys_mam = [
 				"MAMTRL.MATERIAL_RECORD_ID",
 				"MAMTRL.SAP_PART_NUMBER",
 				"MAMTRL.SAP_DESCRIPTION",
-				"MAMTRL.MATERIALGROUP_ID"
+				"MAMSOP.MATPRIGRP_ID"
 				]
 			#get consumable and non consumable values from XML start
 			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
