@@ -27,6 +27,7 @@ except:
 	objectName = Param.objectName
 	wherecon = Param.where
 	ancillary_dict = Param.ancillary_dict
+Log.Info("ancillary_dict1-"+str(ancillary_dict))
 wherecon = wherecon.replace("&#39;","'")
 objItems = objs.split('=')
 where = wherecon.split(",")[0]
@@ -38,8 +39,9 @@ revision =  objItems[2].split(",")[2]
 Log.Info("QUOTE--------->"+str(quote)+'---'+str(revision))
 userid = objItems[2].split(",")[0]
 try:
-	ancillary_dict = eval(ancillary_dict)
-except:
+	ancillary_dict = eval(str(ancillary_dict))
+except Exception as e:
+	Log.Info("error on ancillary--"+str(e))
 	ancillary_dict = ""
 try: 
 	attributeList = objItems[1].split(",")
