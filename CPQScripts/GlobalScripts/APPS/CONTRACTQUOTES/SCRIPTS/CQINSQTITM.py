@@ -1716,7 +1716,7 @@ class ContractQuoteItem:
 											{JoinConditionString}
 					{JoinString}					
 				WHERE 
-					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER' AND ISNULL(IQ.CONFIGURATION_STATUS,'') = 'COMPLETE'
+					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER' 
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
 				JoinConditionString=join_condition_string, JoinString=join_string, WhereString=where_string, EquipmentsCount=equipments_count,service_id = self.service_id)
