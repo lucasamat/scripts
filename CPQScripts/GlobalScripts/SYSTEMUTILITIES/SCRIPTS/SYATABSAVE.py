@@ -436,8 +436,8 @@ for tab in Product.Tabs:
                                             + "' and IS_KEY='True' "
                                         )
                                            
-                                        # if TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
-                                        #     flag = 'False'
+                                        if TABLE_NAME == "ACAPCH" and len(row['APRCHN_ID']) < 8:
+                                            flag = 'False'
                                         Trace.Write("99999888"+str(flag)) 
                                         if iskey is not None and flag == "True": 
                                             Trace.Write("99999")                                           
