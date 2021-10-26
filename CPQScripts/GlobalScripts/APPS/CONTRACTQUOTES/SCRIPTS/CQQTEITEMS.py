@@ -256,6 +256,7 @@ Action = Param.ACTION
 try:
     Trace.Write("try idle notice")
     IdleNotice = Param.IDLENOTICE
+    Trace.Write("IDLE NOTICE="+str(IdleNotice))
 except:
     Trace.Write("except idle notice")
     IdleNotice = ""
