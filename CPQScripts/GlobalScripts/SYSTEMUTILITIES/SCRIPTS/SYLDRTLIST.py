@@ -4193,7 +4193,7 @@ class SYLDRTLIST:
             elif ObjectName == 'SAQIBP' and (col_name in billing_date_column or col_name == 'BILLING_CURRENCY'):# Billing Matrix - Pivot - Start
                 try:
                     gettotaldateamt =""
-                    #Trace.Write('col_name-----3087-----'+str(col_name))
+                    Trace.Write('col_name--table_list----'+str(table_list))
                     if col_name in billing_date_column:                    
                         my_format = "{:,." + str(decimal_place) + "f}"
                         tovalue = 0.00
