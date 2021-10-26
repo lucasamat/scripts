@@ -226,7 +226,7 @@ def NoticeOnChange(IdleNotice):
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
             
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr = '<tr id = "notice_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
         secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
     return secstr
 def DurationOnChange(IdleDuration):
@@ -236,7 +236,7 @@ def DurationOnChange(IdleDuration):
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
             
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr = '<tr id = "duration_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
         secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
     return secstr
 def ExceptionOnChange(IdlingException):
@@ -246,7 +246,7 @@ def ExceptionOnChange(IdlingException):
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
             
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr = '<tr id = "exception_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
         secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idling_Exception_Notes" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
     return secstr
 SubtabName = Param.SUBTAB
