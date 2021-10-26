@@ -2366,6 +2366,7 @@ def Related_Sub_Banner(
                     else:
                         if quote_status.QUOTE_STATUS != 'APPROVED':
                             sec_rel_sub_bnr += (str(add_button))
+                        
                         # sec_rel_sub_bnr += (
                         #     '<button id="ADDNEW__' + str(buttonid) + '" onclick="cont_openaddnew(this,'
                         #     ')" class="btnconfig" data-target="" data-toggle="modal">ADD FROM LIST</button>'
@@ -2376,7 +2377,9 @@ def Related_Sub_Banner(
                 #         ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD FROM LIST</button>'
                 #     )           
                 # 
-                                
+                elif CurrentRecordId == "SYOBJR-00010" and TreeParam != "Fab Locations":
+                    Trace.Write("Summary Refresh button condition")
+                    sec_rel_sub_bnr += (str(add_button))
                 else:	
                     Trace.Write('elseeee')
 
