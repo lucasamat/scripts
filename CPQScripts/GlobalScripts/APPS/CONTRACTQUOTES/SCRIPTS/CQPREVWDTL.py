@@ -461,19 +461,24 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 	checklist_vals = Sql.GetList("select TOP 1000 CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ORDER BY CpqTableEntryId ASC".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 	for value in checklist_vals:
-		sec_str +='<tr>'
-		sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
-		sec_str += ('<td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+str(value.CHECKLIST_DESCRIPTION)+'" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled></td>')
 		if str(value.CHECKLIST_ID) != "":
-			sec_str += ('<td class="wid_90 cbc_parent"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
-			sec_str += ('<td class="wid_90 cbc_parent"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
-			sec_str += ('<td class="wid_90 cbc_parent"><textarea id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+			sec_str +='<tr class ="cbc_parent">'
+			sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+			sec_str += ('<td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+str(value.CHECKLIST_DESCRIPTION)+'" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled></td>')
+			sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+			sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+			sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled></textarea></td>')
+			sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+			sec_str += '</tr>'
 		else:
-			sec_str +=('<td class="wid_90 cbc_child"></td>')
-			sec_str +=('<td class="wid_90 cbc_child"></td>')
-			sec_str +=('<td class="wid_90 cbc_child"></td>')
-		sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
-		sec_str += '</tr>'
+			sec_str +='<tr class ="cbc_child">'
+			sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+			sec_str += ('<td><input id="CHECKLIST_DESCRIPTION" type="text" value="'+str(value.CHECKLIST_DESCRIPTION)+'" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled></td>')
+			sec_str +=('<td class="wid_90"></td>')
+			sec_str +=('<td class="wid_90"></td>')
+			sec_str +=('<td class="wid_90"></td>')
+			sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+			sec_str += '</tr>'
 	sec_str += '</tbody></table></div>'
 	sec_str +='<div class="g4 collapse in except_sec removeHorLine iconhvr sec_edit_sty" id="cbc_savecancel" style="display:none"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcCancel(this)">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcSAVE(this)">SAVE</button></div>'
 	values_lists = ""
@@ -490,8 +495,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 
 def EditCBC(Qt_rec_id, Quote, MODE):		
 	Trace.Write('CBC Update')
+	min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	for val in values:
-		Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+		order = int(val["order"])
+		order = order + min.id - 1
+		Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND CpqTableEntryId = '{id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",id = order,service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	return True
 	
 
