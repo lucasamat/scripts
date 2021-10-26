@@ -4176,8 +4176,8 @@ class SYLDRTLIST:
                         string_value = string.replace("ACQUIRING","<img title='Acquiring' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg> ACQUIRING")
                     if string == "ERROR":
                         string_value = string.replace("ERROR","<img title='Error' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg> ERROR")
-                    if string == "ASSEMBLY MISSING":
-                        string_value = string.replace("ASSEMBLY MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY MISSING")
+                    if string == "ASSEMBLY IS MISSING":
+                        string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY MISSING")
                     if string == "PARTIALLY PRICED":
                         string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
                     if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING":                        
