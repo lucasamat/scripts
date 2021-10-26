@@ -221,7 +221,7 @@ def SaveToolIdling(VALUES):
 
 def NoticeOnChange(IdleNotice):
     if IdleNotice == "Restricted Entry(Days)":
-
+        Trace.Write("inside NoticeOnChange")
         getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
@@ -231,7 +231,7 @@ def NoticeOnChange(IdleNotice):
     return secstr
 def DurationOnChange(IdleDuration):
     if IdleDuration == "Restricted Entry(Days)":
-
+        Trace.Write("inside DurationOnChange")
         getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Duration Exception'")
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
@@ -241,7 +241,7 @@ def DurationOnChange(IdleDuration):
     return secstr
 def ExceptionOnChange(IdlingException):
     if IdlingException == "Yes":
-
+        Trace.Write("inside ExceptionOnChange")
         getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idling Exception Notes'")
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
