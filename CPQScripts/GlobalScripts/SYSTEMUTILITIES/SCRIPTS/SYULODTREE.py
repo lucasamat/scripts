@@ -2071,6 +2071,7 @@ class TreeView:
 											subTabName = str(getRightView.SUBTAB_NAME)
 										#Trace.Write("**2045 Subtab-->"+str(subTabName))
 									elif subTabName == 'Spare Parts':
+										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
 										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIFP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										if spare_parts_object is not None:
