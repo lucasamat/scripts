@@ -227,6 +227,19 @@ def CoveredObjEntitlement():
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
+	
+	if ancillary_dict:
+		#Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
+		for anc_key,anc_val in ancillary_dict.items():
+			#if anc_val == 'INSERT':
+			try:
+				temp_val = "SERVICE_ID = '{}'".format(anc_key)
+				where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
+				#where = where.replace('Z0091','{}'.format(anc_key))
+				#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+			except Exception:
+				Log.Info("Exception in Quote Item insert")
 
 
 def CoveredObjItemEntitlement():
@@ -1243,7 +1256,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	Log.Info('532-CQROLLDOWN-----QT_SAQITM--insertitm-'+str(insertitm))
 	Sql.RunQuery(insertitm)
 
-Log.Info("Qt_rec_id ->"+str(Param.CPQ_Columns['Quote']))
+#Log.Info("Qt_rec_id ->"+str(Param.CPQ_Columns['Quote']))
 Qt_rec_id = Param.CPQ_Columns['Quote']
 Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
