@@ -2151,7 +2151,8 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
 		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
-		
+		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
+		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list
 
 	def EntitlementCancel(self,SectionRecordId, ENT_CANCEL, Getprevdict,subtabName,EquipmentId):		
