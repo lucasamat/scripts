@@ -89,33 +89,7 @@ def LoadSummary():
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-def EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException):
-    
-    if IdleNotice == "Restricted Entry(Days)":
 
-        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
-        x = getPRTIAV.TOOLIDLING_ID
-        y = getPRTIAV.TOOLIDLING_NAME
-            
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
-    elif IdleDuration == "Restricted Entry(Days)":
-
-        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Duration Exception'")
-        x = getPRTIAV.TOOLIDLING_ID
-        y = getPRTIAV.TOOLIDLING_NAME
-            
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
-    elif IdlingException == "Yes":
-
-        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idling Exception Notes'")
-        x = getPRTIAV.TOOLIDLING_ID
-        y = getPRTIAV.TOOLIDLING_NAME
-            
-        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idling_Exception_Notes" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
-    return secstr
 def EditToolIdling():
     #ent_value = Quote.GetGlobal("IdlingAllowed")
     getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
@@ -241,22 +215,56 @@ def SaveToolIdling(VALUES):
                 """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y,x.replace("_"," ")))
     return ""
 
+def NoticeOnChange(IdleNotice):
+    if IdleNotice == "Restricted Entry(Days)":
 
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
+        x = getPRTIAV.TOOLIDLING_ID
+        y = getPRTIAV.TOOLIDLING_NAME
+            
+        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+    return secstr
+def DurationOnChange(IdleDuration):
+    if IdleDuration == "Restricted Entry(Days)":
+
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Duration Exception'")
+        x = getPRTIAV.TOOLIDLING_ID
+        y = getPRTIAV.TOOLIDLING_NAME
+            
+        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+    return secstr
+def ExceptionOnChange(IdlingException):
+    if IdlingException == "Yes":
+
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idling Exception Notes'")
+        x = getPRTIAV.TOOLIDLING_ID
+        y = getPRTIAV.TOOLIDLING_NAME
+            
+        secstr = '<tr data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idling_Exception_Notes" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+    return secstr
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 Action = Param.ACTION
-if Action == "ONCHANGE":
+try:
     IdleNotice = Param.IDLENOTICE
     IdleDuration = Param.IDLEDURATION
     IdlingException = Param.IDLINGEXCEPTION
-    #Trace.Write("IdleNotice ="+str(IdleNotice))
-    #Trace.Write("IdleDuration ="+str(IdleDuration))
-    #Trace.Write("IdlingException ="+str(IdlingException))
+except:
+    IdleNotice = ""
+    IdleDuration = ""
+    IdlingException = ""
+if Action == "ONCHANGE" and IdleNotice != "":
+    ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
+if Action == "ONCHANGE" and IdleDuration != "":
+    ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
+if Action == "ONCHANGE" and IdlingException != "":
+    ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
-elif SubtabName == "Summary" and Action == "ONCHANGE":
-    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException))
 elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
 elif SubtabName == "Summary" and Action == "SAVE":
