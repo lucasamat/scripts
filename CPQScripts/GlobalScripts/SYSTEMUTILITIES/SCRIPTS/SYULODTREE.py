@@ -2078,8 +2078,8 @@ class TreeView:
 										if spare_parts_object is not None:
 											if spare_parts_object.cnt > 0:
 												subTabName = str(getRightView.SUBTAB_NAME)
-									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM':
-    									Trace.Write("NodeText spare parts"+str(NodeText))
+									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
+										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
 										service_id = NodeText.split('-')[1].strip()
 										spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id))
