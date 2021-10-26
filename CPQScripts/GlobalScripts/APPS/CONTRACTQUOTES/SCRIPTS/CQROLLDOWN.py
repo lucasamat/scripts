@@ -243,7 +243,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQICO (NOLOCK) ON SAQICO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	#Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
+	Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
 	Sql.RunQuery(SAQIEN_query)
 	#insert to SAQSPT
 	SAQSPEaddon_query = """
@@ -259,7 +259,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	#Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
+	Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
 	Sql.RunQuery(SAQSPEaddon_query)
 	#insert to SAQSPT
 	SAQIPE_query = """
