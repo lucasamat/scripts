@@ -110,6 +110,7 @@ class EntitlementView():
 		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
 		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+		
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
@@ -208,8 +209,14 @@ class EntitlementView():
 		elif EntitlementType == "ASSEMBLY":
 			TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
-					
-		if EntitlementType != "SENDING_LEVEL":
+
+		get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
+		if get_configuration_status:
+			if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+				EntitlementType = "NO_ENTITLEMENT"
+		
+
+		if EntitlementType != "NO_ENTITLEMENT":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
 				#Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
@@ -352,7 +359,7 @@ class EntitlementView():
 			date_field = []
 			
 			insertservice = ""
-			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
+			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))		
 		if TableObj is None and (EntitlementType == "EQUIPMENT"): 
 			Trace.Write('not inserted')
 			getnameentallowed = []
@@ -736,7 +743,7 @@ class EntitlementView():
 				getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
 				totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
 				#Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
-		elif EntitlementType == "SENDING_LEVEL":
+		elif EntitlementType == "NO_ENTITLEMENT":
 			sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 			multi_select_attr_list = {}
 			getnameentallowed = []
@@ -1670,7 +1677,7 @@ if SectionList is not None and (
 			
 elif ((SubtabName in ('Entitlements','Equipment Entitlements','Assembly Entitlements') ) and (TreeParam.upper() == "SENDING EQUIPMENT" or TreeSuperParentParam.upper() =="SENDING EQUIPMENT" or TreeParentParam.upper() =="SENDING EQUIPMENT")):
 	#Trace.Write("Entitlements"+str(TreeParam))
-	EntitlementType = "SENDING_LEVEL"
+	EntitlementType = "NO_ENTITLEMENT"
 	SectionObjectName = "SAQSRA"
 
 elif ObjectName == "SAQTSE":	
