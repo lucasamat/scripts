@@ -125,7 +125,7 @@ def EditToolIdlingOnChange(IdleNotice,IdleDuration):
                 secstr += '</select></td></tr>'
         secstr += "</tbody></table>"
         secstr += '<div id="quotesummarysavecancel" class="col-md-12 text-center"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="QuoteItemsView()">CANCEL</button><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn flt_none" onclick="QuoteItemsIdlingSave()">SAVE</button></div>'
-    elif option == "No":
+    elif IdleDuration == "Restricted Entry(Days)":
 
         yes_selected = ""
         no_selected =  ' selected=""'
@@ -258,10 +258,11 @@ Action = Param.ACTION
 if Action == "ONCHANGE":
     IdleNotice = Param.IDLENOTICE
     IdleDuration = Param.IDLEDURATION
+    IdlingException = Param.IDLINGEXCEPTION
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "ONCHANGE":
-    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdlingOnChange(IdleNotice,IdleDuration))
+    ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException))
 elif SubtabName == "Summary" and Action == "EDIT":
     ApiResponse = ApiResponseFactory.JsonResponse(EditToolIdling())
 elif SubtabName == "Summary" and Action == "SAVE":
