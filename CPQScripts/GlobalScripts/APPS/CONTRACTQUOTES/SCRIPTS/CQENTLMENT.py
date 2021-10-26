@@ -2395,6 +2395,7 @@ class Entitlements:
 			Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))'''
 		return attributesdisallowedlst,attributesallowedlst,attributevalues,attributeReadonlylst,attributeEditonlylst,valdisplaycode,attributedefaultvalue
 	def Rolldown(self):
+		configuration_status =''
 		Trace.Write("Newdict------523----> "+str(Newdict))
 		try:
 			Log.Info("Newdict-----745---> "+str(Newdict))
@@ -2410,6 +2411,12 @@ class Entitlements:
 		###tool relocation receiving entitilement starts
 		Fullresponse=Product.GetGlobal("Fullresponse")
 		Fullresponse = eval(Fullresponse)
+		if Fullresponse['complete'] == 'true':
+			configuration_status = 'COMPLETE'
+		elif Fullresponse['complete'] == 'false':
+			configuration_status = 'INCOMPLETE'
+		else:
+			configuration_status = 'ERROR
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Products' or self.treetopsuperparentparam == 'Complementary Products' or self.treesupertopparentparam == 'Complementary Products' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQTSE'
