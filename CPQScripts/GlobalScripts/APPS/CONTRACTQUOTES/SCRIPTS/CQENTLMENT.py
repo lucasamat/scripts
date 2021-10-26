@@ -986,7 +986,6 @@ class Entitlements:
 		else:
 			# to insert new input column value and price factor, cost impact for manual input Start 
 			getvalue = insertservice =""
-			#Trace.Write("----------attributedefaultvalue------------"+str(attributedefaultvalue))
 			Fullresponse = Product.GetGlobal('Fullresponse')
 			configuration_status =""
 			if Fullresponse:
