@@ -1296,7 +1296,7 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
-								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id)
+								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 							else:
 								for employee in payload_json.get('SAEMPL'):
 									employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
@@ -1328,7 +1328,7 @@ class SyncQuoteAndCustomTables:
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
 										Sql.Upsert(tableInfo)
-									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id)
+									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
@@ -1697,7 +1697,7 @@ class SyncQuoteAndCustomTables:
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
 	##A055S000P01-8690 starts..
-	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id):
+	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
 		Sql.RunQuery("""INSERT SAQDLT (
 								C4C_PARTNERFUNCTION_ID,
 								CRM_PARTNERFUNCTION_ID,
@@ -1803,7 +1803,7 @@ class SyncQuoteAndCustomTables:
 		
 		Log.Info("SALES TEAM CREATED BY INSERT STARTS"+str(employee))
 		created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
-		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_NAME = '{EmployeeName}'".format(EmployeeName = contract_quote_data.get("OWNER_NAME")))
+		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
 		saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
 		if not saqdlt_data:
 			sales_team_table = Sql.GetTable("SAQDLT")
