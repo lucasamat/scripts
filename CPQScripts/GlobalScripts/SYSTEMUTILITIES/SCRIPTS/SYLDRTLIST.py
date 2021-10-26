@@ -4180,7 +4180,7 @@ class SYLDRTLIST:
                         string_value = string.replace("ASSEMBLY IS MISSING","<img title='Assembly Missing' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Orange1_Circle.svg> ASSEMBLY IS MISSING")
                     if string == "PARTIALLY PRICED":
                         string_value = string.replace("PARTIALLY PRICED","<img title='Partially Priced' src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Red1_Circle.svg> PARTIALLY PRICED")
-                    if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING":                        
+                    if string != "ACQUIRED" and string != "APPROVAL REQUIRED" and string != "ERROR" and string != "ASSEMBLY IS MISSING" and string != "PARTIALLY PRICED" and string != "ACQUIRING":                        
                         string_value = string
                     StringValue_lists.append(string_value)
                 DropDownList.append(StringValue_lists)
