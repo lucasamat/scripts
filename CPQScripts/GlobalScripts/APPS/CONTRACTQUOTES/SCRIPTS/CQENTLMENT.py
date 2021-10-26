@@ -1187,7 +1187,7 @@ class Entitlements:
 							else:
 								x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
 							Trace.Write("x="+str(x))
-							y = "AGS_Z0046_PQB_AP{}PCP"
+							y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
 							Trace.Write("y="+str(y))
 							if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
 								total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
