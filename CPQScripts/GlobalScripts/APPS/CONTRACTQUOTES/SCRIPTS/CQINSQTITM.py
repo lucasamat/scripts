@@ -1099,7 +1099,7 @@ class ContractQuoteItem:
 		quote_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM (NOLOCK) WHERE SERVICE_ID LIKE '{ServiceId}%' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		##spare part insert for ancillary
 		#spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
-		
+		Log.Info("_quote_items_update ==> "+str(self.contract_quote_id))
 		if self.service_id == "Z0101":
 			self._insert_quote_item_forecast_parts()
 		elif not quote_item_obj or self.service_id == 'Z0016':
@@ -1117,7 +1117,7 @@ class ContractQuoteItem:
 	def _insert_quote_item_forecast_parts(self, **kwargs):
 		##Deleteing the tables before insert the data starts..
 
-		
+		Log.Info("_insert_quote_item_forecast_parts ==> "+str(self.contract_quote_id)+" == Service Id == "+str(self.service_id))
 		Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
 			ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
 		))
