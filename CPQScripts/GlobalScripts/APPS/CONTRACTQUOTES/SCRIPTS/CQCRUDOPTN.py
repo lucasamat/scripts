@@ -4360,16 +4360,17 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					ancillary_dict = ""
 					try:
 						ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
+						ancillary_dict = ancillary_dict.replace("}","/").replace("{","|").replace(":","=").replace("'","&#39;")
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:
 						ancillary_dict = ""
 					Trace.Write("ancillary_dict--"+str(ancillary_dict))
 					try:
-						quote_ent_roll = self.contract_quote_record_id+"=="+str(ancillary_dict)
+						#quote_ent_roll = self.contract_quote_record_id+"=="+str(ancillary_dict)
 						if self.tree_param != 'Receiving Equipment':
 							level = "COV OBJ ENTITLEMENT,"+str(self.tree_param)+","+str(self.tree_parent_level_0)+","+str(self.user_id)+","+str(self.quote_revision_record_id)
-							#CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level,ancillary_dict)
-							CQVLDRIFLW.iflow_valuedriver_rolldown(quote_ent_roll,level,str(ancillary_dict))						
+							CQVLDRIFLW.iflow_valuedriver_rolldown(self.contract_quote_record_id,level,ancillary_dict)
+							#CQVLDRIFLW.iflow_valuedriver_rolldown(quote_ent_roll,level,str(ancillary_dict))						
 					except:
 						Trace.Write("EXCEPT----COV OBJ ENTITLEMENT IFLOW")
 				Entitlement_end_time = time.time()
