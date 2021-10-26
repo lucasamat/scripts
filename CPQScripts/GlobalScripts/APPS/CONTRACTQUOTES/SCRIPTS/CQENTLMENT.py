@@ -2516,7 +2516,7 @@ class Entitlements:
 			except Exception as e:
 				#Trace.Write("ENTITLEMENT IFLOW ERROR! "+str(e))
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
-		return True
+		return configuration_status
 
 	def popup(self):
 		sec_str = ""
