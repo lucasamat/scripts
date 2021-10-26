@@ -1099,20 +1099,19 @@ class ContractQuoteItem:
 		quote_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM (NOLOCK) WHERE SERVICE_ID LIKE '{ServiceId}%' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		##spare part insert for ancillary
 		#spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
-			
-		if not quote_item_obj or self.service_id == 'Z0016':
+		
+		if self.service_id == "Z0101":
+			self._insert_quote_item_forecast_parts()
+		elif not quote_item_obj or self.service_id == 'Z0016':
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
-			self._insert_quote_item_greenbook()	
-		elif self.service_id in ("Z0101"):
-				#if spare_parts_count_object.COUNT > 0:
-				self._insert_quote_item_forecast_parts()
+			self._insert_quote_item_greenbook()
 		else:
 			self._quote_item_delete_process()
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()	
-		Log.Info("update completed")
+		#Log.Info("update completed")
 		return True
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
