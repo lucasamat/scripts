@@ -963,7 +963,7 @@ class EntitlementView():
 									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
 									Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
 									
-									if DType == "Drop Down" or DType == "DropDown" :
+									if DType == "Drop Down":
 										
 										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
@@ -979,7 +979,7 @@ class EntitlementView():
 											else:
 												default = 'selected'
 
-											#Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
+											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											
 											# if str(attrName) == "Fab Location":
 											# 	if getquote_sales_val in get_il_sales_list:
