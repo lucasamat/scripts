@@ -273,6 +273,7 @@ except:
     Trace.Write("except idling ecxxeption")
     IdlingException = ""
 if Action == "ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
+    Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
 if Action == "ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
     ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
