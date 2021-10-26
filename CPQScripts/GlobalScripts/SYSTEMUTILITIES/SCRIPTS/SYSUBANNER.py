@@ -186,6 +186,7 @@ def Related_Sub_Banner(
                     add_button = ""
         else:
             add_button = ""
+        Trace.Write("add_button_ Trace ------- "+str(add_button))
         try:
             if subTabName.startswith("Year") and str(ObjName) == "SAQTBP":
                 Trace.Write('176---------------')
