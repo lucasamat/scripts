@@ -197,6 +197,7 @@ def CoveredObjEntitlement():
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
 	#ancillary_service_Z0046()
 	if ancillary_dict:
+		Log.Info("inside ancillary1111"+str(ancillary_dict))
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		for anc_key,anc_val in ancillary_dict.items():
 			Log.Info("vall--"+str(anc_key)  )
