@@ -1104,12 +1104,15 @@ class ContractQuoteItem:
 		Log.Info("_quote_items_update SID==> "+str(self.service_id))
 		Log.Info("_quote_items_update ==> "+str(self.contract_quote_id))
 		if self.service_id == "Z0101":
+			Log.Info("In Z0101")
 			self._insert_quote_item_forecast_parts()
 		elif not quote_item_obj or self.service_id == 'Z0016':
+			Log.Info("In Z0016")
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()
 		else:
+			Log.Info("In Z0091 OR 46")
 			self._quote_item_delete_process()
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
