@@ -67,7 +67,8 @@ class ContractQuoteItem:
 			self._native_quote_edit()
 			Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			for item in Quote.MainItems:
-				item.Delete()
+				if self.service_id == item.PartNumber:
+					item.Delete()
 			# Update Zero in Quote custom fields
 			self._native_quote_item_update()
 		return True
@@ -669,7 +670,8 @@ class ContractQuoteItem:
 						))
 		
 		for item in Quote.MainItems:
-			item.Delete()
+			if self.service_id == item.PartNumber:
+				item.Delete()
 		## Delete SAQICO, SAQITM  and native quote items - End
 		return True		
 	
@@ -1115,15 +1117,21 @@ class ContractQuoteItem:
 	
 	def _insert_quote_item_forecast_parts(self, **kwargs):
 		##Deleteing the tables before insert the data starts..
-		for table_name in ('SAQIFP', 'SAQITM'):
-			delete_query = "DELETE FROM {ObjectName} WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereCondition}".format(
-					ObjectName=table_name, ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, WhereCondition='',
-				)
-			Sql.RunQuery(delete_query)
+
+		
+		Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
+			ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
+		))
+			
+		Sql.RunQuery("DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
+					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
+				))
+		
 		##Deleteing the tables before insert the data ends..
 		##Delete the native product before adding the product starts..
 		for item in Quote.MainItems:
-			item.Delete()
+			if self.service_id == item.PartNumber:
+				item.Delete()
 		##Delete the native product before adding the product ends..
 		##quote item insert starts..
 		Sql.RunQuery("""
