@@ -1243,7 +1243,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	Sql.RunQuery(insertitm)
 
 Log.Info("Qt_rec_id ->"+str(Param.CPQ_Columns['Quote']))
-Qt_rec_id = Param.CPQ_Columns['Quote'].split("==")[0]
+Qt_rec_id = Param.CPQ_Columns['Quote']
 Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
