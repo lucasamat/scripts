@@ -2030,6 +2030,7 @@ class TreeView:
 									if get_service_name:
 										if ObjName == 'SAQITM':
 											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
+											Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
 										else:
 											NodeText_temp = NodeText
 											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
