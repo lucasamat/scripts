@@ -4203,7 +4203,7 @@ class SYLDRTLIST:
                             #Trace.Write('getval ---------'+str(float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))))
                             tovalue += float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))
                             getamt = str(my_format.format(round(float(tovalue), int(decimal_place))))
-                        #Trace.Write('getamt----'+str(getamt)+'-----tovalue----'+str(tovalue))
+                        Trace.Write('getamt----'+str(getamt)+'-----tovalue----'+str(tovalue))
                         footer += '<th class="text-right">{}</th>'.format(getamt)
                     else:
                         if table_list:
