@@ -2022,16 +2022,21 @@ class TreeView:
 										NodeText = image_url+NodeText
 								##concatenate name with ID
 								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB' or  str(ObjName).strip() == 'SAQIFL') and str(NodeName) == 'FABLOCATION_ID': 
-									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} ".format(ObjName, where_string))
+									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
-									service_id_temp =  NodeText.split('>')
-									service_id_temp = service_id_temp[len(service_id_temp) -1]
+									if str(ObjName).strip() == 'SAQTSV':
+										service_id_temp =  NodeText.split('>')
+										service_id_temp = service_id_temp[len(service_id_temp) -1]
+									elif str(ObjName).strip() == 'SAQITM':
+										service_id_temp = NodeText.split('-')[1]+'- BASE'
+
 									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,service_id_temp ) )
 									if get_service_name:
 										Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
 										if ObjName == 'SAQITM':
+											
 											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
 											Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
 										else:
