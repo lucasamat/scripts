@@ -2118,10 +2118,10 @@ class Entitlements:
 			
 		factcurreny = ""
 		dataent = ""
-		getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_ID = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
-		if getedit_calc:
-			if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
-				dataent = getedit_calc.DT				
+		# getedit_calc = Sql.GetFirst("SELECT PRICE_METHOD,DATA_TYPE as DT FROM PRENVL (NOLOCK) where ENTITLEMENT_ID = 'ADDL_PERF_GUARANTEE_91_1' AND ENTITLEMENT_VALUE_CODE = 'MANUAL INPUT' ")
+		# if getedit_calc:
+		# 	if getedit_calc.PRICE_METHOD == "MANUAL PRICE":				
+		# 		dataent = getedit_calc.DT				
 				# factcurr = Sql.GetFirst("select GLOBAL_CURRENCY as GS from SAQTMT (NOLOCK) where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(str(self.ContractRecordId)))
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
