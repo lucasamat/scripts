@@ -996,7 +996,7 @@ class EntitlementView():
 												try:
 													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
-														#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+														Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															#Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
@@ -1013,7 +1013,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 													else:
-														#Trace.Write(str(disallow_style)+'--disallow_style----'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
+														Trace.Write(str(disallow_style)+'--disallow_style----'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
