@@ -4360,7 +4360,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					ancillary_dict = ""
 					try:
 						ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
-						ancillary_dict = ancillary_dict.replace("}","/").replace("{","|").replace(":","=").replace("'","&#39;")
+						ancillary_dict = ancillary_dict.replace("}","#").replace("{","$$").replace(":","=")
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:
 						ancillary_dict = ""
