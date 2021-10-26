@@ -1037,7 +1037,7 @@ class EntitlementView():
 														)
 												except:
 													Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
-													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
+													#VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
 														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
