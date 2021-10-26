@@ -1178,6 +1178,21 @@ class Entitlements:
 							Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
 					elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
 						Trace.Write("@1181---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+
+						total_price = 0.00
+
+						for i in range(1,11):
+							if i < 9:
+								x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
+							else:
+								x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
+							Trace.Write("x="+str(x))
+							y = "AGS_Z0046_PQB_AP{}PCP"
+							Trace.Write("y="+str(y))
+							if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
+								total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
+						Trace.Write("total price = "+str(total_price))
+
 					# ##A055S000P01-9646  code ends..
 					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 					# 	tbrow={}
