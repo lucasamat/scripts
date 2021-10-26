@@ -1060,7 +1060,8 @@ class Entitlements:
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
 				ancillary_object_dict = {}
-				for key,dict_val in ENT_IP_DICT.items():	
+				for key,dict_val in ENT_IP_DICT.items():
+						
 					getcostbaborimpact =""
 					getpriceimpact = ""
 					calculation_factor =""
@@ -1176,6 +1177,8 @@ class Entitlements:
 						elif entitlement_value == "No":
 							Quote.SetGlobal("IdlingAllowed","No")
 							Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+					elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
+						Trace.Write("@1181---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
 					# ##A055S000P01-9646  code ends..
 					# if key == "AGS_Z0091_KPI_BPTKPI" and str((dict_val).split("||")[0]).strip() == "Yes":
 					# 	tbrow={}
