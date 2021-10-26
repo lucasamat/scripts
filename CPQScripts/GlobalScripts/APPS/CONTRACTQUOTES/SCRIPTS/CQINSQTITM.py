@@ -1371,7 +1371,7 @@ class ContractQuoteItem:
 		total_extended_price = 0.00
 		total_model_price = 0.00
 		items_data = {}
-		get_billing_matrix_year =[]
+		
 		items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID,ISNULL(TOTAL_COST_WOSEEDSTOCK, 0) as TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,ISNULL(TARGET_PRICE, 0) as TARGET_PRICE,ISNULL(YEAR_1, 0) as YEAR_1,ISNULL(YEAR_2, 0) as YEAR_2, ISNULL(YEAR_3, 0) as YEAR_3,ISNULL(YEAR_4, 0) as YEAR_4, ISNULL(YEAR_5, 0) as YEAR_5, CURRENCY, ISNULL(YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR, OBJECT_QUANTITY FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
 		if items_obj:
 			for item_obj in items_obj:
