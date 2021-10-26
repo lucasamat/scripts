@@ -108,7 +108,7 @@ def EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException):
         ToolId = {}
 
         #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
-        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
             
