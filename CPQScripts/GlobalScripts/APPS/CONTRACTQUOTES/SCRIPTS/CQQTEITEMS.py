@@ -273,9 +273,9 @@ except:
     IdlingException = ""
 if Action == "ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
-if Action == "ONCHANGE" and IdleDuration != "":
+if Action == "ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
     ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
-if Action == "ONCHANGE" and IdlingException != "":
+if Action == "ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
