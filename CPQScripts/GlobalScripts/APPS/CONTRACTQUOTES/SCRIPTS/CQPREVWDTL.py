@@ -467,7 +467,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		if str(value.CHECKLIST_ID) != "":
 			sec_str += ('<td class="wid_90 cbc_parent"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
 			sec_str += ('<td class="wid_90 cbc_parent"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
-			sec_str += ('<td class="wid_90 cbc_parent"><textarea id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled></textarea></td>')
+			sec_str += ('<td class="wid_90 cbc_parent"><textarea id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
 		else:
 			sec_str +=('<td class="wid_90 cbc_child"></td>')
 			sec_str +=('<td class="wid_90 cbc_child"></td>')
