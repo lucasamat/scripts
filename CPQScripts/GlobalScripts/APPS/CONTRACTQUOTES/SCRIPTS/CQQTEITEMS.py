@@ -272,12 +272,12 @@ try:
 except:
     Trace.Write("except idling ecxxeption")
     IdlingException = ""
-if Action == "ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
+if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
-if Action == "ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
+if Action == "DURATION ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
     ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
-if Action == "ONCHANGE" and IdlingException == "Yes":
+if Action == " EXCEPTION ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
