@@ -2416,7 +2416,7 @@ class Entitlements:
 		elif Fullresponse['complete'] == 'false':
 			configuration_status = 'INCOMPLETE'
 		else:
-			configuration_status = 'ERROR
+			configuration_status = 'ERROR'
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Products' or self.treetopsuperparentparam == 'Complementary Products' or self.treesupertopparentparam == 'Complementary Products' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQTSE'
