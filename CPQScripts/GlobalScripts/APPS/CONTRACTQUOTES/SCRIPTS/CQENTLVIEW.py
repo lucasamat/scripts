@@ -1479,6 +1479,7 @@ class EntitlementView():
 					)'''
 				
 		##Adding Audit information section in Entitlement starts...
+		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS"):
 			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
