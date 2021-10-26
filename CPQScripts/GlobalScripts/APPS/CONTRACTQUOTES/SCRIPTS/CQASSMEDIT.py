@@ -362,7 +362,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
-				Trace.Write(str(ent_disp_val)+'--ent_disp_val--value code---'+str(attributevalues[attrs])+'--'+str(attrs))
+				#Trace.Write(str(ent_disp_val)+'--ent_disp_val--value code---'+str(attributevalues[attrs])+'--'+str(attrs))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
