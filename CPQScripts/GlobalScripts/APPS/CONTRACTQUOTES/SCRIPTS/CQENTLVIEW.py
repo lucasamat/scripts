@@ -1027,8 +1027,9 @@ class EntitlementView():
 															+ str(val.ENTITLEMENT_DISPLAY_VALUE)
 															+ "</option>"
 														)
+														Trace.Write('selected_option--'+str(selected_option))
 													else:
-														Trace.Write(str(disallow_style)+'--disallow_style----'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
+														Trace.Write(str(disallow_style)+'--disallow_style----'+'-----default----'+str(default)+'----1032---'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
@@ -1039,7 +1040,7 @@ class EntitlementView():
 															+ "</option>"
 														)
 												except:
-													#Trace.Write(str(default)+'except dropdown ---durga--'+str(attrName))
+													Trace.Write(str(default)+'----except dropdown ---durga--'+str(attrName))
 													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
