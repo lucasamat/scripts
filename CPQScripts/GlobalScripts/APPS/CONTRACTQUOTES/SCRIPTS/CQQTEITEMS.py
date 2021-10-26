@@ -91,6 +91,7 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 def EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException):
     getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
+    secstr = ""
     if getRows:
         if getRows.cnt > 1:
             ent_value = "Yes"
