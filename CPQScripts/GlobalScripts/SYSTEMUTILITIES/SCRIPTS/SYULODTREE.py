@@ -2030,15 +2030,15 @@ class TreeView:
 										service_id_temp =  NodeText.split('>')
 										service_id_temp = service_id_temp[len(service_id_temp) -1]
 									elif str(ObjName).strip() == 'SAQITM':
-										service_id_temp = NodeText.split('-')[1]+'- BASE'
+										service_id_temp = NodeText.split('-')[1].strip()+'- BASE'
 
 									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,service_id_temp ) )
 									if get_service_name:
-										Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
+										#Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
 										if ObjName == 'SAQITM':
 											
 											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
-											Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
+											#Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
 										else:
 											NodeText_temp = NodeText
 											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
