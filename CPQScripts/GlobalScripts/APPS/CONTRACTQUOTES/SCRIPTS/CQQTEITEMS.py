@@ -90,24 +90,9 @@ quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 def EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException):
-    getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
-    secstr = ""
-    if getRows:
-        if getRows.cnt > 1:
-            ent_value = "Yes"
-        else:
-            ent_value = "No"
+    
     if IdleNotice == "Restricted Entry(Days)":
-        #ent_value = Quote.GetGlobal("IdlingAllowed")
-        if ent_value == "Yes":
-            yes_selected = ' selected=""'
-            no_selected = ""
-        elif ent_value == "No":
-            yes_selected = ""
-            no_selected =  ' selected=""'
-        ToolId = {}
 
-        #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
         getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Idle Notice Exception'")
         x = getPRTIAV.TOOLIDLING_ID
         y = getPRTIAV.TOOLIDLING_NAME
