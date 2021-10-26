@@ -89,7 +89,7 @@ def LoadSummary():
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
-def EditToolIdlingOnChange(IdleNotice,IdleDuration):
+def EditToolIdlingOnChange(IdleNotice,IdleDuration,IdlingException):
     getRows = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id))
     if getRows:
         if getRows.cnt > 1:
