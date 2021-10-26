@@ -117,6 +117,8 @@ class SYLDRTLIST:
             contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
         except:
             contract_quote_record_id = ''    
+        if current_prod == "vc_config_cpq":
+            current_prod = "Sales"
         Trace.Write('139---'+str(RECORD_ID))
         
         #object level permissions
