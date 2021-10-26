@@ -1254,7 +1254,7 @@ Log.Info("LEVEL ->"+str(LEVEL))
 try:
 	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
 	Log.Info("ancillary_dict-try-"+str(ancillary_dict))
-	ancillary_dict = eval(str(ancillary_dict.replace("&#39;","'")))
+	ancillary_dict = eval(str(ancillary_dict.replace(';39;',"'").replace('_;',"{").replace("$;","}").replace("=",":")))
 except Exception as e:
 	Log.Info("ancillary_dict--"+str(e))
 	ancillary_dict = {}
