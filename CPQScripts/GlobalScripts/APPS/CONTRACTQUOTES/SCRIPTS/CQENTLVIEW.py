@@ -231,7 +231,6 @@ class EntitlementView():
 			validation_dict = {}
 			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
 			# where = ""
-			Trace.Write("Fullresponse_J "+str(Fullresponse))
 			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
@@ -962,11 +961,11 @@ class EntitlementView():
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
-									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
+									Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
 									
-									if DType == "Drop Down" :
+									if DType == "Drop Down" or DType == "DropDown" :
 										
-										#Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
+										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 										
 										
