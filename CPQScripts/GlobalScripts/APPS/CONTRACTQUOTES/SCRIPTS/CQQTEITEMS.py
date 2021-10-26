@@ -123,13 +123,13 @@ def EditToolIdling():
                 i += 1
                 getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
                 if getDefaultValue:
-                    if x.replace(" ","_") == "Idle Notice":
+                    if x == "Idle Notice":
                         Trace.Write("Idle Notice")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
-                    elif x.replace(" ","_") == "Idle Duration":
+                    elif x == "Idle Duration":
                         Trace.Write("Idle Duration")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
-                    elif x.replace(" ","_") == "Idling Exception":
+                    elif x == "Idling Exception":
                         Trace.Write("Idle Exception")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     else:
