@@ -254,12 +254,22 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
 Action = Param.ACTION
 try:
+    Trace.Write("try idle notice")
     IdleNotice = Param.IDLENOTICE
+except:
+    Trace.Write("except idle notice")
+    IdleNotice = ""
+try:
+    Trace.Write("try idle duration")
     IdleDuration = Param.IDLEDURATION
+except:
+    Trace.Write("except idle duration")
+    IdleDuration = ""
+try:
+    Trace.Write("try idling ecxxeption")
     IdlingException = Param.IDLINGEXCEPTION
 except:
-    IdleNotice = ""
-    IdleDuration = ""
+    Trace.Write("except idling ecxxeption")
     IdlingException = ""
 if Action == "ONCHANGE" and IdleNotice != "":
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
