@@ -976,7 +976,7 @@ class EntitlementView():
 									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
 									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
 									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
-									Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
+									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
 									
 									if DType == "Drop Down":
 										
