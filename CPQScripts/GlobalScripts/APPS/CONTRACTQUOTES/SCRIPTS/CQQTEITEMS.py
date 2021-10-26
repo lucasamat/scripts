@@ -262,13 +262,13 @@ except:
     IdleNotice = ""
 try:
     Trace.Write("try idle duration")
-    IdleDuration = Param.IDLEDURATION
+    IdleDuration = str(Param.IDLEDURATION)
 except:
     Trace.Write("except idle duration")
     IdleDuration = ""
 try:
     Trace.Write("try idling ecxxeption")
-    IdlingException = Param.IDLINGEXCEPTION
+    IdlingException = str(Param.IDLINGEXCEPTION)
 except:
     Trace.Write("except idling ecxxeption")
     IdlingException = ""
