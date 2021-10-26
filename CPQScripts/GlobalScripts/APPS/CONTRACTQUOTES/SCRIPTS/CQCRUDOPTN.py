@@ -4358,8 +4358,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				else:
 					#ENTITLEMENT SV TO CE AND GB
 					ancillary_dict = ""
-					try:
-						ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
+					try: 
+						ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
 						ancillary_dict = ancillary_dict.replace("'",";39;").replace('{',"_;").replace("}","$;").replace(":","=")
 						#Quote.SetGlobal("ancillary_object_dict","")
 					except:

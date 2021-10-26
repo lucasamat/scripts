@@ -1636,8 +1636,8 @@ class Entitlements:
 						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
 						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
 					#Trace.Write("updateentXML-970------"+str(updateentXML))
-				
-				Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
+				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
+				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				#Trace.Write('configuration_status----'+str(configuration_status))
 				UpdateEntitlement = " UPDATE {} SET ENTITLEMENT_XML= REPLACE('{}','&apos;',''''),CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified =GETDATE(),CONFIGURATION_STATUS = '{}' WHERE  {} ".format(tableName, updateentXML,userId,configuration_status,whereReq)
 				###to update match id at all level while saving starts
@@ -2484,7 +2484,7 @@ class Entitlements:
 	
 		if ENT_IP_DICT != '':
 			
-			ancillary_dict = Quote.GetGlobal("ancillary_object_dict")
+			ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
 			
 			Trace.Write("ancillary_dict--"+str(ancillary_dict))
 			Trace.Write("inside Attr List------> "+str(AttributeList))
