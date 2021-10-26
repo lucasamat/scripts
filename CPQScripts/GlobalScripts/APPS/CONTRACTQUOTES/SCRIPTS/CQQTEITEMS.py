@@ -255,7 +255,7 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 Action = Param.ACTION
 try:
     Trace.Write("try idle notice")
-    IdleNotice = Param.IDLENOTICE
+    IdleNotice = str(Param.IDLENOTICE)
     Trace.Write("IDLE NOTICE="+str(IdleNotice))
 except:
     Trace.Write("except idle notice")
