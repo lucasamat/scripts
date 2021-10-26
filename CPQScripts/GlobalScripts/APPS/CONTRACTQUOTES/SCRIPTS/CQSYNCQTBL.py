@@ -588,7 +588,8 @@ class SyncQuoteAndCustomTables:
 							"CANCELLATION_PERIOD":"90 DAYS",
 							"COMPANY_ID":salesorg_obj.COMPANY_ID,
 							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
-							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID
+							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID,
+							"HLV_ORG_BUN":"AGS - SSC"
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
