@@ -344,7 +344,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						if get_display_val:
 							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
-
+				
 				if attrs == "AGS_Z0016_NET_PRICNG":
 					if type(eval(str(ent_val_code))) is list:
 						ent_val = str(tuple(ent_val_code)).replace(',)',')')
