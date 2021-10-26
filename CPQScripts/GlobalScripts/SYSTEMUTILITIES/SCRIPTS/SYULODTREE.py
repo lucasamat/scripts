@@ -2026,8 +2026,11 @@ class TreeView:
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
+									service_id_temp =  NodeText.split('>')
+									service_id_temp = service_id_temp[len(service_id_temp) -1]
 									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,NodeText ) )
 									if get_service_name:
+										Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
 										if ObjName == 'SAQITM':
 											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
 											Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
