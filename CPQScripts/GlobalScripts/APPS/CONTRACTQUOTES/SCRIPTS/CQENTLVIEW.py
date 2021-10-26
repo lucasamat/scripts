@@ -980,7 +980,7 @@ class EntitlementView():
 									
 									if DType == "Drop Down":
 										
-										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
+										#Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 										
 										
