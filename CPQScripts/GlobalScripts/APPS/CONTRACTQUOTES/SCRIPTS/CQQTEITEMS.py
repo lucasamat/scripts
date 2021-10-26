@@ -242,6 +242,9 @@ if Action == "ONCHANGE":
     IdleNotice = Param.IDLENOTICE
     IdleDuration = Param.IDLEDURATION
     IdlingException = Param.IDLINGEXCEPTION
+    Trace.Write("IdleNotice ="+str(IdleNotice))
+    Trace.Write("IdleDuration ="+str(IdleDuration))
+    Trace.Write("IdlingException ="+str(IdlingException))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "ONCHANGE":
