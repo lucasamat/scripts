@@ -721,6 +721,7 @@ class ContractQuoteItem:
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:
+				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 000 ==> ")
 				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
@@ -764,6 +765,7 @@ class ContractQuoteItem:
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:		
+				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 111 ==> ")
 				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
