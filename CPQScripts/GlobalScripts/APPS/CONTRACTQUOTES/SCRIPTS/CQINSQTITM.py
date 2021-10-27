@@ -63,12 +63,14 @@ class ContractQuoteItem:
 		Sql.RunQuery(delete_statement) 
 
 		quote_line_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQICO (NOLOCK) QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		'''
 		if self.service_id == 'Z0091':
 			fetch_distinct_sid_quote = Sql.GetList(""" SELECT DISTINCT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE 'Z0091%' OR PAR_SERVICE_ID  LIKE 'Z0091%' """)
 			if fetch_distinct_sid_quote:
 				for get_sid in fetch_distinct_sid_quote:
 					Log.Info("delete service if z0091==>" +str(get_sid.SERVICE_ID))
 					Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=get_sid.SERVICE_ID))
+		'''
 		if not quote_line_item_obj:
 			self._native_quote_edit()
 			Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
@@ -1112,6 +1114,7 @@ class ContractQuoteItem:
 		if self.service_id == "Z0101":
 			Log.Info("In Z0101")
 			self._insert_quote_item_forecast_parts()
+			
 		elif not quote_item_obj or self.service_id == 'Z0016':
 			Log.Info("In Z0016")
 			self._quote_items_insert()				
@@ -1599,7 +1602,7 @@ class ContractQuoteItem:
 						
 					) AS IQ ON IQ.CpqTableEntryId = SAQSCO.CpqTableEntryId	
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID 
-					       
+						
 					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCO.SERVICE_ID 
 					JOIN SAQTRV (NOLOCK) ON  SAQTRV.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 					LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
