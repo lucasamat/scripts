@@ -2171,7 +2171,7 @@ class Entitlements:
 				# if factcurr:
 				# 	factcurreny = factcurr.GS
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
-		Trace.Write('attributesallowedlst---'+str(attributesallowedlst))
+		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesrequired_list
@@ -2427,7 +2427,7 @@ class Entitlements:
 		#self.ent_update(tableName,valcode, AttributeValCoderes, cpsmatc_incr,ConfigurationId,where)
 		Trace.Write("Updated Successfully!!")
 		#Trace.Write('response2--Fullresponse--------'+str(Fullresponse))
-		Trace.Write("attributeEditonlylst----durga----"+str(attributeEditonlylst))
+		Trace.Write("attriburesrequired_list-------"+str(attriburesrequired_list))
 		'''try:			
 			CQENTIFLOW.iflow_entitlement(tableName,where)
 		except Exception, e:
