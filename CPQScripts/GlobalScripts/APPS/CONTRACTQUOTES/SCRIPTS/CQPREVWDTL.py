@@ -440,12 +440,14 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	rev_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID ='{quote_recid}' and QTEREV_RECORD_ID ='{quote_revision_recid}' ".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 	if rev_status.REVISION_STATUS == "APPROVED":
 		Trace.Write("if approved")
+		edit_var = ""
 	else:
-		Trace.Write("else approved")	
+		Trace.Write("else approved")
+		edit_var ="cbcEDIT(this)"	
 	sec_str += (
 		'<table id="'
 		+ str(table_id)
-		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true" class="table table-hover JColResizer" ondblclick="cbcEDIT(this)"> <thead><tr>'
+		+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true" class="table table-hover JColResizer" ondblclick="'+str(edit_var)+'"> <thead><tr>'
 	)
 	
 	for key, invs in enumerate(list(ordered_keys)):
