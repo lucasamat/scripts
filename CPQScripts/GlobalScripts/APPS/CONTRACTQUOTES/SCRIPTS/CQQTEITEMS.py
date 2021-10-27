@@ -60,11 +60,11 @@ def LoadSummary():
                     sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
 
                 
-                getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
-                if getAllValues:
-                    for val in getAllValues:
-                        sec_str += '<option id="AGS_'+val.TOOLIDLING_VALUE_CODE+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
-                sec_str += '</select></td></tr>'
+                    getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
+                    if getAllValues:
+                        for val in getAllValues:
+                            sec_str += '<option id="AGS_'+val.TOOLIDLING_VALUE_CODE+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
+                    sec_str += '</select></td></tr>'
         sec_str += "</tbody></table>"
     elif ent_value == "No":
         yes_selected = ""
