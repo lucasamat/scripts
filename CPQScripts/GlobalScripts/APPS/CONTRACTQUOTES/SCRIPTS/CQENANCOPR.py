@@ -474,6 +474,8 @@ class AncillaryProductOperation:
 					SERVICE_DESCRIPTION,
 					SERVICE_ID,
 					SERVICE_RECORD_ID,
+					CONTRACT_VALID_FROM,
+					CONTRACT_VALID_TO,
 					INCLUDED 
 					FROM SAQSCA (NOLOCK)
 					WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND SERVICE_ID ='{par_service_id}' {addtional_where}  AND ASSEMBLY_ID NOT IN (SELECT ASSEMBLY_ID FROM SAQSCA WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'  AND QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PAR_SERVICE_ID ='{par_service_id}' AND SERVICE_ID ='{serviceid}' )
