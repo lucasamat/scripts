@@ -703,18 +703,18 @@ class AncillaryProductOperation:
 				Log.Info('@qtqsce_anc_query-renewal----179=---Qt_rec_id--'+str(qtqsce_anc_query))
 				Sql.RunQuery(qtqsce_anc_query)
 
-				Sql.RunQuery("""UPDATE SAQSCE
-								SET
-								ENTITLEMENT_GROUP_ID = OQ.RowNo
-								FROM SAQSCE (NOLOCK)
-								INNER JOIN (
-									SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
-									SELECT DISTINCT SRC.QUOTE_RECORD_ID,SRC.QTEREV_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
-									FROM SAQSCE (NOLOCK) SRC
-									JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
-									WHERE SRC.QUOTE_RECORD_ID = '{QuoteRecordId}'   AND SRC.QTEREV_RECORD_ID = '{revision_rec_id}' AND SRC.SERVICE_ID = '{service_id}' )AS IQ
-								)AS OQ
-								ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML AND OQ.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID""".format(QuoteRecordId=self.contract_quote_record_id , revision_rec_id = self.contract_quote_revision_record_id ,service_id = self.service_id ))
+				# Sql.RunQuery("""UPDATE SAQSCE
+				# 				SET
+				# 				ENTITLEMENT_GROUP_ID = OQ.RowNo
+				# 				FROM SAQSCE (NOLOCK)
+				# 				INNER JOIN (
+				# 					SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
+				# 					SELECT DISTINCT SRC.QUOTE_RECORD_ID,SRC.QTEREV_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
+				# 					FROM SAQSCE (NOLOCK) SRC
+				# 					JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
+				# 					WHERE SRC.QUOTE_RECORD_ID = '{QuoteRecordId}'   AND SRC.QTEREV_RECORD_ID = '{revision_rec_id}' AND SRC.PAR_SERVICE_ID = '{service_id}' )AS IQ
+				# 				)AS OQ
+				# 				ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML AND OQ.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID""".format(QuoteRecordId=self.contract_quote_record_id , revision_rec_id = self.contract_quote_revision_record_id ,service_id = self.service_id ))
 			
 
 				# Duplicate records removed from assembly level entitlement in offering - Start
