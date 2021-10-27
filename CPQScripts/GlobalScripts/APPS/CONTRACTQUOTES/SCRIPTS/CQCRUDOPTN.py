@@ -4631,6 +4631,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				FROM SAQTMT (NOLOCK) JOIN SAQTSV on SAQTSV.QUOTE_ID = SAQTMT.QUOTE_ID
 				
 				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
+				AND SAQTSV.SERVICE_ID NOT IN('Z0101')
 				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')											
 		""".format(                        
 			QuoteRecordId= self.contract_quote_record_id,
