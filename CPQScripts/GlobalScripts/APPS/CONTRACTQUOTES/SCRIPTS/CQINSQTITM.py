@@ -1287,6 +1287,13 @@ class ContractQuoteItem:
 		spare_quote_item_obj = Sql.GetFirst("SELECT LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		if spare_quote_item_obj:
 			##quote item spare parts insert starts..
+			part_line_id_generation = "ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) + {QuoteExistingLineId} as PART_LINE_ID".format(QuoteExistingLineId=quote_item_line_obj.EQUIPMENT_LINE_ID)
+
+			quote_service_pare_quote_item_obj = Sql.GetFirst("SELECT PAR_SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(PAR_SERVICE_ID,'') <> ''".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			if quote_service_pare_quote_item_obj:
+				part_line_id_generation = "{QuoteExistingLineId} + 1 as PART_LINE_ID".format(QuoteExistingLineId=quote_item_line_obj.EQUIPMENT_LINE_ID)
+			
+				
 			Sql.RunQuery(
 						"""
 						INSERT SAQIFP (
@@ -1331,7 +1338,7 @@ class ContractQuoteItem:
 							SAQSPT.DELIVERY_MODE,
 							SAQSPT.EXTENDED_UNIT_PRICE,
 							'{LineItemId}' as LINE_ITEM_ID,
-							ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) + {QuoteExistingLineId} as PART_LINE_ID,
+							{PartLineId},
 							SAQSPT.PART_DESCRIPTION,
 							SAQSPT.PART_NUMBER,
 							SAQSPT.PART_RECORD_ID,
@@ -1373,7 +1380,7 @@ class ContractQuoteItem:
 							status='ACQUIRING...',
 							UserId=self.user_id,
 							UserName=self.user_name,
-							QuoteExistingLineId=quote_item_line_obj.EQUIPMENT_LINE_ID,
+							PartLineId=part_line_id_generation,
 							LineItemId=spare_quote_item_obj.LINE_ITEM_ID
 						)
 					)
