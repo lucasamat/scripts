@@ -186,6 +186,37 @@ def SaveToolIdling(VALUES):
         if "28 Days" in y or "30 Days" in y:
             #y = ord(y)
             a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,User.UserName,y.encode('utf-8').decode('utf-8'),x.replace("_"," ")))
+        elif "Idle Notice Exception" in x.replace("_"," ") or "Idle Duration Exception" in x.replace("_"," ") or "Idling Exception Notes" in x.replace("_"," "):
+            Sql.RunQuery(""" INSERT SAQTDA(
+                QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+                QUOTE_ID,
+                QUOTE_RECORD_ID,
+                QTEREV_ID,
+                QTEREV_RECORD_ID,
+                TOLIDLVAL_RECORD_ID,
+                TOOLIDLING_DISPLAY_VALUE,
+                TOOLIDLING_ID,
+                TOOLIDLING_NAME,
+                TOOLIDLING_RECORD_ID,
+                TOOLIDLING_VALUE_CODE,
+                CPQTABLEENTRYADDEDBY,
+                CPQTABLEENTRYDATEADDED
+                ) SELECT 
+                CONVERT(VARCHAR(4000),NEWID()),
+                '{}' AS QUOTE_ID,
+                '{}' AS QUOTE_RECORD_ID,
+                '{}' AS QTEREV_ID,
+                '{}' AS QTEREV_RECORD_ID,
+                '',
+                '{}',
+                PRTIDA.TOOLIDLING_ID,
+                PRTIDA.TOOLIDLING_NAME,
+                PRTIDA.TOOLIDLING_RECORD_ID,
+                '{}',
+                '{}' AS CPQTABLEENTRYADDEDBY,
+                GETDATE() AS CPQTABLEENTRYDATEADDED
+                FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = '{}'
+                """.format(QuoteId,QuoteRecordId,QuoteRevisionId,QuoteRevisionRecordId,y,y,User.UserName,x.replace("_"," ")))
         else:    
             Sql.RunQuery(""" INSERT SAQTDA(
                 QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
