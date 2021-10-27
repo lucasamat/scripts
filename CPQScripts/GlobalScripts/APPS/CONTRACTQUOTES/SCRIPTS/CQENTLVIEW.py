@@ -616,7 +616,7 @@ class EntitlementView():
 									if attr_value == "DefaultValue":
 										attr_value = ''
 									sec_str1 += (
-										'<input class="form-control '+str(disable_edit)+'" id = "'
+										'<input maxlength="255" class="form-control '+str(disable_edit)+'" id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
@@ -633,7 +633,7 @@ class EntitlementView():
 									getinval = ''
 
 								sec_str1 += (
-									'<input class="form-control '+str(disable_edit)+'" id = "'
+									'<input maxlength="255" class="form-control '+str(disable_edit)+'" id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
