@@ -3963,7 +3963,7 @@ def POPUPLISTVALUEADDNEW(
 			table_id = "contact_replace_addnew_model"
 			Header_details = {
 				"CONTACT_RECORD_ID": "KEY",
-				"CONTACT_ID": "CONTACT ID"
+				"CONTACT_ID": "CONTACT ID",
 				"CONTACT_NAME": "CONTACT NAME",
 				"EMAIL": "EMAIL",
 				"PHONE":"PHONE",
