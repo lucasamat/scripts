@@ -700,7 +700,7 @@ class ContractQuoteItem:
 			self.quote_line_item_temp_table, self.pricing_temp_table = self._create_temp_table_z0016()			
 			self._delete_quote_items()			
 		# Z0016 - End
-
+		quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		# Non tool base quote item insert
 		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if service_obj:
@@ -722,7 +722,7 @@ class ContractQuoteItem:
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:
 				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 000 ==> ")
-				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string)
+				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
 			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
@@ -749,7 +749,7 @@ class ContractQuoteItem:
 		# Tool base quote item insert
 		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID, MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if service_obj:
-			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			
 			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Update - Start
 			item_join_string = ""			
