@@ -1291,7 +1291,7 @@ class EntitlementView():
 											#sec_str_faccur += str(val.PRICE_METHOD)
 																			
 									if attrSysId in attriburesrequired_list:
-										required_symbol_class = 'required_symbol'
+										required_symbol_class = str(attrSysId)+'required_symbol'
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
 									else:
 										required_symbol_class = get_requiredicon = ""
@@ -1422,7 +1422,7 @@ class EntitlementView():
 									)
 								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
 								if attrSysId in attriburesrequired_list:
-									required_symbol_class = 'required_symbol'
+									required_symbol_class = str(attrSysId)+'required_symbol'
 									get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
 								else:
 									required_symbol_class = ""
