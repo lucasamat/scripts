@@ -54,6 +54,7 @@ class ContractQuoteItem:
 	def _quote_item_delete_process(self):
 		for delete_object in ['SAQIAE','SAQICA','SAQIEN','SAQICO']:
 			delete_statement = "DELETE DT FROM " +str(delete_object)+" DT JOIN SAQSCE ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND SAQSCE.CONFIGURATION_STATUS ='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))
+			Log.Info(str(self.contract_quote_id)+" <== delete_statement ==> "+str(delete_statement))
 			Sql.RunQuery(delete_statement)
 
 		delete_statement = "DELETE DT FROM SAQIGB DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.GREENBOOK NOT IN(SELECT CO.GREENBOOK FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
