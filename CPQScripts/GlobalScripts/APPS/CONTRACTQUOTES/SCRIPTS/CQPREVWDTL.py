@@ -495,11 +495,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 
 def EditCBC(Qt_rec_id, Quote, MODE):		
 	Trace.Write('CBC Update')
-	min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	#min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	for val in values:
-		order = int(val["order"])
-		order = order + min.id - 1
-		Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND CpqTableEntryId = '{id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",id = order,service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+		#order = int(val["order"])
+		#order = order + min.id - 1
+		Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",id = order,service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	return True
 	
 
