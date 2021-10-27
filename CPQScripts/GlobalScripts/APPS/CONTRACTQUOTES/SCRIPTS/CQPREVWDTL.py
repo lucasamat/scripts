@@ -437,7 +437,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	]            
 
 	sec_str = '<div id="container"><div class="bootstrap-table">'
-	
+	rev_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID ='{quote_recid}' and QTEREV_RECORD_ID ='{quote_revision_recid}' ".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
+	if rev_status.REVISION_STATUS == "APPROVED":
+		Trace.Write("if approved")
+	else:
+		Trace.Write("else approved")	
 	sec_str += (
 		'<table id="'
 		+ str(table_id)
