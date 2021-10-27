@@ -49,7 +49,8 @@ try:
 			
 			
 			if str(tbl_name).upper() == 'SAACCT':
-				primaryQueryItems = SqlHelper.GetFirst( "sp_executesql @statement = N'insert SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,CPQTABLEENTRYDATEADDED)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''CONTACT_PERSON'',GetDate()' ")	
+				if len(rebuilt_data)> 0:
+					primaryQueryItems = SqlHelper.GetFirst( "sp_executesql @statement = N'insert SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_NAME,CPQTABLEENTRYDATEADDED)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''CONTACT_PERSON'',GetDate()' ")	
 			
 			
 			else:
