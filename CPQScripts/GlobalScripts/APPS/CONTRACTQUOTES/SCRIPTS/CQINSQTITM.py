@@ -1770,7 +1770,7 @@ class ContractQuoteItem:
 					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} AND ISNULL(SAQSCO.INCLUDED,'') != 'CHAMBER' 
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
-				JoinConditionString=join_condition_string, JoinString=join_string, WhereString=where_string, EquipmentsCount=1,service_id = self.service_id)
+				JoinConditionString=join_condition_string, JoinString=join_string, WhereString=where_string, EquipmentsCount=0,service_id = self.service_id)
 			)
 				
 		##inserting assembly to SAQICO if a equipemnt is chamber based FTS A055S000P01-6826
