@@ -1094,16 +1094,16 @@ class Entitlements:
 						else:
 							ancillary_object_dict['A6200'] = "DELETE"
 							#ancillary_flag = "DELETE"
-					elif key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091":
+					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091") or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
 						ancillary_object = 'Z0046'
 						if entitlement_value == "Yes":
 							ancillary_object_dict['Z0046'] = "INSERT"
 							#Quote.SetGlobal("ANCILLARY","YES")
 							#ancillary_flag = "INSERT"
-						else:
+						elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and entitlement_value.upper() !='YES')  and (key == "AGS_{}_PQB_PPCPRM".format(serviceId) and entitlement_value.upper() !='YES' ) :
 							ancillary_object_dict['Z0046'] = "DELETE"
 							#Quote.SetGlobal("ANCILLARY","NO")
-							ancillary_flag = "DELETE"
+							#ancillary_flag = "DELETE"
 						
 						
 					# ##calling script ancillary insert	
