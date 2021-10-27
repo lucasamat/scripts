@@ -582,7 +582,7 @@ class AncillaryProductOperation:
 						ent_desc = ''
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS TIED TO KPI":
 						AttributeID_Pass = attrs
-						NewValue = 'YES'
+						NewValue = 'Yes'
 
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
