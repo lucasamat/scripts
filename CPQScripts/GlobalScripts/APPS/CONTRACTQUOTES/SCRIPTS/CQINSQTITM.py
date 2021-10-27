@@ -84,7 +84,7 @@ class ContractQuoteItem:
 
 	def _quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
 
-		Log.Info(str(self.contract_quote_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
+		Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
 		# Insert SAQITM - Start
 		Sql.RunQuery("""
 					INSERT SAQITM (
