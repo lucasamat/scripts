@@ -46,13 +46,13 @@ def LoadSummary():
             i += 1
             getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
             if getDefaultValue:
-                if x == "Idle Notice":
+                if x == "Idle Notice Exception":
                     Trace.Write("Idle Notice")
                     sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
-                elif x == "Idle Duration":
+                elif x == "Idle Duration Exception":
                     Trace.Write("Idle Duration")
                     sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
-                elif x == "Idling Exception":
+                elif x == "Idling Exception Notes":
                     Trace.Write("Idle Exception")
                     sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
                 else:
