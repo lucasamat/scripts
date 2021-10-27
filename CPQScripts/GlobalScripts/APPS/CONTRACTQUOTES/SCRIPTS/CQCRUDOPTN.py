@@ -852,11 +852,13 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						UserId=self.user_id
 					)
 				)
+				'''
 				self._process_query(
 					"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'  and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
 						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					)
 				)
+				'''
 				get_child_service_id = Sql.GetFirst("""SELECT SAP_PART_NUMBER FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'  AND MAMTRL.IS_SPARE_PART = 1 """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 				if get_child_service_id:
 					if get_child_service_id.SAP_PART_NUMBER == 'Z0101':
@@ -1222,12 +1224,13 @@ class PartsListModel(ContractQuoteCrudOpertion):
 						UserId=self.user_id
 					)
 				)
-
+			'''
 			self._process_query(
 						"""DELETE FROM SYSPBT WHERE SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' and SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' and SYSPBT.BATCH_STATUS = 'IN PROGRESS'""".format(
 							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 						)
 					)
+			'''
 			get_child_service_id = Sql.GetFirst("""SELECT SAP_PART_NUMBER FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'  AND MAMTRL.IS_SPARE_PART = 1 """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 			if get_child_service_id:
 				if get_child_service_id.SAP_PART_NUMBER == 'Z0101':
