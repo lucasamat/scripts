@@ -719,15 +719,15 @@ class AncillaryProductOperation:
 	def _delete_operation(self):
 		delete_obj_list = []
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQITM"]
 		elif self.tablename == "SAQSFE":
-			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO"]
 		elif self.tablename == "SAQSGE":
-			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE"] 
+			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE","SAQICO"] 
 		elif self.tablename == "SAQSCE":
-			delete_obj_list = ["SAQSCO","SAQSCA","SAQSCE","SAQSAE"] 
+			delete_obj_list = ["SAQSCO","SAQSCA","SAQSCE","SAQSAE","SAQICO"] 
 		elif self.tablename == "SAQSAE":
-			delete_obj_list = ["SAQSCA","SAQSAE"]
+			delete_obj_list = ["SAQSCA","SAQSAE","SAQICO"]
 		
 		# if self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
