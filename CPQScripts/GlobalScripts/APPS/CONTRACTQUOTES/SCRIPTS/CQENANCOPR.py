@@ -497,7 +497,7 @@ class AncillaryProductOperation:
 	def _insert_service_ent(self):
 		get_service_details = Sql.GetList("SELECT SAQTSV.* FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  AND PAR_SERVICE_ID = '{}' AND MATERIALCONFIG_TYPE != 'SIMPLE MATERIAL'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
 		for addon in get_service_details:
-			ent_disp_val = ent_val_code = ''
+			ent_disp_val = ent_val_code = AttributeID_Pass = NewValue = ''
 			get_tooltip = ''
 			tbrow = {}
 			anc_request_url="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
@@ -580,6 +580,10 @@ class AncillaryProductOperation:
 						ent_desc = ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME
 					else:
 						ent_desc = ''
+					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS TIED TO KPI":
+						AttributeID_Pass = attrs
+						NewValue = 'YES'
+
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 					<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
@@ -622,7 +626,15 @@ class AncillaryProductOperation:
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-	
+				if addon.SERVICE_ID == "Z0046":
+					try:						
+						add_where =''
+						ServiceId = addon.SERVICE_ID
+						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(addon.QUOTE_RECORD_ID,addon.SERVICE_ID,self.contract_quote_revision_record_id)
+						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+					except:
+						Trace.Write('error--296')
 	
 	def _entitlement_rolldown(self):
 		try:
