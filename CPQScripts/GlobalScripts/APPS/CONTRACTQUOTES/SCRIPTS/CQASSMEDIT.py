@@ -404,7 +404,10 @@ def rolldown(where_cond):
 
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
-ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+try:
+	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+except:
+	ContractRecordId = ''
 revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 Trace.Write("check script called")
 try:
@@ -445,6 +448,7 @@ elif ACTION == 'EDIT_ASSEMBLY':
 
 elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 6:
 	Trace.Write('inside update')
+	Log.Info('ent_params_lis----------')
 	ent_where = ent_params_list[0]
 	ent_add_where = ent_params_list[1]
 	ent_attr_id = ent_params_list[2]
