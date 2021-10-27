@@ -211,7 +211,7 @@ def SaveToolIdling(VALUES):
                 '{}',
                 PRTIDA.TOOLIDLING_ID,
                 PRTIDA.TOOLIDLING_NAME,
-                PRTIDA.TOOLIDLING_RECORD_ID,
+                PRTIDA.TOLIDLATT_RECORD_ID,
                 '{}',
                 '{}' AS CPQTABLEENTRYADDEDBY,
                 GETDATE() AS CPQTABLEENTRYDATEADDED
