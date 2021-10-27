@@ -12,9 +12,7 @@ import re
 import System.Net
 import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
-#from datetime import datetime
-#from datetime import datetime
-#import time
+
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
