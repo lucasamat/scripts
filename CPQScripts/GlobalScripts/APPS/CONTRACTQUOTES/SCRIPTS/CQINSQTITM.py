@@ -719,7 +719,7 @@ class ContractQuoteItem:
 			# Insert SAQITM - Start
 			
 			if service_obj.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
-				quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+				
 				item_where_string = item_where_string.replace("SAQSCE","SAQSCO")
 				item_join_string = item_join_string.replace("SAQSCE","SAQSCO")
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
