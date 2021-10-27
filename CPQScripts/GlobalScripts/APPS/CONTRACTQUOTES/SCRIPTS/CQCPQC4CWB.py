@@ -23,7 +23,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
     if writeback == "quote_header":
         revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         
-        quote_obj = Sql.GetFirst("select NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        quote_obj = Sql.GetFirst("select ISNULL(NET_VALUE,0) AS NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         
         opportunity_obj = Sql.GetFirst("select ISNULL(C4C_QTEOBJ_ID,0) AS C4C_QTEOBJ_ID FROM SAOPQT WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         c4c_quote_object_id = opportunity_obj.C4C_QTEOBJ_ID
