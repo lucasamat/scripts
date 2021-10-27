@@ -1327,13 +1327,14 @@ class PartsListModel(ContractQuoteCrudOpertion):
 							BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 						)
 					)
-			get_child_service_id = Sql.GetFirst("""SELECT SAP_PART_NUMBER FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'  AND MAMTRL.IS_SPARE_PART = 1 """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+			
+			get_child_service_id = Sql.GetFirst("""SELECT SAQTSV.SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSPT.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE SAQTSV.QUOTE_RECORD_ID = '{}' AND SAQTSV.QTEREV_RECORD_ID = '{}' AND SAQTSV.PAR_SERVICE_ID = '{}'""".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 			if get_child_service_id:
-				if get_child_service_id.SAP_PART_NUMBER == 'Z0101':
-						spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SAP_PART_NUMBER))
-						if spareparts_config_status_count.COUNT > 0:
-							data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SAP_PART_NUMBER, "ActionType":'INSERT_LINE_ITEMS'})
-
+				if get_child_service_id.SERVICE_ID == 'Z0101':
+					spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
+					if spareparts_config_status_count.COUNT > 0:
+						data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
+						
 
 class ToolRelocationModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
