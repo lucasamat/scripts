@@ -762,6 +762,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				self._process_query("""INSERT INTO SYSPBT(BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) 
 										SELECT * FROM (VALUES {}) QS (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID)""".format(spare_parts_details_joined))
 				self._process_query("""DELETE SYSPBT FROM SYSPBT JOIN SAQSPT ON SYSPBT.SAP_PART_NUMBER = SAQSPT.PART_NUMBER AND SYSPBT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND  SYSPBT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID WHERE SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				parent_based_condition = ""
+				if self.tree_param == 'Z0091':
+					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"
 				self._process_query("""
 									INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
 									SELECT DISTINCT
@@ -844,12 +847,13 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 									JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SYSPBT.QUOTE_RECORD_ID
 									JOIN SAQTSV (NOLOCK) ON SAQTSV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID AND SAQTSV.PAR_SERVICE_ID = '{ServiceId}'
 									JOIN MAMSOP (NOLOCK) ON MAMSOP.MATERIAL_RECORD_ID = MAMTRL.MATERIAL_RECORD_ID AND MAMSOP.SALESORG_RECORD_ID = SAQTSV.SALESORG_RECORD_ID
-									WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 ) IQ
+									WHERE SYSPBT.BATCH_STATUS = 'IN PROGRESS' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}' AND SYSPBT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND MAMTRL.PRODUCT_TYPE IS NULL AND MAMTRL.IS_SPARE_PART = 1 {ParentBasedCondition}) IQ
 									""".format(
 						ServiceId=self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
-						UserId=self.user_id
+						UserId=self.user_id,
+						ParentBasedCondition=parent_based_condition
 					)
 				)
 				self._process_query(
@@ -857,12 +861,13 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						BatchGroupRecordId=batch_group_record_id,RevisionRecordId=self.quote_revision_record_id
 					)
 				)
-				get_child_service_id = Sql.GetFirst("""SELECT SAP_PART_NUMBER FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'  AND MAMTRL.IS_SPARE_PART = 1 """.format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
+				
+				get_child_service_id = Sql.GetFirst("""SELECT SERVICE_ID FROM SAQTSV (NOLOCK) JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_ID = SAQTSV.SERVICE_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSV.QUOTE_RECORD_ID AND SAQSPT.QTEREV_RECORD_ID = SAQTSV.QTEREV_RECORD_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'""".format(self.contract_quote_record_id,self.quote_revision_record_id,self.tree_param))
 				if get_child_service_id:
-					if get_child_service_id.SAP_PART_NUMBER == 'Z0101':
-						spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SAP_PART_NUMBER))
+					if get_child_service_id.SERVICE_ID == 'Z0101':
+						spareparts_config_status_count = Sql.GetFirst(""" SELECT COUNT(CONFIGURATION_STATUS) AS COUNT FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND CONFIGURATION_STATUS='COMPLETE' """.format(self.contract_quote_record_id,self.quote_revision_record_id,get_child_service_id.SERVICE_ID))
 						if spareparts_config_status_count.COUNT > 0:
-							data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SAP_PART_NUMBER, "ActionType":'INSERT_LINE_ITEMS'})
+							data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":self.contract_quote_record_id, "ContractQuoteRevisionRecordId":self.quote_revision_record_id, "ServiceId":get_child_service_id.SERVICE_ID, "ActionType":'INSERT_LINE_ITEMS'})
 	
 		return True
 
