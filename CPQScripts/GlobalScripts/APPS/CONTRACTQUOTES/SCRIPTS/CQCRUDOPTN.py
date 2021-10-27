@@ -4229,6 +4229,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				DOC_CURRENCY,
 				GLOBAL_CURRENCY_RECORD_ID,
 				DOCCURR_RECORD_ID,
+				CONTRACT_VALID_FROM,
+				CONTRACT_VALID_TO,
 				QUOTE_ID,
 				QUOTE_NAME,
 				QUOTE_RECORD_ID,
@@ -4261,6 +4263,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				SAQICO.DOC_CURRENCY,
 				SAQICO.GLOBAL_CURRENCY_RECORD_ID,
 				SAQICO.DOCURR_RECORD_ID,
+				SAQICO.CONTRACT_VALID_FROM,
+				SAQICO.CONTRACT_VALID_TO,
 				SAQICO.QUOTE_ID,
 				SAQICO.QUOTE_NAME,
 				SAQICO.QUOTE_RECORD_ID,
@@ -5455,7 +5459,7 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 
 	def _insert_quote_item_greenbook(self, **kwargs):
 		self._process_query(
-			"""INSERT SAQIGB(
+			"""(
 				GREENBOOK,
 				GREENBOOK_RECORD_ID,
 				FABLOCATION_ID,
@@ -5470,6 +5474,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				DOC_CURRENCY,
 				GLOBAL_CURRENCY_RECORD_ID,
 				DOCCURR_RECORD_ID,
+				CONTRACT_VALID_FROM,
+				CONTRACT_VALID_TO,
 				QUOTE_ID,
 				QUOTE_NAME,
 				QUOTE_RECORD_ID,
@@ -5502,6 +5508,8 @@ class ContractQuoteItemsModel(ContractQuoteCrudOpertion):
 				SAQICO.DOC_CURRENCY,
 				SAQICO.GLOBAL_CURRENCY_RECORD_ID,
 				SAQICO.DOCURR_RECORD_ID,
+				SAQICO.CONTRACT_VALID_FROM,
+				SAQICO.CONTRACT_VALID_TO,
 				SAQICO.QUOTE_ID,
 				SAQICO.QUOTE_NAME,
 				SAQICO.QUOTE_RECORD_ID,
