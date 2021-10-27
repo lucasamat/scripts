@@ -31,7 +31,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - PRICING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
         ##Fetch the code according to the revision status..code ends...
         ##quote header write back details starts...
-        quote_header_data = '{\"ProcessingTypeCode\":'+str(revision_obj.DOCTYP_ID)+', \"BuyerPartyID\":'+str(quote_obj.ACCOUNT_ID)+', \"EmployeeResponsiblePartyID\":'+str(quote_obj.OWNER_NAME)+', \"SalesUnitPartyID\":'+str(revision_obj.SALESORG_ID)+', \"DistributionChannelCode\":'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+', \"DivisionCode\":'+str(revision_obj.DIVISION_ID)+', \"ZWB_ContractValidFrom_KUT\":'+str(revision_obj.CONTRACT_VALID_FROM)+', \"ZWB_ContractValidTo_KUT\":'+str(revision_obj.CONTRACT_VALID_TO)+', \"ZWB_QuoteRevisionID_KUT\":'+str(revision_obj.QTEREV_ID)+', \"ZWB_RevisionDescription_KUT\":'+str(revision_obj.REVISION_DESCRIPTION)+', \"ZQuoteRevisionStatus\":'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+', \"ZWB_TotalQuoteContent_KUT\":'+str(quote_obj.NET_VALUE)+', \"ZWB_TotalQuotecurrencyCode_KUT\":USD}'
+        quote_header_data = '{\"ProcessingTypeCode\":"'+str(revision_obj.DOCTYP_ID)+'", \"BuyerPartyID\":"'+str(quote_obj.ACCOUNT_ID)+'", \"EmployeeResponsiblePartyID\":"'+str(quote_obj.OWNER_NAME)+'", \"SalesUnitPartyID\":"'+str(revision_obj.SALESORG_ID)+'", \"DistributionChannelCode\":"'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+'", \"DivisionCode\":'+str(revision_obj.DIVISION_ID)+', \"ZWB_ContractValidFrom_KUT\":"'+str(revision_obj.CONTRACT_VALID_FROM)+'", \"ZWB_ContractValidTo_KUT\":"'+str(revision_obj.CONTRACT_VALID_TO)+'", \"ZWB_QuoteRevisionID_KUT\":"'+str(revision_obj.QTEREV_ID)+'", \"ZWB_RevisionDescription_KUT\":"'+str(revision_obj.REVISION_DESCRIPTION)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'", \"ZWB_TotalQuoteContent_KUT\":"'+str(quote_obj.NET_VALUE)+'", \"ZWB_TotalQuotecurrencyCode_KUT\":"USD"}'
         ##quote header write back details ends...
         
         requestdata = (
@@ -60,7 +60,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         
         
         ##opportunity header write back details starts...
-        opportunity_header_data = '{\"ExpectedRevenueAmount\":'+str(revision_obj.NET_VALUE)+', \"ExpectedRevenueAmountCurrencyCode\":USD, \"ExpectedProcessingStartDate\":"", \"ExpectedRevenueStartDate\":'+str(revision_obj.CONTRACT_VALID_FROM)+', \"ExpectedRevenueEndDate\":'+str(revision_obj.CONTRACT_VALID_TO)+', \"ZQuoteRevisionStatus\":'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'}'
+        opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(revision_obj.NET_VALUE)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"", \"ExpectedRevenueStartDate\":"'+str(revision_obj.CONTRACT_VALID_FROM)+'", \"ExpectedRevenueEndDate\":"'+str(revision_obj.CONTRACT_VALID_TO)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
 
         requestdata = (
