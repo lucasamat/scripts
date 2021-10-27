@@ -147,13 +147,13 @@ def EditToolIdling():
                 i += 1
                 getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
                 if getDefaultValue:
-                    if x == "Idle Notice Exception":
+                    if x == "Idle Notice":
                         Trace.Write("Idle Notice")
                         sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
-                    elif x == "Idle Duration Exception":
+                    elif x == "Idle Duration":
                         Trace.Write("Idle Duration")
                         sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
-                    elif x == "Idling Exception Notes":
+                    elif x == "Idling Exception":
                         Trace.Write("Idle Exception")
                         sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                     else:
