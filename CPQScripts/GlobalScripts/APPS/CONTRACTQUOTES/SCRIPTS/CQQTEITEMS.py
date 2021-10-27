@@ -137,23 +137,23 @@ def EditToolIdling():
                 if getDefaultValue:
                     if x == "Idle Notice Exception":
                         Trace.Write("Idle Notice")
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                     elif x == "Idle Duration Exception":
                         Trace.Write("Idle Duration")
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                     elif x == "Idling Exception Notes":
                         Trace.Write("Idle Exception")
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
+                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                     else:
                         Trace.Write("Idle Else")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
 
                     
-                    getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND TOOLIDLING_VALUE_CODE != {}'{}'".format(x,"N" if "28" in getDefaultValue.TOOLIDLING_VALUE_CODE or "30" in getDefaultValue.TOOLIDLING_VALUE_CODE else "",getDefaultValue.TOOLIDLING_VALUE_CODE))
-                    if getAllValues:
-                        for val in getAllValues:
-                            sec_str += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
-                    sec_str += '</select></td></tr>'
+                        getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND TOOLIDLING_VALUE_CODE != {}'{}'".format(x,"N" if "28" in getDefaultValue.TOOLIDLING_VALUE_CODE or "30" in getDefaultValue.TOOLIDLING_VALUE_CODE else "",getDefaultValue.TOOLIDLING_VALUE_CODE))
+                        if getAllValues:
+                            for val in getAllValues:
+                                sec_str += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
+                        sec_str += '</select></td></tr>'
             sec_str += "</tbody></table>"
         else:
             #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
