@@ -3963,12 +3963,14 @@ def POPUPLISTVALUEADDNEW(
 			table_id = "contact_replace_addnew_model"
 			Header_details = {
 				"CONTACT_RECORD_ID": "KEY",
+				"CONTACT_ID": "CONTACT ID"
 				"CONTACT_NAME": "CONTACT NAME",
 				"EMAIL": "EMAIL",
 				"PHONE":"PHONE",
 			}
 			ordered_keys = [
 				"CONTACT_RECORD_ID",
+				"CONTACT_ID",
 				"CONTACT_NAME",
 				"EMAIL",
 				"PHONE",
@@ -4055,24 +4057,12 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); } } ; });  });'
 				)
-				
-
-			sales_org_record_id = None
-			account_record_id = None
-			quote_obj = Sql.GetFirst(
-				"SELECT SAQTMT.ACCOUNT_RECORD_ID, SAQTRV.SALESORG_RECORD_ID FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(
-					contract_quote_record_id,quote_revision_record_id
-				)
-			)
-			if quote_obj:
-				sales_org_record_id = quote_obj.SALESORG_RECORD_ID
-				account_record_id = quote_obj.ACCOUNT_RECORD_ID
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
-			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_NAME  NOT IN (SELECT CONTACT_NAME FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
+			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_ID  NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
 
-			order_by = "order by SACONT.CONTACT_NAME ASC"
+			order_by = "order by SACONT.CONTACT_ID ASC"
 
 			if str(PerPage) == "" and str(PageInform) == "":
 				Page_start = 1
@@ -4088,14 +4078,14 @@ def POPUPLISTVALUEADDNEW(
 			if SortColumn != '' and SortColumnOrder !='':
 				order_by = "order by "+SortColumn + " " + SortColumnOrder
 			else:
-				order_by = "order by CONTACT_NAME ASC"
+				order_by = "order by CONTACT_ID ASC"
 
 			pop_val = {}
 			if where_string:
 				where_string += " AND"
 				Trace.Write("soureceequipments "+str(where_string))
 			if TreeParam == "Customer Information":
-				where_string += """ SACONT.CONTACT_NAME NOT IN (SELECT CONTACT_NAME FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
+				where_string += """ SACONT.CONTACT_ID NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
 			
 			table_data = Sql.GetList("Select {} FROM SACONT {} {} {}".format(", ".join(ordered_keys),"WHERE " +where_string if where_string else "",order_by,pagination_condition))
 			QueryCountObj = Sql.GetFirst(
