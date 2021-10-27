@@ -1163,6 +1163,7 @@ class ContractQuoteItem:
 			if self.service_id == item.PartNumber:
 				item.Delete()
 		##Delete the native product before adding the product ends..
+		quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		##quote item insert starts..
 		Sql.RunQuery("""
 					INSERT SAQITM (
@@ -1279,7 +1280,7 @@ class ContractQuoteItem:
 				RevisionRecordId=self.contract_quote_revision_record_id,
 				UserId=self.user_id,
 				UserName=self.user_name,
-				ExistingCount=0
+				ExistingCount=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0
 			))
 		##quote item insert ends..
 		##quote item spare parts insert starts..
