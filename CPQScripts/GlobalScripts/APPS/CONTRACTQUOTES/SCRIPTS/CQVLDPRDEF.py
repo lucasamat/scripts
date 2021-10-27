@@ -270,7 +270,7 @@ def valuedriver_onchage():
 			Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
 			Sql.RunQuery(Update_xml_uptime)
 
-	return inputXML
+	#return inputXML
 
 
 try:
