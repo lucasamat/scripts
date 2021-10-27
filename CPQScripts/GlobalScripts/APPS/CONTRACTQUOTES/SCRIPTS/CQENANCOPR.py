@@ -733,7 +733,10 @@ class AncillaryProductOperation:
 		# 	delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
 		for obj in delete_obj_list:
 			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
+			
 			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
+			if obj in ('SAQICO','SAQITM'):
+				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
 
 	
