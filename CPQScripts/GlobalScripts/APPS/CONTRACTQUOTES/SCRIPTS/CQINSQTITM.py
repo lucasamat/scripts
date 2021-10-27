@@ -360,7 +360,7 @@ class ContractQuoteItem:
 					JOIN SAQSCE (NOLOCK) ON SAQSCE.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQSCE.SERVICE_ID = SAQSCO.SERVICE_ID AND SAQSCE.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID
 					AND SAQSCE.EQUIPMENT_RECORD_ID = SAQSCO.EQUIPMENT_RECORD_ID 
 					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID					
-					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID         
+					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID         
 					JOIN SAQTRV (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID 
 					JOIN SAQITM (NOLOCK) ON SAQTRV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID 
 											AND SAQITM.SERVICE_RECORD_ID = SAQSCO.SERVICE_RECORD_ID
@@ -704,7 +704,7 @@ class ContractQuoteItem:
 			self.quote_line_item_temp_table, self.pricing_temp_table = self._create_temp_table_z0016()			
 			self._delete_quote_items()			
 		# Z0016 - End
-		
+		quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		# Non tool base quote item insert
 		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID,MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_id = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if service_obj:
@@ -726,14 +726,14 @@ class ContractQuoteItem:
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:
 				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 000 ==> ")
-				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string)
+				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
 			item_line_where_string = "AND SAQSCO.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			if self.sale_type == 'TOOL RELOCATION':
 				item_line_where_string += " AND SAQSCO.FABLOCATION_ID IS NOT NULL AND SAQSCO.FABLOCATION_ID != '' "
-			item_line_join_condition_string = "AND SAQITM.LINE_ITEM_ID = CAST(ISNULL(SAQSCE.ENTITLEMENT_GROUP_ID,'1.1') AS DECIMAL(5,1))"
-			
+			#item_line_join_condition_string = "AND SAQITM.LINE_ITEM_ID = CAST(ISNULL(SAQSCE.ENTITLEMENT_GROUP_ID,'1.1') AS DECIMAL(5,1))"
+			item_line_join_condition_string = ""
 			# Update - Start
 			item_line_join_string = ""			
 			if not self.service_id == 'Z0016':
@@ -753,7 +753,7 @@ class ContractQuoteItem:
 		# Tool base quote item insert
 		service_obj = Sql.GetFirst("SELECT SAQTSV.SERVICE_ID, MAMTRL.MATERIALCONFIG_TYPE FROM SAQTSV (NOLOCK) JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQTSV.SERVICE_ID AND MAMTRL.SERVICE_TYPE != 'NON TOOL BASED' WHERE SAQTSV.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSV.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if service_obj:
-			quote_item_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(LINE_ITEM_ID, 0) AS LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			
 			item_where_string = "AND SAQSCE.SERVICE_ID = '{}'".format(service_obj.SERVICE_ID)
 			# Update - Start
 			item_join_string = ""			
@@ -1283,95 +1283,100 @@ class ContractQuoteItem:
 				ExistingCount=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0
 			))
 		##quote item insert ends..
-		##quote item spare parts insert starts..
-		Sql.RunQuery(
-					"""
-					INSERT SAQIFP (
-						QUOTE_ITEM_FORECAST_PART_RECORD_ID,
-						DELIVERY_MODE,
-						EXTENDED_PRICE,
-						LINE_ITEM_ID,
-						PART_LINE_ID,
-						PART_DESCRIPTION,
-						PART_NUMBER,
-						PART_RECORD_ID,
-						QUOTE_ID,
-						QUOTE_NAME,
-						QUOTE_RECORD_ID,
-						QTEREV_ID,
-						QTEREV_RECORD_ID,
-						SALESORG_ID,
-						SALESORG_RECORD_ID,
-						SALESUOM_ID,
-						SALESUOM_RECORD_ID,
-						SCHEDULE_MODE,
-						SERVICE_DESCRIPTION,
-						SERVICE_ID,
-						SERVICE_RECORD_ID,
-						UNIT_PRICE,
-						VALID_FROM_DATE,
-						VALID_TO_DATE,
-						BASEUOM_ID,
-						BASEUOM_RECORD_ID,
-						ANNUAL_QUANTITY,
-						MATPRIGRP_ID,
-						MATPRIGRP_RECORD_ID,
-						PRICING_STATUS,
-						DOC_CURRENCY,
-						DOCCURR_RECORD_ID,
-						CPQTABLEENTRYADDEDBY, 
-						CPQTABLEENTRYDATEADDED,
-						CpqTableEntryModifiedBy,
-						CpqTableEntryDateModified
-						)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID, A.* FROM( SELECT
-						DISTINCT
-						SAQSPT.DELIVERY_MODE,
-						SAQSPT.EXTENDED_UNIT_PRICE,
-						'10' as LINE_ITEM_ID,
-						ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) * 10 as PART_LINE_ID,
-						SAQSPT.PART_DESCRIPTION,
-						SAQSPT.PART_NUMBER,
-						SAQSPT.PART_RECORD_ID,
-						SAQSPT.QUOTE_ID,
-						SAQSPT.QUOTE_NAME,
-						SAQSPT.QUOTE_RECORD_ID,
-						SAQSPT.QTEREV_ID,
-						SAQSPT.QTEREV_RECORD_ID,
-						SAQSPT.SALESORG_ID,
-						SAQSPT.SALESORG_RECORD_ID,
-						SAQSPT.SALESUOM_ID,
-						SAQSPT.SALESUOM_RECORD_ID,
-						SAQSPT.SCHEDULE_MODE,
-						SAQSPT.SERVICE_DESCRIPTION,
-						SAQSPT.SERVICE_ID,
-						SAQSPT.SERVICE_RECORD_ID,
-						SAQSPT.UNIT_PRICE,
-						SAQSPT.VALID_FROM_DATE,
-						SAQSPT.VALID_TO_DATE,
-						SAQSPT.BASEUOM_ID,
-						SAQSPT.BASEUOM_RECORD_ID,
-						SAQSPT.CUSTOMER_ANNUAL_QUANTITY,
-						SAQSPT.MATPRIGRP_ID,
-						SAQSPT.MATPRIGRP_RECORD_ID,
-						'{status}' AS PRICING_STATUS,
-						'{currency}' AS DOC_CURRENCY,
-						'{currency_rec_id}' AS DOCCURR_RECORD_ID,
-						'{UserName}' as CPQTABLEENTRYADDEDBY, 
-						GETDATE() as CPQTABLEENTRYDATEADDED,
-						{UserId} AS CpqTableEntryModifiedBy,
-						GETDATE() as CpqTableEntryDateModified
-						FROM SAQSPT (NOLOCK)
-						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')A
-					""".format(
-						currency=self.contract_currency, 
-						currency_rec_id=self.contract_currency_record_id, 
-						QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.contract_quote_revision_record_id,
-						status='ACQUIRING...',
-						UserId=self.user_id,
-						UserName=self.user_name
+		quote_item_line_obj = Sql.GetFirst("SELECT TOP 1 ISNULL(EQUIPMENT_LINE_ID, 0) AS EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY EQUIPMENT_LINE_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		spare_quote_item_obj = Sql.GetFirst("SELECT LINE_ITEM_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		if spare_quote_item_obj:
+			##quote item spare parts insert starts..
+			Sql.RunQuery(
+						"""
+						INSERT SAQIFP (
+							QUOTE_ITEM_FORECAST_PART_RECORD_ID,
+							DELIVERY_MODE,
+							EXTENDED_PRICE,
+							LINE_ITEM_ID,
+							PART_LINE_ID,
+							PART_DESCRIPTION,
+							PART_NUMBER,
+							PART_RECORD_ID,
+							QUOTE_ID,
+							QUOTE_NAME,
+							QUOTE_RECORD_ID,
+							QTEREV_ID,
+							QTEREV_RECORD_ID,
+							SALESORG_ID,
+							SALESORG_RECORD_ID,
+							SALESUOM_ID,
+							SALESUOM_RECORD_ID,
+							SCHEDULE_MODE,
+							SERVICE_DESCRIPTION,
+							SERVICE_ID,
+							SERVICE_RECORD_ID,
+							UNIT_PRICE,
+							VALID_FROM_DATE,
+							VALID_TO_DATE,
+							BASEUOM_ID,
+							BASEUOM_RECORD_ID,
+							ANNUAL_QUANTITY,
+							MATPRIGRP_ID,
+							MATPRIGRP_RECORD_ID,
+							PRICING_STATUS,
+							DOC_CURRENCY,
+							DOCCURR_RECORD_ID,
+							CPQTABLEENTRYADDEDBY, 
+							CPQTABLEENTRYDATEADDED,
+							CpqTableEntryModifiedBy,
+							CpqTableEntryDateModified
+							)SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID, A.* FROM( SELECT
+							DISTINCT
+							SAQSPT.DELIVERY_MODE,
+							SAQSPT.EXTENDED_UNIT_PRICE,
+							'{LineItemId}' as LINE_ITEM_ID,
+							ROW_NUMBER()OVER(ORDER BY SAQSPT.PART_NUMBER) + {QuoteExistingLineId} as PART_LINE_ID,
+							SAQSPT.PART_DESCRIPTION,
+							SAQSPT.PART_NUMBER,
+							SAQSPT.PART_RECORD_ID,
+							SAQSPT.QUOTE_ID,
+							SAQSPT.QUOTE_NAME,
+							SAQSPT.QUOTE_RECORD_ID,
+							SAQSPT.QTEREV_ID,
+							SAQSPT.QTEREV_RECORD_ID,
+							SAQSPT.SALESORG_ID,
+							SAQSPT.SALESORG_RECORD_ID,
+							SAQSPT.SALESUOM_ID,
+							SAQSPT.SALESUOM_RECORD_ID,
+							SAQSPT.SCHEDULE_MODE,
+							SAQSPT.SERVICE_DESCRIPTION,
+							SAQSPT.SERVICE_ID,
+							SAQSPT.SERVICE_RECORD_ID,
+							SAQSPT.UNIT_PRICE,
+							SAQSPT.VALID_FROM_DATE,
+							SAQSPT.VALID_TO_DATE,
+							SAQSPT.BASEUOM_ID,
+							SAQSPT.BASEUOM_RECORD_ID,
+							SAQSPT.CUSTOMER_ANNUAL_QUANTITY,
+							SAQSPT.MATPRIGRP_ID,
+							SAQSPT.MATPRIGRP_RECORD_ID,
+							'{status}' AS PRICING_STATUS,
+							'{currency}' AS DOC_CURRENCY,
+							'{currency_rec_id}' AS DOCCURR_RECORD_ID,
+							'{UserName}' as CPQTABLEENTRYADDEDBY, 
+							GETDATE() as CPQTABLEENTRYDATEADDED,
+							{UserId} AS CpqTableEntryModifiedBy,
+							GETDATE() as CpqTableEntryDateModified
+							FROM SAQSPT (NOLOCK)
+							WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')A
+						""".format(
+							currency=self.contract_currency, 
+							currency_rec_id=self.contract_currency_record_id, 
+							QuoteRecordId=self.contract_quote_record_id,
+							RevisionRecordId=self.contract_quote_revision_record_id,
+							status='ACQUIRING...',
+							UserId=self.user_id,
+							UserName=self.user_name,
+							QuoteExistingLineId=quote_item_line_obj.EQUIPMENT_LINE_ID,
+							LineItemId=spare_quote_item_obj.LINE_ITEM_ID
+						)
 					)
-				)
 		##quote item spart parts insert ends..
 		# Native Cart Items Insert for spare quotes- Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
@@ -1912,8 +1917,7 @@ class ContractQuoteItem:
 
 					
 		return True
-	
-	
+		
 	def _do_opertion(self):
 		if self.action_type == "INSERT_LINE_ITEMS":
 			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
