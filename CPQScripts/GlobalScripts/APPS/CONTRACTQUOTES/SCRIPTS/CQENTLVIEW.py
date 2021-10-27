@@ -1226,7 +1226,7 @@ class EntitlementView():
 												datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
 												sec_str1 += (
-													'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  onchange="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
@@ -1245,7 +1245,7 @@ class EntitlementView():
 												if attr_value == "DefaultValue":
 													attr_value = ''
 												sec_str1 += (
-													'<input class="form-control no_border_bg '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
 													+ str(attr_value)
@@ -1413,7 +1413,7 @@ class EntitlementView():
 									if attrSysId in inserted_value_dict.keys():
 										attr_value = inserted_value_dict[attrSysId]
 									sec_str1 += (
-										'<input class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
+										'<input maxlength="255" class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
