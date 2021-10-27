@@ -2065,9 +2065,12 @@ class SYLDRTLIST:
                             service_id = TreeParam
                             quote_rec_id = Product.GetGlobal("contract_quote_record_id")
                             quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-                            service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,TreeParam))
-                            if service_object is not None:
-                                service_id = service_object.SERVICE_ID
+                            if SubTab == "Parts List":
+                                service_id = 'Z0101'
+                            else:
+                                service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,TreeParam))
+                                if service_object is not None:
+                                    service_id = service_object.SERVICE_ID
                             Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"
                         Trace.Write('In 1958---*'+str(Qustr))
                         if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825"):
