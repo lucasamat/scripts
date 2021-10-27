@@ -263,6 +263,7 @@ except:
 try:
     Trace.Write("try idle duration")
     IdleDuration = str(Param.IDLEDURATION)
+    Trace.Write("IDLE DURATION="+str(IdleDuration))
 except:
     Trace.Write("except idle duration")
     IdleDuration = ""
