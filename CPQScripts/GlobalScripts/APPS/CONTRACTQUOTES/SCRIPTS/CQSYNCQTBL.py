@@ -554,12 +554,12 @@ class SyncQuoteAndCustomTables:
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})			
 		
-					# if custom_fields_detail.get('AccountAssignmentGroup'):
-					# 	Region_Object = Sql.GetFirst(
-					# 			"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
-					# 				custom_fields_detail.get('AccountAssignmentGroup')
-					# 			)
-					# 		)
+					if custom_fields_detail.get('AccountAssignmentGroup'):
+						Region_Object = Sql.GetFirst(
+								"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
+									custom_fields_detail.get('AccountAssignmentGroup')
+								)
+							)
 				
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
@@ -573,8 +573,8 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY": salesorg_country.COUNTRY,
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-							#"REGION":Region_Code.get(custom_fields_detail.get("AccountAssignmentGroup")),
-							#"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object is not None else "",
+							"REGION":Region_Code.get(custom_fields_detail.get("AccountAssignmentGroup")),
+							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object is not None else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
