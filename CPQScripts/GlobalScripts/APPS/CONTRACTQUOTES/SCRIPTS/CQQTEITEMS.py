@@ -48,7 +48,7 @@ def LoadSummary():
             if getDefaultValue:
                 if x == "Idle Notice Exception":
                     Trace.Write("Idle Notice")
-                    sec_str += '<input class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'+y+'</input>'
+                    sec_str += '<input class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                 elif x == "Idle Duration Exception":
                     Trace.Write("Idle Duration")
                     sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
