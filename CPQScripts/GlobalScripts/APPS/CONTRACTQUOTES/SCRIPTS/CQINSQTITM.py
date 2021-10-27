@@ -63,7 +63,7 @@ class ContractQuoteItem:
 		delete_statement = "DELETE DT FROM SAQIFL DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.FABLOCATION_ID NOT IN(SELECT CO.FABLOCATION_ID FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')""".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
 		Sql.RunQuery(delete_statement) 
 
-		quote_line_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQICO (NOLOCK) QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		quote_line_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		'''
 		if self.service_id == 'Z0091':
 			fetch_distinct_sid_quote = Sql.GetList(""" SELECT DISTINCT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE 'Z0091%' OR PAR_SERVICE_ID  LIKE 'Z0091%' """)
