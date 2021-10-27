@@ -70,6 +70,7 @@ class ContractQuoteItem:
 				fetch_distinct_sid_quote = Sql.GetList(""" SELECT DISTINCT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID LIKE 'Z0091%' OR PAR_SERVICE_ID  LIKE 'Z0091%' """)
 				if fetch_distinct_sid_quote:
 					for get_sid in fetch_distinct_sid_quote:
+						Log.Info("delete service if z0091==>" +str(get_sid.SERVICE_ID))
 						Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=get_sid.SERVICE_ID))
 			else:
 				Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
