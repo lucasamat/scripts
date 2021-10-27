@@ -1059,8 +1059,9 @@ class Entitlements:
 				AttributeID = AttributeID.replace("_calc","")
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
 				ancillary_object_dict = {}
+				count_temp_z0046 = 0
 				for key,dict_val in ENT_IP_DICT.items():
-						
+					
 					getcostbaborimpact =""
 					getpriceimpact = ""
 					calculation_factor =""
@@ -1094,17 +1095,19 @@ class Entitlements:
 						else:
 							ancillary_object_dict['A6200'] = "DELETE"
 							#ancillary_flag = "DELETE"
-					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091"):
-						# or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035"))
-						Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value))
+					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091") or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
+						Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
 						#ancillary_object = 'Z0046'
 						if entitlement_value == "Yes":
 							ancillary_object_dict['Z0046'] = "INSERT"
 							#Quote.SetGlobal("ANCILLARY","YES")
 							#ancillary_flag = "INSERT"
 						
-						else  :
-							ancillary_object_dict['Z0046'] = "DELETE"
+						else:
+							count_temp_z0046 += 1
+							if  count_temp_z0046 == 2:
+								Trace.Write("inside delete")
+								ancillary_object_dict['Z0046'] = "DELETE"
 							#Quote.SetGlobal("ANCILLARY","NO")
 							#ancillary_flag = "DELETE"
 						
