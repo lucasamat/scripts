@@ -579,7 +579,7 @@ class Entitlements:
 											attributesdisallowedlst.append(prdvalue["id"])
 										if prdvalue["visible"] == "true":							
 											attributesallowedlst.append(prdvalue["id"])
-										if prdvalue["required"] == "true":
+										if prdvalue["required"] == "false":
 											attriburesrequired_list.append(prdvalue["id"])
 										if prdvalue["readOnly"] == "true":
 											attributeReadonlylst.append(prdvalue["id"])
@@ -811,7 +811,7 @@ class Entitlements:
 										attributesdisallowedlst.append(prdvalue["id"])
 									if prdvalue["visible"] == "true":							
 										attributesallowedlst.append(prdvalue["id"])
-									if prdvalue["required"] == "true":
+									if prdvalue["required"] == "false":
 										attriburesrequired_list.append(prdvalue["id"])
 									if prdvalue["readOnly"] == "true":
 										attributeReadonlylst.append(prdvalue["id"])
@@ -2332,7 +2332,7 @@ class Entitlements:
 										attributeReadonlylst.append(prdvalue["id"])
 									if prdvalue["readOnly"] == "false":
 										attributeEditonlylst.append(prdvalue["id"])
-									if prdvalue["required"] == "true":
+									if prdvalue["required"] == "false":
 										attriburesrequired_list.append(prdvalue["id"])
 									for attribute in prdvalue["values"]:
 										#Trace.Write("attribute---"+str(attribute))
