@@ -465,6 +465,7 @@ class SyncQuoteAndCustomTables:
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
+					Region_Code = {"01":"AMNA", "02":"AMJ", "03":"AME", "04":"AMT","07":"AMK","08":"AMSEA","09":"AMC"}
 					#opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
 					contract_quote_data.update(
 						{
@@ -550,7 +551,15 @@ class SyncQuoteAndCustomTables:
 								Owner_name = Employee_obj.FIRST_NAME+" "+Employee_obj.LAST_NAME
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
-													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})								
+													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})			
+		
+					if custom_fields_detail.get('AccountAssignmentGroup'):
+						Region_Object = Sql.GetFirst(
+								"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
+									custom_fields_detail.get('AccountAssignmentGroup')
+								)
+							)
+				
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
@@ -563,8 +572,8 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY": salesorg_country.COUNTRY,
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-							"REGION":salesorg_obj.REGION,
-							"REGION_RECORD_ID":salesorg_obj.REGION_RECORD_ID,
+							"REGION":Region_Code.get(custom_fields_detail.get("AccountAssignmentGroup")),
+							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object is not None else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
@@ -1181,7 +1190,7 @@ class SyncQuoteAndCustomTables:
 						insert_saqcbc ="""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id)
 						insert_saqcbc = insert_saqcbc.encode('ascii', 'ignore').decode('ascii')
 						Sql.RunQuery(insert_saqcbc)
-						Log.Info("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id))
+						#Log.Info("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id))
 					# Insert SAQCBC while creating quote in c4c - end A055S000P01-11413	
 
 					cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
