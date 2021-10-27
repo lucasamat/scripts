@@ -711,7 +711,26 @@ class AncillaryProductOperation:
 			Log.Info("error on ancillary--"+str(e)+'--'+str(str(sys.exc_info()[-1].tb_lineno)))
 
 	def _delete_entitlement_tables(self):
-		delete_table_dict = {'SAQTSE': 'QUOTE_SERVICE_ENTITLEMENT_RECORD_ID','SAQSFE': 'QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID', 'SAQSGE' : 'QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID','SAQSCE':'QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID', 'SAQSAE':'QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID'}
+		if self.tablename == "SAQTSE": 
+			delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSFE":
+			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSGE":
+			delete_obj_list = ["SAQSGE","SAQSCE","SAQSAE"] 
+		elif self.tablename == "SAQSCE":
+			delete_obj_list = ["SAQSCE","SAQSAE"] 
+		elif self.tablename == "SAQSAE":
+			delete_obj_list = ["SAQSAE"]
+		
+		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
+		for obj in delete_obj_list:
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where})".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
+
+
+
+
+		#delete_table_dict = {'SAQTSE': 'QUOTE_SERVICE_ENTITLEMENT_RECORD_ID','SAQSFE': 'QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID', 'SAQSGE' : 'QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID','SAQSCE':'QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID', 'SAQSAE':'QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID'}
+		delete_table_dict = {}
 		for delete_object,guid in delete_table_dict.items():
 			delete_statement = "DELETE FROM {obj} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_rec_id}' AND PAR_SERVICE_ID = '{par_service_id}' AND {guid} IN (SELECT {guid} FROM {obj} M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{revision_rec_id}' AND M.SERVICE_ID = '{par_service_id}' AND M.CONFIGURATION_STATUS ='INCOMPLETE') ".format(obj = delete_object,guid = guid, QuoteRecordId = self.contract_quote_record_id,revision_rec_id = self.contract_quote_revision_record_id , par_service_id = self.service_id  )
 			Sql.RunQuery(delete_statement)
