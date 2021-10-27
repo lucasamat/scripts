@@ -1065,6 +1065,7 @@ class Entitlements:
 				gettechlaborcostimpact = gettechlaborpriceimpact = getpselaborcostimpact = getpselaborpriceimpact = ""
 				ancillary_object_dict = {}
 				count_temp_z0046 = 0
+				count_temp_z0101 = 0
 				for key,dict_val in ENT_IP_DICT.items():
 					
 					getcostbaborimpact =""
@@ -1087,9 +1088,10 @@ class Entitlements:
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_object_dict['Z0101'] = "INSERT"
 							#ancillary_flag = "INSERT"
-						elif (key == "AGS_{}_TSC_CONSUM".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) and (key == "AGS_{}_TSC_NONCNS".format(serviceId) and entitlement_value not in ("Some Exclusions", "Some Inclusions") ) :
-							#Trace.Write('else')
-							ancillary_object_dict['Z0101'] = "DELETE"
+						else:
+							count_temp_z0101 += 1
+							if  count_temp_z0101 == 2:
+								ancillary_object_dict['Z0101'] = "DELETE"
 							#ancillary_flag = "DELETE"
 
 					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
@@ -1101,7 +1103,7 @@ class Entitlements:
 							ancillary_object_dict['A6200'] = "DELETE"
 							#ancillary_flag = "DELETE"
 					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091") or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
-						Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
+						#Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
 						#ancillary_object = 'Z0046'
 						if entitlement_value == "Yes":
 							ancillary_object_dict['Z0046'] = "INSERT"
@@ -1111,7 +1113,7 @@ class Entitlements:
 						else:
 							count_temp_z0046 += 1
 							if  count_temp_z0046 == 2:
-								Trace.Write("inside delete")
+								#Trace.Write("inside delete")
 								ancillary_object_dict['Z0046'] = "DELETE"
 							#Quote.SetGlobal("ANCILLARY","NO")
 							#ancillary_flag = "DELETE"
