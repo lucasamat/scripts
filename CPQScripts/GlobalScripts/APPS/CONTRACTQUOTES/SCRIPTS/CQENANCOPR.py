@@ -54,11 +54,11 @@ class AncillaryProductOperation:
 		elif self.action_type == "DELETE_SERVICE":
 			self._delete_operation()
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
-			#self._delete_entitlement_tables()
+			self._delete_entitlement_tables()
 			self._insert_service_ent()
 			self._entitlement_rolldown()
-		elif self.action_type == "DELETE_ENT_EQUIPMENT":
-			self._delete_entitlement_tables()
+		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
+		# 	self._delete_entitlement_tables()
 		
 
 
