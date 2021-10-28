@@ -1754,20 +1754,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						for req1 in Tier_List:
 							req1 = req1.strip()							
 							if current_obj_value == req1:	
-								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":		
-									sec_str += "<option selected>" + str(req1) + " of month </option>"
-								else:
-									sec_str += "<option selected>" + str(req1) + "</option>"
+								# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":		
+								# 	sec_str += "<option selected>" + str(req1) + " of month </option>"
+								# else:
+								sec_str += "<option selected>" + str(req1) + "</option>"
 							else:	
-								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":							
-									sec_str += "<option>" + str(req1) + " of month </option>"
-								else:
-									sec_str += "<option>" + str(req1) + "</option>"
+								# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":							
+								# 	sec_str += "<option>" + str(req1) + " of month </option>"
+								# else:
+								sec_str += "<option>" + str(req1) + "</option>"
 					else:	
-						if str(current_obj_api_name) == "APPDTE_EXCH_RATE":					
-							sec_str += "<option selected>" + str(current_obj_value) + " of month </option>"
-						else:
-							sec_str += "<option selected>" + str(current_obj_value) + "</option>"
+						# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":					
+						# 	sec_str += "<option selected>" + str(current_obj_value) + " of month </option>"
+						# else:
+						sec_str += "<option selected>" + str(current_obj_value) + "</option>"
 					sec_str += "</select></td>"
 				elif data_type == "DATE" and MODE == "EDIT":								
 					date_field.append(current_obj_api_name)					
