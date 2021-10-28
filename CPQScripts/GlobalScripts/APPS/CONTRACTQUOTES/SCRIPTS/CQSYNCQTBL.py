@@ -587,7 +587,7 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
 							"REGION":str(AccountAssignmentGroup),
 							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object else "",
-							"BANK":bank_id if exchange_rate_type_object else "",
+							"BANK_ID":bank_id if exchange_rate_type_object else "",
 							"BANK_NAME":bank_name if exchange_rate_type_object else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
