@@ -86,8 +86,8 @@ def equipment_predefined():
 			if entitlement_id in updateentXML:
 				Trace.Write("try")
 				updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
-		except:
-			Trace.Write("exceptt")
+		except Exception as e:
+			Trace.Write("exceptt"+str(e))
 			pass
 
 
