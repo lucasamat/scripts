@@ -1833,7 +1833,6 @@ class SyncQuoteAndCustomTables:
 								)
 							)
 		
-		Log.Info("SALES TEAM CREATED BY INSERT STARTS"+str(employee))
 		created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
 		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
 		saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
