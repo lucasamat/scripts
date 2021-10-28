@@ -4360,7 +4360,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 			)
 		)
 	elif TreeParentParam in ('Comprehensive Services','Complementary Products'):
-		Parent_assembly_id = Sql.GetFirst("select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = 'RevisionRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' ".format(ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),PreventiveMaintainenceId = recid))	
+		Parent_assembly_id = Sql.GetFirst("select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' ".format(ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),PreventiveMaintainenceId = recid))	
 	if Parent_assembly_id:
 		Preventive_Maintainence_ID = Parent_assembly_id.PM_ID
 		if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
