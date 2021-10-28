@@ -4058,6 +4058,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 
 	### editablity in Grid 
 	Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
+	Trace.Write("TreeParentParam---"+str(TreeParentParam))
 	if TopSuperParentParam in ('Comprehensive Services','Complementary Products') or TreeParentParam in ('Comprehensive Services','Complementary Products'): 
 		Trace.Write("inside---")  
 		cls = "eq(2)"
