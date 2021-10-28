@@ -1067,7 +1067,7 @@ class Entitlements:
 				count_temp_z0046 = 0
 				count_temp_z0101 = 0
 				for key,dict_val in ENT_IP_DICT.items():
-					
+					Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
 					getcostbaborimpact =""
 					getpriceimpact = ""
 					calculation_factor =""
