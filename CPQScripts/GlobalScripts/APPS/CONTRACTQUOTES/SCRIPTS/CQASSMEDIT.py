@@ -136,11 +136,12 @@ def child_ent_request(tableName,where,serviceId):
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
 	Trace.Write(response["access_token"])
-	Trace.Write(serviceId)
+	Log.Info('serviceId---'+str(serviceId))
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
 	gettodaydate = datetime.now().strftime("%Y-%m-%d")
 	ProductPartnumber = serviceId#'Z0035'
+	Log.Info('inside----')
 	try:        
 		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
 		Trace.Write("requestdata" + str(requestdata))
@@ -152,6 +153,8 @@ def child_ent_request(tableName,where,serviceId):
 		Trace.Write("newConfigurationid.."+str(newConfigurationid))
 		if tableName!="":
 			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId, revision_record_id))
+			Log.Info('-ContractRecordId-'+str(ContractRecordId))
+			Log.Info('-revision_record_id-'+str(revision_record_id))
 			ent_temp = "ENT_ASSEM_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 			where_cond = where.replace("'","''")
@@ -215,7 +218,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 	get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
 	#get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
 	if get_equp_xml:
-		#Trace.Write('inside')
+		Log.Info('inside----')
 		cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
 		# cpsmatchID = get_equp_xml.CPS_MATCH_ID
 		# cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
