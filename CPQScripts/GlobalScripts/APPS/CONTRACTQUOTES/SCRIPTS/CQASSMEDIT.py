@@ -407,7 +407,7 @@ TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 try:
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 except:
-	ContractRecordId = ''
+	ContractRecordId = ent_params_list[0].split('and',)[0].split('=',)
 try:
 	revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
