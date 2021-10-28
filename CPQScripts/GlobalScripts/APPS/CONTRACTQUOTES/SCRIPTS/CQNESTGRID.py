@@ -4058,7 +4058,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 
 	### editablity in Grid 
 	Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
-	if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
+	if TopSuperParentParam in ('Comprehensive Services','Complementary Products') or TreeParentParam in ('Comprehensive Services','Complementary Products'): 
 		Trace.Write("inside---")  
 		cls = "eq(2)"
 		# dbl_clk_function = ( 
@@ -4091,7 +4091,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "_SortColumnOrder', order); }); "	
 		)	
 		Trace.Write("@4099----->"+str(dbl_clk_function))
-
 
 	else:
 		Trace.Write("else---")
