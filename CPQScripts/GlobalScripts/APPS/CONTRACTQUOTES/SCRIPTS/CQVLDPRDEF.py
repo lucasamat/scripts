@@ -79,10 +79,13 @@ def equipment_predefined():
 				if get_val:
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
 		##total seed coefficent update
-		ent_value = 'log(Total Cost w/o Seed Stock)'
-		entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
-		if entitlement_id in updateentXML:
-			updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+		try:
+			ent_value = 'log(Total Cost w/o Seed Stock)'
+			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
+			if entitlement_id in updateentXML:
+				updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+		except:
+			pass
 
 
 
