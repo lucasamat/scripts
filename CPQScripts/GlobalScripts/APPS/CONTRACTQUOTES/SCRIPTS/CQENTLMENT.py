@@ -2084,13 +2084,15 @@ class Entitlements:
 									for Productattribute, Productvalue in rootvalue.items():
 										if Productattribute == "variantConditions":
 											characteristics_attr_values = Productvalue
-										# if Productattribute == "characteristics":
-										# 	for prdvalue in Productvalue:											
-										# 		for attribute in prdvalue["values"]:
-										# 			if prdvalue["id"] in characteristics_attr_values:
-										# 				characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
-										# 			else:
-										# 				characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
+										if Productattribute == "characteristics":
+											for prdvalue in Productvalue:											
+												for attribute in prdvalue["values"]:
+													attributevalues[str(prdvalue["id"])] = attribute["value"]
+													attributevalues_textbox.append(str(prdvalue["id"])+'%#'+str(attribute["value"]))
+													# if prdvalue["id"] in characteristics_attr_values:
+													# 	characteristics_attr_values[str(prdvalue["id"])].append(attribute["value"])
+													# else:
+													# 	characteristics_attr_values[str(prdvalue["id"])] = [attribute["value"]]
 							Trace.Write("characteristics_attr_values"+str(characteristics_attr_values)+str(AttributeID))
 							
 							if characteristics_attr_values and 'AGS_LAB_OPT' in AttributeID:
