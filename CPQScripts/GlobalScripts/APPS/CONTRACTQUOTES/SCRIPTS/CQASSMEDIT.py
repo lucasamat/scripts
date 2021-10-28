@@ -421,7 +421,8 @@ except:
 try:
 	revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
-	revision_record_id = ent_params_list[0].split('and')[1].split('=')
+	revisionrecord_id = ent_params_list[0].split('and')[1].split('=')
+	revision_record_id = revisionrecord_id[2]
 Trace.Write("check script called")
 try:
 	ACTION = Param.ACTION
