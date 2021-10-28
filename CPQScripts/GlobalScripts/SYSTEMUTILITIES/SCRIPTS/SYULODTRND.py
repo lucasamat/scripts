@@ -1701,28 +1701,28 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							+ str(current_obj_api_name)
 							+ "' "
 						)
-					elif str(current_obj_api_name) == "APPDTE_EXCH_RATE":
-						sec_str += "<td>"
-						sec_str += (
-							'<select id="'
-							+ str(current_obj_api_name)
-							+ '" '
-							+ str(onchange)
-							+ ' value="'
-							+ current_obj_value
-							+ 'of month" type="text" title="'
-							+ str(current_obj_value)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
-							+ disable
-							+ " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
-						)
-						Sql_Quality_Tier = Sql.GetFirst(
-							"select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
-							+ str(ObjectName)
-							+ "' and DATA_TYPE='PICKLIST' and API_NAME = '"
-							+ str(current_obj_api_name)
-							+ "' "
-						)
+					# elif str(current_obj_api_name) == "APPDTE_EXCH_RATE":
+					# 	sec_str += "<td>"
+					# 	sec_str += (
+					# 		'<select id="'
+					# 		+ str(current_obj_api_name)
+					# 		+ '" '
+					# 		+ str(onchange)
+					# 		+ ' value="'
+					# 		+ current_obj_value
+					# 		+ 'of month" type="text" title="'
+					# 		+ str(current_obj_value)
+					# 		+ '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+					# 		+ disable
+					# 		+ " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
+					# 	)
+					# 	Sql_Quality_Tier = Sql.GetFirst(
+					# 		"select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+					# 		+ str(ObjectName)
+					# 		+ "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+					# 		+ str(current_obj_api_name)
+					# 		+ "' "
+					# 	)
 					else:						
 						sec_str += "<td>"
 						sec_str += (
@@ -1754,20 +1754,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						for req1 in Tier_List:
 							req1 = req1.strip()							
 							if current_obj_value == req1:	
-								# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":		
-								# 	sec_str += "<option selected>" + str(req1) + " of month </option>"
-								# else:
-								sec_str += "<option selected>" + str(req1) + "</option>"
+								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":		
+									sec_str += "<option selected>" + str(req1) + " of month </option>"
+								else:
+									sec_str += "<option selected>" + str(req1) + "</option>"
 							else:	
-								# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":							
-								# 	sec_str += "<option>" + str(req1) + " of month </option>"
-								# else:
-								sec_str += "<option>" + str(req1) + "</option>"
+								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":							
+									sec_str += "<option>" + str(req1) + " of month </option>"
+								else:
+									sec_str += "<option>" + str(req1) + "</option>"
 					else:	
-						# if str(current_obj_api_name) == "APPDTE_EXCH_RATE":					
-						# 	sec_str += "<option selected>" + str(current_obj_value) + " of month </option>"
-						# else:
-						sec_str += "<option selected>" + str(current_obj_value) + "</option>"
+						if str(current_obj_api_name) == "APPDTE_EXCH_RATE":					
+							sec_str += "<option selected>" + str(current_obj_value) + " of month </option>"
+						else:
+							sec_str += "<option selected>" + str(current_obj_value) + "</option>"
 					sec_str += "</select></td>"
 				elif data_type == "DATE" and MODE == "EDIT":								
 					date_field.append(current_obj_api_name)					
@@ -2225,38 +2225,38 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							+ "</td>"
 						)
 					else:
-						if current_obj_api_name == "APPDTE_EXCH_RATE" and str(current_obj_value).lstrip() != "":
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value.lstrip()
-								+ ' of month" title="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(left_float)
-								+ ' " '
-								+ disable
-								+ " maxlength = '"+str(max_length)+"'>"
-								+ str(edit_warn_icon)
-								+ "</td>"
-							)
-						else:
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value.lstrip()
-								+ '" title="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(left_float)
-								+ ' " '
-								+ disable
-								+ " maxlength = '"+str(max_length)+"'>"
-								+ str(edit_warn_icon)
-								+ "</td>"
-							)
+						# if current_obj_api_name == "APPDTE_EXCH_RATE" and str(current_obj_value).lstrip() != "":
+						# 	sec_str += (
+						# 		'<td><input id="'
+						# 		+ str(current_obj_api_name)
+						# 		+ '" type="text" value="'
+						# 		+ current_obj_value.lstrip()
+						# 		+ ' of month" title="'
+						# 		+ current_obj_value
+						# 		+ '" class="form-control related_popup_css" style="'
+						# 		+ str(left_float)
+						# 		+ ' " '
+						# 		+ disable
+						# 		+ " maxlength = '"+str(max_length)+"'>"
+						# 		+ str(edit_warn_icon)
+						# 		+ "</td>"
+						# 	)
+						# else:
+						sec_str += (
+							'<td><input id="'
+							+ str(current_obj_api_name)
+							+ '" type="text" value="'
+							+ current_obj_value.lstrip()
+							+ '" title="'
+							+ current_obj_value
+							+ '" class="form-control related_popup_css" style="'
+							+ str(left_float)
+							+ ' " '
+							+ disable
+							+ " maxlength = '"+str(max_length)+"'>"
+							+ str(edit_warn_icon)
+							+ "</td>"
+						)
 				sec_str += (
 					'<td class="float_r_bor_bot"><div class="col-md-12 editiconright"><a href="#" onclick="editclick_row(this)" class="editclick">'
 					+ str(edit_pencil_icon)
