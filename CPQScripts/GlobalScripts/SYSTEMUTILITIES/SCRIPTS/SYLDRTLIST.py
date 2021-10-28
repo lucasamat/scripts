@@ -2794,7 +2794,6 @@ class SYLDRTLIST:
                                     Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
                     if str(Action_permission.get("Delete")).upper() == "TRUE":
                         #Trace.Write("ooooooooo"+str(ik.PARTY_ROLE))
-                        #Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
                         if related_list_delete_permission:
                             onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
                             if str(ObjectName) == "SYOBJC":
@@ -2817,7 +2816,7 @@ class SYLDRTLIST:
                                         Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
                             ##A055S000P01-10136
                             elif str(ObjectName)=="SAQICT":
-                                Trace.write("SAQICT----DEL")
+                                Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
                                 Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
@@ -2825,7 +2824,6 @@ class SYLDRTLIST:
                                 )  
                                 
                             else:
-                                Trace.write("SAQICT----DELelse")
                                 Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
