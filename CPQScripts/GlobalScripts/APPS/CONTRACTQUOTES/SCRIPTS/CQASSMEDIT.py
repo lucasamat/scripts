@@ -408,7 +408,10 @@ try:
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 except:
 	ContractRecordId = ''
-revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+try:
+	revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+except:
+	revision_record_id = ''
 Trace.Write("check script called")
 try:
 	ACTION = Param.ACTION
