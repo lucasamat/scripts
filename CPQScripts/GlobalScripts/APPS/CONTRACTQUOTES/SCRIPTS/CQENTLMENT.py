@@ -1638,7 +1638,7 @@ class Entitlements:
 							STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals, prd_id = product_obj.PRD_ID))
 							if STANDARD_ATTRIBUTE_VALUES:
 								if key == "AGS_Z0091_PQB_PPCPRM" and display_vals == "Yes":
-									Trace.Write("@1641---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+									Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
 
 									total_price = 0.00
 
