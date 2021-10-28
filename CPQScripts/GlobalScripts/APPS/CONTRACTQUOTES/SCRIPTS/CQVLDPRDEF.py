@@ -80,11 +80,14 @@ def equipment_predefined():
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
 		##total seed coefficent update
 		try:
+			Trace.Write("try"+str(TreeParam))
 			ent_value = 'log(Total Cost w/o Seed Stock)'
 			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
 			if entitlement_id in updateentXML:
+				Trace.Write("try")
 				updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
 		except:
+			Trace.Write("exceptt")
 			pass
 
 
