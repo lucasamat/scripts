@@ -2794,7 +2794,7 @@ class SYLDRTLIST:
                                     Action_str += '<li><a class="dropdown-item" href="#" onclick="cont_openedit(this)" data-target="#cont_viewModalSection" data-toggle="modal">EDIT</a></li>'
                     if str(Action_permission.get("Delete")).upper() == "TRUE":
                         #Trace.Write("ooooooooo"+str(ik.PARTY_ROLE))
-                        Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
+                        #Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
                         if related_list_delete_permission:
                             onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
                             if str(ObjectName) == "SYOBJC":
