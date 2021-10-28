@@ -365,11 +365,18 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				else:
 					# if sefl_api != "REGION":
 					Trace.Write('At line 289-->'+str(sefl_api))
-					sec_str += (
-						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
-						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-					)
+					if sefl_api == "APPDTE_EXCH_RATE":
+						sec_str += (
+							"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+							+ str(eval("col_name." + str(sefl_api)))
+							+ " of month' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						)
+					else:
+						sec_str += (
+							"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
+							+ str(eval("col_name." + str(sefl_api)))
+							+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						)
 					# else:
 					#     sec_str += (
 					#         "<div class='col-md-3 pad-0'> <input type='text' value = '' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
