@@ -417,12 +417,12 @@ try:
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 except:
 	Contract_RecordId = ent_params_list[0].split('and')[0].split('=')
-	ContractRecordId = Contract_RecordId[1]
+	ContractRecordId = Contract_RecordId[1].replace("'", "")
 try:
 	revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	revisionrecord_id = ent_params_list[0].split('and')[1].split('=')
-	revision_record_id = revisionrecord_id[2]
+	revision_record_id = revisionrecord_id[2].replace("'", "")
 Trace.Write("check script called")
 try:
 	ACTION = Param.ACTION
