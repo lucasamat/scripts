@@ -78,6 +78,12 @@ def equipment_predefined():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
+		##total seed coefficent update
+		ent_value = 'log(Total Cost w/o Seed Stock)'
+		entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
+		if entitlement_id in updateentXML:
+			updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+
 
 
 		for roll_obj in ['SAQSCE','SAQSAE']:
