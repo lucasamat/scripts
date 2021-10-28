@@ -405,6 +405,12 @@ def rolldown(where_cond):
 
 TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 try:
+	ent_params_list = Param.ent_params_list.split('||')
+	Trace.Write('ent_params_list-----'+str(ent_params_list))
+except:
+
+	ent_params_list = []
+try:
 	ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
 except:
 	ContractRecordId = ent_params_list[0].split('and',)[0].split('=',)
@@ -435,12 +441,7 @@ try:
 except Exception as e:
 	#Trace.Write('unselected_values--error-'+str(e))
 	unselected_values =[]
-try:
-	ent_params_list = Param.ent_params_list.split('||')
-	Trace.Write('ent_params_list-----'+str(ent_params_list))
-except:
 
-	ent_params_list = []
 if ACTION == 'UPDATE_ASSEMBLY':
 	#selected_values = list(selected_values)
 	#Trace.Write('values----'+str(selected_values))
