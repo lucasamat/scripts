@@ -554,7 +554,7 @@ class SyncQuoteAndCustomTables:
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})			
-		
+					Region_Object = None
 					if custom_fields_detail.get('AccountAssignmentGroup'):
 						Region_Object = Sql.GetFirst(
 								"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
