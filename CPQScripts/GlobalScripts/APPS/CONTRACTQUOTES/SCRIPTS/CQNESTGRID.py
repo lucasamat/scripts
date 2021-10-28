@@ -4109,7 +4109,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(table_id)
 			+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 			+ str(table_id)
-			+ "',"+str(ASSEMBLYID)+","+EQUIPMENTID+"); }); "
+			+ "',"+str(ASSEMBLYID)+","+str(EQUIPMENTID)+"); }); "
 			)
 	Trace.Write("7777 dbl_clk_function --->"+str(dbl_clk_function))
 	NORECORDS = ""
