@@ -1134,7 +1134,7 @@ class Entitlements:
 						# 	Trace.Write("whereReq---"+str(whereReq))
 						# 	Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
 						# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
-					elif key == "AGS_Z0091_GEN_IDLALW":
+					elif "GEN_IDLALW" in key:
 						Trace.Write("1125 entvalue"+str(entitlement_value))
 						if entitlement_value == "Yes":
 							Quote.SetGlobal("IdlingAllowed","Yes")
@@ -1665,7 +1665,7 @@ class Entitlements:
 									days = (d2 - d1).days
 									total = (total_price/365)*int(days)
 									#UPDATE TOTAL PRICE IN SAQTRV
-									Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = '{}' WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
+									Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
 								
 								ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
 							else:
