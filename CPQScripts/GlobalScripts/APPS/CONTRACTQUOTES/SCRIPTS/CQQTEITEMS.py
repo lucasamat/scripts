@@ -150,7 +150,7 @@ def EditToolIdling():
                         sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
                     
                     elif x == "Idle Duration Exception":
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
+                        sec_str += '<input '+'data-content="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
                     elif x == "Idling Exception Notes":
                         sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
 
@@ -341,7 +341,7 @@ if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
 if Action == "DURATION ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
     Trace.Write("342")
     ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
-if Action == " EXCEPTION ONCHANGE" and IdlingException == "Yes":
+if Action == "EXCEPTION ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
