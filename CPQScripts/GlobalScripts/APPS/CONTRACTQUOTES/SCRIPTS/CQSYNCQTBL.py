@@ -669,12 +669,12 @@ class SyncQuoteAndCustomTables:
 							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								##A055S000P01-4418 exchange rate details starts..
-								if AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
-									exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
-									if exchange_rate_type_object is not None:
-										exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
-								else:
-									exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								# if AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
+    							# 		exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
+								# 	if exchange_rate_type_object is not None:
+								# 		exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
+								# else:
+								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								#Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								
 								if exchange_obj:
