@@ -156,6 +156,7 @@ def child_ent_request(tableName,where,serviceId):
 			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId, revision_record_id))
 			Log.Info('-ContractRecordId-'+str(ContractRecordId))
 			Log.Info('-revision_record_id-'+str(revision_record_id))
+			Log.Info('-ent_temp-160---C4C_QUOTE_ID-'+str(get_c4c_quote_id.C4C_QUOTE_ID))
 			ent_temp = "ENT_ASSEM_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 			Log.Info('-ent_temp-160----'+str(ent_temp))
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
