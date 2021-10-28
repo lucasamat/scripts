@@ -340,18 +340,19 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					Trace.Write("sefl_api_APPDTE_EXCH_RATE_chk "+str(sefl_api))
 					current_obj_value = col_name.APPDTE_EXCH_RATE
 					onchange = ""
+					disable= ""
 					sec_str += (
-						"<div class='col-md-3 pad-0'> <select id="'
+						'''<div class='col-md-3 pad-0'> <select id="'''
 							+ str(sefl_api)
-							+ '" '
+							+ '''" '''
 							+ str(onchange)
-							+ ' value="'
+							+ ''' value="'''
 							+ current_obj_value
-							+ '" type="text" title="'
+							+ '''" type="text" title="'''
 							+ str(current_obj_value)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '
+							+ '''" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '''
 							+ disable
-							+ " ><option value='Select'>..Select</option> </div>"
+							+ '''" ><option value='Select'>..Select</option> </div>'''
 					)
 					# else:
 					# 	sec_str += (
