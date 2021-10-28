@@ -361,6 +361,7 @@ class SyncQuoteAndCustomTables:
 
 	def create_custom_table_record(self):
 		contract_quote_data = {}
+		Region_Object = None
 		sync_start_time = time.time()
 		#Log.Info("Sync start ==> "+str(sync_start_time))
 		
