@@ -335,7 +335,22 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea remove_yellow bor-left bor-right' style='height: 28px;border-top: 0 !important;border-bottom: 1px solid #ddd !important;' id='' title='' tabindex='' disabled=''></textarea></div>"
-					)      
+					)    
+				elif sefl_api == "APPDTE_EXCH_RATE":
+					current_obj_value = col_name.APPDTE_EXCH_RATE
+					onchange = ""
+					sec_str += (
+						"<div class='col-md-3 pad-0'> <select id="'
+							+ str(sefl_api)
+							+ '" '
+							+ str(onchange)
+							+ ' value="'
+							+ current_obj_value
+							+ '" type="text" title="'
+							+ str(current_obj_value)
+							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '
+							+ disable
+							+ " ><option value='Select'>..Select</option>
 					# else:
 					# 	sec_str += (
 					# 		'<td><input id="'
