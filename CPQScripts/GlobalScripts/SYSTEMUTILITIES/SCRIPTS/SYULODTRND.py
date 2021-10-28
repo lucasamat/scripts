@@ -2194,7 +2194,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							+ "</td>"
 						)
 					else:
-						if sefl_api == "APPDTE_EXCH_RATE" and str(current_obj_value).lstrip() != ""
+						if sefl_api == "APPDTE_EXCH_RATE" and str(current_obj_value).lstrip() != "":
 							sec_str += (
 								'<td><input id="'
 								+ str(current_obj_api_name)
