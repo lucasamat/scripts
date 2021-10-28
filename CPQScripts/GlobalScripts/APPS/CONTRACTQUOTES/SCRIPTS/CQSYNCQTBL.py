@@ -565,9 +565,7 @@ class SyncQuoteAndCustomTables:
 					exchange_rate_type_object = None
 					if custom_fields_detail.get('AccountAssignmentGroup'):
 						exchange_rate_type_object = Sql.GetFirst(
-							"SELECT BANK_ID,BANK_NAME FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(
-								custom_fields_detail.get('AccountAssignmentGroup')
-							)
+							"SELECT BANK_ID,BANK_NAME FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(AccountAssignmentGroup)
 						)
 						if exchange_rate_type_object:
 							bank_id = exchange_rate_type_object.BANK_ID
