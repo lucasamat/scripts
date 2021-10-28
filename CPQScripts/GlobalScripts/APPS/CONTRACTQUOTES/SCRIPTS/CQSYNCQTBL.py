@@ -586,9 +586,9 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
 							"REGION":str(AccountAssignmentGroup),
-							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object is not None else "",
-							"BANK":bank_id if exchange_rate_type_object is not None else "",
-							"BANK_NAME":bank_name if exchange_rate_type_object is not None else "",
+							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object else "",
+							"BANK":bank_id if exchange_rate_type_object else "",
+							"BANK_NAME":bank_name if exchange_rate_type_object else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
@@ -747,7 +747,7 @@ class SyncQuoteAndCustomTables:
 							if tax_details:
 								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
 						quote_salesorg_table_info.AddRow(salesorg_data)
-						#Log.Info('salesorg_data---443--'+str(salesorg_data))
+						Log.Info('salesorg_data---443--'+str(salesorg_data))
 						Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
 						Sql.Upsert(quote_salesorg_table_info)
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
