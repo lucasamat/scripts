@@ -1615,7 +1615,8 @@ class Entitlements:
 								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
 								#Trace.Write('attr_code--if'+str(attr_code))
 								ent_val_code =  str(attr_code).replace("'", '"')
-								get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
+								if STANDARD_ATTRIBUTE_VALUES.ATTRDESC:
+									get_tool_desc= STANDARD_ATTRIBUTE_VALUES.ATTRDESC
 								#multi_select_attr_list[str(key)] = display_value_arr
 						else:
 							attr_code = ""
