@@ -1665,9 +1665,9 @@ class ContractQuoteItem:
 	
 	def _simple_quote_item_lines_insert_process(self, where_string='', join_condition_string='', join_string=''):
 		equipments_count = 0
-		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		quote_line_item_obj = Sql.GetFirst("SELECT max(EQUIPMENT_LINE_ID) as max FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_line_item_obj:
-			equipments_count = int(quote_line_item_obj.EQUIPMENT_LINE_ID) +2
+			equipments_count = int(quote_line_item_obj.max) +1
 		#Log.Info(" 1.equipments_count ===>"+str(equipments_count))
 		##inserting SAQICO except chamber based equipment A055S000P01-6826	
 		# ROW_NUMBER()OVER(ORDER BY(SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)) * 1 + {EquipmentsCount} as EQUIPMENT_LINE_ID,			
