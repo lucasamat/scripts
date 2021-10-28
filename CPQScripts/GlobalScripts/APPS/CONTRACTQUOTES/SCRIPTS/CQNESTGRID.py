@@ -4551,7 +4551,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 	+ str(table_id)
 	+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 	+ str(table_id)
-	+ "',"+str(ASSEMBLYID)+","+EQUIPMENTID+"); }); "
+	+ "',"+str(ASSEMBLYID)+","+str(EQUIPMENTID)+"); }); "
 	)
 	
 
