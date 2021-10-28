@@ -1700,6 +1700,9 @@ elif ObjectName == "SAQTSE":
 # 	Trace.Write("ObjectName-else--"+str(ObjectName))
 
 ##calling class
+if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
+	EntitlementType = "TOOLS"
+
 entview_class = EntitlementView()
 if action == "VIEW":
 	# if mode == 'Contracts':
