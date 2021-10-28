@@ -110,7 +110,8 @@ class EntitlementView():
 		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
 		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-		
+		if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
+			EntitlementType = "EQUIPMENT"
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
@@ -1700,8 +1701,7 @@ elif ObjectName == "SAQTSE":
 # 	Trace.Write("ObjectName-else--"+str(ObjectName))
 
 ##calling class
-if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
-	EntitlementType = "TOOLS"
+
 
 entview_class = EntitlementView()
 if action == "VIEW":
