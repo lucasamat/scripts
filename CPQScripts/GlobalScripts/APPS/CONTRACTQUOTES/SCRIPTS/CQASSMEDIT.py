@@ -240,7 +240,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		for val in STANDARD_ATTRIBUTE_VALUES:
 			if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
-		Trace.Write("---eqruestdata---requestdata----"+str(requestdata))
+		Log.Info("---eqruestdata---AttributeID----"+str(AttributeID))
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
