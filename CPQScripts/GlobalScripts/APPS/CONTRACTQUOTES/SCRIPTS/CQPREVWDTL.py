@@ -351,7 +351,8 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 							+ str(current_obj_value)
 							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt" onchange = "onchangeFunction(this)" '
 							+ disable
-							+ " ><option value='Select'>..Select</option>
+							+ " ><option value='Select'>..Select</option> </div>"
+					)
 					# else:
 					# 	sec_str += (
 					# 		'<td><input id="'
