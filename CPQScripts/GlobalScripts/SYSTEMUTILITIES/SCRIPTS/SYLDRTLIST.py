@@ -2825,6 +2825,7 @@ class SYLDRTLIST:
                                 )  
                                 
                             else:
+                                Trace.write("SAQICT----DELelse")
                                 Action_str += (
                                     '<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
                                     + str(onclick)
