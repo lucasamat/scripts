@@ -111,7 +111,11 @@ class EntitlementView():
 		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
 		if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
-			EntitlementType = "EQUIPMENT"
+			EntitlementType = ""
+			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '" + str(self.contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '" + str(self.quote_revision_record_id) + "' AND SERVICE_ID = 'Z0101'")
+			ObjectName = "SAQTSE"
+			where = "QUOTE_RECORD_ID = '" + str(self.contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = 'Z0101'"
+
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
