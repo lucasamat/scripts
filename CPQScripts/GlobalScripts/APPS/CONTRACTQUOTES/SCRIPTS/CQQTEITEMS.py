@@ -50,13 +50,13 @@ def LoadSummary():
             if getDefaultValue:
                 if x == "Idle Notice Exception":
                     Trace.Write("Idle Notice")
-                    sec_str += '<input class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
+                    sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'
                 elif x == "Idle Duration Exception":
                     Trace.Write("Idle Duration")
-                    sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
+                    sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
                 elif x == "Idling Exception Notes":
                     Trace.Write("Idle Exception")
-                    sec_str += '<input class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
+                    sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
                 else:
                     Trace.Write("Idle Else")
                     sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
@@ -147,12 +147,12 @@ def EditToolIdling():
                         Trace.Write("Idle Exception")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     elif x == "Idle Notice Exception":
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
+                        sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
                     
                     elif x == "Idle Duration Exception":
                         sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'
                     elif x == "Idling Exception Notes":
-                        sec_str += '<input class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</input>'
+                        sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" maxlength = "255" >'
 
                     else:
                         Trace.Write("Idle Else")
