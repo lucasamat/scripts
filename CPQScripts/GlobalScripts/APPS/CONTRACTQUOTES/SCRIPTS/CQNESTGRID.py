@@ -3912,6 +3912,28 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
 		)
+	elif TreeParentParam == "Comprehensive Services" or TopSuperParentParam == "Complementary Products":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' ) m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+		QueryCount = ""
+		QueryCountObj = ""
+		QueryCountObj = Sql.GetFirst(
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' "
+		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
 		#Trace.Write("count---->" + str(QueryCount))
