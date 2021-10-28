@@ -3880,6 +3880,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	attrs_datatype_dict = {}
 	lookup_disply_list = []
 	lookup_str = ""
+	QueryCountObj = ""
+	QueryCount = ""
 	if Objd_Obj is not None:
 		attr_list = {}
 		for attr in Objd_Obj:
@@ -3903,8 +3905,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ " and "
 			+ str(Page_End)
 		)
-		QueryCount = ""
-		QueryCountObj = ""
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -3912,7 +3912,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
 		)
-	elif TreeParentParam == "Comprehensive Services" or TopSuperParentParam == "Complementary Products":
+	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 		Qstr = (
 			"select top "
 			+ str(PerPage)
@@ -3925,8 +3925,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ " and "
 			+ str(Page_End)
 		)
-		QueryCount = ""
-		QueryCountObj = ""
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
