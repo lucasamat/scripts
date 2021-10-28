@@ -4812,17 +4812,30 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		#Trace.Write("Empty searh --->")
 		if TreeTopSuperParentParam == 'Comprehensive Services':
 			parent_obj = Sql.GetList(
-			"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
-			+ str(ContractRecordId)            
-			+ "' and QTEREV_RECORD_ID = '"
-			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
-		)
-		Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
-			+ str(ContractRecordId)            
-			+ "' and QTEREV_RECORD_ID = '"
-			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
+		elif TreeParentParam == 'Comprehensive Services' or TreeParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' ")
 		if Count:
 			QueryCount = Count.cnt
 
@@ -4847,8 +4860,26 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
 				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
-			if Count:
-				QueryCount = Count.cnt
+			
+		elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
+				+ str(ATTRIBUTE_VALUE_STR)
+				+ " 1=1 and QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "'  and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "'  ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where "
+				+ str(ATTRIBUTE_VALUE_STR)
+				+ " 1=1 and QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' ")
+		if Count:
+			QueryCount = Count.cnt
 
 
 
