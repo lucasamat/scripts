@@ -136,7 +136,7 @@ def child_ent_request(tableName,where,serviceId):
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
 	Trace.Write(response["access_token"])
-	Log.Info('serviceId---'+str(serviceId))
+	Log.Info(str(tableName)+'--serviceId---'+str(serviceId))
 	ent_temp =''
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
