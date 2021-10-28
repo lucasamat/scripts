@@ -1701,6 +1701,28 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							+ str(current_obj_api_name)
 							+ "' "
 						)
+					elif str(current_obj_api_name) == "APPDTE_EXCH_RATE":
+						sec_str += "<td>"
+						sec_str += (
+							'<select id="'
+							+ str(current_obj_api_name)
+							+ '" '
+							+ str(onchange)
+							+ ' value="'
+							+ current_obj_value
+							+ 'of month" type="text" title="'
+							+ str(current_obj_value)
+							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt"  '
+							+ disable
+							+ " style=\'margin-left: -1px\'><option value='Select'>..Select</option>"
+						)
+						Sql_Quality_Tier = Sql.GetFirst(
+							"select PICKLIST_VALUES FROM  SYOBJD WITH (NOLOCK) where OBJECT_NAME='"
+							+ str(ObjectName)
+							+ "' and DATA_TYPE='PICKLIST' and API_NAME = '"
+							+ str(current_obj_api_name)
+							+ "' "
+						)
 					else:						
 						sec_str += "<td>"
 						sec_str += (
