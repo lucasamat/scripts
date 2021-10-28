@@ -4401,6 +4401,27 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 			+ str(Preventive_Maintainence_ID)
 			+ "'and ASSEMBLY_ID = '"
 			+ str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"'and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"'")
+		elif TreeParentParam in ('Comprehensive Services','Complementary Products'):
+			child_obj_recid = Sql.GetList(
+				"select top "
+					+ str(PerPage)
+					+ " * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,PART_DESCRIPTION,QUANTITY,TKM_FLAG from SAQSKP (NOLOCK) where PM_ID = '"
+					+ str(recid)
+					+ "' and QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"
+					+ str(RevisionRecordId)
+					+ "' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"') m where m.ROW BETWEEN "
+					+ str(Page_start)
+					+ " and "
+					+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) as cnt from SAQSKP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and PM_ID = '"
+			+ str(Preventive_Maintainence_ID)
+			+ "' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"'")
 		chld_list = []
 		QueryCount = ""
 		if QueryCountObj is not None:
