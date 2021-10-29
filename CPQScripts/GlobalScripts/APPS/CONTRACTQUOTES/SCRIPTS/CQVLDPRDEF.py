@@ -70,6 +70,7 @@ def equipment_predefined():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
+			Trace.Write("vallls"+str(val.ENTITLEMENT_DESCRIPTION.upper()))
 			if 'WAFER NODE' in val.ENTITLEMENT_DESCRIPTION.upper():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
