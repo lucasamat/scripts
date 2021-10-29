@@ -1063,7 +1063,10 @@ try:
 	Trace.Write("SELECTALL = "+str(SELECTALL))
 except:
 	SELECTALL = None
-
+try:
+	TreeSuperParentParam = Param.TreeSuperParentParam
+except:
+	TreeSuperParentParam = ""
 Trace.Write("VALUE--------------------------->" + str(VALUE))
 
 # Trace.Write("selectPN--------------------------->" + str(selectPN))
