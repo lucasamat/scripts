@@ -247,7 +247,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		for val in STANDARD_ATTRIBUTE_VALUES:
 			if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
-		Log.Info("---eqruestdata---AttributeID----"+str(AttributeID))
+		Log.Info("---eqruestdata---requestdata----"+str(requestdata))
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
@@ -369,7 +369,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
-				#Log.Info('response2--182----342-')
+				Log.Info('response2--182----342-')
 				#Trace.Write(str(ent_disp_val)+'--ent_disp_val--value code---'+str(attributevalues[attrs])+'--'+str(attrs))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
