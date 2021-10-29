@@ -35,7 +35,7 @@ def LoadSummary():
         ToolId = {}
 
         #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
-        getPRTIAV = Sql.GetList("SELECT TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND TOOLIDLING_ID != 'Idling Allowed'".format(Quote.GetGlobal("quote_revision_record_id")))
+        getPRTIAV = Sql.GetList("SELECT TOP 25 TOOLIDLING_ID,TOOLIDLING_NAME,TOOLIDLING_VALUE_CODE,TOOLIDLING_DISPLAY_VALUE FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND TOOLIDLING_ID != 'Idling Allowed' ORDER BY TOOLIDLING_NAME ".format(Quote.GetGlobal("quote_revision_record_id")))
         
         for x in getPRTIAV:
             ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
