@@ -595,8 +595,8 @@ class AncillaryProductOperation:
 						GetXMLsecField=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 						for val in GetXMLsecField:
 							if 'AGS_Z0046' in val.ENTITLEMENT_ID:
-								anc_insert_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
-						Trace.Write('anc_insert_dict---'+str(anc_insert_dict))
+								anc_insert_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_DISPLAY_VALUE
+						Log.Info('anc_insert_dict---'+str(anc_insert_dict))
 
 					except:
 						Trace.Write('592----------')
