@@ -1341,7 +1341,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
-						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Details":
+						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and "Details" in subtab_name:
 							contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
@@ -1382,7 +1382,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(saqtrv_contract_update)
 
 
-						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Equipment Details":
+						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and "Equipment Details" in subtab_name:
 							contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
