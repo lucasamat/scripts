@@ -1994,6 +1994,7 @@ class TreeView:
 								if str(ObjName).strip() == 'SAQTSV' and str(NodeName) == 'SERVICE_ID':
 									#Trace.Write('NodeText--inside-'+str(NodeText))
 									service_id = NodeText
+									Trace.Write('NodeText--inside-service_id--'+str(service_id))
 									##adding configuration status in offering subtab
 									contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 									where_cond = "WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}'".format(contract_quote_record_id, quote_revision_record_id, NodeText )
