@@ -1927,6 +1927,7 @@ class ContractQuoteItem:
 		return True
 		
 	def _do_opertion(self):
+		Log.Info("-===========>> _do_opertion"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 		if self.action_type == "INSERT_LINE_ITEMS":
 			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
 			
@@ -1934,16 +1935,19 @@ class ContractQuoteItem:
 				if spare_parts_count_object.COUNT > 0:
 					self._insert_quote_item_forecast_parts()
 				else:	
+					Log.Info("-===========>> _do_opertion if else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 					self._quote_items_insert()
 					#batch_group_record_id = str(Guid.NewGuid()).upper()
 					self._insert_quote_item_fab_location()
 					self._insert_quote_item_greenbook()
 			else:	
+				Log.Info("-===========>> _do_opertion else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 				self._quote_items_insert()
 				#batch_group_record_id = str(Guid.NewGuid()).upper()
 				self._insert_quote_item_fab_location()
 				self._insert_quote_item_greenbook()		
 		else:
+			Log.Info("-===========>> _do_opertion update"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 			self._quote_items_update()	
 		# Pricing Calculation
 		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
