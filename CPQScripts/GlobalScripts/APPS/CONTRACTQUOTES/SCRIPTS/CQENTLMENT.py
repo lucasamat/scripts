@@ -2583,17 +2583,17 @@ class Entitlements:
 			ancillary_dict = Quote.GetCustomField('ANCILLARY_DICT').Content
 			
 			Trace.Write("ancillary_dict--"+str(ancillary_dict))
-			Trace.Write("inside Attr List------> "+str(AttributeList))
+			#Trace.Write("inside Attr List------> "+str(AttributeList))
 			tableName = str(objName) +"="+str(AttributeList)+"="+str(User.Id)+","+str(Quote.GetGlobal("contract_quote_record_id"))+','+str(self.revision_recordid)
 			SAQITMwhere = "WHERE A.QUOTE_RECORD_ID = '{}' AND A.QTEREV_RECORD_ID = '{}' AND A.SERVICE_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId)
 			responsive_where = where.replace('SRC.','')
 			Coverage_where = where.replace('SRC.','SAQSCO.').replace("'","$$")
 			where = str(where)+","+str(SAQITMwhere)+","+str(sectionid)
 			Trace.Write("where---"+str(where))
-			Trace.Write("objName-ent"+str(objName))
+			#Trace.Write("objName-ent"+str(objName))
 			# Trace.Write("attributemy"+str(AttributeList))
 			# Trace.Write("attributemywhere"+str(responsive_where))
-			# Trace.Write("tableName---"+str(tableName))
+			Trace.Write("tableName---"+str(tableName))
 			#Getprevdict = str(Getprevdict).replace("&","&#38;")
 			
 			try:			
