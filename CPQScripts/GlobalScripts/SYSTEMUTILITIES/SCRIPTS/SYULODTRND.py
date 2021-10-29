@@ -920,7 +920,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ "'"
 				)
 			else:	
-				Trace.Write("test746")		
+				Trace.Write("test746"+str(API_NAMES))		
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
