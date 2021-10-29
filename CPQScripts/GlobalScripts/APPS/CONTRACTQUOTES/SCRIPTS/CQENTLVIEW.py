@@ -975,8 +975,14 @@ class EntitlementView():
 								# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
 								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
 								for val in GetXMLsecField:
-									val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
-									val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									try:
+										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									except:
+										pass
+									try:
+										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									except:
+										pass
 									val.ENTITLEMENT_NAME = val.ENTITLEMENT_NAME.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
 									try:
 										val.ENTITLEMENT_VALUE_CODE = val.ENTITLEMENT_VALUE_CODE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
