@@ -3920,7 +3920,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' ) m where m.ROW BETWEEN "
+			+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
 			+ str(Page_End)
@@ -3930,7 +3930,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
-			+ "' "
+			+ "' AND SERVICE_ID = '"+str(TreeParam)+"' "
 		)
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
@@ -4829,13 +4829,13 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' ORDER BY "+str(orderby)+" "
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
 		if Count:
 			QueryCount = Count.cnt
 
@@ -4869,7 +4869,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "'  and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "'  ORDER BY "+str(orderby)+" "
+				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
 			)
 			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
@@ -4877,7 +4877,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ str(ContractRecordId)
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
-				+ "' ")
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
 		if Count:
 			QueryCount = Count.cnt
 
