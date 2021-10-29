@@ -3882,6 +3882,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	lookup_str = ""
 	QueryCountObj = ""
 	QueryCount = ""
+	dbl_clk_function = ""
 	if Objd_Obj is not None:
 		attr_list = {}
 		for attr in Objd_Obj:
