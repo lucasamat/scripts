@@ -531,7 +531,7 @@ def CommonTreeViewHTMLDetail(
 							if "SAVE" in btn.HTML_CONTENT:
 								save_btn = str(btn.HTML_CONTENT).format(save_onclick= saveclick)
 
-						cancel_save = '<div  class="g4 sec_' + str(SECTION_EDIT) + ' collapse in except_sec removeHorLine iconhvr sec_edit_sty">'+ str(cancel_btn) + str(save_btn) +'</div>'
+						cancel_save = '<div  class="g4 sec_' + str(sec.RECORD_ID) + ' collapse in except_sec removeHorLine iconhvr sec_edit_sty">'+ str(cancel_btn) + str(save_btn) +'</div>'
 						Trace.Write("cancel_savecancel_save_J"+str(cancel_save))
 					
 
