@@ -1457,7 +1457,12 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					and formula_data_type != "CHECKBOX"
 					and formula_data_type != "CURRENCY"
 				):	
-					Trace.Write(str(lookup_val)+'--lookup_val---'+str(readonly)+'current_obj_api_name--1440---'+str(current_obj_api_name))				
+					Trace.Write(str(lookup_val)+'--lookup_val---'+str(readonly)+'current_obj_api_name--1440---'+str(current_obj_api_name))
+					if current_obj_api_name == "REGION":
+						if current_obj_value == "AMC" or current_obj_value == "AMK":
+							readonly = ""
+						else:
+							readonly = "readonly"
 					if current_obj_api_name in lookup_val and str(readonly) != "readonly":
 						Trace.Write(str(readonly)+'current_obj_api_name--1443---'+str(current_obj_api_name))	
 						sec_str += (
