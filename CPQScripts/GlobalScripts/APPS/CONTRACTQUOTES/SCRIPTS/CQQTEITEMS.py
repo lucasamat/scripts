@@ -40,6 +40,7 @@ def LoadSummary():
         for x in getPRTIAV:
             ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
         i = 1
+        ToolId=sorted(ToolId.keys(), key=lambda x:x.lower())
         for x,y in ToolId.items():
 
             sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
