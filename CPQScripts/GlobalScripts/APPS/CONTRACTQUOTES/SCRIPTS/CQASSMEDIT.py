@@ -389,7 +389,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				#cpsmatc_incr = int(cpsmatchID) + 1
 				#Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
 			Updatecps = "UPDATE {} SET CPS_MATCH_ID ={},CPS_CONFIGURATION_ID = '{}',ENTITLEMENT_XML='{}',CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = GETDATE(),CONFIGURATION_STATUS = '{}' WHERE {} ".format(table_name, cpsmatc_incr,cpsConfigID,insertservice,User.Id,configuration_status,whereReq)
-			Trace.Write('cpsmatc_incr'+str(cpsmatc_incr))
+			Log.Info('Updatecps---'+str(Updatecps))
 			Sql.RunQuery(Updatecps)
 		
 		return True
