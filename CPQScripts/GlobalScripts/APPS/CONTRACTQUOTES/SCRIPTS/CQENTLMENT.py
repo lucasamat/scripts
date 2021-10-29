@@ -1044,6 +1044,11 @@ class Entitlements:
 											attributedefaultvalue.append(prdvalue["id"])
 										elif attribute["author"] == "User":
 											attribute_non_defaultvalue.append(prdvalue["id"])
+			else:
+				get_status = Sql.GetFirst("SELECT * FROM {} {}".format(tableName,whereReq))
+				if get_status:
+					if get_status.CONFIGURATION_STATUS:
+						configuration_status =  get_status.CONFIGURATION_STATUS
 			#Trace.Write('524--787-attributes_service_sublist--'+str(attributes_service_sublist))
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
@@ -2496,14 +2501,15 @@ class Entitlements:
 		# except:
 		# 	Getprevdict = {}
 		###tool relocation receiving entitilement starts
-		Fullresponse=Product.GetGlobal("Fullresponse")
-		Fullresponse = eval(Fullresponse)
-		if Fullresponse['complete'] == 'true':
-			configuration_status = 'COMPLETE'
-		elif Fullresponse['complete'] == 'false':
-			configuration_status = 'INCOMPLETE'
-		else:
-			configuration_status = 'ERROR'
+		# Fullresponse=Product.GetGlobal("Fullresponse")
+		# if Fullresponse:
+		# 	Fullresponse = eval(Fullresponse)
+		# 	if Fullresponse['complete'] == 'true':
+		# 		configuration_status = 'COMPLETE'
+		# 	elif Fullresponse['complete'] == 'false':
+		# 		configuration_status = 'INCOMPLETE'
+		# 	else:
+		# 		configuration_status = 'ERROR'
 		if (self.treeparam.upper() == 'RECEIVING EQUIPMENT' or self.treeparentparam.upper() == 'RECEIVING EQUIPMENT' or self.treesuperparentparam.upper() == 'RECEIVING EQUIPMENT') and (self.treesuperparentparam == 'Complementary Products' or self.treetopsuperparentparam == 'Complementary Products' or self.treesupertopparentparam == 'Complementary Products' ):
 			if self.treeparam.upper() == 'RECEIVING EQUIPMENT'  and subtabName == 'Entitlements':
 				objName = 'SAQTSE'
@@ -2552,7 +2558,11 @@ class Entitlements:
 				parentObj = 'SAQSCE'
 				whereReq = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
-		
+		get_status = Sql.GetFirst("SELECT * FROM {} {}".format(objName,where))
+		if get_status:
+			if get_status.CONFIGURATION_STATUS:
+				configuration_status =  get_status.CONFIGURATION_STATUS
+
 		Trace.Write('AttributeList----'+str(AttributeList))
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
@@ -2563,6 +2573,7 @@ class Entitlements:
 		qa_req = 'AGS_'+str(serviceId)+'_VAL_QLYREQ'
 		get_ent_type_val =''
 		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
+
 		if AttributeList:
 			if 'Z0046' in AttributeID and serviceId == 'Z0091':
 				serviceId = 'Z0046'
