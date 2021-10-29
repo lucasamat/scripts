@@ -26,8 +26,8 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         time = "T12:00:00.00"
         fromvalue = revision_obj.CONTRACT_VALID_FROM
         tovalue = revision_obj.CONTRACT_VALID_TO
-        valid_from =fromvalue+time
-        valid_to = tovalue+time
+        valid_from = str(fromvalue)+str(time)
+        valid_to = str(tovalue)+str(time)
         ##date time conversion
         quote_obj = Sql.GetFirst("select ISNULL(NET_VALUE,0) AS NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
         
