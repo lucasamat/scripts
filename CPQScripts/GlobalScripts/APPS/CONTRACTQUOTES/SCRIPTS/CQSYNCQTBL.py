@@ -1248,7 +1248,7 @@ class SyncQuoteAndCustomTables:
 						Log.Info("11111 QuoteId_info----> "+str(QuoteId_info))
 						Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
 						
-						requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n}'
+						requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n,\n  \"PrimaryContactId\": \"'+str(custom_fields_detail.get("PrimaryContactId"))+'\"\n}'
 						Trace.Write("REQUEST DATA----> "+str(requestdata))
 						
 						response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
