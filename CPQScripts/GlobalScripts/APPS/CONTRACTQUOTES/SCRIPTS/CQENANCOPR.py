@@ -583,7 +583,7 @@ class AncillaryProductOperation:
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
 						AttributeID_Pass = attrs
 						NewValue = 'Yes'
-					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "Bonus Threshold value":
+					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS THRESHOLD VALUE":
 						AttributeID_Pass = attrs
 						NewValue = ent_disp_val
 
