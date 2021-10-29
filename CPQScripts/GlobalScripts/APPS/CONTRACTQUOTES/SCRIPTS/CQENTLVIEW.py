@@ -280,7 +280,7 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			#Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
+			Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
@@ -1425,7 +1425,7 @@ class EntitlementView():
 										+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="editent_bt(this)" >'
 										+ "</input>"
 									)
-								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
+								Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
 								if attrSysId in attriburesrequired_list:
 									required_symbol_class = str(attrSysId)+' required_symbol'
 									get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
