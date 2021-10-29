@@ -307,7 +307,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		attributesallowedlst = list(set(attributesallowedlst))
 		overallattributeslist = list(set(overallattributeslist))
 		HasDefaultvalue=False
-		Trace.Write('response2--182----315---'+str(attributesallowedlst))
+		Log.Info('response2--182----315---'+str(attributesallowedlst))
 		Trace.Write('attributevalues--182----315---'+str(attributevalues))
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 		if ProductVersionObj is not None:
