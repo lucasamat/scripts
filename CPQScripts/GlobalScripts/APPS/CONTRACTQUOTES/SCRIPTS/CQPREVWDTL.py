@@ -500,7 +500,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 			sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
 			sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
 			sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
-			sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" value="'+str(value.COMMENT)+'" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled></textarea></td>')
+			sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
 			sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 			sec_str += '</tr>'
 		else:
