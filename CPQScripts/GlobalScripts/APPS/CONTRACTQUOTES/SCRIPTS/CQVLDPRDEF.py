@@ -104,7 +104,7 @@ def equipment_predefined():
 		##total seed coefficent update
 		try:
 			Trace.Write("try"+str(TreeParam))
-			ent_value = 'log(Total Cost w/o Seed Stock)'
+			ent_value = 'Y' 
 			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
 			if entitlement_id in updateentXML:
 				Trace.Write("try")
@@ -316,9 +316,9 @@ try:
 	else:
 		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
 		for obj in obj_list:
-			if obj == "SAQSFE":
-				fab_predefined()
-			elif obj == "SAQSGE":
+			# if obj == "SAQSFE":
+			# 	fab_predefined()
+			if obj == "SAQSGE":
 				greenbook_predefined()
 			elif obj == "SAQSCE":
 				equipment_predefined()
