@@ -4102,7 +4102,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	else:
 		Trace.Write("else---")
 		if TreeParentParam in ('Comprehensive Services','Complementary Products'):
-			Trace.Write('*At 4105') 
+			Trace.Write('**At 4105') 
 			cls = "eq(2)"
 			dbl_clk_function += (
 				'$("'	
