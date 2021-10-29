@@ -496,6 +496,7 @@ class AncillaryProductOperation:
 
 	def _insert_service_ent(self):
 		get_service_details = Sql.GetList("SELECT SAQTSV.* FROM SAQTSV INNER JOIN MAMTRL ON SAP_PART_NUMBER = SERVICE_ID WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'  AND PAR_SERVICE_ID = '{}' AND MATERIALCONFIG_TYPE != 'SIMPLE MATERIAL'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id , self.service_id))
+		anc_insert_dict ={}
 		for addon in get_service_details:
 			ent_disp_val = ent_val_code = AttributeID_Pass = NewValue = ''
 			get_tooltip = ''
@@ -518,6 +519,7 @@ class AncillaryProductOperation:
 			attributedefaultvalue = []
 			overallattributeslist =[]
 			attributevalues={}
+			
 		
 				
 			#if get_service_details : 
@@ -582,7 +584,7 @@ class AncillaryProductOperation:
 						ent_desc = ''
 					#ancillary insert based on aprent insert start
 					try:
-						anc_insert_dict ={}
+						
 						get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,self.contract_quote_revision_record_id))
 						ent_temp = "ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 						ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
