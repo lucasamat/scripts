@@ -1289,7 +1289,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							saqico_contract_update = "UPDATE SAQICO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 							Trace.Write("QUOTE_REC_CHK_J"+str(contract_quote_record_id))
-							saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{validity_from_date}' , CONTRACT_VALID_TO = '{validity_to_date}' WHERE QUOTE_RECORD_ID = '{validity_to_date}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(validity_from_date= validity_from_date.CONTRACT_VALID_FROM, validity_to_date =   validity_to_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+							saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{validity_from_date}' , CONTRACT_VALID_TO = '{validity_to_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(validity_from_date= validity_from_date.CONTRACT_VALID_FROM, validity_to_date =   validity_to_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 
 							Sql.RunQuery(fab_contract_update)
