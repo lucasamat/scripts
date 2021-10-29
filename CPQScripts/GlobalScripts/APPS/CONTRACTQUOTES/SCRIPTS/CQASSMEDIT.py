@@ -185,7 +185,7 @@ def child_ent_request(tableName,where,serviceId):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Trace.Write('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
@@ -194,7 +194,7 @@ def child_ent_request(tableName,where,serviceId):
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							Trace.Write("requestdata--child-- " + str(requestdata))
+							Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1			
 							cpsmatchID = webclient.ResponseHeaders["Etag"]
@@ -208,7 +208,7 @@ def child_ent_request(tableName,where,serviceId):
 		for data in getdata:
 			updateConfiguration = Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={} WHERE {} ".format(tableName,newConfigurationid,cpsmatchID,where))            
 	except Exception:
-		Trace.Write("Patch Error-2-"+str(sys.exc_info()[1]))        
+		Log.Info("Patch Error-2-"+str(sys.exc_info()[1]))        
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 	return newConfigurationid,cpsmatchID
 
@@ -253,9 +253,9 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-		#Log.Info("requestdata---180--265----" + str(requestdata))
+		Log.Info("requestdata---180--265----" + str(requestdata))
 		response2 = webclient.DownloadString(Request_URL)
-		Trace.Write('response2--182----267-----'+str(response2))
+		Log.Info('response2--182----267-----'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse= eval(response2)
 		##getting configuration_status status
@@ -296,7 +296,6 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 									#Trace.Write('iiiii---'+str(attribute["value"])+'-'+str(prdvalue["id"]) )
 									value_list = [attribute["value"] for attribute in prdvalue["values"]]
 									if attribute["author"] in ("Default","System"):
-										#Trace.Write('524------'+str(prdvalue["id"]))
 										attributedefaultvalue.append(prdvalue["id"])
 									#value_list = str(value_list)
 								attributevalues[str(prdvalue["id"])] = value_list
@@ -307,7 +306,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		attributesallowedlst = list(set(attributesallowedlst))
 		overallattributeslist = list(set(overallattributeslist))
 		HasDefaultvalue=False
-		Log.Info('response2--182----315---'+str(attributesallowedlst))
+		#Log.Info('response2--182----315---'+str(attributesallowedlst))
 		Trace.Write('attributevalues--182----315---'+str(attributevalues))
 		ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 		if ProductVersionObj is not None:
