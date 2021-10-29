@@ -108,7 +108,11 @@ def equipment_predefined():
 			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
 			if entitlement_id in updateentXML:
 				Trace.Write("try")
-				updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+				get_value_qry = Sql.GetFirst("SELECT ENTITLEMENT_DISPLAY_VALUE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID ='{}'".format(entitlement_id,TreeParam))
+				if get_value_qry:
+					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
+						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
+						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
 		except Exception as e:
 			Trace.Write("exceptt"+str(e))
 			pass
