@@ -165,7 +165,7 @@ def EditToolIdling():
                     if getAllValues:
                         for val in getAllValues:
                             sec_str += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
-                    sec_str += '</select></td></tr>'
+                    sec_str += '</select><a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil" aria-hidden="true"></i></a></td></tr>'
             sec_str += "</tbody></table>"
         else:
             #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
