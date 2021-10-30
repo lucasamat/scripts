@@ -403,7 +403,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 			RECID_OBJ = RECORD[str(AutoNumb)]
 			RECID_OBJ_SLICE = RECID_OBJ[slice(0, 6)]
 		except:
-			Trace.Write("RECID_OBJ_J"+str(RECID_OBJ))
+			Trace.Write("RECID_OBJ_J"+str(RECORD))
 			RECID_OBJ_SLICE = RECID_OBJ
 		if RECID_OBJ_SLICE == str(TableName):
 			RECID = CPQID.KeyCPQId.GetKEYId(str(TableName), str(RECID_OBJ))
