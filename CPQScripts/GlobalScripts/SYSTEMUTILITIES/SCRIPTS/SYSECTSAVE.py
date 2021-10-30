@@ -399,12 +399,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 			"SELECT API_NAME FROM SYOBJD WHERE DATA_TYPE = 'AUTO NUMBER' AND OBJECT_NAME = '" + str(TableName) + "'"
 		)
 		AutoNumb = TABLE_OBJS.API_NAME
-		try:
-			RECID_OBJ = RECORD[str(AutoNumb)]
-			RECID_OBJ_SLICE = RECID_OBJ[slice(0, 6)]
-		except:
-			Trace.Write("RECID_OBJ_J"+str(RECORD))
-			RECID_OBJ_SLICE = RECID_OBJ
+		RECID_OBJ = RECORD[str(AutoNumb)]
+		RECID_OBJ_SLICE = RECID_OBJ[slice(0, 6)]
 		if RECID_OBJ_SLICE == str(TableName):
 			RECID = CPQID.KeyCPQId.GetKEYId(str(TableName), str(RECID_OBJ))
 		else:
