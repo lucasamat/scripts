@@ -404,6 +404,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 			RECID_OBJ_SLICE = RECID_OBJ[slice(0, 6)]
 		except:
 			if Product.GetGlobal("TreeParentLevel3") == "Product Offerings":
+				RECID_OBJ = "SAQSGB"
 				RECID_OBJ_SLICE = "SAQSGB"
 		if RECID_OBJ_SLICE == str(TableName):
 			RECID = CPQID.KeyCPQId.GetKEYId(str(TableName), str(RECID_OBJ))
