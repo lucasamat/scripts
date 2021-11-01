@@ -630,7 +630,7 @@ class AncillaryProductOperation:
 				values = ', '.join("'" + str(x) + "'" for x in tbrow.values())
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-				if addon.SERVICE_ID == "Z0046":
+				if addon.SERVICE_ID:
 					#ancillary insert based on aprent insert start
 					try:
 						Log.Info('636---')
@@ -643,7 +643,7 @@ class AncillaryProductOperation:
 
 						GetXMLsecField=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 						for val in GetXMLsecField:
-							if 'AGS_Z0046' in val.ENTITLEMENT_ID:
+							if str(addon.SERVICE_ID) in val.ENTITLEMENT_ID:
 								Log.Info('647--'+str(val.ENTITLEMENT_ID))
 								if val.ENTITLEMENT_DISPLAY_VALUE:
 									try:						
