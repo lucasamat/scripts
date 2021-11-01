@@ -2623,6 +2623,7 @@ class Entitlements:
 		return configuration_status,AttributeList
 
 	def anc_onchange(AttributeList):
+		Trace.Write('2626--')
 		for val in AttributeList:
 			if 'AGS_Z0046' in val:
 				ServiceId = 'Z0046'
