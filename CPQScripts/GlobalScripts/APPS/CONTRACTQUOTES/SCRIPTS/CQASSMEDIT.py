@@ -245,11 +245,16 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		#AttributeID = 'AGS_QUO_QUO_TYP'
 		#NewValue = 'Chamber based'
 		STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
-		
-		for val in STANDARD_ATTRIBUTE_VALUES:
-			if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
-				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
-		Log.Info("---eqruestdata---requestdata----"+str(requestdata))
+		if STANDARD_ATTRIBUTE_VALUES:
+			for val in STANDARD_ATTRIBUTE_VALUES:
+				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
+					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
+			Log.Info("---eqruestdata---requestdata----"+str(requestdata))
+		else:
+			Trace.Write('NewValue--'+str(NewValue))
+			#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+			#requestdata += '{"value":"' + NewValue + '","selected":true}'
+			requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'NewValue+'","selected":true}]}]}'
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
