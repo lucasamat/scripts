@@ -585,7 +585,7 @@ class AncillaryProductOperation:
 					
 					#ancillary insert based on aprent insert end
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
-						AttributeID_Pass = 'AGS_'+str(addon.SERVICE_ID)+'_KPI_BPTKPI'
+						AttributeID_Pass = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_KPI_BPTKPI'
 						NewValue = 'Yes'
 
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
