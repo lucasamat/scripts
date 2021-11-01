@@ -365,6 +365,7 @@ def remove_html_tags(text):
 
 def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN):
 	TreeParam = Product.GetGlobal("TreeParam")
+	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	value_list = []
@@ -1063,10 +1064,6 @@ try:
 	Trace.Write("SELECTALL = "+str(SELECTALL))
 except:
 	SELECTALL = None
-try:
-	TreeSuperParentParam = Param.TreeSuperParentParam
-except:
-	TreeSuperParentParam = ""
 Trace.Write("VALUE--------------------------->" + str(VALUE))
 
 # Trace.Write("selectPN--------------------------->" + str(selectPN))
