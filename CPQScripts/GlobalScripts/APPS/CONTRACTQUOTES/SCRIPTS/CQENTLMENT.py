@@ -2589,7 +2589,7 @@ class Entitlements:
 					try:						
 						add_where =''
 						NewValue = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
-						ServiceId = serviceId
+						ServiceId = ServiceId
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,ServiceId,self.revision_recordid)
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(attr_id)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 						
