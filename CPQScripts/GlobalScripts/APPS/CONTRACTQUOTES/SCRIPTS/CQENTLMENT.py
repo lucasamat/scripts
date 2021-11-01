@@ -2575,9 +2575,16 @@ class Entitlements:
 		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
 
 		if AttributeList:
+			AttributeList = AttributeList.split(',')
+			for val in AttributeList:
+				if 'AGS_Z0046' in val:
+					serviceId = 'Z0046'
+					attr_id =val
+			Trace.Write('attr_id_--'+str(attr_id))
+			
 			if 'Z0046' in AttributeList and serviceId == 'Z0091':
 				serviceId = 'Z0046'
-			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeList)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(attr_id)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:
 				get_ent_type_val = get_ent_type.ENTITLEMENT_TYPE
 			responsive_where = where.replace('SRC.','')
