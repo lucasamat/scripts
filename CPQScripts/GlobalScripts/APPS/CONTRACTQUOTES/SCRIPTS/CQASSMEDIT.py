@@ -224,12 +224,12 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 	get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
 	#get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
 	if get_equp_xml:
-		Log.Info('inside----')
+		Trace.Write('inside----')
 		cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
 		# cpsmatchID = get_equp_xml.CPS_MATCH_ID
 		# cpsConfigID = get_equp_xml.CPS_CONFIGURATION_ID
 		#try:       
-		Log.Info(str(AttributeID)+"----NewValue-----"+str(NewValue)+"---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
+		Trace.Write(str(AttributeID)+"----NewValue-----"+str(NewValue)+"---requestdata--244-cpsConfigID0-----"+str(cpsmatchID)+'--'+str(cpsConfigID))
 		# webclient = System.Net.WebClient()
 		# webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/json"
 		# webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Basic c2ItYzQwYThiMWYtYzU5NS00ZWJjLTkyYzYtYzM4ODg4ODFmMTY0IWIyNTAzfGNwc2VydmljZXMtc2VjdXJlZCFiMzkxOm9zRzgvSC9hOGtkcHVHNzl1L2JVYTJ0V0FiMD0="
@@ -255,6 +255,13 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 					#requestdata += '{"value":"' + NewValue + '","selected":true}'
 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+		else:
+			if AttributeID == "AGS_Z0046_KPI_BPTKPI":
+				NewValue ='002'
+				Trace.Write('NewValue--'+str(NewValue))
+				#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+				#requestdata += '{"value":"' + NewValue + '","selected":true}'
+				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
