@@ -1014,7 +1014,7 @@ class EntitlementView():
 
 											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											
-											
+											Trace.Write('dropdowndisallowlist----'+str(dropdowndisallowlist))
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:
