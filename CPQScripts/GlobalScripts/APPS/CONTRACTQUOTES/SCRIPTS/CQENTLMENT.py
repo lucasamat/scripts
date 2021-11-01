@@ -2603,7 +2603,7 @@ class Entitlements:
 					NewValue = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
 					ServiceId = serviceId
 					whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.ContractRecordId,ServiceId,self.revision_recordid)
-					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeList)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+					ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(attr_id)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 					
 					result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 				except:
