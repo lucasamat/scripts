@@ -658,8 +658,8 @@ class AncillaryProductOperation:
 										result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 									except:
 										Trace.Write('error--296')
-								anc_insert_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_DISPLAY_VALUE
-						Log.Info('anc_insert_dict---'+str(anc_insert_dict))
+								#anc_insert_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_DISPLAY_VALUE
+						
 
 					except:
 						Trace.Write('592----------')
