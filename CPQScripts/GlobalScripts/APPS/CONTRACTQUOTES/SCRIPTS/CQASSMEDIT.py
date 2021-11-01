@@ -254,7 +254,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			Trace.Write('NewValue--'+str(NewValue))
 			#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 			#requestdata += '{"value":"' + NewValue + '","selected":true}'
-			requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'NewValue+'","selected":true}]}]}'
+			requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
