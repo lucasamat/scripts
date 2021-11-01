@@ -2575,9 +2575,9 @@ class Entitlements:
 		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
 
 		if AttributeList:
-			if 'Z0046' in AttributeID and serviceId == 'Z0091':
+			if 'Z0046' in AttributeList and serviceId == 'Z0091':
 				serviceId = 'Z0046'
-			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeID)+"' and SERVICE_ID = '"+str(serviceId)+"'")
+			get_ent_type = Sql.GetFirst("select ENTITLEMENT_TYPE from PRENTL where ENTITLEMENT_ID = '"+str(AttributeList)+"' and SERVICE_ID = '"+str(serviceId)+"'")
 			if get_ent_type:
 				get_ent_type_val = get_ent_type.ENTITLEMENT_TYPE
 			responsive_where = where.replace('SRC.','')
