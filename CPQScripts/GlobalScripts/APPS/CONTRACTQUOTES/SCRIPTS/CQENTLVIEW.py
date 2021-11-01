@@ -1351,6 +1351,7 @@ class EntitlementView():
 											selected_option = ' title="Select" '
 										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 										for value in standard_attr_values:
+											selected = ""
 											if value.SYSTEM_ID in dropdowndisallowlist:
 												disallow_style = "style = 'display:none'"
 											else:	
@@ -1359,10 +1360,12 @@ class EntitlementView():
 												selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 											try:
 												#Trace.Write('attrSysId-try---3491-'+str(attrSysId))
+												if inserted_value_dict[str(attrSysId)] == value.STANDARD_ATTRIBUTE_VALUE :
+													selected = "selected"
 												VAR1 += (
 													'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
-													+ '"'+str(select_option)+'>'
+													+ '"'+str(select_option)+str(selected)+'>'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													+ "</option>"
 												)
