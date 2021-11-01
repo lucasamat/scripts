@@ -59,7 +59,7 @@ def LoadSummary():
                     sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'
                 elif x == "Idling Exception Notes":
                     Trace.Write("Idle Exception")
-                    sec_str += '<textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" ></textarea>'
+                    sec_str += '<textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
                 else:
                     Trace.Write("Idle Else")
                     sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
