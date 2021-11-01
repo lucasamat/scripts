@@ -39,6 +39,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##quote header write back details starts...
         quote_header_data = '{\"ProcessingTypeCode\":"'+str(revision_obj.DOCTYP_ID)+'", \"BuyerPartyID\":"'+str(quote_obj.ACCOUNT_ID)+'", \"EmployeeResponsiblePartyID\":"'+str(quote_obj.OWNER_NAME)+'", \"SalesUnitPartyID\":"'+str(revision_obj.SALESORG_ID)+'", \"DistributionChannelCode\":"'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+'", \"DivisionCode\":"'+str(revision_obj.DIVISION_ID)+'", \"ZWB_ContractValidFrom_KUT\":"'+str(valid_from)+'", \"ZWB_ContractValidTo_KUT\":"'+str(valid_to)+'", \"ZWB_QuoteRevisionID_KUT\":"'+str(revision_obj.QTEREV_ID)+'", \"ZWB_RevisionDescription_KUT\":"'+str(revision_obj.REVISION_DESCRIPTION)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'", \"ZWB_TotalQuoteContent_KUT\":"'+str(quote_obj.NET_VALUE)+'", \"ZWB_TotalQuotecurrencyCode_KUT\":"USD"}'
         ##quote header write back details ends...
+        Trace.Write("quote_header_data-----"+str(quote_header_data))
         
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
@@ -76,7 +77,8 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##opportunity header write back details starts...
         opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(revision_obj.NET_VALUE)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
-
+        Trace.Write("opportunity_header_data-----"+str(opportunity_header_data))
+        
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
             + str(writeback)
