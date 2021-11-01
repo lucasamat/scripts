@@ -250,7 +250,7 @@ class ContractQuoteItem:
 
 	def _quote_item_lines_insert_process(self, where_string='', join_condition_string='', join_string=''):
 		equipments_count = 0
-		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+		quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY EQUIPMENT_LINE_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_line_item_obj:
 			equipments_count = int(quote_line_item_obj.EQUIPMENT_LINE_ID) 
 		Log.Info(" 1.equipments_count ===>"+str(equipments_count))
@@ -376,7 +376,7 @@ class ContractQuoteItem:
 				
 		##inserting assembly to SAQICO if a equipemnt is chamber based FTS A055S000P01-6826
 		if self.sale_type == 'TOOL RELOCATION':		
-			quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
+			quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY EQUIPMENT_LINE_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			if quote_line_item_obj:
 				equipments_count = int(quote_line_item_obj.EQUIPMENT_LINE_ID) 
 			Log.Info(" 2.equipments_count ===>"+str(equipments_count))
