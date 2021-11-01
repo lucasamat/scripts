@@ -249,12 +249,12 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			for val in STANDARD_ATTRIBUTE_VALUES:
 				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
-			Log.Info("---eqruestdata---requestdata----"+str(requestdata))
-		else:
-			Trace.Write('NewValue--'+str(NewValue))
-			#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
-			#requestdata += '{"value":"' + NewValue + '","selected":true}'
-			requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+					Trace.Write('NewValue-iff--'+str(NewValue))
+				else:
+					Trace.Write('NewValue--'+str(NewValue))
+					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+					#requestdata += '{"value":"' + NewValue + '","selected":true}'
+					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
