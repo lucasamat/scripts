@@ -633,7 +633,7 @@ class AncillaryProductOperation:
 				if addon.SERVICE_ID == "Z0046":
 					#ancillary insert based on aprent insert start
 					try:
-						
+						Log.Info('636---')
 						get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,self.contract_quote_revision_record_id))
 						ent_temp = "ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 						ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
