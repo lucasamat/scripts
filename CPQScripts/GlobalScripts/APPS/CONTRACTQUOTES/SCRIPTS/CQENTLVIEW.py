@@ -919,7 +919,7 @@ class EntitlementView():
 							#Trace.Write('get_tooltip---'+str(get_tooltip))
 							attribute_Name_list.append(attrSysId)
 							DType = attribute['attribute_dtype']
-							#Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+							Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 							if attrSysId in attributesdisallowedlst:
 								if attrSysId in attributedefaultvalue:
 									add_style = "display:none;"
@@ -1014,7 +1014,7 @@ class EntitlementView():
 
 											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											
-											Trace.Write('dropdowndisallowlist----'+str(dropdowndisallowlist))
+											Trace.Write(str(attributes_disallowed_list)+'---dropdowndisallowlist----'+str(dropdowndisallowlist))
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
 											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:
