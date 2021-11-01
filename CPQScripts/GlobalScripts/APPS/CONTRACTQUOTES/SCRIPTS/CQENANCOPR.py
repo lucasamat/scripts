@@ -644,6 +644,7 @@ class AncillaryProductOperation:
 						GetXMLsecField=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 						Log.Info('GetXMLsecField---'+str(ent_temp))
 						for val in GetXMLsecField:
+							Log.Info('GetXMLsecField-inside loop--'+str(ent_temp))
 							if str(addon.SERVICE_ID) in val.ENTITLEMENT_ID:
 								Log.Info('647--'+str(val.ENTITLEMENT_ID))
 								if val.ENTITLEMENT_DISPLAY_VALUE:
