@@ -238,7 +238,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 	where_condition = SAQITMWhere.replace('A.','')
 	update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userid,datetimenow)
 
-	Log.Info('price rollup'+str(ent_roll_temp))
+	#Log.Info('price rollup'+str(ent_roll_temp))
 	if objectname == 'SAQSFE':
 		obj_list = ['SAQTSE']
 	elif objectname == 'SAQSGE':
@@ -315,7 +315,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 						updateentXML += "<QUOTE_ITEM_ENTITLEMENT>"+assign_xml+"</QUOTE_ITEM_ENTITLEMENT>"
 						
 			if updateentXML:
-				Log.Info('updateentXML--ser-'+str(updateentXML))
+				#Log.Info('updateentXML--ser-'+str(updateentXML))
 				where_condition = SAQITMWhere.replace('A.','')
 				UpdateEntitlement = " UPDATE SAQTSE SET ENTITLEMENT_XML= '{}', {} {} ".format(updateentXML,update_fields,where_condition)
 			
@@ -323,7 +323,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 				if flag == True:
 					newConfigurationid	= get_config_id()
 					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
-					Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					#Log.Info('cpsconfig---ser-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
 					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 		elif obj == 'SAQSFE' and GetXMLsecField:
@@ -406,7 +406,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 				if flag == True:
 					newConfigurationid	= get_config_id()
 					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
-					Log.Info('cpsconfig---fab-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					#Log.Info('cpsconfig---fab-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
 					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 		elif obj == 'SAQSGE' and GetXMLsecField:
@@ -490,7 +490,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 				if flag == True:
 					newConfigurationid	= get_config_id()
 					cpsmatchID = ChildEntRequest(newConfigurationid,obj,where_condition)
-					Log.Info('cpsconfig---grn-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
+					#Log.Info('cpsconfig---grn-'+str(newConfigurationid)+'cpsmatchID-'+str(cpsmatchID))
 					Sql.RunQuery("UPDATE {} SET CPS_CONFIGURATION_ID = '{}',CPS_MATCH_ID={}  {} ".format(obj,newConfigurationid,cpsmatchID,where_condition))
 
 
@@ -505,7 +505,7 @@ def ancillary_service_call():
 			if (anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
 				
 				ActionType = "{}_SERVICE".format(anc_val)
-				Log.Info("inside ancillary")
+				#Log.Info("inside ancillary")
 				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":ActionType,   "ancillary_obj": anc_key, "service_id" : get_serviceid , "tablename":objectName})
 	
 	##getting count of complete equipment count
@@ -660,7 +660,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
-					Log.Info("val_list--fab-"+str(val_list))
+					#Log.Info("val_list--fab-"+str(val_list))
 					for fab in get_value_query:
 						where_condition = where_cond + " AND FABLOCATION_ID = '{}' ".format(fab.FABLOCATION_ID)
 						get_equipment_count = Sql.GetFirst("select count(*) as cnt from SAQSCO {}".format(where_condition))
@@ -769,7 +769,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 						val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 						val_list.extend(val_coeff)
-					Log.Info("val_list--grn-"+str(val_list))
+					#Log.Info("val_list--grn-"+str(val_list))
 					for grnbk in get_value_query:
 						where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
 						updateentXML = ""
