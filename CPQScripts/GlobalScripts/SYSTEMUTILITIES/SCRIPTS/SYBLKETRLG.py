@@ -383,10 +383,10 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 	if objh_obj is not None:
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
-		Trace.Write("selected_rows--386---"+str(selected_rows))
 		item_lines_record_ids = []
 		if TreeParentParam in ('Comprehensive Services','Complementary Products') and obj_name == "SAQSAP":
 			selected_rows = selectPN
+		Trace.Write("selected_rows--389---"+str(selected_rows))
 		for rec in selected_rows:
 			row = {}
 			if TITLE == 'DISCOUNT' and '%' in VALUE:
@@ -463,8 +463,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
 					Sql.RunQuery(sqlforupdate)
 			elif TreeParentParam in ('Comprehensive Services','Complementary Products') and str(obj_name) == "SAQSAP":
+				Trace.Write('466-rec-->'+str(rec)+'-'+str(selected_rows))
 				index_val = selected_rows.index(rec)
-				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID = '{rec_id}' """.format(column=TITLE,value=ALLVALUES[index_val],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
+				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value=ALLVALUES[index_val],QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
 			else:
 				Trace.Write("selected_rows---463----"+str(row))
 				#A055S000P01-8729 start
