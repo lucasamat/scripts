@@ -21,7 +21,7 @@ from SYDATABASE import SQL
 Sql = SQL()
 def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id):
     if writeback == "quote_header":
-        revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         ##date time conversion
         time = "T12:00:00.00"
         fromvalue = revision_obj.CONTRACT_VALID_FROM
@@ -55,7 +55,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         )
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
-        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         
         ##date time conversion
         time = "T12:00:00.00"    
