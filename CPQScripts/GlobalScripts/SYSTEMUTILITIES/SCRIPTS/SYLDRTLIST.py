@@ -7966,9 +7966,9 @@ class SYLDRTLIST:
                     if cur_api_name is not None:
                         data_type_val = cur_api_name.DATA_TYPE
                         formu_data_type_val = cur_api_name.FORMULA_DATA_TYPE
-                    # str(cur_api_name) is not None and
+                    
                     Trace.Write("CURRENCY_DATA_TYPE"+str(data_type_val)+"-"+str(formu_data_type_val))
-                    if  (
+                    if str(cur_api_name) is not None and (
                         str(data_type_val) == "CURRENCY" or str(formu_data_type_val) == "CURRENCY"
                     ):                        
                         cur_api_name_obj = Sql.GetFirst(
