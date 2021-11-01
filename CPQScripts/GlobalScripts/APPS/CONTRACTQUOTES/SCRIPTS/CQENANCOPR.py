@@ -660,7 +660,7 @@ class AncillaryProductOperation:
 									except:
 										Trace.Write('error--296')
 								#anc_insert_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_DISPLAY_VALUE
-						
+						ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 
 					except:
 						Trace.Write('592----------')
