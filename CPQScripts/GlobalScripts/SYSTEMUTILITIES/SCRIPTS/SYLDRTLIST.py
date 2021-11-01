@@ -7960,7 +7960,8 @@ class SYLDRTLIST:
                     if cur_api_name is not None:
                         data_type_val = cur_api_name.DATA_TYPE
                         formu_data_type_val = cur_api_name.FORMULA_DATA_TYPE
-                    if str(cur_api_name) is not None and (
+                    # str(cur_api_name) is not None and
+                    if  (
                         str(data_type_val) == "CURRENCY" or str(formu_data_type_val) == "CURRENCY"
                     ):                        
                         cur_api_name_obj = Sql.GetFirst(
