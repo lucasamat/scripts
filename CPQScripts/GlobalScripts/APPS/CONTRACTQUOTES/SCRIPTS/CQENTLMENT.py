@@ -2573,7 +2573,7 @@ class Entitlements:
 		qa_req = 'AGS_'+str(serviceId)+'_VAL_QLYREQ'
 		get_ent_type_val =''
 		uptime_list = [base_percent,target_percent,uptime_key,uptime_coeff]
-
+		attr_id  = ''
 		if AttributeList:
 			AttributeList = AttributeList.split(',')
 			
