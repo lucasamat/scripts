@@ -2075,7 +2075,7 @@ class TreeView:
 										subTabName = ""
 									elif subTabName == 'Parts List':
 										subTabName = ""
-										Trace.Write(str(service_id)+"---TreeParam   -"+str(TreeParam))
+										Trace.Write(str(service_id)+"---TreeParam   -"+str(TreeParam)+"----"+str(NodeText))
 										#if TreeParam is not None:
 										service_id = TreeParam
 										table_name = "SAQTSE"
