@@ -1111,7 +1111,7 @@ class Entitlements:
 						else:
 							ancillary_object_dict['A6200'] = "DELETE"
 							#ancillary_flag = "DELETE"
-					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId == "Z0091") or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
+					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0091","Z0035")) or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
 						#Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
 						#ancillary_object = 'Z0046'
 						if entitlement_value == "Yes":
