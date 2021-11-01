@@ -7954,12 +7954,18 @@ class SYLDRTLIST:
                         current_rec_id = value1234
                         
                     curr_symbol = ""
-                    # cur_api_name=None
-                    # data_type_val = ""
-                    # formu_data_type_val = ""
-                    # if cur_api_name is not None:
-                    data_type_val = cur_api_name.DATA_TYPE
-                    formu_data_type_val = cur_api_name.FORMULA_DATA_TYPE
+                    cur_api_name=Sql.GetFirst(
+                            "select API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from  SYOBJD (nolock) where API_NAME = '"
+                            + str(value123)
+                            + "' and OBJECT_NAME = '"
+                            + str(ObjectName)
+                            + "' "
+                        )
+                    data_type_val = ""
+                    formu_data_type_val = ""
+                    if cur_api_name is not None:
+                        data_type_val = cur_api_name.DATA_TYPE
+                        formu_data_type_val = cur_api_name.FORMULA_DATA_TYPE
                     # str(cur_api_name) is not None and
                     Trace.Write("CURRENCY_DATA_TYPE"+str(data_type_val)+"-"+str(formu_data_type_val))
                     if  (
