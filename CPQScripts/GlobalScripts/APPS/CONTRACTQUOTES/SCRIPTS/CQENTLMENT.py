@@ -2563,7 +2563,7 @@ class Entitlements:
 			if get_status.CONFIGURATION_STATUS:
 				configuration_status =  get_status.CONFIGURATION_STATUS
 
-		Trace.Write('AttributeList----'+str(AttributeList))
+		Trace.Write('AttributeList----'+str(type(AttributeList)))
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
 		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
@@ -2589,7 +2589,7 @@ class Entitlements:
 					getvalue = str((val).split("||")[0]).strip()
 					get_selected_dict[str(key)] = getvalue
 			Trace.Write(str(get_selected_dict)+'--getvalue--'+str(get_ent_type_val))
-			entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID  like 'AGS_%KPI_PNTHVL' OR ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.ContractRecordId,quote_revision_record_id = self.revision_recordid,service_id = 'Z0091',att_id = AttributeID))
+			entitlement_obj = Sql.GetFirst("select ENTITLEMENT_ID,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {table_name} (nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' and SERVICE_ID = '{service_id}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where  ( ENTITLEMENT_ID like '{att_id}')".format(table_name = 'SAQTSE' ,contract_quote_record_id = self.ContractRecordId,quote_revision_record_id = self.revision_recordid,service_id = 'Z0091',att_id = AttributeID))
 			try:						
 				add_where =''
 				NewValue = entitlement_obj.ENTITLEMENT_DISPLAY_VALUE
