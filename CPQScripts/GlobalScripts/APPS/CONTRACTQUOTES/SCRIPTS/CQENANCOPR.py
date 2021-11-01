@@ -644,7 +644,7 @@ class AncillaryProductOperation:
 						GetXMLsecField=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
 						for val in GetXMLsecField:
 							if 'AGS_Z0046' in val.ENTITLEMENT_ID:
-								
+								Log.Info('647--'+str(val.ENTITLEMENT_ID))
 								if val.ENTITLEMENT_DISPLAY_VALUE:
 									try:						
 										add_where =''
