@@ -120,6 +120,8 @@ def create_new_revision(Opertion,cartrev):
 				"DIVISION_RECORD_ID" : get_previous_rev_data.DIVISION_RECORD_ID,
 				"DOC_CURRENCY" : get_previous_rev_data.DOC_CURRENCY,
 				"DOCCURR_RECORD_ID" : get_previous_rev_data.DOCCURR_RECORD_ID,
+				"DOCTYP_ID":get_previous_rev_data.DOCTYP_ID,
+				"DOCTYP_RECORD_ID":get_previous_rev_data.DOCTYP_RECORD_ID,
 				"DOCUMENT_PRICING_PROCEDURE" : get_previous_rev_data.DOCUMENT_PRICING_PROCEDURE,
 				"DISTRIBUTIONCHANNEL_ID" : get_previous_rev_data.DISTRIBUTIONCHANNEL_ID,
 				"EXCHANGE_RATE" : get_previous_rev_data.EXCHANGE_RATE,
