@@ -631,7 +631,7 @@ class AncillaryProductOperation:
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
 				
-				if addon.PAR_SERVICE_ID == "Z0091":
+				if addon.PAR_SERVICE_ID:
 					#ancillary insert based on aprent insert start
 					try:						
 						add_where =''
