@@ -124,6 +124,7 @@ def create_new_revision(Opertion,cartrev):
 				"DISTRIBUTIONCHANNEL_ID" : get_previous_rev_data.DISTRIBUTIONCHANNEL_ID,
 				"EXCHANGE_RATE" : get_previous_rev_data.EXCHANGE_RATE,
 				"EXCHANGE_RATE_DATE" : get_previous_rev_data.EXCHANGE_RATE_DATE,
+				"EXCHANGE_RATE_TYPE" : get_previous_rev_data.EXCHANGE_RATE_TYPE,
 				"EXCHANGERATE_RECORD_ID" : get_previous_rev_data.EXCHANGERATE_RECORD_ID,
 				"GLOBAL_CURRENCY" : get_previous_rev_data.GLOBAL_CURRENCY,
 				"GLOBAL_CURRENCY_RECORD_ID" : get_previous_rev_data.GLOBAL_CURRENCY_RECORD_ID,
