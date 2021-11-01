@@ -40,11 +40,11 @@ def LoadSummary():
         for x in getPRTIAV:
             ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
         i = 1
-        ToolId=dict(sorted(ToolId.items(), key=lambda x:x[0].lower()))
-        Trace.Write("DICT="+str(ToolId))
-        for x,y in ToolId.items():
+        listofkeys=sorted(ToolId.keys(), key=lambda x:x.lower())
+        #Trace.Write("DICT="+str(ToolId))
+        for x in listofkeys:
 
-            sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+            sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+ToolId[x]+'">'+ToolId[x]+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
 
             
             i = int(i)
