@@ -101,7 +101,7 @@ def create_new_revision(Opertion,cartrev):
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
 				"REV_EXPIRE_DATE":end_date.strftime('%m/%d/%Y'),
-				"REVISION_STATUS":"NEW REVISION",
+				"REVISION_STATUS":"PREPARING REVISION",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
