@@ -696,8 +696,16 @@ class AncillaryProductOperation:
 				
 				result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 				Log.Info('698--ent_params_list---'+str(ent_params_list))
-		pass
+		Log.Info('tablename-----'+str(self.tablename))
+		self._delete_entitlement_tables_anc()
 
+	def _delete_entitlement_tables_anc(self):
+		if self.tablename == "SAQTSE": 
+			delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		
+		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
+		for obj in delete_obj_list:
+			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where})".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
 
 	def _entitlement_rolldown(self):
 		try:
