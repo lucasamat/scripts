@@ -235,7 +235,8 @@ class EntitlementView():
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
 			attributesdisallowedlst = []
-			attributeReadonlylst = attributes_disallowed_list = attriburesrequired_list = []
+			attributeReadonlylst = attributes_disallowed_list =  []
+			attriburesrequired_list = []
 			attributeEditlst = list_of_tabs = []
 			attributevalues = {}
 			attributedefaultvalue = []
