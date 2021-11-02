@@ -702,7 +702,7 @@ class AncillaryProductOperation:
 
 	def _delete_entitlement_tables_anc(self):
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
 		
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
