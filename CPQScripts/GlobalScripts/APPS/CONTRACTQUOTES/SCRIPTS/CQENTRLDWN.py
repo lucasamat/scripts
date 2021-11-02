@@ -51,6 +51,7 @@ get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
 Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"------ "+str(attributeList)+'--'+str(get_serviceid))
 Log.Info("ancillary_dict--"+str(ancillary_dict))
+Log.Info("attributeList--"+str(attributeList))
 
 def sendEmail(level):
 	Log.Info('284-----entitlement email started-----')
@@ -506,12 +507,13 @@ def ancillary_service_call():
 				
 				ActionType = "{}_SERVICE".format(anc_val)
 				#Log.Info("inside ancillary")
-				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":ActionType,   "ancillary_obj": anc_key, "service_id" : get_serviceid , "tablename":objectName})
+				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":ActionType,   "ancillary_obj": anc_key, "service_id" : get_serviceid , "tablename":objectName,"attributeList":attributeList})
 	
 	##getting count of complete equipment count
 	# get_par_equp_ent = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND CONFIGURATION_STATUS = 'COMPLETE' ".format(quote, revision , get_serviceid))
 	# get_par_equp = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQSCO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' ".format(quote, revision , get_serviceid))
 	# if get_par_equp_ent.cnt == get_par_equp.cnt and get_par_equp.cnt != 0:
+
 	try:
 		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName,"attributeList":attributeList})
 	except:
