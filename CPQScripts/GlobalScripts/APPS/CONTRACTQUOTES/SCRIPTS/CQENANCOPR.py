@@ -682,7 +682,7 @@ class AncillaryProductOperation:
 					
 	
 	def _update_entitlement(self):
-		Log.Info('attr--685--self.attributeList------'+str(self.self.attributeList))
+		Log.Info('attr--685--self.attributeList----'+str(self.self.attributeList))
 		pass
 
 
