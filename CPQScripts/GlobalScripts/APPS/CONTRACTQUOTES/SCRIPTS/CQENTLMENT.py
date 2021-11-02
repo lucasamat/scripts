@@ -2663,10 +2663,10 @@ class Entitlements:
 									Trace.Write('saqsfe_ancillary_query--148----ROLL DOWN----'+str(saqsfe_ancillary_query))
 									Sql.RunQuery(saqsfe_ancillary_query)
 						except:
-							Trace.Write('error--296')
+							Trace.Write('error2665--296')
 					
 			except:
-				Trace.Write('error--296')
+				Trace.Write('error-2669----296')
 		return configuration_status,AttributeList
 
 	
