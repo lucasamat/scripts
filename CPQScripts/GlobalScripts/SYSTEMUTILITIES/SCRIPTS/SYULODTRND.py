@@ -423,10 +423,10 @@ def CommonTreeViewHTMLDetail(
 			if data.DATA_TYPE == "DATE" or data.FORMULA_DATA_TYPE == "DATE" or str(data.API_NAME) == "EXCHANGE_RATE_DATE":				
 				if text == "":	
 					Trace.Write('text if--'+str(text))				
-					text = "CONVERT(VARCHAR(10),"+'CONVERT(DATE,'+str(API_NAME)+')'+" ,101) AS " + str(API_NAME)
+					text = "CONVERT(VARCHAR(10),"+'CONVERT(DATE,'+str(data.API_NAME)+')'+" ,101) AS " + str(data.API_NAME)
 				else:	    
 					Trace.Write('text else--'+str(text))
-					text = text + "," + "CONVERT(VARCHAR(10),"+'CONVERT(DATE,'+str(API_NAME)+')'+" ,101) AS " + str(API_NAME)
+					text = text + "," + "CONVERT(VARCHAR(10),"+'CONVERT(DATE,'+str(data.API_NAME)+')'+" ,101) AS " + str(data.API_NAME)
 				if text.startswith("CONVERT"):
 					Trace.Write("API_NAMES- API_NAMES->"+str(API_NAMES))
 					API_NAMES = API_NAMES + "," + ",".join(str(data) for data in text.split(","))
