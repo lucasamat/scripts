@@ -314,7 +314,7 @@ def ExceptionOnChange(IdlingException):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "exception_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idling_Exception_Notes" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<textarea '+'value="'+x+'"  class="form-control related_popup_css txtArea light_yellow wid_90" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+x+'" maxlength = "255" rows="1" cols="100" ></textarea>'
     return secstr
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
