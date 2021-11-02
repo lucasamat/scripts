@@ -29,6 +29,7 @@ class AncillaryProductOperation:
 		self.ancillary_obj = str(ancillary_obj)
 		self.where_string = where_string.replace("WHERE","")
 		self.tablename = tablename
+		self.attributeList = attributeList
 		if self.tablename in ("SAQSFE","SAQSGE","SAQSCE","SAQSAE"):
 			pattern = re.compile(r''+str('FABLOCATION_ID')+'\s*\=\s*\'([^>]*?)\'')
 			self.fab = re.search(pattern, self.where_string).group(1)
@@ -56,6 +57,7 @@ class AncillaryProductOperation:
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
 			self._delete_entitlement_tables()
 			self._insert_service_ent()
+			self._update_entitlement()
 			self._entitlement_rolldown()
 		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	self._delete_entitlement_tables()
@@ -679,7 +681,8 @@ class AncillaryProductOperation:
 				# 	Trace.Write('592----------')
 					
 	
-
+	def _update_entitlement(self):
+		pass
 
 
 	def _entitlement_rolldown(self):
@@ -851,5 +854,9 @@ try:
 	tablename = Param.tablename
 except:
 	tablename = ""
+try:
+	attributeList = eval(Param.attributeList)
+except:
+	attributeList = ""
 auto_ancillary_obj = AncillaryProductOperation()
 auto_ancillary_obj._do_opertion()
