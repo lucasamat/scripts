@@ -368,6 +368,9 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				else:
 					Trace.Write('369--attrs---'+str(attrs))
 					Trace.Write('369-NewValue--'+str(NewValue))
+					if attrs == AttributeID:
+						ent_disp_val = NewValue
+						ent_val_code = NewValue
 				if attrs == "AGS_Z0016_NET_PRICNG":
 					if type(eval(str(ent_val_code))) is list:
 						ent_val = str(tuple(ent_val_code)).replace(',)',')')
@@ -385,7 +388,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				DTypeset={"Drop Down":"DropDown","Free Input, no Matching":"FreeInputNoMatching","Check Box":"Check Box"}
 				#Log.Info('response2--182----342-')
-				#Trace.Write(str(ent_disp_val)+'--ent_disp_val--value code---'+str(attributevalues[attrs])+'--'+str(attrs))
+				#Trace.Write('--ent_disp_val--value code---'+str(ent_val_code)+'--'+str(attrs))
 				
 				insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 				<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
