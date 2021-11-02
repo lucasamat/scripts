@@ -84,11 +84,13 @@ def create_new_revision(Opertion,cartrev):
 		Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		
+		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"' AND ACTIVE = 1")
+
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
+  
 		get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID, CART_REVISIONS.DESCRIPTION as DESCRIPTION,CART.ACTIVE_REV, CART_REVISIONS.CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}'  and REVISION_ID  = '{}' ".format(Quote.CompositeNumber,newrev_inc))
 		
-		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"'")
 		current_date = datetime.now()
 		end_date = current_date + timedelta(days=365)
 		if get_previous_rev_data:
@@ -142,8 +144,8 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
 				"CANCELLATION_PERIOD":"90 DAYS",
-				"CONTRACT_VALID_FROM":get_quote_info_details.CONTRACT_VALID_FROM,
-				"CONTRACT_VALID_TO":get_quote_info_details.CONTRACT_VALID_TO,
+				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
+				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
 				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
 				"COMPANY_NAME":get_previous_rev_data.COMPANY_NAME,
 				"COMPANY_RECORD_ID":get_previous_rev_data.COMPANY_RECORD_ID,
