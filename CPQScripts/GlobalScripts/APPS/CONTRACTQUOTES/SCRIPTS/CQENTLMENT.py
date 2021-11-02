@@ -2625,6 +2625,7 @@ class Entitlements:
 				Log.Info("ENTITLEMENT IFLOW ERROR! "+str(e))
 			try:
 				AttributeList = AttributeList.split(',')
+				Trace.Write('2628---'+str(AttributeList))
 				for val in AttributeList:
 					if 'AGS_Z0046' in val:
 						ServiceId = 'Z0046'
