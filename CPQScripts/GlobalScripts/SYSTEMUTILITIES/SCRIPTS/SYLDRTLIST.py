@@ -1270,6 +1270,8 @@ class SYLDRTLIST:
                                     "select count(*) as cnt FROM SAQICO where QUOTE_ID = '{}'".format(str(qt_rec_id.QUOTE_ID))
                             )
                     elif str(RECORD_ID) == "SYOBJR-00009":
+                        if Quote.GetCustomField('PRICING_PICKLIST').Content == '':
+                            Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
                         if getyears == 1:
                             col_year =  'YEAR_1'
                         elif getyears == 2:
@@ -5662,6 +5664,8 @@ class SYLDRTLIST:
                             )
                     elif str(RECORD_ID) == "SYOBJR-00009":
                         Trace.Write("123")
+                        if Quote.GetCustomField('PRICING_PICKLIST').Content == '':
+                            Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
                         if Product.GetGlobal("TreeParentLevel2") == "Quote Items":  
                             imgstr = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
                             acquiring_img_str = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
@@ -7126,6 +7130,8 @@ class SYLDRTLIST:
                                                 LineAndEquipIDList[1], str(qt_rec_id.CONTRACT_ID))
                                     )  
                         elif str(RECORD_ID) == "SYOBJR-00009":
+                            if Quote.GetCustomField('PRICING_PICKLIST').Content = '':
+                                Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
                             if getyears == 1:
                                 col_year =  'YEAR_1'
                             elif getyears == 2:
