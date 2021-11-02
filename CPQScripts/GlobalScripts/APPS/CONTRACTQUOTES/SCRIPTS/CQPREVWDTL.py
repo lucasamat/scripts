@@ -334,9 +334,9 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea remove_yellow bor-left bor-right' style='height: 28px;border-top: 0 !important;border-bottom: 1px solid #ddd !important;' id='' title='' tabindex='' disabled=''>'"
+						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control txtArea remove_yellow bor-left bor-right' style='height: 28px;border-top: 0 !important;border-bottom: 1px solid #ddd !important;' id='' title='' tabindex='' disabled=''>"
 						+ str(eval("col_name." + str(sefl_api)))
-						+ "'</textarea></div>"
+						+ "</textarea></div>"
 					)    
 				# elif sefl_api == "APPDTE_EXCH_RATE":
 				# 	Trace.Write("sefl_api_APPDTE_EXCH_RATE_chk "+str(sefl_api))
