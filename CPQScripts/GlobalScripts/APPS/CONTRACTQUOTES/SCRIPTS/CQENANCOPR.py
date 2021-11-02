@@ -698,6 +698,7 @@ class AncillaryProductOperation:
 				Log.Info('698--ent_params_list---'+str(ent_params_list))
 		Log.Info('tablename-----'+str(self.tablename))
 		self._delete_entitlement_tables_anc()
+		self._entitlement_rolldown()
 
 	def _delete_entitlement_tables_anc(self):
 		if self.tablename == "SAQTSE": 
@@ -742,7 +743,7 @@ class AncillaryProductOperation:
 					JOIN SAQSFE ON SAQSFB.PAR_SERVICE_ID = SAQSFE.SERVICE_ID AND SAQSFB.QUOTE_RECORD_ID = SAQSFE.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQSFE.QTEREV_RECORD_ID 
 					
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSE.PAR_SERVICE_ID ='{par_service_id}' AND ISNULL(SAQSFE.CONFIGURATION_STATUS,'') = 'COMPLETE'  AND SAQSFB.FABLOCATION_ID not in (SELECT FABLOCATION_ID FROM SAQSFE M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId = self.contract_quote_revision_record_id, par_service_id = self.service_id)
-				Log.Info('saqsfe_ancillary_query--148----ROLL DOWN----'+str(saqsfe_ancillary_query))
+				Log.Info('saqsfe_ancillary_query--148---ANCILLARy----'+str(saqsfe_ancillary_query))
 				Sql.RunQuery(saqsfe_ancillary_query)
 						
 				
