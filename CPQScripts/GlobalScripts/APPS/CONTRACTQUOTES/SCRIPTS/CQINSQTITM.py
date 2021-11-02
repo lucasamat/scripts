@@ -612,7 +612,7 @@ class ContractQuoteItem:
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 		Quote.Save()
-
+		Trace.Write("PRICING_PICKLIST_Value_CHK "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TARGET_PRICE_INGL_CURR = IQ.TARGET_PRICE_INGL_CURR,
