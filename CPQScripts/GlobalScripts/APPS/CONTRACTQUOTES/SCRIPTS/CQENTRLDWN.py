@@ -49,7 +49,7 @@ except:
 	attributeList = ""
 get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
-Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"------ "+str(attributeList)+'--'+str(get_serviceid))
+Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"---140------- "+str(attributeList)+'--24------'+str(get_serviceid))
 Log.Info("ancillary_dict--"+str(ancillary_dict))
 Log.Info("attributeList--"+str(attributeList))
 
