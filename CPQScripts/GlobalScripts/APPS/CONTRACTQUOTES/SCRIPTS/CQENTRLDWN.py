@@ -97,11 +97,11 @@ def sendEmail(level):
 	msg.Subject = str(level)+" Rolldown"
 	msg.IsBodyHtml = True
 	msg.Body = Error_Info
-	copyEmail1 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+	#copyEmail1 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
 	#copyEmail2 = MailAddress("mayura.priya@bostonharborconsulting.com")
 	#copyEmail3 = MailAddress("dhurga.gopalakrishnan@bostonharborconsulting.com")
-	copyEmail4 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
-	copyEmail5 = MailAddress("ashish.gandotra@bostonharborconsulting.com")
+	#copyEmail4 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
+	#copyEmail5 = MailAddress("ashish.gandotra@bostonharborconsulting.com")
 	#copyEmail6 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
 	msg.Bcc.Add(copyEmail1)
 	#msg.Bcc.Add(copyEmail2)
