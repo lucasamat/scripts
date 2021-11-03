@@ -921,6 +921,36 @@ class SyncQuoteAndCustomTables:
 						contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 						employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+						Log.Info("SAQICT_DETAILS "+str(payload_json.get('SAQICT')))
+						if employee_obj is None:
+							for employee in payload_json.get('SAQICT'):
+								country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+								salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+								employee_dict = {}
+								employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+								employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+								employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+								employee_dict["CITY"] = employee.get("CITY")
+								employee_dict["COUNTRY"] = employee.get("COUNTRY")
+								employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+								employee_dict["EMAIL"] = employee.get("EMAIL")
+								employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
+								employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+								employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+								employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+								employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+								employee_dict["PHONE"] = employee.get("PHONE")
+								employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+								employee_dict["STATE"] = employee.get("STATE")
+								employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+								employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+								employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+								employee_dict["CpqTableEntryModifiedBy"] = User.Id
+								employee_dict["ADDUSR_RECORD_ID"] = User.Id
+								tableInfo = Sql.GetTable("SAEMPL")
+								tablerow = employee_dict
+								tableInfo.AddRow(tablerow)
+								Sql.Upsert(tableInfo)
 						if len(contact_query) == 0:
 							contact_master_entry = {
 								"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
