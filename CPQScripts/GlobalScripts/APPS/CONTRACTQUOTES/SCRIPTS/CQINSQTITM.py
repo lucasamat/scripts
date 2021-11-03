@@ -1925,9 +1925,7 @@ class ContractQuoteItem:
 					) IQ
 					""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, 
 					JoinConditionString=join_condition_string, JoinString=join_string, WhereString= str(where_string), EquipmentsCount=equipments_count,service_id = self.service_id)
-				)
-
-					
+				)					
 		return True
 		
 	def _do_opertion(self):
@@ -1954,7 +1952,9 @@ class ContractQuoteItem:
 			#Log.Info("-===========>> _do_opertion update"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 			self._quote_items_update()	
 		# Pricing Calculation
-		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
+		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		if quote_line_item_obj:
+			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
 		return True
 
 try:
