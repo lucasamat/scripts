@@ -922,6 +922,10 @@ class SyncQuoteAndCustomTables:
 						employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
+						if payload_json_obj:
+							payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
+							payload_json = eval(payload_json.get('Param'))
+							payload_json = payload_json.get('CPQ_Columns')
 						Log.Info("SAQICT_DETAILS "+str(payload_json.get('SAQICT')))
 						if employee_obj is None:
 							for employee in payload_json.get('SAQICT'):
