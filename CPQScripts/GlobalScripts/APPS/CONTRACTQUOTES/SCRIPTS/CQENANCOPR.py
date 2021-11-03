@@ -651,7 +651,6 @@ class AncillaryProductOperation:
 						ServiceId = addon.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(addon.QUOTE_RECORD_ID,addon.SERVICE_ID,self.contract_quote_revision_record_id)
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
-						Log.Info('635-ent_params_list---'+str(ent_params_list))
 						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 					except:
 						Trace.Write('error--296')
@@ -706,8 +705,6 @@ class AncillaryProductOperation:
 				ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(attr_id)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 				
 				result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
-				Log.Info('698--ent_params_list---'+str(ent_params_list))
-		Log.Info('tablename-----'+str(self.tablename))
 		self._delete_entitlement_tables_anc()
 		self._entitlement_rolldown()
 
@@ -754,7 +751,6 @@ class AncillaryProductOperation:
 					JOIN SAQSFE ON SAQSFB.PAR_SERVICE_ID = SAQSFE.SERVICE_ID AND SAQSFB.QUOTE_RECORD_ID = SAQSFE.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQSFE.QTEREV_RECORD_ID 
 					
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSE.PAR_SERVICE_ID ='{par_service_id}' AND ISNULL(SAQSFE.CONFIGURATION_STATUS,'') = 'COMPLETE'  AND SAQSFB.FABLOCATION_ID not in (SELECT FABLOCATION_ID FROM SAQSFE M WHERE M.QUOTE_RECORD_ID = '{QuoteRecordId}' AND M.QTEREV_RECORD_ID = '{RevisionRecordId}' AND M.SERVICE_ID = SAQTSE.SERVICE_ID AND PAR_SERVICE_ID = '{par_service_id}')) IQ""".format(UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId = self.contract_quote_revision_record_id, par_service_id = self.service_id)
-				Log.Info('saqsfe_ancillary_query--148---ANCILLARy----'+str(saqsfe_ancillary_query))
 				Sql.RunQuery(saqsfe_ancillary_query)
 						
 				
