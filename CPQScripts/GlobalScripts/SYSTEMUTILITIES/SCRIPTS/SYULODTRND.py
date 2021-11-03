@@ -439,7 +439,7 @@ def CommonTreeViewHTMLDetail(
 		else:
 			sec_str += '<div id="container" class="wdth100 margtop10 ' + str(a) + '"  >'
 		action_visible_obj = ""
-		SecEdiApp = ["SYSTEM ADMIN", "SALES"]
+		SecEdiApp = ["SYSTEM ADMIN", "SALES","Sales"]
 		if current_prod not in SecEdiApp:
 			action_visible_obj = Sql.GetFirst(
 				"""
