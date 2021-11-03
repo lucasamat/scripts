@@ -521,9 +521,54 @@ def ancillary_service_call():
 	# elif get_par_equp_ent.cnt != 0:
 	# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"DELETE_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
 
+def dividend_critical_price_sumup(ent_roll_temp):
+	get_val = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = 'AGS_Z0091_PQB_PPCPRM'".format(ent_roll_temp))
+	if get_val:
+		if get_val.ENTITLEMENT_DISPLAY_VALUE.upper() == "YES":
+			#Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+
+			total_price = 0.00
+
+			for i in range(1,11):
+				if i < 9:
+					x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
+				else:
+					x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
+				#Trace.Write("x="+str(x))
+				y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+				#Trace.Write("y="+str(y))
+				get_x = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_roll_temp,x))
+				get_y = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_roll_temp,y))
+				try:
+					if get_x and get_y:
+						total_price += float(get_x.ENTITLEMENT_DISPLAY_VALUE) * float(get_y.ENTITLEMENT_DISPLAY_VALUE)
+				except:
+					total_price = total_price
+					break
+			#Trace.Write("total price = "+str(total_price))
+			getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
+			import datetime as dt
+			fmt = '%m/%d/%Y'
+			d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+			d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+			days = (d2 - d1).days
+			total = (total_price/365)*int(days)
+			#UPDATE TOTAL PRICE IN SAQTRV
+			#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,revision))
+			#objects = ["SAQSFE","SAQSGE","SAQSCE"]
+			# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
+			# eqcount = getCount.cnt
+			# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(revision))
+			# fab = []
+			# gbk = []
+			# for x in getfab:
+			# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(revision,x.FABLOCATION_ID))
+			# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
+			# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(revision,x.FABLOCATION_ID,x.GREENBOOK))
+			# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
+			
 		
 
-						
 
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
@@ -995,6 +1040,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
+		try:
+			dividend_critical_price_sumup(ent_roll_temp)
+		except Exception as e:
+			Log.Info("error on dividend--"+str(e)+str(get_serviceid))
 		sendEmail(level)
 
 	except Exception as e:
