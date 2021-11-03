@@ -419,7 +419,7 @@ if Action == "EXCEPTION ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if Action == "COLD ONCHANGE" and Cold == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ColdOnChange(Cold))
-if Action == "HOT ONCHANGE" and Cold == "Yes":
+if Action == "HOT ONCHANGE" and Hot == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(HotOnChange(Hot))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
