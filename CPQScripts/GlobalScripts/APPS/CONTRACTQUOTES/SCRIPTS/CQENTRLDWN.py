@@ -274,7 +274,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 			if obj == 'SAQTSE' and GetXMLsecField:
 				#newConfigurationid	= get_config_id()
 				where_condition = SAQITMWhere.replace('A.','')
-				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_NAME,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
+				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_NAME,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
 				get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM SAQTSE (NOLOCK) {where_condition}""".format(where_condition = where_condition))
 				flag = False
 				if GetXMLsec:
@@ -357,7 +357,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 				
 				get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM {obj} (NOLOCK) {where_condition}""".format(obj =obj ,where_condition = where_condition))
 				updateentXML = ""
-				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_NAME,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
+				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_NAME,ENTITLEMENT_DESCRIPTION,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
 				if GetXMLsec:
 
 					updateentXML = get_ser_xml.ENTITLEMENT_XML
@@ -440,7 +440,7 @@ def entitlement_price_rollup(objectname,ent_temp):
 				
 				updateentXML = ""
 			
-				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_NAME,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
+				GetXMLsec = Sql.GetList("select distinct ENTITLEMENT_ID,IS_DEFAULT,case when ENTITLEMENT_TYPE in ('Check Box','CheckBox') then 'Check Box' else ENTITLEMENT_TYPE end as ENTITLEMENT_TYPE,ENTITLEMENT_DESCRIPTION,ENTITLEMENT_NAME,PRICE_METHOD,CASE WHEN Isnumeric(ENTITLEMENT_COST_IMPACT) = 1 THEN CONVERT(DECIMAL(18,2),ENTITLEMENT_COST_IMPACT) ELSE null END as ENTITLEMENT_COST_IMPACT from {} {} AND ENTITLEMENT_ID like '%{}%'".format(ent_temp,where_condition,pricing_attr))
 				get_ser_xml = Sql.GetFirst("""Select ENTITLEMENT_XML FROM {obj} (NOLOCK) {where_condition}""".format(obj=obj,where_condition = where_condition))
 				if GetXMLsec:
 					flag = False
