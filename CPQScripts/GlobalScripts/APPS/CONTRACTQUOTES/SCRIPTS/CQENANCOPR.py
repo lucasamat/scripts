@@ -589,6 +589,9 @@ class AncillaryProductOperation:
 					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "BONUS & PENALTY TIED TO KPI":
 						AttributeID_Pass = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_KPI_BPTKPI'
 						NewValue = 'Yes'
+					if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "PRICE PER CRITICAL PARAMETER":
+						AttributeID_Pass = 'AGS_'+str(addon.PAR_SERVICE_ID)+'_PQB_PPCPRM'
+						NewValue = 'Yes'
 
 					insertservice += """<QUOTE_ITEM_ENTITLEMENT>
 					<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
