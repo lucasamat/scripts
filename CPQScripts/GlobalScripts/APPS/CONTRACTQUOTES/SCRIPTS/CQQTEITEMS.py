@@ -40,7 +40,7 @@ def LoadSummary():
         ToolId = [x.TOOLIDLING_ID for x in getPRTIAV]
         ToolDesc = [x.TOOLIDLING_NAME for x in getPRTIAV]
         i = 1
-        listofkeys=sorted(ToolId.keys(), key=lambda x:x.lower())
+        #listofkeys=sorted(ToolId.keys(), key=lambda x:x.lower())
         #Trace.Write("DICT="+str(ToolId))
         for x,y in zip(ToolId,ToolDesc):
 
