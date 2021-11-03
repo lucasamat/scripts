@@ -110,6 +110,12 @@ def LoadSummary():
         NetPrice = 0.00
         NetValue = 0.00
 
+    
+    getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID,QUOTE_RECORD_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+    QuoteId = getQuoteDetails.QUOTE_ID
+    QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
+    QuoteRevisionId = getQuoteDetails.QTEREV_ID
+    QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
     price_preview_status = []
     price_preview_details = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '"+str(QuoteId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
     for status in price_preview_details:
