@@ -155,13 +155,16 @@ def EditToolIdling():
             #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
             getPRTIAV = Sql.GetList("SELECT TOP 25 SAQTDA.TOOLIDLING_ID,SAQTDA.TOOLIDLING_NAME,SAQTDA.TOOLIDLING_VALUE_CODE,SAQTDA.TOOLIDLING_DISPLAY_VALUE FROM SAQTDA (NOLOCK) JOIN PRTIDA (NOLOCK) ON SAQTDA.TOOLIDLING_ID = PRTIDA.TOOLIDLING_ID WHERE SAQTDA.QTEREV_RECORD_ID = '{}' AND SAQTDA.TOOLIDLING_ID != 'Idling Allowed' ORDER BY PRTIDA.DISPLAY_ORDER ASC".format(Quote.GetGlobal("quote_revision_record_id")))
             
-            for x in getPRTIAV:
-                ToolId[x.TOOLIDLING_ID] = x.TOOLIDLING_NAME
+
+                
+            ToolId = [x.TOOLIDLING_ID for x in getPRTIAV]
+            ToolDesc = [x.TOOLIDLING_NAME for x in getPRTIAV]
+
             i = 1
             #listofkeys=sorted(ToolId.keys(), key=lambda x:x.lower())
-            for x in ToolId.keys():
+            for x,y in zip(ToolId,ToolDesc):
                 
-                sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+ToolId[x]+'">'+ToolId[x]+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+                sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
                 i = int(i)
                 i += 1
                 getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
