@@ -380,6 +380,12 @@ try:
 except:
     Trace.Write("except idling ecxxeption")
     IdlingException = ""
+try:
+    Trace.Write("try cold ")
+    Cold = str(Param.COLD)
+except:
+    Trace.Write("except cold")
+    Cold = ""
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
@@ -388,6 +394,8 @@ if Action == "DURATION ONCHANGE" and IdleDuration == "Restricted Entry(Days)":
     ApiResponse = ApiResponseFactory.JsonResponse(DurationOnChange(IdleDuration))
 if Action == "EXCEPTION ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
+if Action == "COLD ONCHANGE" and Cold == "Yes":
+    ApiResponse = ApiResponseFactory.JsonResponse(ColdOnChange(Cold))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "EDIT":
