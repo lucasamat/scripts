@@ -84,7 +84,7 @@ class ContractQuoteItem:
 
 	def _quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
 
-		Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
+		#Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
 		# Insert SAQITM - Start
 		Sql.RunQuery("""
 					INSERT SAQITM (
@@ -253,9 +253,9 @@ class ContractQuoteItem:
 		quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY EQUIPMENT_LINE_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 		if quote_line_item_obj:
 			equipments_count = int(quote_line_item_obj.EQUIPMENT_LINE_ID) 
-		Log.Info(" 1.equipments_count ===>"+str(equipments_count))
+		#Log.Info(" 1.equipments_count ===>"+str(equipments_count))
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
-		Log.Info("PRICING_PICKLIST_Value_CHK_1 "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
+		#Log.Info("PRICING_PICKLIST_Value_CHK_1 "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
 		##inserting SAQICO except chamber based equipment A055S000P01-6826		
 		Sql.RunQuery("""INSERT SAQICO (BD_PRICE,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_COST_IMPACT, EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, CONTRACT_VALID_FROM, CONTRACT_VALID_TO,LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,KPU, NET_PRICE, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TARGET_PRICE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, BD_DISCOUNT, BD_DISCOUNT_RECORD_ID, BD_PRICE_MARGIN, BD_PRICE_MARGIN_RECORD_ID, CEILING_PRICE, CLEANING_COST, CM_PART_COST, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, KPI_COST,MODEL_PRICE,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK, LABOR_COST, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PM_PART_COST, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, NET_VALUE, SALES_DISCOUNT_PRICE, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, LINE, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
@@ -381,7 +381,7 @@ class ContractQuoteItem:
 			quote_line_item_obj = Sql.GetFirst("SELECT TOP 1 EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY EQUIPMENT_LINE_ID DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
 			if quote_line_item_obj:
 				equipments_count = int(quote_line_item_obj.EQUIPMENT_LINE_ID) 
-			Log.Info(" 2.equipments_count ===>"+str(equipments_count))
+			#Log.Info(" 2.equipments_count ===>"+str(equipments_count))
 			Sql.RunQuery("""INSERT SAQICO (BD_PRICE,ENTITLEMENT_PRICE_IMPACT,ENTITLEMENT_COST_IMPACT, EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,KPU, NET_PRICE, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TARGET_PRICE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, BD_DISCOUNT, BD_DISCOUNT_RECORD_ID, BD_PRICE_MARGIN, BD_PRICE_MARGIN_RECORD_ID, CEILING_PRICE, CLEANING_COST, CM_PART_COST, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, KPI_COST,MODEL_PRICE,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK, LABOR_COST, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, PM_PART_COST, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, NET_VALUE, SALES_DISCOUNT_PRICE, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, LINE,ASSEMBLY_ID,ASSEMBLY_RECORD_ID, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 					SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT DISTINCT
@@ -516,7 +516,7 @@ class ContractQuoteItem:
 	
 	def _native_quote_item_insert(self):		
 		if not Quote:
-			Log.Info("_native_quote_item_insert ==> Mo Quote")
+			#Log.Info("_native_quote_item_insert ==> Mo Quote")
 			self._native_quote_edit()
 		# Native Cart Items Insert - Start
 		quote_items_obj = Sql.GetList("""SELECT TOP 1000 SAQTSV.SERVICE_ID FROM SAQITM (NOLOCK) JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' ORDER BY LINE_ITEM_ID ASC""".format(QuoteRecordId= self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
@@ -614,7 +614,7 @@ class ContractQuoteItem:
 		###Updating pricing picklist value in line item subtab A055S000P01-4578
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 		Quote.Save()
-		Log.Info("PRICING_PICKLIST_Value_CHK "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
+		#Log.Info("PRICING_PICKLIST_Value_CHK "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TARGET_PRICE_INGL_CURR = IQ.TARGET_PRICE_INGL_CURR,
@@ -727,7 +727,7 @@ class ContractQuoteItem:
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:
-				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 000 ==> ")
+				#Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 000 ==> ")
 				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
@@ -771,7 +771,7 @@ class ContractQuoteItem:
 				item_outer_where_string = item_outer_where_string.replace("SAQSCE","SAQSCO")
 				self._simple_quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			else:		
-				Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 111 ==> ")
+				#Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process 111 ==> ")
 				self._quote_item_insert_process(where_string=item_where_string, join_string=item_join_string, outer_where_string=item_outer_where_string, max_quote_item_count=int(float(quote_item_obj.LINE_ITEM_ID)) if quote_item_obj else 0)
 			# Insert SAQITM - End
 			# Insert Quote Items Covered Object - Start
@@ -1125,21 +1125,21 @@ class ContractQuoteItem:
 		quote_item_obj = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM (NOLOCK) WHERE SERVICE_ID LIKE '{ServiceId}%' AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		##spare part insert for ancillary
 		#spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
-		Log.Info("_quote_items_update QID==> "+str(self.contract_quote_record_id))
-		Log.Info("_quote_items_update RID==> "+str(self.contract_quote_revision_record_id))
-		Log.Info("_quote_items_update SID==> "+str(self.service_id))
-		Log.Info("_quote_items_update ==> "+str(self.contract_quote_id))
-		if self.service_id == "Z0101":
-			Log.Info("In Z0101")
+		get_simple_product = Sql.GetFirst("SELECT * FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(self.service_id))
+		configuration_type = ""
+		if get_simple_product:
+			configuration_type = get_simple_product.MATERIALCONFIG_TYPE		
+		if self.service_id == "Z0101" and configuration_type != "SIMPLE MATERIAL" :
+			#Log.Info("In Z0101")
 			self._insert_quote_item_forecast_parts()
 			
 		elif not quote_item_obj or self.service_id == 'Z0016':
-			Log.Info("In Z0016")
+			#Log.Info("In Z0016")
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
 			self._insert_quote_item_greenbook()
 		else:
-			Log.Info("In Z0091 OR 46")
+			#Log.Info("In Z0091 OR 46")
 			self._quote_item_delete_process()
 			self._quote_items_insert()				
 			self._insert_quote_item_fab_location()
@@ -1150,7 +1150,7 @@ class ContractQuoteItem:
 	def _insert_quote_item_forecast_parts(self, **kwargs):
 		##Deleteing the tables before insert the data starts..
 
-		Log.Info("_insert_quote_item_forecast_parts ==> "+str(self.contract_quote_id)+" == Service Id == "+str(self.service_id))
+		#Log.Info("_insert_quote_item_forecast_parts ==> "+str(self.contract_quote_id)+" == Service Id == "+str(self.service_id))
 		Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
 			ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
 		))
@@ -1671,7 +1671,7 @@ class ContractQuoteItem:
 		if quote_line_item_obj:
 			equipments_count = int(quote_line_item_obj.max) +1
 		Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
-		Log.Info("PRICING_PICKLIST_Value_CHK_2 "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
+		#Log.Info("PRICING_PICKLIST_Value_CHK_2 "+str(Quote.GetCustomField('PRICING_PICKLIST').Content))
 		#Log.Info(" 1.equipments_count ===>"+str(equipments_count))
 		##inserting SAQICO except chamber based equipment A055S000P01-6826	
 		# ROW_NUMBER()OVER(ORDER BY(SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)) * 1 + {EquipmentsCount} as EQUIPMENT_LINE_ID,			
@@ -1931,7 +1931,7 @@ class ContractQuoteItem:
 		return True
 		
 	def _do_opertion(self):
-		Log.Info("-===========>> _do_opertion"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
+		#Log.Info("-===========>> _do_opertion"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 		if self.action_type == "INSERT_LINE_ITEMS":
 			spare_parts_count_object = Sql.GetFirst("SELECT COUNT(PART_NUMBER) AS COUNT FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id,self.service_id))
 			
@@ -1939,19 +1939,19 @@ class ContractQuoteItem:
 				if spare_parts_count_object.COUNT > 0:
 					self._insert_quote_item_forecast_parts()
 				else:	
-					Log.Info("-===========>> _do_opertion if else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
+					#Log.Info("-===========>> _do_opertion if else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 					self._quote_items_insert()
 					#batch_group_record_id = str(Guid.NewGuid()).upper()
 					self._insert_quote_item_fab_location()
 					self._insert_quote_item_greenbook()
 			else:	
-				Log.Info("-===========>> _do_opertion else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
+				#Log.Info("-===========>> _do_opertion else"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 				self._quote_items_insert()
 				#batch_group_record_id = str(Guid.NewGuid()).upper()
 				self._insert_quote_item_fab_location()
 				self._insert_quote_item_greenbook()		
 		else:
-			Log.Info("-===========>> _do_opertion update"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
+			#Log.Info("-===========>> _do_opertion update"+str(self.contract_quote_id)+" ====== "+str(self.action_type))
 			self._quote_items_update()	
 		# Pricing Calculation
 		ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
@@ -1961,7 +1961,7 @@ try:
 	where_condition_string = Param.WhereString
 except:
 	where_condition_string = ''
-Log.Info("CQINSQTITM ---- called")
+#Log.Info("CQINSQTITM ---- called")
 action_type = Param.ActionType
 parameters = {}
 keysofparameters = {
