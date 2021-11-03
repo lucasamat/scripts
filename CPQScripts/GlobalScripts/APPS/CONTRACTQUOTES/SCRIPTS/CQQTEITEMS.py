@@ -358,6 +358,21 @@ def ColdOnChange(Cold):
             for val in getAllValues:
                 secstr += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
     return secstr
+def HotOnChange(Hot):
+    if Hot == "Yes":
+        Trace.Write("inside Hot yes")
+        getPRTIAV = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK) WHERE TOOLIDLING_ID = 'Warm/Hot Idle Fee'")
+        x = getPRTIAV.TOOLIDLING_ID
+        y = getPRTIAV.TOOLIDLING_NAME
+        getDefaultValue = Sql.GetFirst("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = 'Warm/Hot Idle Fee' AND [DEFAULT] = 1")
+        secstr = '<tr id = "cold_onchange" data-index="'+str(15)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+        secstr += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+        
+        getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND TOOLIDLING_VALUE_CODE != {}'{}'".format(x,"N" if "28" in getDefaultValue.TOOLIDLING_VALUE_CODE or "30" in getDefaultValue.TOOLIDLING_VALUE_CODE else "",getDefaultValue.TOOLIDLING_VALUE_CODE))
+        if getAllValues:
+            for val in getAllValues:
+                secstr += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
+    return secstr
 SubtabName = Param.SUBTAB
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 
@@ -388,6 +403,12 @@ try:
 except:
     Trace.Write("except cold")
     Cold = ""
+try:
+    Trace.Write("try hot ")
+    Hot = str(Param.HOT)
+except:
+    Trace.Write("except hot")
+    Hot = ""
 if Action == "NOTICE ONCHANGE" and IdleNotice == "Restricted Entry(Days)":
     Trace.Write("276")
     ApiResponse = ApiResponseFactory.JsonResponse(NoticeOnChange(IdleNotice))
@@ -398,6 +419,8 @@ if Action == "EXCEPTION ONCHANGE" and IdlingException == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ExceptionOnChange(IdlingException))
 if Action == "COLD ONCHANGE" and Cold == "Yes":
     ApiResponse = ApiResponseFactory.JsonResponse(ColdOnChange(Cold))
+if Action == "HOT ONCHANGE" and Cold == "Yes":
+    ApiResponse = ApiResponseFactory.JsonResponse(HotOnChange(Hot))
 if SubtabName == "Summary" and Action == "VIEW":
     ApiResponse = ApiResponseFactory.JsonResponse(LoadSummary())
 elif SubtabName == "Summary" and Action == "EDIT":
