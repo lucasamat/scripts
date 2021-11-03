@@ -631,7 +631,7 @@ def CommonTreeViewHTMLDetail(
 		if "PRIMARY" in str(API_NAMES):
 			API_NAMES = str(API_NAMES).replace("PRIMARY", "[PRIMARY]")
 		if str(ObjectName) == "SAQITM":
-			autoNumber = "LINE_ITEM_ID"
+			autoNumber = "QUOTE_ITEM_RECORD_ID"
 		if str(ObjectName) == "SYPROH":
 			if "SYPRO" in RECORD_ID:
 				syprohval = SqlHelper.GetFirst(
