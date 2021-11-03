@@ -121,9 +121,11 @@ def LoadSummary():
     for status in price_preview_details:
         price_preview_status.append(status.STATUS)
     if len(price_preview_status) > 1:
-        prize_preview = 'multi-status'
+        prize_preview = 'not completed'
+    elif 'ACQUIRED' in price_preview_status:
+        prize_preview = 'completed'
     else:
-        prize_preview = ''
+        prize_preview = 'not completed'
     return sec_str,str(TotalCost),str(BDPrice)+ " " +curr,str(CeilingPrice)+ " " +curr,str(TargetPrice)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,str(prize_preview)
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
