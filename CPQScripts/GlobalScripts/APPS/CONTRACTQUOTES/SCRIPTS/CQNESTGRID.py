@@ -4333,6 +4333,8 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 	##replacing space with '_' in recid
 	if ' ' in recid:
 		table_recid = recid.replace(' ','_')
+	else:
+    		table_recid = recid
 	table_id = "table_preventive_maintainence_child_"+str(table_recid) 
 	table_header = (
 		'<table id="'
