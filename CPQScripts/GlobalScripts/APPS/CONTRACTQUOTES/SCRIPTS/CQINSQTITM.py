@@ -331,7 +331,7 @@ class ContractQuoteItem:
 					SAQSCO.GREENBOOK, 
 					SAQSCO.GREENBOOK_RECORD_ID, 
 					CASE WHEN MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' 
-							THEN {EquipmentsCount}
+							THEN {EquipmentsCount} + 1
 							ELSE ROW_NUMBER()OVER(ORDER BY(SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)) * 1 + {EquipmentsCount}
 					END as EQUIPMENT_LINE_ID,					
 					0 as NET_VALUE, 
@@ -456,7 +456,7 @@ class ContractQuoteItem:
 						SAQSCO.GREENBOOK, 
 						SAQSCO.GREENBOOK_RECORD_ID, 
 						CASE WHEN MAMTRL.SERVICE_TYPE = 'NON TOOL BASED' 
-								THEN {EquipmentsCount} 
+								THEN {EquipmentsCount} + 1
 								ELSE ROW_NUMBER()OVER(ORDER BY(SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)) * 1 + {EquipmentsCount}
 						END as EQUIPMENT_LINE_ID,						
 						0 as NET_VALUE, 
