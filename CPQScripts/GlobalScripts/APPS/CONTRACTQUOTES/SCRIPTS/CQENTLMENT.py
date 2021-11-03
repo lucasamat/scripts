@@ -1387,16 +1387,16 @@ class Entitlements:
 									#UPDATE TOTAL PRICE IN SAQTRV
 									#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
 									#objects = ["SAQSFE","SAQSGE","SAQSCE"]
-									getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-									eqcount = getCount.cnt
-									getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-									fab = []
-									gbk = []
-									for x in getfab:
-										getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(self.revision_recordid,x.FABLOCATION_ID))
-										fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
-										getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(self.revision_recordid,x.FABLOCATION_ID,x.GREENBOOK))
-										gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
+									# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+									# eqcount = getCount.cnt
+									# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+									# fab = []
+									# gbk = []
+									# for x in getfab:
+									# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(self.revision_recordid,x.FABLOCATION_ID))
+									# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
+									# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(self.revision_recordid,x.FABLOCATION_ID,x.GREENBOOK))
+									# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
 									
 									
 									
