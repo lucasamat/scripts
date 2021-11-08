@@ -2577,14 +2577,24 @@ def Related_Sub_Banner(
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
-        item_covered_obj = Sql.GetFirst("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        # item_covered_obj = Sql.GetFirst("SELECT COUNT(STATUS) AS STATUS FROM SAQICO WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND STATUS NOT IN ('ACQUIRED')".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         #for status in item_covered_obj:
-        if item_covered_obj.STATUS > 0:
+        price_preview_status = []
+        item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '"+str(QuoteId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+        for status in price_preview_details:
+            price_preview_status.append(status.STATUS)
+        if len(price_preview_status) > 1:
+            price_bar = "not_acquired_status"
+        elif 'ACQUIRED' in price_preview_status:
             price_bar = "acquired_status"
-            Trace.Write("config status==="+str(price_bar))
         else:
             price_bar = "not_acquired_status"
-            Trace.Write("config status111==="+str(price_bar))                    
+        # if item_covered_obj.STATUS > 0:
+        #     price_bar = "acquired_status"
+        #     Trace.Write("config status==="+str(price_bar))
+        # else:
+        #     price_bar = "not_acquired_status"
+        #     Trace.Write("config status111==="+str(price_bar))                    
         if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
