@@ -2581,7 +2581,7 @@ def Related_Sub_Banner(
         #for status in item_covered_obj:
         price_preview_status = []
         item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        for status in price_preview_details:
+        for status in item_covered_obj:
             price_preview_status.append(status.STATUS)
         if len(price_preview_status) > 1:
             price_bar = "not_acquired_status"
