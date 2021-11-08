@@ -3800,7 +3800,7 @@ class SYLDRTLIST:
                                     + str(qstring)
                                     + "</th>"
                                 )
-                        elif key == "EQUIPMENT_LINE_ID":
+                        elif invs == "EQUIPMENT_LINE_ID":
                             table_header += (
                                     '<th  data-field="'
                                     + str(invs)
