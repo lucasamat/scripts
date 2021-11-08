@@ -544,8 +544,8 @@ def ancillary_service_call():
 	# elif get_par_equp_ent.cnt != 0:
 	# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where.replace('SRC.',''), "quote_record_id": quote, "revision_rec_id": revision, "ActionType":"DELETE_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : get_serviceid , "tablename":objectName})
 
-def dividend_critical_price_sumup(ent_roll_temp):
-	get_val = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = 'AGS_Z0091_PQB_PPCPRM'".format(ent_roll_temp))
+def dividend_critical_price_sumup(ent_temp):
+	get_val = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = 'AGS_Z0091_PQB_PPCPRM'".format(ent_temp))
 	if get_val:
 		if get_val.ENTITLEMENT_DISPLAY_VALUE.upper() == "YES":
 			#Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
@@ -565,8 +565,8 @@ def dividend_critical_price_sumup(ent_roll_temp):
 				else:
 					y = "AGS_Z0046_PQB_AP{}PR".format(str(i))
 				#Trace.Write("y="+str(y))
-				get_x = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_roll_temp,x))
-				get_y = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_roll_temp,y))
+				get_x = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_temp,x))
+				get_y = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE ENTITLEMENT_ID = '{}'".format(ent_temp,y))
 				try:
 					if get_x and get_y:
 						total_price += float(get_x.ENTITLEMENT_DISPLAY_VALUE) * float(get_y.ENTITLEMENT_DISPLAY_VALUE)
@@ -1073,7 +1073,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		#if 'Z0091' in get_serviceid :
 		ancillary_service_call()
 		try:
-			dividend_critical_price_sumup(ent_roll_temp)
+			dividend_critical_price_sumup(ent_temp)
 		except Exception as e:
 			Log.Info("error on dividend--"+str(e)+str(get_serviceid))
 		sendEmail(level)
