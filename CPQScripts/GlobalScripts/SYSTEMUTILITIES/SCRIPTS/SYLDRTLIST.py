@@ -3773,7 +3773,7 @@ class SYLDRTLIST:
                                 + "</th>"
                             )
                     else: 
-                        Trace.Write("@3776")                       
+                        Trace.Write("@3776"+str(qstring))                       
                         if str(qstring) == "Key": 
                             
                             if ObjectName == "CTCICO":
@@ -3800,7 +3800,7 @@ class SYLDRTLIST:
                                     + str(qstring)
                                     + "</th>"
                                 )
-                        elif RECORD_ID == 'SYOBJR-00009' and qstring == "Equipment Line ID":
+                        elif qstring == "Equipment Line ID":
                             table_header += (
                                     '<th  data-field="'
                                     + str(invs)
