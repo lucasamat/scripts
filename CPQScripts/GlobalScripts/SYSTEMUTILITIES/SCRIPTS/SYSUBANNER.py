@@ -950,7 +950,7 @@ def Related_Sub_Banner(
                     #SecondLable = "Name"
                     #SecondValue = str(TreeParam)
                 ##commented the below code taking all the values in dynamic way...
-                elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Line Item Details":
+                elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Annualized Items":
                     Trace.Write("663")
                     getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     TreeParam = TreeParam.split('-')
