@@ -75,7 +75,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         
         
         ##opportunity header write back details starts...
-        opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(revision_obj.NET_VALUE)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
+        opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(revision_obj.NET_VALUE)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_to)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
         Trace.Write("opportunity_header_data-----"+str(opportunity_header_data))
         
