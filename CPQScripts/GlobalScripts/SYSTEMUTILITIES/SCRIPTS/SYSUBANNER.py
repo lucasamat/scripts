@@ -2585,11 +2585,11 @@ def Related_Sub_Banner(
             price_preview_status.append(status.STATUS)
         Trace.Write("price_preview_status_CHK"+str(price_preview_status))
         if len(price_preview_status) > 1:
-            price_bar = "not_acquired_status"
-        elif 'ACQUIRED' in price_preview_status:
             price_bar = "acquired_status"
-        else:
+        elif 'ACQUIRED' in price_preview_status:
             price_bar = "not_acquired_status"
+        else:
+            price_bar = "acquired_status"
         # if item_covered_obj.STATUS > 0:
         #     price_bar = "acquired_status"
         #     Trace.Write("config status==="+str(price_bar))
