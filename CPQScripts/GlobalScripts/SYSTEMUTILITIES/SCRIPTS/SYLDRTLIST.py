@@ -207,11 +207,11 @@ class SYLDRTLIST:
 		# Billing Matrix - Pivot - End
 		if obj_obj is not None:
 			##A055S000P01-4401            
-			if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':
-				##column for pricing view
-				Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"
-			else:
-				Columns = obj_obj.COLUMNS
+			# if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':
+			# 	##column for pricing view
+			# 	Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"
+			# else:
+			Columns = obj_obj.COLUMNS
 			#Hide columns in Related list based on Quote type start
 			if Currenttab == 'Quotes':
 				quote_rec_id = Product.GetGlobal("contract_quote_record_id")
@@ -269,13 +269,13 @@ class SYLDRTLIST:
 					else:         
 						##A055S000P01-4401
 						##column for pricing view
-						if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':                            
-							Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"  
-						else:        
-							Columns = obj_obj.COLUMNS
-							if RECORD_ID == "SYOBJR-98869":                                
-								rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
-								Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+						# if str(TreeParam) == "Quote Items" and RECORD_ID == "SYOBJR-00009" and pricing_picklist_value == 'Pricing':                            
+						# 	Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"  
+						# else:        
+						Columns = obj_obj.COLUMNS
+						if RECORD_ID == "SYOBJR-98869":                                
+							rem_list_sp = ["QUOTE_REVISION_RECORD_ID"]
+							Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 			
 			#Hide columns in Related list based on Quote type End
 			Obj_Name = obj_obj.OBJ_REC_ID            
@@ -335,12 +335,12 @@ class SYLDRTLIST:
 			#Quote items column based on pricing picklist ends A055S000P01-4578
 			#A055S000P01-4401
 			Trace.Write('inside'+str(pricing_picklist_value)+str(TreeParam)+'--'+str(Columns))
-			if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
-				Trace.Write('inside')
-				#backup for SYOBJR-00009
-				# ['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','BD_PRICE_MARGIN','DISCOUNT','NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','ENTITLEMENT_CATEGORY','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']
-				rem_list_sp = ["ENTITLEMENT_CATEGORY"]
-				Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
+			# if RECORD_ID == "SYOBJR-00009" and not (pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items"):
+			# 	Trace.Write('inside')
+			# 	#backup for SYOBJR-00009
+			# 	# ['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','BD_PRICE_MARGIN','DISCOUNT','NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','ENTITLEMENT_CATEGORY','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']
+			# 	rem_list_sp = ["ENTITLEMENT_CATEGORY"]
+			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
@@ -3243,10 +3243,10 @@ class SYLDRTLIST:
 			rowspan = ''
 			#A055S000P01-4401
 			if RECORD_ID == 'SYOBJR-00009':
-				if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					rowspan = 'rowspan="3"' 
-				else:
-					rowspan = 'rowspan="2"' 
+				# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 	rowspan = 'rowspan="3"' 
+				# else:
+				rowspan = 'rowspan="2"' 
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
@@ -3374,26 +3374,26 @@ class SYLDRTLIST:
 			header1 = ''
 			header3 = ''
 			header2 = ''
-			if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				ent_cat_list = ['KPI','MISC TERMS']
-				if ent_cat_list:
-					header1 = '<th class = "ent_header1" colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign header1" id="entitlement-header-category-toggle" onclick="entitlement_category_toggle(this)"></button>CATEGORY 4 ENTITLEMENTS</div></th>'.format(len(ent_cat_list)*3)
-					for i in ent_cat_list:
-						category_val = str(i).replace(' ','_')
-						header2 += (									
-									'<th id ='+category_val+' class = "ent_header2" data-field='+category_val+' colspan=3 data-align="right"><div><button data-field='+category_val+' style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
-									) 
-						#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
-										# + str(i)
-										# + '" data-filter-control="input" data-align="right" data-title-tooltsip="'
-										# + str(i)
-										# + '" data-sortable="true">'
-										# + str(i)
-										# + "</th>" 
-						header3 += (
-									'<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">COST IMPACT</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">PRICE IMPACT</th>'.format(val = category_val)
-									)    
-			Trace.Write("@Columns---"+str(Columns))
+			# if RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	ent_cat_list = ['KPI','MISC TERMS']
+			# 	if ent_cat_list:
+			# 		header1 = '<th class = "ent_header1" colspan="{}" data-align="right"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign header1" id="entitlement-header-category-toggle" onclick="entitlement_category_toggle(this)"></button>CATEGORY 4 ENTITLEMENTS</div></th>'.format(len(ent_cat_list)*3)
+			# 		for i in ent_cat_list:
+			# 			category_val = str(i).replace(' ','_')
+			# 			header2 += (									
+			# 						'<th id ='+category_val+' class = "ent_header2" data-field='+category_val+' colspan=3 data-align="right"><div><button data-field='+category_val+' style="border:none;" class="glyphicon glyphicon-minus-sign" id="entitlement-category-toggle" onclick="entitlement_category_toggle(this)"></button>'+str(i)+'</div></th>'
+			# 						) 
+			# 			#'<th colspan=3 data-toggle="bootstrap-table" data-field="'
+			# 							# + str(i)
+			# 							# + '" data-filter-control="input" data-align="right" data-title-tooltsip="'
+			# 							# + str(i)
+			# 							# + '" data-sortable="true">'
+			# 							# + str(i)
+			# 							# + "</th>" 
+			# 			header3 += (
+			# 						'<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">COST IMPACT</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">PRICE IMPACT</th>'.format(val = category_val)
+			# 						)    
+			# Trace.Write("@Columns---"+str(Columns))
 			for key, invs in enumerate(list(eval(Columns))):
 				table_ids = "#" + str(table_id)
 				invs = str(invs).strip()
@@ -3406,10 +3406,10 @@ class SYLDRTLIST:
 				#Trace.Write("@3394--"+str(qstring))
 				#A055S000P01-4401
 				if RECORD_ID == 'SYOBJR-00009':
-					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-						rowspan = 'rowspan="3"'
-					else:
-						rowspan = 'rowspan="2"'
+					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					# 	rowspan = 'rowspan="3"'
+					# else:
+					rowspan = 'rowspan="2"'
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				if key == 0:
 					if invs in primary_link_popup:
@@ -3533,16 +3533,42 @@ class SYLDRTLIST:
 									+ "</th>"
 								)    
 								
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD'):
+					
+				# 	align = ''
+				# 	#A055S000P01-4401
+				# 	# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 	# 	rowspan_level1 = 'rowspan="2"'
+				# 	# else:
+				# 	rowspan_level1 = ""
+				# 	if not table_group_columns:
+				# 		table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION'):
 					
 					align = ''
 					#A055S000P01-4401
-					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-						rowspan_level1 = 'rowspan="2"'
-					else:
-						rowspan_level1 = ""
+					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					# 	rowspan_level1 = 'rowspan="2"'
+					# else:
+					rowspan_level1 = ""
 					if not table_group_columns:
-						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICE BENCHMARKING</div></th>'
+						table_header += '<th colspan="7" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>OBJECT INFORMATION</div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -3562,93 +3588,93 @@ class SYLDRTLIST:
 				
 				##A055S000P01-4401 
 				##cost grouping
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					
-					align = ''
-					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-						rowspan_level1 = 'rowspan="2"'
-					else:
-						rowspan_level1 = ""
-					if not table_group_columns2:
-						table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="line_item_column_toggle(this)"></button>COST</div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns2 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-				##price grouping
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 	align = ''
+				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 		rowspan_level1 = 'rowspan="2"'
+				# 	else:
+				# 		rowspan_level1 = ""
+				# 	if not table_group_columns2:
+				# 		table_header += '<th colspan="2" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost-column-toggle" onclick="line_item_column_toggle(this)"></button>COST</div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns2 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				# ##price grouping
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					
-					align = ''
+				# 	align = ''
 					
-					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-						rowspan_level1 = 'rowspan="2"'
-					else:
-						rowspan_level1 = ""
-					if not table_group_columns3:
-						table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns3 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
-				##Line summary grouping
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 		rowspan_level1 = 'rowspan="2"'
+				# 	else:
+				# 		rowspan_level1 = ""
+				# 	if not table_group_columns3:
+				# 		table_header += '<th colspan="5" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-column-toggle" onclick="line_item_column_toggle(this)"></button>PRICE</div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns3 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
+				# ##Line summary grouping
+				# elif RECORD_ID == 'SYOBJR-00009' and invs in ('DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE') and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 					
-					align = ''
+				# 	align = ''
 					
-					if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-						rowspan_level1 = 'rowspan="2"'
-					else:
-						rowspan_level1 = ""
-					if not table_group_columns4:
-						table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>LINE SUMMARY</div></th>'
-					if str(invs) in right_align_list:
-						align = 'right'
-					elif str(invs) in center_align_list:
-						align = 'center'
-					table_group_columns4 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
-					continue
+				# 	if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+				# 		rowspan_level1 = 'rowspan="2"'
+				# 	else:
+				# 		rowspan_level1 = ""
+				# 	if not table_group_columns4:
+				# 		table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="linesummary-column-toggle" onclick="line_item_column_toggle(this)"></button>LINE SUMMARY</div></th>'
+				# 	if str(invs) in right_align_list:
+				# 		align = 'right'
+				# 	elif str(invs) in center_align_list:
+				# 		align = 'center'
+				# 	table_group_columns4 += (
+				# 				'<th data-toggle="bootstrap-table" data-field="'
+				# 				+ str(invs)
+				# 				+ '" data-filter-control="input" data-align="'
+				# 				+ str(align)
+				# 				+'" data-title-tooltsip="'
+				# 				+ str(qstring)
+				# 				+ '" data-sortable="true">'
+				# 				+ str(qstring)
+				# 				+ "</th>"
+				# 			)           
+				# 	continue
 				
 
-				elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
-					Trace.Write('3 tier header')
-					if header1:
-						table_header += header1
+				# elif RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items" and invs == "ENTITLEMENT_CATEGORY":
+				# 	Trace.Write('3 tier header')
+				# 	if header1:
+				# 		table_header += header1
 
-					continue
+				# 	continue
 
 				elif len(cell_api) > 0 and invs in cell_api:                    
 					table_header += (
