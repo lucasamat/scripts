@@ -3365,7 +3365,7 @@ class SYLDRTLIST:
 			table_group_columns = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
-			# table_group_columns2 = ''
+			table_group_columns2 = ''
 			# ##price grouping
 			# table_group_columns3 =''
 			# ##Line summary grouping
@@ -3575,6 +3575,33 @@ class SYLDRTLIST:
 					elif str(invs) in center_align_list:
 						align = 'center'
 					table_group_columns += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('CEILING_PRICE_INGL_CURR','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','TOTAL_AMOUNT_INGL_CURR','NET_PRICE','NET_VALUE'):
+					
+					align = ''
+					#A055S000P01-4401
+					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					# 	rowspan_level1 = 'rowspan="2"'
+					# else:
+					rowspan_level1 = ""
+					if not table_group_columns2:
+						table_header += '<th colspan="6" '+rowspan_level1+'  data-align="center"><div><button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price-benchmark-column-toggle" onclick="price_benchmark_column_toggle(this)"></button>PRICING INFORMATION</div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns2 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -3910,6 +3937,8 @@ class SYLDRTLIST:
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
 				grouping_columns += table_group_columns
+			if table_group_columns2:
+				grouping_columns += table_group_columns2
 			table_header += '<tr>{}</tr>'.format(grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
