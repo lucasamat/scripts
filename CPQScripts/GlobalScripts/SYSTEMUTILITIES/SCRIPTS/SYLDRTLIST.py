@@ -93,6 +93,7 @@ class SYLDRTLIST:
             lookup_disply_list,
             edit_field,
         ) = ([] for i in range(11))
+        Trace.Write("@96----"+str(primary_link_popup))
         Qustr = ""
         table_header = ""
         TreeParam = Product.GetGlobal("TreeParam")
