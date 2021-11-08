@@ -4134,17 +4134,17 @@ class SYLDRTLIST:
 			
 			#A055S000P01-4401
 			##filter control for entitlement category for pricing view
-			if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				Trace.Write('ENTITLEMENT_CATEGORY')
-				ent_cat_list = ['KPI','MISC TERMS']
-				header3_list = ['ENTITLEMENT_NAME','ENTITLEMENT_COST','ENTITLEMENT_PRICE']
-				for i in ent_cat_list:
-					filter_level_data = ["input","input",'input']
-					temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'_'+ str(i).replace(' ','_')+ '">' for j in header3_list]
+			# if col_name == 'ENTITLEMENT_CATEGORY' and RECORD_ID == 'SYOBJR-00009' and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	Trace.Write('ENTITLEMENT_CATEGORY')
+			# 	ent_cat_list = ['KPI','MISC TERMS']
+			# 	header3_list = ['ENTITLEMENT_NAME','ENTITLEMENT_COST','ENTITLEMENT_PRICE']
+			# 	for i in ent_cat_list:
+			# 		filter_level_data = ["input","input",'input']
+			# 		temp_list = ['<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'+str(j)+'_'+ str(i).replace(' ','_')+ '">' for j in header3_list]
 
 					
-					filter_level_list.extend(filter_level_data)
-					cv_list.extend(temp_list)
+			# 		filter_level_list.extend(filter_level_data)
+			# 		cv_list.extend(temp_list)
 
 			if filter_level_data == "select" and col_name not in checkbox_list:                
 				try:
