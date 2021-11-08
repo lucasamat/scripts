@@ -2027,6 +2027,7 @@ class TreeView:
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
 								elif str(ObjName).strip() == 'SAQTBT' and str(NodeName) == 'SERVICE_ID':
+									Trace.Write("Billing___conc")
 									NodeText_temp = NodeText +' - '+ NodeText
 								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
 									try:
