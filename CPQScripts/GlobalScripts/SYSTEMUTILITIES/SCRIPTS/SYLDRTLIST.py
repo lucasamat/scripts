@@ -7209,20 +7209,31 @@ class SYLDRTLIST:
 									Trace.Write('column---'+str(Columns)+str(type(Columns)))
 									#pricing_curr = pricing_picklist_value
 										
-									if pricing_picklist_value == 'Document Currency':
-										saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
-										Trace.Write('DocumentCurr----'+str(saqico_cols)) 
-									else:
-										##Global Currency
-										gl_str = "_INGL_CURR"
-										col_year = col_year.split(',')
-										col_year = ','.join([i+gl_str for i in col_year])
-										saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR, "+col_year
-										Trace.Write('GlobalCurr----'+str(saqico_cols))
+									# if pricing_picklist_value == 'Document Currency':
+									# 	saqico_cols ="CEILING_PRICE, MODEL_PRICE, NET_PRICE, NET_VALUE, TARGET_PRICE, SALES_DISCOUNT_PRICE,TAX_AMOUNT, "+col_year
+									# 	Trace.Write('DocumentCurr----'+str(saqico_cols)) 
+									# else:
+									# 	##Global Currency
+									# 	gl_str = "_INGL_CURR"
+									# 	col_year = col_year.split(',')
+									# 	col_year = ','.join([i+gl_str for i in col_year])
+									# 	saqico_cols ="CEILING_PRICE_INGL_CURR, MODEL_PRICE_INGL_CURR, NET_PRICE_INGL_CURR, NET_VALUE_INGL_CURR, TARGET_PRICE_INGL_CURR, SLSDIS_PRICE_INGL_CURR,TAX_AMOUNT_INGL_CURR, "+col_year
+									# 	Trace.Write('GlobalCurr----'+str(saqico_cols))
+									# Qury_str = (
+									# 	"select top "
+									# 		+ str(PerPage)
+									# 		+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,YEAR_OVER_YEAR,SERIAL_NO, "+saqico_cols+", GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE_MARGIN,++ SALDIS_PERCENT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE, PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+									# 		+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
+									# 		+ str(qt_rec_id.QUOTE_ID)
+									# 		+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
+									# 		+ str(Page_start)
+									# 		+ " and "
+									# 		+ str(Page_End)+" ORDER BY "+ str(Wh_API_NAMEs)
+									# )
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID, EQUIPMENT_ID,SERVICE_ID,LINE_ITEM_ID,BD_DISCOUNT,BD_PRICE_MARGIN,DISCOUNT,YEAR_OVER_YEAR,SERIAL_NO, "+saqico_cols+", GREENBOOK,FABLOCATION_ID,TECHNOLOGY,KPU, TARGET_PRICE_MARGIN,++ SALDIS_PERCENT,SRVTAXCLA_DESCRIPTION,TAX_PERCENTAGE, PRICE_BENCHMARK_TYPE,TOOL_CONFIGURATION,ANNUAL_BENCHMARK_BOOKING_PRICE,CONTRACT_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],BENCHMARKING_THRESHOLD,CpqTableEntryId,ASSEMBLY_ID,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,CUSTOMER_TOOL_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,KPU,TECHNOLOGY,TOOL_CONFIGURATION,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,NET_PRICE,NET_VALUE,YEAR_OVER_YEAR,DISCOUNT,WARRANTY_START_DATE,WARRANTY_END_DATE from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 											+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
 											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
