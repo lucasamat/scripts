@@ -716,7 +716,13 @@ class AncillaryProductOperation:
 						try:						
 							add_where =''
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
-							AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
+							if str(val.ENTITLEMENT_ID) == "AGS_Z0091_KPI_BPTKPI" and NewValue == "Yes":
+								AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
+							# elif str(val.ENTITLEMENT_ID) == "AGS_Z0091_PQB_PPCPRM" and NewValue == "Yes":
+							# 	AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
+							# else:
+							# 	if 'AGS_Z0046'str(val.ENTITLEMENT_ID)
+							# 		AttributeID_Pass = val.ENTITLEMENT_ID
 							ServiceId = 'Z0046'
 							whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
 							ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
