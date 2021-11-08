@@ -3728,20 +3728,21 @@ class SYLDRTLIST:
                     if str(invs) in right_align_list:                        
                         visible = ""
                         if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
-                            visible = 'data-visible="false"'               
-                        table_header += (
-                            '<th  data-field="'
-                            + str(invs)
-                            + '" data-filter-control="input" data-align="right" data-title-tooltip="'
-                            + str(qstring)
-                            + '" data-sortable="true" '
-                            + str(visible)
-                            + ' '
-                            + rowspan
-                            + '>'
-                            + str(qstring)
-                            + "</th>"
-                        )  
+                            visible = 'data-visible="false"'  
+                        if invs != "EQUIPMENT_LINE_ID":             
+                            table_header += (
+                                '<th  data-field="'
+                                + str(invs)
+                                + '" data-filter-control="input" data-align="right" data-title-tooltip="'
+                                + str(qstring)
+                                + '" data-sortable="true" '
+                                + str(visible)
+                                + ' '
+                                + rowspan
+                                + '>'
+                                + str(qstring)
+                                + "</th>"
+                            )  
                         if invs == "EQUIPMENT_LINE_ID":
                             table_header += (
                                     '<th  data-field="'
