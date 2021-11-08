@@ -283,6 +283,14 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 									+ str(VALUE)
 									+ '" type="text">'
 								)
+							elif TITLE =="PM_FREQUENCY":
+    								edt_str += (
+									'<input class="form-control light_yellow wth_80"   id="'
+									+ str(api_name)
+									+ '" value="'
+									+ str(VALUE)
+									+ '" type="text">'
+								)
 						elif data_type.upper() == "FORMULA":
 							if  obj_obj == 'SAQSTE':
 								edt_str += '<input class="form-control light_yellow fltlt wth_80"   id="' + str(api_name) + '" type="text">'
@@ -336,6 +344,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						if obj_obj == 'SAQSAP':
 							k = Sql.GetFirst("SELECT QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID FROM SAQSAP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 							Trace.Write("query---->"+str(k))
+							edt_str += "</div></td></tr></tbody></table>"
 							if k:
 								key = str(k.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
 						else:
