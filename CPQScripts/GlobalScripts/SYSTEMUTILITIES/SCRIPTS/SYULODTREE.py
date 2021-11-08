@@ -2026,7 +2026,7 @@ class TreeView:
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-								elif (str(ObjName).strip() == 'SAQTBT' and str(NodeName) == 'SERVICE_ID':
+								elif str(ObjName).strip() == 'SAQTBT' and str(NodeName) == 'SERVICE_ID':
 									NodeText_temp = NodeText +' - '
 								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
 									try:
@@ -3168,7 +3168,7 @@ elif LOAD == "GlobalSet":
 
 #A055S000P01-4578 starts
 elif LOAD == 'PRICING PICKLIST':
-	ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist())
+	ApiResponse = ApiResponseFactory.JsonResponse(tree.pricing_picklist()) 
 ##A055S000P01-4578 ends
 #else:
 #Trace.Write("elsee")
