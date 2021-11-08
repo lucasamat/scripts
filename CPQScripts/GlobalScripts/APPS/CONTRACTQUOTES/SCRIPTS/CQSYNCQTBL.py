@@ -974,7 +974,36 @@ class SyncQuoteAndCustomTables:
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-						if employee_obj and contact_master_table:
+						if contact_master_table is None:
+							for employee in payload_json.get('SAQICT'):
+								contact_master_table_update = {
+									"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+									"ADDRESS": employee_obj.ADDRESS_1,
+									"CITY": employee_obj.CITY,
+									"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
+									"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+									"CONTACT_TYPE": "",
+									"COUNTRY": employee_obj.COUNTRY,
+									"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
+									"DEPARTMENT": "",
+									"EMAIL": employee_obj.EMAIL,
+									"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
+									"FAX": "",
+									"FUNCTION": "",
+									"MOBILE": "",
+									"PHONE": employee.get("PHONE"),
+									"POSTAL_CODE": employee.get("POSTAL_CODE"),
+									"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+									"STATE": employee_obj.STATE,
+									"STATUS": "",
+									"FIRST_NAME": employee.get("FIRST_NAME"),
+									"LAST_NAME": employee.get("LAST_NAME"),
+								}
+								tableInfo = Sql.GetTable("SACONT")
+								tablerow = contact_master_table_update
+								tableInfo.AddRow(tablerow)
+								Sql.Upsert(tableInfo)
+						if employee_obj:
 							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
 							contact_info_update = {
 								"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
