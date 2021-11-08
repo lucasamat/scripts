@@ -98,10 +98,10 @@ class ContractQuoteItem:
 						ISNULL(CONVERT(FLOAT,SAQTRV.EXCHANGE_RATE),'') AS EXCHANGE_RATE,
 						SAQTRV.EXCHANGE_RATE_DATE,
 						SAQTRV.EXCHANGERATE_RECORD_ID as EXCHANGE_RATE_RECORD_ID,
-						GL_ACCOUNT_NO,
+						null as GL_ACCOUNT_NO,
 						SAQTRV.GLOBAL_CURRENCY,
 						SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-						LINE,
+						ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
 						null as OBJECT_ID,
 						null as OBJECT_TYPE,
 						{ObjectName}.SERVICE_DESCRIPTION,
@@ -124,7 +124,7 @@ class ContractQuoteItem:
 					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = {ObjectName}.SERVICE_ID 
 					LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
 					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}'				
-				""".format(ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+				""".format(ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=0))
 
 		return True
 		
