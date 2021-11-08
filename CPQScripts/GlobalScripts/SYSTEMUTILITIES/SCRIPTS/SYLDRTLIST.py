@@ -4487,7 +4487,7 @@ class SYLDRTLIST:
 			+ str(table_id)
 			+ '_page_count" class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2"  >Page </span></div></div>'
 		)
-		
+		Trace.Write("cv_list--"+str(cv_list))
 		return (
 			table_header,
 			table_list,
