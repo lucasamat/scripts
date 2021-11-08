@@ -1936,7 +1936,7 @@ def Related_Sub_Banner(
         PrimaryLable = ""
         PrimaryValue = ""       
     elif TreeParam == 'Quote Items':
-        get_quote_details = Sql.GetFirst("select * from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,NET_VALUE,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         PrimaryLable = "Total Sales Price"
         PrimaryValue = str(get_quote_details.TOTAL_AMOUNT)
         SecondLable = "Total Discount %"
