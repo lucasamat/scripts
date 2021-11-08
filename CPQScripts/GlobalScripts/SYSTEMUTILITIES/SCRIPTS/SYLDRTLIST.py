@@ -3797,6 +3797,19 @@ class SYLDRTLIST:
                                     + str(qstring)
                                     + "</th>"
                                 )
+                        elif RECORD_ID == 'SYOBJR-00009' and qstring == "Equipment Line ID":
+                            table_header += (
+                                    '<th  data-field="'
+                                    + str(invs)
+                                    + '" data-filter-control="input" data-title-tooltip="'
+                                    + str(qstring)
+                                    + '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+                                    + rowspan
+                                    +'>'
+                                    + str(qstring)
+                                    + "</th>"
+                                )
+
                         elif RECORD_ID == 'SYOBJR-00007' and str(invs) in billing_date_column: # Billing Matrix Date Change Model and Footer - Start
                             
                             footer_formatter = ''
