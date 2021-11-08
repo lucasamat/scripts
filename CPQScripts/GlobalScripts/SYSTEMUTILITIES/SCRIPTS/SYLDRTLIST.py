@@ -93,7 +93,7 @@ class SYLDRTLIST:
             lookup_disply_list,
             edit_field,
         ) = ([] for i in range(11))
-        Trace.Write("@96----"+str(primary_link_popup))
+        #Trace.Write("@96----"+str(primary_link_popup))
         Qustr = ""
         table_header = ""
         TreeParam = Product.GetGlobal("TreeParam")
@@ -3391,6 +3391,7 @@ class SYLDRTLIST:
                     qstring = invs.replace("_", " ")
             
                 rowspan = ''
+                Trace.Write("@3394--"+str(qstring))
                 #A055S000P01-4401
                 if RECORD_ID == 'SYOBJR-00009':
                     if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
