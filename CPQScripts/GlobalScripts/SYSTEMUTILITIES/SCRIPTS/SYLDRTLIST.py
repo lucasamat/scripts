@@ -8474,7 +8474,7 @@ except:
 try:
 	pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
 except:
-	pricing_picklist_value = ''
+	pricing_picklist_value = 'Pricing'
 if ACTION == "PRODUCT_ONLOAD": 
 	ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
