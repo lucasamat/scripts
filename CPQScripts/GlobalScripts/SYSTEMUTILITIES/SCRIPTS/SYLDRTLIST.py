@@ -3741,7 +3741,19 @@ class SYLDRTLIST:
                             + '>'
                             + str(qstring)
                             + "</th>"
-                        )                        
+                        )  
+                        if invs == "EQUIPMENT_LINE_ID":
+                            table_header += (
+                                    '<th  data-field="'
+                                    + str(invs)
+                                    + '" data-filter-control="input" data-title-tooltip="'
+                                    + str("Equipment Line ID")
+                                    + '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+                                    + rowspan
+                                    +'>'
+                                    + str("Equipment Line ID")
+                                    + "</th>"
+                                )                      
                     elif str(invs) in center_align_list:                        
                         if RECORD_ID == 'SYOBJR-00010' and str(invs) == 'SERVICE_ID' and TreeParam != "Quote Preview":
                             table_header += (
@@ -3800,18 +3812,7 @@ class SYLDRTLIST:
                                     + str(qstring)
                                     + "</th>"
                                 )
-                        elif invs == "EQUIPMENT_LINE_ID":
-                            table_header += (
-                                    '<th  data-field="'
-                                    + str(invs)
-                                    + '" data-filter-control="input" data-title-tooltip="'
-                                    + str("Equipment Line ID")
-                                    + '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
-                                    + rowspan
-                                    +'>'
-                                    + str("Equipment Line ID")
-                                    + "</th>"
-                                )
+                        
 
                         elif RECORD_ID == 'SYOBJR-00007' and str(invs) in billing_date_column: # Billing Matrix Date Change Model and Footer - Start
                             
