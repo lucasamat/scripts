@@ -3800,16 +3800,16 @@ class SYLDRTLIST:
                                     + str(qstring)
                                     + "</th>"
                                 )
-                        elif qstring == "Equipment Line ID":
+                        elif key == "EQUIPMENT_LINE_ID":
                             table_header += (
                                     '<th  data-field="'
                                     + str(invs)
                                     + '" data-filter-control="input" data-title-tooltip="'
-                                    + str(qstring)
+                                    + str("Equipment Line ID")
                                     + '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
                                     + rowspan
                                     +'>'
-                                    + str(qstring)
+                                    + str("Equipment Line ID")
                                     + "</th>"
                                 )
 
