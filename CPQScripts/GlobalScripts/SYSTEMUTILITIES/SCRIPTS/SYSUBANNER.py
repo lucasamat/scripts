@@ -2424,11 +2424,8 @@ def Related_Sub_Banner(
                         if str(TabName) == 'Quotes':
                             if subTabName == "Contacts":
                                 sec_rel_sub_bnr += ""
-                            elif quote_status:
-                                if quote_status.QUOTE_STATUS != 'APPROVED':
-                                    sec_rel_sub_bnr += (str(add_button))
-                                else:
-                                    sec_rel_sub_bnr += (str(add_button))
+                            elif quote_status.QUOTE_STATUS != 'APPROVED':
+                                sec_rel_sub_bnr += (str(add_button))
                         else:
                             Trace.Write("add###---")                                        
                             sec_rel_sub_bnr += (str(add_button))
