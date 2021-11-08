@@ -3381,7 +3381,7 @@ class SYLDRTLIST:
                         header3 += (
                                     '<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">COST IMPACT</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">PRICE IMPACT</th>'.format(val = category_val)
                                     )    
-            
+            Trace.Write("@Columns---"+str(Columns))
             for key, invs in enumerate(list(eval(Columns))):
                 table_ids = "#" + str(table_id)
                 invs = str(invs).strip()
@@ -3391,7 +3391,7 @@ class SYLDRTLIST:
                     qstring = invs.replace("_", " ")
             
                 rowspan = ''
-                Trace.Write("@3394--"+str(qstring))
+                #Trace.Write("@3394--"+str(qstring))
                 #A055S000P01-4401
                 if RECORD_ID == 'SYOBJR-00009':
                     if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
