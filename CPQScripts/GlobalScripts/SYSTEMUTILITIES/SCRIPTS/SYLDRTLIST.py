@@ -3772,7 +3772,8 @@ class SYLDRTLIST:
                                 + str(qstring)
                                 + "</th>"
                             )
-                    else:                        
+                    else: 
+                        Trace.Write("@3776")                       
                         if str(qstring) == "Key": 
                             
                             if ObjectName == "CTCICO":
