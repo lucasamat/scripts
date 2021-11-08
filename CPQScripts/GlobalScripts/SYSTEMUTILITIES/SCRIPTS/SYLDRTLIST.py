@@ -3385,7 +3385,7 @@ class SYLDRTLIST:
             for key, invs in enumerate(list(eval(Columns))):
                 table_ids = "#" + str(table_id)
                 invs = str(invs).strip()
-                
+                Trace.Write("keyval---"+str(key)+ "--"+str(invs))
                 qstring = attr_list.get(str(invs)) or ""
                 if qstring == "":
                     qstring = invs.replace("_", " ")
