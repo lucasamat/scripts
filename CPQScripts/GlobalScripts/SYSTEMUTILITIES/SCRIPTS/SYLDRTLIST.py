@@ -3394,6 +3394,8 @@ class SYLDRTLIST:
 			# 						'<th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_NAME_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_NAME_{val}" data-sortable="true">ENTITLEMENT NAME</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_COST_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_COST_{val}" data-sortable="true">COST IMPACT</th><th class = "entitlement_category_header entitlement_category_{val}" data-toggle="bootstrap-table" data-field="ENTITLEMENT_PRICE_{val}" data-filter-control="input" data-align="left" data-title-tooltsip="ENTITLEMENT_PRICE_{val}" data-sortable="true">PRICE IMPACT</th>'.format(val = category_val)
 			# 						)    
 			# Trace.Write("@Columns---"+str(Columns))
+			if  RECORD_ID == 'SYOBJR-00009' and str(TreeParam) == "Quote Items":
+				Columns = "['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','EQUIPMENT_DESCRIPTION',,'CEILING_PRICE_INGL_CURR','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','TOTAL_AMOUNT_INGL_CURR','NET_PRICE','NET_VALUE','YEAR_OVER_YEAR','DISCOUNT','WARRANTY_START_DATE','WARRANTY_END_DATE''SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION']"
 			for key, invs in enumerate(list(eval(Columns))):
 				table_ids = "#" + str(table_id)
 				invs = str(invs).strip()
