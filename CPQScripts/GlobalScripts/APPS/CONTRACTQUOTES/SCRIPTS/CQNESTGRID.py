@@ -3981,7 +3981,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_list.append(data_dict)
 
-	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"]
+	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","PM_FREQUENCY"]
 	ParentObj = Sql.GetList(
 		"select ASSEMBLY_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}'".format(
 			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), AssemblyId = ASSEMBLYID,
@@ -4012,12 +4012,13 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ "</abbr></th>"
 			)
 		elif hyper_link is not None and invs in hyper_link:            
+			data_formatter = "PMFrequencyBulkEditHyperLink" if invs == "PM_FREQUENCY" else "EquipHyperLinkTreeLink"
 			table_header += (
 				'<th  id="'
 				+ str(invs)
 				+ '"  data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-formatter="EquipHyperLinkTreeLink" data-sortable="true"><abbr title="'
+				+ '" data-filter-control="input" data-formatter="'+str(data_formatter)+'" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
