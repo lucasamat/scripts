@@ -2939,7 +2939,11 @@ if CurrentTab == 'Quotes':
     # 	if str(ObjName) != "SAQTBP":
     # 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
 try:
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+    GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(ContractRecordId))
+    if GetActiveRevision:
+        Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+        quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
     quote_revision_record_id = ""
 ApiResponse = ApiResponseFactory.JsonResponse(
