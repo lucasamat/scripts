@@ -3889,22 +3889,22 @@ class SYLDRTLIST:
 			table_header += "</tr>"
 		if RECORD_ID == 'SYOBJR-00009':
 			#A055S000P01-4401 Pricing view
-			if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				Trace.Write('header2---'+str(header2))
-				table_header += '<tr>{}</tr>'.format(header2)
+			# if header2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	Trace.Write('header2---'+str(header2))
+			# 	table_header += '<tr>{}</tr>'.format(header2)
 			grouping_columns = ""
-			#entitlement category header 
-			if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
-				grouping_columns += header3
-			#cost header
-			if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				grouping_columns += table_group_columns2
-			#price header
-			if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				grouping_columns += table_group_columns3
-			#line summary header
-			if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-				grouping_columns += table_group_columns4
+			# #entitlement category header 
+			# if pricing_picklist_value == 'Pricing' and header3 and str(TreeParam) == "Quote Items":
+			# 	grouping_columns += header3
+			# #cost header
+			# if table_group_columns2 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	grouping_columns += table_group_columns2
+			# #price header
+			# if table_group_columns3 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	grouping_columns += table_group_columns3
+			# #line summary header
+			# if table_group_columns4 and pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+			# 	grouping_columns += table_group_columns4
 			#benchmark header
 			if table_group_columns:
 				#Trace.Write('table_group_columns---'+str(table_group_columns))
