@@ -4808,7 +4808,7 @@ def POPUPLISTVALUEADDNEW(
 					if (ObjectName == "ACACSA" or ObjectName == "ACAPTF") and current_obj_api_name in ["APRCHN_ID","APRCHNSTP_APPROVER_ID"]:
 						add_style = "display: none;"
 
-					if (ObjectName == "SAQTIP") and current_obj_api_name in["QUOTE_ID","QUOTE_NAME","SALESORG_ID","SALESORG_NAME"]:
+					if (ObjectName == "SAQTIP") and current_obj_api_name in["QUOTE_ID","QUOTE_NAME","SALESORG_ID","SALESORG_NAME","QTEREV_ID"]:
 						add_style = "display: none;"
 					if ObjectName == "ACACST" and current_obj_api_name in ["MESSAGE_HEADERVALUE", "MESSAGE_BODYVALUE", "WHERE_CONDITION_01", "WHERE_CONDITION_02", "APRCHN_ID", "TSTOBJ_TESTEDFIELD_LABEL", "ENABLE_SMARTAPPROVAL"]:
 						add_style = "display: none;"
