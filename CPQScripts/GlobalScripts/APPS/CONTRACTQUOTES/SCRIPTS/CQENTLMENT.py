@@ -1054,7 +1054,7 @@ class Entitlements:
 				if Gettabledata:
 					if Gettabledata.CONFIGURATION_STATUS:
 						configuration_status =  Gettabledata.CONFIGURATION_STATUS
-			Trace.Write('524--787-whereReq--'+str(whereReq))
+			Trace.Write('524--787-whereReq--configuration_status--'+str(configuration_status))
 			#get
 			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':whereReq,'partnumber':serviceId,'ent_level_table':tableName,'inserted_value_list':attributesallowedlst,'action':'get_from_prenli'})
 			#Trace.Write('524---658-get_attr_leve_based_list--'+str(get_attr_leve_based_list))
@@ -2299,6 +2299,7 @@ class Entitlements:
 			if get_status.CONFIGURATION_STATUS:
 				configuration_status =  get_status.CONFIGURATION_STATUS
 		configuration_status_pre = Product.GetGlobal('configg_status')
+		Trace.Write(''+str(configuration_status))
 		if configuration_status_pre == configuration_status:
 			configuration_status = ''
 		else:
