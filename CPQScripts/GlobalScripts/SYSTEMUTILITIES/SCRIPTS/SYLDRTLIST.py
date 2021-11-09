@@ -3459,7 +3459,7 @@ class SYLDRTLIST:
 									+ "</th>"
 								)                         
 					else:        
-						
+						Trace.Write("@3462"+str(qstring))
 						if str(qstring) == "Purchase Order Notes" or str(qstring) == "Equipment Status":
 							table_header += (
 								'<th class="wth60" data-field="'
