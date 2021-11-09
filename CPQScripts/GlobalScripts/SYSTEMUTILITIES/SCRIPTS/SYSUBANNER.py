@@ -2583,15 +2583,18 @@ def Related_Sub_Banner(
         #for status in item_covered_obj:
         price_preview_status = []
         item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        for status in item_covered_obj:
-            price_preview_status.append(status.STATUS)
-        Trace.Write("price_preview_status_CHK"+str(price_preview_status))
-        if len(price_preview_status) > 1:
-            price_bar = "acquired_status"
-        elif 'ACQUIRED' in price_preview_status:
-            price_bar = "not_acquired_status"
+        if item_covered_obj:
+            for status in item_covered_obj:
+                price_preview_status.append(status.STATUS)
+            Trace.Write("price_preview_status_CHK"+str(price_preview_status))
+            if len(price_preview_status) > 1:
+                price_bar = "acquired_status"
+            elif 'ACQUIRED' in price_preview_status:
+                price_bar = "not_acquired_status"
+            else:
+                price_bar = "acquired_status"
         else:
-            price_bar = "acquired_status"
+            price_bar = "not_acquired_status"
         # if item_covered_obj.STATUS > 0:
         #     price_bar = "acquired_status"
         #     Trace.Write("config status==="+str(price_bar))
