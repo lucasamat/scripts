@@ -2594,6 +2594,7 @@ def Related_Sub_Banner(
             else:
                 price_bar = "acquired_status"
         else:
+            Trace.Write("NO Quote Items")
             price_bar = "no_quote_items"
         # if item_covered_obj.STATUS > 0:
         #     price_bar = "acquired_status"
