@@ -470,7 +470,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					Sql.RunQuery(sqlforupdate)
 			elif TreeParentParam in ('Comprehensive Services','Complementary Products') and str(obj_name) == "SAQSAP":
 				Trace.Write('type-->'+str(type(ALLVALUES)))
-				if str(type(ALLVALUES))=="<type 'list'>":
+				if str(type(ALLVALUES))=="<type 'ArrayList'>":
 					Trace.Write('##List')
 					val = ALLVALUES[index]
 				else:
