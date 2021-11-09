@@ -311,7 +311,7 @@ def CommonTreeViewHTMLDetail(
 	
 	elif (ObjectName =="SYTABS" and crnt_prd_val == "SY" and (TreeParentParam == "Tabs" or TreeParam == "Tabs")):	
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE SYSECT.PAGE_RECORD_ID = '' AND SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' " + str(queryStr) + " ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
-	elif ObjectName in ("SAQSGB","SAQFBL","SAQFGB","SAQSFB"):
+	elif ObjectName in ("SAQSGB","SAQFBL","SAQFGB","SAQSFB","SAQRIT"):
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
 	elif (ObjectName == "CTCFGB"):
 		QStr1 = ("SELECT TOP 1000 SYSECT.* FROM SYSECT (NOLOCK) WHERE  SYSECT.PRIMARY_OBJECT_NAME = '" + str(ObjectName) + "' ORDER BY ABS(SYSECT.DISPLAY_ORDER)")
