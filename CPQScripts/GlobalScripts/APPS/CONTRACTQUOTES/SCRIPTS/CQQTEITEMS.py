@@ -96,7 +96,7 @@ def LoadSummary():
         #BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
         #CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
         NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
-        #NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
+        NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
         TargetPrice = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
         ##Updating the revision table values to custom fields  code starts...
         Quote.GetCustomField('TARGET_PRICE').Content = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " " +curr
