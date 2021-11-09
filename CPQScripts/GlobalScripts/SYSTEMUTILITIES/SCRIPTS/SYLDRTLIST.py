@@ -3809,7 +3809,8 @@ class SYLDRTLIST:
 						)  
 
 
-					if str(invs) in right_align_list:                        
+					if str(invs) in right_align_list:  
+						Trace.Write("right_align_list_j"+str(qstring))                      
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
@@ -3840,7 +3841,8 @@ class SYLDRTLIST:
 									+ str("Equipment Line ID")
 									+ "</th>"
 								)                      
-					elif str(invs) in center_align_list:                        
+					elif str(invs) in center_align_list:    
+						Trace.Write("center_align_list_j"+str(qstring)) 
 						if RECORD_ID == 'SYOBJR-00010' and str(invs) == 'SERVICE_ID' and TreeParam != "Quote Preview":
 							table_header += (
 								'<th class="wth60" data-field="'
