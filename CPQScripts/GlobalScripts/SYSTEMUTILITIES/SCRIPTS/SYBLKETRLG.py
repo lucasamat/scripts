@@ -469,7 +469,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
 					Sql.RunQuery(sqlforupdate)
 			elif TreeParentParam in ('Comprehensive Services','Complementary Products') and str(obj_name) == "SAQSAP":
-				if type(ALLVALUES) is list:
+				Trace.Write('type-->'+str(type(ALLVALUES)))
+				if str(type(ALLVALUES))=="<type 'list'>":
 					Trace.Write('##List')
 					val = ALLVALUES[index]
 				else:
