@@ -6484,7 +6484,7 @@ def UpdateBreadcrumb():
 		if qry:
 			eq_id = str(qry.PART_NUMBER)
 	elif TreeParam == "Quote Items" and TABLENAME == 'SAQRIT':
-		line_item = recid
+		line_item = CURR_REC_ID
 		if line_item:
 			eq_id = str(line_item)
 		else:
