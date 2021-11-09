@@ -3287,6 +3287,7 @@ class SYLDRTLIST:
 			ATTRIBUTE_NAME_List = []
 			cv_list = []
 			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT']
+			Trace.Write("Columns_chk_J"+str(Columns))
 			for invs in list(eval(Columns)):
 				table_ids = "#" + str(table_id)
 				if invs in billing_date_column: # Billing Matrix - Pivot - Start
