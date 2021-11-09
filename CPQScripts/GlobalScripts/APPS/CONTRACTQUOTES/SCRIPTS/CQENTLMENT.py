@@ -451,7 +451,12 @@ class Entitlements:
 		attribute_non_defaultvalue = get_attr_leve_based_list = []
 		dropdownallowlist_selected = []
 		where = pricemethodupdate = get_tool_desc = ""
+		configg_status =''
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
+		if Gettabledata:
+			configg_status = Gettabledata.CONFIGURATION_STATUS
+		Trace.Write('458--'+str(configg_status))
+		Product.SetGlobal('configg_status',configg_status)
 		if multiselect_flag != 'true':
 			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 		else:
