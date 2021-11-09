@@ -3795,6 +3795,20 @@ class SYLDRTLIST:
 				else:
 					Trace.Write("CHKNGO_J"+str(qstring))				
 					dblclick_ele.append(invs)
+					if str(qstring) == "Line":
+						table_header += (
+							'<th  data-field="'
+							+ str(invs)
+							+ '" data-filter-control="input" data-title-tooltip="'
+							+ str(qstring)
+							+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+							+ rowspan
+							+'>'
+							+ str(qstring)
+							+ "</th>"
+						)  
+
+
 					if str(invs) in right_align_list:                        
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
