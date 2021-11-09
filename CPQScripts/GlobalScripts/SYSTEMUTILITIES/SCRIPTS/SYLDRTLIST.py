@@ -8385,7 +8385,9 @@ class SYLDRTLIST:
 													img_list.append('PRICING_STATUS')
 												if value123 in img_list:
 												
-													new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")                                                   
+													new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")  
+												elif RECORD_ID == 'SYOBJR-98872' and value123 == 'LINE':
+													new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 												else:                                                           
 													if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
 														new_dict[value123] = ('<abbr id="discount_'+key_value+'" title="'+str(value1234).upper()+'">'+str(value1234).upper()+'</abbr>')
