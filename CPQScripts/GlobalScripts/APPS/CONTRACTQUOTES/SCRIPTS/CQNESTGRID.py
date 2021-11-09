@@ -6483,6 +6483,12 @@ def UpdateBreadcrumb():
 		)
 		if qry:
 			eq_id = str(qry.PART_NUMBER)
+	elif TABLENAME == 'SAQRSP':
+		qry = Sql.GetFirst(
+			"SELECT PART_NUMBER,PART_DESCRIPTION FROM SAQRSP (NOLOCK) WHERE QUOTE_REV_PO_PRODUCT_LIST_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry:
+			eq_id = str(qry.PART_NUMBER)
 	elif TreeParam == "Quote Items" and TABLENAME == 'SAQRIT':
 		qry = Sql.GetFirst(
 			"SELECT LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID = '{recid}'".format(recid=CURR_REC_ID)
