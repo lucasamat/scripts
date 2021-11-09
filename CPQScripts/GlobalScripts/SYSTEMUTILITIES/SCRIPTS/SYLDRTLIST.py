@@ -3835,7 +3835,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						else:      
-                            Trace.Write("center_align_hyper_link")                      
+							Trace.Write("center_align_hyper_link")                      
 							visible = ""
 							if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_DATE':
 								visible = 'data-visible="false"'                   
