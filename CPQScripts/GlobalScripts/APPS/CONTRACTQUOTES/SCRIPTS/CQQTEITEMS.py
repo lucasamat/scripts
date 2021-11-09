@@ -85,15 +85,18 @@ def LoadSummary():
     sec_str += "</div>"
     #Trace.Write("sec_str --->"+str(sec_str))
     
-    getRevisionDetails = Sql.GetFirst("SELECT GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(DISCOUNT_PERCENT,0.00) AS DISCOUNT_PERCENT, ISNULL(SALES_PRICE_INGL_CURR,0.00) AS SALES_PRICE_INGL_CURR,GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(NET_VALUE,0.00) AS NET_VALUE FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
         curr = str(getRevisionDetails.GLOBAL_CURRENCY)
+        TotalSalesPrice = "{0:.2f}".format(float(getRevisionDetails.SALES_PRICE_INGL_CURR))
+        TotalDiscount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_PERCENT))
+        Tax = "{0:.2f}".format(float(getRevisionDetails.TAX_AMOUNT_INGL_CURR))
         TotalCost = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT))
-        BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
-        CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
+        #BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
+        #CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
         NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
-        NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
+        #NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
         TargetPrice = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
         ##Updating the revision table values to custom fields  code starts...
         Quote.GetCustomField('TARGET_PRICE').Content = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " " +curr
@@ -126,7 +129,7 @@ def LoadSummary():
         prize_preview = 'completed'
     else:
         prize_preview = 'not completed'
-    return sec_str,str(TotalCost),str(BDPrice)+ " " +curr,str(CeilingPrice)+ " " +curr,str(TargetPrice)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,prize_preview
+    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,prize_preview
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
