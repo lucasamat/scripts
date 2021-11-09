@@ -3793,7 +3793,7 @@ class SYLDRTLIST:
 					)
 										
 				else:
-					Trace.Write("CHKNGO_J")				
+					Trace.Write("CHKNGO_J"+str(qstring))				
 					dblclick_ele.append(invs)
 					if str(invs) in right_align_list:                        
 						visible = ""
