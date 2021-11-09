@@ -392,7 +392,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			selected_rows = selectPN
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-		Trace.Write('ALL VALUES-->'+str(ALLVALUES))		
+		Trace.Write('ALL VALUES-->'+str(list(ALLVALUES)))		
 		for index,rec in enumerate(selected_rows):
 			Trace.Write('index-->'+str(index))
 			row = {}
@@ -469,7 +469,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 					sqlforupdate += "UPDATE QT__SAQIFP SET  ANNUAL_QUANTITY = {AQ},EXTENDED_UNIT_PRICE = (UNIT_PRICE*{AQ}) where QUOTE_RECORD_ID ='{CT}' and  PART_NUMBER  = '{PN}'".format(AQ =VALUE ,CT = str(ContractRecordId),PN=getpartno)
 					Sql.RunQuery(sqlforupdate)
 			elif TreeParentParam in ('Comprehensive Services','Complementary Products') and str(obj_name) == "SAQSAP":
-				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value=ALLVALUES[str(index)] if type(ALLVALUES) is list else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
+				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value=ALLVALUES[int(index)] if type(ALLVALUES) is list else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
 			else:
 				Trace.Write("selected_rows---463----"+str(row))
 				#A055S000P01-8729 start
