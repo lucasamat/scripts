@@ -2294,7 +2294,7 @@ class Entitlements:
 			if get_status.CONFIGURATION_STATUS:
 				configuration_status =  get_status.CONFIGURATION_STATUS
 
-		Trace.Write('AttributeList----'+str(type(AttributeList)))
+		Trace.Write(str(configuration_status)+'--configuration_status---AttributeList----'+str(type(AttributeList)))
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
 		uptime_key = 'AGS_'+str(serviceId)+'_VAL_UPIMPV'
