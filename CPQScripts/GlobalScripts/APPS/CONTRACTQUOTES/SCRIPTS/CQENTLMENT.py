@@ -2300,10 +2300,10 @@ class Entitlements:
 				configuration_status =  get_status.CONFIGURATION_STATUS
 		configuration_status_pre = Product.GetGlobal('configg_status')
 		if configuration_status_pre == configuration_status:
-			configuration_status = 'COMPLETE'
-		else:
 			configuration_status = ''
-			
+		else:
+			configuration_status = 'COMPLETE'
+
 		Trace.Write(str(configuration_status)+'--configuration_status---AttributeList----'+str(type(AttributeList)))
 		base_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTBP'
 		target_percent = 'AGS_'+str(serviceId)+'_KPI_SDUTTP'
