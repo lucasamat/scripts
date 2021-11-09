@@ -3527,7 +3527,7 @@ class SYLDRTLIST:
 										+ str(qstring)
 										+ "</th>"
 									)  
-							elif RECORD_ID != "SYOBJR-98872":
+							elif RECORD_ID == "SYOBJR-98872":
 								table_header += ""
 							else:
 								table_header += (
