@@ -3430,6 +3430,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)         
 						else:  
+							Trace.Write("@3433"+str(qstring))
 							if str(TreeParam) != 'Quote Preview' and  str(TreeParam) != 'Billing Matrix':                                                      
 								
 								
@@ -3484,6 +3485,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)
 						else:
+							Trace.Write("@3488"+str(qstring))
 							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP"):
 							
 								table_header += (
@@ -3511,6 +3513,7 @@ class SYLDRTLIST:
 										+ "</th>"
 									)    
 								else:
+									Trace.Write("@3516"+str(qstring))
 									table_header += (
 										'<th  data-field="'
 										+ str(invs)
@@ -3811,6 +3814,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)  
 						if invs == "EQUIPMENT_LINE_ID":
+							Trace.Write("@3817"+str(qstring))
 							table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -3870,6 +3874,7 @@ class SYLDRTLIST:
 									+ "</th>"
 								)
 							else:
+								Trace.Write("@3877"+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
