@@ -2299,7 +2299,7 @@ class Entitlements:
 			if get_status.CONFIGURATION_STATUS:
 				configuration_status =  get_status.CONFIGURATION_STATUS
 		configuration_status_pre = Product.GetGlobal('configg_status')
-		Trace.Write(''+str(configuration_status))
+		Trace.Write('2302--'+str(configuration_status))
 		if configuration_status_pre == configuration_status:
 			configuration_status = ''
 		else:
