@@ -2389,7 +2389,7 @@ def Related_Sub_Banner(
                 #         ')" class="btnconfig" data-target="#cont_viewModalSection" data-toggle="modal">ADD FROM LIST</button>'
                 #     )           
                 # 
-                elif CurrentRecordId == "SYOBJR-00010" and TreeParam != "Fab Locations":
+                elif CurrentRecordId == "SYOBJR-00010" and TreeParam != "Fab Locations" and subTabName != "Items":
                     Trace.Write("Summary Refresh button condition")
                     sec_rel_sub_bnr += (str(add_button))
                 else:	
