@@ -6484,9 +6484,11 @@ def UpdateBreadcrumb():
 		if qry:
 			eq_id = str(qry.PART_NUMBER)
 	elif TreeParam == "Quote Items" and TABLENAME == 'SAQRIT':
-		line_item = CURR_REC_ID
-		if line_item:
-			eq_id = str(line_item)
+		qry = Sql.GetFirst(
+			"SELECT LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry:
+			eq_id = str(qry.LINE)
 		else:
 			eq_id = "Line"
 	Action_Str = '<li><a onclick="breadCrumb_redirection(this)">'
