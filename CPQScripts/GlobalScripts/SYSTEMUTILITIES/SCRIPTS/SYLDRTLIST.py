@@ -3795,26 +3795,13 @@ class SYLDRTLIST:
 				else:
 					Trace.Write("CHKNGO_J"+str(qstring))				
 					dblclick_ele.append(invs)
-					if str(qstring) == "Line":
-						table_header += (
-							'<th  data-field="'
-							+ str(invs)
-							+ '" data-filter-control="input" data-title-tooltip="'
-							+ str(qstring)
-							+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
-							+ rowspan
-							+'>'
-							+ str(qstring)
-							+ "</th>"
-						)  
-
-
+ 
 					if str(invs) in right_align_list:  
 						Trace.Write("right_align_list_j"+str(qstring))                      
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
-						if invs != "EQUIPMENT_LINE_ID":             
+						if invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
@@ -3828,6 +3815,18 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)  
+						if invs == "LINE":
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							) 
 						if invs == "EQUIPMENT_LINE_ID":
 							Trace.Write("@3817"+str(qstring))
 							table_header += (
