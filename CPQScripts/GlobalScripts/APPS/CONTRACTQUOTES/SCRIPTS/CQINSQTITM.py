@@ -229,6 +229,46 @@ class ContractQuoteItem:
 				JoinString='')
 			)
 	
+	def _quote_items_entitlement_insert(self, source_object_name=None):		
+		Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
+					SELECT
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID,
+						'{UserName}' AS CPQTABLEENTRYADDEDBY,
+						GETDATE() as CPQTABLEENTRYDATEADDED,
+						{UserId} as CpqTableEntryModifiedBy,
+						GETDATE() as CpqTableEntryDateModified,
+						{ObjectName}.CPS_CONFIGURATION_ID,
+						{ObjectName}.CPS_MATCH_ID,
+						{ObjectName}.ENTITLEMENT_COST_IMPACT,
+						{ObjectName}.ENTITLEMENT_GROUP_ID,
+						{ObjectName}.ENTITLEMENT_GROUP_XML,
+						{ObjectName}.ENTITLEMENT_PRICE_IMPACT,
+						{ObjectName}.ENTITLEMENT_XML,
+						{ObjectName}.IS_CHANGED,
+						SAQRIT.LINE,						
+						SAQRIT.SERVICE_DESCRIPTION,
+						SAQRIT.SERVICE_ID,
+						SAQRIT.SERVICE_RECORD_ID,
+						SAQRIT.QTEITM_RECORD_ID,						
+						SAQRIT.QUOTE_ID,
+						SAQRIT.QUOTE_RECORD_ID,
+						SAQRIT.QTEREV_ID,
+						SAQRIT.QTEREV_RECORD_ID,						
+						SAQRIT.FABLOCATION_ID,
+						SAQRIT.FABLOCATION_NAME,
+						SAQRIT.FABLOCATION_RECORD_ID,
+						SAQRIT.GREENBOOK,
+						SAQRIT.GREENBOOK_RECORD_ID
+					FROM {ObjectName} (NOLOCK) 
+					JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID
+												AND SAQRIT.SERVICE_RECORD_ID = {ObjectName}.SERVICE_RECORD_ID
+												AND SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID
+												AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID
+												AND SAQRIT.GREENBOOK_RECORD_ID = {ObjectName}.GREENBOOK_RECORD_ID					
+					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		return True
+
 	def _quote_items_insert(self, update=False):
 		Log.Info("_quote_items_insert ===> 1")
 		service_entitlement_obj = Sql.GetFirst("""SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM 
@@ -351,7 +391,8 @@ class ContractQuoteItem:
 					LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
 					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=0, DynamicColumns=dynamic_select_columns))
-
+				# Item Level entitlement Insert
+				self._quote_items_entitlement_insert(source_object_name=source_object_name)
 		return True		
 	
 	def _simple_quote_items_insert(self):
