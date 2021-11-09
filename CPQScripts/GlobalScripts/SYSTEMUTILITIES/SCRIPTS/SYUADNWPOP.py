@@ -5237,7 +5237,7 @@ def POPUPLISTVALUEADDNEW(
 								+ str(current_obj_api_name)
 								+ "' "
 							)
-							Trace.Write('4063----')
+							Trace.Write('4063------')
 							Tier_List1 = []
 							Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")
 							Tier_List1 = sorted(Tier_List)
