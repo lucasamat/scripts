@@ -619,6 +619,7 @@ def Related_Sub_Banner(
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         Trace.Write("Inside addbut")  
                         if len(multi_buttons)>0:
+                            Trace.Write("lenmulti---")
                             for btn in multi_buttons:
                                 if "Sending Account" in TreeParam:
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
@@ -639,6 +640,7 @@ def Related_Sub_Banner(
                                 # else:
                                 #     sec_rel_sub_bnr += ''
                         else:
+                            Trace.Write("lenmultibtn---")
                             sec_rel_sub_bnr += str(add_button)
 
 
