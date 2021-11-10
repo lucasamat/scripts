@@ -366,8 +366,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 							ent_disp_val = str(str(get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL).split("'") ).replace("'", '"')
 							ent_val_code = str(str(ent_val_code).split(',') ).replace("'", '"')
 				else:
-					Trace.Write('369--attrs---'+str(attrs))
-					Trace.Write('369-NewValue--'+str(NewValue))
+					Trace.Write(str(AttributeID)+'---369--attrs---'+str(attrs))
+					Trace.Write('369-NewValue-370----'+str(attrs)+'-----'+str(NewValue)+str(ent_val_code))
 					if attrs == AttributeID:
 						Trace.Write(str(NewValue)+'---372--'+str(attrs)+'372---ent_val_code----'+str(ent_val_code))
 						ent_disp_val = NewValue
