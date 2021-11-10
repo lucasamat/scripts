@@ -2943,19 +2943,17 @@ class SYLDRTLIST:
 								if value1234 != "":
 									if "-" in value1234:
 										Trace.Write("beforeformat0"+str(value123)+"qqq00"+str(value1234))
-										ccc = value1234.split("-")
-										value1234 = value1234[0] + "" + ccc[1] + curr_symbol
+										if (str(value123) == "NET_VALUE_INGL_CURR" or str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) == "SAQICO":
+											my_format = "{:,." + str(decimal_place) + "f}"
+											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+										else:
+											ccc = value1234.split("-")
+											value1234 = value1234[0] + "" + ccc[1] + curr_symbol
 									else:
-										Trace.Write("beforeformat"+str(value123)+"qqq"+str(value1234))
 										my_format = "{:,." + str(decimal_place) + "f}"
 										value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
 											value1234 = value1234
-										elif str(value123) == "NET_VALUE_INGL_CURR" and str(ObjectName) == "SAQICO":
-											Trace.Write("2953"+str(value1234))
-											my_format = "{:,." + str(decimal_place) + "f}"
-											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
-											Trace.Write("2955"+str(value1234)+"2955--"+str(value123))
 										else:
 											Trace.Write("value123value123value123====2956"+str(value123))
 											value1234 = value1234 + " " + curr_symbol
