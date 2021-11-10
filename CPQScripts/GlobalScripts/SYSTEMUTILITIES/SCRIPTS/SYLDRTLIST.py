@@ -2911,12 +2911,14 @@ class SYLDRTLIST:
 										)
 									else:
 										if str(cur_api_name_obj.CURRENCY_INDEX) =="GLOBAL_CURRENCY":
-											Globalcurrency=Sql.GetFirst("SELECT CURRENCY_RECORD_ID FROM PRCURR(NOLOCK) WHERE CURRENCY = 'USD' ")
+											Trace.Write("2912")
+                                            Globalcurrency=Sql.GetFirst("SELECT CURRENCY_RECORD_ID FROM PRCURR(NOLOCK) WHERE CURRENCY = 'USD' ")
 											curr_symbol_obj = Sql.GetFirst(
 												"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = '"+str(Globalcurrency.CURRENCY_RECORD_ID)+"'"
 											)
 										
 										else:
+                                            Trace.Write("2919")
 											curr_symbol_obj = Sql.GetFirst(
 												"select SYMBOL,CURRENCY,DISPLAY_DECIMAL_PLACES from PRCURR (nolock) where CURRENCY_RECORD_ID = (select "
 												+ str(cur_api_name_obj.CURRENCY_INDEX)
