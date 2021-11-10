@@ -3543,6 +3543,9 @@ class SYLDRTLIST:
 							elif RECORD_ID == "SYOBJR-98872":
 								table_header += ""
 								
+							elif RECORD_ID == "SYOBJR-98875":
+								table_header += ""	
+								
 							else:
 								table_header += (
 									'<th  data-field="'
