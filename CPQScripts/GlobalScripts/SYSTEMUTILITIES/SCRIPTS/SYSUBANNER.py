@@ -1955,6 +1955,7 @@ def Related_Sub_Banner(
         PrimaryValue = ""       
     elif TreeParam == 'Quote Items':
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,NET_VALUE,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
         PrimaryLable = "Total Sales Price"
         PrimaryValue = str(get_quote_details.TOTAL_AMOUNT)
         SecondLable = "Total Discount %"
@@ -1970,8 +1971,7 @@ def Related_Sub_Banner(
         SeventhLable = "Net Price"
         SeventhValue = str(get_quote_details.NET_PRICE_INGL_CURR)
         if subTabName == "Details" and ObjName == "SAQRIT":
-            Trace.Write("SAQRIT-DETAIL222===")
-            item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+            Trace.Write("SAQRIT-DETAIL222===")            
             if item_detail:
                 PrimaryLable = "Product Offering Id"
                 PrimaryValue =  item_detail.SERVICE_ID
@@ -1982,7 +1982,24 @@ def Related_Sub_Banner(
                 FourthLable = "Contract Start Date"
                 FourthValue = item_detail.CONTRACT_VALID_FROM
                 FifthLable = "Contract End Date"
-                FifthValue = item_detail.CONTRACT_VALID_TO  
+                FifthValue = item_detail.CONTRACT_VALID_TO 
+        if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
+            Trace.Write("SAQRIT-DETAIL333===")            
+            if item_detail:
+                PrimaryLable = "Line"
+                PrimaryValue =  item_detail.LINE
+                SecondLable = "Product Offering Id"
+                SecondValue = item_detail.SERVICE_ID
+                ThirdLable = "Fab Location Id"
+                ThirdValue = item_detail.FABLOCATION_ID
+                FourthLable = "Fab Location Name"
+                FourthValue = item_detail.FABLOCATION_NAME
+                FifthLable = "Total Excluding Tax/VAT"
+                FifthValue = item_detail.TAX_AMOUNT_INGL_CURR
+                SixthLable = "Start Date"
+                SixthValue =  item_detail.CONTRACT_VALID_FROM
+                SeventhLable = "End Date"
+                SeventhValue = item_detail.CONTRACT_VALID_TO        
     elif TreeParam == 'Cart Items':
         PrimaryLable = "Cart Items"
         PrimaryValue = "ALL"
