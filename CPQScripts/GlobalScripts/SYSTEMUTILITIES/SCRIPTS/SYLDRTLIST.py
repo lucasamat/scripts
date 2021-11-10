@@ -2954,6 +2954,8 @@ class SYLDRTLIST:
                                         else:
                                             Trace.Write("value123value123value123=2955"+str(value123))
                                             value1234 = value1234 + " " + curr_symbol
+                                            Trace.Write("-----2957---"+str(value1234))
+
                         if str(cur_api_name) is not None and (
                             str(data_type_val) == "PERCENT" or str(formu_data_type_val) == "PERCENT"
                         ):
