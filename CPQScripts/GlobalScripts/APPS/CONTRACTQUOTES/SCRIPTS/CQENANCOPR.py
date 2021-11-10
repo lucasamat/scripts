@@ -721,7 +721,7 @@ class AncillaryProductOperation:
 							elif str(val.ENTITLEMENT_ID) == "AGS_Z0091_PQB_PPCPRM" and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
 							else:
-								if 'AGS_Z0046'str(val.ENTITLEMENT_ID)
+								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 							ServiceId = 'Z0046'
 							whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
