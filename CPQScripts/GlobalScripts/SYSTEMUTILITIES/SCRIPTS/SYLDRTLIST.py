@@ -4024,7 +4024,7 @@ class SYLDRTLIST:
 					+ '").text(); $.each(checkedRows, function(index, value) { if (value === rec_ids) { checkedRows.splice(index,1); }}); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });'
 				)
 				dbl_clk_function += (
-					'$("'
+					'debugger; $("'
 					+ str(table_ids)
 					+ '").on("dbl-click-cell.bs.table", onClickCell); $("'
 					+ str(table_ids)
