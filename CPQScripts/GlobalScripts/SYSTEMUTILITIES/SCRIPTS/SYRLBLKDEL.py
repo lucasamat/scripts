@@ -91,7 +91,10 @@ if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
     elif selectall == "no":
         checkedrows = checkedrows.split(",")
         checkedrows = tuple(checkedrows)
-        Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(checkedrows))
+        rows = []
+        for x in checkedrows:
+            rows.append(x.split("-")[1])
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(tuple(rows)))
 
  
 
