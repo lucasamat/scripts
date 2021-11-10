@@ -4819,9 +4819,9 @@ class SYLDRTLIST:
                 select_obj_str = str(obj_str) + "," + str(lookup_str)
             else:
                 select_obj_str = str(obj_str)
-            Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(lookup_str))
+            Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(type(lookup_str)))
             Trace.Write("select_obj_str---- "+str(select_obj_str))
-            Trace.Write("obj_str---- "+str(obj_str))
+            Trace.Write("obj_str---- "+str(type(obj_str)))
             #Trace.Write("obj_str---- "+str(obj_str))
             lookup_disply_list123 = ""
             lookup_str = ",".join(list(lookup_disply_list))
