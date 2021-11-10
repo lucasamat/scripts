@@ -250,6 +250,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
 					Trace.Write('NewValue-iff--'+str(NewValue))
+					NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
+					Trace.Write('NewValue-iff--254----'+str(NewValue))
 				else:
 					Trace.Write('NewValue--'+str(NewValue))
 					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
@@ -345,7 +347,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					else:
 						get_tooltip_desc = ''
 				if PRODUCT_ATTRIBUTES.ATT_DISPLAY_DESC in ('Drop Down','DropDown') and ent_disp_val:
-					Trace.Write('ent_val_code--328----'+str(attrs)+'--ent_disp_val---'+str(ent_disp_val))
+					Trace.Write('ent_val_code--348--'+str(attrs)+'--ent_disp_val---'+str(ent_disp_val))
 					get_display_val = Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE = '{}' ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  attributevalues[attrs] ) )
 					if get_display_val:
 						ent_disp_val = get_display_val.STANDARD_ATTRIBUTE_DISPLAY_VAL 
