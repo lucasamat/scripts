@@ -2952,6 +2952,7 @@ class SYLDRTLIST:
                                         if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
                                             value1234 = value1234
                                         elif str(value123) == "NET_VALUE_INGL_CURR" and str(ObjectName) == "SAQICO":
+                                            Trace.Write("2955"+str(value123))
                                             my_format = "{:,." + str(decimal_place) + "f}"
                                             value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
                                         else:
