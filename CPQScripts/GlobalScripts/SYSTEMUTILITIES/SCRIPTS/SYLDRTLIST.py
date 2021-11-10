@@ -4366,7 +4366,7 @@ class SYLDRTLIST:
 				cv_list.append(filter_clas_name)
 			else:
 				DropDownList.append("")
-		if ObjectName == 'SAQIBP':
+		if ObjectName == 'SAQIBP' and Treeparam != 'Quote Items':
 			#footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr><th colspan="7" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format("SUBTOTAL", footer,str(SubTab)+" Total",footer_tot)
 			footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
 		RelatedDrop_str = (
@@ -8475,7 +8475,7 @@ class SYLDRTLIST:
 							#footer += '<th>{}</th>'.format(sum([float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0]) for data in table_list]))
 						except Exception:                    
 							footer += '<th>0.00</th>'
-		if ObjectName == 'SAQIBP':
+		if ObjectName == 'SAQIBP' and Treeparam != 'Quote Items':
 			#footer_str = '<tfoot><tr><th colspan="7" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format(str(SubTab)+" Total", footer)
 			footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr></tr></tfoot>'.format("GRAND TOTAL", footer_tot)
 			#footer_str = '<tfoot><tr><th colspan="7" id= "getbill1year" class="text-left">{}</th>{}</tr><tr><th colspan="9" id= "getbillyear" class="text-left">{}</th>{}</tr></tfoot>'.format("GRAND TOTAL", footer_tot,str(SubTab)+" Total",footer_tot)
