@@ -2810,7 +2810,7 @@ def Related_Sub_Banner(
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             else:
-                if str(subTabName)=="Parts Lists":
+                if str(subTabName)!="Parts Lists":
                     sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
             sec_rel_sub_bnr =''
