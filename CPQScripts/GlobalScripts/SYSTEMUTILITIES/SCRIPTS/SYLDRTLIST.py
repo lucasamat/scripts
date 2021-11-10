@@ -2949,8 +2949,12 @@ class SYLDRTLIST:
 										value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
 											value1234 = value1234
+										elif str(value123) == "NET_VALUE_INGL_CURR" and str(ObjectName) == "SAQICO":
+											my_format = "{:,." + str(decimal_place) + "f}"
+											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
+											Trace.Write("2955"+str(value1234)+"2955--"+str(value123))
 										else:
-											#Trace.Write("value123value123value123"+str(value123))
+											Trace.Write("value123value123value123====2956"+str(value123))
 											value1234 = value1234 + " " + curr_symbol
 						if str(cur_api_name) is not None and (
 							str(data_type_val) == "PERCENT" or str(formu_data_type_val) == "PERCENT"
