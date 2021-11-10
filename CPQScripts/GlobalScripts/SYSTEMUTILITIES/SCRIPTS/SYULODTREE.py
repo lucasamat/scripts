@@ -2629,7 +2629,7 @@ class TreeView:
 					NewList = []                    
 					ChildList.append(ChildDict)
 		#Trace.Write("ChildList"+str(ChildList))
-		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+		#ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return ChildList
 
 	def getChildFromParentObj(
