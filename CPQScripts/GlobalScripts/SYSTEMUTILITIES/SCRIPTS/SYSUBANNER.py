@@ -607,7 +607,7 @@ def Related_Sub_Banner(
             elif TreeParam =="Quote Documents":
                 PrimaryLable = "Dynamic Document Generator"
                 PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
-            elif subTabName == "Details" and ObjName == "SAQRIT":
+            elif subTabName == "Object List":
                 Trace.Write("SAQRIT-DETAIL===")
                 item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
                 if item_detail:
