@@ -82,7 +82,7 @@ for ID in list(Id):
         Trace.Write("Objd_ColumnName------------103--------------------------->" + str(Objd_ColumnName))
         Trace.Write("ID--------------------------104------------->" + str(ID))
 if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
-    pass
+    Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
  
 
    
