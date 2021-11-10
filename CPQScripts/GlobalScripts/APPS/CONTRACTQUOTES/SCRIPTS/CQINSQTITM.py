@@ -407,7 +407,7 @@ class ContractQuoteItem:
 			if (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() == 'OFFERING + EQUIPMENT':
 				source_object_name = 'SAQSCE'
 				dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
-			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() == 'OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT':
+			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART'):
 				source_object_name = 'SAQSGE'
 				dynamic_select_columns = 'null as OBJECT_ID,'
 			else:
