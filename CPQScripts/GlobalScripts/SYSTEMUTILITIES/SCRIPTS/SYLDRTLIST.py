@@ -3513,8 +3513,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								) 
-							if RECORD_ID == "SYOBJR-98875":
-								table_header += ""	    
+								    
 							elif str(current_tab).upper() == "APP":
 								if (str(TreeParam) == "Tabs" or str(TreeParam) == "Pages"):
 									table_header += (
