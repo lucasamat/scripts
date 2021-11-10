@@ -885,15 +885,15 @@ class AncillaryProductOperation:
 	def _delete_operation(self):
 		delete_obj_list = []
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQITM"]
+			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		elif self.tablename == "SAQSFE":
-			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO"]
+			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		elif self.tablename == "SAQSGE":
-			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE","SAQICO"] 
+			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"] 
 		elif self.tablename == "SAQSCE":
-			delete_obj_list = ["SAQSCO","SAQSCA","SAQSCE","SAQSAE","SAQICO"] 
+			delete_obj_list = ["SAQSCO","SAQSCA","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"] 
 		elif self.tablename == "SAQSAE":
-			delete_obj_list = ["SAQSCA","SAQSAE","SAQICO"]
+			delete_obj_list = ["SAQSCA","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		
 		# if self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
@@ -901,8 +901,10 @@ class AncillaryProductOperation:
 			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 			
 			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
-			if obj in ('SAQICO','SAQITM'):
+			if obj in ('SAQICO','SAQRIT','SAQRIO'):
 				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
+			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
+				ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', self.ancillary_where )
 			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
 
 	
