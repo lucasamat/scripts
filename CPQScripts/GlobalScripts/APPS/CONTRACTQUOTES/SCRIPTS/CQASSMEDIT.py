@@ -369,6 +369,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 					Trace.Write('369--attrs---'+str(attrs))
 					Trace.Write('369-NewValue--'+str(NewValue))
 					if attrs == AttributeID:
+						Trace.Write(str(NewValue)+'---372--'+str(attrs)+'372---ent_val_code----'+str(ent_val_code))
 						ent_disp_val = NewValue
 						ent_val_code = NewValue
 				if attrs == "AGS_Z0016_NET_PRICNG":
