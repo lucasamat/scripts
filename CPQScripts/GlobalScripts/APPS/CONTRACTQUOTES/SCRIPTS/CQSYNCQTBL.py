@@ -1364,6 +1364,9 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
+
+
+						
 						# if len(contact_query) == 0:
 						# 	contact_master_entry = {
 						# 		"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1509,6 +1512,7 @@ class SyncQuoteAndCustomTables:
 									employee_dict["STATE"] = employee.get("STATE")
 									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+									employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
 									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
 									employee_dict["CpqTableEntryModifiedBy"] = User.Id
 									employee_dict["ADDUSR_RECORD_ID"] = User.Id
@@ -1516,6 +1520,9 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
+								else:
+									c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
+									Sql.RunQuery(c4c_employee_update)
 								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 							else:
 								for employee in payload_json.get('SAEMPL'):
@@ -1541,6 +1548,7 @@ class SyncQuoteAndCustomTables:
 										employee_dict["STATE"] = employee.get("STATE")
 										employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 										employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+										employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
 										employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
 										employee_dict["CpqTableEntryModifiedBy"] = User.Id
 										employee_dict["ADDUSR_RECORD_ID"] = User.Id
@@ -1548,6 +1556,9 @@ class SyncQuoteAndCustomTables:
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
 										Sql.Upsert(tableInfo)
+									else:
+										c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
+										Sql.RunQuery(c4c_employee_update)
 									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
