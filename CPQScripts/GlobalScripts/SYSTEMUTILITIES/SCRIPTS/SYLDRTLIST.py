@@ -3037,7 +3037,7 @@ class SYLDRTLIST:
 								+ "' and SE.SECTION_NAME ='BASIC INFORMATION'"
 							)
 						else:
-							Trace.Write('At line 2805 ---2960----- Else')
+							Trace.Write('At line 2805 ---2960----- Else'+str(value123)+" - "+str(value1234))
 							imgValue = ''
 							if value1234.startswith("<img"):
 								# value1234 = value1234.replace('"', "&quot;")
