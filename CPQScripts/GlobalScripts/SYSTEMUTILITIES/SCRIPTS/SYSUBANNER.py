@@ -609,7 +609,7 @@ def Related_Sub_Banner(
                 PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
             elif subTabName == "Details" and ObjName == "SAQRIT":
                 Trace.Write("SAQRIT-DETAIL===")
-                item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
                 if item_detail:
                     PrimaryLable = "Product Offering Id"
                     PrimaryValue =  item_detail.SERVICE_ID
