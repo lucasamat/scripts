@@ -795,7 +795,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								RevisionApprovedDate = datetime.now().date()
 								Sql.RunQuery("UPDATE SAQTRV SET REV_APPROVE_DATE = '{RevisionApprovedDate}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(RevisionApprovedDate = RevisionApprovedDate,QuoteRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 							##Updating the Revision Approved Date while changing the status to Approved...
-							crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(newdict.get("QUOTE_ID")),'REVISION_ID':str(get_rev_val),'Fun_type':'cpq_to_crm'})
+							#crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(newdict.get("QUOTE_ID")),'REVISION_ID':str(get_rev_val),'Fun_type':'cpq_to_crm'})
 					#A055S000P01-4288 end
 
 					if TreeParam == "Quote Information":
