@@ -4813,7 +4813,7 @@ class SYLDRTLIST:
 						]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
 				Trace.Write(str(lookup_disply_list)+'---lookup_disply_list---###Lookup List-->'+str(lookup_list))
-				if "QUOTE_REV_PO_PRODUCT_LIST_ID" in lookup_disply_list:
+				if "QUOTE_REV_PO_PRODUCT_LIST_ID","PART_DESCRIPTION","PART_NUMBER","SERVICE_ID" in lookup_disply_list and ObjectName == "SAQRSP":
 					lookup_disply_list.remove("QUOTE_REV_PO_PRODUCT_LIST_ID")
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
