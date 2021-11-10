@@ -421,6 +421,13 @@ class ContractQuoteItem:
 		return True
 
 	def _quote_items_insert(self, update=False):
+		##chk ancillary offering
+		parent_service_id = ""
+		check_ancillary = Sql.GetFirst("SELECT PAR_SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' ".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if check_ancillary:
+			if check_ancillary.PAR_SERVICE_ID:
+				parent_service_id = check_ancillary.PAR_SERVICE_ID
+
 		Log.Info("_quote_items_insert ===> 1")
 		service_entitlement_obj = Sql.GetFirst("""SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM 
 										(
@@ -436,7 +443,7 @@ class ContractQuoteItem:
 												) IQ 
 											OUTER APPLY IQ.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) 
 										) as OQ 
-										WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
+										WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
 		if service_entitlement_obj:
 			Log.Info("_quote_items_insert ===> 2"+str(service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE))
 			source_object_name = ''
