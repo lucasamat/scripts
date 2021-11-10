@@ -393,9 +393,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			selected_rows = selectPN
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
-		Trace.Write('ALL VALUES-->'+str(list(ALLVALUES)))		
 		for index,rec in enumerate(selected_rows):
-			Trace.Write('index-->'+str(index))
 			row = {}
 			if TITLE == 'DISCOUNT' and '%' in VALUE:
 				VALUE = VALUE.replace('%','')
