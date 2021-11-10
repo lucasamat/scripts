@@ -4028,7 +4028,7 @@ class SYLDRTLIST:
 					+ str(table_ids)
 					+ '").on("dbl-click-cell.bs.table", onClickCell); $("'
 					+ str(table_ids)
-					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("input[name=\'btSelectAll\']:checkbox").is(":checked")) {$("button#delete_parts").removeAttr("disabled");}if (!$("input[name=\'btSelectAll\']:checkbox").is(":checked"){$("button#delete_parts").attr("disabled");} $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+					+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("input[name=\'btSelectAll\']:checkbox").is(":checked")) {$("button#delete_parts").removeAttr("disabled");}if (!$("input[name=\'btSelectAll\']:checkbox").is(":checked")){$("button#delete_parts").attr("disabled");} $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 					+ str(table_ids)
 					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\' >SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id=""; var reco = []; reco = localStorage.getItem("multiedit_checkbox_clicked"); if (reco === null || reco === undefined ){ reco = []; } if (reco.length > 0){reco = reco.split(",");} if (reco.length > 0){ reco.push($element.closest("tr").find("td:'
 					+ str(cls)
