@@ -53,7 +53,7 @@ class ContractQuoteItem:
 		return True
 	
 	def _set_service_type(self):
-		spare_parts_count_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))			
+		spare_parts_count_object = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))			
 		if spare_parts_count_object:
 			self.is_spare_service = True
 		else:
@@ -68,7 +68,8 @@ class ContractQuoteItem:
 			self.is_simple_service = False
 		return True
 	
-	def _quote_items_assembly_insert(self):
+	def _quote_item_assembly_insert(self):
+
 		Sql.RunQuery("""INSERT SAQICA (EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,GREENBOOK,GREENBOOK_RECORD_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,ASSEMBLY_DESCRIPTION,ASSEMBLY_ID,ASSEMBLY_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,EQUIPMENTTYPE_ID,QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified) 
 				SELECT OQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_ASSEMBLY_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy,GETDATE() as CpqTableEntryDateModified FROM (
 					SELECT IQ.* FROM (
@@ -612,12 +613,37 @@ class ContractQuoteItem:
 				)
 			)
 	
-	def _insert_quote_item_forecast_parts(self):
-		pass
-	
 	def _simple_quote_annualized_items_insert(self):
 		pass
 
+	def _insert_quote_item_forecast_parts(self):
+		Sql.RunQuery("""INSERT SAQRIP (QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE, ) 
+			SELECT 
+				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_ITEM_PRODUCT_LIST_RECORD_ID,
+				'{UserName}' AS CPQTABLEENTRYADDEDBY,
+				GETDATE() as CPQTABLEENTRYDATEADDED,
+				{UserId} as CpqTableEntryModifiedBy,
+				GETDATE() as CpqTableEntryDateModified,
+				SAQRSP.PART_DESCRIPTION,
+				SAQRSP.PART_NUMBER,
+				SAQRSP.PART_RECORD_ID,
+				SAQRSP.SERVICE_DESCRIPTION,
+				SAQRSP.SERVICE_ID,
+				SAQRSP.SERVICE_RECORD_ID,
+				SAQRSP.QUANTITY,
+				SAQRSP.QUOTE_ID,
+				SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
+				SAQRSP.QUOTE_RECORD_ID,
+				SAQRSP.QTEREV_ID,
+				SAQRSP.QTEREV_RECORD_ID,
+				SAQRIT.LINE
+			FROM SAQRSP (NOLOCK) 
+			JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = SAQRSP.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = FABLOCATION_RECORD_ID 
+			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}'
+				
+
+				""")
+	
 	def _delete_item_related_table_records(self):
 		pass
 
