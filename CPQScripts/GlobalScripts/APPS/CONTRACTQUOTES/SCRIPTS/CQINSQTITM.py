@@ -478,7 +478,7 @@ class ContractQuoteItem:
 					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=0, DynamicColumns=dynamic_select_columns))
 				# Item Level entitlement Insert
-				#self._quote_items_entitlement_insert(source_object_name=source_object_name)
+				self._quote_items_entitlement_insert(source_object_name=source_object_name)
 		return True		
 	
 	def _simple_quote_items_insert(self):
