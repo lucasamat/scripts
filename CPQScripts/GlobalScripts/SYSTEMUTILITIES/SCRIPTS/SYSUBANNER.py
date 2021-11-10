@@ -2808,7 +2808,7 @@ def Related_Sub_Banner(
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
             if str(subTabName)=="PM Events":
-                sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
+                sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             else:
                 sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
