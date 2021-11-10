@@ -4832,8 +4832,10 @@ class SYLDRTLIST:
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
+				Trace.Write("okokok")
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
+				Trace.Write("okoko___sec")
 				select_obj_str = str(obj_str)
 			Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(type(lookup_str)))
 			Trace.Write("select_obj_str---- "+str(select_obj_str))
