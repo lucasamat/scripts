@@ -371,7 +371,7 @@ class SyncQuoteAndCustomTables:
 				quote_involved_party_table_info = Sql.GetTable("SAQTIP")
 				#quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 				quote_opportunity_table_info = Sql.GetTable("SAOPQT")
-				quote_contact_master_table_info = Sql.GetTable("SACONT")
+				#quote_contact_master_table_info = Sql.GetTable("SACONT")
 				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
 				Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
@@ -1324,7 +1324,7 @@ class SyncQuoteAndCustomTables:
 					payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
 					
 					if custom_fields_detail.get("PrimaryContactName"):
-
+						Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
 						contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 						employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
@@ -1336,6 +1336,7 @@ class SyncQuoteAndCustomTables:
 							payload_json = payload_json.get('CPQ_Columns')
 							Log.Info("SAQICT_DETAILS "+str(payload_json.get('SAQICT')))
 							if employee_obj is None:
+								Log.Info("EMPLOYEE IS NOT THERE ")
 								for employee in payload_json.get('SAQICT'):
 									country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 									salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1364,25 +1365,27 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
-						if len(contact_query) == 0:
-							contact_master_entry = {
-								"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
-								"ADDRESS": "",
-								"CITY": "",
-								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
-								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
-								"EXTERNAL_ID": "",
-								"PHONE": employee_obj.PHONE if employee_obj is not None else ""
-							}
-							Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
-							quote_contact_master_table_info.AddRow(contact_master_entry)
-							Sql.Upsert(quote_contact_master_table_info)
+						# if len(contact_query) == 0:
+						# 	contact_master_entry = {
+						# 		"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+						# 		"ADDRESS": "",
+						# 		"CITY": "",
+						# 		"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+						# 		"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+						# 		"EXTERNAL_ID": "",
+						# 		"PHONE": employee_obj.PHONE if employee_obj is not None else ""
+						# 	}
+						# 	Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
+						# 	quote_contact_master_table_info = Sql.GetTable("SACONT")
+						# 	quote_contact_master_table_info.AddRow(contact_master_entry)
+						# 	Sql.Upsert(quote_contact_master_table_info)
 
 						Log.Info("CONTACT_INFO INSERT STARTS----> " +str(custom_fields_detail.get("PrimaryContactName")))
 						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 						contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 						if contact_master_table is None:
+							Log.Info("CONTACT_MASTER_TABLE_INSERTS")
 							for employee in payload_json.get('SAQICT'):
 								contact_master_table_update = {
 									"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1413,6 +1416,7 @@ class SyncQuoteAndCustomTables:
 								Sql.Upsert(tableInfo)
 						if employee_obj:
 							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+							Log.Info("SAQICT_INSERT_STARTS")
 							quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 							contact_info_update = {
 								"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
