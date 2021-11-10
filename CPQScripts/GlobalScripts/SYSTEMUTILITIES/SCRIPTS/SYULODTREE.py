@@ -20,7 +20,7 @@ g_total = 0
 try:
 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 	ObjectName = "SAQTSE"
-	where  = "WHERE QUOTE_ID = {quote_id} AND QTEREV_RECORD_ID = {quote_rev_id}".format(quote_id=Quote.CompositeNumber,quote_rev_id = str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+	where  = "QUOTE_ID = {quote_id} AND QTEREV_RECORD_ID = {quote_rev_id}".format(quote_id=Quote.CompositeNumber,quote_rev_id = str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 	where_cond = where.replace("'","''")
 	ent_temp = "ENT_BKP_"+str(Quote.CompositeNumber)
 	ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
