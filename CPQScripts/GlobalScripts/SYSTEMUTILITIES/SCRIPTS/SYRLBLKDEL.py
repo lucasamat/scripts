@@ -14,9 +14,7 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-CurrentTab = TestProduct.CurrentTab
-Trace.Write("CurrentTab-------->" + str(CurrentTab))
+
 Id = []
 Trace.Write("Id--------" + str(list(Id)))
 Trace.Write("selected id------" + str(Id))
