@@ -88,14 +88,19 @@ for ID in list(Id):
 if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
     if selectall == "yes":
         Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
+        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
     elif selectall == "no":
         checkedrows = checkedrows.split(",")
         checkedrows = tuple(checkedrows)
         rows = []
+        parts = []
         for x in checkedrows:
             rows.append(x.split("-")[1])
+            getPart = Sql.GetFirst("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE CpqTableEntryId = {}".format(x.split("-")[1]))
+            part = str(getPart.PART_NUMBER)
+            parts.append(part)
         Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(tuple(rows)))
-
+        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
  
 
    
