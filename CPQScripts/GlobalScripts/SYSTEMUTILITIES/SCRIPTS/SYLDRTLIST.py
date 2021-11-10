@@ -3978,7 +3978,7 @@ class SYLDRTLIST:
 		if CHL_STS_OBJ is not None:
 			
 			dbl_clk_function += (
-				'$("'
+				'$("debugger;'
 				+ str(table_ids)
 				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom");if ($("input[name=\'btSelectAll\']:checkbox").is(":checked")) {$("button#delete_parts").removeAttr("disabled");} $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 				+ str(table_ids)
