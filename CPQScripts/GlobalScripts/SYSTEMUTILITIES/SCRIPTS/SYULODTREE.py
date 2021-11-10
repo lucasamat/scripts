@@ -12,7 +12,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 from SYDATABASE import SQL
 from datetime import date
-
+import re
 Sql = SQL()
 
 c_total = 0
