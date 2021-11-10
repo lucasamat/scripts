@@ -4803,9 +4803,11 @@ class SYLDRTLIST:
                         if (
                             attr.LOOKUP_API_NAME is not None
                             and attr.LOOKUP_API_NAME != ""
-                            and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD","QUOTE_REV_PO_PRODUCT_LIST_ID"]
+                            and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
                         ):
                             lookup_disply_list.append(str(attr.API_NAME))
+							if "QUOTE_REV_PO_PRODUCT_LIST_ID" in lookup_disply_list:
+								lookup_disply_list.remove("QUOTE_REV_PO_PRODUCT_LIST_ID")
                         checkbox_list = [
                             inn.API_NAME
                             for inn in Objd_Obj
