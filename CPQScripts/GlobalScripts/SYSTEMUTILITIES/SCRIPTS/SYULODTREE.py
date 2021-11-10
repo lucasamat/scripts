@@ -3045,7 +3045,7 @@ except:
 			Quote.SetGlobal("quote_rev_id",str(GetActiveRevision.QTEREV_ID))
 			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 	except Exception as e:
-		Trace.Write("error--"+str(e))
+		Trace.Write("error------"+str(e))
 		quote_revision_record_id = ""
 if not quote_revision_record_id and quote_revision_record_id!="":
 	try:
