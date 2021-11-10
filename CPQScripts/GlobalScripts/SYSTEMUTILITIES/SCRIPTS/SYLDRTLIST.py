@@ -2945,6 +2945,7 @@ class SYLDRTLIST:
 										ccc = value1234.split("-")
 										value1234 = value1234[0] + "" + ccc[1] + curr_symbol
 									else:
+										Trace.Write("beforeformat"+str(value123)+"qqq"+str(value1234))
 										my_format = "{:,." + str(decimal_place) + "f}"
 										value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
