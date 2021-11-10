@@ -89,7 +89,9 @@ if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
     if selectall == "yes":
         Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
     elif selectall == "no":
-        pass
+        checkedrows = checkedrows.split(",")
+        checkedrows = tuple(checkedrows)
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {checkedrows}".format(checkedrows))
 
  
 
