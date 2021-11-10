@@ -370,6 +370,7 @@ def remove_html_tags(text):
 def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
 	value_list = []
@@ -388,7 +389,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		if TreeParentParam in ('Comprehensive Services','Complementary Products') and obj_name == "SAQSAP":
+		if (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')) and obj_name == "SAQSAP":
 			selected_rows = selectPN
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
