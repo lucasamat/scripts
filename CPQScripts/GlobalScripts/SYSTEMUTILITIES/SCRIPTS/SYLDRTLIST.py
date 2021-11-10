@@ -3047,8 +3047,8 @@ class SYLDRTLIST:
                                 value1234 = value1234.split('"')
                                 
                                 value1234 = value1234[1]
-							elif str(value123) == "QUOTE_REVISION_ITEM_OBJECT_RECORD_ID":
-								value1234 = str(ObjectName) + "-" + str(OBJ_CpqTableEntryId).rjust(6, "0")
+                            elif str(value123) == "QUOTE_REVISION_ITEM_OBJECT_RECORD_ID":
+                                value1234 = str(ObjectName) + "-" + str(OBJ_CpqTableEntryId).rjust(6, "0")
                             else:
                                 value1234 = value1234.replace('"', "&quot;")
                                 value1234 = value1234.replace("<p>", " ")
