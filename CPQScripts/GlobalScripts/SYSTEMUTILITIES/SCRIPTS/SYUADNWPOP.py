@@ -3724,7 +3724,7 @@ def POPUPLISTVALUEADDNEW(
 			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_NONCNS</ENTITLEMENT_ID>')
 			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-			non_consumable_val_mamsop = consumable_value_mamsop = ''
+			# non_consumable_val_mamsop = consumable_value_mamsop = ''
 			consumable_value_mamsop = ""
 			for m in re.finditer(quote_item_tag, entitlement_xml):
 				sub_string = m.group(1)
