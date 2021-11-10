@@ -1089,6 +1089,7 @@ class Entitlements:
 					pricemethodupdate = ""
 					#Trace.Write("val---"+str(dict_val))
 					#Trace.Write("key---"+str(key))
+					Trace.Write("self.treeparam--"+str(self.treeparam)+"self.treeparentparam"+str(self.treeparentparam)+"self.treesuperparentparam"+str(self.treesuperparentparam))
 					#getregionvalq = "AMT"
 					getvalue = str((dict_val).split("||")[4]).strip()
 					##A055S000P01-9646 code starts..
