@@ -606,7 +606,22 @@ def Related_Sub_Banner(
 
             elif TreeParam =="Quote Documents":
                 PrimaryLable = "Dynamic Document Generator"
-                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"         
+                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
+            elif subTabName == "Details" and ObjName == "SAQRIT":
+                Trace.Write("SAQRIT-DETAIL===")
+                item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                if item_detail:
+                    PrimaryLable = "Product Offering Id"
+                    PrimaryValue =  item_detail.SERVICE_ID
+                    SecondLable = "Quantity"
+                    SecondValue = item_detail.QUANTITY
+                    ThirdLable = "Total Excluding Tax/VAT"
+                    ThirdValue = item_detail.TAX_AMOUNT_INGL_CURR
+                    FourthLable = "Contract Start Date"
+                    FourthValue = item_detail.CONTRACT_VALID_FROM
+                    FifthLable = "Contract End Date"
+                    FifthValue = item_detail.CONTRACT_VALID_TO
+         
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
