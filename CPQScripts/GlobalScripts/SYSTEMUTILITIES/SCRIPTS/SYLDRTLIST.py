@@ -345,10 +345,13 @@ class SYLDRTLIST:
 			# Billing Matrix - Pivot - Start
 			if Wh_OBJECT_NAME == 'SAQIBP':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
-				if SubTab:
-					Trace.Write('SubTab----'+str(SubTab))
-					end = int(SubTab.split(' ')[-1]) * 12
-					start = end - 12 + 1
+				try:
+					if SubTab:
+						Trace.Write('SubTab----'+str(SubTab))
+						end = int(SubTab.split(' ')[-1]) * 12
+						start = end - 12 + 1
+				except:
+					Trace.Write('452----TreeParentLevel0----')		
 				Trace.Write('452----TreeParentLevel0----'+str(TreeParentParam))
 				if str(TreeParam) == "Billing":
 					item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
