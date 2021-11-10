@@ -1440,14 +1440,12 @@ class SyncQuoteAndCustomTables:
 										Sql.RunQuery(c4c_employee_update)
 									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
-						Trace.write("J_PrimaryContactName_J"+str(custom_fields_detail.get("PrimaryContactName")))
 						if custom_fields_detail.get("PrimaryContactName"):
 							contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							if payload_json.get('SAQICT'):
 								if employee_obj is None:
-									Trace.Write("J_Employee-Insert")
 									for employee in payload_json.get('SAQICT'):
 										country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
 										salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
@@ -1482,7 +1480,6 @@ class SyncQuoteAndCustomTables:
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							if contact_master_table is None:
-								Trace.Write("J_COntact_master-Inserts")
 								for employee in payload_json.get('SAQICT'):
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1512,7 +1509,6 @@ class SyncQuoteAndCustomTables:
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
 							if employee_obj:
-								Trace.Write("J_SAQICT_Inserts")
 								quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 								contact_info_update = {
 									"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
