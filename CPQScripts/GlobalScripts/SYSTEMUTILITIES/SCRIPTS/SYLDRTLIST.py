@@ -2942,6 +2942,7 @@ class SYLDRTLIST:
 							if value1234 is not None:
 								if value1234 != "":
 									if "-" in value1234:
+										Trace.Write("beforeformat0"+str(value123)+"qqq00"+str(value1234))
 										ccc = value1234.split("-")
 										value1234 = value1234[0] + "" + ccc[1] + curr_symbol
 									else:
