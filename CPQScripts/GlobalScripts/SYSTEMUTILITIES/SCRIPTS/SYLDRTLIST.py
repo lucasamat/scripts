@@ -3232,6 +3232,10 @@ class SYLDRTLIST:
                                                     else:
                                                         Trace.Write('At line 3231'+str(value123))
                                                         Trace.Write('At line 3232'+str(value1234))
+                                                        if value123 =="NET_VALUE_INGL_CURR":
+                                                            my_format = "{:,." + str(decimal_place) + "f}"
+                                                            value1234 = str(my_format.format(round(float(value1234), int(decimal_place)))) 
+                                
                                                         try:
                                                             if RECORD_ID == 'SYOBJR-00009' and value123 == 'DISCOUNT':
                                                                 new_dict[value123] = ('<abbr id ="discount_' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
