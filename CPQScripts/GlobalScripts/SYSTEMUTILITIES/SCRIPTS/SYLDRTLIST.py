@@ -351,6 +351,8 @@ class SYLDRTLIST:
 						end = int(SubTab.split(' ')[-1]) * 12
 						start = end - 12 + 1
 				except:
+					end = ""
+					start = ""
 					Trace.Write('452----TreeParentLevel0----')		
 				Trace.Write('452----TreeParentLevel0----'+str(TreeParentParam))
 				if str(TreeParam) == "Billing":
