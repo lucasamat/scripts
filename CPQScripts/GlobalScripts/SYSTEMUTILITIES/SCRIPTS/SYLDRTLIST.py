@@ -222,10 +222,7 @@ class SYLDRTLIST:
 						getQuotetype = getQuote.QUOTE_TYPE
 					else:
 						getQuotetype =''
-					if RECORD_ID == "SYOBJR-98875":
-						Trace.Write("hiddenlist====")
-						rem_list_sp = ["QUOTE_ITEM_BILLING_PLAN_RECORD_ID"]
-						Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])   					
+					   					
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
 						if RECORD_ID == "SYOBJR-00006" and str(TreeParam) == "Quote Preview":
 							rem_list_sp = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID","ITEM_LINE_SEQUENCE","SCHEDULE_MODE","DELIVERY_MODE"]
@@ -3505,7 +3502,7 @@ class SYLDRTLIST:
 							)
 						else:
 							Trace.Write("@3488"+str(qstring))
-							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-00009":
+							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-98875":
 							
 								table_header += (
 									'<th  data-field="'
@@ -3546,7 +3543,10 @@ class SYLDRTLIST:
 										+ "</th>"
 									)  
 							elif RECORD_ID == "SYOBJR-98872":
-								table_header += ""							
+								table_header += ""
+								
+							elif RECORD_ID == "SYOBJR-98875":
+								table_header += ""								
 								
 							else:
 								table_header += (
