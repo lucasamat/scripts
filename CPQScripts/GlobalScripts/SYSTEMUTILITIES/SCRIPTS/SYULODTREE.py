@@ -2234,18 +2234,7 @@ class TreeView:
 							# PROFILE EXPLORER
 							if NodeText in ('APPROVAL CENTER','SALES','MATERIALS','PRICE MODELS','PRICE MODELS','SYSTEM ADMIN'):
 								Product.SetGlobal("APPS",NodeText)
-							#commneted Dhurga - strat
-							'''if str(TabName)  == "Profile" :
-								prf_sn = Sql.GetList("select TAB_ID,OBJECT_NAME from SYPRSN (nolock) WHERE PROFILE_RECORD_ID = '"+str(RecAttValue)+"'")
-								prfyl_sec = [sec.TAB_ID for sec in prf_sn]
-								prfyl_obj = [sec.OBJECT_NAME for sec in prf_sn]
-								prfyl_obj_dict = {prfyl_sec[i]: prfyl_obj[i] for i in range(len(prfyl_sec))}
-								if NodeText in prfyl_sec:
-									Product.SetGlobal("TAB",NodeText)
-									Product.SetGlobal("prfyl_obj_name",prfyl_obj_dict[NodeText])'''
-
-							#commneted Dhurga - end
-							# To fetch pages based on Tabs in System Admin
+							
 							
 							pages_tab = Sql.GetList("SELECT TAB_LABEL,PRIMARY_OBJECT_NAME FROM SYTABS (NOLOCK)")
 							tab_list= [(tab.TAB_LABEL).upper() for tab in pages_tab]
@@ -2640,6 +2629,7 @@ class TreeView:
 					NewList = []                    
 					ChildList.append(ChildDict)
 		#Trace.Write("ChildList"+str(ChildList))
+		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
 		return ChildList
 
 	def getChildFromParentObj(
