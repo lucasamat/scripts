@@ -34,7 +34,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         opportunity_obj = Sql.GetFirst("select ISNULL(C4C_QTEOBJ_ID,0) AS C4C_QTEOBJ_ID FROM SAOPQT WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         c4c_quote_object_id = opportunity_obj.C4C_QTEOBJ_ID
         ##Fetch the code according to the revision status..code starts...
-        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - PRICING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
+        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
         ##Fetch the code according to the revision status..code ends...
         ##quote header write back details starts...
         quote_header_data = '{\"BuyerPartyID\":"'+str(quote_obj.ACCOUNT_ID)+'", \"EmployeeResponsiblePartyID\":"'+str(quote_obj.OWNER_NAME)+'", \"SalesUnitPartyID\":"'+str(revision_obj.SALESORG_ID)+'", \"DistributionChannelCode\":"'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+'", \"DivisionCode\":"'+str(revision_obj.DIVISION_ID)+'", \"ZWB_ContractValidFrom_KUT\":"'+str(valid_from)+'", \"ZWB_ContractValidTo_KUT\":"'+str(valid_to)+'", \"ZWB_QuoteRevisionID_KUT\":"'+str(revision_obj.QTEREV_ID)+'", \"ZWB_RevisionDescription_KUT\":"'+str(revision_obj.REVISION_DESCRIPTION)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'", \"ZWB_TotalQuoteContent_KUT\":"'+str(quote_obj.NET_VALUE)+'", \"ZWB_TotalQuotecurrencyCode_KUT\":"USD"}'
@@ -70,7 +70,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
         ##Fetch the code according to the revision status..code starts...
-        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - PRICING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
+        revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
         ##Fetch the code according to the revision status..code ends...
         
         
