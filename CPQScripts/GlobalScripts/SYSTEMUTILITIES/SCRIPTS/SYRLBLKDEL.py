@@ -19,6 +19,10 @@ Id = []
 Trace.Write("Id--------" + str(list(Id)))
 Trace.Write("selected id------" + str(Id))
 table_id = Param.table_id
+checkedrows = Param.checkedrows
+selectall = Param.selectall
+Trace.Write("checkedrows------" + str(checkedrows))
+Trace.Write("selectall------" + str(selectall))
 Trace.Write("table_id--- " + str(table_id))
 Table_ID = table_id
 Table_ID = "-".join(Table_ID.split("_")[-5:]).strip()
@@ -82,7 +86,11 @@ for ID in list(Id):
         Trace.Write("Objd_ColumnName------------103--------------------------->" + str(Objd_ColumnName))
         Trace.Write("ID--------------------------104------------->" + str(ID))
 if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
-    Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
+    if selectall == "yes":
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
+    elif selectall == "no":
+        pass
+
  
 
    
