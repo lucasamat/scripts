@@ -2952,7 +2952,7 @@ class SYLDRTLIST:
 										if str(value123) == "ANNUAL_BILLING_AMOUNT" and str(ObjectName) == "SAQIBP":
 											value1234 = value1234
 										else:
-											#Trace.Write("value123value123value123"+str(value123))
+											Trace.Write("value123value123value123=2955"+str(value123))
 											value1234 = value1234 + " " + curr_symbol
 						if str(cur_api_name) is not None and (
 							str(data_type_val) == "PERCENT" or str(formu_data_type_val) == "PERCENT"
@@ -3153,11 +3153,13 @@ class SYLDRTLIST:
 												curr_symbol = curr_symbol_obj.CURRENCY
 												
 												try:
-													decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
+													Trace.Write("3156"+str(value1234))
+                                                    decimal_place = curr_symbol_obj.DISPLAY_DECIMAL_PLACES
 													Trace.Write('curr_symbol--2289--'+str(curr_symbol))
 													my_format = "{:,." + str(decimal_place) + "f}"
 													value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 												except:
+                                                    Trace.Write("3162"+str(value1234))
 													value1234
 											
 											if getdate_indication:
