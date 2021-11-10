@@ -3512,7 +3512,9 @@ class SYLDRTLIST:
 									+'>'
 									+ str(qstring)
 									+ "</th>"
-								)     
+								) 
+							if RECORD_ID == "SYOBJR-98875":
+								table_header += ""	    
 							elif str(current_tab).upper() == "APP":
 								if (str(TreeParam) == "Tabs" or str(TreeParam) == "Pages"):
 									table_header += (
@@ -3541,8 +3543,7 @@ class SYLDRTLIST:
 									)  
 							elif RECORD_ID == "SYOBJR-98872":
 								table_header += ""
-							elif RECORD_ID == "SYOBJR-98875":
-								table_header += ""	
+								
 							else:
 								table_header += (
 									'<th  data-field="'
