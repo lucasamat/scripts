@@ -291,9 +291,9 @@ class ContractQuoteItem:
 													IQ.QUOTE_RECORD_ID,
 													IQ.QTEREV_RECORD_ID, 
 													replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,
-													replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE
+													replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE 
 											FROM (
-												SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,CONVERT(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML 
+												SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,CONVERT(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;'))  as ENTITLEMENT_XML  
 												FROM SAQTSE (NOLOCK) 
 												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' 
 												) IQ 
