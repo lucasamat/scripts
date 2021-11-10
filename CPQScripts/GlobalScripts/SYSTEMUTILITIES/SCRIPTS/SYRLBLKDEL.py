@@ -17,7 +17,7 @@ Sql = SQL()
 TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 CurrentTab = TestProduct.CurrentTab
 Trace.Write("CurrentTab-------->" + str(CurrentTab))
-Id = Param.SELECTEDROW
+Id = []
 Trace.Write("Id--------" + str(list(Id)))
 Trace.Write("selected id------" + str(Id))
 table_id = Param.table_id
@@ -83,7 +83,8 @@ for ID in list(Id):
         Trace.Write("ObjectName-------------102-------------------------->" + str(ObjectName))
         Trace.Write("Objd_ColumnName------------103--------------------------->" + str(Objd_ColumnName))
         Trace.Write("ID--------------------------104------------->" + str(ID))
-
+if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
+    pass
  
 
    
