@@ -1323,129 +1323,7 @@ class SyncQuoteAndCustomTables:
 						
 					payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
 					Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
-					if custom_fields_detail.get("PrimaryContactName"):
-						contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-						employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
-						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
-
-
-						if payload_json_obj:
-							payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
-							payload_json = eval(payload_json.get('Param'))
-							payload_json = payload_json.get('CPQ_Columns')
-							Log.Info("SAQICT_DETAILS "+str(payload_json.get('SAQICT')))
-							if employee_obj is None:
-								Log.Info("EMPLOYEE IS NOT THERE ")
-								for employee in payload_json.get('SAQICT'):
-									country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
-									salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
-									employee_dict = {}
-									employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
-									employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
-									employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
-									employee_dict["CITY"] = employee.get("CITY")
-									employee_dict["COUNTRY"] = employee.get("COUNTRY")
-									employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
-									employee_dict["EMAIL"] = employee.get("EMAIL")
-									employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
-									employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
-									employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
-									employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
-									employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
-									employee_dict["PHONE"] = employee.get("PHONE")
-									employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
-									employee_dict["STATE"] = employee.get("STATE")
-									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
-									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
-									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
-									employee_dict["CpqTableEntryModifiedBy"] = User.Id
-									employee_dict["ADDUSR_RECORD_ID"] = User.Id
-									tableInfo = Sql.GetTable("SAEMPL")
-									tablerow = employee_dict
-									tableInfo.AddRow(tablerow)
-									Sql.Upsert(tableInfo)
-
-
-						
-						# if len(contact_query) == 0:
-						# 	contact_master_entry = {
-						# 		"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
-						# 		"ADDRESS": "",
-						# 		"CITY": "",
-						# 		"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
-						# 		"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
-						# 		"EXTERNAL_ID": "",
-						# 		"PHONE": employee_obj.PHONE if employee_obj is not None else ""
-						# 	}
-						# 	Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
-						# 	quote_contact_master_table_info = Sql.GetTable("SACONT")
-						# 	quote_contact_master_table_info.AddRow(contact_master_entry)
-						# 	Sql.Upsert(quote_contact_master_table_info)
-
-						Log.Info("CONTACT_INFO INSERT STARTS----> " +str(custom_fields_detail.get("PrimaryContactName")))
-						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
-						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
-						contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
-						if contact_master_table is None:
-							Log.Info("CONTACT_MASTER_TABLE_INSERTS")
-							for employee in payload_json.get('SAQICT'):
-								contact_master_table_update = {
-									"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
-									"ADDRESS": employee_obj.ADDRESS_1,
-									"CITY": employee_obj.CITY,
-									"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
-									"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
-									"CONTACT_TYPE": "",
-									"COUNTRY": employee_obj.COUNTRY,
-									"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
-									"DEPARTMENT": "",
-									"EMAIL": employee_obj.EMAIL,
-									"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
-									"FAX": "",
-									"FUNCTION": "",
-									"MOBILE": "",
-									"PHONE": employee.get("PHONE"),
-									"POSTAL_CODE": employee.get("POSTAL_CODE"),
-									"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
-									"STATE": employee_obj.STATE,
-									"STATUS": "",
-									"FIRST_NAME": employee.get("FIRST_NAME"),
-									"LAST_NAME": employee.get("LAST_NAME"),
-								}
-								tableInfo = Sql.GetTable("SACONT")
-								tablerow = contact_master_table_update
-								tableInfo.AddRow(tablerow)
-								Sql.Upsert(tableInfo)
-						if employee_obj:
-							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
-							Log.Info("SAQICT_INSERT_STARTS")
-							quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
-							contact_info_update = {
-								"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
-								"EMAIL": employee_obj.EMAIL,
-								"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-								"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
-								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
-								"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
-								"PRIMARY": "",
-								"PHONE": employee_obj.PHONE,
-								"QTEREV_RECORD_ID":quote_revision_id,
-								"QTEREV_ID":quote_rev_id,
-								"COUNTRY":salesorg_country.COUNTRY,
-								"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-								"STATE": employee_obj.STATE,
-								"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
-								"CITY":employee_obj.CITY,
-								"POSTAL_CODE":employee_obj.POSTAL_CODE,
-								"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
-								"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
-								"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
-								"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
-								"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
-								"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
-							}
-							quote_involved_party_contact_table_info.AddRow(contact_info_update)
+					
 					if payload_json_obj:
 						contract_quote_obj = None
 						fab_location_ids, service_ids = [], []
@@ -1486,6 +1364,7 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
+						
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
@@ -1561,6 +1440,104 @@ class SyncQuoteAndCustomTables:
 										Sql.RunQuery(c4c_employee_update)
 									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
+
+						if custom_fields_detail.get("PrimaryContactName"):
+							contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+							if payload_json.get('SAQICT'):
+								if employee_obj is None:
+									for employee in payload_json.get('SAQICT'):
+										country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+										salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+										employee_dict = {}
+										employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+										employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+										employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+										employee_dict["CITY"] = employee.get("CITY")
+										employee_dict["COUNTRY"] = employee.get("COUNTRY")
+										employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+										employee_dict["EMAIL"] = employee.get("EMAIL")
+										employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
+										employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+										employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+										employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+										employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+										employee_dict["PHONE"] = employee.get("PHONE")
+										employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+										employee_dict["STATE"] = employee.get("STATE")
+										employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+										employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+										employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+										employee_dict["CpqTableEntryModifiedBy"] = User.Id
+										employee_dict["ADDUSR_RECORD_ID"] = User.Id
+										tableInfo = Sql.GetTable("SAEMPL")
+										tablerow = employee_dict
+										tableInfo.AddRow(tablerow)
+										Sql.Upsert(tableInfo)
+
+
+							employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							if contact_master_table is None:
+								for employee in payload_json.get('SAQICT'):
+									contact_master_table_update = {
+										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+										"ADDRESS": employee_obj.ADDRESS_1,
+										"CITY": employee_obj.CITY,
+										"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
+										"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+										"CONTACT_TYPE": "",
+										"COUNTRY": employee_obj.COUNTRY,
+										"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
+										"DEPARTMENT": "",
+										"EMAIL": employee_obj.EMAIL,
+										"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
+										"FAX": "",
+										"FUNCTION": "",
+										"MOBILE": "",
+										"PHONE": employee.get("PHONE"),
+										"POSTAL_CODE": employee.get("POSTAL_CODE"),
+										"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+										"STATE": employee_obj.STATE,
+										"STATUS": "",
+										"FIRST_NAME": employee.get("FIRST_NAME"),
+										"LAST_NAME": employee.get("LAST_NAME"),
+									}
+									tableInfo = Sql.GetTable("SACONT")
+									tablerow = contact_master_table_update
+									tableInfo.AddRow(tablerow)
+									Sql.Upsert(tableInfo)
+							if employee_obj:
+								quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
+								contact_info_update = {
+									"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
+									"EMAIL": employee_obj.EMAIL,
+									"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+									"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+									"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+									"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+									"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
+									"PRIMARY": "",
+									"PHONE": employee_obj.PHONE,
+									"QTEREV_RECORD_ID":quote_revision_id,
+									"QTEREV_ID":quote_rev_id,
+									"COUNTRY":salesorg_country.COUNTRY,
+									"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+									"STATE": employee_obj.STATE,
+									"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+									"CITY":employee_obj.CITY,
+									"POSTAL_CODE":employee_obj.POSTAL_CODE,
+									"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
+									"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
+									"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
+									"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
+									"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
+									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
+								}
+								quote_involved_party_contact_table_info.AddRow(contact_info_update)
+						
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
 							OpportunityType = {"23":"PROSPECT FOR PRODUCT SALES","24":"PROSPECT FOR SERVICE","25":"PROSPECT FOR TRAINING","26":"PROSPECT FOR CONSULTING","Z27":"FPM/EXE","Z28":"TKM","Z29":"POES","Z30":"LOW","Z31":"AGS"}
