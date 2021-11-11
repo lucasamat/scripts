@@ -16,6 +16,7 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import re
 from datetime import timedelta , date
+from datetime import datetime, timedelta
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 #Log.Info("==========================>00000000")
@@ -573,6 +574,8 @@ class SyncQuoteAndCustomTables:
 							
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
+						revision_start_date = datetime.now()
+						revision_end_date = revision_start_date + timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
 							"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
@@ -595,8 +598,8 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id,
 							"REVISION_DESCRIPTION":"REVISION 0 DESCRIPTION",
 							"ACTIVE":get_rev_details.ACTIVE_REV,
-							"REV_CREATE_DATE":str(start_date),
-							"REV_EXPIRE_DATE":str(expired_date_val),
+							"REV_CREATE_DATE":revision_start_date.strftime('%m/%d/%Y'),
+							"REV_EXPIRE_DATE":revision_end_date.strftime('%m/%d/%Y'),
 							"REVISION_STATUS":"PREPARING REVISION",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
