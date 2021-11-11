@@ -2092,7 +2092,10 @@ class SYLDRTLIST:
 							# 	service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,TreeParam))
 							# 	if service_object is not None:
 							# 		service_id = service_object.SERVICE_ID
-							# Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"
+							# Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"							
+							if TreeSuperParentParam == "Product Offerings":
+								service_id = Treeparam.split('-')[0]
+								Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
