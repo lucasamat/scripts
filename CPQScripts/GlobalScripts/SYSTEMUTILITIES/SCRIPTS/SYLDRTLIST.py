@@ -3891,7 +3891,7 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
 						if str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY":
-    						table_header += (
+							table_header += (
 								'<th  data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
