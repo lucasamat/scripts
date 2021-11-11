@@ -4930,6 +4930,8 @@ class SYLDRTLIST:
 					lookup_disply_list.remove("PART_DESCRIPTION")
 					lookup_disply_list.remove("PART_NUMBER")
 					lookup_disply_list.remove("SERVICE_ID")
+					lookup_disply_list.remove("FABLOCATION_ID")
+					lookup_disply_list.remove("GREENBOOK")
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
