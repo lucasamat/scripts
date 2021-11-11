@@ -3800,7 +3800,8 @@ class SYLDRTLIST:
 
 				# 	continue
 
-				elif len(cell_api) > 0 and invs in cell_api:                    
+				elif len(cell_api) > 0 and invs in cell_api:    
+					Trace.Write("3800_sER"+str(qstring))                 
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3813,7 +3814,8 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):                    
+				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):   
+					Trace.Write("3813_sER"+str(qstring))                  
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3826,7 +3828,8 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_rl_popup is not None and invs in lookup_rl_popup:            
+				elif lookup_rl_popup is not None and invs in lookup_rl_popup:     
+					Trace.Write("3826_sER"+str(qstring))        
 					footer_text_formatter = ''
 
 					if RECORD_ID == 'SYOBJR-00024' and invs == 'APRCHNSTP_ID':                        
@@ -3858,7 +3861,7 @@ class SYLDRTLIST:
 					
 				# + '" data-formatter="ParentRelatedListHyperLink" data-sortable="true">'
 				elif checkbox_list is not None and invs in checkbox_list:
-										
+					Trace.Write("3857_sER"+str(qstring)) 					
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3871,7 +3874,8 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif edit_field is not None and invs in edit_field:                    
+				elif edit_field is not None and invs in edit_field:  
+					Trace.Write("3871_sER"+str(qstring))                 
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
