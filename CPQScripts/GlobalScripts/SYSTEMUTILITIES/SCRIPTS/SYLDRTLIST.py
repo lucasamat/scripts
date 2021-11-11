@@ -489,7 +489,7 @@ class SYLDRTLIST:
 						attr_list[str(attr.API_NAME)] = str(attr.FIELD_SHORT_LABEL)
 					else:
 						attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
-					Trace.Write("attr_list_j"+str(attr_list))
+					#Trace.Write("attr_list_j"+str(attr_list))
 					if (
 						str(attr.LOOKUP_API_NAME) != ""
 						and str(attr.LOOKUP_API_NAME) is not None
