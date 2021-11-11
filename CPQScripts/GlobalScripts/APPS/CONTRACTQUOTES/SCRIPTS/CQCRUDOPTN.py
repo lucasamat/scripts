@@ -6200,7 +6200,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 			#end 31 march
 			if str(self.contract_quote_record_id):
 				#getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE (nolock)  where  QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
-				entitlement_obj  = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'").format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id)
+				entitlement_obj  = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				if entitlement_obj:
 					#check_fabvantage_messgae_query = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e  OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)  ")
 					#if check_fabvantage_messgae_query:
