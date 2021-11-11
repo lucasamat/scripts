@@ -323,7 +323,7 @@ class ContractQuoteItem:
 				source_object_name = 'SAQSCE'
 				dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
-			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART','Offering + Greenbook + Gr Equi'):
+			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART','OFFERING + GREENBOOK + GR EQUI'):
 				source_object_name = 'SAQSGE'
 				dynamic_select_columns = 'null as OBJECT_ID,'
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
