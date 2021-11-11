@@ -711,7 +711,7 @@ class AncillaryProductOperation:
 			for val in GetXMLsecField:
 				#Log.Info('GetXMLsecField-inside loop--'+str(ent_temp))
 				if val.ENTITLEMENT_ID:
-					#Log.Info('647--'+str(val.ENTITLEMENT_ID))
+					Trace.Write('647--'+str(val.ENTITLEMENT_ID))
 					if val.ENTITLEMENT_DISPLAY_VALUE:
 						try:						
 							add_where =''
@@ -728,8 +728,9 @@ class AncillaryProductOperation:
 							ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 							
 							result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
-						except:
-							Log.Info('error--296')
+						except Exception as e:
+							Log.Info('error--296'+str(e))
+							Trace.Write('erroe on update'+str(e))
 		except:
 			Log.Info('728-----')
 
