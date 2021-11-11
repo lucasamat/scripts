@@ -483,6 +483,10 @@ class DeleteConfirmPopup:
 
                     if GetQuery is not None:
                         for tablerow in GetQuery:
+                            if ObjName == "SAQRSP":
+                                getpart = Sql.GetFirst("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_REV_PO_PRODUCT_LIST_ID = '{}'".format(RecordId))
+                                part = getpart.PART_NUMBER
+                                Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),part))
                             tableInfo.AddRow(tablerow)
                             Sql.Delete(tableInfo)
                         if str(ObjName) == 'ACACST' and GetAprchnRecId is not None:
