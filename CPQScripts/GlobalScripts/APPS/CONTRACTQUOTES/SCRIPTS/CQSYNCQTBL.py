@@ -574,6 +574,7 @@ class SyncQuoteAndCustomTables:
 							
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
+						from datetime import datetime, timedelta
 						revision_start_date = datetime.now()
 						revision_end_date = revision_start_date + timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
