@@ -86,9 +86,19 @@ for ID in list(Id):
         Trace.Write("Objd_ColumnName------------103--------------------------->" + str(Objd_ColumnName))
         Trace.Write("ID--------------------------104------------->" + str(ID))
 if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
+    TreeParam = Product.GetGlobal("TreeParam")
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
     if selectall == "yes":
-        Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
-        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id")))
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam,TreeParam))
+
+        GetParts = Sql.GetList("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam,TreeParam))
+        parts = []
+        for x in GetParts:
+            parts.append(x.PART_NUMBER)
+        
+        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
     elif selectall == "no":
         checkedrows = checkedrows.split(",")
         checkedrows = tuple(checkedrows)
