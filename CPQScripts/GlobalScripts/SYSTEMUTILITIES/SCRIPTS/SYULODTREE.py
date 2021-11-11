@@ -2082,12 +2082,8 @@ class TreeView:
 									elif subTabName == 'Parts List':
 										subTabName = ""
 										Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
-										#if TreeParam is not None:
-										#service_id = TreeParam
 										if str(service_id) == "bar":
 											service_id = NodeText.split('/>')[1]
-											#service_id = TreeParam
-
 										table_name = "SAQTSE"
 										X=SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
 										updateentXML = X.ENTITLEMENT_XML
@@ -2100,7 +2096,6 @@ class TreeView:
 											get_ent_id =re.findall(pattern_id,sub_string)
 											get_ent_name=re.findall(pattern_name,sub_string)
 											if get_ent_id and get_ent_name:
-												Trace.Write("mATCHED")
 												flag_excluse=1
 												break
 										if flag_excluse==1:
@@ -2134,6 +2129,10 @@ class TreeView:
 									# 		if spare_parts_object is not None:
 									# 			if spare_parts_object.cnt > 0:
 									# 				subTabName = str(getRightView.SUBTAB_NAME)
+									elif subTabName == 'Fab Parts List':
+										Trace.Write("fab service list---"+str(NodeText))
+									elif subTabName == 'Green Parts List':
+										Trace.Write("Green service list---"+str(NodeText))
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
