@@ -1098,7 +1098,7 @@ class Entitlements:
 					##Ancillary Object auto insert based on conditions
 					ancillary_flag = "False"
 					#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
-					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE,SAQTSE',SAQSFE):
+					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE,SAQTSE','SAQSFE'):
 						#ancillary_object = 'Z0101' 
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_object_dict['Z0101'] = "INSERT"
