@@ -34,6 +34,7 @@ class ContractQuoteItem:
 		self.set_contract_quote_related_details()
 		self._set_service_type()	
 		self._get_material_type()
+		self._get_ancillary_product()
 	
 	def set_contract_quote_related_details(self):
 		contract_quote_obj = Sql.GetFirst("SELECT QUOTE_ID, QUOTE_TYPE, SALE_TYPE, C4C_QUOTE_ID, QTEREV_ID, QUOTE_CURRENCY, QUOTE_CURRENCY_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId=self.contract_quote_record_id))
@@ -68,6 +69,13 @@ class ContractQuoteItem:
 		else:
 			self.is_simple_service = False
 		return True
+	def _get_ancillary_product(self):
+		check_ancillary = Sql.GetFirst("SELECT PAR_SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' ".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
+		if check_ancillary:
+			if check_ancillary.PAR_SERVICE_ID:
+				self.is_ancillary = True
+		else:
+			self.is_ancillary = False
 	
 	def _quote_items_assembly_insert(self):
 
@@ -101,11 +109,15 @@ class ContractQuoteItem:
 		join_condition_string = ''
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 			join_condition_string = ' AND SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID'
+		if self.is_ancillary == True:
+			dynamic_value_for_status = "'ACQUIRED' AS STATUS"
+		else:
+			dynamic_value_for_status = "null AS STATUS"
 		Sql.RunQuery("""INSERT SAQICO (EQUIPMENT_DESCRIPTION,STATUS,EQUIPMENT_ID, EQUIPMENT_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, CONTRACT_VALID_FROM, CONTRACT_VALID_TO,LINE_ITEM_ID, MATERIAL_RECORD_ID, PLATFORM, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,KPU, SAP_PART_NUMBER, SERIAL_NO, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, WAFER_SIZE, TECHNOLOGY,SRVTAXCAT_RECORD_ID,SRVTAXCAT_DESCRIPTION,SRVTAXCAT_ID,SRVTAXCLA_DESCRIPTION,SRVTAXCLA_ID,SRVTAXCLA_RECORD_ID, CUSTOMER_TOOL_ID, EQUIPMENTCATEGORY_ID, EQUIPMENTCATEGORY_RECORD_ID, EQUIPMENT_STATUS, MNT_PLANT_ID, MNT_PLANT_NAME, MNT_PLANT_RECORD_ID, SLSDIS_PRICE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_PRICE_MARGIN, TARGET_PRICE_MARGIN_RECORD_ID, WARRANTY_END_DATE, WARRANTY_START_DATE, GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_QUANTITY, YEAR_OVER_YEAR, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID,GLOBAL_CURRENCY,DOC_CURRENCY,DOCURR_RECORD_ID, GLOBAL_CURRENCY_RECORD_ID, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified)
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 				SELECT DISTINCT					
 					SAQSCO.EQUIPMENT_DESCRIPTION,
-					null AS STATUS,
+					{dynamic_value_for_status},
 					SAQSCO.EQUIPMENT_ID,
 					SAQSCO.EQUIPMENT_RECORD_ID,                        
 					SAQRIT.FABLOCATION_ID, 
@@ -180,7 +192,7 @@ class ContractQuoteItem:
 				WHERE 
 					SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCO.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE'
 				) IQ
-				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinString='', JoinConditionString=join_condition_string)
+				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinString='', JoinConditionString=join_condition_string,dynamic_value_for_status = dynamic_value_for_status)
 			)
 
 	def _quote_items_object_insert(self):
@@ -479,7 +491,7 @@ class ContractQuoteItem:
 				SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
 				SELECT DISTINCT					
 					SAQSCO.EQUIPMENT_DESCRIPTION,
-					null AS STATUS,
+					'ACQUIRED' AS STATUS,
 					SAQSCO.EQUIPMENT_ID,
 					SAQSCO.EQUIPMENT_RECORD_ID,                        
 					SAQRIT.FABLOCATION_ID, 
