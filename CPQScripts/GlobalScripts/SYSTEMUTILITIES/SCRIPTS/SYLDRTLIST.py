@@ -4205,7 +4205,7 @@ class SYLDRTLIST:
 				for val in gettotaldateamt:
 					getamt = str(my_format.format(round(float(val.BILLING_AMOUNT), int(decimal_place))))
 					footer_tot += '<th class="text-right">{}</th>'.format(getamt)
-		if  RECORD_ID == 'SYOBJR-00009' and str(TreeParam) == "Quote Items":
+		# if  RECORD_ID == 'SYOBJR-00009' and str(TreeParam) == "Quote Items":
 				#Columns = "['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','EQUIPMENT_DESCRIPTION','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','CEILING_PRICE_INGL_CURR','NET_VALUE_INGL_CURR','DISCOUNT','TOTAL_AMOUNT_INGL_CURR','TAX_PERCENTAGE','NET_PRICE_INGL_CURR']"
 		for key, col_name in enumerate(list(eval(Columns))):            
 			StringValue_list = []
