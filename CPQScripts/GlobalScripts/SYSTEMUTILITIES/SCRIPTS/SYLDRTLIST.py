@@ -3841,6 +3841,7 @@ class SYLDRTLIST:
 							+ "</th>"
 						)
 					if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :
+						trace.Write("HyperService")
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
