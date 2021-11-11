@@ -1477,6 +1477,7 @@ class SyncQuoteAndCustomTables:
 										tableInfo = Sql.GetTable("SAEMPL")
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
+										Log.Info("tablerow_chk_j"+str(tablerow))
 										Sql.Upsert(tableInfo)
 
 
