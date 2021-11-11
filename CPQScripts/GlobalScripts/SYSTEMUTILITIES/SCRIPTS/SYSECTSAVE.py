@@ -1281,6 +1281,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							assembly_contract_update = "UPDATE SAQSCA SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
+							item_contract_update = "UPDATE SAQRIT SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+
 							saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID LIKE '%{service_id}%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
@@ -1301,6 +1303,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
+							Sql.RunQuery(item_contract_update)
 
 						elif Product.GetGlobal("TreeParentLevel2") == "Product Offerings":
 							contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
@@ -1317,6 +1320,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							greenbook_contract_update = "UPDATE SAQSGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
+							item_contract_update = "UPDATE SAQRIT SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							equipment_contract_update = "UPDATE SAQSCO SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
@@ -1341,6 +1345,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
+							Sql.RunQuery(item_contract_update)
+
 						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Details":
 							contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -1371,6 +1377,8 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{validity_from_date}' , CONTRACT_VALID_TO = '{validity_to_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(validity_from_date= validity_from_date.CONTRACT_VALID_FROM, validity_to_date =   validity_to_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
+							item_contract_update = "UPDATE SAQRIT SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+
 							Sql.RunQuery(service_contract_update)
 							Sql.RunQuery(fab_contract_update)
 							Sql.RunQuery(equipment_contract_update)
@@ -1380,6 +1388,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
+							Sql.RunQuery(item_contract_update)
 
 
 						elif Product.GetGlobal("TreeParentLevel3") == "Product Offerings" and subtab_name == "Equipment Details":
@@ -1413,9 +1422,11 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							saqtrv_contract_update = "UPDATE SAQTRV SET CONTRACT_VALID_FROM = '{validity_from_date}' , CONTRACT_VALID_TO = '{validity_to_date}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(validity_from_date= validity_from_date.CONTRACT_VALID_FROM, validity_to_date =   validity_to_date.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
+							item_contract_update = "UPDATE SAQRIT SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+
 							Sql.RunQuery(service_contract_update)
 							Sql.RunQuery(fab_contract_update)
-							# Sql.RunQuery(equipment_contract_update)
+							Sql.RunQuery(item_contract_update)
 							Sql.RunQuery(assembly_contract_update)
 							Sql.RunQuery(saqitm_contract_update)
 							Sql.RunQuery(saqifl_contract_update)
@@ -1458,14 +1469,9 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							WARRANTY_val = datetime.strptime(str(val.WARRANTY_END_DATE), "%Y-%m-%d")
 							get_con_date = str(getdate.CONTRACT_VALID_FROM).split(" ")[0]
 							get_con_date = datetime.strptime(str(get_con_date), "%m/%d/%Y")
-							Trace.Write('get_con_date---562--'+str(type(get_con_date)))
-							Trace.Write('WARRANTY_val---562--'+str(type(WARRANTY_val)))
 							if WARRANTY_val > get_con_date:
-								Trace.Write('get_con_date--564---'+str(get_con_date))
-								Trace.Write('WARRANTY_END_DATE--564-'+str(val.WARRANTY_END_DATE))
 								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 							else:
-								Trace.Write('WARRANTY_val---568--'+str(val.WARRANTY_END_DATE))
 								update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 								Trace.Write('no end date--')
 							Sql.RunQuery(update_warranty_enddate_alert)
