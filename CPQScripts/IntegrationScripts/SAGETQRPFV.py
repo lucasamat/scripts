@@ -16,7 +16,7 @@ from System.Net import HttpWebRequest, NetworkCredential
 clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
-
+Log.Info('19-SAGETQRPFV----')
 try:
     if 'Param' in globals():    
         if hasattr(Param, 'CPQ_Columns'): 
