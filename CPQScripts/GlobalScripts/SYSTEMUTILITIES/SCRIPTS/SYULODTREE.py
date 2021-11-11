@@ -2072,6 +2072,7 @@ class TreeView:
 								for getRightView in getParentObjRightView:
 									type = str(getRightView.SUBTAB_TYPE)
 									subTabName = str(getRightView.SUBTAB_NAME)
+									Trace.Write("subTabName--------"+str(subTabName))
 									ObjRecId = getRightView.OBJECT_RECORD_ID
 									if (str(ObjRecId) == '354C16C4-BDCA-4045-BC4A-40F1A6600AFD' and  str(getRightView.SUBTAB_TYPE) == 'OBJECT SECTION LAYOUT'):
 										subTabName = str(NodeText) + " : " + str(subTabName)
