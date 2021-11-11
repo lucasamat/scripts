@@ -599,7 +599,14 @@ class ContractQuoteItem:
 			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}'""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 				
 	def _delete_item_related_table_records(self):
-		pass
+		for delete_object in ['SAQIAE','SAQICA','SAQRIO','SAQICO']:
+			delete_statement = "DELETE DT FROM " +str(delete_object)+" DT (NOLOCK) JOIN SAQSCE (NOLOCK) ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))			
+			Sql.RunQuery(delete_statement)
+		# item entitlement delete
+		quote_item_entitlement_delete_statement = "DELETE SAQITE FROM SAQITE (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQITE.QTEITM_RECORD_ID JOIN SAQSCE ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQITE.QUOTE_RECORD_ID='{}' AND SAQITE.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND SAQITE.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))	
+		# item delete
+		quote_item_delete_statement = "DELETE SAQRIT FROM SAQRIT (NOLOCK) JOIN SAQSCE (NOLOCK) ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID='{}' AND SAQRIT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))	
+
 
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":			
@@ -641,7 +648,8 @@ class ContractQuoteItem:
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
 			else:
-				self._delete_item_related_table_records()
+				#self._delete_item_related_table_records()
+				pass
 		# Pricing Calculation - Start
 		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		if quote_line_item_obj:
