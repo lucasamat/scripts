@@ -4250,7 +4250,7 @@ class SYLDRTLIST:
 				+ "'"
 			)           
 			if objss_obj:
-				Trace.Write('chk--'+str(key)+str(col_name))
+				
 				try:
 					try:
 						FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
