@@ -15,8 +15,8 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 import re
-#from datetime import timedelta , date
-from datetime import datetime, timedelta
+from datetime import timedelta , date
+#from datetime import datetime, timedelta
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -463,10 +463,9 @@ class SyncQuoteAndCustomTables:
 							# )
 					# self.quote.OrderStatus.Name
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
-					created_date = datetime.now()
-					expired_date = created_date + timedelta(days=365)
-					created_date = re.sub('-','/',str(created_date))
-					expired_date = re.sub('-','/',str(expired_date))
+					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+					expired_date = date.today()+ timedelta(days=365)
+					Log.Info("Expiry_Date_Check "+str(expired_date))
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
@@ -576,8 +575,8 @@ class SyncQuoteAndCustomTables:
 							
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
-						revision_start_date = datetime.now()
-						revision_end_date = revision_start_date + timedelta(days=365)
+						revision_start_date = datetime.datetime.now().strftime("%m/%d/%Y")
+						revision_end_date = date.today()+ timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
 							"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
@@ -600,8 +599,8 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id,
 							"REVISION_DESCRIPTION":"REVISION 0 DESCRIPTION",
 							"ACTIVE":get_rev_details.ACTIVE_REV,
-							"REV_CREATE_DATE":revision_start_date.strftime('%m/%d/%Y'),
-							"REV_EXPIRE_DATE":revision_end_date.strftime('%m/%d/%Y'),
+							"REV_CREATE_DATE":revision_start_date,
+							"REV_EXPIRE_DATE":revision_end_date,
 							"REVISION_STATUS":"PREPARING REVISION",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
