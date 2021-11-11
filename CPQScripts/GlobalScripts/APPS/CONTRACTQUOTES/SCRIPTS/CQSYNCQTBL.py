@@ -495,7 +495,7 @@ class SyncQuoteAndCustomTables:
 							if custom_fields_detail.get("LOW")
 							else 'FALSE',
 							"CONTRACT_VALID_FROM": start_date,
-							"CONTRACT_VALID_TO": end_date,
+							"CONTRACT_VALID_TO": start_date + timedelta(days=365),
 							"QUOTE_CREATED_DATE": str(created_date),                            
 							"QUOTE_EXPIRE_DATE":str(expired_date),
 							#"OPPORTUNITY_ID": custom_fields_detail.get("OpportunityId"),
@@ -605,7 +605,7 @@ class SyncQuoteAndCustomTables:
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":start_date,
-							"CONTRACT_VALID_TO":end_date,
+							"CONTRACT_VALID_TO":start_date + timedelta(days=365),
 							"PAYMENTTERM_DAYS":pay_days,
 							"PAYMENTTERM_ID":payid,
 							"PAYMENTTERM_NAME":pay_name,
