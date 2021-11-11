@@ -4252,9 +4252,12 @@ class SYLDRTLIST:
 			if objss_obj:
 				Trace.Write('chk--'+str(key)+str(col_name))
 				try:
-					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
-					FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
-					FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+					try:
+						FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
+						FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
+						FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
+					except:
+						Trace.Write('4260---'+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE":
 						Trace.Write('chkpick--'+str(key)+str(col_name))                                                
 						filter_level_data = "select"                        
@@ -4281,7 +4284,7 @@ class SYLDRTLIST:
 				except:
 					Trace.Write("except-filter-"+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE": 
-										
+						Trace.Write("except-filter-4284---"+str(col_name))			
 						filter_level_data = "select"
 						filter_clas_name = (
 							'<div  id = "'
