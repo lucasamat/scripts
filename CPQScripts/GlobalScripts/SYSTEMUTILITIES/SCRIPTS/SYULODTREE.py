@@ -2131,8 +2131,10 @@ class TreeView:
 									# 				subTabName = str(getRightView.SUBTAB_NAME)
 									elif subTabName == 'Fab Parts List':
 										Trace.Write("fab service list---"+str(NodeText))
+										subTabName = "Parts List"
 									elif subTabName == 'Green Parts List':
 										Trace.Write("Green service list---"+str(NodeText))
+										subTabName = "Parts List"
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
