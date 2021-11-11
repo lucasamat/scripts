@@ -4655,13 +4655,22 @@ def POPUPLISTVALUEADDNEW(
 			sec_str += '<div class="col-md-12"  style="display: none;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#SegAlert_notifcation" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="SegAlert_notifcation" class="col-md-12  alert-notification  brdr collapse in" ><div class="col-md-12 alert-warning" id="alert_msg"><label><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"></label></div></div></div>'
 
 			if GettreeEnable is not None and str(GettreeEnable.ENABLE_TREE).upper() == "TRUE":
-				sec_str += (
-					'<div id="container" text="'
-					+ str(ObjectName)
-					+ '" class="g4 pad-10 brdr except_sec header_section_div" style="'
-					+ str(overflow_val)
-					+ '">'
-				)
+				if str(popup_table_id) == "SYOBJR-98798":
+					sec_str += (
+						'<div id="container" text="'
+						+ str(ObjectName)
+						+ '" class="except_sec" style="'
+						+ str(overflow_val)
+						+ '">'
+					)
+				else:
+					sec_str += (
+						'<div id="container" text="'
+						+ str(ObjectName)
+						+ '" class="g4 pad-10 brdr except_sec header_section_div" style="'
+						+ str(overflow_val)
+						+ '">'
+					)
 
 			else:
 				sec_str += (
