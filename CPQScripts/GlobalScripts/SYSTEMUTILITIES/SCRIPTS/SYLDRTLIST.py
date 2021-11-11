@@ -2086,12 +2086,12 @@ class SYLDRTLIST:
 							service_id = TreeParam.split('-')[0]
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-							# if SubTab == "Parts List":
-							# 	service_id = 'Z0101'
-							# else:
-							service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,service_id))
-							if service_object is not None:
-								serv_id = service_object.SERVICE_ID
+							if SubTab == "Parts List":
+								serv_id = 'Z0101'
+							else:
+								service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,service_id))
+								if service_object is not None:
+									serv_id = service_object.SERVICE_ID
 							# Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"							
 							if TreeSuperParentParam == "Product Offerings":
 								#service_id = TreeParam.split('-')[0]
