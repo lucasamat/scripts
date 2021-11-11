@@ -4253,7 +4253,8 @@ class SYLDRTLIST:
 					FORMULA_LOGIC = objss_obj.FORMULA_LOGIC.strip()
 					FORMULA_col = FORMULA_LOGIC.split(" ")[1].strip()
 					FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
-					if str(objss_obj.PICKLIST).upper() == "TRUE":                                                
+					if str(objss_obj.PICKLIST).upper() == "TRUE":
+						Trace.Write('chkpick--'+str(key)+str(col_name))                                                
 						filter_level_data = "select"                        
 						filter_clas_name = (
 							'<div dropDownWidth="true" id = "'
