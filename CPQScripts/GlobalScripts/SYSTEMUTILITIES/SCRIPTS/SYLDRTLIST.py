@@ -2094,7 +2094,7 @@ class SYLDRTLIST:
 							# 		service_id = service_object.SERVICE_ID
 							# Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"							
 							if TreeSuperParentParam == "Product Offerings":
-								service_id = Treeparam.split('-')[0]
+								service_id = TreeParam.split('-')[0]
 								Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874":
