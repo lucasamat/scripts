@@ -3798,8 +3798,7 @@ class SYLDRTLIST:
 
 				# 	continue
 
-				elif len(cell_api) > 0 and invs in cell_api:    
-					Trace.Write("3800_sER"+str(qstring))                 
+				elif len(cell_api) > 0 and invs in cell_api:
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3812,8 +3811,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):   
-					Trace.Write("3813_sER"+str(qstring))                  
+				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):                 
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3842,6 +3840,18 @@ class SYLDRTLIST:
 							+ str(qstring)
 							+ "</th>"
 						)
+					if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							) 
 					else:        
 						table_header += (
 							'<th  data-field="'
@@ -3857,9 +3867,7 @@ class SYLDRTLIST:
 							+ "</th>"
 						)                    
 					
-				# + '" data-formatter="ParentRelatedListHyperLink" data-sortable="true">'
-				elif checkbox_list is not None and invs in checkbox_list:
-					Trace.Write("3857_sER"+str(qstring)) 					
+				elif checkbox_list is not None and invs in checkbox_list:				
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3872,8 +3880,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif edit_field is not None and invs in edit_field:  
-					Trace.Write("3871_sER"+str(qstring))                 
+				elif edit_field is not None and invs in edit_field:       
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3933,18 +3940,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							) 
-						if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :
-							table_header += (
-								'<th  data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-title-tooltip="'
-								+ str(qstring)
-								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
-								+ rowspan
-								+'>'
-								+ str(qstring)
-								+ "</th>"
-							) 
+		
 						if invs == "EQUIPMENT_LINE_ID":
 							Trace.Write("@3817"+str(qstring))
 							table_header += (
