@@ -223,7 +223,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 	#NewValue = 'Chamber based'
 	get_equp_xml = Sql.GetFirst("select distinct CPS_MATCH_ID,ENTITLEMENT_XML,CPS_CONFIGURATION_ID FROM {} where {}".format(table_name,whereReq))
 	#get_query = Sql.GetFirst("select EQUIPMENT_ID FROM SAQSCO where {} {}".format(whereReq,add_where))
-	if get_equp_xml:
+	if get_equp_xml and NewValue.upper() != 'SELECT':
 		Trace.Write('inside----')
 		cpsConfigID,cpsmatchID = child_ent_request(table_name,whereReq,service_id)
 		# cpsmatchID = get_equp_xml.CPS_MATCH_ID
@@ -250,8 +250,8 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
 					Trace.Write('NewValue-iff--'+str(NewValue)+str(requestdata))
-					NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
-					Trace.Write('NewValue-iff--254----'+str(NewValue))
+					# NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
+					# Trace.Write('NewValue-iff--254----'+str(NewValue))
 				else:
 					Trace.Write('NewValue--'+str(NewValue))
 					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
@@ -264,6 +264,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 				#requestdata += '{"value":"' + NewValue + '","selected":true}'
 				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+		Trace.Write("requestdata----"+str(requestdata))
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
