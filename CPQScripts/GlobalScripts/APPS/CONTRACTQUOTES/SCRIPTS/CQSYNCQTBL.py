@@ -1487,7 +1487,9 @@ class SyncQuoteAndCustomTables:
 							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							if contact_master_table is None:
+								Log.Info("TRAZE_CHECK_1")
 								for employee in payload_json.get('SAQICT'):
+									Log.Info("TRAZE_CHECK_2")
 									contact_master_table_update = {
 										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
 										"ADDRESS": employee_obj.ADDRESS_1,
@@ -1514,10 +1516,13 @@ class SyncQuoteAndCustomTables:
 									tableInfo = Sql.GetTable("SACONT")
 									tablerow = contact_master_table_update
 									tableInfo.AddRow(tablerow)
+									Log.Info("TRAZE_CHECK_3"+str(tablerow))
 									Sql.Upsert(tableInfo)
+							Log.Info("TRAZE_CHECK_4")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							
 							if employee_obj:
+								Log.Info("TRAZE_CHECK_5")
 								quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 								contact_info_update = {
 									"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
@@ -1545,6 +1550,7 @@ class SyncQuoteAndCustomTables:
 									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
 								}
 								quote_involved_party_contact_table_info.AddRow(contact_info_update)
+								Sql.Upsert(quote_involved_party_contact_table_info)
 						
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
