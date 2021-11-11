@@ -3715,7 +3715,7 @@ def POPUPLISTVALUEADDNEW(
 			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-			if TreeSuperParentParam = "Product Offerings":
+			if TreeSuperParentParam == "Product Offerings":
 				TreeParam = TreeParam
 			else:
 				TreeParam = Product.GetGlobal("TreeParentLevel1")
