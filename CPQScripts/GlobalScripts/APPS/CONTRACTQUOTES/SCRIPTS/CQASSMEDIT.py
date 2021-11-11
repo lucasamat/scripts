@@ -281,6 +281,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			configuration_status = 'INCOMPLETE'
 		else:
 			configuration_status = 'ERROR'
+		Trace.Write('configuration_status---'+str(configuration_status))
 		attributesdisallowedlst=[]
 		attributesallowedlst=[]
 		attributedefaultvalue = []
