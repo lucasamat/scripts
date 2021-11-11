@@ -2806,6 +2806,10 @@ class TreeView:
 								RelatedId = getRightView.RELATED_RECORD_ID
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
+								if subTabName == 'Fab Parts List':
+									Trace.Write("fab service list---"+str(NodeText))
+									subTabName = "Parts List"
+									Trace.Write("subTabName fab service list---"+str(subTabName))
 								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
 									subTabName = "Parts List"
