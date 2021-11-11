@@ -69,6 +69,7 @@ class ContractQuoteItem:
 		else:
 			self.is_simple_service = False
 		return True
+	
 	def _get_ancillary_product(self):
 		check_ancillary = Sql.GetFirst("SELECT PAR_SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' ".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id))
 		if check_ancillary:
@@ -76,6 +77,7 @@ class ContractQuoteItem:
 				self.is_ancillary = True
 		else:
 			self.is_ancillary = False
+		return True
 	
 	def _quote_items_assembly_insert(self):
 
