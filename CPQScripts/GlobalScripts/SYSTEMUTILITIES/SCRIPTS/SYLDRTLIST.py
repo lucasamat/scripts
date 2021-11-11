@@ -2082,8 +2082,7 @@ class SYLDRTLIST:
 							Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
 						elif str(RECORD_ID) == "SYOBJR-98868":
 							Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
-						elif str(RECORD_ID) == "SYOBJR-00029":
-							service_id = TreeParam.split('-')[0]
+						elif str(RECORD_ID) == "SYOBJR-00029":							
 							#service_id = TreeParam
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -2091,8 +2090,13 @@ class SYLDRTLIST:
 							# service_object = Sql.GetFirst("select SERVICE_ID FROM SAQTSV where QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(quote_rec_id,quote_revision_record_id,service_id))
 							# if service_object is not None:
 							# 	service_id = service_object.SERVICE_ID
-							if TreeSuperParentParam == "Product Offerings":		
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"							
+							if TreeSuperParentParam == "Product Offerings":
+								service_id = TreeParam.split('-')[0]		
+								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"
+							elif TreeFirstSuperTopParentParam == "Product Offerings":
+								service_id = TreeSuperParentParam.split('-')[0]
+								fab_id = TreeParentParam.split('-')[0]
+								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
 							# if TreeSuperParentParam == "Product Offerings":
 							# 	#service_id = TreeParam.split('-')[0]
 							# 	Qustr += " AND SERVICE_ID = '"+str(serv_id)+"'"							
