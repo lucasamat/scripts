@@ -2145,7 +2145,8 @@ def Related_Sub_Banner(
             + '"/></div>'
         )
 
-    if str(PrimaryLable) != "" and str(PrimaryValue) != "":
+    #if str(PrimaryLable) != "" and str(PrimaryValue) != "":
+    if str(PrimaryLable) != "":    
         sec_rel_sub_bnr += (
             '<div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="'
             + str(PrimaryLable)
@@ -2157,7 +2158,8 @@ def Related_Sub_Banner(
             + str(PrimaryValue)
             + "</abbr></div></div>"
         )
-    if str(SecondLable) != "" and str(SecondValue) != "":
+    #if str(SecondLable) != "" and str(SecondValue) != "":
+    if str(SecondLable) != "":
         Trace.Write("SSLA"+str(SecondLable))
         Trace.Write("SSVAL"+str(SecondValue))
         sec_rel_sub_bnr += (
@@ -2171,7 +2173,8 @@ def Related_Sub_Banner(
             + str(SecondValue)
             + "</abbr></div></div>"
         )
-    if str(ThirdLable) != "" and str(ThirdValue) != "":		
+    #if str(ThirdLable) != "" and str(ThirdValue) != "":
+    if str(ThirdLable) != "":		
         if str(TabName) == "CM Class":			
             if str(ThirdValue).upper() == "TRUE":				
                 ThirdValueDiv = (
@@ -2208,7 +2211,8 @@ def Related_Sub_Banner(
             )
             Trace.Write("Line no:1945")
             Trace.Write(sec_rel_sub_bnr)
-    if str(FourthLable) != "" and str(FourthValue) != "" and (ObjName != "SAQTMT") and str(TreeParam) != "Quote Preview":		
+    #if str(FourthLable) != "" and str(FourthValue) != "" and (ObjName != "SAQTMT") and str(TreeParam) != "Quote Preview":
+    if str(FourthLable) != "" and (ObjName != "SAQTMT") and str(TreeParam) != "Quote Preview":		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(FourthLable)
@@ -2220,7 +2224,8 @@ def Related_Sub_Banner(
                 + str(FourthValue)
                 + "</abbr></div></div>"
             )
-    if str(FifthLable) != "" and str(FifthValue) != "" and str(TreeParam) != "Quote Preview":		
+    #if str(FifthLable) != "" and str(FifthValue) != "" and str(TreeParam) != "Quote Preview":
+    if str(FifthLable) != "" and str(TreeParam) != "Quote Preview": 		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(FifthLable)
@@ -2232,7 +2237,8 @@ def Related_Sub_Banner(
                 + str(FifthValue)
                 + "</abbr></div></div>"
             )
-    if str(SixthLable) != "" and str(SixthValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):		
+    #if str(SixthLable) != "" and str(SixthValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):
+    if str(SixthLable) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(SixthLable)
@@ -2244,7 +2250,8 @@ def Related_Sub_Banner(
                 + str(SixthValue)
                 + "</abbr></div></div>"
             )  
-    if str(SeventhLable) != "" and str(SeventhValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):		
+    #if str(SeventhLable) != "" and str(SeventhValue) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):
+    if str(SeventhLable) != "" and (str(TreeParam) != "Quote Information" and str(TreeParam) != "Quote Preview"):    		
         sec_rel_sub_bnr += (
                 '<div class="segment_part_description_child secondary_highlight" style="display: block;"><div class="segment_part_heading_child"><abbr title="'
                 + str(SeventhLable)
