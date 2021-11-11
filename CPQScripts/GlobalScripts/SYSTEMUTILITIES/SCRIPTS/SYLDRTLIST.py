@@ -2082,7 +2082,7 @@ class SYLDRTLIST:
 							Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
 						elif str(RECORD_ID) == "SYOBJR-98868":
 							Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
-						elif str(RECORD_ID) == "SYOBJR-98870":
+						elif str(RECORD_ID) == "SYOBJR-00029":
 							service_id = TreeParam
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -6741,7 +6741,7 @@ class SYLDRTLIST:
 					elif str(RECORD_ID) == "SYOBJR-98785":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-					elif str(RECORD_ID) == "SYOBJR-98870":
+					elif str(RECORD_ID) == "SYOBJR-00029":
 						service_id = TreeParam
 						quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -7929,7 +7929,7 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-98785":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00811").GetValue()
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-						elif str(RECORD_ID) == "SYOBJR-98870":
+						elif str(RECORD_ID) == "SYOBJR-00029":
 							service_id = TreeParam
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
