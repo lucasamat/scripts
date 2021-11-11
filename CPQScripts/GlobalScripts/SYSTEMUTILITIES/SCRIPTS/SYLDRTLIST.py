@@ -1400,7 +1400,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,CUSTOMER_TOOL_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,KPU,TECHNOLOGY,TOOL_CONFIGURATION,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,CEILING_PRICE_INGL_CURR,NET_PRICE_INGL_CURR,DISCOUNT,TOTAL_AMOUNT_INGL_CURR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],TAX_PERCENTAGE,NET_VALUE_INGL_CURR from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,EQUIPMENT_ID,ASSEMBLY_ID,TOOL_CONFIGURATION,CM_PART_COST,PM_PART_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,RECOATING_COST,KPI_COST,SEEDSTOCK_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,YEAR_OVER_YEAR,SALES_PRICE_INGL_CURR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE] from ( select  ROW_NUMBER() OVER( ORDER BY EQUIPMENT_LINE_ID) AS ROW, * from SAQICO (NOLOCK) where QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "'  AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
 										+ str(Page_start)
@@ -3382,9 +3382,11 @@ class SYLDRTLIST:
 		
 			# Item Covered Object Column Grouping - Start
 			table_group_columns = ''
+			table_group_columns2 = ''
+			table_group_columns3 = ''
+			table_group_columns4 = ''
 			#A055S000P01-4401 pricing view
 			##cost grouping
-			table_group_columns2 = ''
 			# ##price grouping
 			# table_group_columns3 =''
 			# ##Line summary grouping
@@ -3589,7 +3591,7 @@ class SYLDRTLIST:
 				# 				+ "</th>"
 				# 			)           
 				# 	continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','ASSEMBLY_ID','TOOL_CONFIGURATION'):
 					
 					align = ''
 					#A055S000P01-4401
@@ -3598,7 +3600,7 @@ class SYLDRTLIST:
 					# else:
 					rowspan_level1 = ""
 					if not table_group_columns:
-						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="3" '+rowspan_level1+'  data-align="center"><div>OBJECT INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="object_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
@@ -3615,8 +3617,8 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','CEILING_PRICE_INGL_CURR','NET_VALUE_INGL_CURR','DISCOUNT','TOTAL_AMOUNT_INGL_CURR','TAX_PERCENTAGE','NET_PRICE_INGL_CURR'):
+				##annulaized cost
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('CM_PART_COST','PM_PART_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','RECOATING_COST','KPI_COST','SEEDSTOCK_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','','ENTITLEMENT_COST_IMPACT'):
 					
 					align = ''
 					#A055S000P01-4401
@@ -3625,12 +3627,68 @@ class SYLDRTLIST:
 					# else:
 					rowspan_level1 = ""
 					if not table_group_columns2:
-						table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>PRICING INFORMATION<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+						table_header += '<th colspan="13" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
 					if str(invs) in right_align_list:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
 					table_group_columns2 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				
+				##annulaized price
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTITLEMENT_PRICE_IMPACT','CEILING_PRICE_INGL_CURR','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','DISCOUNT','YEAR_OVER_YEAR','SALES_PRICE_INGL_CURR'):
+					
+					align = ''
+					#A055S000P01-4401
+					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					# 	rowspan_level1 = 'rowspan="2"'
+					# else:
+					rowspan_level1 = ""
+					if not table_group_columns3:
+						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns3 += (
+								'<th data-toggle="bootstrap-table" data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="'
+								+ str(align)
+								+'" data-title-tooltsip="'
+								+ str(qstring)
+								+ '" data-sortable="true">'
+								+ str(qstring)
+								+ "</th>"
+							)           
+					continue
+				
+				##contractual cost and price
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE'):
+					
+					align = ''
+					#A055S000P01-4401
+					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
+					# 	rowspan_level1 = 'rowspan="2"'
+					# else:
+					rowspan_level1 = ""
+					if not table_group_columns4:
+						table_header += '<th colspan="4" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
+					if str(invs) in right_align_list:
+						align = 'right'
+					elif str(invs) in center_align_list:
+						align = 'center'
+					table_group_columns4 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -3986,6 +4044,10 @@ class SYLDRTLIST:
 				grouping_columns += table_group_columns
 			if table_group_columns2:
 				grouping_columns += table_group_columns2
+			if table_group_columns3:
+				grouping_columns += table_group_columns3
+			if table_group_columns4:
+				grouping_columns += table_group_columns4
 			table_header += '<tr>{}</tr>'.format(grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
@@ -4144,7 +4206,7 @@ class SYLDRTLIST:
 					getamt = str(my_format.format(round(float(val.BILLING_AMOUNT), int(decimal_place))))
 					footer_tot += '<th class="text-right">{}</th>'.format(getamt)
 		if  RECORD_ID == 'SYOBJR-00009' and str(TreeParam) == "Quote Items":
-				Columns = "['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','EQUIPMENT_DESCRIPTION','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','CEILING_PRICE_INGL_CURR','NET_VALUE_INGL_CURR','DISCOUNT','TOTAL_AMOUNT_INGL_CURR','TAX_PERCENTAGE','NET_PRICE_INGL_CURR']"
+				#Columns = "['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','EQUIPMENT_DESCRIPTION','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','CEILING_PRICE_INGL_CURR','NET_VALUE_INGL_CURR','DISCOUNT','TOTAL_AMOUNT_INGL_CURR','TAX_PERCENTAGE','NET_PRICE_INGL_CURR']"
 		for key, col_name in enumerate(list(eval(Columns))):            
 			StringValue_list = []
 			filter_level_data = ""
@@ -5890,7 +5952,7 @@ class SYLDRTLIST:
 								Qury_str = (
 									"select top "
 										+ str(PerPage)
-										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,CUSTOMER_TOOL_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,KPU,TECHNOLOGY,TOOL_CONFIGURATION,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,CEILING_PRICE_INGL_CURR,NET_PRICE_INGL_CURR,DISCOUNT,TOTAL_AMOUNT_INGL_CURR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],TAX_PERCENTAGE,NET_VALUE_INGL_CURR from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+										+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"' WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,EQUIPMENT_ID,ASSEMBLY_ID,TOOL_CONFIGURATION,CM_PART_COST,PM_PART_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,RECOATING_COST,KPI_COST,SEEDSTOCK_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,YEAR_OVER_YEAR,SALES_PRICE_INGL_CURR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE] from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 										+") AS ROW, * from SAQICO (NOLOCK) where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_ID = '"
 										+ str(qt_rec_id.QUOTE_ID)
 										+ "') m where m.ROW BETWEEN "
@@ -7359,7 +7421,7 @@ class SYLDRTLIST:
 									Qury_str = (
 										"select top "
 											+ str(PerPage)
-											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,CUSTOMER_TOOL_ID,ASSEMBLY_ID,GREENBOOK,FABLOCATION_ID,KPU,TECHNOLOGY,TOOL_CONFIGURATION,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,CEILING_PRICE_INGL_CURR,NET_PRICE_INGL_CURR,DISCOUNT,TOTAL_AMOUNT_INGL_CURR,YEAR_OVER_YEAR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],TAX_PERCENTAGE,NET_VALUE_INGL_CURR from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
+											+ " CASE WHEN STATUS = 'ACQUIRED' THEN '"+ imgstr +"' WHEN STATUS = 'APPROVAL REQUIRED' THEN '" +exclamation+ "' WHEN STATUS = 'ON HOLD - COSTING' THEN '"+ error +"' WHEN STATUS = 'ERROR' THEN '"+ error +"'  WHEN STATUS = 'PARTIALLY PRICED' THEN '"+ partially_priced +"' WHEN STATUS = 'ASSEMBLY MISSING' THEN '"+ assembly_missing +"'  ELSE '"+ acquiring_img_str +"' END AS STATUS, QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_LINE_ID,SERVICE_ID,FABLOCATION_ID,GREENBOOK,EQUIPMENT_ID,ASSEMBLY_ID,TOOL_CONFIGURATION,CM_PART_COST,PM_PART_COST,GREATER_THAN_QTLY_PM_COST,LESS_THAN_QTLY_PM_COST,REFURB_COST,CLEANING_COST,METROLOGY_COST,RECOATING_COST,KPI_COST,SEEDSTOCK_COST,TOTAL_COST_WOSEEDSTOCK,TOTAL_COST_WSEEDSTOCK,,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,CEILING_PRICE_INGL_CURR,TARGET_PRICE_INGL_CURR,SLSDIS_PRICE_INGL_CURR,BD_PRICE_INGL_CURR,DISCOUNT,YEAR_OVER_YEAR,SALES_PRICE_INGL_CURR,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CONVERT(VARCHAR(10),WARRANTY_START_DATE,101) AS [WARRANTY_START_DATE],CONVERT(VARCHAR(10),WARRANTY_END_DATE,101) AS [WARRANTY_END_DATE] from ( select  ROW_NUMBER() OVER( ORDER BY "+ str(Wh_API_NAMEs)
 											+") AS ROW, * from SAQICO (NOLOCK) where  QUOTE_ID = '"
 											+ str(qt_rec_id.QUOTE_ID)
 											+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"') m where m.ROW BETWEEN "
