@@ -4086,6 +4086,8 @@ class SYLDRTLIST:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
 		else:
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
+		if RECORD_ID == 'SYOBJR-98872':
+			cls = "eq(1)"
 		cls = "eq(2)"
 		CHL_STS_OBJ = None
 
