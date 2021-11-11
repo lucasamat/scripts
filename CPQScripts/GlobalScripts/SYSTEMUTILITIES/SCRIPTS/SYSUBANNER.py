@@ -2840,17 +2840,17 @@ def Related_Sub_Banner(
         # elif str(TreeParentParam) == "Comprehensive Services" and TabName == "Quotes" and subTabName == "Parts List":
         #     Trace.Write("@@@2473")
         #     sec_rel_sub_bnr += ('<button id="delete_parts" onclick="bulk_del_yes()"  class="btnconfig" disabled = "">DELETE</button>') 
-        elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Service Parts List" and str(subTabName)!= "New Parts Only":     
+        elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Parts List" and str(subTabName)!= "New Parts Only":     
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )    
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += str(add_button)                              
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
-        elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Service Parts List":
+        elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Parts List":
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += ('<button id="ADDNEW__SYOBJR_00011_SYOBJ_00974" onclick="PM_FrequencyInlineEdit()" class="btnconfig" >INLINE EDIT</button>')
             else:
-                if str(subTabName)!="Service Parts List":
+                if str(subTabName)!="Parts List":
                     sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
             sec_rel_sub_bnr =''
