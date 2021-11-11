@@ -3899,7 +3899,19 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)  
-						if invs == "LINE":
+						if invs == "LINE"and RECORD_ID != 'SYOBJR-98873' :
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
+							) 
+						if invs == "SERVICE_ID"and RECORD_ID == 'SYOBJR-98873' :
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
