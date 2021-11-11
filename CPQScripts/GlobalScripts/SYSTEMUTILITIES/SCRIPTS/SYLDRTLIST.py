@@ -23,7 +23,7 @@ except:
 if GetActiveRevision:
     Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 class SYLDRTLIST:
-	def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id):         
+	def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id,line_item):         
 		TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or ""
 		getyears = col_year = footer_tot = ""
 		getQuotetype = exclamation=""
@@ -2094,6 +2094,8 @@ class SYLDRTLIST:
 									service_id = service_object.SERVICE_ID
 							Qustr += " AND SERVICE_ID = '"+str(service_id)+"'"
 						Trace.Write('In 1958---*'+str(Qustr))
+						if str(RECORD_ID) == "SYOBJR-98874":
+							Qustr += " AND LINE = '"+str(line_item)+"'"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825"):
 							Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 						Qury_str = (
@@ -8601,8 +8603,14 @@ try:
     pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
 except:
     pricing_picklist_value = 'Pricing'
+
+try:
+	line_item = Param.line_item
+except:
+	line_item = ""
+
 if ACTION == "PRODUCT_ONLOAD": 
-    ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id))
+    ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id,line_item))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
 
     ATTRIBUTE_NAME = Param.ATTRIBUTE_NAME
@@ -8612,6 +8620,6 @@ elif ACTION == "PRODUCT_ONLOAD_FILTER":
         RECORD_ID = "-".join(RECORD_ID.split("_")[:2])
         ApiResponse = ApiResponseFactory.JsonResponse(
             ObjSYLDRTLIST.MDYNMICSQLOBJECTFILTER(
-                RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab
+                RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab,line_item
             )
         )
