@@ -1097,7 +1097,6 @@ class Entitlements:
 					entitlement_value = str((dict_val).split("||")[0]).strip()
 					##Ancillary Object auto insert based on conditions
 					ancillary_flag = "False"
-					tableName = SAQSGE,SAQTSEserviceId
 					#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
 					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE,SAQTSE',SAQSFE):
 						#ancillary_object = 'Z0101' 
