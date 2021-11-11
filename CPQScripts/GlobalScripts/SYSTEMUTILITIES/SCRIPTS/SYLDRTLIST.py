@@ -4281,7 +4281,7 @@ class SYLDRTLIST:
 							+ '">'
 						)
 						filter_level_list.append(filter_level_data)
-						Trace.Write('4260--filter_level_list----'+str(col_name)+'-----'+str(filter_level_data))
+					Trace.Write('4260--filter_level_list----'+str(col_name)+'-----'+str(filter_level_data))
 				except:
 					Trace.Write("except-filter-"+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE": 
