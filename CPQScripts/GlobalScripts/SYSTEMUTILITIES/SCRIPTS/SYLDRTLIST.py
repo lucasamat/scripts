@@ -3891,16 +3891,16 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
 						if str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="TARGET QUANTITY":
-    						table_header += (
-									'<th  data-field="'
-									+ str(invs)
-									+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
-									+ str(qstring)
-									+ '" data-formatter="partsListEditLink" data-sortable="true" '
-									+ rowspan
-									+'>'
-									+ str(qstring)
-									+ "</th>"
+							table_header += (
+								'<th  data-field="'
+								+ str(invs)
+								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
+								+ str(qstring)
+								+ '" data-formatter="partsListEditLink" data-sortable="true" '
+								+ rowspan
+								+'>'
+								+ str(qstring)
+								+ "</th>"
 								)
 						if invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
 							table_header += (
