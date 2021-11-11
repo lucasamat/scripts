@@ -4682,7 +4682,7 @@ class SYLDRTLIST:
 		)
 
 	def MDYNMICSQLOBJECTFILTER(
-		self, RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder,  PR_CURR, TP ,SubTab
+		self, RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder,  PR_CURR, TP ,SubTab,line_item
 	):
 		obj_obj1 = ""
 		price_status = []
