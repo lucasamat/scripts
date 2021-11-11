@@ -3513,18 +3513,17 @@ class SYLDRTLIST:
 						else:
 							Trace.Write("@3488"+str(qstring))
 							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873":
-								formatter = "partsListEditLink" if str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" else "commonrealtedhyperlink"
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
 									+ '" data-filter-control="input" data-title-tooltip="'
 									+ str(qstring)
-									+ '" data-formatter="'+str(formatter)+'" data-sortable="true" '
+									+ '" data-formatter="commonrealtedhyperlink" data-sortable="true" '
 									+ rowspan
 									+'>'
 									+ str(qstring)
 									+ "</th>"
-								) 
+								)
 								    
 							elif str(current_tab).upper() == "APP":
 								if (str(TreeParam) == "Tabs" or str(TreeParam) == "Pages"):
@@ -3898,6 +3897,18 @@ class SYLDRTLIST:
 						visible = ""
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
+						if str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="TARGET QUANTITY":
+    						table_header += (
+									'<th  data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
+									+ str(qstring)
+									+ '" data-formatter="partsListEditLink" data-sortable="true" '
+									+ rowspan
+									+'>'
+									+ str(qstring)
+									+ "</th>"
+								)
 						if invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
 							table_header += (
 								'<th  data-field="'
