@@ -15,7 +15,9 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 import re
-from datetime import timedelta , date
+#from datetime import timedelta , date
+from datetime import datetime, timedelta
+
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 #Log.Info("==========================>00000000")
@@ -461,9 +463,10 @@ class SyncQuoteAndCustomTables:
 							# )
 					# self.quote.OrderStatus.Name
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
-					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-					expired_date = date.today()+ timedelta(days=365)
-					Log.Info("Expiry_Date_Check "+str(expired_date))
+					created_date = datetime.now()
+					expired_date = created_date + timedelta(days=365)
+					created_date = re.sub('-','/',str(created_date))
+					expired_date = re.sub('-','/',str(expired_date))
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
@@ -573,7 +576,6 @@ class SyncQuoteAndCustomTables:
 							
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
-						from datetime import datetime, timedelta
 						revision_start_date = datetime.now()
 						revision_end_date = revision_start_date + timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
