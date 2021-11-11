@@ -2079,7 +2079,7 @@ class TreeView:
 										subTabName = str(NodeText) + " : " + str(subTabName)
 									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
-									elif subTabName == 'Parts List':
+									elif subTabName == 'Service Parts List':
 										subTabName = ""
 										Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
 										if str(service_id) == "bar":
