@@ -747,7 +747,7 @@ class SyncQuoteAndCustomTables:
 								#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
 								#                     })
 						if str(salesorg_data.get('SALESORG_ID')):
-							#Log.Info("TAX_DETAILS")
+							Log.Info("TAX_DETAILS=====")
 							tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							#Log.Info("""SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}'""".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID')))
 							if tax_details:
