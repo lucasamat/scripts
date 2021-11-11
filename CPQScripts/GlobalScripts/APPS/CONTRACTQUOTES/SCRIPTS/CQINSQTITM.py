@@ -323,7 +323,7 @@ class ContractQuoteItem:
 				source_object_name = 'SAQSCE'
 				dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
-			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART'):
+			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART','Offering + Greenbook + Gr Equi'):
 				source_object_name = 'SAQSGE'
 				dynamic_select_columns = 'null as OBJECT_ID,'
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
@@ -616,6 +616,10 @@ class ContractQuoteItem:
 				self._quote_items_assembly_insert()
 				self._quote_items_assembly_entitlement_insert()
 		else:
+			##deleting Z0046 SAQRIT records
+			if self.service_id == 'Z0046':
+				Sql.RunQuery("DELETE FORM SAQRIT WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+
 			quote_revision_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			if not quote_revision_item_obj:
 				
