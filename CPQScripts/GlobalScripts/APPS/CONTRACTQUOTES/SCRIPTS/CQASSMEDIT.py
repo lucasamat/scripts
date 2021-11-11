@@ -250,7 +250,7 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
 					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
 					Trace.Write('NewValue-iff--'+str(NewValue)+str(requestdata))
-					# NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
+					NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
 					# Trace.Write('NewValue-iff--254----'+str(NewValue))
 				else:
 					Trace.Write('NewValue--'+str(NewValue))
