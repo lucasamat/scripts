@@ -322,16 +322,10 @@ class ContractQuoteItem:
 			if (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() == 'OFFERING + EQUIPMENT':
 				source_object_name = 'SAQSCE'
 				dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
-				
-				dynamic_join_str = "LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = {ObjectName}.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = {ObjectName}.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID AND SAQRIT.OBJECT_ID = {ObjectName}.EQUIPMENT_ID".format(ObjectName = source_object_name)
-				dynamic_where_str = " AND ISNULL(SAQRIT.OBJECT_ID,'') = '' "
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
-			
 			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART'):
 				source_object_name = 'SAQSGE'
 				dynamic_select_columns = 'null as OBJECT_ID,'
-				dynamic_join_str = "LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = {ObjectName}.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = {ObjectName}.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = {ObjectName}.FABLOCATION_RECORD_ID ".format(ObjectName = source_object_name)
-				dynamic_where_str = " AND ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = '' "
 				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
 			else:
 				return False
@@ -383,10 +377,9 @@ class ContractQuoteItem:
 					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID     
 					JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = {ObjectName}.SALESORG_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
 					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = {ObjectName}.SERVICE_ID 
-					LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER 
-					{dynamic_join_str}
-					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' {dynamic_where_str}			
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, dynamic_where_str = dynamic_where_str,dynamic_join_str = dynamic_join_str ))
+					LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
+					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns))
 				# Item Level entitlement Insert
 				self._quote_items_entitlement_insert(source_object_name=source_object_name)
 		return True		
