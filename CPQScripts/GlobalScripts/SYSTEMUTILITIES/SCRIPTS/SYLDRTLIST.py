@@ -3901,7 +3901,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 								)
-						if invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
+						elif invs != "EQUIPMENT_LINE_ID" and invs != "LINE":             
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
