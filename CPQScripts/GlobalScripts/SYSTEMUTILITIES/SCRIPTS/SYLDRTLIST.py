@@ -3798,8 +3798,7 @@ class SYLDRTLIST:
 
 				# 	continue
 
-				elif len(cell_api) > 0 and invs in cell_api:    
-					Trace.Write("@3798ServiceJ"+str(qstring))                 
+				elif len(cell_api) > 0 and invs in cell_api:                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3812,8 +3811,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):
-					Trace.Write("@3811ServiceJ"+str(qstring))                     
+				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3841,8 +3839,7 @@ class SYLDRTLIST:
 							+ str(qstring)
 							+ "</th>"
 						)
-					else:  
-						Trace.Write("@3839ServiceJ"+str(qstring))      
+					else:        
 						table_header += (
 							'<th  data-field="'
 							+ str(invs)
@@ -3859,7 +3856,7 @@ class SYLDRTLIST:
 					
 				# + '" data-formatter="ParentRelatedListHyperLink" data-sortable="true">'
 				elif checkbox_list is not None and invs in checkbox_list:
-					Trace.Write("@3855ServiceJ"+str(qstring)) 										
+										
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3872,8 +3869,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif edit_field is not None and invs in edit_field:    
-					Trace.Write("@3869ServiceJ"+str(qstring))                
+				elif edit_field is not None and invs in edit_field:                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
