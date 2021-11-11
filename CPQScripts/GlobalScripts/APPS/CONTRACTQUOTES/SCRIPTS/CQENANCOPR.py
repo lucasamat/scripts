@@ -713,7 +713,8 @@ class AncillaryProductOperation:
 				if val.ENTITLEMENT_ID:
 					Trace.Write('647--'+str(val.ENTITLEMENT_ID))
 					if val.ENTITLEMENT_DISPLAY_VALUE:
-						try:						
+						try:
+							AttributeID_Pass =""						
 							add_where =''
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
 							if str(val.ENTITLEMENT_ID) == "AGS_Z0091_KPI_BPTKPI" and NewValue == "Yes":
@@ -723,11 +724,12 @@ class AncillaryProductOperation:
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
-							ServiceId = 'Z0046'
-							whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
-							ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
-							
-							result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+							if AttributeID_Pass:
+								ServiceId = 'Z0046'
+								whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
+								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+								
+								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 						except Exception as e:
 							Log.Info('error--296'+str(e))
 							Trace.Write('erroe on update'+str(e))
