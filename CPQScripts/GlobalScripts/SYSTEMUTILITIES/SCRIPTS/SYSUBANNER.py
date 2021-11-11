@@ -1939,7 +1939,7 @@ def Related_Sub_Banner(
     elif TreeParentParam == 'Quote Items' and ObjName == 'SAQITM' and subTabName == 'Spare Parts':
         PrimaryLable = ""
         PrimaryValue = ""       
-    elif TreeParam == 'Quote Items' and subTabName == "Summary":
+    elif TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
         Trace.Write("quoteitemshp===")
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,NET_VALUE,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
@@ -2856,7 +2856,7 @@ def Related_Sub_Banner(
         elif str(TreeParam) == "Quote Items" and TabName == "Quotes" and subTabName == "Summary":
             #sec_rel_sub_bnr =''
             #sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal" style="display: none;">UPDATE PRICING</button>')
-            sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal" style="display: none;">UPDATE PRICING</button>')
+            sec_rel_sub_bnr += ('<button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button><button id="CALCULATE_QItems"  onclick="calculate_QItems(this)" class="btnconfig" data-target="" data-toggle="modal" style="display: none;">UPDATE PRICING</button>')
         elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
             sec_rel_sub_bnr += ""
         else:
