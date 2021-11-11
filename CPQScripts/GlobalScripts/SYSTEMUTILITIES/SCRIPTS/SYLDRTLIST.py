@@ -3441,7 +3441,7 @@ class SYLDRTLIST:
 					#table_header += '<th colspan="5" data-align="right"><div><label class="onlytext"><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 				if key == 0:
 					if invs in primary_link_popup:
-						Trace.Write("@3444---"str(invs))						
+						
 						if str(current_tab).upper() == "APP" and current_prod.upper() == "SYSTEM ADMIN":
 							
 							table_header += (
@@ -3598,7 +3598,6 @@ class SYLDRTLIST:
 				# 			)           
 				# 	continue
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('EQUIPMENT_ID','ASSEMBLY_ID','TOOL_CONFIGURATION'):
-					Trace.Write("@3602---"str(invs))
 					
 					align = ''
 					#A055S000P01-4401
@@ -3626,7 +3625,7 @@ class SYLDRTLIST:
 					continue
 				##annulaized cost
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('CM_PART_COST','PM_PART_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','RECOATING_COST','KPI_COST','SEEDSTOCK_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT'):
-					Trace.Write("@3630---"str(invs))
+					
 					align = ''
 					#A055S000P01-4401
 					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
@@ -3654,7 +3653,6 @@ class SYLDRTLIST:
 				
 				##annulaized price
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','CEILING_PRICE_INGL_CURR','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','DISCOUNT','YEAR_OVER_YEAR','SALES_PRICE_INGL_CURR'):
-					Trace.Write("@3658---"str(invs))
 					
 					align = ''
 					#A055S000P01-4401
@@ -3683,7 +3681,7 @@ class SYLDRTLIST:
 				
 				##contractual cost and price
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE'):
-					Trace.Write("@3687---"str(invs))
+					
 					align = ''
 					#A055S000P01-4401
 					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
@@ -3799,8 +3797,7 @@ class SYLDRTLIST:
 
 				# 	continue
 
-				elif len(cell_api) > 0 and invs in cell_api:  
-					Trace.Write("@3804---"str(invs))                  
+				elif len(cell_api) > 0 and invs in cell_api:                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3813,8 +3810,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):        
-					Trace.Write("@3818---"str(invs))            
+				elif lookup_link_popup is not None and invs in lookup_link_popup and (str(invs) != "TAB_NAME" and str(ObjectName) != "SYPSAC"):                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
@@ -3827,8 +3823,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif lookup_rl_popup is not None and invs in lookup_rl_popup:     
-					Trace.Write("@3832---"str(invs))       
+				elif lookup_rl_popup is not None and invs in lookup_rl_popup:            
 					footer_text_formatter = ''
 
 					if RECORD_ID == 'SYOBJR-00024' and invs == 'APRCHNSTP_ID':                        
@@ -3860,7 +3855,6 @@ class SYLDRTLIST:
 					
 				# + '" data-formatter="ParentRelatedListHyperLink" data-sortable="true">'
 				elif checkbox_list is not None and invs in checkbox_list:
-					Trace.Write("@3864---"str(invs))
 										
 					table_header += (
 						'<th  data-field="'
@@ -3874,8 +3868,7 @@ class SYLDRTLIST:
 						+ "</th>"
 					)
 					
-				elif edit_field is not None and invs in edit_field:    
-					Trace.Write("@3879---"str(invs))                
+				elif edit_field is not None and invs in edit_field:                    
 					table_header += (
 						'<th  data-field="'
 						+ str(invs)
