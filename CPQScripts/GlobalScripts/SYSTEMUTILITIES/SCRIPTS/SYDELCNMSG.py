@@ -499,6 +499,10 @@ class DeleteConfirmPopup:
                                         start_step_id += 1
 
                                     Sql.RunQuery(sql_to_upd_acacst_step_number)
+                        elif ObjName == "SAQRSP":
+                            getpart = Sql.GetFirst("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_REV_PO_PRODUCT_LIST_ID = '{}'".format(RecordId))
+                            part = getpart.PART_NUMBER
+                            Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),part))
 
         return True
 
