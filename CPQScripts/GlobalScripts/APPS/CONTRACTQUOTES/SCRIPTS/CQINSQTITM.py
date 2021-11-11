@@ -607,6 +607,10 @@ class ContractQuoteItem:
 		# item delete
 		quote_item_delete_statement = "DELETE SAQRIT FROM SAQRIT (NOLOCK) JOIN SAQSCE (NOLOCK) ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID='{}' AND SAQRIT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))	
 
+	def _delete_z0046_quote_items(self):
+		if self.service_id == 'Z0046':
+			#deleting_tables_list = ['SAQRIT','SAQRIO','']
+			Sql.RunQuery("DELETE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":			
