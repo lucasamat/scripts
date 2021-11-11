@@ -1336,7 +1336,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 									""".format(
 						green_book =self.tree_param,
 						fab_location_id = self.tree_parent_level_0,
-						service_id = self.tree_parent_level_1,
+						service_id = self.tree_parent_level_1 if self.tree_parent_level_1 in ("Z0091","Z0092") else self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 						UserId=self.user_id,
