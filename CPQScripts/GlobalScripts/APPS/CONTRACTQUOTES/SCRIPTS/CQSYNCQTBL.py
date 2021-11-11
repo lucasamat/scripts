@@ -1461,8 +1461,8 @@ class SyncQuoteAndCustomTables:
 										employee_dict["COUNTRY"] = employee.get("COUNTRY")
 										employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
 										employee_dict["EMAIL"] = employee.get("EMAIL")
-										employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
-										employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+										employee_dict["EMPLOYEE_ID"] = employee.get("PRIMARY_CONTACT_ID")
+										employee_dict["EMPLOYEE_NAME"] = employee.get("PRIMARY_CONTACT_NAME")
 										employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
 										employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
 										employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
