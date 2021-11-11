@@ -609,8 +609,9 @@ class ContractQuoteItem:
 
 	def _delete_z0046_quote_items(self):
 		if self.service_id == 'Z0046':
-			#deleting_tables_list = ['SAQRIT','SAQRIO','']
-			Sql.RunQuery("DELETE FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			deleting_tables_list = ['SAQRIT','SAQRIO','SAQITE','SAQICO']
+			for obj in deleting_tables_list:
+				Sql.RunQuery("DELETE FROM {obj} (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, obj = obj))
 
 	def _do_opertion(self):		
 		if self.action_type == "INSERT_LINE_ITEMS":			
