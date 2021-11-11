@@ -51,7 +51,7 @@ get_serviceid = SAQITMWhere.split('SERVICE_ID = ')
 get_serviceid = get_serviceid[len(get_serviceid)-1].replace("'","")
 Log.Info("script called..40-----"+str(objectName)+" - "+str(where)+" - "+str(SAQITMWhere)+"---140------- "+str(attributeList)+'--24------'+str(get_serviceid))
 Log.Info("ancillary_dict--"+str(ancillary_dict))
-Log.Info("attributeList--"+str(attributeList))
+#Log.Info("attributeList--"+str(attributeList))
 
 def sendEmail(level):
 	Log.Info('284-----entitlement email started-----')
@@ -158,7 +158,7 @@ def ChildEntRequest(config_id,tableName,where):
 			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val =  replace(replace(STUFF((SELECT ''''+FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(entitlement_xml,''&'','';#38''),'''','';#39''),'' < '','' &lt; ''),'' > '','' &gt; '')  as entitlement_xml from "+str(tableName)+"(nolock) "+str(where_cond)+" )A )a FOR XML PATH ('''')), 1, 1, ''''),''&lt;'',''<''),''&gt;'',''>'')  SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_child_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
 
 			Parentgetdata=Sql.GetList("SELECT * FROM {} ".format(ent_child_temp))
-			Log.Info("where------ "+str(where))
+			#Log.Info("where------ "+str(where))
 			if Parentgetdata:					
 				response = Request_access_token()					
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(config_id)+"/items/1"
@@ -179,7 +179,7 @@ def ChildEntRequest(config_id,tableName,where):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
@@ -188,7 +188,7 @@ def ChildEntRequest(config_id,tableName,where):
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							Log.Info("requestdata--child-- " + str(requestdata))
+							#Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1
 							cpsmatchID = webclient.ResponseHeaders["Etag"]	
@@ -523,7 +523,7 @@ def ancillary_service_call():
 	if ancillary_dict:
 		
 		for anc_key,anc_val in ancillary_dict.items():
-			Log.Info("vall--"+str(anc_key)  )
+			#Log.Info("vall--"+str(anc_key)  )
 			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, quote,revision,get_serviceid ))
 			
 			if (anc_val == "INSERT") or (anc_val == "DELETE" and ancillary_object_qry) :
@@ -911,7 +911,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					get_coeffi = Sql.GetList("SELECT ENTITLEMENT_ID from PRENTL (NOLOCK) where SERVICE_ID = '{}' AND PAR_ENPAR_ENTITLEMENT_ID in {} ".format(get_serviceid ,lst) )
 					val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 					val_list.extend(val_coeff)
-				Log.Info("val_list--equp-"+str(val_list))
+				#Log.Info("val_list--equp-"+str(val_list))
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
@@ -1003,18 +1003,18 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				where_str = where.split('AND')
 				if where_str:
 					where_string_splitted = 'AND'.join(where_str[0:2])
-				Log.Info("""UPDATE SAQSCE
-									SET
-									ENTITLEMENT_GROUP_ID = OQ.RowNo                            
-									FROM SAQSCE (NOLOCK)
-									INNER JOIN (
-										SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
-										SELECT DISTINCT SRC.QUOTE_RECORD_ID,SRC.QTEREV_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
-										FROM SAQSCE (NOLOCK) SRC
-										JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
-										{WhereString} )AS IQ
-									)AS OQ
-									ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML AND OQ.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID""".format(WhereString=where_string_splitted))
+				# Log.Info("""UPDATE SAQSCE
+				# 					SET
+				# 					ENTITLEMENT_GROUP_ID = OQ.RowNo                            
+				# 					FROM SAQSCE (NOLOCK)
+				# 					INNER JOIN (
+				# 						SELECT *, ROW_NUMBER()OVER(ORDER BY IQ.QUOTE_RECORD_ID) AS RowNo  FROM (
+				# 						SELECT DISTINCT SRC.QUOTE_RECORD_ID,SRC.QTEREV_RECORD_ID, SRC.SERVICE_ID, SRC.ENTITLEMENT_XML
+				# 						FROM SAQSCE (NOLOCK) SRC
+				# 						JOIN MAMTRL ON MAMTRL.SAP_PART_NUMBER = SRC.SERVICE_ID AND MAMTRL.SERVICE_TYPE = 'NON TOOL BASED'
+				# 						{WhereString} )AS IQ
+				# 					)AS OQ
+				# 					ON OQ.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND OQ.SERVICE_ID = SAQSCE.SERVICE_ID AND OQ.ENTITLEMENT_XML = SAQSCE.ENTITLEMENT_XML AND OQ.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID""".format(WhereString=where_string_splitted))
 				Sql.RunQuery("""UPDATE SAQSCE
 									SET
 									ENTITLEMENT_GROUP_ID = OQ.RowNo
