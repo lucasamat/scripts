@@ -1516,6 +1516,7 @@ class SyncQuoteAndCustomTables:
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							
 							if employee_obj:
 								quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 								contact_info_update = {
