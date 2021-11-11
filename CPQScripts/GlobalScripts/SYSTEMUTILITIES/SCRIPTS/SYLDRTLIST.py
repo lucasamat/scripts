@@ -2083,7 +2083,7 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-98868":
 							Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
 						elif str(RECORD_ID) == "SYOBJR-00029":
-							service_id = TreeParam
+							#service_id = TreeParam
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							# if SubTab == "Parts List":
