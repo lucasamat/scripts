@@ -34,6 +34,7 @@ class ContractQuoteItem:
 		self.set_contract_quote_related_details()
 		self._set_service_type()	
 		self._get_material_type()
+		self.is_ancillary = ''
 		self._get_ancillary_product()
 	
 	def set_contract_quote_related_details(self):
