@@ -3506,7 +3506,7 @@ class SYLDRTLIST:
 							)
 						else:
 							Trace.Write("@3488"+str(qstring))
-							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-98875":
+							if (str(TreeParam) != 'Quote Preview' and str(TreeParam) != 'Contract Preview' and  str(TreeParam) != 'Billing Matrix' and str(current_tab).upper() != "APP" and RECORD_ID != "SYOBJR-98872") and RECORD_ID != "SYOBJR-00009" and RECORD_ID != "SYOBJR-98875" and RECORD_ID !="SYOBJR-98873":
 							
 								table_header += (
 									'<th  data-field="'
@@ -3548,7 +3548,8 @@ class SYLDRTLIST:
 									)  
 							elif RECORD_ID == "SYOBJR-98872":
 								table_header += ""
-								
+							elif RECORD_ID == "SYOBJR-98873":
+								table_header += ""	
 							elif RECORD_ID == "SYOBJR-98875":
 								table_header += ""								
 								
