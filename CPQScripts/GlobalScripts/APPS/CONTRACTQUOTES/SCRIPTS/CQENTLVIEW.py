@@ -216,10 +216,13 @@ class EntitlementView():
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
 		Trace.Write('Treeparam--'+str(self.treeparam))
 		Trace.Write('treeparentparam----'+str(self.treeparentparam))
-		get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
-		if get_configuration_status:
-			if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
-				EntitlementType = "NO_ENTITLEMENT"
+		try:
+			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
+			if get_configuration_status:
+				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+					EntitlementType = "NO_ENTITLEMENT"
+		except:
+			Trace.Write('Treeparam--'+str(self.treeparam))
 		
 
 		if EntitlementType != "NO_ENTITLEMENT":
