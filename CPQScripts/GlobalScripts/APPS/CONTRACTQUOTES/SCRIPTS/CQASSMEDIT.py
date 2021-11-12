@@ -269,11 +269,11 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 			
 				for val in STANDARD_ATTRIBUTE_VALUES:
 					#if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
-					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
+					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL.upper() == str(NewValue).upper()):
 						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 						requestdata +=','
 						
-						NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
+						#NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
 						Trace.Write('NewValue-iff--254----'+str(NewValue))
 					elif field_type == 'Check Box':
 						Trace.Write("inside_J____checkbox")
