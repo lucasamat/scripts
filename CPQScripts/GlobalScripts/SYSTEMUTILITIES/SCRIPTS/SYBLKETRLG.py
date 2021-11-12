@@ -378,6 +378,7 @@ def remove_html_tags(text):
 def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUES,SELECTALL):
 	TreeParam = Product.GetGlobal("TreeParam")
 	TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
 	if TreeParam == 'Receiving Equipment':
 		CLICKEDID = "SYOBJR_98800_0D035FD5_F0EA_4F11_A0DB_B4E10928B59F"
@@ -401,6 +402,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			selected_rows = selectPN
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
+				return ""
+			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQRSP" and TITLE == "QUANTITY"):
+				Sql.RunQuery("""UPDATE SAQRSP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND FABLOCATION_ID = '{fab_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeSuperParentParam,fab_id=TreeParentParam,greenbook=TreeParam))
 				return ""
 		for index,rec in enumerate(selected_rows):
 			row = {}
