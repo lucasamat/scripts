@@ -2133,6 +2133,7 @@ class TreeView:
 									# 			if spare_parts_object.cnt > 0:
 									# 				subTabName = str(getRightView.SUBTAB_NAME)
 									elif subTabName == 'Fab Parts List':
+										subTabName = ""
 										Trace.Write("fab service list---"+str(NodeText))
 										entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
 										if entitlement_obj is None:
