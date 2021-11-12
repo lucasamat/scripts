@@ -1473,7 +1473,7 @@ class EntitlementView():
 									get_required_icon = ""
 								new_value_dicta["APPROVAL"] = ""	
 								new_value_dicta["ENTITLEMENT"] = str(attrName)
-								new_value_dicta["DESCRIPTION"] = str(get_tooltip)
+								new_value_dicta["DESCRIPTION"] = get_tooltip
 								new_value_dicta["REQUIRED"] = ""
 								if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
 									new_value_dicta["VALUE"] =sec_str1
