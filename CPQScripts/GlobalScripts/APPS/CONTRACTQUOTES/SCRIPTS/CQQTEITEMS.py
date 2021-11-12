@@ -119,17 +119,7 @@ def LoadSummary():
     QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
     QuoteRevisionId = getQuoteDetails.QTEREV_ID
     QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-    price_preview_status = []
-    price_preview_details = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_ID = '"+str(QuoteId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-    for status in price_preview_details:
-        price_preview_status.append(status.STATUS)
-    if len(price_preview_status) > 1:
-        prize_preview = 'not completed'
-    elif 'ACQUIRED' in price_preview_status:
-        prize_preview = 'completed'
-    else:
-        prize_preview = 'not completed'
-    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,prize_preview
+    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
