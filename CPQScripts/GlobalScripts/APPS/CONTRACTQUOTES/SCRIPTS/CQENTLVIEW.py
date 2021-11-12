@@ -274,7 +274,7 @@ class EntitlementView():
 									attr_tab_list_disallow.append(prdvalue["id"])
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
-								if prdvalue["visible"] == "false":
+								if prdvalue["visible"] == "true":
 									overallattributeslist_visible.append(prdvalue["id"])
 								if prdvalue["visible"] == "false":
 									attributesdisallowedlst.append(prdvalue["id"])
