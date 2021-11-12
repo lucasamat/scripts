@@ -335,7 +335,7 @@ class ContractQuoteItem:
 						break
 				else:
 					continue
-			Log.Info("_quote_items_insert ===> 2"+str(self.quote_service_entitlement_type))
+			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
 
 	def _quote_items_insert(self, update=False):		
 		source_object_name = ""
