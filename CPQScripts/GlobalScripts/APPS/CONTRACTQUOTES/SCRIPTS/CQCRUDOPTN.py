@@ -1186,7 +1186,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 			parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")			
 			primaryQueryItems = SqlHelper.GetFirst(""+str(parameter.QUERY_CRITERIA_1)+" SYSPBT(BATCH_RECORD_ID,SAP_PART_NUMBER, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,QTEREV_RECORD_ID) SELECT MAMTRL.MATERIAL_RECORD_ID as BATCH_RECORD_ID,MAMTRL.SAP_PART_NUMBER, ''IN PROGRESS'' as BATCH_STATUS, ''"+str(self.contract_quote_id)+"'' as QUOTE_ID, ''"+str(self.contract_quote_record_id)+"'' as QUOTE_RECORD_ID, ''"+str(batch_group_record_id)+"'' as BATCH_GROUP_RECORD_ID,''"+str(self.quote_revision_record_id)+"'' as QTEREV_RECORD_ID FROM MAMTRL (NOLOCK) JOIN splitstring(''"+record_ids+"'') ON ltrim(rtrim(NAME)) = MAMTRL.MATERIAL_RECORD_ID'")
 			parent_based_condition = ""
-			if self.tree_param in ("Z0091","Z0092") or  self.tree_parent_level_1 in ("Z0091","Z0092"):
+			if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007") or  self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007"):
 				parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"
 			# self._process_query("""
 			# 						INSERT SAQSPT (QUOTE_SERVICE_PART_RECORD_ID, BASEUOM_ID, BASEUOM_RECORD_ID, CUSTOMER_PART_NUMBER, CUSTOMER_PART_NUMBER_RECORD_ID, DELIVERY_MODE, EXTENDED_UNIT_PRICE, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, PRDQTYCON_RECORD_ID, CUSTOMER_ANNUAL_QUANTITY, QUOTE_ID, QUOTE_NAME, QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,SALESORG_ID, SALESORG_RECORD_ID, SALESUOM_CONVERSION_FACTOR, SALESUOM_ID, SALESUOM_RECORD_ID, SCHEDULE_MODE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, UNIT_PRICE, MATPRIGRP_ID, MATPRIGRP_RECORD_ID, DELIVERY_INTERVAL, VALID_FROM_DATE, VALID_TO_DATE,PAR_SERVICE_DESCRIPTION,PAR_SERVICE_ID,PAR_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED)
@@ -1337,7 +1337,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 									""".format(
 						green_book =self.tree_param,
 						fab_location_id = self.tree_parent_level_0,
-						service_id = self.tree_parent_level_1 if self.tree_parent_level_1 in ("Z0091","Z0092") else self.tree_param,
+						service_id = self.tree_parent_level_1 if self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007") else self.tree_param,
 						BatchGroupRecordId=batch_group_record_id,
 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 						UserId=self.user_id,
