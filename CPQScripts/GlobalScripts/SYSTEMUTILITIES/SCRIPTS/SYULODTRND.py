@@ -64,6 +64,7 @@ def CommonTreeViewHTMLDetail(
 	auto_field = ""
 	date_field = []
 	primary_value = RECORD_ID
+	Product.SetGlobal('get_quote_item_service',primary_value)
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
 	
 	try:
