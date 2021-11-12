@@ -2850,7 +2850,7 @@ class TreeView:
 											flag_excluse=1
 											break
 									if flag_excluse==1:
-    									subTabName = "Parts List"
+										subTabName = "Parts List"
 									#subTabName = "Parts List"
 								if subTabName:
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
