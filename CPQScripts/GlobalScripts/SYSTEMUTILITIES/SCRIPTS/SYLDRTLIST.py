@@ -3552,8 +3552,8 @@ class SYLDRTLIST:
 										+ str(qstring)
 										+ "</th>"
 									)  
-							elif RECORD_ID == "SYOBJR-98872":
-								table_header += ""
+							# elif RECORD_ID == "SYOBJR-98872":
+							# 	table_header += ""
 							elif RECORD_ID == "SYOBJR-98873":
 								table_header += ""	
 							elif RECORD_ID == "SYOBJR-98875":
@@ -4276,7 +4276,7 @@ class SYLDRTLIST:
 						filter_level_list.append(filter_level_data)
 					else:                        
 						filter_level_data = "input"
-						# if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
+						if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
 							# filter_level_data = "select"                        
 							# filter_clas_name = (
 							# 	'<div dropDownWidth="true" id = "'
@@ -4291,12 +4291,12 @@ class SYLDRTLIST:
 							# )
 							# filter_level_list.append(filter_level_data)
 							# filter_clas_name = ""
-							# filter_clas_name = (
-							# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
-							# 	+ str(col_name)
-							# 	+ '">'
-							# )
-						if str(col_name) != "QUOTE_REVISION_CONTRACT_ITEM_ID":
+							filter_clas_name = (
+								'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
+								+ str(col_name)
+								+ '">'
+							)
+						else
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
