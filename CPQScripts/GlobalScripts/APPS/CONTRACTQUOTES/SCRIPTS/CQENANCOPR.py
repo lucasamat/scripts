@@ -57,7 +57,8 @@ class AncillaryProductOperation:
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
 			self._delete_entitlement_tables()
 			self._insert_service_ent()
-			self._update_entitlement()
+			if self.service_id in ('Z0091','Z0035'):
+				self._update_entitlement()
 			self._entitlement_rolldown()
 		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	self._delete_entitlement_tables()
@@ -701,7 +702,7 @@ class AncillaryProductOperation:
 			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
 			ent_temp = "ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
-			where_cond = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id , 'Z0091')
+			where_cond = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(self.contract_quote_record_id,self.contract_quote_revision_record_id , self.service_id)
 			where_cond = where_cond.replace("'","''")
 			#Log.Info('636--646---706---where_cond-'+str(where_cond))
 			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38'')   as entitlement_xml from SAQTSE (nolock)  WHERE "+str(where_cond)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,CALCULATION_FACTOR,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
@@ -717,9 +718,9 @@ class AncillaryProductOperation:
 							AttributeID_Pass =""						
 							add_where =''
 							NewValue = val.ENTITLEMENT_DISPLAY_VALUE
-							if str(val.ENTITLEMENT_ID) == "AGS_Z0091_KPI_BPTKPI" and NewValue == "Yes":
+							if str(val.ENTITLEMENT_ID) == "AGS_{}_KPI_BPTKPI".format(self.service_id) and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
-							elif str(val.ENTITLEMENT_ID) == "AGS_Z0091_PQB_PPCPRM" and NewValue == "Yes":
+							elif str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
