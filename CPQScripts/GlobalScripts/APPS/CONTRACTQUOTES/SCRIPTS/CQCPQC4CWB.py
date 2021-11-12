@@ -60,7 +60,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         )
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
-        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO,ISNULL(NET_VALUE,0) AS NET_VALUE FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         
         ##date time conversion
         time = "T12:00:00.00"    
@@ -69,7 +69,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         valid_from =fromvalue+time
         valid_to = tovalue+time
         ##date time conversion
-        
+        net_value = "0.0000"
         opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
@@ -79,7 +79,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         
         
         ##opportunity header write back details starts...
-        opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(revision_obj.NET_VALUE)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_from)+'",\"ExpectedProcessingEndDate\":"'+str(valid_from)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
+        opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(net_value)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_from)+'",\"ExpectedProcessingEndDate\":"'+str(valid_from)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
         Trace.Write("opportunity_header_data-----"+str(opportunity_header_data))
         
