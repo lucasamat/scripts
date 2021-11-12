@@ -376,9 +376,14 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# 	)
 					# else:
 					#sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
+					# sec_str += (
+					# 	"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  eval("col_name." + str(sefl_api))+"' value = '"
+					# 	+ eval("col_name." + str(sefl_api))
+					# 	+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+					# )
 					sec_str += (
-						"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  eval("col_name." + str(sefl_api))+"' value = '"
-						+ eval("col_name." + str(sefl_api))
+						"<div class='col-md-3 pad-0'> <input type='text' id ='"+sefl_api+"' title = '"+  str(eval("col_name." + sefl_api))+"' value = '"
+						+ str(eval("col_name." + sefl_api))
 						+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 					)
 					# else:
