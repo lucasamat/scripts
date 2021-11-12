@@ -371,6 +371,7 @@ class ContractQuoteSummaryUpdate:
 						FROM SAQTRV (NOLOCK)
 						INNER JOIN (SELECT SAQITM.QUOTE_RECORD_ID, SAQITM.QTEREV_RECORD_ID,
 									SUM(ISNULL(SAQITM.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+									SUM(ISNULL(SAQITM.TOTAL_AMOUNT_INGL_CURR, 0)) as TOTAL_AMOUNT_INGL_CURR,
 									SUM(ISNULL(SAQITM.NET_VALUE, 0)) as NET_VALUE
 									FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY QTEREV_RECORD_ID, QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
