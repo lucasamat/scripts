@@ -4277,25 +4277,25 @@ class SYLDRTLIST:
 					else:                        
 						filter_level_data = "input"
 						if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
-							filter_level_data = "select"                        
-							filter_clas_name = (
-								'<div dropDownWidth="true" id = "'
-								+ str(table_id)
-								+ "_RelatedMutipleCheckBoxDrop_"
-								+ str(key)
-								+ '" class="form-control bootstrap-table-filter-control-'
-								+ str(col_name)
-								+ " RelatedMutipleCheckBoxDrop_"
-								+ str(key)
-								+ ' "></div>'
-							)
-							filter_level_list.append(filter_level_data)
-							# filter_clas_name = ""
+							# filter_level_data = "select"                        
 							# filter_clas_name = (
-							# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
+							# 	'<div dropDownWidth="true" id = "'
+							# 	+ str(table_id)
+							# 	+ "_RelatedMutipleCheckBoxDrop_"
+							# 	+ str(key)
+							# 	+ '" class="form-control bootstrap-table-filter-control-'
 							# 	+ str(col_name)
-							# 	+ '">'
+							# 	+ " RelatedMutipleCheckBoxDrop_"
+							# 	+ str(key)
+							# 	+ ' "></div>'
 							# )
+							# filter_level_list.append(filter_level_data)
+							# filter_clas_name = ""
+							filter_clas_name = (
+								'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
+								+ str(col_name)
+								+ '">'
+							)
 						else:
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
