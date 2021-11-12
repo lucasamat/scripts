@@ -2086,7 +2086,7 @@ class TreeView:
 										if str(service_id) == "bar":
 											service_id = NodeText.split('/>')[1]
 										table_name = "SAQTSE"
-										X=SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
+										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
 										updateentXML = X.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2813,9 +2813,9 @@ class TreeView:
 									#if str(service_id) == "bar":
 										##service_id = NodeText.split('/>')[1]
 									table_name = "SAQSFE"
-									entitlement_obj =SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
 									if entitlement_obj is None:
-										entitlement_obj=SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
 										updateentXML = entitlement_obj.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2828,7 +2828,9 @@ class TreeView:
 											if get_ent_id and get_ent_name:
 												flag_excluse=1
 												break
-									subTabName = "Parts List"
+										if flag_excluse==1:
+											subTabName = "Parts List"
+									#subTabName = "Parts List"
 								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
 									#if str(service_id) == "bar":
@@ -2847,7 +2849,9 @@ class TreeView:
 										if get_ent_id and get_ent_name:
 											flag_excluse=1
 											break
-									subTabName = "Parts List"
+									if flag_excluse==1:
+    									subTabName = "Parts List"
+									#subTabName = "Parts List"
 								if subTabName:
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
