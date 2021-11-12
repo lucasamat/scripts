@@ -622,12 +622,21 @@ class ContractQuoteItem:
 			Sql.RunQuery(delete_statement)
 		join_condition_string = ''
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
-			join_condition_string = 'ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID'
+			join_condition_string = 'AND ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID'
 		# item entitlement delete
-		quote_item_entitlement_delete_statement = "DELETE SAQITE FROM SAQITE (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQITE.QTEITM_RECORD_ID JOIN SAQSCE ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQITE.QUOTE_RECORD_ID='{}' AND SAQITE.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND SAQITE.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)	
+		quote_item_entitlement_delete_statement = """
+				DELETE SAQITE 
+					FROM SAQITE (NOLOCK) 
+					JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQITE.QTEITM_RECORD_ID 
+					JOIN SAQSCE ON SAQSCE.QUOTE_RECORD_ID=SAQRIT.QUOTE_RECORD_ID AND SAQSCE.QTEREV_RECORD_ID=SAQRIT.QTEREV_RECORD_ID AND SAQSCE.SERVICE_ID=SAQRIT.SERVICE_ID AND SAQSCE.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND SAQSCE.GREENBOOK_RECORD_ID = SAQRIT.GREENBOOK_RECORD_ID {JoinCondition}
+					WHERE SAQITE.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND SAQITE.SERVICE_ID='{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinCondition=join_condition_string)	
 		Sql.RunQuery(quote_item_entitlement_delete_statement)
 		# item delete
-		quote_item_delete_statement = "DELETE SAQRIT FROM SAQRIT (NOLOCK) JOIN SAQSCE (NOLOCK) ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID='{}' AND SAQRIT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)	
+		quote_item_delete_statement = """
+				DELETE SAQRIT 
+					FROM SAQRIT (NOLOCK) 
+					JOIN SAQSCE ON SAQSCE.QUOTE_RECORD_ID=SAQRIT.QUOTE_RECORD_ID AND SAQSCE.QTEREV_RECORD_ID=SAQRIT.QTEREV_RECORD_ID AND SAQSCE.SERVICE_ID=SAQRIT.SERVICE_ID AND SAQSCE.FABLOCATION_RECORD_ID = SAQRIT.FABLOCATION_RECORD_ID AND SAQSCE.GREENBOOK_RECORD_ID = SAQRIT.GREENBOOK_RECORD_ID {JoinCondition}
+					WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID='{QuoteRevisionRecordId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{ServiceId}' """.format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinCondition=join_condition_string)	
 		Sql.RunQuery(quote_item_delete_statement)
 
 	def _delete_z0046_quote_items(self):
@@ -676,6 +685,11 @@ class ContractQuoteItem:
 					self._quote_items_assembly_entitlement_insert()
 			else:
 				#self._delete_item_related_table_records()
+				#self._quote_items_insert(update=true)		
+				#self._quote_items_object_insert(update=true)	
+				#self._quote_annualized_items_insert(update=true)
+				#self._quote_items_assembly_insert(update=true)
+				#self._quote_items_assembly_entitlement_insert(update=true)
 				pass
 		# Pricing Calculation - Start
 		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
