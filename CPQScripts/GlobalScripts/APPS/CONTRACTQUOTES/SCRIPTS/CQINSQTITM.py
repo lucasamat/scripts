@@ -301,33 +301,49 @@ class ContractQuoteItem:
 				parent_service_id = check_ancillary.PAR_SERVICE_ID
 
 		Log.Info("_quote_items_insert ===> 1")
-		service_entitlement_obj = Sql.GetFirst("""SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM 
-										(
-											SELECT DISTINCT 
-													IQ.QUOTE_RECORD_ID,
-													IQ.QTEREV_RECORD_ID, 
-													replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,
-													replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE 
-											FROM (
-												SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,CONVERT(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;'))  as ENTITLEMENT_XML  
-												FROM SAQTSE (NOLOCK) 
-												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' 
-												) IQ 
-											OUTER APPLY IQ.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) 
-										) as OQ 
-										WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
+		# service_entitlement_obj = Sql.GetFirst("""SELECT ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE FROM 
+		# 								(
+		# 									SELECT DISTINCT 
+		# 											IQ.QUOTE_RECORD_ID,
+		# 											IQ.QTEREV_RECORD_ID, 
+		# 											replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,
+		# 											replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE 
+		# 									FROM (
+		# 										SELECT QUOTE_RECORD_ID,QTEREV_RECORD_ID,CONVERT(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;'))  as ENTITLEMENT_XML  
+		# 										FROM SAQTSE (NOLOCK) 
+		# 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}' 
+		# 										) IQ 
+		# 									OUTER APPLY IQ.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) 
+		# 								) as OQ 
+		# 								WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
+		#if service_entitlement_obj:
+		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM SAQTSE (NOLOCK) 
+		 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id))
 		if service_entitlement_obj:
-			Log.Info("_quote_items_insert ===> 2"+str(service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE))
+			quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_entitlement_obj.service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
+			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
+				quote_item_tag_content = quote_item_tag.group(1)
+				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)				
+				if entitlement_id_tag_match:
+					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+					if entitlement_display_value_tag_match:
+						self.quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
+						break
+				else:
+					continue
+			Log.Info("_quote_items_insert ===> 2"+str(self.quote_service_entitlement_type))
 			source_object_name = ''
 			dynamic_select_columns = ''
-			if (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() == 'OFFERING + EQUIPMENT':
+			if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 				source_object_name = 'SAQSCE'
 				dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
-				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
-			elif (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper() in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART','OFFERING + GREENBOOK + GR EQUI'):
+				#self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
+			elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT','OFFERING + CHILD GROUP OF PART','OFFERING + GREENBOOK + GR EQUI'):
 				source_object_name = 'SAQSGE'
 				dynamic_select_columns = 'null as OBJECT_ID,'
-				self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
+				#self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
 			else:
 				return False
 			if source_object_name:		
