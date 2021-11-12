@@ -2808,7 +2808,6 @@ class TreeView:
 								# ChildDict["id"] = RelatedId
 								if subTabName == 'Fab Parts List':
 									Trace.Write("fab service list---"+str(NodeText))
-									Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
 									if str(service_id) == "bar":
 										service_id = NodeText.split('/>')[1]
 									table_name = "SAQSFE"
@@ -2829,7 +2828,6 @@ class TreeView:
 										subTabName = "Parts List"
 								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
-									Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
 									if str(service_id) == "bar":
 										service_id = NodeText.split('/>')[1]
 									table_name = "SAQTSE"
