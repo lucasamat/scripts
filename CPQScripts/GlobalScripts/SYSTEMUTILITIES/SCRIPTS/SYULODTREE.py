@@ -2868,6 +2868,7 @@ class TreeView:
 											subTabName = "Parts List"
 									#subTabName = "Parts List"
 								if subTabName == 'Green Parts List':
+									subTabName = ""
 									Trace.Write("Green service list---"+str(NodeText))
 									#if str(service_id) == "bar":
 										#service_id = NodeText.split('/>')[1]
