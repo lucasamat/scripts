@@ -335,6 +335,8 @@ class ContractQuoteItem:
 						break
 				else:
 					continue
+			if self.service_id == 'Z0101':
+				self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
 
 	def _quote_items_insert(self, update=False):		
@@ -348,7 +350,7 @@ class ContractQuoteItem:
 			if update:
 				item_where_string += " AND ISNULL(SAQRIT.OBJECT_ID,'') = '' "
 				item_join_string += "LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND ISNULL(SAQRIT.OBJECT_ID,'') = SAQSCE.EQUIPMENT_ID"
-		elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART', 'OFFERING + GREENBOOK + GR EQUI'):
+		elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
 			source_object_name = 'SAQSGE'
 			dynamic_select_columns = 'null as OBJECT_ID, null as OBJECT_TYPE, '		
 			if update:
