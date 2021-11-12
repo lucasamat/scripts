@@ -1191,6 +1191,26 @@ def Related_Sub_Banner(
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
                         # FifthValue = "ALL" 
+                if (TreeSuperTopParentParam == "Product Offerings") and subTabName == "Parts List":
+                    Trace.Write("Parts==list==") 
+                    try:
+                        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
+                        desc = getService.SERVICE_DESCRIPTION
+                    except:
+                        desc = ""
+                    Trace.Write("Line No:1201 - Testing")
+                    PrimaryLable = "Product Offering ID"
+                    PrimaryValue = str(TreeSuperParentParam)
+                    SecondLable = "Product Offering Description"
+                    SecondValue = getService.SERVICE_DESCRIPTION
+                    ThirdLable = "Product Offering Type"
+                    ThirdValue = str(TreeTopSuperParentParam)
+                    FourthLable = "Fab Location ID"
+                    FourthValue = str(TreeParam)
+                    FifthLable = "Greenbooks"
+                    FifthValue = "All"
+                    SixthLable = "Equipment"
+                    SixthValue = "All"     
                 if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" or subTabName =="Customer Value Drivers" or subTabName =="Product Value Drivers"):
                     Trace.Write("Fab2333")
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
