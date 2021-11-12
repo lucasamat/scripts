@@ -16,12 +16,12 @@ Sql = SQL()
 get_user_id = User.Id
 productAttributesGetByName = lambda productAttribute: Product.Attributes.GetByName(productAttribute) or ""
 try:
-    GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 except:
-    Trace.Write("EXCEPT: GetActiveRevision ")
-    GetActiveRevision = ""
+	Trace.Write("EXCEPT: GetActiveRevision ")
+	GetActiveRevision = ""
 if GetActiveRevision:
-    Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
+	Quote.SetGlobal("quote_revision_record_id",str(GetActiveRevision.QUOTE_REVISION_RECORD_ID))
 class SYLDRTLIST:
 	def MDYNMICSQLOBJECT(self, RECORD_ID, PerPage, PageInform, SubTab, PR_CURR, TP, equipment_id,line_item):         
 		TestProduct = Webcom.Configurator.Scripting.Test.TestProduct() or ""
@@ -222,7 +222,7 @@ class SYLDRTLIST:
 						getQuotetype = getQuote.QUOTE_TYPE
 					else:
 						getQuotetype =''
-					   					
+										
 					if str(getQuotetype).upper() == "ZWK1 - SPARES" and  str(TreeParam) in ['Quote Items','Quote Preview','Cart Items','Contract Preview']:
 						if RECORD_ID == "SYOBJR-00006" and str(TreeParam) == "Quote Preview":
 							rem_list_sp = ["QUOTE_ITEM_FORECAST_PART_RECORD_ID","ITEM_LINE_SEQUENCE","SCHEDULE_MODE","DELIVERY_MODE"]
@@ -3525,7 +3525,7 @@ class SYLDRTLIST:
 									+ str(qstring)
 									+ "</th>"
 								)
-								    
+									
 							elif str(current_tab).upper() == "APP":
 								if (str(TreeParam) == "Tabs" or str(TreeParam) == "Pages"):
 									table_header += (
@@ -8697,59 +8697,59 @@ class SYLDRTLIST:
 
 ObjSYLDRTLIST = SYLDRTLIST()
 if hasattr(Param, "REC_ID"):
-    RECORD_ID = Param.REC_ID
+	RECORD_ID = Param.REC_ID
 
-    Product.SetGlobal("REC_ID", str(RECORD_ID))
+	Product.SetGlobal("REC_ID", str(RECORD_ID))
 else:
-    RECORD_ID = ""
-    
+	RECORD_ID = ""
+	
 ACTION = Param.ACTION
 try:
-    PerPage = Param.PerPage
-    PageInform = Param.PageInform
+	PerPage = Param.PerPage
+	PageInform = Param.PageInform
 except:
-    PerPage = ""
-    PageInform = ""
+	PerPage = ""
+	PageInform = ""
 
 try:
-    SortColumn = Param.SortColumn
-    SortColumnOrder = Param.SortColumnOrder
+	SortColumn = Param.SortColumn
+	SortColumnOrder = Param.SortColumnOrder
 except:
-    SortColumn = ""
-    SortColumnOrder = ""
+	SortColumn = ""
+	SortColumnOrder = ""
 
 try:
-    subTab = Param.SUBTAB
+	subTab = Param.SUBTAB
 
 except Exception:
-    subTab = "Year 1"
+	subTab = "Year 1"
 
 try:
-    PR_CURR = Param.PR_CURR
-    TP = Param.TP
+	PR_CURR = Param.PR_CURR
+	TP = Param.TP
 except:
-    PR_CURR = ""
-    TP= ""
+	PR_CURR = ""
+	TP= ""
 try:
-    equipment_id = Param.equipment_id
-    Trace.Write("EQUIPM_ID_CHK "+str(equipment_id))
+	equipment_id = Param.equipment_id
+	Trace.Write("EQUIPM_ID_CHK "+str(equipment_id))
 except:
-    equipment_id = ""
+	equipment_id = ""
 
 try:
-    Currenttab = Param.Currenttab    
+	Currenttab = Param.Currenttab    
 except:
-    Currenttab = ""
-        
+	Currenttab = ""
+		
 try:
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
-    quote_revision_record_id = None
-    
+	quote_revision_record_id = None
+	
 try:
-    pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
+	pricing_picklist_value = Quote.GetCustomField('PRICING_PICKLIST').Content
 except:
-    pricing_picklist_value = 'Pricing'
+	pricing_picklist_value = 'Pricing'
 
 try:
 	line_item = Param.line_item
@@ -8757,16 +8757,16 @@ except:
 	line_item = ""
 
 if ACTION == "PRODUCT_ONLOAD": 
-    ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id,line_item))
+	ApiResponse = ApiResponseFactory.JsonResponse(ObjSYLDRTLIST.MDYNMICSQLOBJECT(RECORD_ID, PerPage, PageInform, subTab, PR_CURR, TP, equipment_id,line_item))
 elif ACTION == "PRODUCT_ONLOAD_FILTER":
 
-    ATTRIBUTE_NAME = Param.ATTRIBUTE_NAME
-    
-    ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
-    if RECORD_ID:
-        RECORD_ID = "-".join(RECORD_ID.split("_")[:2])
-        ApiResponse = ApiResponseFactory.JsonResponse(
-            ObjSYLDRTLIST.MDYNMICSQLOBJECTFILTER(
-                RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab,line_item
-            )
-        )
+	ATTRIBUTE_NAME = Param.ATTRIBUTE_NAME
+	
+	ATTRIBUTE_VALUE = Param.ATTRIBUTE_VALUE
+	if RECORD_ID:
+		RECORD_ID = "-".join(RECORD_ID.split("_")[:2])
+		ApiResponse = ApiResponseFactory.JsonResponse(
+			ObjSYLDRTLIST.MDYNMICSQLOBJECTFILTER(
+				RECORD_ID, ATTRIBUTE_NAME, ATTRIBUTE_VALUE, PerPage, PageInform, SortColumn, SortColumnOrder, PR_CURR, TP,subTab,line_item
+			)
+		)
