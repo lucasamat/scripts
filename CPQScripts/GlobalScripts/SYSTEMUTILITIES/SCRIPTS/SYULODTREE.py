@@ -2673,6 +2673,8 @@ class TreeView:
 		NewList = []
 		NodeNameValue = ""
 		NodeTextValue = ""
+		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		if str(NodeType) == "DYNAMIC":			
 			pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")
 			if pageDetails is not None:
