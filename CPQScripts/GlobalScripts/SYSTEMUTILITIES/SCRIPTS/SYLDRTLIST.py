@@ -4744,6 +4744,7 @@ class SYLDRTLIST:
 		
 		TreeParam = Product.GetGlobal("TreeParam")
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0") 
+		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel0")  
 		
 		if str(PerPage) == "" and str(PageInform) == "":
 			Page_start = 1
