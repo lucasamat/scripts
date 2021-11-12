@@ -214,14 +214,17 @@ class EntitlementView():
 		elif EntitlementType == "ASSEMBLY":
 			TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
-		Trace.Write('Treeparam--'+str(self.treeparam))
-		Trace.Write('treeparentparam----'+str(self.treeparentparam))
+		#Trace.Write('Treeparam--'+str(self.treeparam))
+		#Trace.Write('treeparentparam----'+str(self.treeparentparam))
 		if self.treeparam == "Quote Items":
 			quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
 			Trace.Write('quote_item_revision_rec_id--'+str(quote_item_revision_rec_id))
 			get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(quote_item_revision_rec_id)+"'")
 			ProductPartnumber = get_quite_item_service.SERVICE_ID
 			Trace.Write('ProductPartnumber-224-'+str(ProductPartnumber))
+			TableObj = Sql.GetFirst("select * from SAQRIT (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID = '" + str(self.quote_item_revision_rec_id) + "' ")
+			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"'"
+			EntitlementType == "ITEM_ENTITLEMENT"
 		try:
 			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
 			if get_configuration_status:
@@ -233,7 +236,7 @@ class EntitlementView():
 
 		if EntitlementType != "NO_ENTITLEMENT":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
-				#Trace.Write('223----durga---')
+				Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,)
