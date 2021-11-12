@@ -327,7 +327,7 @@ def NoticeOnChange(IdleNotice):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "notice_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Notice_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
     return secstr
 def DurationOnChange(IdleDuration):
     if IdleDuration == "Restricted Entry(Days)":
@@ -337,7 +337,7 @@ def DurationOnChange(IdleDuration):
         y = getPRTIAV.TOOLIDLING_NAME
             
         secstr = '<tr id = "duration_onchange" data-index="'+str(9)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
-        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="text" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
+        secstr += '<input class="form-control no_border_bg disable_edit light_yellow" id="Idle_Duration_Exception" type="number" style="color:#1B78D2" data-content="" value="" title="" onchange="">'
     return secstr
 def ExceptionOnChange(IdlingException):
     if IdlingException == "Yes":
