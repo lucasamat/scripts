@@ -226,6 +226,7 @@ class EntitlementView():
 				TableObj = Sql.GetFirst("select * from SAQITE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "'AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"' ")
 				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"'"
 				EntitlementType == "ITEM_ENTITLEMENT"
+				ObjectName = "SAQTIE"
 		try:
 			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
 			if get_configuration_status:
