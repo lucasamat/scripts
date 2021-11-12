@@ -255,6 +255,7 @@ class EntitlementView():
 			attributeEditlst = list_of_tabs = []
 			attributevalues = {}
 			attributedefaultvalue = []
+			overallattributeslist =[]
 			dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
 			validation_dict = {}
 			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
@@ -265,6 +266,7 @@ class EntitlementView():
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
+								overallattributeslist.append(prdvalue['id'])
 								if prdvalue["visible"]:
 									total_tablist.append(prdvalue["id"])
 								if prdvalue["visible"] == "true":							
