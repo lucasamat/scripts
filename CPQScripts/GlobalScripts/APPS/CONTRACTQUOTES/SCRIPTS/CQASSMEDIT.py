@@ -244,26 +244,60 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 				
 		#AttributeID = 'AGS_QUO_QUO_TYP'
 		#NewValue = 'Chamber based'
-		STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
-		if STANDARD_ATTRIBUTE_VALUES:
-			for val in STANDARD_ATTRIBUTE_VALUES:
-				if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
-					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+str(val.STANDARD_ATTRIBUTE_VALUE)+'","selected":true}]}]}'
-					Trace.Write('NewValue-iff--'+str(NewValue)+str(requestdata))
-					NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
-					# Trace.Write('NewValue-iff--254----'+str(NewValue))
-				else:
+		product_obj = Sql.GetFirst("""SELECT 
+								MAX(PDS.PRODUCT_ID) AS PRD_ID,PDS.SYSTEM_ID,PDS.PRODUCT_NAME 
+							FROM PRODUCTS PDS 
+							INNER JOIN PRODUCT_VERSIONS PRVS ON  PDS.PRODUCT_ID = PRVS.PRODUCT_ID 
+							WHERE SYSTEM_ID ='{SystemId}' 
+							GROUP BY PDS.SYSTEM_ID,PDS.UnitOfMeasure,PDS.CART_DESCRIPTION_BUILDER,PDS.PRODUCT_NAME""".format(SystemId = str(service_id)))
+		get_datatype = Sql.GetFirst("""SELECT ATT_DISPLAY_DEFN.ATT_DISPLAY_DESC AS ATT_DISPLAY_DESC,PRODUCT_ATTRIBUTES.ATTRDESC
+												FROM TAB_PRODUCTS
+												LEFT JOIN PAT_SCHEMA ON PAT_SCHEMA.TAB_PROD_ID=TAB_PRODUCTS.TAB_PROD_ID											
+												LEFT JOIN PRODUCT_ATTRIBUTES ON PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE = PAT_SCHEMA.STANDARD_ATTRIBUTE_CODE AND PRODUCT_ATTRIBUTES.PRODUCT_ID = TAB_PRODUCTS.PRODUCT_ID
+												LEFT JOIN ATTRIBUTE_DEFN ON ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_CODE = PRODUCT_ATTRIBUTES.STANDARD_ATTRIBUTE_CODE
+												LEFT JOIN ATT_DISPLAY_DEFN ON ATT_DISPLAY_DEFN.ATT_DISPLAY = PRODUCT_ATTRIBUTES.ATT_DISPLAY
+												
+												WHERE TAB_PRODUCTS.PRODUCT_ID = {ProductId} AND SYSTEM_ID = '{service_id}'""".format(ProductId = product_obj.PRD_ID,service_id = AttributeID ))
+		field_type = ""
+		if get_datatype:
+			if get_datatype.ATT_DISPLAY_DESC:
+				field_type = get_datatype.ATT_DISPLAY_DESC
+		requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+		if field_type != 'input':
+			STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{}' ".format(AttributeID))
+			if STANDARD_ATTRIBUTE_VALUES:
+			
+				for val in STANDARD_ATTRIBUTE_VALUES:
+					#if str(val.STANDARD_ATTRIBUTE_DISPLAY_VAL).upper() == str(NewValue).upper():
+					if (field_type == 'Check Box' and val.STANDARD_ATTRIBUTE_DISPLAY_VAL in NewValue) or (val.STANDARD_ATTRIBUTE_DISPLAY_VAL == NewValue):
+						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
+						requestdata +=','
+						
+						NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
+						# Trace.Write('NewValue-iff--254----'+str(NewValue))
+					elif field_type == 'Check Box':
+						Trace.Write("inside_J____checkbox")
+						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
+						requestdata +=','
+					
+
+					else:
+						Trace.Write('NewValue--'+str(NewValue))
+						#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+						#requestdata += '{"value":"' + NewValue + '","selected":true}'
+						requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+			else:
+				if AttributeID == "AGS_Z0046_KPI_BPTKPI":
+					NewValue ='002'
 					Trace.Write('NewValue--'+str(NewValue))
 					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 					#requestdata += '{"value":"' + NewValue + '","selected":true}'
-					requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+					requestdata = '{"value":"' + NewValue + '","selected":true}'
 		else:
-			if AttributeID == "AGS_Z0046_KPI_BPTKPI":
-				NewValue ='002'
-				Trace.Write('NewValue--'+str(NewValue))
-				#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
-				#requestdata += '{"value":"' + NewValue + '","selected":true}'
-				requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+			requestdata += '{"value":"' + NewValue + '","selected":true}'
+		
+		requestdata += ']}]}'
+		requestdata = requestdata.replace(',]}]}',']}]}')
 		Trace.Write("requestdata----"+str(requestdata))
 		response2 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 		cpsmatc_incr = webclient.ResponseHeaders["Etag"]
