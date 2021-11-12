@@ -3148,7 +3148,7 @@ class SYLDRTLIST:
 											)
 										
 										#the Billing Matrix based on the Warranty Date  start
-										if str(value123) == "WARRANTY_END_DATE":
+										if str(value123) == "WARRANTY_END_DATE" and RECORD_ID != "SYOBJR-00009":
 											#Trace.Write('getindication--3075---'+str(getindication))
 											getdate_indication = str(value1234)
 											if getdate_indication:
