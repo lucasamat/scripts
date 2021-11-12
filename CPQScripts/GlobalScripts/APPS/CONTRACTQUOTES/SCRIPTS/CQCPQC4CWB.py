@@ -20,6 +20,7 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id):
+    Log.Info("writeback --------?"+str(writeback))
     if writeback == "quote_header":
         revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         ##date time conversion
