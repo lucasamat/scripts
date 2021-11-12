@@ -1900,10 +1900,6 @@ class SyncQuoteAndCustomTables:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type")
 							##A055S000P01-10174 code ends...
 						
-						##Calling the iflow for quote header writeback to cpq to c4c code starts..
-						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
