@@ -2149,6 +2149,7 @@ class TreeView:
 												get_ent_name=re.findall(pattern_name,sub_string)
 												if get_ent_id and get_ent_name:
 													flag_excluse=1
+													Trace.Write("fab flag_excluse11111111"+str(flag_excluse))
 													break
 											if flag_excluse==1:
 												subTabName = "Parts List"
@@ -2169,6 +2170,7 @@ class TreeView:
 											get_ent_name=re.findall(pattern_name,sub_string)
 											if get_ent_id and get_ent_name:
 												flag_excluse=1
+												Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
 												break
 										if flag_excluse==1:
 											subTabName = "Parts List"
@@ -2843,6 +2845,7 @@ class TreeView:
 								RelatedId = getRightView.RELATED_RECORD_ID
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
+								Trace.Write("Service Parts List-----"+str(subTabName))
 								if subTabName == 'Fab Parts List':
 									subTabName = ""
 									table_name = "SAQSFE"
@@ -2860,10 +2863,11 @@ class TreeView:
 											get_ent_name=re.findall(pattern_name,sub_string)
 											if get_ent_id and get_ent_name:
 												flag_excluse=1
+												Trace.Write("fab flag_excluse222222"+str(flag_excluse))
 												break
 										if flag_excluse==1:
 											subTabName = "Parts List"
-								if subTabName == 'Green Parts List':
+								elif subTabName == 'Green Parts List':
 									subTabName = ""
 									table_name = "SAQSGE"
 									X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
@@ -2878,6 +2882,7 @@ class TreeView:
 										get_ent_name=re.findall(pattern_name,sub_string)
 										if get_ent_id and get_ent_name:
 											flag_excluse=1
+											Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
 											break
 									if flag_excluse==1:
 										subTabName = "Parts List"
