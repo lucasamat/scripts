@@ -341,11 +341,11 @@ class ContractQuoteItem:
 		dynamic_select_columns = ''
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 			source_object_name = 'SAQSCE'
-			dynamic_select_columns = 'SAQSCE.EQUIPMENT_ID as OBJECT_ID,' 
+			dynamic_select_columns = "SAQSCE.EQUIPMENT_ID as OBJECT_ID, 'EQUIPMENT' as OBJECT_TYPE, " 
 			#self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
 		elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART', 'OFFERING + GREENBOOK + GR EQUI'):
 			source_object_name = 'SAQSGE'
-			dynamic_select_columns = 'null as OBJECT_ID,'
+			dynamic_select_columns = 'null as OBJECT_ID, null as OBJECT_TYPE, '
 			#self.quote_service_entitlement_type = (service_entitlement_obj.ENTITLEMENT_DISPLAY_VALUE).upper()
 		else:
 			return False
@@ -373,8 +373,7 @@ class ContractQuoteItem:
 					SAQTRV.GLOBAL_CURRENCY,
 					SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
 					ROW_NUMBER()OVER(ORDER BY({ObjectName}.CpqTableEntryId)) + {EquipmentsCount} as LINE,
-					{DynamicColumns}
-					null as OBJECT_TYPE,
+					{DynamicColumns}					
 					{ObjectName}.SERVICE_DESCRIPTION,
 					{ObjectName}.SERVICE_ID,
 					{ObjectName}.SERVICE_RECORD_ID,
@@ -621,13 +620,16 @@ class ContractQuoteItem:
 				
 	def _delete_item_related_table_records(self):
 		for delete_object in ['SAQIAE','SAQICA','SAQRIO','SAQICO']:
-			delete_statement = "DELETE DT FROM " +str(delete_object)+" DT (NOLOCK) JOIN SAQSCE (NOLOCK) ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))			
+			delete_statement = "DELETE DT FROM " +str(delete_object)+" DT (NOLOCK) JOIN SAQSCE (NOLOCK) ON DT.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID AND DT.SERVICE_ID=SAQSCE.SERVICE_ID AND DT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND DT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE DT.QUOTE_RECORD_ID='{}' AND DT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND DT.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)			
 			Sql.RunQuery(delete_statement)
+		join_condition_string = ''
+		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
+			join_condition_string = 'ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID'
 		# item entitlement delete
-		quote_item_entitlement_delete_statement = "DELETE SAQITE FROM SAQITE (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQITE.QTEITM_RECORD_ID JOIN SAQSCE ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQITE.QUOTE_RECORD_ID='{}' AND SAQITE.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND SAQITE.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))	
+		quote_item_entitlement_delete_statement = "DELETE SAQITE FROM SAQITE (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID = SAQITE.QTEITM_RECORD_ID JOIN SAQSCE ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQITE.QUOTE_RECORD_ID='{}' AND SAQITE.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '')='INCOMPLETE' AND SAQITE.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)	
 		Sql.RunQuery(quote_item_entitlement_delete_statement)
 		# item delete
-		quote_item_delete_statement = "DELETE SAQRIT FROM SAQRIT (NOLOCK) JOIN SAQSCE (NOLOCK) ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID='{}' AND SAQRIT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{}' ".format(str(self.contract_quote_record_id), str(self.contract_quote_revision_record_id), str(self.service_id))	
+		quote_item_delete_statement = "DELETE SAQRIT FROM SAQRIT (NOLOCK) JOIN SAQSCE (NOLOCK) ON ISNULL(SAQRIT.OBJECT_ID, '') = SAQSCE.EQUIPMENT_ID AND SAQRIT.SERVICE_ID=SAQSCE.SERVICE_ID AND SAQRIT.QUOTE_RECORD_ID=SAQSCE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID=SAQSCE.QTEREV_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID='{}' AND SAQRIT.QTEREV_RECORD_ID='{}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS, '') ='INCOMPLETE' AND SAQRIT.SERVICE_ID='{}' ".format(self.contract_quote_record_id, self.contract_quote_revision_record_id, self.service_id)	
 		Sql.RunQuery(quote_item_delete_statement)
 
 	def _delete_z0046_quote_items(self):
