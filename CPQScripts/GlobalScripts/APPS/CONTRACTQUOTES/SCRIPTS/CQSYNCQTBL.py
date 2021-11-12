@@ -16,6 +16,7 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import re
 from datetime import timedelta , date
+import CQCPQC4CWB
 #from datetime import datetime, timedelta
 
 Sql = SQL()
