@@ -936,6 +936,7 @@ class EntitlementView():
 							if STDVALUES:
 								attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
 								get_tooltip = STDVALUES.ATTRDESC
+								get_tooltip = get_tooltip.encode('ascii', 'ignore').decode('ascii')
 							else:
 								attrValue = get_tooltip = ''
 							#Trace.Write('get_tooltip---'+str(get_tooltip))
