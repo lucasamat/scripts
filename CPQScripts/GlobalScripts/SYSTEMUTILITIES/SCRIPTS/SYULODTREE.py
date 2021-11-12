@@ -2828,9 +2828,7 @@ class TreeView:
 											if get_ent_id and get_ent_name:
 												flag_excluse=1
 												break
-										if flag_excluse==1:
-											subTabName = "Parts List"
-									#subTabName = "Parts List"
+									subTabName = "Parts List"
 								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
 									#if str(service_id) == "bar":
@@ -2849,9 +2847,7 @@ class TreeView:
 										if get_ent_id and get_ent_name:
 											flag_excluse=1
 											break
-									if flag_excluse==1:
-										subTabName = "Parts List"
-									#subTabName = "Parts List"
+									subTabName = "Parts List"
 								if subTabName:
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
