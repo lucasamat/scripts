@@ -936,11 +936,9 @@ class EntitlementView():
 							if STDVALUES:
 								attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
 								get_tooltip = STDVALUES.ATTRDESC
-
 							else:
 								attrValue = get_tooltip = ''
-							get_tooltip = get_tooltip.encode('ascii', 'ignore').decode('ascii')
-							Trace.Write('get_tooltip---'+str(get_tooltip))
+							#Trace.Write('get_tooltip---'+str(get_tooltip))
 							attribute_Name_list.append(attrSysId)
 							DType = attribute['attribute_dtype']
 							Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
