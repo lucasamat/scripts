@@ -330,7 +330,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						+ 'disabled checked><span class="lbl"></span></div>'
 					)
 				elif sefl_api in ["INTERNAL_NOTES","CUSTOMER_NOTES"]:
-					Trace.Write('At line 289-->'+str(sefl_api))
+					Trace.Write('At line 289-->err'+str(sefl_api))
 					sec_str += (
 						"<div class='col-md-3 pad-0'> <textarea type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
 						+ str(eval("col_name." + str(sefl_api)))
@@ -366,7 +366,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					# 	)
 				else:
 					# if sefl_api != "REGION":
-					Trace.Write('At line 289-->'+str(sefl_api))
+					Trace.Write('At line 289-->arr2'+str(sefl_api))
 					# if sefl_api == "APPDTE_EXCH_RATE" and str(eval("col_name." + str(sefl_api))) != "":
 					# 	sec_str += (
 					# 		"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(eval("col_name." + str(sefl_api)))+"' value = '"
