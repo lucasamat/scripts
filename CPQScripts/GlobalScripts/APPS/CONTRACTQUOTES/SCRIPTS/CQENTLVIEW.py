@@ -255,7 +255,7 @@ class EntitlementView():
 			attributeEditlst = list_of_tabs = []
 			attributevalues = {}
 			attributedefaultvalue = []
-			overallattributeslist =[]
+			overallattributeslist_visible =[]
 			dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
 			validation_dict = {}
 			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
@@ -266,7 +266,6 @@ class EntitlementView():
 					for Productattribute, Productvalue in rootvalue.items():
 						if Productattribute == "characteristicGroups":
 							for prdvalue in Productvalue:
-								overallattributeslist.append(prdvalue['id'])
 								if prdvalue["visible"]:
 									total_tablist.append(prdvalue["id"])
 								if prdvalue["visible"] == "true":							
@@ -275,6 +274,8 @@ class EntitlementView():
 									attr_tab_list_disallow.append(prdvalue["id"])
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
+								if prdvalue["visible"] == "false":
+									overallattributeslist_visible.append(prdvalue["id"])
 								if prdvalue["visible"] == "false":
 									attributesdisallowedlst.append(prdvalue["id"])
 								if prdvalue["readOnly"] == "true":
@@ -798,7 +799,7 @@ class EntitlementView():
 			Trace.Write('766---ObjectName-----'+str(ObjectName))
 			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
 			if self.treeparam == "Quote Items":
-				get_attr_leve_based_list = overallattributeslist
+				get_attr_leve_based_list = overallattributeslist_visible
 			else:
 				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
