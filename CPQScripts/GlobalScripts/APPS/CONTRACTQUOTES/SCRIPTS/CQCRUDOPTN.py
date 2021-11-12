@@ -279,6 +279,7 @@ class ContractQuoteCrudOpertion:
 		#s=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
 		if remaining_months < 0:
 			divide_by = 12 + remaining_months
+		amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 		Trace.Write(str(amount_column)+'---272-----272-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
 		Sql.RunQuery("""INSERT SAQIBP (
