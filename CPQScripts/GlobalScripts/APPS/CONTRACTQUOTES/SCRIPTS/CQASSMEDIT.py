@@ -285,14 +285,14 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						Trace.Write('NewValue--'+str(NewValue))
 						#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 						#requestdata += '{"value":"' + NewValue + '","selected":true}'
-						requestdata = '{"characteristics":[{"id":"'+AttributeID+'","values":[{"value":"'+NewValue+'","selected":true}]}]}'
+						requestdata += '{"value":"' + NewValue + '","selected":true}'
 			else:
 				if AttributeID == "AGS_Z0046_KPI_BPTKPI":
 					NewValue ='002'
 					Trace.Write('NewValue--'+str(NewValue))
 					#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
 					#requestdata += '{"value":"' + NewValue + '","selected":true}'
-					requestdata = '{"value":"' + NewValue + '","selected":true}'
+					requestdata += '{"value":"' + NewValue + '","selected":true}'
 		else:
 			requestdata += '{"value":"' + NewValue + '","selected":true}'
 		
