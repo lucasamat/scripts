@@ -225,6 +225,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
+			sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
 			if ACTION == "CONTRACT_INFO": 
 				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
 				
