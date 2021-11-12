@@ -414,6 +414,12 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" data-detail-view="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
+		elif 'SYOBJR_98872' in table_id:
+			table_header = (
+				'<table id="'
+				+ table_id
+				+ '" data-pagination="false" data-filter-control="true" class = "items_grid"  data-maintain-selected="true" data-locale = "en-US"><thead>'
+			)
 		else:
 			table_header = (
 				'<table id="'
