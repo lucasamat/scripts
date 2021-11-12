@@ -2808,8 +2808,8 @@ class TreeView:
 								# ChildDict["id"] = RelatedId
 								if subTabName == 'Fab Parts List':
 									Trace.Write("fab service list---"+str(NodeText))
-									if str(service_id) == "bar":
-										service_id = NodeText.split('/>')[1]
+									#if str(service_id) == "bar":
+										#service_id = NodeText.split('/>')[1]
 									table_name = "SAQSFE"
 									X=SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
 									updateentXML = X.ENTITLEMENT_XML
@@ -2828,8 +2828,8 @@ class TreeView:
 										subTabName = "Parts List"
 								if subTabName == 'Green Parts List':
 									Trace.Write("Green service list---"+str(NodeText))
-									if str(service_id) == "bar":
-										service_id = NodeText.split('/>')[1]
+									#if str(service_id) == "bar":
+										#service_id = NodeText.split('/>')[1]
 									table_name = "SAQTSE"
 									X=SqlHelper.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SAQSGE = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
 									updateentXML = X.ENTITLEMENT_XML
