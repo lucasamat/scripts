@@ -85,7 +85,7 @@ def LoadSummary():
     sec_str += "</div>"
     #Trace.Write("sec_str --->"+str(sec_str))
     
-    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(DISCOUNT_PERCENT,0.00) AS DISCOUNT_PERCENT, ISNULL(SALES_PRICE_INGL_CURR,0.00) AS SALES_PRICE_INGL_CURR,GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
+    getRevisionDetails = Sql.GetFirst("SELECT ISNULL(TAX_AMOUNT_INGL_CURR,0.00) AS TAX_AMOUNT_INGL_CURR,ISNULL(DISCOUNT_PERCENT,0.00) AS DISCOUNT_PERCENT, ISNULL(SALES_PRICE_INGL_CURR,0.00) AS SALES_PRICE_INGL_CURR,GLOBAL_CURRENCY,ISNULL(TOTAL_AMOUNT,0.00) AS TOTAL_AMOUNT,ISNULL(TOTAL_AMOUNT_INGL_CURR,0.00) AS TOTAL_AMOUNT_INGL_CURR,ISNULL(BD_PRICE_INGL_CURR,0.00) AS BD_PRICE_INGL_CURR,ISNULL(TARGET_PRICE_INGL_CURR,0.00) AS TARGET_PRICE_INGL_CURR,ISNULL(CEILING_PRICE_INGL_CURR,0.00) AS CEILING_PRICE_INGL_CURR,ISNULL(NET_PRICE_INGL_CURR,0.00) AS NET_PRICE_INGL_CURR,ISNULL(CREDIT_INGL_CURR,0.00) AS CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id, quote_revision_record_id))
     
     if getRevisionDetails:
         curr = str(getRevisionDetails.GLOBAL_CURRENCY)
@@ -98,6 +98,7 @@ def LoadSummary():
         NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
         NetValue = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
         TargetPrice = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))
+        Credit = "{0:.2f}".format(float(getRevisionDetails.CREDIT_INGL_CURR))
         ##Updating the revision table values to custom fields  code starts...
         Quote.GetCustomField('TARGET_PRICE').Content = "{0:.2f}".format(float(getRevisionDetails.TARGET_PRICE_INGL_CURR))+ " " +curr
         Quote.GetCustomField('BD_PRICE').Content = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))+ " " +curr
@@ -112,6 +113,7 @@ def LoadSummary():
         TargetPrice = 0.00
         NetPrice = 0.00
         NetValue = 0.00
+        Credit = 0.00
 
     
     getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID,QUOTE_RECORD_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
@@ -119,7 +121,7 @@ def LoadSummary():
     QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
     QuoteRevisionId = getQuoteDetails.QTEREV_ID
     QuoteRevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
-    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr
+    return sec_str,str(TotalSalesPrice) + " " +curr,str(TotalDiscount)+ " %",str(TotalCost)+ " " +curr,str(Tax)+ " " +curr,str(NetPrice)+ " " +curr,str(NetValue)+ " " +curr,str(Credit)+ " " +curr
 
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
