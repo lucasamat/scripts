@@ -136,7 +136,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
+						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE
 						
 						
 						FROM SAQTRV (NOLOCK)
