@@ -274,18 +274,18 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						requestdata +=','
 						
 						NewValue = str(val.STANDARD_ATTRIBUTE_VALUE)
-						# Trace.Write('NewValue-iff--254----'+str(NewValue))
+						Trace.Write('NewValue-iff--254----'+str(NewValue))
 					elif field_type == 'Check Box':
 						Trace.Write("inside_J____checkbox")
 						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":false}'
 						requestdata +=','
 					
 
-					else:
-						Trace.Write('NewValue--'+str(NewValue))
-						#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
-						#requestdata += '{"value":"' + NewValue + '","selected":true}'
-						requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
+					# else:
+					# 	Trace.Write('NewValue--'+str(NewValue))
+					# 	#requestdata = '{"characteristics":[{"id":"' + AttributeID + '","values":['
+					# 	#requestdata += '{"value":"' + NewValue + '","selected":true}'
+					# 	requestdata += '{"value":"' + val.STANDARD_ATTRIBUTE_VALUE + '","selected":true}'
 			else:
 				if AttributeID == "AGS_Z0046_KPI_BPTKPI":
 					NewValue ='002'
