@@ -4290,7 +4290,7 @@ class SYLDRTLIST:
 								+ ' "></div>'
 							)
 							filter_level_list.append(filter_level_data)
-							filter_clas_name = ""
+							# filter_clas_name = ""
 							# filter_clas_name = (
 							# 	'<input type="text"  class="width100_vis form-control bootstrap-table-filter-control-'
 							# 	+ str(col_name)
