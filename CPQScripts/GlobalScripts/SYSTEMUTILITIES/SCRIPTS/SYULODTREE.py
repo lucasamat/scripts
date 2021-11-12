@@ -2844,6 +2844,7 @@ class TreeView:
 								RelatedName = getRightView.RELATED_LIST_NAME
 								# ChildDict["id"] = RelatedId
 								if subTabName == 'Fab Parts List':
+									subTabName = ""
 									Trace.Write("fab service list---"+str(NodeText))
 									#if str(service_id) == "bar":
 										##service_id = NodeText.split('/>')[1]
