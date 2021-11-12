@@ -1203,14 +1203,12 @@ def Related_Sub_Banner(
                     PrimaryValue = str(TreeSuperParentParam)
                     SecondLable = "Product Offering Description"
                     SecondValue = getService.SERVICE_DESCRIPTION
-                    ThirdLable = "Product Offering Type"
-                    ThirdValue = str(TreeTopSuperParentParam)
-                    FourthLable = "Fab Location ID"
+                    ThirdLable = "Fab Location ID"
+                    ThirdValue = str(TreeParentParam)
+                    FourthLable = "Greenbooks"
                     FourthValue = str(TreeParam)
-                    FifthLable = "Greenbooks"
-                    FifthValue = "All"
-                    SixthLable = "Equipment"
-                    SixthValue = "All"     
+                    FifthLable = "Equipment"
+                    FifthValue = "All"      
                 if (TreeTopSuperParentParam == "Complementary Products" ) and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers" or subTabName == "Equipment Fab Value Drivers" or subTabName =="Details" or subTabName =="Customer Value Drivers" or subTabName =="Product Value Drivers"):
                     Trace.Write("Fab2333")
                     if TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment":
