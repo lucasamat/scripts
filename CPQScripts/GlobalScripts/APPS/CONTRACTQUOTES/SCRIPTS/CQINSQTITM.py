@@ -220,6 +220,29 @@ class ContractQuoteItem:
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinString=annualized_item_join_string, JoinConditionString=join_condition_string, WhereConditionString=annualized_item_where_string, dynamic_value_for_status = dynamic_value_for_status)
 			)
 
+	def _quote_item_line_entitlement_insert(self, update=False):
+		# Update - Start
+		item_line_covered_object_entitlement_join_string = ""	
+		item_line_covered_object_entitlement_where_string = ""		
+		if update:
+			item_line_covered_object_entitlement_where_string += " AND ISNULL(SAQIEN.EQUIPMENT_RECORD_ID,'') = '' "
+			item_line_covered_object_entitlement_join_string += "LEFT JOIN SAQIEN (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQIEN.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQIEN.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQIEN.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQIEN.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
+		# Update - End
+		item_line_covered_object_entitlement_query = """INSERT SAQIEN (QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,QTESRVENT_RECORD_ID,SERVICE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERIAL_NO,ENTITLEMENT_XML,CPS_CONFIGURATION_ID,FABLOCATION_ID,FABLOCATION_NAME,FABLOCATION_RECORD_ID,EQUIPMENT_LINE_ID,LINE_ITEM_ID,CPS_MATCH_ID,QTEITMCOB_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,QTEITM_RECORD_ID) 
+		(
+			SELECT 
+				DISTINCT CONVERT(VARCHAR(4000), NEWID()) AS QUOTE_ITEM_COVERED_OBJECT_ENTITLEMENTS_RECORD_ID, SAQSCE.QUOTE_ID,SAQSCE.QUOTE_RECORD_ID,SAQSCE.QTEREV_ID,SAQSCE.QTEREV_RECORD_ID,SAQSCE.QTESRVENT_RECORD_ID,SAQSCE.SERVICE_RECORD_ID,SAQSCE.SERVICE_ID,SAQSCE.SERVICE_DESCRIPTION,SAQICO.SERIAL_NO,SAQSCE.ENTITLEMENT_XML,SAQSCE.CPS_CONFIGURATION_ID,SAQSCE.FABLOCATION_ID,SAQSCE.FABLOCATION_NAME,SAQSCE.FABLOCATION_RECORD_ID,SAQICO.EQUIPMENT_LINE_ID,SAQICO.LINE,SAQSCE.CPS_MATCH_ID,SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,SAQICO.EQUIPMENT_ID,SAQICO.EQUIPMENT_RECORD_ID,SAQSCE.SALESORG_ID,SAQSCE.SALESORG_NAME,SAQSCE.SALESORG_RECORD_ID,SAQITM.QUOTE_ITEM_RECORD_ID 
+			FROM SAQSCE (NOLOCK) 
+			JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQSCE.SERVICE_ID AND SAQICO.						QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.FABLOCATION_ID = SAQSCE.FABLOCATION_ID 
+							AND SAQICO.GREENBOOK = SAQSCE.GREENBOOK AND SAQICO.EQUIPMENT_ID = SAQSCE.EQUIPMENT_ID 
+			JOIN SAQITM ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQITM.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID
+			{JoinString}
+			WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCE.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQSCE.CONFIGURATION_STATUS,'') = 'COMPLETE' {WhereString}
+		)""".format(
+		QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id,
+		JoinString=item_line_covered_object_entitlement_join_string, WhereString=item_line_covered_object_entitlement_where_string)
+		Sql.RunQuery(item_line_covered_object_entitlement_query)
+
 	def _quote_items_object_insert(self, update=False):
 		join_condition_string = ""
 		item_object_where_string = ""
@@ -700,6 +723,7 @@ class ContractQuoteItem:
 				self._quote_items_insert()		
 				self._quote_items_object_insert()	
 				self._quote_annualized_items_insert()	
+				self._quote_item_line_entitlement_insert()
 				self._quote_items_assembly_insert()
 				self._quote_items_assembly_entitlement_insert()
 		else:
@@ -724,6 +748,7 @@ class ContractQuoteItem:
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
 					self._quote_annualized_items_insert()
+					self._quote_item_line_entitlement_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
 			else:
@@ -731,6 +756,7 @@ class ContractQuoteItem:
 				self._quote_items_insert(update=True)		
 				self._quote_items_object_insert(update=True)	
 				self._quote_annualized_items_insert(update=True)
+				self._quote_item_line_entitlement_insert(update=True)
 				self._quote_items_assembly_insert(update=True)
 				self._quote_items_assembly_entitlement_insert(update=True)
 				
