@@ -799,7 +799,7 @@ class EntitlementView():
 			
 			Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
 			for val in GetXMLsecField:
-				#Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
+				Trace.Write(str(val.ENTITLEMENT_NAME)+'--ENT___NAME---2908----'+str(val.IS_DEFAULT))
 				if val.IS_DEFAULT == '1':
 					#Trace.Write(str(val.ENTITLEMENT_NAME)+'--2910------'+str(val.IS_DEFAULT))
 					attributedefaultvalue.append(val.ENTITLEMENT_ID)
@@ -814,8 +814,8 @@ class EntitlementView():
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
-			#Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber:	
+			Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
+			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam == "Quote Items":	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
