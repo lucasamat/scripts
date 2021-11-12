@@ -1589,7 +1589,7 @@ class EntitlementView():
 		new_value_dict = ""
 		api_name = ""
 		ret_value = ""
-		#Trace.Write('multi_select_attr_list'+str(multi_select_attr_list))
+		Trace.Write('sec_str---'+str(sec_str))
 		return sec_str, date_field, new_value_dict, api_name, ret_value, ObjectName, sec_bnr,sec_str_boot,tablistnew,dbl_clk_function,getprevdicts,totaldisallowlist,msg_txt,ChangedList,getnameentallowed,getvaludipto,getvaludipt1,getvaludipt2,getvaludipt2lt,getvaludipt2lab,getvaludipto_q ,getvaludipt2_q,getvaludipt2lt_q ,getvaludipt2lab_q ,getvaludipt2lab,getvaludipt3lab ,getvaludipt3lab_q , getvaludipt3labt ,getvaludipt3labt_q,getvaludipt1_q,getlabortype_calc,gett1labor_calc,gett1labortype_calc,gett2labo_calc,gett2labotype_calc,gett3lab_calc,gett3labtype_calc,getTlab,section_not_list,multi_select_attr_list
 
 ##Getting Tree params
