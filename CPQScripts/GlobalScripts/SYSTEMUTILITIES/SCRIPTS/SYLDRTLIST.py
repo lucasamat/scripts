@@ -4296,7 +4296,7 @@ class SYLDRTLIST:
 								+ str(col_name)
 								+ '">'
 							)
-						else
+						else:
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
