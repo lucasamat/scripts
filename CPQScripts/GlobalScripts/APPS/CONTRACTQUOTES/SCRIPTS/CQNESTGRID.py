@@ -6344,7 +6344,7 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.PART_NUMBER)
 		else:
 			eq_id = "Spare parts"
-	elif TreeSuperParentParam == "Quote Items":        
+	elif TreeParam == "Quote Items":        
 		qry = Sql.GetFirst(
 		"SELECT EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO FROM SAQICO (NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
 		)
