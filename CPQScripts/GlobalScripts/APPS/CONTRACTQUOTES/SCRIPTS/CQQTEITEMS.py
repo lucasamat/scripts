@@ -92,7 +92,7 @@ def LoadSummary():
         TotalSalesPrice = "{0:.2f}".format(float(getRevisionDetails.SALES_PRICE_INGL_CURR))
         TotalDiscount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_PERCENT))
         Tax = "{0:.2f}".format(float(getRevisionDetails.TAX_AMOUNT_INGL_CURR))
-        TotalCost = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT))
+        TotalCost = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
         #BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
         #CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
         NetPrice = "{0:.2f}".format(float(getRevisionDetails.NET_PRICE_INGL_CURR))
@@ -114,6 +114,12 @@ def LoadSummary():
         NetPrice = 0.00
         NetValue = 0.00
         Credit = 0.00
+        TotalDiscount = 0.00
+        TotalSalesPrice = 0.00
+        Tax = 0.00
+        
+
+
 
     
     getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID,QUOTE_RECORD_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
