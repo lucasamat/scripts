@@ -178,26 +178,24 @@ def CoveredObjEntitlement():
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start
 	
 	level = "Offering Entitlement "
-	#calling pre-logic valuedriver script
-	# try:
-	# 	Log.Info("PREDEFINED WAFER DRIVER IFLOW")
-	# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
-	# 	CQTVLDRIFW.valuedriver_predefined(Qt_rec_id ,"EQUIPMENT_LEVEL" ,TreeParam , userId, rev_rec_id, where_condition)
-	# except:
-	# 	Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
-	#calling pre-logic valuedriver script
+	
 	try:
 		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
-		# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 		
 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": Qt_rec_id ,"level":"EQUIPMENT_LEVEL", "treeparam": TreeParam,"user_id": userId, "quote_rev_id":rev_rec_id})
 
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
 	#ancillary_service_Z0046()
+	if not ancillary_dict:
+		get_ancillary = Sql.GetList("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}'".format(Qt_rec_id,rev_rec_id,TreeParam))
+		if get_ancillary:
+			for rec in get_ancillary:
+				ancillary_dict[rec.SERVICE_ID] = 'INSERT'
+
 	if ancillary_dict:
-		Log.Info("inside ancillary1111"+str(ancillary_dict))
+		Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
 		for anc_key,anc_val in ancillary_dict.items():
 			Log.Info("vall--"+str(anc_key)  )
@@ -230,7 +228,7 @@ def CoveredObjEntitlement():
 		Log.Info("Exception in Quote Item insert") 
 	
 	if ancillary_dict:
-		#Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
+		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)+'--'+str(Qt_rec_id)) 
 		for anc_key,anc_val in ancillary_dict.items():
 			#if anc_val == 'INSERT':
 			try:
@@ -633,8 +631,6 @@ def covobjrenewal():
 				Sql.Upsert(tableInfo)
 		
 	
-	
-
 def covobjrenewal_two():    
 	for configurationId,ProductPartnumber in zip(configuration,ProductPart):
 		SAQIEN = """INSERT SAQIEN 
@@ -1268,12 +1264,13 @@ Log.Info("LEVEL ->"+str(LEVEL))
 # 	Log.Info("anc--"+str(e))
 try:
 	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
-	Log.Info("ancillary_dict-try-"+str(ancillary_dict))
 	ancillary_dict = eval(str(ancillary_dict.replace(';39;',"'").replace('_;',"{").replace("$;","}").replace("=",":")))
 except Exception as e:
 	Log.Info("ancillary_dict--"+str(e))
 	ancillary_dict = {}
 Log.Info("ancillary_dict--"+str(ancillary_dict))
+
+
 if 'COV OBJ ENTITLEMENT' in LEVEL:
 	a = LEVEL.split(",")
 	TreeParam = a[1]
