@@ -938,7 +938,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						get_val_list =re.findall(r''+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</ENTITLEMENT_DISPLAY_VALUE>',get_previous_xml.ENTITLEMENT_XML)
 						
 						get_code = re.findall( re.compile(r'<ENTITLEMENT_VALUE_CODE>([^>]*?)</ENTITLEMENT_VALUE_CODE>'), get_val_list[0] )[0]
-						get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )[0]
+						try:
+							get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )[0]
+						except:
+							get_value = re.findall( re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([\w\W]*?)</ENTITLEMENT_DISPLAY_VALUE>'), get_val_list[0] )[0]
 					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
 						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
 						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
