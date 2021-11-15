@@ -225,6 +225,7 @@ def CoveredObjEntitlement():
 	#try:
 	Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
 	data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
+	Log.Info("Called CQINSQTITM ==>cqroll enddddd "+str(Qt_rec_id))
 	#except Exception:
 	#	Log.Info("Exception in Quote Item insert") 
 	
@@ -239,7 +240,7 @@ def CoveredObjEntitlement():
 				#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 			except Exception:
-				Log.Info("Exception in Quote Item insert")
+				Log.Info("Exception in Quote Item insert1111")
 	sendEmail(level)
 
 def CoveredObjItemEntitlement():
