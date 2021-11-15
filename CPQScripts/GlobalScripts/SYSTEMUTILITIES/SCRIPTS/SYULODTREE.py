@@ -1812,6 +1812,7 @@ class TreeView:
 								Trace.Write("NodeName ---SAQSFB---->"+str(NodeName))
 								NodeText = str(eval("childdata." + str(NodeName)))
 								Trace.Write("NodeText ---SAQSFB---->"+str(NodeText))
+								Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
 								childQueryObj = Sql.GetFirst("select  SAQSCO.FABLOCATION_ID,SAQSFB.QUOTE_SERVICE_FAB_LOCATION_RECORD_ID from SAQSCO (nolock) INNER JOIN SAQSFB ON SAQSCO.QUOTE_RECORD_ID = SAQSFB.QUOTE_RECORD_ID AND SAQSFB.QTEREV_RECORD_ID = SAQSCO.QTEREV_RECORD_ID WHERE  SAQSFB.QUOTE_RECORD_ID = '{quote}' AND SAQSCO.SERVICE_ID = '{service}' AND SAQSCO.FABLOCATION_ID != '' AND SAQSFB.QTEREV_RECORD_ID = '{quote_revision_record_id}' and SAQSFB.FABLOCATION_ID = '{NodeText}'  ".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id"),NodeText = NodeText))
 							elif str(ObjName).strip() == 'ACACHR' and str(NodeName).strip() == 'APPROVAL_ROUND' 	and str(ProductName).upper() == "SALES":#A055S000P01-3618 code starts..
 								NodeText = "Round "+str(eval("childdata." + str(NodeName))).title()
@@ -2853,7 +2854,7 @@ class TreeView:
 									Trace.Write("fab service list---"+str(NodeText))
 									Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
 									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-									if entitlement_obj is None:
+									if entitlement_obj is None: 
 										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
 									updateentXML = entitlement_obj.ENTITLEMENT_XML
 									flag_excluse=0
