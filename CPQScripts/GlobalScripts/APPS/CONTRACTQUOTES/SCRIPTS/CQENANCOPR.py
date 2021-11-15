@@ -757,7 +757,13 @@ class AncillaryProductOperation:
 	def _delete_entitlement_tables_anc(self):
 		if self.tablename == "SAQTSE": 
 			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
-		
+		elif self.tablename == "SAQSFE": 
+			delete_obj_list = ["SAQSGE","SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSGE": 
+			delete_obj_list = ["SAQSCE","SAQSAE"]
+		elif self.tablename == "SAQSCE": 
+			delete_obj_list = ["SAQSAE"]
+
 		ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 		for obj in delete_obj_list:
 			Sql.RunQuery("DELETE FROM {obj} WHERE {where} AND PAR_SERVICE_ID IN (SELECT SERVICE_ID FROM {obj}  WHERE {par_where})".format(obj = obj, where=  ancillary_where, par_where = self.where_string ))
