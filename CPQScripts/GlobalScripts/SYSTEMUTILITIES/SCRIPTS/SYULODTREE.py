@@ -2087,6 +2087,7 @@ class TreeView:
 										Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
 										if str(service_id) == "bar":
 											service_id = NodeText.split('/>')[1]
+											Product.SetGlobal('service_id_for_parts_list',str(service_id))
 										table_name = "SAQTSE"
 										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
 										updateentXML = X.ENTITLEMENT_XML
@@ -2135,9 +2136,10 @@ class TreeView:
 									elif subTabName == 'Fab Parts List':
 										subTabName = ""
 										Trace.Write("fab service list---"+str(NodeText))
-										entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+										Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
+										entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),NodeText = NodeText))
 										if entitlement_obj is None:
-											entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+											entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
 										updateentXML = entitlement_obj.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2158,7 +2160,7 @@ class TreeView:
 									elif subTabName == 'Green Parts List':
 										Trace.Write("Green service list---"+str(NodeText))
 										subTabName = ""
-										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
 										updateentXML = X.ENTITLEMENT_XML
 										flag_excluse=0
 										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2848,10 +2850,11 @@ class TreeView:
 								Trace.Write("Service Parts List-----"+str(subTabName))
 								if subTabName == 'Fab Parts List':
 									subTabName = ""
-									table_name = "SAQSFE"
-									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+									Trace.Write("fab service list---"+str(NodeText))
+									Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
+									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),NodeText = NodeText))
 									if entitlement_obj is None:
-										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
 									updateentXML = entitlement_obj.ENTITLEMENT_XML
 									flag_excluse=0
 									pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2863,14 +2866,14 @@ class TreeView:
 										get_ent_name=re.findall(pattern_name,sub_string)
 										if get_ent_id and get_ent_name:
 											flag_excluse=1
-											Trace.Write("fab flag_excluse222222"+str(flag_excluse))
+											Trace.Write("fab flag_excluse11111111"+str(flag_excluse))
 											break
 									if flag_excluse==1:
 										subTabName = "Parts List"
 								elif subTabName == 'Green Parts List':
+									Trace.Write("Green service list---"+str(NodeText))
 									subTabName = ""
-									table_name = "SAQSGE"
-									X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,NodeText = NodeText))
+									X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal('service_id_for_parts_list'),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
 									updateentXML = X.ENTITLEMENT_XML
 									flag_excluse=0
 									pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -2886,6 +2889,7 @@ class TreeView:
 											break
 									if flag_excluse==1:
 										subTabName = "Parts List"
+									Trace.Write("subTabName Green service list---"+str(subTabName))
 								if subTabName:
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
