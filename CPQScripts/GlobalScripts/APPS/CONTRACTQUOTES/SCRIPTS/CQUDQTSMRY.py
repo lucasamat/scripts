@@ -364,17 +364,7 @@ class ContractQuoteSummaryUpdate:
 		Quote.Save()
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,
-						SAQTRV.DISCOUNT_PERCENT = '{discount}'
-						
-						FROM SAQTRV (NOLOCK)
-						INNER JOIN (SELECT SAQITM.QUOTE_RECORD_ID, SAQITM.QTEREV_RECORD_ID,
-									SUM(ISNULL(SAQITM.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
-									SUM(ISNULL(SAQITM.TOTAL_AMOUNT_INGL_CURR, 0)) as TOTAL_AMOUNT_INGL_CURR,
-									SUM(ISNULL(SAQITM.NET_VALUE, 0)) as NET_VALUE
-									FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY QTEREV_RECORD_ID, QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
-						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
+						NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}), DISCOUNT = '{Discount}' WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}'""".format(Discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id,DecimalDiscount=decimal_discount ))
 
 
 		#self._quote_item_update()
