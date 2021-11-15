@@ -4989,7 +4989,7 @@ class SYLDRTLIST:
 			else:
 				Trace.Write("okoko___sec")
 				select_obj_str = str(obj_str)
-			Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(type(lookup_str)))
+			Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(lookup_str))
 			Trace.Write("select_obj_str---- "+str(select_obj_str))
 			Trace.Write("obj_str---- "+str(type(obj_str)))
 			#Trace.Write("obj_str---- "+str(obj_str))
