@@ -215,7 +215,7 @@ def CoveredObjEntitlement():
 	except:
 		Log.Info("ancillary entitlement error")
 
-	sendEmail(level)
+	
 	try:
 		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
 		if quote_obj:
@@ -240,7 +240,7 @@ def CoveredObjEntitlement():
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 			except Exception:
 				Log.Info("Exception in Quote Item insert")
-
+	sendEmail(level)
 
 def CoveredObjItemEntitlement():
 	
