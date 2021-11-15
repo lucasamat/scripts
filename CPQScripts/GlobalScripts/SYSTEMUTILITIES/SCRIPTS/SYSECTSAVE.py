@@ -1723,7 +1723,7 @@ Trace.Write(RECORD)
 ObjectName = ""
 warning_msg = ""
 Trace.Write("TableId-" + str(TableId))
-Trace.Write("RECORD" + str(RECORD))
+#Trace.Write("RECORD" + str(RECORD))
 Trace.Write("TreeParam" + str(TreeParam))
 Trace.Write("TreeParentParam" + str(TreeParentParam))
 Trace.Write("TreeSuperParentParam" + str(TreeSuperParentParam))
