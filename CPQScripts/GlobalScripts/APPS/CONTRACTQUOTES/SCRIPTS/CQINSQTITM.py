@@ -298,8 +298,12 @@ class ContractQuoteItem:
 	
 	def _quote_items_entitlement_insert(self, source_object_name=None, update=False):		
 		join_condition_string = ''
+		dynamic_group_id_value = 'null as ENTITLEMENT_GROUP_ID'
+		dynamic_is_changed_value = 'null as IS_CHANGED'
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 			join_condition_string = ' AND SAQRIT.OBJECT_ID = {ObjectName}.EQUIPMENT_ID'.format(ObjectName=source_object_name)
+			dynamic_group_id_value = '{ObjectName}.ENTITLEMENT_GROUP_ID'.format(ObjectName=source_object_name)
+			dynamic_is_changed_value = '{ObjectName}.IS_CHANGED'.format(ObjectName=source_object_name)
 		#if update: # need to verify one more time
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
@@ -312,11 +316,11 @@ class ContractQuoteItem:
 						{ObjectName}.CPS_CONFIGURATION_ID,
 						{ObjectName}.CPS_MATCH_ID,
 						null as ENTITLEMENT_COST_IMPACT,
-						{ObjectName}.ENTITLEMENT_GROUP_ID,
+						{dynamic_group_id_value},
 						null as ENTITLEMENT_GROUP_XML,
 						null as ENTITLEMENT_PRICE_IMPACT,
 						{ObjectName}.ENTITLEMENT_XML,
-						null as IS_CHANGED,
+						{dynamic_is_changed_value},
 						SAQRIT.LINE,						
 						SAQRIT.SERVICE_DESCRIPTION,
 						SAQRIT.SERVICE_ID,
@@ -339,7 +343,7 @@ class ContractQuoteItem:
 												AND SAQRIT.GREENBOOK_RECORD_ID = {ObjectName}.GREENBOOK_RECORD_ID		
 												{JoinConditionString}			
 					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
-				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinConditionString=join_condition_string))
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinConditionString=join_condition_string, dynamic_is_changed_value = dynamic_is_changed_value, dynamic_group_id_value = dynamic_group_id_value))
 		return True
 
 	def _set_quote_service_entitlement_type(self):
@@ -830,7 +834,6 @@ class ContractQuoteItem:
 						self._quote_annualized_items_insert()
 				##simple product quote item insert
 				elif self.is_simple_service == True:
-					#Trace.Write("simple a6200")
 					self._simple_quote_items_insert()
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
@@ -843,12 +846,24 @@ class ContractQuoteItem:
 					self._quote_items_assembly_entitlement_insert()
 			else:
 				self._delete_item_related_table_records()
-				self._quote_items_insert(update=True)		
-				self._quote_items_object_insert(update=True)	
-				self._quote_annualized_items_insert(update=True)
-				self._quote_item_line_entitlement_insert(update=True)
-				self._quote_items_assembly_insert(update=True)
-				self._quote_items_assembly_entitlement_insert(update=True)
+				
+				if self.service_id == 'Z0101':	
+					if self.is_spare_service == True:			
+						# Spare Parts Insert/Update
+						self._quote_items_insert()
+						self._insert_quote_item_forecast_parts()
+						self._quote_annualized_items_insert()
+				elif self.is_simple_service == True:
+					self._simple_quote_items_insert()
+					self._simple_items_object_insert()
+					self._simple_quote_annualized_items_insert()
+				else:
+					self._quote_items_insert(update=True)		
+					self._quote_items_object_insert(update=True)	
+					self._quote_annualized_items_insert(update=True)
+					self._quote_item_line_entitlement_insert(update=True)
+					self._quote_items_assembly_insert(update=True)
+					self._quote_items_assembly_entitlement_insert(update=True)
 				
 		# Pricing Calculation - Start
 		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
