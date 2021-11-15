@@ -505,7 +505,11 @@ class ContractQuoteItem:
 				WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' {WhereConditionString}			
 			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, WhereConditionString=item_where_string, JoinString=item_join_string))
 			# Item Level entitlement Insert
-			self._quote_items_entitlement_insert(source_object_name=source_object_name, update=update)
+			if self.service_id == 'Z0101':
+				self._spare_quote_items_entitlement_insert(source_object_name='SAQTSE', update=update)
+			else:
+				self._quote_items_entitlement_insert(source_object_name=source_object_name, update=update)
+
 		return True		
 	
 	def _simple_quote_items_insert(self):
@@ -754,6 +758,47 @@ class ContractQuoteItem:
 			deleting_tables_list = ['SAQRIT','SAQRIO','SAQITE','SAQICO']
 			for obj in deleting_tables_list:
 				Sql.RunQuery("DELETE {obj} FROM {obj} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, obj = obj))
+
+	def _spare_quote_items_entitlement_insert(self, source_object_name=None, update=False):		
+		#if update: # need to verify one more time
+		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
+					SELECT
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID,
+						'{UserName}' AS CPQTABLEENTRYADDEDBY,
+						GETDATE() as CPQTABLEENTRYDATEADDED,
+						{UserId} as CpqTableEntryModifiedBy,
+						GETDATE() as CpqTableEntryDateModified,
+						{ObjectName}.CPS_CONFIGURATION_ID,
+						{ObjectName}.CPS_MATCH_ID,
+						null as ENTITLEMENT_COST_IMPACT,
+						null as ENTITLEMENT_GROUP_ID,
+						null as ENTITLEMENT_GROUP_XML,
+						null as ENTITLEMENT_PRICE_IMPACT,
+						{ObjectName}.ENTITLEMENT_XML,
+						
+						SAQRIT.LINE,						
+						SAQRIT.SERVICE_DESCRIPTION,
+						SAQRIT.SERVICE_ID,
+						SAQRIT.SERVICE_RECORD_ID,
+						SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
+						SAQRIT.QUOTE_ID,
+						SAQRIT.QUOTE_RECORD_ID,
+						SAQRIT.QTEREV_ID,
+						SAQRIT.QTEREV_RECORD_ID,						
+						null as FABLOCATION_ID,
+						null as FABLOCATION_NAME,
+						null as FABLOCATION_RECORD_ID,
+						null as GREENBOOK,
+						null as GREENBOOK_RECORD_ID
+					FROM {ObjectName} (NOLOCK) 
+					JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID
+												AND SAQRIT.SERVICE_RECORD_ID = {ObjectName}.SERVICE_RECORD_ID
+												AND SAQRIT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID
+															
+					WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE'			
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		return True
 
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
