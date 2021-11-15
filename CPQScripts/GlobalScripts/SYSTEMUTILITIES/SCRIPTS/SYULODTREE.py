@@ -2137,7 +2137,7 @@ class TreeView:
 									elif subTabName == 'Fab Parts List':
 										subTabName = ""
 										Trace.Write("fab service list---"+str(NodeText))
-										Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
+										#Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
 										entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
 										if entitlement_obj is None:
 											entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
@@ -2852,7 +2852,7 @@ class TreeView:
 								if subTabName == 'Fab Parts List':
 									subTabName = ""
 									Trace.Write("fab service list---"+str(NodeText))
-									Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
+									#Product.SetGlobal('fablocation_id_for_parts_list',str(NodeText))
 									entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSFE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
 									if entitlement_obj is None: 
 										entitlement_obj=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and FABLOCATION_ID = '{fablocation_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),fablocation_id = Product.GetGlobal('fablocation_id_for_parts_list'),NodeText = NodeText))
