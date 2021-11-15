@@ -494,16 +494,7 @@ class ContractQuoteSummaryUpdate:
 
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.TOTAL_AMOUNT_INGL_CURR,
-						SAQTRV.DISCOUNT_PERCENT = '{discount}'
-						
-						FROM SAQTRV (NOLOCK)
-						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,
-									SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
-									SUM(ISNULL(SAQRIT.TOTAL_AMOUNT_INGL_CURR, 0)) as TOTAL_AMOUNT_INGL_CURR
-									FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
-						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format(discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id ) )
+						DISCOUNT_PERCENT = '{Discount}' WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}'""".format(Discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id,DecimalDiscount=decimal_discount ))
 
 
 
