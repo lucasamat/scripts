@@ -521,7 +521,7 @@ discount = Param.Discount
 summary_obj = ContractQuoteSummaryUpdate(discount=discount)
 
 if "-" in discount:
-	discount = str(discount).replace("-","").strip()
+	discount = str(discount).replace("-","").replace("%","").strip()
 	summary_obj.CalculateMinusDiscount()
 else:
 	discount = str(discount).replace("+","").replace("%","").strip()
