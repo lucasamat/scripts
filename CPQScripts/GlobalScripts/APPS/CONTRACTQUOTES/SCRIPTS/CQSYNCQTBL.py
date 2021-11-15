@@ -1904,6 +1904,11 @@ class SyncQuoteAndCustomTables:
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
 						Sql.Upsert(payload_table_info)
+
+						##Calling the iflow for quote header writeback to cpq to c4c code starts..
+						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					# Approval Trigger - Start								
 					import ACVIORULES
 					violationruleInsert = ACVIORULES.ViolationConditions()
