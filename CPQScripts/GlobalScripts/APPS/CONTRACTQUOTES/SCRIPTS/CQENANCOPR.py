@@ -725,6 +725,8 @@ class AncillaryProductOperation:
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
+								elif 'AGS_Z0101' in val.ENTITLEMENT_ID:
+									AttributeID_Pass = val.ENTITLEMENT_ID
 							if AttributeID_Pass:
 								Trace.Write("AttributeID_Pass--"+str(AttributeID_Pass)+'---'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 								ServiceId = 'Z0046'
