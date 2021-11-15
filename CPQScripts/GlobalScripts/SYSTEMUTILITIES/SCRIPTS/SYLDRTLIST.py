@@ -543,6 +543,7 @@ class SYLDRTLIST:
 					lookup_disply_list123 = list(eval(Columns))[0]
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
+				Trace.Write("Chkng_tracez"+str(obj_str)+" - "+str(lookup_str))
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
 				select_obj_str = str(obj_str)
