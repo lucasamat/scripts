@@ -3719,13 +3719,16 @@ def POPUPLISTVALUEADDNEW(
 			if TreeSuperParentParam == "Product Offerings":
 				TreeParam = TreeParam
 				TableName = "SAQTSE"
+				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 			elif TreeTopSuperParentParam == "Product Offerings":
-				TreeParam = Product.GetGlobal("TreeParentLevel0")
+				Service_Id = Product.GetGlobal("TreeParentLevel0")
 				TableName = "SAQSFE"
+				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
 			else:
-				TreeParam = Product.GetGlobal("TreeParentLevel1")
+				Service_Id = Product.GetGlobal("TreeParentLevel1")
+				Fab_location_Id = Product.GetGlobal("TreeParentLevel1")
 				TableName = "SAQSGE"
-			entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,Fab_location_Id,TreeParam))
 			# get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,'"+str(entitlement_obj.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('{}','{}') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions') ".format(contract_quote_record_id,#quote_revision_record_id,TreeParam,non_consumable_value,consumable_value))
 			#get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions')")
 			# entitlement_xml = entitlement_obj.ENTITLEMENT_XML
