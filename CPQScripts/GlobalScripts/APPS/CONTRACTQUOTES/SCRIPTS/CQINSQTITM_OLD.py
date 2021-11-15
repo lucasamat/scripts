@@ -1983,6 +1983,6 @@ else:
 	parameters[keysofparameters['QUOTE_RECORD_ID']]=str(Param.ContractQuoteRecordId)
 	parameters[keysofparameters['QTEREV_RECORD_ID']]=str(Param.ContractQuoteRevisionRecordId)
 	parameters[keysofparameters['SERVICE_ID']]=str(Param.ServiceId)
-	
+Log.Info("CQINSQTITM ================>"+str(**parameters))	
 contract_quote_item_obj = ContractQuoteItem(**parameters)
 contract_quote_item_obj._do_opertion()
