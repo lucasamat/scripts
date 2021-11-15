@@ -17,9 +17,9 @@ class ContractQuoteSummaryUpdate:
 			self.discount = discount
 		else:
 			if "+" in discount:
-				self.discount = str(discount).replace("+","").strip()
+				self.discount = str(discount).replace("+","").replace("%","").strip()
 			elif "-" in discount:
-				self.discount = str(discount).replace("-","").strip()
+				self.discount = str(discount).replace("-","").replace("%","").strip()
 		try:
 			self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 		except Exception:
