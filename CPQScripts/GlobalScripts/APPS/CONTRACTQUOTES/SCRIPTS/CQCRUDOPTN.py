@@ -945,6 +945,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		pass
 	
 	def CreateEntitlements(self,OfferingRow_detail):
+		Trace.Write("CreateEntitlements--trace")
 		Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				
 		Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':OfferingRow_detail.get("SERVICE_ID"),'request_url':Request_URL,'request_type':"New"})
