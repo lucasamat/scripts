@@ -364,7 +364,7 @@ class ContractQuoteSummaryUpdate:
 		Quote.Save()
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 									
-						DISCOUNT = '{Discount}' WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}'""".format(Discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id,DecimalDiscount=decimal_discount ))
+						DISCOUNT_PERCENT = '{Discount}' WHERE QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}'""".format(Discount = str(self.discount), quote_rec_id = self.contract_quote_record_id, quote_revision_rec_id = self.quote_revision_record_id,DecimalDiscount=decimal_discount ))
 
 
 		#self._quote_item_update()
