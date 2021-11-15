@@ -222,11 +222,11 @@ def CoveredObjEntitlement():
 			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)	
 	except Exception:
 		Log.Info("Exception in Quote Edit") 
-	try:
-		Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
-		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
-	except Exception:
-		Log.Info("Exception in Quote Item insert") 
+	#try:
+	Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
+	data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
+	#except Exception:
+	#	Log.Info("Exception in Quote Item insert") 
 	
 	if ancillary_dict:
 		#Log.Info("ancillary_dict--qi-"+str(ancillary_dict)) 
