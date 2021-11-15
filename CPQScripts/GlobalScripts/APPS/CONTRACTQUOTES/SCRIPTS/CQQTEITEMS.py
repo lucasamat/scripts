@@ -193,9 +193,15 @@ def EditToolIdling():
                     elif x == "Idling Exception Notes":
                         sec_str += '<textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control related_popup_css txtArea light_yellow wid_90" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" maxlength = "255" rows="1" cols="100" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
                     elif x == "Cold Idle Allowed":
-                        sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsColdOnChange()" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                        if getDefaultValue.TOOLIDLING_VALUE_CODE == "Yes":
+                            sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsColdOnChange()" disabled=""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                        else:
+                            sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsColdOnChange()" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     elif x == "Warm / Hot Idle Allowed":
-                        sec_str += '<select class="form-control light_yellow" style="" id="WarmHotIdleAllowed" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsHotOnChange()" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                        if getDefaultValue.TOOLIDLING_VALUE_CODE == "Yes":
+                            sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="WarmHotIdleAllowed" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsHotOnChange()" disabled=""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                        else:
+                            sec_str += '<select class="form-control light_yellow" style="" id="WarmHotIdleAllowed" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" onchange="QuoteItemsHotOnChange()" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
                     else:
                         Trace.Write("Idle Else")
                         sec_str += '<select class="form-control light_yellow" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" ><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
@@ -205,7 +211,11 @@ def EditToolIdling():
                     if getAllValues:
                         for val in getAllValues:
                             sec_str += '<option id="'+x.replace(" ","_")+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
-                    sec_str += '</select><a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil" aria-hidden="true"></i></a></td></tr>'
+                    if ("Cold Idle Allowed" in x and "Yes" in getDefaultValue.TOOLIDLING_VALUE_CODE) or ("Hot Idle Allowed" in x and "Yes" in getDefaultValue.TOOLIDLING_VALUE_CODE) or "Idling type" in x:
+                        sec_str += '</select><a href="#" class="editclick" style=" color:#dcdcdc !important;"><i title="" class="fa fa-lock" aria-hidden="true"></i></a></td></tr>'
+                    else:
+                        sec_str += '</select><a href="#" class="editclick" style=" color:#dcdcdc !important;"><i title="Double Click to Edit" class="fa fa-pencil" aria-hidden="true"></i></a></td></tr>'
+                    #sec_str += '</select><a href="#" class="editclick"><i title="Double Click to Edit" class="fa fa-pencil" aria-hidden="true"></i></a></td></tr>'
             sec_str += "</tbody></table>"
         else:
             #getPRTIDA = Sql.GetFirst("SELECT TOOLIDLING_ID,TOOLIDLING_NAME FROM PRTIDA (NOLOCK)")
