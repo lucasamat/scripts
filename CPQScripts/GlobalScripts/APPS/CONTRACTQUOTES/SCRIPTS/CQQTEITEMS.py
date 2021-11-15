@@ -70,7 +70,7 @@ def LoadSummary():
                         for val in getAllValues:
                             sec_str += '<option id="AGS_'+val.TOOLIDLING_VALUE_CODE+'" value="'+val.TOOLIDLING_VALUE_CODE+'" >'+val.TOOLIDLING_VALUE_CODE+'</option>'
 
-                if (("Cold Idle Allowed" in x and "Yes" in y) or ("Hot Idle Allowed" in x and "Yes" in y)) and "Idling type" in x:
+                if ("Cold Idle Allowed" in x and "Yes" in y) or ("Hot Idle Allowed" in x and "Yes" in y) or "Idling type" in x:
                     sec_str += '</select><a href="#" class="editclick" style=" color:#dcdcdc !important;"><i title="" class="fa fa-lock" aria-hidden="true"></i></a></td></tr>'
                 else:
                     sec_str += '</select><a href="#" class="editclick" style=" color:#dcdcdc !important;"><i title="Double Click to Edit" class="fa fa-pencil" aria-hidden="true"></i></a></td></tr>'
