@@ -2848,8 +2848,6 @@ def Related_Sub_Banner(
                         '<button id="ADDNEW__SYOBJR_98858_SYOBJ_01034" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties_Equipments\')" class="btnconfig addNewRel">ADD EQUIPMENT</button>'
                     )
 
-        elif  str(TreeParentParam).upper() == "BRIDGE PRODUCTS" and TabName == "Quotes":		
-            sec_rel_sub_bnr += ('<button id="spare-parts-bulk-edit-btn" onclick="showSparePartsBulkEdit(this)" style="display: none;" class="btnconfig">BULK EDIT</button><button id="spare-parts-bulk-save-btn" onclick="showSparePartsBulksave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="spare-parts-bulk-cancel-btn" onclick="showSparePartsBulkcancel(this)" style="display: none;" class="btnconfig">CANCEL</button> '  ) 
         elif  (str(TreeParentParam).upper() == "FAB LOCATIONS" or str(TreeParam).upper() == "QUOTE INFORMATION" or str(TreeSuperParentParam).upper() == "FAB LOCATIONS" )  and TabName == "Quotes":
             
             sec_rel_sub_bnr += ('<button id="fablocate_save" onclick="fablocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fablocate_cancel" onclick="fablocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )

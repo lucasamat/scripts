@@ -6336,14 +6336,6 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.EQUIPMENT_ID)+"-"+str(qry.SERIAL_NUMBER)
 		else:
 			eq_id = "TOOLS"
-	elif TreeParentParam == "Bridge Products":
-		qry = Sql.GetFirst(
-		"SELECT PART_NUMBER,PART_DESCRIPTION FROM SAQSPT (NOLOCK) WHERE QUOTE_SERVICE_PART_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
-		)
-		if qry:
-			eq_id = str(qry.PART_NUMBER)
-		else:
-			eq_id = "Spare parts"
 	elif TreeParam == "Quote Items" and TABLENAME == 'SAQICO':        
 		qry = Sql.GetFirst(
 		"SELECT EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO FROM SAQICO (NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
@@ -7058,7 +7050,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ str(table_id)
 				+ '");   cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
 				+ str(table_id)
-				+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT", "SELECTALL":selectAll }, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (sparePartsBulkAddBtn.length == 0 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","none");} else if(sparePartsBulkAddBtn.length == 1 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","block");$("#spare-parts-bulk-edit-btn").css("display","none");$("#spare-parts-bulk-add-modal-btn").css("display","none");}; if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
+				+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT", "SELECTALL":selectAll }, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn"); if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
 				+ str(table_ids)
 				+ "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 				+ str(table_id)
