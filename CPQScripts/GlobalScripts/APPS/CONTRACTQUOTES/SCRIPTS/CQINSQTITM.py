@@ -316,7 +316,7 @@ class ContractQuoteItem:
 						null as ENTITLEMENT_GROUP_XML,
 						null as ENTITLEMENT_PRICE_IMPACT,
 						{ObjectName}.ENTITLEMENT_XML,
-						{ObjectName}.IS_CHANGED,
+						null as IS_CHANGED,
 						SAQRIT.LINE,						
 						SAQRIT.SERVICE_DESCRIPTION,
 						SAQRIT.SERVICE_ID,
