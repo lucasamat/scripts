@@ -4993,6 +4993,7 @@ class SYLDRTLIST:
 				elif "QUOTE_REV_DEAL_TEAM_MEMBER_ID" in lookup_disply_list and ObjectName == "SAQDLT":
 					try:
 						lookup_disply_list.remove("QUOTE_REV_DEAL_TEAM_MEMBER_ID")
+						lookup_disply_list.remove("C4C_PARTNERFUNCTION_ID")
 					except:
 						pass
 			lookup_str = ",".join(list(lookup_disply_list))
