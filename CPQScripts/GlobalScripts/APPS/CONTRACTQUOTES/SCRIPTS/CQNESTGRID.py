@@ -4333,7 +4333,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 	if ' ' in recid:
 		table_recid = recid.replace(' ','_')
 	else:
-    		table_recid = recid
+			table_recid = recid
 	table_id = "table_preventive_maintainence_child_"+str(table_recid) 
 	table_header = (
 		'<table id="'
@@ -6425,6 +6425,16 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.CONTACT_ID)
 		else:
 			eq_id = "Contacts"
+	elif TABLENAME == 'SAQSAP':
+		qry = Sql.GetFirst(
+		"SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSAP (NOLOCK) WHERE QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry.SERIAL_NO: 
+			eq_id = str(qry.EQUIPMENT_ID)+"-"+str(qry.SERIAL_NUMBER)
+		elif qry:
+			eq_id = str(qry.EQUIPMENT_ID)
+		else:
+			eq_id = "PM Events"
 	##A055S000P01-8690 code starts..
 	elif TABLENAME == 'SAQDLT':
 		qry = Sql.GetFirst(
