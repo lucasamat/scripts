@@ -574,6 +574,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 def EditCBC(Qt_rec_id, Quote, MODE):		
 	Trace.Write('CBC Update')
 	#min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+	Trace.Write("aaaaaaa"+str(values))
 	for val in values:
 		#order = int(val["order"])
 		#order = order + min.id - 1
