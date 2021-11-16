@@ -111,9 +111,9 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
 
         authorization = Convert.ToBase64String(binaryAuthorization)
         authorization = "Basic " + authorization
-    webclient = System.Net.WebClient()
-    webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
-    webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
-    response = webclient.UploadString(URL, requestdata)
-    Trace.Write("response    " + str(response))
+        webclient = System.Net.WebClient()
+        webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
+        webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
+        response = webclient.UploadString(URL, requestdata)
+        Trace.Write("response    " + str(response))
     
