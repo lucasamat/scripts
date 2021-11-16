@@ -3868,7 +3868,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		#"ANNUAL_FREQUENCY_BASE",
 		"SSCM_PM_FREQUENCY",
 		"PM_FREQUENCY",
-		"KIT_ID",
+		# "KIT_ID",
 		"KIT_NAME",
 		"KIT_NUMBER",
 		"TKM_FLAG",
@@ -3969,7 +3969,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId(
 			"SAQSAP", str(par.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID)
 		)
-		data_dict["KIT_ID"] = str(par.KIT_ID)
+		# data_dict["KIT_ID"] = str(par.KIT_ID)
 		data_dict["KIT_NAME"] = str(par.KIT_NAME)
 		data_dict["KIT_NUMBER"] = str(par.KIT_NUMBER)
 		data_dict["PM_ID"] = str(par.PM_ID)
