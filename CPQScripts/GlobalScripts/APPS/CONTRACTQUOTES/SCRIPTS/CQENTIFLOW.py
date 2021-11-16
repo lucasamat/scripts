@@ -41,5 +41,6 @@ def iflow_entitlement(objectName,where,ancillary_dict):
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
     response = webclient.UploadString(URL, requestdata)
     Log.Info("URL------"+str(URL))
+    Log.Info("objectName------"+str(objectName))
     Trace.Write("33333333333333333    " + str(response))
     
