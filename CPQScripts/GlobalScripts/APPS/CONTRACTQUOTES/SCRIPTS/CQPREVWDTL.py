@@ -499,7 +499,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 		checklist_vals = Sql.GetList("select TOP 1000 CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ORDER BY CpqTableEntryId ASC".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 		for value in checklist_vals:
-			if sect.SECTION_NAME =="SECTION ONE" and str(value.CHECKLIST_ID) in ['1','2','2.1','3','3.1','3.2','3.3','3.4']:
+			if sect.SECTION_NAME =="TERMS AND CONDITIONS VALIDATION" and str(value.CHECKLIST_ID) in ['1','2','2.1','3','3.1','3.2','3.3','3.4']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
