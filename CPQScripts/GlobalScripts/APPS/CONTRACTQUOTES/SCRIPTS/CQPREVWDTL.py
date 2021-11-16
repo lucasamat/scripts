@@ -499,16 +499,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 		checklist_vals = Sql.GetList("select TOP 1000 CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ORDER BY CpqTableEntryId ASC".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 		for value in checklist_vals:
-			if '.' in str(value.CHECKLIST_ID):				
-				sec_str +='<tr class ="cbc_child">'
-				sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
-				sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
-				sec_str +=('<td class="wid_90"></td>')
-				sec_str +=('<td class="wid_90"></td>')
-				sec_str +=('<td class="wid_90"></td>')
-				sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
-				sec_str += '</tr>'
-			else:
+			if str(value.CHECKLIST_ID) != "":				
 				sec_str +='<tr class ="cbc_parent">'
 				sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
 				sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
@@ -517,7 +508,15 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 				sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
 				sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 				sec_str += '</tr>'
-
+			else:
+				sec_str +='<tr class ="cbc_child">'
+				sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+				sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+				sec_str +=('<td class="wid_90"></td>')
+				sec_str +=('<td class="wid_90"></td>')
+				sec_str +=('<td class="wid_90"></td>')
+				sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+				sec_str += '</tr>'
 		sec_str += '</tbody></table></div>'
 		sec_str +='<div class="g4 collapse in except_sec removeHorLine iconhvr sec_edit_sty" id="cbc_savecancel" style="display:none"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcCancel(this)">CANCEL</button><button id="cbc_save_id" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcSAVE_check(this)">SAVE</button></div>'
 	values_lists = ""
