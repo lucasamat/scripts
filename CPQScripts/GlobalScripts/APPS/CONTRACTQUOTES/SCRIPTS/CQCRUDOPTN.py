@@ -4594,8 +4594,8 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 						for m in re.finditer(pattern_tag, updateentXML):
 							sub_string = m.group(1)
-							get_ent_id =re.findall(pattern_id,sub_string)
-							get_ent_val=re.findall(pattern_name,sub_string)
+							get_ent_id = re.findall(pattern_id,sub_string)
+							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
 								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val))
 								break
