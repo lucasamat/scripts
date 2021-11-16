@@ -4963,6 +4963,9 @@ class SYLDRTLIST:
 							and attr.LOOKUP_API_NAME != ""
 							and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
 						):
+							Trace.Write('##'+str(attr.LOOKUP_API_NAME is not None))
+							Trace.Write('##'+str(attr.LOOKUP_API_NAME))
+							Trace.Write('##'+str(attr.LOOKUP_API_NAME != ""))
 							lookup_disply_list.append(str(attr.API_NAME))
 						checkbox_list = [
 							inn.API_NAME
