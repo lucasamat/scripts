@@ -42,7 +42,7 @@ def CommonTreeViewHTMLDetail(
 		current_prod = Product.Name
 	except:
 		current_prod = "Sales"
-	Trace.Write("RECORD_ID---->"str(RECORD_ID))
+	Trace.Write("RECORD_ID---->"+str(RECORD_ID))
 	TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 	CurrentModuleObj = Sql.GetFirst("select * from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
 	quote_revision_record_id = ""
