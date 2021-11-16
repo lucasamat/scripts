@@ -1410,8 +1410,12 @@ class TreeView:
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		Trace.Write('RecId-----TreeParentParam--'+str(TreeParentParam))
 		TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
-		contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+		try:
+			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+		except:
+			contract_quote_record_id = ""
+			quote_revision_record_id = ""
 		#Trace.Write('RecAttValue-----1076-----'+str(TreeSuperParentParam))
 		# Trace.Write("Subwhere_string_CHK"+str(where_string))
 		#Trace.Write("NodeName---1073----"+str(NodeName))
