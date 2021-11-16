@@ -1280,10 +1280,13 @@ class SyncQuoteAndCustomTables:
 					finalchecklist_id=0
 					for field_desc in checklist_desc:
 						if re.match(r'^\-',field_desc):
-							checklist_id=''
+							checklist_id= str(finalchecklist_id)+'.'+str(cnt)
+       						field_desc=re.sub(r'^\-','',field_desc)
+       						cnt+=1
 						else:
 							finalchecklist_id= finalchecklist_id +1
 							checklist_id=finalchecklist_id
+							cnt = 1
 						#checklist_id = checklist_id + 1						
 						insert_saqcbc ="""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id)
 						insert_saqcbc = insert_saqcbc.encode('ascii', 'ignore').decode('ascii')
