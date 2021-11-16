@@ -475,7 +475,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	]            
 	dynamic_sect = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = 'SAQCBC'ORDER BY DISPLAY_ORDER")
 	for sect in dynamic_sect:
-		sec_str += '<div id="container"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="'+str(sect.RECORD_ID)+'" class="dropdown-item" href="#" onclick="QuoteinformationEDIT(this)">EDIT</a></li></ul></div></div>"'+str(sect.SECTION_NAME)+'"</div><div class="bootstrap-table">'
+		sec_str += '<div id="container"><div><div id="ctr_drop" class="btn-group dropdown"><div class="dropdown"><i data-toggle="dropdown" class="fa fa-sort-desc dropdown-toggle"></i><ul class="dropdown-menu left" aria-labelledby="dropdownMenuButton"><li class="edit_list"> <a id="'+str(sect.RECORD_ID)+'" class="dropdown-item" href="#" onclick="QuoteinformationEDIT(this)">EDIT</a></li></ul></div></div>'+str(sect.SECTION_NAME)+'</div><div class="bootstrap-table">'
 		sec_str += (
 		'<table id="'
 		+ str(table_id)
@@ -499,8 +499,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 		checklist_vals = Sql.GetList("select TOP 1000 CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ORDER BY CpqTableEntryId ASC".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 		for value in checklist_vals:
-			if str(value.CHECKLIST_ID) != "":
-				
+			if str(value.CHECKLIST_ID) != "":				
 				sec_str +='<tr class ="cbc_parent">'
 				sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
 				sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
