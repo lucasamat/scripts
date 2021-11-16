@@ -1281,8 +1281,8 @@ class SyncQuoteAndCustomTables:
 					for field_desc in checklist_desc:
 						if re.match(r'^\-',field_desc):
 							checklist_id= str(finalchecklist_id)+'.'+str(cnt)
-       						field_desc=re.sub(r'^\-','',field_desc)
-       						cnt+=1
+							field_desc=re.sub(r'^\-','',field_desc)
+							cnt+=1
 						else:
 							finalchecklist_id= finalchecklist_id +1
 							checklist_id=finalchecklist_id
