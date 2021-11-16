@@ -4585,6 +4585,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 					start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 					billing_day = int(val.BILLING_DAY)
 					get_service_val = val.SERVICE_ID
+					get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =qtid,qt_rev_id=qt_rev_id,get_service = str(get_service_val).strip()))
 					#Trace.Write('get_service_val---4750--'+str(get_service_val))
 					if billing_day in (29,30,31):
 						if start_date.month == 2:
