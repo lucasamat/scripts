@@ -3,7 +3,7 @@
 #   __script_description : THIS SCRIPT IS USED TO CREATE NEW REVISIONS,EDIT REVISIONS AND UPDATE CUSTOM TABLES
 #   __primary_author__ : SRIJAYDHURGA
 #   __create_date :08/30/2021
-#   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#   Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # #====================================================================================================================#======================
 import Webcom.Configurator.Scripting.Test.TestProduct
 import datetime
@@ -18,6 +18,7 @@ import re
 from datetime import datetime, timedelta
 import SYTABACTIN as Table
 import SYCNGEGUID as CPQID
+import CQCPQC4CWB
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -50,7 +51,8 @@ def create_new_revision(Opertion,cartrev):
 		"SAQFEA":"QUOTE_FAB_LOC_COV_OBJ_ASSEMBLY_RECORD_ID",
 		"SAQFGB":"QUOTE_FAB_LOC_GB_RECORD_ID",
 		"SAQSFB":"QUOTE_SERVICE_FAB_LOCATION_RECORD_ID",
-		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID"
+		"SAQSSF":"QUOTE_SERVICE_SENDING_FAB_LOC_ID",
+		"SAQCBC":"QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID"
 		}
 	#"SAQIBP":"QUOTE_ITEM_BILLING_PLAN_RECORD_ID"
 	# "SAQITM":"QUOTE_ITEM_RECORD_ID",
@@ -83,11 +85,13 @@ def create_new_revision(Opertion,cartrev):
 		Quote.SetGlobal("quote_revision_record_id",str(quote_revision_id))
 		get_current_rev = Sql.GetFirst("select MAX(QTEREV_ID) as rev_id from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		
+		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"' AND ACTIVE = 1")
+
 		update_quote_rev = Sql.RunQuery("""UPDATE SAQTRV SET ACTIVE = {active_rev} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=quote_contract_recordId,active_rev = 0))
 		newrev_inc = int(get_current_rev.rev_id)+1
+  
 		get_rev_details = Sql.GetFirst("SELECT DISTINCT TOP 1 CART2.CARTCOMPOSITENUMBER, CART_REVISIONS.REVISION_ID, CART_REVISIONS.DESCRIPTION as DESCRIPTION,CART.ACTIVE_REV, CART_REVISIONS.CART_ID, CART_REVISIONS.PARENT_ID, CART.USERID FROM CART_REVISIONS (nolock) INNER JOIN CART2 (nolock) ON CART_REVISIONS.CART_ID = CART2.CartId INNER JOIN CART(NOLOCK) ON CART.CART_ID = CART2.CartId WHERE CART2.CARTCOMPOSITENUMBER = '{}'  and REVISION_ID  = '{}' ".format(Quote.CompositeNumber,newrev_inc))
 		
-		get_previous_rev_data = Sql.GetFirst("select * from SAQTRV where QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"' AND QTEREV_ID = '"+str(get_current_rev.rev_id)+"'")
 		current_date = datetime.now()
 		end_date = current_date + timedelta(days=365)
 		if get_previous_rev_data:
@@ -100,7 +104,7 @@ def create_new_revision(Opertion,cartrev):
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
 				"REV_EXPIRE_DATE":end_date.strftime('%m/%d/%Y'),
-				"REVISION_STATUS":"NEW REVISION",
+				"REVISION_STATUS":"PREPARING REVISION",
 				"QTEREV_ID":newrev_inc,
 				"QTEREV_RECORD_ID":quote_revision_id, 
 				"REV_APPROVE_DATE":'',
@@ -119,10 +123,13 @@ def create_new_revision(Opertion,cartrev):
 				"DIVISION_RECORD_ID" : get_previous_rev_data.DIVISION_RECORD_ID,
 				"DOC_CURRENCY" : get_previous_rev_data.DOC_CURRENCY,
 				"DOCCURR_RECORD_ID" : get_previous_rev_data.DOCCURR_RECORD_ID,
+				"DOCTYP_ID":get_previous_rev_data.DOCTYP_ID,
+				"DOCTYP_RECORD_ID":get_previous_rev_data.DOCTYP_RECORD_ID,
 				"DOCUMENT_PRICING_PROCEDURE" : get_previous_rev_data.DOCUMENT_PRICING_PROCEDURE,
 				"DISTRIBUTIONCHANNEL_ID" : get_previous_rev_data.DISTRIBUTIONCHANNEL_ID,
 				"EXCHANGE_RATE" : get_previous_rev_data.EXCHANGE_RATE,
 				"EXCHANGE_RATE_DATE" : get_previous_rev_data.EXCHANGE_RATE_DATE,
+				"EXCHANGE_RATE_TYPE" : get_previous_rev_data.EXCHANGE_RATE_TYPE,
 				"EXCHANGERATE_RECORD_ID" : get_previous_rev_data.EXCHANGERATE_RECORD_ID,
 				"GLOBAL_CURRENCY" : get_previous_rev_data.GLOBAL_CURRENCY,
 				"GLOBAL_CURRENCY_RECORD_ID" : get_previous_rev_data.GLOBAL_CURRENCY_RECORD_ID,
@@ -138,14 +145,17 @@ def create_new_revision(Opertion,cartrev):
 				"PRICINGPROCEDURE_NAME" : get_previous_rev_data.PRICINGPROCEDURE_NAME,
 				"PRICINGPROCEDURE_RECORD_ID" :get_previous_rev_data.PRICINGPROCEDURE_RECORD_ID,
 				"CANCELLATION_PERIOD":"90 DAYS",
-				"CONTRACT_VALID_FROM":get_quote_info_details.CONTRACT_VALID_FROM,
-				"CONTRACT_VALID_TO":get_quote_info_details.CONTRACT_VALID_TO
+				"CONTRACT_VALID_FROM":get_previous_rev_data.CONTRACT_VALID_FROM,
+				"CONTRACT_VALID_TO":get_previous_rev_data.CONTRACT_VALID_TO,
+				"COMPANY_ID":get_previous_rev_data.COMPANY_ID,
+				"COMPANY_NAME":get_previous_rev_data.COMPANY_NAME,
+				"COMPANY_RECORD_ID":get_previous_rev_data.COMPANY_RECORD_ID,
+				"HLV_ORG_BUN":"AGS - SSC"
 			}
 
 		quote_revision_table_info.AddRow(quote_rev_data)
 		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
-
 		#get quote data for update in SAQTMT start
 		
 		quote_table_info = Sql.GetTable("SAQTMT")
@@ -154,40 +164,41 @@ def create_new_revision(Opertion,cartrev):
 			#update SAQTMT start
 			Sql.RunQuery("""UPDATE SAQTMT SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}',ACTIVE_REV={active_rev} WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId,active_rev = 1))
 			#update SAQTMT end
-
+			
+			##Calling the iflow for quote header writeback to cpq to c4c code starts..
+			CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+			CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),quote_revision_id)
+			##Calling the iflow for quote header writeback to cpq to c4c code ends...
+			
 			#update SAQTIP start
 			Sql.RunQuery("""UPDATE SAQTIP SET QTEREV_ID = {newrev_inc},QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#update SAQTIP end
 			
 			#CLONE ALL OBJECTS 
 			for cloneobjectname in cloneobject.keys():
+				insertval = 'INSERT INTO '+ str(cloneobjectname) +'( '
+				selectval = "SELECT "
 				sqlobj=Sql.GetList("""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{}'""".format(str(cloneobjectname)))
-				insertcols = 'INSERT INTO '+ str(cloneobjectname) +'( '
-				selectcols = "SELECT "
+				insertcols = ''
+				selectcols = ''
 				for col in sqlobj:
-					if cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == "CPQTABLEENTRYADDEDBY":
-						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + str(col.COLUMN_NAME)
-					elif cloneobjectname in ("SAQSRA","SAQSSE","SAQSSA","SAQSSF") and col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
-					elif col.COLUMN_NAME == cloneobject[str(cloneobjectname)]:
-						insertcols = insertcols + str(col.COLUMN_NAME)
-						selectcols = selectcols + " CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
+					if col.COLUMN_NAME == cloneobject[cloneobjectname]:
+						insertcols =  str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = "CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", CONVERT(VARCHAR(4000),NEWID()) AS " + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_ID":
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols =  "{} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + ", {} AS ".format(int(newrev_inc)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "QTEREV_RECORD_ID":
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + "'{}' AS ".format(str(quote_revision_id)) + str(col.COLUMN_NAME)
 					elif col.COLUMN_NAME == "CpqTableEntryId":
 						continue
 					else:
-						insertcols = insertcols + "," + str(col.COLUMN_NAME)
-						selectcols = selectcols + "," + str(col.COLUMN_NAME)
+						insertcols = str(col.COLUMN_NAME) if insertcols == '' else insertcols + "," + str(col.COLUMN_NAME)
+						selectcols = str(col.COLUMN_NAME) if selectcols == '' else selectcols + "," + str(col.COLUMN_NAME)
 				insertcols += " )"
 				selectcols += " FROM "+ str(cloneobjectname) +" WHERE QUOTE_RECORD_ID='{}'".format(str(quote_contract_recordId))+" AND QTEREV_ID={}".format(int(old_revision_no))
-				finalquery=insertcols+' '+selectcols
+				finalquery=insertval + insertcols +' '+ selectval + selectcols
 				Trace.Write(finalquery)
 				ExecObjQuery = Sql.RunQuery(finalquery)
 			
@@ -201,8 +212,8 @@ def create_new_revision(Opertion,cartrev):
 			query_result1 = SqlHelper.GetFirst("sp_executesql @statement = N'" + str(updatestatement1) + "'")
 			Trace.Write(query_result)
 			## END CLONE OBJECT SAQSCO TO SAQSCE
-   			
-      		#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
+			
+			#Sql.RunQuery("""UPDATE SAQTSO SET QTEREV_ID = '{newrev_inc}',QTEREV_RECORD_ID = '{quote_revision_id}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(quote_revision_id=quote_revision_id,newrev_inc= newrev_inc,QuoteRecordId=quote_contract_recordId))
 			#INSERT salesorg end
 
 			#Insert fabs start
@@ -222,22 +233,22 @@ def create_new_revision(Opertion,cartrev):
 		for item in Quote.MainItems:
 			item.Delete()
 		## making the quote summary custom field empty
-		Quote.GetCustomField('TARGET_PRICE').Content = '' 
-		Quote.GetCustomField('CEILING_PRICE').Content = ''
-		Quote.GetCustomField('TOTAL_COST').Content = '' 
-		Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = ''
-		Quote.GetCustomField('BD_PRICE_MARGIN').Content = ''
-		Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = ''
-		Quote.GetCustomField('TOTAL_NET_PRICE').Content = ''
-		Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
-		Quote.GetCustomField('YEAR_1').Content = '' 
-		Quote.GetCustomField('YEAR_2').Content = '' 
-		Quote.GetCustomField('YEAR_3').Content = '' 
-		Quote.GetCustomField('TAX').Content = '' 
-		Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
-		Quote.GetCustomField('MODEL_PRICE').Content = '' 
-		Quote.GetCustomField('BD_PRICE').Content = ''
-		Quote.GetCustomField('DISCOUNT').Content = ''
+		# Quote.GetCustomField('TARGET_PRICE').Content = '' 
+		# Quote.GetCustomField('CEILING_PRICE').Content = ''
+		# Quote.GetCustomField('TOTAL_COST').Content = '' 
+		# Quote.GetCustomField('SALES_DISCOUNTED_PRICE').Content = ''
+		# Quote.GetCustomField('BD_PRICE_MARGIN').Content = ''
+		# Quote.GetCustomField('BD_PRICE_DISCOUNT').Content = ''
+		# Quote.GetCustomField('TOTAL_NET_PRICE').Content = ''
+		# Quote.GetCustomField('YEAR_OVER_YEAR').Content = ''
+		# Quote.GetCustomField('YEAR_1').Content = '' 
+		# Quote.GetCustomField('YEAR_2').Content = '' 
+		# Quote.GetCustomField('YEAR_3').Content = '' 
+		# Quote.GetCustomField('TAX').Content = '' 
+		# Quote.GetCustomField('TOTAL_NET_VALUE').Content = ''
+		# Quote.GetCustomField('MODEL_PRICE').Content = '' 
+		# Quote.GetCustomField('BD_PRICE').Content = ''
+		# Quote.GetCustomField('DISCOUNT').Content = ''
 		Quote.Save()
 		#Quote.RefreshActions()
 		current_revison1 = Quote.RevisionNumber
@@ -274,19 +285,23 @@ def set_active_revision(Opertion,cartrev):
 		time.sleep( 5 )
 		Quote.RefreshActions()
 		##assigning active revision custom field value
-		get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(quote_contract_recordId, get_rev_info_details.CART_ID, Quote.UserId ))
-		cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
-		if get_act_rev_custom_val:
-			for i in cust_list:
-				#a = "TOTAL_COST:0.0 USD,TOTAL_NET_PRICE:0.0 USD,DISCOUNT:60 %25,"
-				val = re.findall(r''+i+':[\w\W]*?,', get_act_rev_custom_val.globals)
-				val = str(val[0][:-1].split(':')[1].strip() )
-				Trace.Write('res-'+str(val) )
-				Quote.GetCustomField(i).Content = val
+		# get_act_rev_custom_val = SqlHelper.GetFirst("select globals from cart where  ExternalId = '{}' and cart_id ='{}' and userid = '{}'".format(quote_contract_recordId, get_rev_info_details.CART_ID, Quote.UserId ))
+		# cust_list = ['TARGET_PRICE','CEILING_PRICE','TOTAL_COST','CEILING_PRICE','SALES_DISCOUNTED_PRICE','BD_PRICE_MARGIN','BD_PRICE_DISCOUNT','TOTAL_NET_PRICE','YEAR_OVER_YEAR','YEAR_1','YEAR_2','TAX','TOTAL_NET_VALUE','MODEL_PRICE','BD_PRICE','DISCOUNT']
+		# if get_act_rev_custom_val:
+		# 	for i in cust_list:
+		# 		#a = "TOTAL_COST:0.0 USD,TOTAL_NET_PRICE:0.0 USD,DISCOUNT:60 %25,"
+		# 		val = re.findall(r''+i+':[\w\W]*?,', get_act_rev_custom_val.globals)
+		# 		val = str(val[0][:-1].split(':')[1].strip() )
+		# 		Trace.Write('res-'+str(val) )
+		# 		Quote.GetCustomField(i).Content = val
 						
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where QUOTE_ID = '"+str(Quote.CompositeNumber)+"'")
 		Quote.SetGlobal("contract_quote_record_id",get_quote_info_details.MASTER_TABLE_QUOTE_RECORD_ID)
 		Quote.SetGlobal("quote_revision_record_id",str(get_quote_info_details.QTEREV_RECORD_ID))
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...		
 	return True
 #set active revision  from grid- end
 

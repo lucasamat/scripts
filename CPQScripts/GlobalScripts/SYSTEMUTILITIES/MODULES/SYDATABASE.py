@@ -102,6 +102,9 @@ class SQL:
             newTableInfo = SqlHelper.GetTable(tableName)
             if tableName == 'SYVABL':
                 row["VARIABLE_NAME"] = row["VARIABLE_NAME"].upper()
+            if tableName == 'SACONT':
+                row.pop("ADDUSR_RECORD_ID", None)
+                row.pop("CPQTABLEENTRYADDEDBY", None)
             Trace.Write(str(tableName)+"---tableName---TRACE_TESTZ--102----" + str(row))
             newTableInfo.AddRow(row)
             sqlInfo = SqlHelper.Upsert(newTableInfo)

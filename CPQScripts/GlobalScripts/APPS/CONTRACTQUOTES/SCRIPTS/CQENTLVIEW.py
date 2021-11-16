@@ -7,22 +7,13 @@
 # ==========================================================================================================================================
 import Webcom.Configurator.Scripting.Test.TestProduct
 
-
-import re
-import SYTABACTIN as Table
-import SYCNGEGUID as CPQID
-#import SYERRMSGVL as GetErrorMsg
 import System.Net
-#import datetime
 from datetime import datetime
-import time
 from SYDATABASE import SQL
 
 Sql = SQL()
 userId = str(User.Id)
-userName = str(User.UserName)
-gettodaydate = datetime.now().strftime("%Y-%m-%d")
-
+#userName = str(User.UserName)
 
 class EntitlementView():
 	def __init__(self):
@@ -117,8 +108,14 @@ class EntitlementView():
 		if getslaes_value:
 			getquote_sales_val = getslaes_value.SALESORG_ID
 		#Trace.Write(str(EntitlementType)+'----getquote_sales_val---2421----'+str(getquote_sales_val))
-		get_il_sales = SqlHelper.GetList("select SALESORG_ID from SASORG where country = 'IL'")
+		get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 		get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
+		if 'Z0101' in TreeParam and TreeParentParam == "Quote Items":
+			EntitlementType = ""
+			TableObj = Sql.GetFirst("select * from SAQTSE (NOLOCK) where QUOTE_RECORD_ID = '" + str(self.contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '" + str(self.quote_revision_record_id) + "' AND SERVICE_ID = 'Z0101'")
+			ObjectName = "SAQTSE"
+			where = "QUOTE_RECORD_ID = '" + str(self.contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = 'Z0101'"
+
 		#A055S000P01-9226 end
 		if EntitlementType == "EQUIPMENT":
 			### add on product entitilement starts		
@@ -217,30 +214,52 @@ class EntitlementView():
 		elif EntitlementType == "ASSEMBLY":
 			TableObj = Sql.GetFirst("select * from SAQSAE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"' ")
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND GREENBOOK ='"+str(self.treeparam)+"' AND FABLOCATION_ID = '"+str(self.treeparentparam)+"' AND EQUIPMENT_ID = '"+str(EquipmentId)+"' AND ASSEMBLY_ID = '"+str(AssemblyId)+"'"
-					
-		if EntitlementType != "SENDING_LEVEL":
+		#Trace.Write('Treeparam--'+str(self.treeparam))
+		#Trace.Write('treeparentparam----'+str(self.treeparentparam))
+		if self.treeparam == "Quote Items":
+			quote_item_revision_rec_id = Product.GetGlobal('get_quote_item_service')
+			Trace.Write('quote_item_revision_rec_id--'+str(quote_item_revision_rec_id))
+			if quote_item_revision_rec_id:
+				get_quite_item_service= Sql.GetFirst("select SERVICE_ID from SAQRIT where QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(quote_item_revision_rec_id)+"'")
+				ProductPartnumber = get_quite_item_service.SERVICE_ID
+				Trace.Write('ProductPartnumber-224-'+str(ProductPartnumber))
+				TableObj = Sql.GetFirst("select * from SAQITE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "'AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"' ")
+				where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(ProductPartnumber) + "' AND QTEITM_RECORD_ID ='"+str(quote_item_revision_rec_id)+"'"
+				EntitlementType == "ITEM_ENTITLEMENT"
+				ObjectName = "SAQITE"
+		try:
+			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
+			if get_configuration_status:
+				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+					EntitlementType = "NO_ENTITLEMENT"
+		except:
+			Trace.Write('Treeparam--'+str(self.treeparam))
+		
+
+		if EntitlementType != "NO_ENTITLEMENT":
 			if TableObj is None and (EntitlementType == "EQUIPMENT"):
-				#Trace.Write('223----durga---')
+				Trace.Write('223----durga---')
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"New"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,)
 			else:		
-				if TableObj:
+				if TableObj :
 					cpsConfigID = TableObj.CPS_CONFIGURATION_ID
 				Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 				Fullresponse = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'action':'GET_RESPONSE','partnumber':ProductPartnumber,'request_url':Request_URL,'request_type':"Existing"})
 				#self.EntitlementRequest(ProductPartnumber,Request_URL,"Existing")
 
 			attributesdisallowedlst = []
-			attributeReadonlylst = attributes_disallowed_list = attriburesrequired_list = []
+			attributeReadonlylst = attributes_disallowed_list =  []
+			attriburesrequired_list = []
 			attributeEditlst = list_of_tabs = []
 			attributevalues = {}
 			attributedefaultvalue = []
+			overallattributeslist_visible =[]
 			dropdowndisallowlist = attr_tab_list_allow = attr_tab_list_disallow = total_tablist = []
 			validation_dict = {}
 			get_lastsection_val = attrcode = disable_edit = get_requiredicon = ""
 			# where = ""
-			Trace.Write("Fullresponse_J "+str(Fullresponse))
 			Product.SetGlobal('Fullresponse_load',str(Fullresponse))
 			for rootattribute, rootvalue in Fullresponse.items():
 				if rootattribute == "rootItem":
@@ -255,6 +274,8 @@ class EntitlementView():
 									attr_tab_list_disallow.append(prdvalue["id"])
 						if Productattribute == "characteristics":
 							for prdvalue in Productvalue:
+								if prdvalue["visible"] == "true":
+									overallattributeslist_visible.append(prdvalue["id"])
 								if prdvalue["visible"] == "false":
 									attributesdisallowedlst.append(prdvalue["id"])
 								if prdvalue["readOnly"] == "true":
@@ -278,7 +299,7 @@ class EntitlementView():
 			#Trace.Write('attributesdisallowedlst--'+str(attributesdisallowedlst))
 			#Trace.Write('total_tablist--'+str(total_tablist))
 			#Trace.Write('attr_tab_list_disallow--'+str(attr_tab_list_disallow))
-			#Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
+			Trace.Write('attriburesrequired_list----'+str(attriburesrequired_list))
 			#Trace.Write("validation_dict---"+str(validation_dict))
 
 			product_obj = Sql.GetFirst("""SELECT 
@@ -362,7 +383,7 @@ class EntitlementView():
 			date_field = []
 			
 			insertservice = ""
-			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))
+			#Trace.Write("TableObj__J"+str(TableObj)+" EntitlementType_J "+str(EntitlementType))		
 		if TableObj is None and (EntitlementType == "EQUIPMENT"): 
 			Trace.Write('not inserted')
 			getnameentallowed = []
@@ -383,12 +404,12 @@ class EntitlementView():
 						Section_desc = sysectObj.SECTION_DESC.split('_')
 						Section_desc = sysectObj.SECTION_DESC.split('_')[len(Section_desc) - 1]
 					else:
-						get_last_secid = SqlHelper.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
+						get_last_secid = Sql.GetFirst("select max(SAPCPQ_ATTRIBUTE_NAME) as saprec_id from sysect where SAPCPQ_ATTRIBUTE_NAME like '%SYSECT-SA%'")
 						if get_last_secid:
 							get_last_secid = get_last_secid.saprec_id.split('-')[2]
 							get_last_secid = int(int(get_last_secid)) + 1
 							get_lastsection_val = 'SYSECT-SA-'+ str(get_last_secid)
-							getsect_tab = SqlHelper.GetTable("SYSECT")
+							getsect_tab = Sql.GetTable("SYSECT")
 							tbrowsect = {}
 							tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
 							tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
@@ -619,7 +640,7 @@ class EntitlementView():
 									if attr_value == "DefaultValue":
 										attr_value = ''
 									sec_str1 += (
-										'<input class="form-control '+str(disable_edit)+'" id = "'
+										'<input maxlength="255" class="form-control '+str(disable_edit)+'" id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
@@ -636,7 +657,7 @@ class EntitlementView():
 									getinval = ''
 
 								sec_str1 += (
-									'<input class="form-control '+str(disable_edit)+'" id = "'
+									'<input maxlength="255" class="form-control '+str(disable_edit)+'" id = "'
 									+ str(attrSysId)
 									+ '" type="text"  data-content ="'
 									+ str(attrSysId)
@@ -702,7 +723,7 @@ class EntitlementView():
 					tbrow["SALESORG_RECORD_ID"] = SALESORG_RECORD_ID
 					tbrow["SALESORG_ID"] = SALESORG_ID
 					tbrow["SALESORG_NAME"] = SALESORG_NAME
-					tbrow["CPS_MATCH_ID"] = 11
+					tbrow["CPS_MATCH_ID"] = 1
 					
 					tbrow["KB_VERSION"] = Fullresponse["kbKey"]["version"]
 					tbrow["CPQTABLEENTRYADDEDBY"] = userId
@@ -746,7 +767,7 @@ class EntitlementView():
 				getnameentallowed = [i.replace('_00','') if '_00' in i else i.replace('_00','_0') if '_0' else i  for i in getnameentallowed ]
 				totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]	
 				#Trace.Write("totaldisallowlist"+str(totaldisallowlist))	
-		elif EntitlementType == "SENDING_LEVEL":
+		elif EntitlementType == "NO_ENTITLEMENT":
 			sec_str = getvaludipto = getvaludipt1 = getvaludipt2 = getvaludipt2lt = getvaludipt2lab = getvaludipto_q = getvaludipt2_q = getvaludipt2lt_q = getvaludipt2lab_q = getvaludipt2lab = getvaludipt3lab = getvaludipt3lab_q = getvaludipt3labt = getvaludipt3labt_q= getvaludipt1_q=  getlabortype_calc = gett1labor_calc= gett1labortype_calc =gett2labo_calc = gett2labotype_calc = gett3lab_calc = gett3labtype_calc = ""
 			multi_select_attr_list = {}
 			getnameentallowed = []
@@ -761,14 +782,26 @@ class EntitlementView():
 			#Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
 			#Trace.Write('after inserting in table---where-----'+str(where))
 			inserted_value_dict = {}
-			getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
-			GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'&lt;','<' ),'&gt;','>') as ENTITLEMENT_DESCRIPTION,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
+			#temp_table_dyn = SqlHelper.GetFirst("sp_executesql @T=N' create table entl_tmp (entitlement_id varchar(100))'")
+			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quoteid,self.quote_revision_record_id))
+			ent_temp = "ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
+			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+			where_cond = where.replace("'","''")
+			Trace.Write('where_cond---787--'+str(where_cond))
+			Sql.GetFirst("sp_executesql @T=N'declare @H int; Declare @val Varchar(MAX);DECLARE @XML XML; SELECT @val = FINAL from(select  REPLACE(entitlement_xml,''<QUOTE_ITEM_ENTITLEMENT>'',sml) AS FINAL FROM (select ''  <QUOTE_ITEM_ENTITLEMENT><QUOTE_ID>''+quote_id+''</QUOTE_ID><QUOTE_RECORD_ID>''+QUOTE_RECORD_ID+''</QUOTE_RECORD_ID><QTEREV_RECORD_ID>''+QTEREV_RECORD_ID+''</QTEREV_RECORD_ID><SERVICE_ID>''+service_id+''</SERVICE_ID>'' AS sml,replace(replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,''&'','';#38''),'''','';#39''),'' < '','' &lt; '' ),'' > '','' &gt; '' ),''_>'',''_&gt;''),''_<'',''_&lt;''),''&'','';#38'')   as entitlement_xml from "+str(ObjectName)+"(nolock)  WHERE "+str(where_cond)+"  )A )a SELECT @XML = CONVERT(XML,''<ROOT>''+@VAL+''</ROOT>'') exec sys.sp_xml_preparedocument @H output,@XML; select QUOTE_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_ID,ENTITLEMENT_ID,ENTITLEMENT_NAME,ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT,CALCULATION_FACTOR,ENTITLEMENT_TYPE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE,IS_DEFAULT INTO "+str(ent_temp)+"  from openxml(@H, ''ROOT/QUOTE_ITEM_ENTITLEMENT'', 0) with (QUOTE_ID VARCHAR(100) ''QUOTE_ID'',QUOTE_RECORD_ID VARCHAR(100) ''QUOTE_RECORD_ID'',QTEREV_RECORD_ID VARCHAR(100) ''QTEREV_RECORD_ID'',ENTITLEMENT_NAME VARCHAR(100) ''ENTITLEMENT_NAME'',ENTITLEMENT_ID VARCHAR(100) ''ENTITLEMENT_ID'',SERVICE_ID VARCHAR(100) ''SERVICE_ID'',ENTITLEMENT_COST_IMPACT VARCHAR(100) ''ENTITLEMENT_COST_IMPACT'',ENTITLEMENT_PRICE_IMPACT VARCHAR(100) ''ENTITLEMENT_PRICE_IMPACT'',CALCULATION_FACTOR VARCHAR(100) ''CALCULATION_FACTOR'',ENTITLEMENT_TYPE VARCHAR(100) ''ENTITLEMENT_TYPE'',ENTITLEMENT_VALUE_CODE VARCHAR(100) ''ENTITLEMENT_VALUE_CODE'',ENTITLEMENT_DISPLAY_VALUE VARCHAR(100) ''ENTITLEMENT_DISPLAY_VALUE'',IS_DEFAULT VARCHAR(100) ''IS_DEFAULT'') ; exec sys.sp_xml_removedocument @H; '")
+
+			GetXMLsecField=Sql.GetList("SELECT * FROM {} ".format(ent_temp))
+			#getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")
+			#GetXMLsecField = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(CALCULATION_FACTOR)[1]', 'VARCHAR(128)'),';#38','&') as CALCULATION_FACTOR,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'&lt;','<' ),'&gt;','>') as ENTITLEMENT_DESCRIPTION,replace(replace(replace(replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&'),';#39',''''),'_&lt;','_<' ),'_&gt;','_>') as ENTITLEMENT_DISPLAY_VALUE FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,'"+str(getinnercon.QTEREV_RECORD_ID)+"' as QTEREV_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ")
 			for val in GetXMLsecField:
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
-			#Trace.Write('766---ObjectName-----'+str(ObjectName))
-			#Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
-			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
+			Trace.Write('766---ObjectName-----'+str(ObjectName))
+			Trace.Write(str(inserted_value_list)+'--inserted_value_list---767-----where-----'+str(where))
+			if self.treeparam == "Quote Items":
+				get_attr_leve_based_list = overallattributeslist_visible
+			else:
+				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
 			Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
 			for val in GetXMLsecField:
@@ -779,7 +812,7 @@ class EntitlementView():
 			#Trace.Write('attributedefaultvalue--2912----2912---'+str(attributedefaultvalue))
 			sec_str_cf = sec_str_boot = sec_bnr = sec_str_primp =  ""		
 			## set entitlement_xml for cancel fn A055S000P01-3157 starts
-			previous_entitlement_xml  = SqlHelper.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
+			previous_entitlement_xml  = Sql.GetFirst("select ENTITLEMENT_XML from "+str(ObjectName)+" (nolock)  where  "+str(where)+"")	
 			#Trace.Write('previous_entitlement_xml----'+str(previous_entitlement_xml))	
 			Product.SetGlobal("previous_entitlement_xml", previous_entitlement_xml.ENTITLEMENT_XML)
 			## set entitlement_xml for cancel fn A055S000P01-3157 ends
@@ -787,8 +820,8 @@ class EntitlementView():
 			getprevdicts +=   ("var dict_new = {};var list_new = [];")	
 			if str(self.treeparentparam).upper() == "ADD-ON PRODUCTS":
 				self.treesuperparentparam = ""
-			#Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
-			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber:	
+			Trace.Write('self.treeparam----'+str(self.treeparam)+'--'+str(ProductPartnumber))
+			if self.treeparam.upper() == ProductPartnumber or self.treeparentparam.upper() == ProductPartnumber or self.treesuperparentparam == ProductPartnumber or self.treeparam == "Quote Items":	
 				#Trace.Write("@2756------->"+str(self.treeparentparam))
 				
 				for product_tab_obj in product_tabs_obj:
@@ -816,7 +849,7 @@ class EntitlementView():
 							get_last_secid = get_last_secid.saprec_id.split('-')[2]
 							get_last_secid = int(int(get_last_secid)) + 1
 							get_lastsection_val = 'SYSECT-QT-'+ str(get_last_secid)
-							getsect_tab = SqlHelper.GetTable("SYSECT")
+							getsect_tab = Sql.GetTable("SYSECT")
 							tbrowsect = {}
 							Section_id = tbrowsect['RECORD_ID'] = str(Guid.NewGuid()).upper()
 							tbrowsect['SAPCPQ_ATTRIBUTE_NAME'] = get_lastsection_val
@@ -885,7 +918,7 @@ class EntitlementView():
 							attribute_code = attribute['attribute_code']
 
 							#Trace.Write('attrSysId---looping0507--'+str(attrSysId))
-							STDVALUES = SqlHelper.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+							STDVALUES = Sql.GetFirst("""SELECT TOP 1 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 							A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 							, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -904,12 +937,13 @@ class EntitlementView():
 							if STDVALUES:
 								attrValue = STDVALUES.STANDARD_ATTRIBUTE_DISPLAY_VAL
 								get_tooltip = STDVALUES.ATTRDESC
+								#get_tooltip = get_tooltip.encode('ascii', 'ignore').decode('ascii')
 							else:
 								attrValue = get_tooltip = ''
-							#Trace.Write('get_tooltip---'+str(get_tooltip))
+							#Trace.Write('get_tooltip----'+str(get_tooltip))
 							attribute_Name_list.append(attrSysId)
 							DType = attribute['attribute_dtype']
-							#Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
+							Trace.Write("attrSysId --3109---"+str(attrSysId) + " attrName_else_j "+str(attrName)+ " || "+str(attributedefaultvalue)+"attrSysId__else_j "+str(attributesdisallowedlst)+" attributesdisallowedlst_else_j")
 							if attrSysId in attributesdisallowedlst:
 								if attrSysId in attributedefaultvalue:
 									add_style = "display:none;"
@@ -946,23 +980,7 @@ class EntitlementView():
 							sec_str_cf =sec_str_imt =  dataent = factcurreny = decimal_place = value1234 = sec_str_dt = sec_str_faccur = sec_str_faccur = costimpact = sec_str_primp = priceimp =  sec_str_ipp = ""
 							imgstr =""
 							#Trace.Write("inserted_value_list--"+str(inserted_value_list))
-							if GetXMLsecField and attrSysId in get_attr_leve_based_list:
-								# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
-								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
-								for val in GetXMLsecField:
-									#imgstr = ""
-									userselectedvalue.append(val.ENTITLEMENT_NAME)
-									#getnameentallowed.append(val.ENTITLEMENT_NAME)
-									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
-									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
-									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
-									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
-									
-									if DType == "Drop Down" :
-										
-										Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
-										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-										STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
+							standard_attr_values = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
 										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
 
 										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
@@ -977,10 +995,40 @@ class EntitlementView():
 										LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
 										LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
 										WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+							if GetXMLsecField and attrSysId in get_attr_leve_based_list:
+								# entitlement_display_value = [i.ENTITLEMENT_DISPLAY_VALUE for i in GetXMLsecField]
+								# Trace.Write('entitlement_display_value'+str(entitlement_display_value))
+								for val in GetXMLsecField:
+									try:
+										val.ENTITLEMENT_DISPLAY_VALUE = val.ENTITLEMENT_DISPLAY_VALUE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									except:
+										pass
+									try:
+										val.ENTITLEMENT_DESCRIPTION = val.ENTITLEMENT_DESCRIPTION.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									except:
+										pass
+									val.ENTITLEMENT_NAME = val.ENTITLEMENT_NAME.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									try:
+										val.ENTITLEMENT_VALUE_CODE = val.ENTITLEMENT_VALUE_CODE.replace(';#38','&').replace("_&lt;","_<").replace("_&gt;","_>").replace(" &gt; "," > ").replace(" &lt; "," < ").replace(';#39',"'")
+									except:
+										pass
+									#imgstr = ""
+									userselectedvalue.append(val.ENTITLEMENT_NAME)
+									#getnameentallowed.append(val.ENTITLEMENT_NAME)
+									#Trace.Write("ENTITLEMENT_NAME_else_j "+str(val.ENTITLEMENT_NAME) +" || attrSysId "+str(attrSysId))
+									# if  str(attrSysId) == val.ENTITLEMENT_NAME:
+									#disp_val = str(val.ENTITLEMENT_DISPLAY_VALUE)
+									#Trace.Write(str(attrName)+"dtype--959-----before if"+str(DType))
+									
+									if DType == "Drop Down":
+										
+										#Trace.Write(str(attrName)+'------963--'+str(val.ENTITLEMENT_NAME))
+										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
 										
 										
 										
-										if STDVALUES and val.ENTITLEMENT_ID == str(attrSysId): 
+										
+										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId): 
 											VAR1 = sec_str1 = ""
 											selected_option = "Select"
 											if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() != "":
@@ -988,25 +1036,21 @@ class EntitlementView():
 											else:
 												default = 'selected'
 
-											#Trace.Write(str(attrSysId)+'Approval ICON --------->'+str(attrValue))
+											Trace.Write(str(attrSysId)+'--attrSysId----'+str(val.ENTITLEMENT_ID)+'-----982------>'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 											
-											# if str(attrName) == "Fab Location":
-											# 	if getquote_sales_val in get_il_sales_list:
-											# 		VAR1 += '<option value="select" ' +str(default)+'> </option>'
-											# 	else:
-											# else:
+											Trace.Write(str(attributes_disallowed_list)+'---dropdowndisallowlist----'+str(dropdowndisallowlist))
 											VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
-											for value in STDVALUES:
+											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:
-													Trace.Write(str(attrName)+'--dhurga--3179--1001---'+str(value.SYSTEM_ID)+'-'+str(attribute_code))
+													
 													disallow_style = "style = 'display:none'"
 												else:	
 													disallow_style = ""
 												try:
 													
 													if str(val.ENTITLEMENT_DISPLAY_VALUE).strip() == str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL).strip():
-														#Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
-														approval_status = SqlHelper.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														Trace.Write('drpppppp---3031-------'+str(val.ENTITLEMENT_DISPLAY_VALUE)+'--1028--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL))
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															#Trace.Write("imgstr--1-"+str(approval_status.APPROVAL_REQUIRED))
 															if approval_status.APPROVAL_REQUIRED == True:
@@ -1021,8 +1065,9 @@ class EntitlementView():
 															+ str(val.ENTITLEMENT_DISPLAY_VALUE)
 															+ "</option>"
 														)
+														Trace.Write('selected_option--'+str(selected_option))
 													else:
-														Trace.Write(str(disallow_style)+'---'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---durga---3342-----'+str(attrName))
+														Trace.Write(str(disallow_style)+'--disallow_style----'+'-----default----'+str(default)+'----1032---'+str(disallow_style)+'---disallow_style--1025--'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'drpppppp---3031---3342-----'+str(attrName))
 														VAR1 += (
 															'<option '
 															+ str(disallow_style)
@@ -1033,17 +1078,19 @@ class EntitlementView():
 															+ "</option>"
 														)
 												except:
-													Trace.Write(str(default)+'except dropdown ---durga--'+str(attrName))
-													VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
+													Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
+													#VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
+														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
 														approval_status = SqlHelper.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
 														if approval_status:
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
 														VAR1 += (
-															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
+															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
 														)
+														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
 													else:
 														VAR1 += (
 															'<option '
@@ -1083,17 +1130,17 @@ class EntitlementView():
 												+ '" class="form-control" onchange="editent_bt(this)" title="'+str(selected_option)+'" disabled>{}</select>'.format(VAR1)
 												)
 											
-											if val.ENTITLEMENT_ID == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
-												sec_str_faccur += str(val.PRICE_METHOD)
-											elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
-												sec_str_faccur += str(val.PRICE_METHOD)
-											elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
-												sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
-												sec_str_faccur += str(val.PRICE_METHOD)
-											else:
-												sec_str_imt += ""
+											# if val.ENTITLEMENT_ID == 'AGS_SFM_DEI_PAC' and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											# 	sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
+											# 	sec_str_faccur += ''
+											# elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T0' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T1') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											# 	sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
+											# 	sec_str_faccur += ''
+											# elif (val.ENTITLEMENT_ID == 'AGS_RFM_INS_T2' or val.ENTITLEMENT_ID == 'AGS_RFM_INS_T3') and "Included" in val.ENTITLEMENT_DISPLAY_VALUE:
+											# 	sec_str_imt += str(val.ENTITLEMENT_COST_IMPACT)+" "+str(val.PRICE_METHOD)
+											# 	sec_str_faccur += ''
+											#else:
+											sec_str_imt += ""
 											
 											
 											""" except Exception, e:
@@ -1104,23 +1151,9 @@ class EntitlementView():
 
 									elif DType == "Check Box" :
 										#Trace.Write(str(attrSysId)+'CheckApproval'+str(attrValue))
-										STDVALUES = SqlHelper.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
-
-										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
-
-										, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL,V.SYSTEM_ID, V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-										, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-										, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
-										FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-										INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-										LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-										LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-										LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-										LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-										WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+										
 										#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(attr_code = attribute_code )  )
-										if STDVALUES and val.ENTITLEMENT_ID == str(attrSysId):
+										if standard_attr_values and val.ENTITLEMENT_ID == str(attrSysId):
 											try:
 												display_value_arr = eval(val.ENTITLEMENT_DISPLAY_VALUE)
 											except Exception as e:
@@ -1137,7 +1170,7 @@ class EntitlementView():
 											multi_select_attr_list[attrSysId] = display_value_arr
 											#Trace.Write("multi_select_attr_list"+str(multi_select_attr_list)+'---'+str(display_value_arr))
 											VAR1 = sec_str1 = selected_option = ""
-											for value in STDVALUES:
+											for value in standard_attr_values:
 												if value.SYSTEM_ID in dropdowndisallowlist:
 													disallow_style = "style = 'display:none'"
 												else:	
@@ -1235,7 +1268,7 @@ class EntitlementView():
 												datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
 												sec_str1 += (
-													'<input class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  onchange="'+ str(datepicker)+ '"  data-content ="'
 													+ str(attr_value)
@@ -1254,7 +1287,7 @@ class EntitlementView():
 												if attr_value == "DefaultValue":
 													attr_value = ''
 												sec_str1 += (
-													'<input class="form-control no_border_bg '+str(disable_edit)+'" id = "'
+													'<input maxlength="255" class="form-control no_border_bg '+str(disable_edit)+'" id = "'
 													+ str(attrSysId)
 													+ '" type="text"  style ="'+str(add_style)+'"  data-content ="'
 													+ str(attr_value)
@@ -1267,7 +1300,8 @@ class EntitlementView():
 												if val.ENTITLEMENT_COST_IMPACT:
 													#Trace.Write("@@3089"+str(val.ENTITLEMENT_COST_IMPACT)+str(val.PRICE_METHOD)+str(attrSysId))
 													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
-													sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
+													sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT)))
+													#sec_str_imt += str("{:,.2f}".format(float(val.ENTITLEMENT_COST_IMPACT))) + " "+val.PRICE_METHOD
 													
 												# else:
 												# 	#Trace.Write("@@3093")
@@ -1281,7 +1315,8 @@ class EntitlementView():
 											try:
 												if val.ENTITLEMENT_PRICE_IMPACT:
 													#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
-													sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
+													sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
+													#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT))) + " "+val.PRICE_METHOD
 												# else:
 												# 	Trace.Write("else price")
 												# 	#sec_str_primp += str("{:,.2f}".format(float(val.ENTITLEMENT_PRICE_IMPACT)))
@@ -1294,14 +1329,14 @@ class EntitlementView():
 											sec_str_cf +=str(val.CALCULATION_FACTOR)
 											#Trace.Write('sec_str_cf chk ## '+str(sec_str_cf))
 											##FACTOR CURRENCY
-											sec_str_faccur += str(val.PRICE_METHOD)
+											sec_str_faccur += ''
+											#sec_str_faccur += str(val.PRICE_METHOD)
 																			
 									if attrSysId in attriburesrequired_list:
-										required_symbol_class = 'required_symbol'
+										required_symbol_class = str(attrSysId)+' required_symbol'
 										get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title='"+str(attrName)+"'>*</abbr>")
 									else:
 										required_symbol_class = get_requiredicon = ""
-									#Trace.Write('imgstr--'+str(imgstr)+'---'+str(attrSysId))
 									new_value_dicta["APPROVAL"] = imgstr
 									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
 									try:
@@ -1323,26 +1358,12 @@ class EntitlementView():
 									attributesdisallowedlst.append(attrSysId)
 								add_style = "display:none"							
 								if DType == "Drop Down":
-									Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
+									#Trace.Write(str(attrName)+'attrSysId--2324--drop down---3491-'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-									STDVALUES = Sql.GetList("""SELECT TOP 50 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-										A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
-
-										, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
-
-										, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-										, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-										, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
-										FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-										INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-										LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-										LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-										LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-										LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-										WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+									
 									VAR1 = sec_str1 =  ""
 									selected_option = " "
-									if STDVALUES:
+									if standard_attr_values:
 										if attributevalues.get(attrSysId) is not None:
 											#select_option = 'selected'
 											select_option = ''
@@ -1352,7 +1373,8 @@ class EntitlementView():
 											default = 'selected'
 											selected_option = ' title="Select" '
 										VAR1 += '<option value="select" ' +str(default)+' style= "display:none;"> </option>'
-										for value in STDVALUES:
+										for value in standard_attr_values:
+											selected = ""
 											if value.SYSTEM_ID in dropdowndisallowlist:
 												disallow_style = "style = 'display:none'"
 											else:	
@@ -1361,10 +1383,12 @@ class EntitlementView():
 												selected_option = ' title="'+str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)+'" '
 											try:
 												#Trace.Write('attrSysId-try---3491-'+str(attrSysId))
+												if inserted_value_dict[str(attrSysId)] == value.STANDARD_ATTRIBUTE_VALUE :
+													selected = "selected"
 												VAR1 += (
 													'<option '+str(disallow_style)+' id="'+str(value.SYSTEM_ID)+'"  value = "'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL) 
-													+ '"'+str(select_option)+'>'
+													+ '"'+str(select_option)+str(selected)+'>'
 													+ str(value.STANDARD_ATTRIBUTE_DISPLAY_VAL)
 													+ "</option>"
 												)
@@ -1400,26 +1424,11 @@ class EntitlementView():
 									#sec_str += "</select></td>"
 							
 								elif DType == "Check Box":
-									#Trace.Write('attrSysId--2324---'+str(attrSysId))
 									#STDVALUES =  Sql.GetList("SELECT * from STANDARD_ATTRIBUTE_VALUES where  SYSTEM_ID like '%{sys_id}%' and STANDARD_ATTRIBUTE_CODE = '{attr_code}' ".format(sys_id = str(attrSysId), attr_code = attribute_code )  )
-									STDVALUES = Sql.GetList("""SELECT TOP 20 A.PA_ID, A.PAV_ID, A.STANDARD_ATTRIBUTE_VALUE_CD, A.STANDARD_ATTRIBUTE_PRICE, A.NON_STANDARD_VALUE, A.NON_STANDARD_DISPLAY_VALUE, 
-									A.PRODUCT_ATT_IMAGE_OFF_ALT_TEXT, A.SORT_RANK, A.RELATED_PRODUCT_ID
-
-									, COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) VALUE_CATALOG_CODE
-
-									, PA.STANDARD_ATTRIBUTE_CODE, COALESCE(P.PRODUCT_NAME, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) STANDARD_ATTRIBUTE_DISPLAY_VAL, V.SYSTEM_ID,V.STANDARD_ATTRIBUTE_VALUE, V.SYSTEM_ID AS VALUE_SYSTEM_ID, V.UNIT_ID AS VALUE_UNIT_ID, V.BILLING_PERIOD_ID AS VALUE_BILLING_PERIOD_ID
-									, PA.USEALTERNATIVEPRICINGFORPRODUCTSINCONTAINER
-									, COALESCE(P_ML.PRODUCT_NAME, P.PRODUCT_NAME, STDML.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_DISPLAY_VAL) AS ML_NON_STANDARD_DISPLAY_VALUE
-									FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID 
-									INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD  
-									LEFT OUTER JOIN PRODUCTS P ON A.RELATED_PRODUCT_ID=P.PRODUCT_ID 
-									LEFT OUTER JOIN PRODUCTS_ML P_ML ON P.PRODUCT_ID=P_ML.PRODUCT_ID AND P_ML.ML_ID=0
-									LEFT JOIN  ATTRIBUTES_ML ML ON A.PAV_ID=ML.PAV_ID AND ML.ML_ID= 0
-									LEFT JOIN STANDARD_ATTRIBUTE_VALUES_ML STDML ON A.STANDARD_ATTRIBUTE_VALUE_CD=STDML.STANDARD_ATTRIBUTE_VALUE_CD AND STDML.ML_ID=0 LEFT OUTER JOIN test_USD_L1 ON COALESCE(P.PRODUCT_CATALOG_CODE, A.VALUE_CATALOG_CODE) = test_USD_L1.PARTNUMBER AND ISNULL(A.PRICINGCODE, '')=ISNULL(test_USD_L1.PRICECODE, '') 
-									WHERE PA.PRODUCT_ID ={productId} AND V.STANDARD_ATTRIBUTE_CODE  = {sys_id} ORDER BY A.SORT_RANK""".format(sys_id = attribute_code,productId = str(product_obj.PRD_ID)))
+									
 									VAR1 = sec_str1 = ""
-									if STDVALUES:
-										for value in STDVALUES:
+									if standard_attr_values:
+										for value in standard_attr_values:
 											
 											VAR1 += (
 												'<option  value = "'
@@ -1439,7 +1448,7 @@ class EntitlementView():
 									)
 										
 								elif DType == "Free Input, no Matching":
-									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+									STDVALUES =  SqlHelper.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
 									
 									if attrValue == "DefaultValue":
@@ -1448,23 +1457,23 @@ class EntitlementView():
 									if attrSysId in inserted_value_dict.keys():
 										attr_value = inserted_value_dict[attrSysId]
 									sec_str1 += (
-										'<input class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
+										'<input maxlength="255" class="form-control remove_yellow '+str(disable_edit)+'" style ="'+str(add_style)+'"  id = "'
 										+ str(attrSysId)
 										+ '" type="text"  data-content ="'
 										+ str(attrSysId)
 										+ '" value = "'+str(attr_value)+'" title="'+str(attr_value)+'" onchange="editent_bt(this)" >'
 										+ "</input>"
 									)
-								#Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
+								Trace.Write(str(attrSysId)+'attriburesrequired_list-1436---1288---'+str(attriburesrequired_list))
 								if attrSysId in attriburesrequired_list:
-									required_symbol_class = 'required_symbol'
+									required_symbol_class = str(attrSysId)+' required_symbol'
 									get_requiredicon = str("<abbr class='"+str(required_symbol_class)+"' title=''>*</abbr>")
 								else:
 									required_symbol_class = ""
 									get_required_icon = ""
 								new_value_dicta["APPROVAL"] = ""	
 								new_value_dicta["ENTITLEMENT"] = str(attrName)
-								new_value_dicta["DESCRIPTION"] = str(get_tooltip)
+								new_value_dicta["DESCRIPTION"] = get_tooltip
 								new_value_dicta["REQUIRED"] = ""
 								if DType == "Drop Down" or DType == "Check Box" or DType =="Free Input, no Matching":
 									new_value_dicta["VALUE"] =sec_str1
@@ -1476,7 +1485,7 @@ class EntitlementView():
 								new_value_dicta["ENTITLEMENT PRICE IMPACT"]= ""
 								new_value_dicta["VALIDATION"] = ""
 								new_value_dicta["CALCULATION FACTOR"] = ""	
-							Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
+							#Trace.Write('attributesdisallowedlst'+str(attributesdisallowedlst))
 							totaldisallowlist = [item for item in attributesdisallowedlst]
 							
 							if new_value_dicta:
@@ -1498,7 +1507,7 @@ class EntitlementView():
 					##section hide ends...
 					#getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {if($(this).attr('id') != 'T0_T1_LABOR_calc'){dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();}});console.log('dict_new-2796--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
 					#getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] = $(this).find('td:nth-child(3) select').children(':selected').val() ;});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2796--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
-					if (self.treeparentparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items"):
+					if (self.treeparentparam == "Quote Items" or self.treeparam == "Quote Items" or self.treesuperparentparam == "Quote Items" or self.treetopsuperparentparam == "Quote Items"):
 						dbl_clk_function = ""
 					else:
 						#dbl_clk_function += ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] =  $(this).find('td:nth-child(3) select').children(':selected').attr('id');});$('"+str(table_ids)+" tbody tr:visible').each(function () {dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();});console.log('dict_new-2818--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
@@ -1513,7 +1522,8 @@ class EntitlementView():
 					)'''
 				
 		##Adding Audit information section in Entitlement starts...
-		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS"):
+		ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
+		if EntitlementType in ("EQUIPMENT","FABLOCATION","BUSINESSUNIT","ASSEMBLY","TOOLS","ITEM_ENTITLEMENT"):
 			get_sec = Sql.GetFirst("""SELECT * FROM SYSECT WHERE PRIMARY_OBJECT_NAME = '{}' AND SECTION_NAME = 'AUDIT INFORMATION'""".format(ObjectName))
 			if get_sec :
 				section_id = get_sec.RECORD_ID
@@ -1569,26 +1579,18 @@ class EntitlementView():
 					
 				sec_str_boot += '</tbody></table>'
 			
-				sec_str_boot += ('</div></div>')
-				
-			
+				sec_str_boot += ('</div></div>')			
 		##Adding Audit information section in Entitlement ends...
-
 		quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id ))
 		if quote_status:
 			if quote_status.QUOTE_STATUS == "APPROVED":
 				dbl_clk_function = ""
-
-			
 		date_field = ""
 		new_value_dict = ""
 		api_name = ""
 		ret_value = ""
-		#Trace.Write('multi_select_attr_list'+str(multi_select_attr_list))
+		#Trace.Write('sec_str---'+str(sec_str))
 		return sec_str, date_field, new_value_dict, api_name, ret_value, ObjectName, sec_bnr,sec_str_boot,tablistnew,dbl_clk_function,getprevdicts,totaldisallowlist,msg_txt,ChangedList,getnameentallowed,getvaludipto,getvaludipt1,getvaludipt2,getvaludipt2lt,getvaludipt2lab,getvaludipto_q ,getvaludipt2_q,getvaludipt2lt_q ,getvaludipt2lab_q ,getvaludipt2lab,getvaludipt3lab ,getvaludipt3lab_q , getvaludipt3labt ,getvaludipt3labt_q,getvaludipt1_q,getlabortype_calc,gett1labor_calc,gett1labortype_calc,gett2labo_calc,gett2labotype_calc,gett3lab_calc,gett3labtype_calc,getTlab,section_not_list,multi_select_attr_list
-
-
-
 
 ##Getting Tree params
 try:
@@ -1727,7 +1729,7 @@ if SectionList is not None and (
 			
 elif ((SubtabName in ('Entitlements','Equipment Entitlements','Assembly Entitlements') ) and (TreeParam.upper() == "SENDING EQUIPMENT" or TreeSuperParentParam.upper() =="SENDING EQUIPMENT" or TreeParentParam.upper() =="SENDING EQUIPMENT")):
 	#Trace.Write("Entitlements"+str(TreeParam))
-	EntitlementType = "SENDING_LEVEL"
+	EntitlementType = "NO_ENTITLEMENT"
 	SectionObjectName = "SAQSRA"
 
 elif ObjectName == "SAQTSE":	
@@ -1742,6 +1744,8 @@ elif ObjectName == "SAQTSE":
 # 	Trace.Write("ObjectName-else--"+str(ObjectName))
 
 ##calling class
+
+
 entview_class = EntitlementView()
 if action == "VIEW":
 	# if mode == 'Contracts':

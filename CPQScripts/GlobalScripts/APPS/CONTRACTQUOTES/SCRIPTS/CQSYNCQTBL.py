@@ -16,6 +16,9 @@ from System.Text.Encoding import UTF8
 from System import Convert
 import re
 from datetime import timedelta , date
+import CQCPQC4CWB
+#from datetime import datetime, timedelta
+
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
 #Log.Info("==========================>00000000")
@@ -48,6 +51,9 @@ class SyncQuoteAndCustomTables:
 			'Division':self.quote.GetCustomField('Division').Content,
 			'PrimaryContactName' : self.quote.GetCustomField('PrimaryContactName').Content,
 			'PrimaryContactId' : self.quote.GetCustomField('PrimaryContactId').Content,
+			'SoldToAddress' : self.quote.GetCustomField('SoldToAddress').Content,
+			'SoldToPhone' : self.quote.GetCustomField('SoldToPhone').Content,
+			'SoldToEmail' : self.quote.GetCustomField('SoldToEmail').Content,
 			'SalesOfficeID':self.quote.GetCustomField('SalesOfficeID').Content,            
 			'SalesPerson':self.quote.GetCustomField('SalesPerson').Content,
 			'PaymentTerms':self.quote.GetCustomField('PaymentTerms').Content,
@@ -106,6 +112,9 @@ class SyncQuoteAndCustomTables:
 			'SourceAccountName':self.quote.GetCustomField('SourceAccountName').Content,
 			'SourceAccountPhone':self.quote.GetCustomField('SourceAccountPhone').Content,
 			'POES':self.quote.GetCustomField('POES').Content,#A055S000P01-9777 code starts..
+			'LOW':self.quote.GetCustomField('LOW').Content,			
+			'C4C_Quote_Object_ID':self.quote.GetCustomField('C4C_Quote_Object_ID').Content,
+			'AccountAssignmentGroup':self.quote.GetCustomField('AccountAssignmentGroup').Content,
 		}
 
 	@staticmethod
@@ -125,8 +134,7 @@ class SyncQuoteAndCustomTables:
 	def CreateEntitlements(self,quote_record_id):
 		quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		SAQTSVObj=Sql.GetList("Select * from SAQTSV (nolock) where QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(QuoteRecordId=quote_record_id,quote_revision_record_id=Quote.GetGlobal("quote_revision_record_id")))
-		#Log.Info("quote_record_id---123------"+str(quote_record_id))
-		tableInfo = SqlHelper.GetTable("SAQTSE")
+		#Log.Info("quote_record_id---123------"+str(quote_record_id))		
 		x = datetime.datetime.today()
 		x= str(x)
 		y = x.split(" ")
@@ -178,8 +186,7 @@ class SyncQuoteAndCustomTables:
 			ProductVersionObj=Sql.GetFirst("Select product_id from product_versions(nolock) where SAPKBId = '"+str(Fullresponse['kbId'])+"' AND SAPKBVersion='"+str(Fullresponse['kbKey']['version'])+"'")
 			if ProductVersionObj is not None:
 				tbrow={}
-				insertservice =ent_disp_valdate =  ""
-				tblist = []
+				insertservice = ""
 				#Log.Info("178----")
 				for attrs in overallattributeslist:
 					#tbrow1 = {}
@@ -217,19 +224,17 @@ class SyncQuoteAndCustomTables:
 								#Trace.Write(str(HasDefaultvalue)+'except--ent_disp_val------'+str(ent_disp_val))
 								ent_disp_val = ent_disp_val
 								ent_val_code = ''
-						else:
-							Trace.Write('208--attrs---'+str(attrs))
+						else:							
 							ent_disp_val = ent_disp_val
 							ent_val_code = ent_val_code
 						#Trace.Write(str(attrs)+'---209----'+str(HasDefaultvalue)+'--attrs---208---ent_disp_val----'+str(ent_disp_val))
 						if str(attrs) == 'AGS_CON_DAY' and 'Z0016' in OfferingRow_detail.SERVICE_ID: 
 							try:
 								QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
-								Trace.Write('208--attrs---date check')
+								
 								QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
 								contract_days = (QuoteEndDate - QuoteStartDate).days
-								ent_disp_val = 	str(contract_days)
-								Trace.Write('208--attrs---date check--ent_disp_val--'+str(ent_disp_val))
+								ent_disp_val = 	str(contract_days)								
 							except:
 								#Log.Info('except-----')
 								ent_disp_val = ent_disp_val 
@@ -293,7 +298,7 @@ class SyncQuoteAndCustomTables:
 				tbrow["SALESORG_RECORD_ID"]=OfferingRow_detail.SALESORG_RECORD_ID
 				tbrow["SALESORG_ID"]=OfferingRow_detail.SALESORG_ID
 				tbrow["SALESORG_NAME"]=OfferingRow_detail.SALESORG_NAME
-				tbrow["CPS_MATCH_ID"] = 11
+				tbrow["CPS_MATCH_ID"] = 1
 				tbrow["CPQTABLEENTRYADDEDBY"] = User.Id
 				tbrow["CPQTABLEENTRYDATEADDED"] = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 				tbrow["QTEREV_RECORD_ID"] = Quote.GetGlobal("quote_revision_record_id")
@@ -308,12 +313,9 @@ class SyncQuoteAndCustomTables:
 				#Trace.Write('257----')
 				insert_qtqtse_query = "INSERT INTO SAQTSE ( %s ) VALUES ( %s );" % (columns, values)
 				Sql.RunQuery(insert_qtqtse_query)
-				Trace.Write('269-addednew trace---')
 				#9226 starts
 				if AttributeID_Pass:
-					try:
-						Trace.Write('312---NewValue--'+str(NewValue))
-						Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					try:						
 						add_where =''
 						ServiceId = OfferingRow_detail.SERVICE_ID
 						whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.QUOTE_RECORD_ID,OfferingRow_detail.SERVICE_ID,Quote.GetGlobal("quote_revision_record_id"))
@@ -322,10 +324,8 @@ class SyncQuoteAndCustomTables:
 					except:
 						Trace.Write('error--296')
 				#9226 ends
-				try:
-					Trace.Write('269--')
-					if 'Z0016' in OfferingRow_detail.SERVICE_ID:
-						Trace.Write('269--OfferingRow_detail--')
+				try:					
+					if 'Z0016' in OfferingRow_detail.SERVICE_ID:						
 						try:
 							QuoteEndDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteExpirationDate').Content, '%Y-%m-%d').date()
 							QuoteStartDate = datetime.datetime.strptime(Quote.GetCustomField('QuoteStartDate').Content, '%Y-%m-%d').date()
@@ -334,9 +334,7 @@ class SyncQuoteAndCustomTables:
 						except:
 							#Log.Info('except-----')
 							ent_disp_val = ent_disp_val
-						Trace.Write('269--OfferingRow_detail-ent_disp_val----'+str(ent_disp_val))
-						cpsmatchID = tbrow["CPS_MATCH_ID"]
-						cpsConfigID = Fullresponse['id']
+						
 						if int(ent_disp_val) > 364:
 							try:
 								quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
@@ -348,15 +346,11 @@ class SyncQuoteAndCustomTables:
 								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 							except:
-								pass
-
-							
+								pass							
 				except:
-					Trace.Write('except scenario----final--')
-					cpsmatc_incr = ''
+					Trace.Write('except scenario----final--')					
 				#calling pre-logic valuedriver script
-				try:
-					Trace.Write("PREDEFINED WAFER DRIVER IFLOW")
+				try:					
 					where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(quote_record_id, quote_revision_record_id, OfferingRow_detail.SERVICE_ID)
 					# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 					
@@ -370,6 +364,7 @@ class SyncQuoteAndCustomTables:
 
 	def create_custom_table_record(self):
 		contract_quote_data = {}
+		Region_Object = None
 		sync_start_time = time.time()
 		#Log.Info("Sync start ==> "+str(sync_start_time))
 		
@@ -377,8 +372,9 @@ class SyncQuoteAndCustomTables:
 			if self.quote:
 				quote_table_info = Sql.GetTable("SAQTMT")
 				quote_involved_party_table_info = Sql.GetTable("SAQTIP")
-				quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
+				#quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
 				quote_opportunity_table_info = Sql.GetTable("SAOPQT")
+				#quote_contact_master_table_info = Sql.GetTable("SACONT")
 				#quote_fab_table_info = Sql.GetTable("SAQFBL")
 				custom_fields_detail = self._get_custom_fields_detail()
 				Log.Info("custom_fields_detail =====>>>>>> " + str(custom_fields_detail))              
@@ -416,6 +412,7 @@ class SyncQuoteAndCustomTables:
 				# 	),
 				# )
 				quote_id = self.quote.CompositeNumber
+				Log.Info("quote_id_CHK "+str(quote_id))
 				quote_obj = Sql.GetFirst(
 					"SELECT * FROM SAQTMT (NOLOCK) WHERE QUOTE_ID = '{}' AND C4C_QUOTE_ID = '{}'".format(
 						quote_id, self.quote.CompositeNumber
@@ -428,11 +425,10 @@ class SyncQuoteAndCustomTables:
 				paydesc = ""
 				payrec = ""
 				pay_days = pay_name = ""
-				if not quote_obj:
-					Trace.Write("Quote Id ==> 477---" + str(self.quote.CompositeNumber))
+				if not quote_obj:					
 					if custom_fields_detail.get("SalesOrgID"):
 						salesorg_obj = Sql.GetFirst(
-							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+							"SELECT SALESORG_ID,SALES_ORG_RECORD_ID, SALESORG_NAME,REGION,REGION_RECORD_ID,COMPANY_ID,COMPANY_NAME,COMPANY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
 								custom_fields_detail.get("SalesOrgID")
 							)
 						)
@@ -470,9 +466,13 @@ class SyncQuoteAndCustomTables:
 					#Log.Info("expired"+str(start_date)+"sdate---"+str(created_date))
 					created_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
 					expired_date = date.today()+ timedelta(days=365)
+					Log.Info("Expiry_Date_Check "+str(expired_date))
+					Log.Info("END DATE TO CONTRACT VALID TO "+str(end_date))
 					#A055S000P01-7866
 					#document_type = {"ZTBC": "SSC", "ZWK1": "APG"}
 					quote_type = {"ZTBC":"ZTBC - TOOL BASED", "ZNBC":"ZNBC - NON TOOL BASED", "ZWK1":"ZWK1 - SPARES", "ZSWC":"ZSWC - SOLD WITH SYSTEM"}
+					Region_Code = {"01":"AMNA", "02":"AMJ", "03":"AME", "04":"AMT","07":"AMK","08":"AMSEA","09":"AMC"}
+					AccountAssignmentGroup = Region_Code.get(custom_fields_detail.get("AccountAssignmentGroup"))
 					#opportunity_type = {"ZTBC":"Service", "ZWK1":"Parts"}
 					contract_quote_data.update(
 						{
@@ -493,6 +493,9 @@ class SyncQuoteAndCustomTables:
 							"POES":custom_fields_detail.get("POES")
 							if custom_fields_detail.get("POES")
 							else 'FALSE',#A055S000P01-9777 Code starts..ends..
+							"LOW":custom_fields_detail.get("LOW")
+							if custom_fields_detail.get("LOW")
+							else 'FALSE',
 							"CONTRACT_VALID_FROM": start_date,
 							"CONTRACT_VALID_TO": end_date,
 							"QUOTE_CREATED_DATE": str(created_date),                            
@@ -526,43 +529,9 @@ class SyncQuoteAndCustomTables:
 					#expired_date_val = date.today()+ timedelta(days=365)
 					expired_date_val = datetime.datetime.strptime(end_date, '%m/%d/%Y').date()
 					expired_date_val = expired_date_val + timedelta(days=365)
-					Trace.Write(str(expired_date_val)+'571----expired_date_val---'+str(type(end_date)))
-					#quote_rev_data = {"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),"QUOTE_ID": quote_id,"QUOTE_NAME": '',"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),"ACTIVE":get_rev_details.ACTIVE_REV,"REV_CREATE_DATE":str(created_date),"REV_EXPIRE_DATE":str(expired_date),"REVISION_STATUS":"IN-PROGRESS","QTEREV_ID":quote_rev_id,"REV_APPROVE_DATE":'',"CART_ID":get_rev_details.CART_ID}
-					# if salesorg_obj and get_rev_details:
-					# 	quote_rev_data = {
-					# 		"QUOTE_REVISION_RECORD_ID": str(Guid.NewGuid()).upper(),
-					# 		"QUOTE_ID": quote_id,
-					# 		"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
-					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-					# 		"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
-					# 		"COUNTRY": salesorg_country.COUNTRY,
-					# 		"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
-					# 		"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-					# 		"REGION":salesorg_obj.REGION,
-					# 		"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
-					# 		"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
-					# 		"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
-					# 		"GLOBAL_CURRENCY_RECORD_ID":contract_quote_data.get("GLOBAL_CURRENCY_RECORD_ID"),
-					# 		"QTEREV_RECORD_ID":quote_revision_id,
-					# 		"QTEREV_ID":quote_rev_id,
-					# 		"REVISION_DESCRIPTION":get_rev_details.DESCRIPTION,
-					# 		"ACTIVE":get_rev_details.ACTIVE_REV,
-					# 		"REV_CREATE_DATE":str(created_date),
-					# 		"REV_EXPIRE_DATE":str(expired_date),
-					# 		"REVISION_STATUS":"IN-PROGRESS",
-					# 		"REV_APPROVE_DATE":'',
-					# 		"CART_ID":get_rev_details.CART_ID
-					# 	}
-					# 	#quote_revision_table_info.AddRow(quote_rev_data)
-					# 	# UPDATE REVISION DETAILS TO SAQTMT
-					# 	contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
-					# 								"QTEREV_ID":quote_rev_id })
-					# 	Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
-					# 	Log.Info('quote_revision_table_info---443--quote_rev_data--'+str(quote_rev_data))
-					# 	#Sql.Upsert(quote_revision_table_info)
-					# 	Trace.Write('575---quote_rev_data--'+str(quote_rev_data))
+					#Trace.Write(str(expired_date_val)+'571----expired_date_val---'+str(type(end_date)))
 					
-					#insert in revision table while creating quote end
+					
 					if custom_fields_detail.get('Currency'):
 							Currency_obj = Sql.GetFirst(
 								"SELECT CURRENCY,CURRENCY_NAME, CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '{}'".format(
@@ -589,8 +558,28 @@ class SyncQuoteAndCustomTables:
 								Owner_name = Employee_obj.FIRST_NAME+" "+Employee_obj.LAST_NAME
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
-													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})								
+													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})			
+					Region_Object = None
+					if custom_fields_detail.get('AccountAssignmentGroup'):
+						Region_Object = Sql.GetFirst(
+								"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
+									custom_fields_detail.get('AccountAssignmentGroup')
+								)
+							)
+					exchange_rate_type_object = None
+					if custom_fields_detail.get('AccountAssignmentGroup'):
+						exchange_rate_type_object = Sql.GetFirst(
+							"SELECT BANK_ID,BANK_NAME FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(AccountAssignmentGroup)
+						)
+						if exchange_rate_type_object:
+							bank_id = exchange_rate_type_object.BANK_ID
+							bank_name = exchange_rate_type_object.BANK_NAME
+					Log.Info("END DATE TO CONTRACT VALID TO revision "+str(end_date))
+						
+					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
+						revision_start_date = datetime.datetime.now().strftime("%m/%d/%Y")
+						revision_end_date = date.today()+ timedelta(days=365)
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
 							"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
@@ -601,8 +590,10 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY": salesorg_country.COUNTRY,
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-							"REGION":salesorg_obj.REGION,
-							"REGION_RECORD_ID":salesorg_obj.REGION_RECORD_ID,
+							"REGION":str(AccountAssignmentGroup),
+							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object else "",
+							"BANK_ID":bank_id if exchange_rate_type_object else "",
+							"BANK_NAME":bank_name if exchange_rate_type_object else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
@@ -611,9 +602,9 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id,
 							"REVISION_DESCRIPTION":"REVISION 0 DESCRIPTION",
 							"ACTIVE":get_rev_details.ACTIVE_REV,
-							"REV_CREATE_DATE":str(start_date),
-							"REV_EXPIRE_DATE":str(expired_date_val),
-							"REVISION_STATUS":"NEW REVISION",
+							"REV_CREATE_DATE":revision_start_date,
+							"REV_EXPIRE_DATE":revision_end_date,
+							"REVISION_STATUS":"PREPARING REVISION",
 							"REV_APPROVE_DATE":'',
 							"CART_ID":get_rev_details.CART_ID,
 							"CONTRACT_VALID_FROM":start_date,
@@ -623,7 +614,11 @@ class SyncQuoteAndCustomTables:
 							"PAYMENTTERM_NAME":pay_name,
 							"PAYMENTTERM_RECORD_ID":payrec,
 							"EXCHANGE_RATE_TYPE":custom_fields_detail.get("ExchangeRateType"),
-							"CANCELLATION_PERIOD":"90 DAYS"
+							"CANCELLATION_PERIOD":"90 DAYS",
+							"COMPANY_ID":salesorg_obj.COMPANY_ID,
+							"COMPANY_NAME":salesorg_obj.COMPANY_NAME,
+							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID,
+							"HLV_ORG_BUN":"AGS - SSC"
 						}
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
@@ -679,8 +674,15 @@ class SyncQuoteAndCustomTables:
 							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								##A055S000P01-4418 exchange rate details starts..
-								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
-								#Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),SalesOrg_obj.DEF_CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								if AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
+									exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
+									if exchange_rate_type_object is not None:
+										exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
+										salesorg_data.update({"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
+										Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
+								else:
+									exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+									Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
 								
 								if exchange_obj:
 									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
@@ -690,7 +692,7 @@ class SyncQuoteAndCustomTables:
 									if createddate > ex_rate_begin:										
 										createddate_up = createddate
 									
-									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
+									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID,'BANK_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
 									##A055S000P01-4418 exchange rate details ends..
 								##Commented the below code already we updated the exchange rate details in the above code..
 								# TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
@@ -746,13 +748,13 @@ class SyncQuoteAndCustomTables:
 								#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
 								#                     })
 						if str(salesorg_data.get('SALESORG_ID')):
-							#Log.Info("TAX_DETAILS")
+							Log.Info("TAX_DETAILS=====")
 							tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
-							#Log.Info("""SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}'""".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID')))
+							Log.Info("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							if tax_details:
 								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
 						quote_salesorg_table_info.AddRow(salesorg_data)
-						#Log.Info('salesorg_data---443--'+str(salesorg_data))
+						Log.Info('salesorg_data---443--'+str(salesorg_data))
 						Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
 						Sql.Upsert(quote_salesorg_table_info)
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
@@ -873,7 +875,7 @@ class SyncQuoteAndCustomTables:
 										"SALE_TYPE": "NEW",
 										"OPPORTUNITY_STAGE": Opportunitystagedict.get(custom_fields_detail.get("OpportunityStage")),
 										"ACCOUNT_TYPE": "Sold to Party",
-										"OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),
+										"OPPORTUNITY_OWNER_ID": custom_fields_detail.get("OpportunityOwner"),									
 									}
 									#Log.Info("master_opportunity_data ===>" + str(master_opportunity_data))
 									master_opportunity_table_info.AddRow(master_opportunity_data)
@@ -899,58 +901,165 @@ class SyncQuoteAndCustomTables:
 									"ACCOUNT_ID": custom_fields_detail.get("STPAccountID"),
 									"ACCOUNT_NAME": custom_fields_detail.get("STPAccountName"),
 									"ACCOUNT_TYPE": account_obj.ACCOUNT_TYPE,
+									"C4C_QTEOBJ_ID": custom_fields_detail.get("C4C_Quote_Object_ID"),
 								}
 								quote_opportunity_table_info.AddRow(opportunity_quote_data)
 					# A055S000P01-6618 - Starts
-					if custom_fields_detail.get("PrimaryContactName"):
-						primary_contact_update = {
+					#if custom_fields_detail.get("PrimaryContactName"):
+						# primary_contact_update = {
+						# 	"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+						# 	"ADDRESS": "",
+						# 	"EMAIL": "",
+						# 	"IS_MAIN": "",
+						# 	"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+						# 	"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+						# 	"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+						# 	"PARTY_ID": custom_fields_detail.get("PrimaryContactId"),
+						# 	"PARTY_NAME": custom_fields_detail.get("PrimaryContactName"),
+						# 	"PARTY_ROLE": "PRIMARY CONTACT",
+						# 	"PHONE": "",
+						# 	"QTEREV_RECORD_ID":quote_revision_id,
+						# 	"QTEREV_ID":quote_rev_id
+						# }
+						# quote_involved_party_table_info.AddRow(primary_contact_update)
+
+						# contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+						# employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						# partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+						# payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
+						
+						
+						
+						# if payload_json_obj:
+						# 	payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
+						# 	payload_json = eval(payload_json.get('Param'))
+						# 	payload_json = payload_json.get('CPQ_Columns')
+						# 	Log.Info("SAQICT_DETAILS "+str(payload_json.get('SAQICT')))
+						# 	if employee_obj is None:
+						# 		for employee in payload_json.get('SAQICT'):
+						# 			country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+						# 			salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+						# 			employee_dict = {}
+						# 			employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+						# 			employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+						# 			employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+						# 			employee_dict["CITY"] = employee.get("CITY")
+						# 			employee_dict["COUNTRY"] = employee.get("COUNTRY")
+						# 			employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+						# 			employee_dict["EMAIL"] = employee.get("EMAIL")
+						# 			employee_dict["EMPLOYEE_ID"] = employee.get("EMPLOYEE_ID")
+						# 			employee_dict["EMPLOYEE_NAME"] = employee.get("EMPLOYEE_NAME")
+						# 			employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+						# 			employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+						# 			employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+						# 			employee_dict["PHONE"] = employee.get("PHONE")
+						# 			employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+						# 			employee_dict["STATE"] = employee.get("STATE")
+						# 			employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+						# 			employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+						# 			employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+						# 			employee_dict["CpqTableEntryModifiedBy"] = User.Id
+						# 			employee_dict["ADDUSR_RECORD_ID"] = User.Id
+						# 			tableInfo = Sql.GetTable("SAEMPL")
+						# 			tablerow = employee_dict
+						# 			tableInfo.AddRow(tablerow)
+						# 			Sql.Upsert(tableInfo)
+						# if len(contact_query) == 0:
+						# 	contact_master_entry = {
+						# 		"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+						# 		"ADDRESS": "",
+						# 		"CITY": "",
+						# 		"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+						# 		"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+						# 		"EXTERNAL_ID": "",
+						# 		"PHONE": employee_obj.PHONE if employee_obj is not None else ""
+						# 	}
+						# 	Log.Info("contact_master_entry_CHK " +str(contact_master_entry))
+						# 	quote_contact_master_table_info.AddRow(contact_master_entry)
+						# 	Sql.Upsert(quote_contact_master_table_info)
+
+						# Log.Info("CONTACT_INFO INSERT STARTS----> " +str(custom_fields_detail.get("PrimaryContactName")))
+						# employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+						# partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+						# contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+						# if contact_master_table is None:
+						# 	for employee in payload_json.get('SAQICT'):
+						# 		contact_master_table_update = {
+						# 			"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+						# 			"ADDRESS": employee_obj.ADDRESS_1,
+						# 			"CITY": employee_obj.CITY,
+						# 			"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
+						# 			"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+						# 			"CONTACT_TYPE": "",
+						# 			"COUNTRY": employee_obj.COUNTRY,
+						# 			"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
+						# 			"DEPARTMENT": "",
+						# 			"EMAIL": employee_obj.EMAIL,
+						# 			"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
+						# 			"FAX": "",
+						# 			"FUNCTION": "",
+						# 			"MOBILE": "",
+						# 			"PHONE": employee.get("PHONE"),
+						# 			"POSTAL_CODE": employee.get("POSTAL_CODE"),
+						# 			"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+						# 			"STATE": employee_obj.STATE,
+						# 			"STATUS": "",
+						# 			"FIRST_NAME": employee.get("FIRST_NAME"),
+						# 			"LAST_NAME": employee.get("LAST_NAME"),
+						# 		}
+						# 		tableInfo = Sql.GetTable("SACONT")
+						# 		tablerow = contact_master_table_update
+						# 		tableInfo.AddRow(tablerow)
+						# 		Sql.Upsert(tableInfo)
+						# if employee_obj:
+						# 	# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
+						# 	contact_info_update = {
+						# 		"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
+						# 		"EMAIL": employee_obj.EMAIL,
+						# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+						# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+						# 		"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+						# 		"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+						# 		"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
+						# 		"PRIMARY": "",
+						# 		"PHONE": employee_obj.PHONE,
+						# 		"QTEREV_RECORD_ID":quote_revision_id,
+						# 		"QTEREV_ID":quote_rev_id,
+						# 		"COUNTRY":salesorg_country.COUNTRY,
+						# 		"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+						# 		"STATE": employee_obj.STATE,
+						# 		"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+						# 		"CITY":employee_obj.CITY,
+						# 		"POSTAL_CODE":employee_obj.POSTAL_CODE,
+						# 		"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
+						# 		"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
+						# 		"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
+						# 		"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
+						# 		"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
+						# 		"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
+						# 	}
+						# 	quote_involved_party_contact_table_info.AddRow(contact_info_update)
+						
+						
+						#Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
+					# A055S000P01-6618 - Ends
+					if custom_fields_detail.get("STPAccountID"):
+						sold_to_update = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": "",
-							"EMAIL": "",
-							"IS_MAIN": "",
+							"ADDRESS": custom_fields_detail.get("SoldToAddress"),
+							"EMAIL": custom_fields_detail.get("SoldToEmail"),
+							"IS_MAIN": "1",
 							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
 							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("PrimaryContactId"),
-							"PARTY_NAME": custom_fields_detail.get("PrimaryContactName"),
-							"PARTY_ROLE": "PRIMARY CONTACT",
-							"PHONE": "",
+							"PARTY_ID": custom_fields_detail.get("STPAccountID"),
+							"PARTY_NAME": custom_fields_detail.get("STPAccountName"),
+							"PARTY_ROLE": "SOLD TO",
+							"PHONE": custom_fields_detail.get("SoldToPhone"),
 							"QTEREV_RECORD_ID":quote_revision_id,
 							"QTEREV_ID":quote_rev_id
 						}
-						quote_involved_party_table_info.AddRow(primary_contact_update)
-						Log.Info("CONTACT_INFO INSERT STARTS----> ")
-						employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
-						partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
-						if employee_obj:
-							# getState = Sql.GetFirst("SELECT STATE_RECORD_ID FROM SACYST WHERE STATE = '{}'".format(custom_fields_detail.get("PayerState")))
-							contact_info_update = {
-								"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
-								"EMAIL": employee_obj.EMAIL,
-								"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-								"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-								"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
-								"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
-								"PRIMARY": "",
-								"PHONE": employee_obj.PHONE,
-								"QTEREV_RECORD_ID":quote_revision_id,
-								"QTEREV_ID":quote_rev_id,
-								"COUNTRY":salesorg_country.COUNTRY,
-								"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
-								"STATE": employee_obj.STATE,
-								"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
-								"CITY":employee_obj.CITY,
-								"POSTAL_CODE":employee_obj.POSTAL_CODE,
-								"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
-								"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
-								"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
-								"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
-								"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
-								"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
-							}
-							quote_involved_party_contact_table_info.AddRow(contact_info_update)
-						Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
-					# A055S000P01-6618 - Ends
+						quote_involved_party_table_info.AddRow(sold_to_update)
 					if self.quote.BillToCustomer:
 						bill_to_customer = self.quote.BillToCustomer
 						billtocustomer_quote_data = {
@@ -1055,40 +1164,40 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SalesUnitDetails)
-					if custom_fields_detail.get("SalesEmployeeID"):
-						SalesEmployeeDetails = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": custom_fields_detail.get("SalesEmployeeAddress"),
-							"EMAIL": custom_fields_detail.get("SalesEmployeeEmail"),
-							"IS_MAIN": "1",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
-							"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
-							"PARTY_ROLE": "SALES EMPLOYEE",
-							"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(SalesEmployeeDetails)
-					if custom_fields_detail.get("EmployeeResponsibleID"):
-						EmployeeResponsibleDetails = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": custom_fields_detail.get("EmployeeResponsibleAddress"),
-							"EMAIL": custom_fields_detail.get("EmployeeResponsibleEmail"),
-							"IS_MAIN": "1",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
-							"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
-							"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
-							"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails)
+					# if custom_fields_detail.get("SalesEmployeeID"):
+					# 	SalesEmployeeDetails = {
+					# 		"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"ADDRESS": custom_fields_detail.get("SalesEmployeeAddress"),
+					# 		"EMAIL": custom_fields_detail.get("SalesEmployeeEmail"),
+					# 		"IS_MAIN": "1",
+					# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+					# 		"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"PARTY_ID": custom_fields_detail.get("SalesEmployeeID"),
+					# 		"PARTY_NAME": custom_fields_detail.get("SalesEmployeeName"),
+					# 		"PARTY_ROLE": "SALES EMPLOYEE",
+					# 		"PHONE": custom_fields_detail.get("SalesEmployeePhone"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id
+					# 	}
+					# 	quote_involved_party_table_info.AddRow(SalesEmployeeDetails)
+					# if custom_fields_detail.get("EmployeeResponsibleID"):
+					# 	EmployeeResponsibleDetails = {
+					# 		"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"ADDRESS": custom_fields_detail.get("EmployeeResponsibleAddress"),
+					# 		"EMAIL": custom_fields_detail.get("EmployeeResponsibleEmail"),
+					# 		"IS_MAIN": "1",
+					# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+					# 		"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"PARTY_ID": custom_fields_detail.get("EmployeeResponsibleID"),
+					# 		"PARTY_NAME": custom_fields_detail.get("EmployeeResponsibleName"),
+					# 		"PARTY_ROLE": "EMPLOYEE RESPONSIBLE",
+					# 		"PHONE": custom_fields_detail.get("EmployeeResponsiblePhone"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id
+					# 	}
+					# 	quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails)
 					if custom_fields_detail.get("SourceAccountID"):
 						SourceAccountDetails = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1159,8 +1268,28 @@ class SyncQuoteAndCustomTables:
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
 					Sql.Upsert(quote_involved_party_table_info)
-					Sql.Upsert(quote_involved_party_contact_table_info)
+					##Calling the iflow for quote header writeback to cpq to c4c code starts..
+					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					##Calling the iflow for quote header writeback to cpq to c4c code ends...
+					#Sql.Upsert(quote_involved_party_contact_table_info)
 					#Sql.Upsert(quote_fab_table_info)
+					# Insert SAQCBC while creating quote in c4c - start A055S000P01-11413
+					checklist_desc = ['Signed agreement is current or a temporary extension is approved by legal. If using a quote and PO, they must be valid.','Signed agreement has all of the terms and conditions that would be on a PO. (i.e. ship to, bill to, inco terms, payment terms, etc..). If Std Svc, Proj Eng, & FTS under $1M and booking using a quote and PO, all SOW terms must be listed on the quote and PO must reference quote.','- All customerfacing agreements require legal review/approval per the SAM (except NDAs) and must receive a Legal Review Mark prior to being signed by Applied. Note: This does not apply to contracts for WEB, Solar products and services, and if booking using a PO and Quote, legal does not need to review as long as all terms are listed on the quote and a sales order acknowledgement is sent to the customer.','The customer PO and/or any other document (e.g. SOW, CL) or communication relating to the order received does not contain unacceptable commercial terms such as:','- The right to receive Applied’s best pricing for purchased products or services;','- The right to receive better or more favorable pricing compared than other Applied customers;','- Process or method patent infringement indemnification by Applied;','- The customer right to review or audit any Applied sales records','The master agreement is valid for the full duration for the contract booking (Contact the Law Department for expired Master Agreements).','The master agreement is referenced on the PO/Signed Agreement and the Quote.','Terms, Conditions, and Pricing on the Quote, PO, and/or Sales Agreement are per Master Agreement','Approved Deal sheet (Per AGS Order Policy)','Approved SAF (Per AGS Order Policy)','Clarification letters received for any exceptions or non standard approvals (legal entity and dollar amount changes required a change PO, a revised signed agreement, or an ORCA exception).','Delivery Dates and INCO terms on the PO match the signed agreement/quote (applicable to FPM/TPM, TKM, and equipment upgrades)','Proper sizing and billing data available in a PO, the signed agreement, or a clarification letter in order to book for the full duration.For Variable bookings:','- You can only book for the full duration of the deal if the customer is committing to the full $ within the agreement;','- If you do not have commitment for the full duration but you have a customer commitment to a minimum purchase, you can book for the minimum committed $;','- If you have a signed agreement with an estimate $, no commitment from the customer, PO/No PO, you book for $1','Enter 0 if the cancellation/termination for convenience cannot be identified (silent) or if the customer can walk away at any time for the duration of the agreement.','Enter NA if there is a cancellation/termination of convenience clause stating the contract cannot be cancelled.','Enter NA for POES and MEA','When using the Ts&Cs shown on the website link on the bottom of the quote, enter 90 days','If the agreement with the customer provides a specific number of days to cancel at their convenience, enter that number of days. If there is no cancellation for an initial period of time, enter the total...','All CRM Service Contracts must include equipment numbers. (Excluding FPM)','The Contract/P.O. is made out to the correct Applied Materials entity for the specific delivery location (e.g., Applied Materials, Inc for US delivery locations or Applied Materials South East Asia Pte. Ltd. ALL non US delivery locations)','If any tax is applicable, it is capture at the correct rate on the quote, PO, and/or the signed agreement','If booking using a Quote and PO, the funding amount on PO matches or exceeds the Quote (partial POs require a clarification from the customer on the remaining PO submission)','PO references the Signed Agreement or Quote','If booking with a PO, the terms match the quote. (i.e. ship to, bill to, payment terms, etc)','The start and end dates on each line are accurate against the signed agreement, PO, quote, or CL','The billing amounts for each line are accurate against the signed agreement, PO, quote, or CL','SDA assessment worksheet attached (Display only) and specify RRA CAR/SHPOD','The signed customer spec has been received (if applicable)','If this booking requires an MEA template, obtain a copy of the template from Sales. Attach the template to the booking package and email a copy of the template to regional finance and Judy Mock. If the answer to any of the following questions is "yes", the MEA template is required:','- Does this transaction include deliverables other than a single service? If the answer to this question is Yes but the additional deliverables are for ONLY Services (PMSA, Standard service, Managed Services or Credits) that have amounts which are all priced out then an MEA is not needed and thus the answer to the question should be NA.','- Is this a POSS Deal?','- Are there any deliverables free of charge or not priced out e.g. CSA sold with an NSO at 1 price for both items?']
+					checklist_id=0
+					finalchecklist_id=0
+					for field_desc in checklist_desc:
+						if re.match(r'^\-',field_desc):
+							checklist_id=''
+						else:
+							finalchecklist_id= finalchecklist_id +1
+							checklist_id=finalchecklist_id
+						#checklist_id = checklist_id + 1						
+						insert_saqcbc ="""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id)
+						insert_saqcbc = insert_saqcbc.encode('ascii', 'ignore').decode('ascii')
+						Sql.RunQuery(insert_saqcbc)
+						#Log.Info("""INSERT INTO SAQCBC (QUOTE_REV_CLEAN_BOOKING_CHECKLIST_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED,CHECKLIST_DESCRIPTION,CHECKLIST_ID,COMMENT,SERVICE_CONTRACT,SPECIALIST_REVIEW,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES('{AccountRecordId}','{UserName}',GETDATE(),'{description}','{chek_id}','','False','False','{quote_id}','{quote_rec_id}','{quote_rev_id}','{quote_rev_rec_id}')""".format(AccountRecordId=str(Guid.NewGuid()).upper(),UserName=User.UserName,quote_id = salesorg_data.get("QUOTE_ID"),quote_rec_id = salesorg_data.get("QUOTE_RECORD_ID"), quote_rev_id = salesorg_data.get("QTEREV_ID"), quote_rev_rec_id = salesorg_data.get("QTEREV_RECORD_ID"),description = field_desc,chek_id = checklist_id))
+					# Insert SAQCBC while creating quote in c4c - end A055S000P01-11413	
 
 					cart_obj = Sql.GetFirst("SELECT CART_ID, USERID FROM CART WHERE ExternalId = '{}'".format(self.quote.CompositeNumber))
 					if cart_obj:
@@ -1198,18 +1327,19 @@ class SyncQuoteAndCustomTables:
 						Log.Info("11111 QuoteId_info----> "+str(QuoteId_info))
 						Log.Info("2222 OpportunityId_info ---->"+str(OpportunityId_info))
 						
-						requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n}'
+						requestdata = '{\n  \"OpportunityId\": \"'+str(OpportunityId_info)+'\",\n  \"QuoteId\": \"'+str(QuoteId_info)+'\"\n,\n  \"PrimaryContactId\": \"'+str(custom_fields_detail.get("PrimaryContactId"))+'\"\n}'
 						Trace.Write("REQUEST DATA----> "+str(requestdata))
 						
 						response_SAQTMT = webclient.UploadString(str(LOGIN_CRE.URL), str(requestdata))
 						
 					payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(contract_quote_data.get('C4C_QUOTE_ID')))
+					Log.Info("J_PrimaryContactName_CHK_J"+str(custom_fields_detail.get("PrimaryContactName")))
+					
 					if payload_json_obj:
 						contract_quote_obj = None
 						fab_location_ids, service_ids = [], []
 						equipment_data = {}
 						covered_object_data = {}
-						service_level_covered_object_data = {}
 						payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
 						payload_json = eval(payload_json.get('Param'))
 						payload_json = payload_json.get('CPQ_Columns')
@@ -1217,6 +1347,12 @@ class SyncQuoteAndCustomTables:
 						if payload_json.get('OPPORTUNITY_ID'):
 							contract_quote_obj = Sql.GetFirst("SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID, SAQTMT.CONTRACT_VALID_FROM, SAQTMT.CONTRACT_VALID_TO FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'".format(contract_quote_data.get('C4C_QUOTE_ID')))
 							Log.Info("""SELECT SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID, SAQTMT.QUOTE_ID, SAQTMT.QUOTE_NAME, SAQTMT.ACCOUNT_RECORD_ID FROM SAQTMT (NOLOCK) WHERE SAQTMT.C4C_QUOTE_ID = '{}'""".format(contract_quote_data.get('C4C_QUOTE_ID')))
+						if payload_json.get('C4C_Opportunity_Object_ID'):
+							c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')
+							Log.Info("c4c_opppbj_id====="+str(c4c_opppbj_id))
+							c4c_Opportunity_obj = "UPDATE SAOPPR SET C4C_OPPOBJ_ID = '{c4c_opppbj_id}' where OPPORTUNITY_ID = '{OpportunityId}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID'),OpportunityId = custom_fields_detail.get("OpportunityId"))
+							Sql.RunQuery(c4c_Opportunity_obj)
+							#Log.Info("""SELECT C4C_OPPOBJ_ID FROM SAOPPR (NOLOCK) WHERE OPPORTUNITY_ID = '{}'""".format(OpportunityId = custom_fields_detail.get("OpportunityId")))	
 						if payload_json.get('FAB_LOCATION_IDS'):
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
 						if payload_json.get('SERVICE_IDS'):
@@ -1239,6 +1375,7 @@ class SyncQuoteAndCustomTables:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')].append(equipment_json_data.get('EQUIPMENT_IDS'))
 								else:
 									covered_object_data[equipment_json_data.get('SERVICE_OFFERING_ID')] = [equipment_json_data.get('EQUIPMENT_IDS')]
+						
 						##A055S000P01-8690 starts..
 						if payload_json.get('SAEMPL'):
 							employee = payload_json.get('SAEMPL')
@@ -1265,6 +1402,7 @@ class SyncQuoteAndCustomTables:
 									employee_dict["STATE"] = employee.get("STATE")
 									employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 									employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+									employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
 									employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
 									employee_dict["CpqTableEntryModifiedBy"] = User.Id
 									employee_dict["ADDUSR_RECORD_ID"] = User.Id
@@ -1272,7 +1410,10 @@ class SyncQuoteAndCustomTables:
 									tablerow = employee_dict
 									tableInfo.AddRow(tablerow)
 									Sql.Upsert(tableInfo)
-								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id)
+								else:
+									c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
+									Sql.RunQuery(c4c_employee_update)
+								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 							else:
 								for employee in payload_json.get('SAEMPL'):
 									employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
@@ -1297,6 +1438,7 @@ class SyncQuoteAndCustomTables:
 										employee_dict["STATE"] = employee.get("STATE")
 										employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
 										employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+										employee_dict["C4C_EMPLOYEE_ID"] = employee.get("C4C_EMPLOYEE_ID")
 										employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
 										employee_dict["CpqTableEntryModifiedBy"] = User.Id
 										employee_dict["ADDUSR_RECORD_ID"] = User.Id
@@ -1304,8 +1446,117 @@ class SyncQuoteAndCustomTables:
 										tablerow = employee_dict
 										tableInfo.AddRow(tablerow)
 										Sql.Upsert(tableInfo)
-									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id)
+									else:
+										c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
+										Sql.RunQuery(c4c_employee_update)
+									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
+						if custom_fields_detail.get("PrimaryContactName"):
+							contact_query = Sql.GetList("SELECT * FROM SACONT WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							employee_obj = Sql.GetFirst("select PHONE from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+							if payload_json.get('SAQICT'):
+								if employee_obj is None:
+									for employee in payload_json.get('SAQICT'):
+										country_obj = SqlHelper.GetFirst("select COUNTRY_RECORD_ID from SACTRY(nolock) where COUNTRY = '{country}'".format(country = employee.get("COUNTRY")))
+										salesorg_obj = SqlHelper.GetFirst("select STATE_RECORD_ID from SASORG(nolock) where STATE = '{state}'".format(state = employee.get("STATE")))
+										employee_dict = {}
+										employee_dict["EMPLOYEE_RECORD_ID"] = str(Guid.NewGuid()).upper()
+										employee_dict["ADDRESS_1"] = employee.get("ADDRESS1")
+										employee_dict["ADDRESS_2"] = employee.get("ADDRESS2")
+										employee_dict["CITY"] = employee.get("CITY")
+										employee_dict["COUNTRY"] = employee.get("COUNTRY")
+										employee_dict["COUNTRY_RECORD_ID"] = country_obj.COUNTRY_RECORD_ID  if country_obj else ""
+										employee_dict["EMAIL"] = employee.get("EMAIL")
+										employee_dict["EMPLOYEE_ID"] = employee.get("PRIMARY_CONTACT_ID")
+										employee_dict["EMPLOYEE_NAME"] = employee.get("PRIMARY_CONTACT_NAME")
+										employee_dict["EMPLOYEE_STATUS"] = employee.get("EMPLOYEE_STATUS")
+										employee_dict["FIRST_NAME"] = employee.get("FIRST_NAME")
+										employee_dict["LAST_NAME"] = employee.get("LAST_NAME")
+										employee_dict["PHONE"] = employee.get("PHONE")
+										employee_dict["POSTAL_CODE"] = employee.get("POSTAL_CODE")
+										employee_dict["STATE"] = employee.get("STATE")
+										employee_dict["STATE_RECORD_ID"] = salesorg_obj.STATE_RECORD_ID  if salesorg_obj else ""
+										employee_dict["CRM_EMPLOYEE_ID"] = employee.get("CRM_EMPLOYEE_ID")
+										employee_dict["CPQTABLEENTRYADDEDBY"] = User.UserName
+										employee_dict["CpqTableEntryModifiedBy"] = User.Id
+										employee_dict["ADDUSR_RECORD_ID"] = User.Id
+										tableInfo = Sql.GetTable("SAEMPL")
+										tablerow = employee_dict
+										tableInfo.AddRow(tablerow)
+										Log.Info("tablerow_chk_j"+str(tablerow))
+										Sql.Upsert(tableInfo)
+
+
+							employee_obj = Sql.GetFirst("select * from SAEMPL(nolock) where EMPLOYEE_NAME = '{employee_name}'".format(employee_name = custom_fields_detail.get("PrimaryContactName")))
+							partner_function_obj = Sql.GetFirst("Select * from SYPFTY(nolock) where PARTNERFUNCTION_ID = 'CP'")
+							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							if contact_master_table is None:
+								Log.Info("TRAZE_CHECK_1")
+								for employee in payload_json.get('SAQICT'):
+									Log.Info("TRAZE_CHECK_2")
+									contact_master_table_update = {
+										"CONTACT_RECORD_ID": str(Guid.NewGuid()).upper(),
+										"ADDRESS": employee_obj.ADDRESS_1,
+										"CITY": employee_obj.CITY,
+										"CONTACT_ID": str(custom_fields_detail.get("PrimaryContactId")),
+										"CONTACT_NAME": str(custom_fields_detail.get("PrimaryContactName")),
+										"CONTACT_TYPE": "",
+										"COUNTRY": employee_obj.COUNTRY,
+										"COUNTRY_RECORD_ID": employee_obj.COUNTRY_RECORD_ID,
+										"DEPARTMENT": "",
+										"EMAIL": employee_obj.EMAIL,
+										"EXTERNAL_ID": employee.get("PRIMARY_CONTACT_ID"),
+										"FAX": "",
+										"FUNCTION": "",
+										"MOBILE": "",
+										"PHONE": employee.get("PHONE"),
+										"POSTAL_CODE": employee.get("POSTAL_CODE"),
+										"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+										"STATE": employee_obj.STATE,
+										"STATUS": "",
+										"FIRST_NAME": employee.get("FIRST_NAME"),
+										"LAST_NAME": employee.get("LAST_NAME"),
+									}
+									tableInfo = Sql.GetTable("SACONT")
+									tablerow = contact_master_table_update
+									tableInfo.AddRow(tablerow)
+									Log.Info("TRAZE_CHECK_3"+str(tablerow))
+									Sql.Upsert(tableInfo)
+							Log.Info("TRAZE_CHECK_4")
+							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
+							
+							if employee_obj:
+								Log.Info("TRAZE_CHECK_5")
+								quote_involved_party_contact_table_info = Sql.GetTable("SAQICT")
+								contact_info_update = {
+									"QUOTE_REV_INVOLVED_PARTY_CONTACT_ID": str(Guid.NewGuid()).upper(),
+									"EMAIL": employee_obj.EMAIL,
+									"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+									"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+									"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
+									"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
+									"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
+									"PRIMARY": "",
+									"PHONE": employee_obj.PHONE,
+									"QTEREV_RECORD_ID":quote_revision_id,
+									"QTEREV_ID":quote_rev_id,
+									"COUNTRY":salesorg_country.COUNTRY,
+									"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
+									"STATE": employee_obj.STATE,
+									"STATE_RECORD_ID": employee_obj.STATE_RECORD_ID,
+									"CITY":employee_obj.CITY,
+									"POSTAL_CODE":employee_obj.POSTAL_CODE,
+									"PARTNERFUNCTION_RECORD_ID":partner_function_obj.PARTNERFUNCTION_RECORD_ID,
+									"PARTNERFUNCTION_ID":partner_function_obj.PARTNERFUNCTION_ID,
+									"PARTNERFUNCTION_DESCRIPTION":partner_function_obj.PARTNERFUNCTION_DESCRIPTION,
+									"PARTNERTYPE_ID":partner_function_obj.PARTNERTYPE_ID,
+									"PARTNERTYPE_DESCRIPTION":partner_function_obj.PARTNERTYPE_DESCRIPTION,
+									"CRM_PARTNERFUNCTION":partner_function_obj.CRM_PARTNERFUNCTION
+								}
+								quote_involved_party_contact_table_info.AddRow(contact_info_update)
+								Sql.Upsert(quote_involved_party_contact_table_info)
+						
 						if contract_quote_obj and payload_json.get('SalesType') and payload_json.get('OpportunityType'):
 							SalesType = {"Z14":"NEW","Z15":"CONTRACT RENEWAL","Z16":"CONTRACT EXTENSION","Z17":"CONTRACT AMENDMENT","Z18":"CONVERSION","Z19":"TOOL RELOCATION"}
 							OpportunityType = {"23":"PROSPECT FOR PRODUCT SALES","24":"PROSPECT FOR SERVICE","25":"PROSPECT FOR TRAINING","26":"PROSPECT FOR CONSULTING","Z27":"FPM/EXE","Z28":"TKM","Z29":"POES","Z30":"LOW","Z31":"AGS"}
@@ -1399,9 +1650,9 @@ class SyncQuoteAndCustomTables:
 								SAQTSV_start = time.time()								
 								service_insert = Sql.RunQuery("""
 																INSERT
-																SAQTSV (QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+																SAQTSV (OBJECT_QUANTITY,QTEREV_RECORD_ID,QTEREV_ID,QUOTE_ID, QUOTE_NAME,UOM_ID, QUOTE_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, SERVICE_TYPE, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, QUOTE_SERVICE_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
 																SELECT A.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-																	SELECT DISTINCT '{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{ContractValidFrom}' as CONTRACT_VALID_FROM, '{ContractValidTo}' as CONTRACT_VALID_TO, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
+																	SELECT DISTINCT 1 AS OBJECT_QUANTITY,'{quote_revision_id}' AS QTEREV_RECORD_ID,'{quote_rev_id}' AS QTEREV_ID,'{QuoteId}' as QUOTE_ID, 'QuoteName' as QUOTE_NAME,UNIT_OF_MEASURE, '{QuoteRecordId}' as QUOTE_RECORD_ID, SAP_DESCRIPTION as SERVICE_DESCRIPTION, SAP_PART_NUMBER as SERVICE_ID, MATERIAL_RECORD_ID as SERVICE_RECORD_ID, PRODUCT_TYPE as SERVICE_TYPE, '{ContractValidFrom}' as CONTRACT_VALID_FROM, '{ContractValidTo}' as CONTRACT_VALID_TO, '{SalesorgId}' as SALESORG_ID, '{SalesorgName}' as SALESORG_NAME, '{SalesorgRecordId}' as SALESORG_RECORD_ID FROM MAMTRL (NOLOCK)
 																	WHERE SAP_PART_NUMBER IN ('{ServiceIds}')
 																	) A
 																""".format(UserId=User.Id,UserName=User.UserName,QuoteId=quote_id, QuoteName=contract_quote_obj.QUOTE_NAME,QuoteRecordId=quote_record_id, SalesorgId=salesorg_data.get("SALESORG_ID"), SalesorgName=salesorg_data.get("SALESORG_NAME"), SalesorgRecordId=salesorg_data.get("SALESORG_RECORD_ID"), ServiceIds=service_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id,ContractValidFrom=contract_quote_obj.CONTRACT_VALID_FROM,
@@ -1410,6 +1661,7 @@ class SyncQuoteAndCustomTables:
 								#SAQTSV_end = time.time()
 								#Log.Info("SAQTSV time-----"+str(SAQTSV_end-SAQTSV_start))
 								#service_ADDon = Sql.RunQuery(""" INSERT SAQSAO (QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,ADNPRD_DESCRIPTION,ADNPRD_ID,ADNPRDOFR_RECORD_ID,ADNPRD_RECORD_ID,ADN_TYPE,QUOTE_ID,QUOTE_NAME,QUOTE_RECORD_ID,QTESRV_RECORD_ID,SALESORG_ID,SALESORG_NAME,ACTIVE,SALESORG_RECORD_ID,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADNPRDOFR_NAME,MAADPR.ADNPRDOFR_ID,MAADPR.ADNPRDOFR_RECORD_ID,MAADPR.ADD_ON_PRODUCT_RECORD_ID,MAADPR.ADN_TYPE,SAQTSV.QUOTE_ID,SAQTSV.QUOTE_NAME,SAQTSV.QUOTE_RECORD_ID,SAQTSV.QUOTE_SERVICE_RECORD_ID,SAQTSV.SALESORG_ID,SAQTSV.SALESORG_NAME,'FALSE' as ACTIVE,SAQTSV.SALESORG_RECORD_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.SERVICE_ID,SAQTSV.SERVICE_RECORD_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED, {UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM MAADPR (NOLOCK) INNER JOIN  SAQTSV ON MAADPR.PRDOFR_ID = SAQTSV.SERVICE_ID WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND SERVICE_ID ='{ServiceIds}' """.format(UserId=User.Id,UserName=User.UserName,QuoteRecordId=quote_record_id,ServiceIds=service_ids))
+								
 								entitle_start_time = time.time()
 								#Log.Info("CreateEntitlements start ==> "+str(entitle_start_time))
 								quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -1647,10 +1899,16 @@ class SyncQuoteAndCustomTables:
 							except:
 								Log.Info("EXCEPTION: Iteration Over non sequence for none type")
 							##A055S000P01-10174 code ends...
+						
 						payload_table_info = Sql.GetTable("SYINPL")
 						payload_table_data = {'CpqTableEntryId':payload_json_obj.CpqTableEntryId, 'STATUS':'COMPLETED'}
 						payload_table_info.AddRow(payload_table_data)
 						Sql.Upsert(payload_table_info)
+
+						##Calling the iflow for quote header writeback to cpq to c4c code starts..
+						CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					# Approval Trigger - Start								
 					import ACVIORULES
 					violationruleInsert = ACVIORULES.ViolationConditions()
@@ -1672,7 +1930,7 @@ class SyncQuoteAndCustomTables:
 
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
 	##A055S000P01-8690 starts..
-	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id):
+	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
 		Sql.RunQuery("""INSERT SAQDLT (
 								C4C_PARTNERFUNCTION_ID,
 								CRM_PARTNERFUNCTION_ID,
@@ -1775,13 +2033,40 @@ class SyncQuoteAndCustomTables:
 								RevisionRecordId=quote_revision_id,
 								)
 							)
+		
+		created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
+		saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
+		saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
+		if not saqdlt_data:
+			sales_team_table = Sql.GetTable("SAQDLT")
+			sales_team_createdby_insert ={
+				"QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
+				"C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
+				"PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
+				"PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
+				"PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
+				"EMAIL": saempl_data.EMAIL,
+				"MEMBER_ID": saempl_data.EMPLOYEE_ID,
+				"MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
+				"MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
+				"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+				"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+				"QTEREV_ID": quote_rev_id,
+				"QTEREV_RECORD_ID": quote_revision_id,
+			}
+			sales_team_table.AddRow(sales_team_createdby_insert)
+			Sql.Upsert(sales_team_table)
+
+								
+
+
 	##A055S000P01-8690 starts..
 sync_obj = SyncQuoteAndCustomTables(Quote)
 sync_obj.create_custom_table_record()
 #A055S000P01-9608 START
 quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 quote_revision_id = Quote.GetGlobal("quote_revision_record_id")
-getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
+getService = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE  QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_record_id,quote_revision_id))
 if getService is None:
 	getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 

@@ -8,7 +8,6 @@
 import Webcom
 from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
-import time
 from SYDATABASE import SQL
 Sql = SQL()
 
@@ -48,7 +47,7 @@ def entitlement_request(partnumber,request_url,request_type):
 
 	else:
 		try:		
-			Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
+			#Trace.Write("CHKNGTRAZ_J "+str(webclient.Headers[System.Net.HttpRequestHeader.Authorization]))
 			webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])			
 			response1 = webclient.DownloadString(request_url)
 		except Exception as e:
@@ -60,26 +59,21 @@ def entitlement_request(partnumber,request_url,request_type):
 	return eval(response1)
 
 def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond):
-	Trace.Write('partnumber---61---'+str(partnumber))
-	Trace.Write('ent_level_table---61---'+str(ent_level_table))
-	Trace.Write('where_cond---61---'+str(where_cond))
-	Trace.Write('inserted_value_list---61---'+str(list(inserted_value_list)))
 	level_name = get_clicked_greenbook = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
 	elif ent_level_table == "SAQSFE":
 		level_name = 'OFFERING FAB LEVEL'
+	elif ent_level_table == "SAQITE":
+		level_name = 'OFFERING LEVEL'
 	elif ent_level_table == "SAQSGE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK LEVEL'
 	elif ent_level_table == "SAQSCE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
 	else:
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
-		#Trace.Write('get_clicked_greenbook---'+str(get_clicked_greenbook))
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
 	for val in inserted_value_list:
@@ -134,8 +128,6 @@ try:
 	request_type = Param.request_type
 except:
 	request_type = ""
-Trace.Write('ent_level_table------'+str(ent_level_table))
-Trace.Write('partnumber------'+str(partnumber))
 # if action == 'GET_STATUS':
 # 	Result = get_entitlement_status(partnumber,where_cond,ent_level_table)
 if action == 'GET_RESPONSE':

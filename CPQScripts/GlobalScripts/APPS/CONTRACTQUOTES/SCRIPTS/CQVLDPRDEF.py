@@ -58,7 +58,9 @@ except:
 	serviceId = ""
 #Log.Info('params----'+str(TreeParam)+str(quote_revision_record_id)+str(quote_record_id)+str(where_condition))
 def equipment_predefined():
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
+	Log.Info("INSIDE======equipment_predefined")
+	Log.Info('params--222--'+str(TreeParam)+str(quote_revision_record_id)+str(quote_record_id)+str(where_condition))
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK TOOL LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL','OFFERING FAB GREENBOOK LEVEL')) ".format(TreeParam) )
 	getall_recid = Sql.GetList(""" SELECT EQUIPMENT_RECORD_ID,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSCE {}""".format(str(where_condition) ))
 	for rec in getall_recid:
 		entxmldict = {}
@@ -70,6 +72,7 @@ def equipment_predefined():
 			x=re.findall(pattern_name,sub_string)
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
+			Trace.Write("vallls"+str(val.ENTITLEMENT_DESCRIPTION.upper()))
 			if 'WAFER NODE' in val.ENTITLEMENT_DESCRIPTION.upper():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_WAFERNODE as VALDRV_WAFERNODE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
@@ -78,6 +81,44 @@ def equipment_predefined():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
+			elif 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
+				Trace.Write("csa")
+				ent_value = ""
+				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
+				account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
+				tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
+				if account_bluebook_query.BLUEBOOK != "DISPLAY":
+					if tools_count_query.COUNT > 50:
+						ent_value = '# CSA tools in Fab_>50'
+					elif tools_count_query.COUNT in range(10,51):
+						ent_value = '# CSA tools in Fab_10-50'
+					elif tools_count_query.COUNT < 10:
+						ent_value = '# CSA tools in Fab_<10'
+				elif account_bluebook_query.BLUEBOOK == "DISPLAY":
+					if tools_count_query.COUNT > 7:
+						ent_value = '# CSA tools in Fab_<7'
+					elif tools_count_query.COUNT in range(3,8):
+						ent_value = '# CSA tools in Fab_3-7'
+					elif tools_count_query.COUNT < 3:
+						ent_value = '# CSA tools in Fab_<3'
+				if ent_value:
+					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+		##total seed coefficent update
+		try:
+			Trace.Write("try"+str(TreeParam))
+			ent_value = 'Y' 
+			entitlement_id = 'AGS_{}_VAL_TBCOST'.format(TreeParam)
+			if entitlement_id in updateentXML:
+				Trace.Write("try")
+				get_value_qry = Sql.GetFirst("SELECT ENTITLEMENT_DISPLAY_VALUE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID ='{}'".format(entitlement_id,TreeParam))
+				if get_value_qry:
+					if get_value_qry.ENTITLEMENT_DISPLAY_VALUE:
+						ent_value = get_value_qry.ENTITLEMENT_DISPLAY_VALUE
+						updateentXML = updating_xml(entxmldict,updateentXML,entitlement_id,ent_value)
+		except Exception as e:
+			Trace.Write("exceptt"+str(e))
+			pass
+
 
 
 		for roll_obj in ['SAQSCE','SAQSAE']:
@@ -86,7 +127,7 @@ def equipment_predefined():
 def greenbook_predefined():
 	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
 	
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL')) ".format(TreeParam) )
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL')) ".format(TreeParam) )
 	for rec in getxml_query:
 		entxmldict = {}
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -112,7 +153,7 @@ def greenbook_predefined():
 def fab_predefined():
 	getxml_query = Sql.GetList("""SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQSFE {}""".format(str(where_condition) ))
 	
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(TreeParam) )
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(TreeParam) )
 	for rec in getxml_query:
 		entxmldict = {}
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
@@ -169,7 +210,7 @@ def service_level_predefined():
 		#Log.Info('x---'+str(x))
 		entxmldict[x[0]]=sub_string
 
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND VISIBLE_IN_CONFIG = 1 AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING LEVEL' ".format(TreeParam))
+	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE = 'VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING LEVEL' ".format(TreeParam))
 
 	for val in get_valuedriver_ids:
 		if 'PRODUCT OFFERING' in val.ENTITLEMENT_DESCRIPTION.upper() or 'INTERCEPT' in val.ENTITLEMENT_DESCRIPTION.upper():
@@ -258,6 +299,7 @@ def valuedriver_onchage():
 			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
 			for key in entxmldict.keys():
 				if uptime_coeff == key:
+					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_coeff])
 					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_coeff])
 					querystring = querystring + entxmldict[uptime_coeff]
 				elif uptime_key == key:
@@ -269,7 +311,7 @@ def valuedriver_onchage():
 			Update_xml_uptime = ("UPDATE {TreeParam} SET ENTITLEMENT_XML = '{querystring}' {where_condition}".format(TreeParam=TreeParam,querystring=querystring,where_condition=where_condition))
 			Sql.RunQuery(Update_xml_uptime)
 
-	return inputXML
+	#return inputXML
 
 
 try:
@@ -280,9 +322,9 @@ try:
 	else:
 		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
 		for obj in obj_list:
-			if obj == "SAQSFE":
-				fab_predefined()
-			elif obj == "SAQSGE":
+			# if obj == "SAQSFE":
+			# 	fab_predefined()
+			if obj == "SAQSGE":
 				greenbook_predefined()
 			elif obj == "SAQSCE":
 				equipment_predefined()

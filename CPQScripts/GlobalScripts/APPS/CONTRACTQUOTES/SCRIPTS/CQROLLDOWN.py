@@ -178,25 +178,42 @@ def CoveredObjEntitlement():
 	##ENTITLEMENT UPDATE RESTRICT THE ATTRIBUTE TO PDC AND MPS GREENBOOK A055S000P01-8873 Start
 	
 	level = "Offering Entitlement "
-	#calling pre-logic valuedriver script
-	# try:
-	# 	Log.Info("PREDEFINED WAFER DRIVER IFLOW")
-	# 	where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
-	# 	CQTVLDRIFW.valuedriver_predefined(Qt_rec_id ,"EQUIPMENT_LEVEL" ,TreeParam , userId, rev_rec_id, where_condition)
-	# except:
-	# 	Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW") 
-	#calling pre-logic valuedriver script
+	
 	try:
 		Log.Info("PREDEFINED WAFER DRIVER IFLOW")
 		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
-		# CQTVLDRIFW.valuedriver_predefined(self.contract_quote_record_id,"SERVICE_LEVEL",OfferingRow_detail.get("SERVICE_ID"),self.user_id,self.quote_revision_record_id, where_condition)
 		
 		predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": Qt_rec_id ,"level":"EQUIPMENT_LEVEL", "treeparam": TreeParam,"user_id": userId, "quote_rev_id":rev_rec_id})
 
 	except:
 		Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
-	ancillary_service_Z0046()
-	sendEmail(level)
+	#ancillary_service_Z0046()
+	if not ancillary_dict:
+		get_ancillary = Sql.GetList("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID ='{}'".format(Qt_rec_id,rev_rec_id,TreeParam))
+		if get_ancillary:
+			for rec in get_ancillary:
+				ancillary_dict[rec.SERVICE_ID] = 'INSERT'
+
+	if ancillary_dict:
+		Log.Info("inside ancillary1111"+str(ancillary_dict)+'--'+str(Qt_rec_id))
+		where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(Qt_rec_id, rev_rec_id, TreeParam)
+		for anc_key,anc_val in ancillary_dict.items():
+			Log.Info("vall--"+str(anc_key)  )
+			ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(anc_key, Qt_rec_id,rev_rec_id,TreeParam ))
+			
+			if anc_val == "INSERT" :
+				
+				ActionType = "{}_SERVICE".format(anc_val)
+				Log.Info("inside ancillary")
+				ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":ActionType, "ancillary_obj": anc_key, "service_id" : TreeParam , "tablename":"SAQTSE"})
+	
+	##ancillary entitlement insert
+	try:
+		ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": where_condition, "quote_record_id": Qt_rec_id, "revision_rec_id": rev_rec_id, "ActionType":"INSERT_ENT_EQUIPMENT",   "ancillary_obj": "", "service_id" : TreeParam , "tablename":"SAQTSE"})
+	except:
+		Log.Info("ancillary entitlement error")
+
+	
 	try:
 		quote_obj = Sql.GetFirst("SELECT QUOTE_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Qt_rec_id))
 		if quote_obj:
@@ -204,10 +221,25 @@ def CoveredObjEntitlement():
 	except Exception:
 		Log.Info("Exception in Quote Edit") 
 	try:
+		Log.Info("Called CQINSQTITM ==>cqroll "+str(Qt_rec_id))
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":TreeParam, "ActionType":'INSERT_LINE_ITEMS'})
+		#Log.Info("Called CQINSQTITM ==>cqroll enddddd "+str(Qt_rec_id))
 	except Exception:
 		Log.Info("Exception in Quote Item insert") 
-
+	
+	if ancillary_dict:
+		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)+'--'+str(Qt_rec_id)) 
+		for anc_key,anc_val in ancillary_dict.items():
+			#if anc_val == 'INSERT':
+			try:
+				temp_val = "SERVICE_ID = '{}'".format(anc_key)
+				where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
+				#where = where.replace('Z0091','{}'.format(anc_key))
+				#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+			except Exception:
+				Log.Info("Exception in Quote Item insert1111")
+	sendEmail(level)
 
 def CoveredObjItemEntitlement():
 	
@@ -224,7 +256,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQICO (NOLOCK) ON SAQICO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	#Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
+	Log.Info("SAQIEN_query--235-----"+str(SAQIEN_query))
 	Sql.RunQuery(SAQIEN_query)
 	#insert to SAQSPT
 	SAQSPEaddon_query = """
@@ -240,7 +272,7 @@ def CoveredObjItemEntitlement():
 					JOIN SAQSPT (NOLOCK) ON SAQSPT.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSPT.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 					WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ
 				""".format(UserId=User.Id, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam)
-	#Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
+	Log.Info("SAQSPEaddon_query--251---------"+str(SAQSPEaddon_query))
 	Sql.RunQuery(SAQSPEaddon_query)
 	#insert to SAQSPT
 	SAQIPE_query = """
@@ -398,7 +430,7 @@ def covobjrenewal():
 				SAQTSE (NOLOCK)
 				JOIN SAQSFB ON SAQSFB.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSFB.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID
 				WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ""".format(UserId=User.Id, QuoteRecordId=ContractRecordId, ServiceId=ProductPartnumber,en_xml = insertservice, revision_rec_id = rev_rec_id)
-			Log.Info('SAQSFE_query--411-'+str(SAQSFE_query))
+			Log.Info('SAQSFE_query--41-'+str(SAQSFE_query))
 			Sql.RunQuery(SAQSFE_query)
 			#ENTITLEMENT SV TO GB
 			
@@ -425,7 +457,7 @@ def covobjrenewal():
 				CTCSCE (NOLOCK) 
 				JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID  AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID						
 				WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{revision_rec_id}'
-			) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '11', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId,en_xml = insertservice, revision_rec_id = rev_rec_id)
+			) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId,en_xml = insertservice, revision_rec_id = rev_rec_id)
 			#Log.Info("--378----qtqsce--renewal-"+str(qtqsce))
 			Sql.RunQuery(qtqsce)
 			#Log.Info('insertservice----'+str(insertservice))
@@ -471,7 +503,7 @@ def covobjrenewal():
 		# 	FROM	
 		# 	CTCSCE (NOLOCK) 
 		# 	JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID						
-		# 	WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}'""".format(configurationId=configurationId, cpsmatchId = '11', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId))
+		# 	WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}'""".format(configurationId=configurationId, cpsmatchId = '1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId))
 		# Log.Info('renewal scenaro----ContractRecordId----'+str(ContractRecordId))
 
 		
@@ -532,13 +564,13 @@ def covobjrenewal():
 		# 	CTCSCE (NOLOCK) 
 		# 	JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID						
 		# 	WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}'
-		# ) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '11', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
+		# ) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
 		# Log.Info("------qtqsce---"+str(qtqsce))
 		# Sql.RunQuery(qtqsce)
 		#insert in qtqtsce for renewal scenario
-		# qtqsce = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQSCE (ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, KB_VERSION, GREENBOOK,GREENBOOK_RECORD_ID, QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, 129 as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM ( SELECT DISTINCT (SELECT  ISNULL(REPLACE(REPLACE(STUFF((SELECT '' ''+ JSON FROM (SELECT ''<QUOTE_ITEM_ENTITLEMENT>''+''<ENTITLEMENT_NAME>''+ISNULL(A.ENTITLEMENT_NAME,'''')+''</ENTITLEMENT_NAME>''+''<ENTITLEMENT_TYPE>''+ISNULL(A.ENTITLEMENT_TYPE,'''')+''</ENTITLEMENT_TYPE>''+''<ENTITLEMENT_DISPLAY_VALUE>''+ISNULL(A.ENTITLEMENT_DISPLAY_VALUE,'''')+''</ENTITLEMENT_DISPLAY_VALUE>''+''<ENTITLEMENT_DESCRIPTION>''+ISNULL(A.ENTITLEMENT_DESCRIPTION,'''')+''</ENTITLEMENT_DESCRIPTION>''+''</QUOTE_ITEM_ENTITLEMENT>'' AS JSON FROM ( SELECT B.ENTITLEMENT_NAME,B.ENTITLEMENT_TYPE,B.ENTITLEMENT_DISPLAY_VALUE, B.ENTITLEMENT_DESCRIPTION FROM CTCSCE B(NOLOCK) WHERE CTCSCE.SERVICE_ID = B.SERVICE_ID and CTCSCE.equipment_id = b.equipment_id and CTCSCE.contract_id = b.contract_id and B.contract_ID = ''"+str(Qt_rec_id)+"'' )A )A FOR XML PATH ('''') ), 1, 1,'''' ),''&lt;'',''<''),''&gt;'',''>''),''<QUOTE_ITEM_ENTITLEMENT></QUOTE_ITEM_ENTITLEMENT>'') AS final_xml) as ENTITLEMENT_XML,CTCSCE.EQUIPMENT_ID,CTCSCE.EQUIPMENT_RECORD_ID,SAQSCO.QUOTE_ID,SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,CTCSCE.SERIAL_NO,CTCSCE.SERVICE_DESCRIPTION,CTCSCE.SERVICE_ID,CTCSCE.SERVICE_RECORD_ID,''"+str(configurationId)+"''  as CPS_CONFIGURATION_ID,''11'' as CPS_MATCH_ID,CTCTSO.SALESORG_ID, CTCTSO.SALESORG_NAME, CTCTSO.SALESORG_RECORD_ID, SAQTSE.KB_VERSION,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID FROM CTCSCE (NOLOCK) JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID WHERE CTCSCE.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' AND CTCSCE.SERVICE_ID =  ''"+str(ProductPartnumber)+"'' AND SAQSCO.QUOTE_ID = ''"+str(ContractRecordId)+"''  ) IQ  '")
+		# qtqsce = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQSCE (ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, KB_VERSION, GREENBOOK,GREENBOOK_RECORD_ID, QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, 129 as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM ( SELECT DISTINCT (SELECT  ISNULL(REPLACE(REPLACE(STUFF((SELECT '' ''+ JSON FROM (SELECT ''<QUOTE_ITEM_ENTITLEMENT>''+''<ENTITLEMENT_NAME>''+ISNULL(A.ENTITLEMENT_NAME,'''')+''</ENTITLEMENT_NAME>''+''<ENTITLEMENT_TYPE>''+ISNULL(A.ENTITLEMENT_TYPE,'''')+''</ENTITLEMENT_TYPE>''+''<ENTITLEMENT_DISPLAY_VALUE>''+ISNULL(A.ENTITLEMENT_DISPLAY_VALUE,'''')+''</ENTITLEMENT_DISPLAY_VALUE>''+''<ENTITLEMENT_DESCRIPTION>''+ISNULL(A.ENTITLEMENT_DESCRIPTION,'''')+''</ENTITLEMENT_DESCRIPTION>''+''</QUOTE_ITEM_ENTITLEMENT>'' AS JSON FROM ( SELECT B.ENTITLEMENT_NAME,B.ENTITLEMENT_TYPE,B.ENTITLEMENT_DISPLAY_VALUE, B.ENTITLEMENT_DESCRIPTION FROM CTCSCE B(NOLOCK) WHERE CTCSCE.SERVICE_ID = B.SERVICE_ID and CTCSCE.equipment_id = b.equipment_id and CTCSCE.contract_id = b.contract_id and B.contract_ID = ''"+str(Qt_rec_id)+"'' )A )A FOR XML PATH ('''') ), 1, 1,'''' ),''&lt;'',''<''),''&gt;'',''>''),''<QUOTE_ITEM_ENTITLEMENT></QUOTE_ITEM_ENTITLEMENT>'') AS final_xml) as ENTITLEMENT_XML,CTCSCE.EQUIPMENT_ID,CTCSCE.EQUIPMENT_RECORD_ID,SAQSCO.QUOTE_ID,SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,CTCSCE.SERIAL_NO,CTCSCE.SERVICE_DESCRIPTION,CTCSCE.SERVICE_ID,CTCSCE.SERVICE_RECORD_ID,''"+str(configurationId)+"''  as CPS_CONFIGURATION_ID,''1'' as CPS_MATCH_ID,CTCTSO.SALESORG_ID, CTCTSO.SALESORG_NAME, CTCTSO.SALESORG_RECORD_ID, SAQTSE.KB_VERSION,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID FROM CTCSCE (NOLOCK) JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID WHERE CTCSCE.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' AND CTCSCE.SERVICE_ID =  ''"+str(ProductPartnumber)+"'' AND SAQSCO.QUOTE_ID = ''"+str(ContractRecordId)+"''  ) IQ  '")
 		#Log.Info("------qtqsce--ContractRecordId----"+str(ContractRecordId)+'---Qt_rec_id----'+str(Qt_rec_id)+'----'+str(configurationId)+'--ProductPartnumber---'+str(ProductPartnumber))
-		#qtqsce = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQSCE (ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, KB_VERSION, GREENBOOK,GREENBOOK_RECORD_ID, QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, 129 as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM ( SELECT DISTINCT (SELECT  ISNULL(REPLACE(REPLACE(STUFF((SELECT '' ''+ JSON FROM (SELECT ''<QUOTE_ITEM_ENTITLEMENT>''+''''+ISNULL(A.ENTITLEMENT_NAME,'''')+''</ENTITLEMENT_NAME>''+''<ENTITLEMENT_TYPE>''+ISNULL(A.ENTITLEMENT_TYPE,'''')+''</ENTITLEMENT_TYPE>''+''<ENTITLEMENT_DISPLAY_VALUE>''+ISNULL(A.ENTITLEMENT_DISPLAY_VALUE,'''')+''</ENTITLEMENT_DISPLAY_VALUE>''+''<ENTITLEMENT_DESCRIPTION>''+ISNULL(A.ENTITLEMENT_DESCRIPTION,'''')+''</ENTITLEMENT_DESCRIPTION>''+''</QUOTE_ITEM_ENTITLEMENT>'' AS JSON FROM ( SELECT B.ENTITLEMENT_NAME,B.ENTITLEMENT_TYPE,B.ENTITLEMENT_DISPLAY_VALUE, B.ENTITLEMENT_DESCRIPTION FROM CTCSCE B(NOLOCK) WHERE A.SERVICE_ID = B.SERVICE_ID and a.equipment_id = b.equipment_id and a.contract_id = b.contract_id and B.contract_ID = ''"+str(Qt_rec_id)+"'' )A )A FOR XML PATH ('''') ), 1, 1,'''' ),''&lt;'',''<''),''&gt;'',''>''),''<QUOTE_ITEM_ENTITLEMENT></QUOTE_ITEM_ENTITLEMENT>'') AS final_xml FROM CTCSCE (NOLOCK) A WHERE A.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' ) as ENTITLEMENT_XML,CTCSCE.EQUIPMENT_ID,CTCSCE.EQUIPMENT_RECORD_ID,SAQSCO.QUOTE_ID,SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,CTCSCE.SERIAL_NO,CTCSCE.SERVICE_DESCRIPTION,CTCSCE.SERVICE_ID,CTCSCE.SERVICE_RECORD_ID,''"+str(configurationId)+"'' as CPS_CONFIGURATION_ID,''11'' as CPS_MATCH_ID,CTCTSO.SALESORG_ID, CTCTSO.SALESORG_NAME, CTCTSO.SALESORG_RECORD_ID, SAQTSE.KB_VERSION,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID FROM CTCSCE (NOLOCK) JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID WHERE CTCSCE.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' AND CTCSCE.SERVICE_ID = ''"+str(ProductPartnumber)+"'' AND SAQSCO.QUOTE_RECORD_ID = ''"+str(ContractRecordId)+"'' ) IQ  '")
+		#qtqsce = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQSCE (ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, KB_VERSION, GREENBOOK,GREENBOOK_RECORD_ID, QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, 129 as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM ( SELECT DISTINCT (SELECT  ISNULL(REPLACE(REPLACE(STUFF((SELECT '' ''+ JSON FROM (SELECT ''<QUOTE_ITEM_ENTITLEMENT>''+''''+ISNULL(A.ENTITLEMENT_NAME,'''')+''</ENTITLEMENT_NAME>''+''<ENTITLEMENT_TYPE>''+ISNULL(A.ENTITLEMENT_TYPE,'''')+''</ENTITLEMENT_TYPE>''+''<ENTITLEMENT_DISPLAY_VALUE>''+ISNULL(A.ENTITLEMENT_DISPLAY_VALUE,'''')+''</ENTITLEMENT_DISPLAY_VALUE>''+''<ENTITLEMENT_DESCRIPTION>''+ISNULL(A.ENTITLEMENT_DESCRIPTION,'''')+''</ENTITLEMENT_DESCRIPTION>''+''</QUOTE_ITEM_ENTITLEMENT>'' AS JSON FROM ( SELECT B.ENTITLEMENT_NAME,B.ENTITLEMENT_TYPE,B.ENTITLEMENT_DISPLAY_VALUE, B.ENTITLEMENT_DESCRIPTION FROM CTCSCE B(NOLOCK) WHERE A.SERVICE_ID = B.SERVICE_ID and a.equipment_id = b.equipment_id and a.contract_id = b.contract_id and B.contract_ID = ''"+str(Qt_rec_id)+"'' )A )A FOR XML PATH ('''') ), 1, 1,'''' ),''&lt;'',''<''),''&gt;'',''>''),''<QUOTE_ITEM_ENTITLEMENT></QUOTE_ITEM_ENTITLEMENT>'') AS final_xml FROM CTCSCE (NOLOCK) A WHERE A.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' ) as ENTITLEMENT_XML,CTCSCE.EQUIPMENT_ID,CTCSCE.EQUIPMENT_RECORD_ID,SAQSCO.QUOTE_ID,SAQSCO.QUOTE_RECORD_ID,SAQSCO.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,SAQTSE.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,CTCSCE.SERIAL_NO,CTCSCE.SERVICE_DESCRIPTION,CTCSCE.SERVICE_ID,CTCSCE.SERVICE_RECORD_ID,''"+str(configurationId)+"'' as CPS_CONFIGURATION_ID,''1'' as CPS_MATCH_ID,CTCTSO.SALESORG_ID, CTCTSO.SALESORG_NAME, CTCTSO.SALESORG_RECORD_ID, SAQTSE.KB_VERSION,SAQSCO.GREENBOOK,SAQSCO.GREENBOOK_RECORD_ID FROM CTCSCE (NOLOCK) JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID WHERE CTCSCE.CONTRACT_ID = ''"+str(Qt_rec_id)+"'' AND CTCSCE.SERVICE_ID = ''"+str(ProductPartnumber)+"'' AND SAQSCO.QUOTE_RECORD_ID = ''"+str(ContractRecordId)+"'' ) IQ  '")
 		qtqsce="""INSERT SAQSCE
 		(ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,QUOTE_ID,QUOTE_RECORD_ID,QTESRVCOB_RECORD_ID,QTESRVENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,CPS_CONFIGURATION_ID,CPS_MATCH_ID,SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, KB_VERSION, GREENBOOK,GREENBOOK_RECORD_ID, QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED) 
 		SELECT IQ.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID, {UserId} as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED FROM (
@@ -548,7 +580,7 @@ def covobjrenewal():
 			FROM	
 			CTCSCE (NOLOCK) 
 			JOIN SAQSCO (NOLOCK) ON (CTCSCE.SERVICE_ID= SAQSCO.SERVICE_ID AND SAQSCO.EQUIPMENT_ID = CTCSCE.EQUIPMENT_ID) JOIN SAQTSE (NOLOCK) ON (SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCSCE.SERVICE_ID= SAQTSE.SERVICE_ID) JOIN CTCTSO (NOLOCK) ON CTCTSO.CONTRACT_ID = CTCSCE.CONTRACT_ID						
-			WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}') IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '11', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
+			WHERE CTCSCE.CONTRACT_ID = '{ContractId}' AND CTCSCE.SERVICE_ID = '{serviceId}' AND SAQSCO.QUOTE_RECORD_ID = '{ContractRecordId}') IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId = '1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
 		Log.Info("---qtqsce---"+str(qtqsce))
 		Sql.RunQuery(qtqsce)
 		GetEqp = SqlHelper.GetList("select distinct EQUIPMENT_ID from CTCSCE where CONTRACT_ID = '{ContractId}' AND SERVICE_ID = '{ServiceId}' ".format(ContractId=Qt_rec_id,ServiceId=ProductPartnumber))
@@ -599,8 +631,6 @@ def covobjrenewal():
 				Sql.Upsert(tableInfo)
 		
 	
-	
-
 def covobjrenewal_two():    
 	for configurationId,ProductPartnumber in zip(configuration,ProductPart):
 		SAQIEN = """INSERT SAQIEN 
@@ -614,7 +644,7 @@ def covobjrenewal_two():
 					CTCIEN (NOLOCK)												
 					JOIN SAQICO (NOLOCK) ON (CTCIEN.SERVICE_ID= SAQICO.SERVICE_ID AND SAQICO.EQUIPMENT_RECORD_ID = CTCIEN.EQUIPMENT_RECORD_ID) JOIN SAQTSE (NOLOCK) ON (SAQICO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID AND CTCIEN.SERVICE_ID= SAQTSE.SERVICE_ID AND CTCIEN.ENTITLEMENT_NAME = SAQTSE.ENTITLEMENT_NAME)  
 					WHERE CTCIEN.CONTRACT_ID = '{ContractId}' AND CTCIEN.SERVICE_ID = '{serviceId}' AND SAQICO.QUOTE_RECORD_ID = '{ContractRecordId}'
-				) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId='11', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
+				) IQ""".format(UserId=User.Id, configurationId=configurationId, cpsmatchId='1', ContractId=Qt_rec_id, serviceId=ProductPartnumber,ContractRecordId=ContractRecordId)
 		Log.Info(SAQIEN)
 		Sql.RunQuery(SAQIEN)        
 
@@ -1223,10 +1253,22 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	Log.Info('532-CQROLLDOWN-----QT_SAQITM--insertitm-'+str(insertitm))
 	Sql.RunQuery(insertitm)
 
+#Log.Info("Qt_rec_id ->"+str(Param.CPQ_Columns['Quote']))
 Qt_rec_id = Param.CPQ_Columns['Quote']
 Log.Info("Qt_rec_id ->"+str(Qt_rec_id))
 LEVEL = Param.CPQ_Columns['Level']
 Log.Info("LEVEL ->"+str(LEVEL))
+# try:
+# 	anc =Param.Quote.split("==")[1]
+# except Exception as e:
+# 	Log.Info("anc--"+str(e))
+try:
+	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
+	ancillary_dict = eval(str(ancillary_dict.replace(';39;',"'").replace('_;',"{").replace("$;","}").replace("=",":")))
+except Exception as e:
+	Log.Info("ancillary_dict--"+str(e))
+	ancillary_dict = {}
+Log.Info("ancillary_dict--"+str(ancillary_dict))
 
 
 if 'COV OBJ ENTITLEMENT' in LEVEL:

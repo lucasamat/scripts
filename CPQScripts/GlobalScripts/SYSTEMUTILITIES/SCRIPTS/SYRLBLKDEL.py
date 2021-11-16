@@ -14,13 +14,15 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 
-TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
-CurrentTab = TestProduct.CurrentTab
-Trace.Write("CurrentTab-------->" + str(CurrentTab))
-Id = Param.SELECTEDROW
+
+Id = []
 Trace.Write("Id--------" + str(list(Id)))
 Trace.Write("selected id------" + str(Id))
 table_id = Param.table_id
+checkedrows = Param.checkedrows
+selectall = Param.selectall
+Trace.Write("checkedrows------" + str(checkedrows))
+Trace.Write("selectall------" + str(selectall))
 Trace.Write("table_id--- " + str(table_id))
 Table_ID = table_id
 Table_ID = "-".join(Table_ID.split("_")[-5:]).strip()
@@ -83,7 +85,32 @@ for ID in list(Id):
         Trace.Write("ObjectName-------------102-------------------------->" + str(ObjectName))
         Trace.Write("Objd_ColumnName------------103--------------------------->" + str(Objd_ColumnName))
         Trace.Write("ID--------------------------104------------->" + str(ID))
+if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
+    TreeParam = Product.GetGlobal("TreeParam")
+    TreeParentParam = Product.GetGlobal("TreeParentLevel0")
+    TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
+    TreeTopSuperParentParam =  Product.GetGlobal("TreeParentLevel2")
+    if selectall == "yes":
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam,TreeParam))
 
+        GetParts = Sql.GetList("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeSuperParentParam,TreeParam))
+        parts = []
+        for x in GetParts:
+            parts.append(x.PART_NUMBER)
+        
+        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
+    elif selectall == "no":
+        checkedrows = checkedrows.split(",")
+        checkedrows = tuple(checkedrows)
+        rows = []
+        parts = []
+        for x in checkedrows:
+            rows.append(x.split("-")[1])
+            getPart = Sql.GetFirst("SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE CpqTableEntryId = {}".format(x.split("-")[1]))
+            part = str(getPart.PART_NUMBER)
+            parts.append(part)
+        Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(tuple(rows)))
+        Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
  
 
    

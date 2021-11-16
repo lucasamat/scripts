@@ -19,8 +19,8 @@ from System import Convert
 from SYDATABASE import SQL
 
 Sql = SQL()
-def iflow_entitlement(objectName,where,get_prev_dict=None):
-    requestdata = ('<?xml version="1.0" encoding="UTF-8"?> <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"> <soapenv:Body><CPQ_Columns><objectName>'+str(objectName)+"</objectName><where>"+str(where)+"</where><get_prev_dict>"+str(get_prev_dict)+"</get_prev_dict></CPQ_Columns></soapenv:Body></soapenv:Envelope>")
+def iflow_entitlement(objectName,where,ancillary_dict):
+    requestdata = ('<?xml version="1.0" encoding="UTF-8"?> <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"> <soapenv:Body><CPQ_Columns><objectName>'+str(objectName)+"</objectName><where>"+str(where)+"</where><ancillary_dict>"+str(ancillary_dict)+"</ancillary_dict></CPQ_Columns></soapenv:Body></soapenv:Envelope>")
     Log.Info("2222222222222222      " + str(requestdata))
     LOGIN_CREDENTIALS = SqlHelper.GetFirst("SELECT URL FROM SYCONF where External_Table_Name='SAQTSE'")
     LOGIN_QUERY = SqlHelper.GetFirst("SELECT User_name as Username,Password,Domain,URL FROM SYCONF where Domain='AMAT_TST'")
@@ -41,5 +41,6 @@ def iflow_entitlement(objectName,where,get_prev_dict=None):
     webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
     response = webclient.UploadString(URL, requestdata)
     Log.Info("URL------"+str(URL))
+    Log.Info("objectName------"+str(objectName))
     Trace.Write("33333333333333333    " + str(response))
     

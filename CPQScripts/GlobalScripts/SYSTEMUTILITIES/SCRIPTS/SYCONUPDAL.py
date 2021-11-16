@@ -73,7 +73,7 @@ class ConfigUpdateScript:
 		"""TO DO."""
 		##A055S000P01-9370 ,A055S000P01-4191 code starts...
 		if obj_name == "SAQTMT":
-			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME,SAQTMT.POES"
+			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME,SAQTMT.POES,SAQTMT.LOW"
 			query_string = """
 					SELECT {Column_Name}
 					FROM {Table_Name} (NOLOCK)
@@ -227,7 +227,7 @@ class ConfigUpdateScript:
 					labels.append(objd_record.FIELD_LABEL)
 				##A055S000P01-9370 , A055S000P01-4191 code starts...
 				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES"
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES,LOW"
 				else:
 					field_lables = ",".join(labels)
 				##A055S000P01-9370, A055S000P01-4191 code ends..

@@ -3866,6 +3866,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		"PM_NAME",
 		"PM_LABOR_LEVEL",
 		#"ANNUAL_FREQUENCY_BASE",
+		"SSCM_PM_FREQUENCY",
 		"PM_FREQUENCY",
 		"KIT_ID",
 		"KIT_NAME",
@@ -3879,6 +3880,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	attrs_datatype_dict = {}
 	lookup_disply_list = []
 	lookup_str = ""
+	QueryCountObj = ""
+	QueryCount = ""
+	dbl_clk_function = ""
 	if Objd_Obj is not None:
 		attr_list = {}
 		for attr in Objd_Obj:
@@ -3893,7 +3897,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		Qstr = (
 			"select top "
 			+ str(PerPage)
-			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
@@ -3902,8 +3906,6 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ " and "
 			+ str(Page_End)
 		)
-		QueryCount = ""
-		QueryCountObj = ""
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
@@ -3911,6 +3913,31 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(RevisionRecordId)
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' "
 		)
+	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
+		Qstr = (
+			"select top "
+			+ str(PerPage)
+			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam).split('-')[0]
+			+ "' ) m where m.ROW BETWEEN "
+			+ str(Page_start)
+			+ " and "
+			+ str(Page_End)
+		)
+		QueryCountObj = Sql.GetFirst(
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and SERVICE_ID = '"
+			+ str(TreeParam).split('-')[0]
+			+ "' "
+		)
+		
 	if QueryCountObj is not None:
 		QueryCount = QueryCountObj.cnt
 		#Trace.Write("count---->" + str(QueryCount))
@@ -3950,10 +3977,11 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["PM_LABOR_LEVEL"] = str(par.PM_LABOR_LEVEL)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
+		data_dict["SSCM_PM_FREQUENCY"] = str(par.SSCM_PM_FREQUENCY)
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_list.append(data_dict)
 
-	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"]
+	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","PM_FREQUENCY"]
 	ParentObj = Sql.GetList(
 		"select ASSEMBLY_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}'".format(
 			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), AssemblyId = ASSEMBLYID,
@@ -3984,12 +4012,13 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ "</abbr></th>"
 			)
 		elif hyper_link is not None and invs in hyper_link:            
+			data_formatter = "PMFrequencyBulkEditHyperLink" if invs == "PM_FREQUENCY" else "EquipHyperLinkTreeLink"
 			table_header += (
 				'<th  id="'
 				+ str(invs)
 				+ '"  data-field="'
 				+ str(invs)
-				+ '" data-filter-control="input" data-formatter="EquipHyperLinkTreeLink" data-sortable="true"><abbr title="'
+				+ '" data-filter-control="input" data-formatter="'+str(data_formatter)+'" data-sortable="true"><abbr title="'
 				+ str(qstring)
 				+ '">'
 				+ str(qstring)
@@ -4027,17 +4056,15 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		+ str(values_list)
 		+ ' var attribute_value = $(this).val(); cpq.server.executeScript("CQNESTGRID", {"TABNAME":"Preventive Maintainence Parent", "ACTION":"PRODUCT_ONLOAD_FILTER", "ATTRIBUTE_NAME": '
 		+ str(list(Columns))
-		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList ,"ASSEMBLYID" : '
+		+ ', "ATTRIBUTE_VALUE": ATTRIBUTE_VALUEList ,"ASSEMBLYID" : "'
 		+ str(ASSEMBLYID)
-		+', "EQUIPMENTID" : '
+		+'", "EQUIPMENTID" : "'
 		+ str(EQUIPMENTID)
-		+'}, function(dataset) { data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#' + str(tbl_id) + '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_Preventive_Maintainence_parent thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
+		+'"}, function(dataset) { data2 = dataset[1];  data1 = dataset[0]; data3 = dataset[2]; console.log("len ---->"+data1.length);  try { if(data1.length > 0) { $("#' + str(tbl_id) + '").bootstrapTable("load", data1 );$("#noRecDisp").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;}} else{ $("#' + str(tbl_id) + '").bootstrapTable("load", data1  );$("#' + str(tbl_id) + '").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); if (document.getElementById("'+str(tbl_id) + '___totalItemCount")){document.getElementById("'+str(tbl_id)+ '___totalItemCount").innerHTML = data2;}  if (document.getElementById("'+str(tbl_id) + '___NumberofItem")) {document.getElementById("'+str(tbl_id)+ '___NumberofItem").innerHTML = data3;} }} catch(err){} }); filter_search_click();$(".JColResizer").mousedown(function(){ $("thead.fullHeadFirst").css("cssText","z-index: 2;border-top: 1px solid rgb(220, 220, 220);top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","none"); });$(".JColResizer").mouseup(function(){ var th_width_resize = [];$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var wid = $(this).css("width"); if(index ==0 || index ==1){th_width_resize.push("60px");}else{th_width_resize.push(wid);}}); $("thead.fullHeadFirst").css("cssText","position: fixed;z-index: 2;border-top: 1px solid rgb(220, 220, 220); top: 154px;border-right: 0px !important;");$("thead.fullHeadSecond").css("display","table-header-group");$("#table_Preventive_Maintainence_parent thead.fullHeadFirst tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);});$("#table_Preventive_Maintainence_parent thead.fullHeadSecond tr th").each(function(index){var num = th_width_resize[index].split("px");var numsp = parseInt(num[0]);numsp = numsp - 1;var make_str =numsp+"px"; var c = "width:"+make_str+";white-space: nowrap;overflow: hidden;text-overflow: ellipsis;";var d = "width:"+make_str+";"; $(this).css("cssText",c);$(this).children("div:first-child").css("cssText",c);$(this).children("div.fht-cell").css("cssText",d);}); });});'
 	)
 
 	### editablity in Grid 
-	Trace.Write("TopSuperParentParam---"+str(TopSuperParentParam))
 	if TopSuperParentParam in ('Comprehensive Services','Complementary Products'): 
-		Trace.Write("inside---")  
 		cls = "eq(2)"
 		# dbl_clk_function = ( 
 		#     'var checkedRows=[]; debugger;localStorage.setItem("multiedit_checkbox_clicked", []); $("'
@@ -4051,31 +4078,42 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		#     + '").closest("table"); table.find("tbody tr").each(function() { checkedRows.push($(this).find("td:nth-child(3)").text()); }); localStorage.setItem("multiedit_checkbox_clicked", checkedRows); });  '
 		# ) 
 		#buttons = "<button class=\'btnconfig\' onclick=\'multiedit_RL_cancel();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>" 
-		dbl_clk_function = (	 
-			'$("'	
-			+ str(table_ids)	
-			+ '").on("dbl-click-cell.bs.table", onClickCell); $("'	
-			+ str(table_ids)	
-			+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'	
-			+ str(table_ids)	
-			+ '\ th.bs-checkbox div.th-inner").before(""); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id="";reco_id=$element.closest("tr").find("td:'	
-			+ str(cls)	
-			+ '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("value--",field);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+' "+inp).closest("tr").find("td:nth-child("+edit_index+")").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");}$("'+str(table_ids)+' " +inp).closest("tr").find("td:nth-child("+edit_index+")").addClass("light_yellow"); document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'	
+		# dbl_clk_function = (	 
+		# 	'$("'	
+		# 	+ str(table_ids)	
+		# 	+ '").on("dbl-click-cell.bs.table", onClickCell); $("'	
+		# 	+ str(table_ids)	
+		# 	+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'	
+		# 	+ str(table_ids)	
+		# 	+ '\ th.bs-checkbox div.th-inner").before(""); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); function onClickCell(event, field, value, row, $element) { var reco_id="";reco_id=$element.closest("tr").find("td:'	
+		# 	+ str(cls)	
+		# 	+ '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("value--",field);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+'").closest("tr").find("td:nth-child("+edit_index+")").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");}$("'+str(table_ids)+'").closest("tr").find("td:nth-child("+edit_index+")").addClass("light_yellow"); document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); } ')
+		dbl_clk_function = ('$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
+			+ str(table_ids)
+			+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+			+ str(table_ids)
+			+ '\ th.bs-checkbox div.th-inner").before("<div style=\'padding:0; border-bottom: 1px solid #dcdcdc;\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $("'	
 			+ str(table_ids)	
 			+ "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"	
 			+ str(table_id)	
 			+ "_SortColumn', name); localStorage.setItem('"	
 			+ str(table_id)	
 			+ "_SortColumnOrder', order); }); "	
-		)	
-		Trace.Write("@4099----->"+str(dbl_clk_function))
-
-
+		)
 	else:
-		Trace.Write("else---")
-
-		dbl_clk_function = (
-			'$("'
+		if TreeParentParam in ('Comprehensive Services','Complementary Products'):
+			cls = "eq(2)"
+			# dbl_clk_function += (
+			# 	'$("'	
+			# 	+ str(table_ids)	
+			# 	+ '").on("dbl-click-cell.bs.table", onClickCell);'
+			# )
+			# dbl_clk_function += (
+			# 	'function onClickCell(event, field, value, row, $element) { var reco_id="";reco_id=$element.closest("tr").find("td:'	
+			# 	+ str(cls)	
+			# 	+ '").text().trim();console.log("reco_id2--",reco_id);reco_id=reco_id; reco_id=reco_id.split(","); localStorage.setItem("multiedit_save_date", reco_id);  localStorage.setItem("table_id_RL_edit", "SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63");console.log("field--",field);console.log("value--",value);edit_index = $("'+str(table_ids)+'").find("[data-field="+ field +"]").index()+1;localStorage.setItem("edit_index",edit_index); cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"SYOBJR_00011_1E92CAAD_4EE9_4E5C_AA11_80F20D295A63", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT"}, function(data) { debugger; data1=data[0]; data2=data[1]; data3 = data[2];$("#ADDNEW__SYOBJR_00011_SYOBJ_00974").css("display","none");if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { localStorage.setItem("saqico_title", field); inp = "#"+data3;localStorage.setItem("value_tag", "'+ str(table_id)+' "+inp);$("'+str(table_ids)+'").find("td:nth-child("+edit_index+")").attr("contenteditable", true); var buttonlen = $("#seginnerbnr").find("button#saveButton"); if (buttonlen.length == 0){	$("#seginnerbnr").append("<button class=\'btnconfig\' onclick=\'PreventiveMaintainenceTreeTable();\' type=\'button\' value=\'Cancel\' id=\'cancelButton\'>CANCEL</button><button class=\'btnconfig\' type=\'button\' value=\'Save\' onclick=\'multiedit_save_RL()\' id=\'saveButton\'>SAVE</button>");}else{$("#cancelButton").css("display", "block");$("#saveButton").css("display", "block");}$("'+str(table_ids)+'").find("td:nth-child("+edit_index+")").addClass("light_yellow"); document.getElementById("cont_multiEditModalSection").style.display = "none";  var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); } if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }'
+			# )
+		dbl_clk_function += ('$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); $("'
 			+ str(table_ids)
 			+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
 			+ str(table_ids)
@@ -4087,8 +4125,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ str(table_id)
 			+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 			+ str(table_id)
-			+ "',"+str(ASSEMBLYID)+","+EQUIPMENTID+"); }); "
-			)
+			+ "','"+str(ASSEMBLYID)+"','"+str(EQUIPMENTID)+"'); }); "
+		)
 	Trace.Write("7777 dbl_clk_function --->"+str(dbl_clk_function))
 	NORECORDS = ""
 	if len(data_list) == 0:
@@ -4294,6 +4332,8 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 	##replacing space with '_' in recid
 	if ' ' in recid:
 		table_recid = recid.replace(' ','_')
+	else:
+    		table_recid = recid
 	table_id = "table_preventive_maintainence_child_"+str(table_recid) 
 	table_header = (
 		'<table id="'
@@ -4337,6 +4377,8 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 				EquipmentId = EQUIPMENTID,
 			)
 		)
+	elif TreeParentParam in ('Comprehensive Services','Complementary Products'):
+		Parent_assembly_id = Sql.GetFirst("select PM_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'  AND PM_ID = '{PreventiveMaintainenceId}' ".format(ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),PreventiveMaintainenceId = recid))	
 	if Parent_assembly_id:
 		Preventive_Maintainence_ID = Parent_assembly_id.PM_ID
 		if TopSuperParentParam in ('Comprehensive Services','Complementary Products'):
@@ -4371,6 +4413,27 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 			+ str(Preventive_Maintainence_ID)
 			+ "'and ASSEMBLY_ID = '"
 			+ str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"'and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"'")
+		elif TreeParentParam in ('Comprehensive Services','Complementary Products'):
+			child_obj_recid = Sql.GetList(
+				"select top "
+					+ str(PerPage)
+					+ " * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID,KIT_ID,PART_NUMBER,PART_DESCRIPTION,QUANTITY,TKM_FLAG from SAQSKP (NOLOCK) where PM_ID = '"
+					+ str(recid)
+					+ "' and QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' and QTEREV_RECORD_ID = '"
+					+ str(RevisionRecordId)
+					+ "' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"') m where m.ROW BETWEEN "
+					+ str(Page_start)
+					+ " and "
+					+ str(Page_End)
+			)
+			QueryCountObj = Sql.GetFirst(
+			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_PARTS_RECORD_ID) as cnt from SAQSKP (NOLOCK) where QUOTE_RECORD_ID = '"
+			+ str(ContractRecordId)
+			+ "' and QTEREV_RECORD_ID = '"
+			+ str(RevisionRecordId)
+			+ "' and PM_ID = '"
+			+ str(Preventive_Maintainence_ID)
+			+ "' and KIT_ID = '"+str(KITID)+"' and KIT_NUMBER = '"+str(KITNUMBER)+"'")
 		chld_list = []
 		QueryCount = ""
 		if QueryCountObj is not None:
@@ -4506,7 +4569,7 @@ def QuoteAssemblyPreventiveMaintainenceKitMaterialChild(recid, PerPage, PageInfo
 	+ str(table_id)
 	+ "_SortColumnOrder', order); PmEventsNestedContainerSorting(name, order, '"
 	+ str(table_id)
-	+ "',"+str(ASSEMBLYID)+","+EQUIPMENTID+"); }); "
+	+ "','"+str(ASSEMBLYID)+"','"+str(EQUIPMENTID)+"'); }); "
 	)
 	
 
@@ -4767,17 +4830,30 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		#Trace.Write("Empty searh --->")
 		if TreeTopSuperParentParam == 'Comprehensive Services':
 			parent_obj = Sql.GetList(
-			"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
-			+ str(ContractRecordId)            
-			+ "' and QTEREV_RECORD_ID = '"
-			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
-		)
-		Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
-			+ str(ContractRecordId)            
-			+ "' and QTEREV_RECORD_ID = '"
-			+ str(RevisionRecordId)
-			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
+		elif TreeParentParam == 'Comprehensive Services' or TreeParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)            
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
 		if Count:
 			QueryCount = Count.cnt
 
@@ -4786,7 +4862,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		#Trace.Write("conditional searh --->")
 		if TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
 			parent_obj = Sql.GetList(
-				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
 				+ " 1=1 and QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
@@ -4802,8 +4878,26 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
 				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
-			if Count:
-				QueryCount = Count.cnt
+			
+		elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
+			parent_obj = Sql.GetList(
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
+				+ str(ATTRIBUTE_VALUE_STR)
+				+ " 1=1 and QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "'  and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "'  AND SERVICE_ID = '"+str(TreeParam)+"' ORDER BY "+str(orderby)+" "
+			)
+			Count = Sql.GetFirst("select count(*) as cnt from SAQSAP (NOLOCK) where "
+				+ str(ATTRIBUTE_VALUE_STR)
+				+ " 1=1 and QUOTE_RECORD_ID = '"
+				+ str(ContractRecordId)
+				+ "' and QTEREV_RECORD_ID = '"
+				+ str(RevisionRecordId)
+				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
+		if Count:
+			QueryCount = Count.cnt
 
 
 
@@ -4837,6 +4931,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		data_dict["PM_NAME"] = str(par.PM_NAME)
 		data_dict["PM_LABOR_LEVEL"] = str(par.PM_LABOR_LEVEL)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
+		data_dict["SSCM_PM_FREQUENCY"] = str(par.SSCM_PM_FREQUENCY)
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 
@@ -6208,7 +6303,7 @@ def UpdateBreadcrumb():
 	qry = ""
 	eq_id = ""
 	Action_Str = ""
-	Trace.Write("TABLENAME_chk "=str(TABLENAME))
+	Trace.Write("TABLENAME_chk "+str(TABLENAME) +str(TreeParam))
 	if (TreeParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products" or TreeTopSuperParentParam == "Complementary Products") and TABLENAME == 'SAQSCO' and CurrentTabName == "Quote" : 
 		qry = Sql.GetFirst(
 			"SELECT EQUIPMENT_ID,SERIAL_NO FROM SAQSCO (NOLOCK) WHERE QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
@@ -6241,15 +6336,7 @@ def UpdateBreadcrumb():
 			eq_id = str(qry.EQUIPMENT_ID)+"-"+str(qry.SERIAL_NUMBER)
 		else:
 			eq_id = "TOOLS"
-	elif TreeParentParam == "Bridge Products":
-		qry = Sql.GetFirst(
-		"SELECT PART_NUMBER,PART_DESCRIPTION FROM SAQSPT (NOLOCK) WHERE QUOTE_SERVICE_PART_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
-		)
-		if qry:
-			eq_id = str(qry.PART_NUMBER)
-		else:
-			eq_id = "Spare parts"
-	elif TreeSuperParentParam == "Quote Items":        
+	elif TreeParam == "Quote Items" and TABLENAME == 'SAQICO':        
 		qry = Sql.GetFirst(
 		"SELECT EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO FROM SAQICO (NOLOCK) WHERE QUOTE_ITEM_COVERED_OBJECT_RECORD_ID = '{recid}'".format(recid=CURR_REC_ID)
 		)
@@ -6332,10 +6419,10 @@ def UpdateBreadcrumb():
 			eq_id = "Involved Parties"
 	elif TreeParam == "Customer Information" and TABLENAME == 'SAQICT':
 		qry = Sql.GetFirst(
-		"SELECT CONTACT_NAME FROM SAQICT (NOLOCK) WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID = '{recid}'".format(recid=CURR_REC_ID)
+		"SELECT CONTACT_ID FROM SAQICT (NOLOCK) WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID = '{recid}'".format(recid=CURR_REC_ID)
 		)
 		if qry:
-			eq_id = str(qry.CONTACT_NAME)
+			eq_id = str(qry.CONTACT_ID)
 		else:
 			eq_id = "Contacts"
 	##A055S000P01-8690 code starts..
@@ -6386,7 +6473,20 @@ def UpdateBreadcrumb():
 		)
 		if qry:
 			eq_id = str(qry.PART_NUMBER)
-	
+	elif TABLENAME == 'SAQRSP':
+		qry = Sql.GetFirst(
+			"SELECT PART_NUMBER,PART_DESCRIPTION FROM SAQRSP (NOLOCK) WHERE QUOTE_REV_PO_PRODUCT_LIST_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry:
+			eq_id = str(qry.PART_NUMBER)
+	elif TreeParam == "Quote Items" and TABLENAME == 'SAQRIT':
+		qry = Sql.GetFirst(
+			"SELECT LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID = '{recid}'".format(recid=CURR_REC_ID)
+		)
+		if qry:
+			eq_id = str(qry.LINE)
+		else:
+			eq_id = "Line"
 	Action_Str = '<li><a onclick="breadCrumb_redirection(this)">'
 	Action_Str += '<abbr title="'+str(eq_id)+'">'
 	Action_Str += str(eq_id)
@@ -6950,7 +7050,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 				+ str(table_id)
 				+ '");   cpq.server.executeScript("SYBLKETRLG", {"TITLE":field, "VALUE":value, "CLICKEDID":"'
 				+ str(table_id)
-				+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT", "SELECTALL":selectAll }, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn");if (sparePartsBulkAddBtn.length == 0 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","none");} else if(sparePartsBulkAddBtn.length == 1 && TreeParentParam =="Bridge Products"){$("#cont_multiEditModalSection").css("display","block");$("#spare-parts-bulk-edit-btn").css("display","none");$("#spare-parts-bulk-add-modal-btn").css("display","none");}; if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
+				+ '", "RECORDID":reco_id, "ELEMENT":"RELATEDEDIT", "SELECTALL":selectAll }, function(data) { data1=data[0]; data2=data[1]; if(data1 != "NO"){ if(document.getElementById("RL_EDIT_DIV_ID") ) { document.getElementById("RL_EDIT_DIV_ID").innerHTML = data1; document.getElementById("cont_multiEditModalSection").style.display = "block"; $("#cont_multiEditModalSection").prepend("<div class=\'modal-backdrop fade in\'></div>"); var divHeight = $("#cont_multiEditModalSection").height(); $("#cont_multiEditModalSection .modal-backdrop").css("min-height", divHeight+"px"); $("#cont_multiEditModalSection .modal-dialog").css("width","550px"); $(".modal-dialog").css("margin-top","100px"); }TreeParentParam = localStorage.getItem("CommonTreeParentParam");var sparePartsBulkSAVEBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-save-btn");var sparePartsBulkEDITBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-edit-btn");var sparePartsBulkAddBtn = $(".secondary_highlight_panel").find("button#spare-parts-bulk-add-modal-btn"); if (data2.length !== 0){ $.each( data2, function( key, values ) { onclick_datepicker(values) }); } } }); }                   $("'
 				+ str(table_ids)
 				+ "\").on('sort.bs.table', function (e, name, order) {  currenttab = $(\"ul#carttabs_head .active\").text().trim(); localStorage.setItem('"
 				+ str(table_id)

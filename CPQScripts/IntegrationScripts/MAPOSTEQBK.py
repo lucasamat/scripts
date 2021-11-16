@@ -622,8 +622,9 @@ try:
 		Lst_resp.append({"Status": "200", "Message": "EQUIPMENT DATA SUCCESSFULLY UPLOADED"})
 
 	Resp_msg["Response"] = Lst_resp
+	result = ScriptExecutor.ExecuteGlobal("MAPOSTFLBK")
 
-	return Resp_msg
+	Result =  Resp_msg
 
 except:
 
