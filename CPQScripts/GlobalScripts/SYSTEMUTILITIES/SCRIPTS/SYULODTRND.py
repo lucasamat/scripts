@@ -2353,12 +2353,20 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 	else:
 		Ad_on_prd = ""
 	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
-		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id,quote_revision_record_id))
+		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ={} AND QTEREV_RECORD_ID = {}".format(quoteid,quote_revision_record_id))
+    	spare_parts_visibility = 'False'
 		if entitlement_obj:
-			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
-				spare_parts_visibility = "True"
-			else:
-				spare_parts_visibility = "False"
+			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+    		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+    		pattern_id = re.compile(r'<ENTITLEMENT_NAME>CONSUMABLE_92</ENTITLEMENT_NAME>')
+    		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:INCLUDED|SOME INCLUSIONS)</ENTITLEMENT_DISPLAY_VALUE>')
+    		for m in re.finditer(pattern_tag, entitlement_xml):
+				sub_string = m.group(1)
+        		get_ent_id =re.findall(pattern_id,sub_string)
+        		get_ent_name=re.findall(pattern_name,sub_string)
+        		if get_ent_id and get_ent_name:
+					spare_parts_visibility = 'True'
+            		break
 	else:
 		spare_parts_visibility = ""				
 	
