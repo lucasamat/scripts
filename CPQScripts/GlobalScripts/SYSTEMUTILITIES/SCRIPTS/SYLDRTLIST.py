@@ -4994,6 +4994,8 @@ class SYLDRTLIST:
 					try:
 						lookup_disply_list.remove("QUOTE_REV_DEAL_TEAM_MEMBER_ID")
 						lookup_disply_list.remove("C4C_PARTNERFUNCTION_ID")
+						lookup_disply_list.remove("CRM_PARTNERFUNCTION_ID")
+						
 					except:
 						pass
 			lookup_str = ",".join(list(lookup_disply_list))
