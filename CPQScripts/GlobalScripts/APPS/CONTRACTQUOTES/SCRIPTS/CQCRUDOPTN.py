@@ -4574,7 +4574,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		#Trace.Write('4739---------------')
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
-		
+		get_ent_val = ''
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 			#Trace.Write('4739---------4744------')
@@ -4586,6 +4586,19 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 					billing_day = int(val.BILLING_DAY)
 					get_service_val = val.SERVICE_ID
 					get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =self.contract_quote_record_id,qt_rev_id=self.quote_revision_record_id,get_service = str(get_service_val).strip()))
+					if get_billing_cycle:
+						#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
+						updateentXML = get_billing_cycle.ENTITLEMENT_XML
+						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+						pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILCYC)</ENTITLEMENT_ID>')
+						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+						for m in re.finditer(pattern_tag, updateentXML):
+							sub_string = m.group(1)
+							get_ent_id =re.findall(pattern_id,sub_string)
+							get_ent_val=re.findall(pattern_name,sub_string)
+							if get_ent_id:
+								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val))
+								break
 					#Trace.Write('get_service_val---4750--'+str(get_service_val))
 					if billing_day in (29,30,31):
 						if start_date.month == 2:
