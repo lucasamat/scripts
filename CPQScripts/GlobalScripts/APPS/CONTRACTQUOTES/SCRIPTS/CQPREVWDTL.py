@@ -461,7 +461,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	table_id = "clean_booking_checklist"
 	Header_details = {
 		"CHECKLIST_ID": "SEQ",
-		"CHECKLIST_DESCRIPTION":"CHECKLIST",
+		"CHECKLIST_DESCRIPTION":"QUESTIONS",
 		"SERVICE_CONTRACT": "CM REVIEW",
 		"SPECIALIST_REVIEW": "N/A",
 		"COMMENT": "COMMENTS",    
