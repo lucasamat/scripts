@@ -1266,9 +1266,9 @@ try:
 	ancillary_dict = Param.CPQ_Columns['Ancillary_dict']
 	ancillary_dict = eval(str(ancillary_dict.replace(';39;',"'").replace('_;',"{").replace("$;","}").replace("=",":")))
 except Exception as e:
-	Log.Info("ancillary_dict--"+str(e))
+	Log.Info("ancillary_dict-1269---"+str(e))
 	ancillary_dict = {}
-Log.Info("ancillary_dict--"+str(ancillary_dict))
+Log.Info("ancillary_dict--1271--"+str(ancillary_dict))
 
 
 if 'COV OBJ ENTITLEMENT' in LEVEL:
