@@ -4788,9 +4788,6 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				CPQTABLEENTRYDATEADDED,
 				CpqTableEntryModifiedBy,
 				CpqTableEntryDateModified,
-				IS_CHANGED,
-				SERVICE_ID,
-				SERVICE_RECORD_ID,
 				SALESORG_ID,
 				SALESORG_NAME,
 				SALESORG_RECORD_ID
@@ -4809,9 +4806,6 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				GETDATE() as CPQTABLEENTRYDATEADDED,
 				{UserId} as CpqTableEntryModifiedBy,
 				GETDATE() as CpqTableEntryDateModified,
-				1,
-				SAQTSV.SERVICE_ID,
-				SAQTSV.SERVICE_RECORD_ID,
 				SAQTSV.SALESORG_ID,
 				SAQTSV.SALESORG_NAME,
 				SAQTSV.SALESORG_RECORD_ID                     
