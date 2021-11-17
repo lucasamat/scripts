@@ -271,14 +271,29 @@ class ContractQuoteCrudOpertion:
 	def _delete(self):
 		pass	
 							
-	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None):
+	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None):
 		#QTQIBP_INS=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
-		year = int(amount_column.split('_')[-1])
-		remaining_months = (total_months + 1) - (year*12)		
-		divide_by = 12
-		#s=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
-		if remaining_months < 0:
-			divide_by = 12 + remaining_months
+		if get_ent_val_type == "Monthly":
+			year = int(amount_column.split('_')[-1])
+			remaining_months = (total_months + 1) - (year*12)		
+			divide_by = 12
+			
+			if remaining_months < 0:
+				divide_by = 12 + remaining_months
+		elif str(get_ent_val_type).upper() == "QUARTERLY":
+			year = int(amount_column.split('_')[-1])
+			remaining_months = (total_months) - (year*12)		
+			divide_by = 12
+			
+			if remaining_months < 0:
+				divide_by = 12 + remaining_months
+		else:
+			year = int(amount_column.split('_')[-1])
+			remaining_months = (total_months + 1) - (year*12)		
+			divide_by = 12
+			
+			if remaining_months < 0:
+				divide_by = 12 + remaining_months
 		amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 		Trace.Write(str(amount_column)+'---272-----272-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
@@ -4631,7 +4646,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
 					elif str(get_ent_val).upper() == "QUARTELY":
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						ct_start_date =contract_start_date
@@ -4649,7 +4664,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/4) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
 					else:
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						if billing_day in (29,30,31):
@@ -4675,7 +4690,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
 						columns=["CART_ID", "USERID"],
