@@ -1638,7 +1638,7 @@ def Related_Sub_Banner(
         Trace.Write("PM 1638")
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
         PrimaryLable = "Product Offering ID"
-        PrimaryValue = str(TreeTopSuperParentParam)
+        PrimaryValue = str(TreeParam)
         SecondLable = "Product Offering Description"
         if getService is not None:
             SecondValue = getService.SERVICE_DESCRIPTION
