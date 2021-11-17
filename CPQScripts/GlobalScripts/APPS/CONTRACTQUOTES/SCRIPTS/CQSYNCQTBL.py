@@ -655,20 +655,20 @@ class SyncQuoteAndCustomTables:
 							if distribution_obj:
 								salesorg_data.update({"DISTRIBUTIONCHANNEL_ID":distribution_obj.DISTRIBUTIONCHANNEL_ID , 
 													"DISTRIBUTIONCHANNEL_RECORD_ID":distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID})
-						if custom_fields_detail.get('SalesOrgID'):
-							createddate_up = ""
-							SalesOrg_obj = Sql.GetFirst(
-								"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
-									custom_fields_detail.get('SalesOrgID')
-								)
-							)
+						# if custom_fields_detail.get('SalesOrgID'):
+						# 	createddate_up = ""
+						# 	SalesOrg_obj = Sql.GetFirst(
+						# 		"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+						# 			custom_fields_detail.get('SalesOrgID')
+						# 		)
+						# 	)
 							
 							
-							salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
-							if salesorg_currency:
-								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
-													})
+						# 	salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+						# 	if salesorg_currency:
+						# 		salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+						# 							"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+						# 							})
 							# if SalesOrg_obj:
 								
 							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
@@ -732,17 +732,6 @@ class SyncQuoteAndCustomTables:
 													"SALESOFFICE_NAME":salesoffice_obj.SALES_OFFICE_NAME,
 													"SALESOFFICE_RECORD_ID":salesoffice_obj.SALES_OFFICE_RECORD_ID
 													})
-						if custom_fields_detail.get('SalesOrgID'):
-							salesorg_obj = Sql.GetFirst(
-								"SELECT * FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
-									custom_fields_detail.get('SalesOrgID')
-								)
-							)
-							salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
-							if salesorg_currency:
-								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
-													})
 							# if salesorg_obj:
 								# salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
 								#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
@@ -753,10 +742,8 @@ class SyncQuoteAndCustomTables:
 							Log.Info("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							if tax_details:
 								salesorg_data.update({"ACCTAXCAT_ID": tax_details.TAXCATEGORY_ID,"ACCTAXCAT_DESCRIPTION": tax_details.TAXCATEGORY_DESCRIPTION, "ACCTAXCLA_ID": tax_details.TAXCLASSIFICATION_ID, "ACCTAXCLA_DESCRIPTION": tax_details.TAXCLASSIFICATION_DESCRIPTION})
-						quote_salesorg_table_info.AddRow(salesorg_data)
 						Log.Info('salesorg_data---443--'+str(salesorg_data))
-						Log.Info('contract_quote_data---443--'+str(contract_quote_data))                        
-						Sql.Upsert(quote_salesorg_table_info)
+						Log.Info('contract_quote_data---443--'+str(contract_quote_data))
 						##Commented the condition to update the pricing procedure for both spare and tool based quote
 						#if 'SPARE' in str(contract_quote_data.get('QUOTE_TYPE')):
 						# Get Pricing Procedure
@@ -1043,6 +1030,12 @@ class SyncQuoteAndCustomTables:
 						
 						#Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
+					if custom_fields_detail.get('SalesOrgID') and custom_fields_detail.get('Division') and custom_fields_detail.get("STPAccountID") and custom_fields_detail.get('DistributionChannel') :
+						salesorg_account_obj = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
+						if salesorg_account_obj:
+							salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+												"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+												})
 					if custom_fields_detail.get("STPAccountID"):
 						sold_to_update = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
@@ -1264,6 +1257,8 @@ class SyncQuoteAndCustomTables:
 					Log.Info("contract_quote_data===> " + str(contract_quote_data))
 					#Log.Info("quote_involved_party_table_info===> " + str(quote_involved_party_table_info))
 					#Log.Info("contact_Info_update "+str(contact_info_update))
+					quote_salesorg_table_info.AddRow(salesorg_data)
+					Sql.Upsert(quote_salesorg_table_info)
 					quote_table_info.AddRow(contract_quote_data)
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
