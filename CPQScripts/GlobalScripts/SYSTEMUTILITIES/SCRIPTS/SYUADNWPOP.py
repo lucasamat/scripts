@@ -3541,6 +3541,7 @@ def POPUPLISTVALUEADDNEW(
 
 		elif (str(ObjectName) == "SAQRSP" or str(ObjectName)=="SAQSPT") and str(CurrentTab) == "Quotes":
 			Trace.Write('In '+str(ObjectName))
+			popup_obj = ObjectName
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
@@ -3716,7 +3717,7 @@ def POPUPLISTVALUEADDNEW(
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-			if str(ObjectName)=="SAQRSP":
+			if str(popup_obj)=="SAQRSP":
 				if TreeSuperParentParam == "Product Offerings":
 					TreeParam = TreeParam
 					TableName = "SAQTSE"
@@ -3788,8 +3789,7 @@ def POPUPLISTVALUEADDNEW(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
-			elif str(ObjectName)=="SAQSPT":
-				Trace.Write('Obj SAQSPT')
+			elif str(popup_obj)=="SAQSPT":
 				where_string += ""
 				Pagination_M = ""
 			table_data = Sql.GetList(
