@@ -3781,27 +3781,15 @@ def POPUPLISTVALUEADDNEW(
 						Trace.Write("5443543")
 						iclusions_val_list.append('C')
 				iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
-			#Trace.Write('iclusions_val---'+str(iclusions_val))
 				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
-			#Trace.Write('inner_join----'+str(inner_join))
-			#Trace.Write('ordered_keys----'+str(ordered_keys))
-			#Trace.Write('additional_where----'+str(additional_where))
-			# table_data = Sql.GetList(
-			# 	"select {} from {} (NOLOCK) {} {} {} {} {}".format(
-			# 		", ".join(ordered_keys),
-			# 		ObjectName
-			# 		,inner_join if inner_join else "",
-			# 		"WHERE " + where_string if where_string else "" ,
-			# 		additional_where,
-			# 		order_by,pagination_condition
-			# 	)
-			# )
+			
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER) {} ".format(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
 			elif str(ObjectName)=="SAQSPT":
+				Trace.Write('Obj SAQSPT')
 				where_string += ""
 				Pagination_M = ""
 			table_data = Sql.GetList(
