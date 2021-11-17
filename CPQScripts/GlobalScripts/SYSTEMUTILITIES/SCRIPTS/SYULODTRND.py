@@ -135,11 +135,7 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-<<<<<<< Updated upstream
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
-=======
 	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
->>>>>>> Stashed changes
 			canedit = "TRUE"
 	if Product.GetGlobal("TreeParentLevel0") == "Billing":
 		ObjectName = "SAQRIB"
