@@ -1101,7 +1101,7 @@ class approvalCenter:
 				str(GetCurStatus.APRCHN_RECORD_ID), str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), Objh_Id
 			) """
 			retrunRecall = violationruleInsert.InsertAction(
-				Objh_Id, str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), "RECALL", str(GetCurStatus.APRCHN_RECORD_ID)
+				Objh_Id, str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), "RECALL"
 			)
 			
 			approval_id_without_auto_inc = '-'.join((GetCurStatus.APPROVAL_ID).split('-')[0:-1])
