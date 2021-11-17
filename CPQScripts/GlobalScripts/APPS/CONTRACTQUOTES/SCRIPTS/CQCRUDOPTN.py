@@ -751,7 +751,9 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					if service_maadpr:
 						row_values_doctyp = {"DOCTYP_ID": service_maadpr.COMP_PRDOFR_DOCTYP,"DOCTYP_RECORD_ID": service_maadpr.COMP_PRDOFR_DOCTYP_RECORD_ID}
 						row_detail.update(row_values_doctyp)
+						Trace.Write('row_detail-->'+str(row_detail))
 						offering_table_info.AddRow(row_detail)
+						Trace.Write('offering_table_info-->'+str(offering_table_info))
 						Sql.Upsert(offering_table_info)
 				
 				#A055S000P01-9650 ENDS
