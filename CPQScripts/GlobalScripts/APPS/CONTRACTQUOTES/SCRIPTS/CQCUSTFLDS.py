@@ -10,12 +10,12 @@ Sql = SQL()
 def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	saleprice = float(saleprice)
 	lineitemid = float(lineitemid)
-	a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR  FROM SAQITM (NOLOCK) WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
-	if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
-		discount =((float(a.SALES_DISCOUNT_PRICE)-float(saleprice))/a.SALES_DISCOUNT_PRICE)*100.00
-		Trace.Write("discount"+str(discount))
-	else:
-		discount = 0.00
+	# a = Sql.GetFirst("SELECT ISNULL(SALES_DISCOUNT_PRICE,0) AS  SALES_DISCOUNT_PRICE, SERVICE_ID,QUOTE_RECORD_ID,ISNULL(YEAR_OVER_YEAR,0) AS YEAR_OVER_YEAR  FROM SAQITM (NOLOCK) WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+	# if float(a.SALES_DISCOUNT_PRICE) != 0.0 or float(a.SALES_DISCOUNT_PRICE) != 0.00:
+	# 	discount =((float(a.SALES_DISCOUNT_PRICE)-float(saleprice))/a.SALES_DISCOUNT_PRICE)*100.00
+	# 	Trace.Write("discount"+str(discount))
+	# else:
+	# 	discount = 0.00
 
 	getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID))
 
@@ -51,7 +51,7 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 
 	ext_price = year1 + year2 + year3 + year4 + year5
 
-	Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{saleprice}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext} WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(saleprice=saleprice,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price,lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+	# Sql.RunQuery("UPDATE SAQITM SET SALES_PRICE = '{saleprice}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},EXTENDED_PRICE = {ext} WHERE SERVICE_ID like '%{service_id}%' and QUOTE_RECORD_ID = '{QuoteRecordId}' and LINE_ITEM_ID = {lineitemid} and QTEREV_RECORD_ID = '{RevisionRecordId}'".format(saleprice=saleprice,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price,lineitemid = lineitemid,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	for item in Quote.MainItems:
 		Trace.Write("Quote Quote Quote")
 		item_number = int(item.RolledUpQuoteItem)
@@ -152,10 +152,10 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 
 
 	pricefactor_obj = Sql.GetFirst("SELECT FACTOR_PCTVAR FROM PRCFVA (NOLOCK) WHERE FACTOR_VARIABLE_ID = '{}' AND FACTOR_ID = 'SLDISC' ".format(service_id))
-	if float(pricefactor_obj.FACTOR_PCTVAR) < discount:
-	   Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
-	Sql.RunQuery("""UPDATE SAQICO SET
-STATUS = 'APPROVAL REQUIRED' FROM SAQICO INNER JOIN SAQITM ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID WHERE SAQITM.PRICING_STATUS = 'APPROVAL REQUIRED' AND SAQITM.SERVICE_ID like '%{}%'""".format(service_id))
+	# if float(pricefactor_obj.FACTOR_PCTVAR) < discount:
+	#    Sql.RunQuery("UPDATE SAQITM SET PRICING_STATUS = 'APPROVAL REQUIRED' WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%'".format(Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID))
+# 	Sql.RunQuery("""UPDATE SAQICO SET
+# STATUS = 'APPROVAL REQUIRED' FROM SAQICO INNER JOIN SAQITM ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID WHERE SAQITM.PRICING_STATUS = 'APPROVAL REQUIRED' AND SAQITM.SERVICE_ID like '%{}%'""".format(service_id))
 	return saleprice
 def salepriceedit(service_id):
 	editable = "false"
