@@ -1635,14 +1635,17 @@ def Related_Sub_Banner(
         SixthLable = "Assembly ID"
         SixthValue = str(AssemblyId)     
     elif subTabName == "PM Events" or subTabName == "Assembly Entitlements" :
-        PrimaryLable = "Greenbook"
-        PrimaryValue = str(TreeParam)
-        SecondLable = "Equipment ID"
-        SecondValue = str(EquipmentId)
-        ThirdLable = "Serial Number"
-        ThirdValue = str(SerialNumber)
-        FourthLable = "Assembly ID"
-        FourthValue = str(AssemblyId)
+        Trace.Write("PM 1638")
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV(nolock) where SERVICE_ID = '"+str(TreeParam)+"'")
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeTopSuperParentParam)
+        SecondLable = "Product Offering Description"
+        if getService is not None:
+            SecondValue = getService.SERVICE_DESCRIPTION
+        else:
+            SecondValue =" "
+        ThirdLable = "Greenbook"
+        ThirdValue = "ALL"
         PreventiveMaintainenceobj = Sql.GetFirst("select EQUIPMENT_ID from SAQSAP(nolock) where QUOTE_RECORD_ID = '{contract_quote_record_id}' and EQUIPMENT_ID = '{Equipment_Id}' and ASSEMBLY_ID = '{Assembly_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id"),Equipment_Id = EquipmentId,Assembly_id =AssemblyId,quote_revision_record_id=quote_revision_record_id ))
         if PreventiveMaintainenceobj is not None:
             FifthLable = "PM Events"
