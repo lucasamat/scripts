@@ -1082,12 +1082,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				
 				if ObjectName == "SAQIBP" and TreeParam == "Billing Plan":
 					notinlist = [
-						"QUOTE_ID",
-						"SALESORG_ID",
-						"SALESORG_NAME",
-						"LINE_ITEM_ID",					
-						"SPLIT_BILLING",
-						"QUOTE_NAME",
+						"QUOTE_ID",											
+						"SPLIT_BILLING",						
 						"CPQTABLEENTRYADDEDBY",
 						"CPQTABLEENTRYDATEADDED",
 						"CpqTableEntryModifiedBy",
