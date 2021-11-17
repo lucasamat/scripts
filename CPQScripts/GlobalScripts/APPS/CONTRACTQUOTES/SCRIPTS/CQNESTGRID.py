@@ -3981,7 +3981,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_list.append(data_dict)
 
-	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","PM_FREQUENCY"]
+	hyper_link = ["PM_FREQUENCY"]
 	ParentObj = Sql.GetList(
 		"select ASSEMBLY_ID from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and ASSEMBLY_ID = '{AssemblyId}'".format(
 			ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"), AssemblyId = ASSEMBLYID,
