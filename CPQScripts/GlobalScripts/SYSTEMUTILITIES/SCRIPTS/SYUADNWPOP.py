@@ -3716,7 +3716,7 @@ def POPUPLISTVALUEADDNEW(
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-			if str(ObjName)=="SAQRSP":
+			if str(ObjectName)=="SAQRSP":
 				if TreeSuperParentParam == "Product Offerings":
 					TreeParam = TreeParam
 					TableName = "SAQTSE"
