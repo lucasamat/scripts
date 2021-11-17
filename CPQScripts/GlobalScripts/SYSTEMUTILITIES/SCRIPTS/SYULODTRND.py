@@ -1768,9 +1768,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							if current_obj_value == req1:
 								sec_str += "<option selected>" + str(req1) + "</option>"
 							else:
-							sec_str += "<option>" + str(req1) + "</option>"
+								sec_str += "<option>" + str(req1) + "</option>"
 					else:	
-					sec_str += "<option selected>" + str(current_obj_value) + "</option>"
+						sec_str += "<option selected>" + str(current_obj_value) + "</option>"
 					sec_str += "</select></td>"
 				elif data_type == "DATE" and MODE == "EDIT":								
 					date_field.append(current_obj_api_name)					
