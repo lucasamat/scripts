@@ -2185,7 +2185,6 @@ class TreeView:
 											if flag_excluse==1:
 												subTabName = "Parts List"
 										Trace.Write("subTabName Green service list---"+str(subTabName))
-<<<<<<< Updated upstream
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
@@ -2194,10 +2193,13 @@ class TreeView:
 										if spare_parts_object is not None:
 											if spare_parts_object.cnt > 0:
 												subTabName = str(getRightView.SUBTAB_NAME)
-									elif subTabName == 'Spare Parts' and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQSPT':
+									elif subTabName == 'Spare Parts' and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQTSV':
+										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+										subTabName = str(getRightView.SUBTAB_NAME) if str(doc_type.DOCTYP_ID) == "ZWK1" else ""
+									elif subTabName =='Equipment' and Product.GetGlobal("ParentNodeLevel")=="Complementary Products":
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
-=======
+										Product.SetGlobal("ParentNodeLevel",'')
 									# elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 									# 	Trace.Write("NodeText spare parts"+str(NodeText))
 									# 	subTabName = ""
@@ -2206,7 +2208,6 @@ class TreeView:
 									# 	if spare_parts_object is not None:
 									# 		if spare_parts_object.cnt > 0:
 									# 			subTabName = str(getRightView.SUBTAB_NAME)
->>>>>>> Stashed changes
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
@@ -2633,6 +2634,7 @@ class TreeView:
 										Subwhere_string += " AND APP_ID ='{}'".format(str(apps))                                        
 									else:
 										#Trace.Write('Subwhere_string-----'+str(NodeText))
+										Product.SetGlobal("ParentNodeLevel",NodeText)
 										#A055S000P01-9646 CODE STARTS..
 										Subwhere_string += " AND SERVICE_TYPE = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID != 'Z0046' AND SERVICE_ID != 'Z0101'".format(NodeText,quote_revision_record_id)
 										#A055S000P01-9646 CODE ENDS..
