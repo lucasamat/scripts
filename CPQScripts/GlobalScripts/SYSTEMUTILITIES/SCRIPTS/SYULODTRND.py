@@ -2349,19 +2349,19 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 		Ad_on_prd = ""
 	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
 		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ={} AND QTEREV_RECORD_ID = {}".format(quoteid,quote_revision_record_id))
-    	spare_parts_visibility = 'False'
+		spare_parts_visibility = 'False'
 		if entitlement_obj:
 			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-    		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-    		pattern_id = re.compile(r'<ENTITLEMENT_NAME>CONSUMABLE_92</ENTITLEMENT_NAME>')
-    		pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:INCLUDED|SOME INCLUSIONS)</ENTITLEMENT_DISPLAY_VALUE>')
-    		for m in re.finditer(pattern_tag, entitlement_xml):
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_NAME>CONSUMABLE_92</ENTITLEMENT_NAME>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:INCLUDED|SOME INCLUSIONS)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, entitlement_xml):
 				sub_string = m.group(1)
-        		get_ent_id =re.findall(pattern_id,sub_string)
-        		get_ent_name=re.findall(pattern_name,sub_string)
-        		if get_ent_id and get_ent_name:
+				get_ent_id =re.findall(pattern_id,sub_string)
+				get_ent_name=re.findall(pattern_name,sub_string)
+				if get_ent_id and get_ent_name:
 					spare_parts_visibility = 'True'
-            		break
+					break
 	else:
 		spare_parts_visibility = ""				
 	
