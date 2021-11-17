@@ -705,7 +705,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 
 			offering_table_info = Sql.GetTable(table_name)
 			existing_offering_ids = []
-			Trace.Write('@@Values-->'+str(values))
+			Trace.Write('@@Values-->'+str(list(values)))
 			for row_detail in self._add_record(
 				master_object_name=master_object_name,
 				columns=columns,
