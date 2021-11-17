@@ -280,6 +280,7 @@ class ContractQuoteCrudOpertion:
 			
 			if remaining_months < 0:
 				divide_by = 12 + remaining_months
+			get_val =12
 		elif str(get_ent_val_type).upper() == "QUARTERLY":
 			year = int(amount_column.split('_')[-1])
 			remaining_months = (total_months) - (year*12)		
@@ -287,6 +288,7 @@ class ContractQuoteCrudOpertion:
 			
 			if remaining_months < 0:
 				divide_by = 12 + remaining_months
+			get_val = 4
 		else:
 			year = int(amount_column.split('_')[-1])
 			remaining_months = (total_months + 1) - (year*12)		
@@ -294,7 +296,8 @@ class ContractQuoteCrudOpertion:
 			
 			if remaining_months < 0:
 				divide_by = 12 + remaining_months
-		amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
+			get_val = 1
+		#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 		Trace.Write(str(amount_column)+'---272-----272-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
 		Sql.RunQuery("""INSERT SAQIBP (
@@ -320,7 +323,7 @@ class ContractQuoteCrudOpertion:
 						SAQICO.SALESORG_ID,
 						SAQICO.SALESORG_NAME,
 						SAQICO.SALESORG_RECORD_ID,
-						ISNULL({AmountColumn}, 0) / 12 as BILLING_AMOUNT,	
+						ISNULL(SAQICO.TOTAL_AMOUNT_INGL_CURR, 0) / {get_val}} as BILLING_AMOUNT,	
 						{BillingDate} as BILLING_DATE,				
 						'MONTHLY' as BILLING_INTERVAL,
 						0 as BILLING_YEAR,
@@ -334,7 +337,7 @@ class ContractQuoteCrudOpertion:
 						SAQICO.SERVICE_DESCRIPTION,
 						SAQICO.SERVICE_ID,
 						SAQICO.SERVICE_RECORD_ID,     
-						(ISNULL(SAQICO.{AmountColumn}, 0) / 12) * {DivideBy} AS ANNUAL_BILLING_AMOUNT,
+						(ISNULL(SAQICO.TOTAL_AMOUNT_INGL_CURR, 0) / {get_val}) * {DivideBy} AS ANNUAL_BILLING_AMOUNT,
 						SAQICO.GREENBOOK,
 						SAQICO.GREENBOOK_RECORD_ID,
 						'' AS BILLING_CURRENCY_RECORD_ID,
@@ -349,7 +352,7 @@ class ContractQuoteCrudOpertion:
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
-						AmountColumn=amount_column,
+						get_val=get_val,
 						DivideBy=divide_by,
 						service_id = service_id))		
 		return True
