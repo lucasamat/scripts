@@ -604,7 +604,7 @@ class TreeView:
 									self.getSubtabRelatedDetails(subTabName, type, ObjRecId, RelatedId, RelatedName)
 								)
 						# Billing Matrix Dynamic Tabs - Start
-						if ProductDict.get("objname") == 'SAQTBP' and ProductDict.get("text") == 'Billing':
+						if ProductDict.get("objname") == 'SAQRIB' and ProductDict.get("text") == 'Billing':
 							item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' GROUP BY EQUIPMENT_ID,SERVICE_ID".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 							if item_billing_plan_obj is not None:
 								quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
@@ -2034,7 +2034,7 @@ class TreeView:
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-								elif str(ObjName).strip() == 'SAQTBP' and str(NodeName) == 'PRDOFR_ID':
+								elif str(ObjName).strip() == 'SAQRIB' and str(NodeName) == 'PRDOFR_ID':
 									Trace.Write("Billing___conc"+str(where_string))
 									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
 									if get_service_name_bill:

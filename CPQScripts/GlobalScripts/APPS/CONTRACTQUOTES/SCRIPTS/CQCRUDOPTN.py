@@ -4588,7 +4588,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		#Trace.Write('4739---------------')
-		billing_plan_obj = Sql.GetList("SELECT * FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		billing_plan_obj = Sql.GetList("SELECT * FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		get_ent_val = ''
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
@@ -4713,7 +4713,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 								self._delete_quote_line_items(cart_obj.CART_ID, cart_obj.USERID)
 								self._insert_quote_line_items(cart_obj.CART_ID, cart_obj.USERID) 
 					if not self.trigger_from == 'IntegrationScript':
-						Sql.RunQuery("""UPDATE SAQTBP
+						Sql.RunQuery("""UPDATE SAQRIB
 											SET 
 											IS_CHANGED = 0                                
 											WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'
@@ -4751,7 +4751,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 
 	def _insert_billing_matrix(self):
 		'''Sql.RunQuery("""
-				INSERT SAQTBP (
+				INSERT SAQRIB (
 				QUOTE_BILLING_PLAN_RECORD_ID,
 				BILLING_END_DATE,
 				BILLING_DAY,
@@ -4783,14 +4783,14 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 									JQ.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND JQ.ENTITLEMENT_NAME IN ('AGS_BIL_BIL_TYP') 
 								AND JQ.ENTITLEMENT_DISPLAY_VALUE = 'Variable Billing'
 				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}'
-				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')											
+				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}')											
 		""".format(                        
 			QuoteRecordId= self.contract_quote_record_id,   
 			UserId=self.user_id,
 			UserName=self.user_name
 		))'''
 		Sql.RunQuery("""
-				INSERT SAQTBP (
+				INSERT SAQRIB (
 				QUOTE_BILLING_PLAN_RECORD_ID,
 				BILLING_END_DATE,
 				BILLING_DAY,
@@ -4833,7 +4833,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 				
 				WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQTMT.QTEREV_RECORD_ID = '{RevisionRecordId}'
 				AND SAQTSV.SERVICE_ID NOT IN('Z0101','A6200')
-				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')											
+				AND NOT EXISTS (SELECT CpqTableEntryId FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}')											
 		""".format(                        
 			QuoteRecordId= self.contract_quote_record_id,
 			RevisionRecordId=self.quote_revision_record_id,

@@ -97,7 +97,7 @@ def generate_year_based_billing_matrix(billing_plan_data=None):
 		subtab_obj = Sql.GetFirst('''
 					SELECT SYSTAB.* FROM SYSTAB (NOLOCK)
 					JOIN SYOBJH (NOLOCK) SYOBJH.RECORD_ID = SYSTAB.OBJECT_RECORD_ID
-					WHERE SYSTAB.SUBTAB_NAME = 'Detail' AND SYOBJH.OBJECT_NAME = 'SAQTBP'
+					WHERE SYSTAB.SUBTAB_NAME = 'Detail' AND SYOBJH.OBJECT_NAME = 'SAQRIB'
 					''')
 		if subtab_obj:
 			subtab_details.update({
@@ -441,7 +441,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 			
 			if str(TableName) != "USERS":
 				old_billing_matrix_obj = None
-				if TableName == 'SAQTBP':
+				if TableName == 'SAQRIB':
 					billenddate = RECORD.get('BILLING_END_DATE')
 					billstartdt = RECORD.get('BILLING_START_DATE')
 					billingdateinterval = RECORD.get('BILLING_DAY')
@@ -453,7 +453,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					conenddt = datetime.datetime.strptime(conend, '%m/%d/%Y ')
 					old_billing_matrix_obj = Sql.GetFirst("""SELECT BILLING_START_DATE, 
 									BILLING_END_DATE, QUOTE_BILLING_PLAN_RECORD_ID, BILLING_DAY
-									FROM SAQTBP (NOLOCK) 
+									FROM SAQRIB (NOLOCK) 
 									WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 				if billstart >= constartdt and billstart < conenddt :
 					if billend > billstart:
@@ -1417,14 +1417,14 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 
 
-				if TableName == 'SAQTBP' and old_billing_matrix_obj:                    
+				if TableName == 'SAQRIB' and old_billing_matrix_obj:                    
 					billing_matrix_obj = Sql.GetFirst("""SELECT BILLING_START_DATE, 
 									BILLING_END_DATE, QUOTE_BILLING_PLAN_RECORD_ID, BILLING_DAY
-									FROM SAQTBP (NOLOCK)
+									FROM SAQRIB (NOLOCK)
 									WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' """.format(Product.GetGlobal("contract_quote_record_id"), quote_revision_record_id ))
 					if billing_matrix_obj:
 						if billing_matrix_obj.BILLING_START_DATE != old_billing_matrix_obj.BILLING_START_DATE or billing_matrix_obj.BILLING_END_DATE != old_billing_matrix_obj.BILLING_END_DATE or billing_matrix_obj.BILLING_DAY != old_billing_matrix_obj.BILLING_DAY:                        						
-							billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1 WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(billing_matrix_obj.QUOTE_BILLING_PLAN_RECORD_ID)
+							billing_query = "UPDATE SAQRIB SET IS_CHANGED = 1 WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(billing_matrix_obj.QUOTE_BILLING_PLAN_RECORD_ID)
 							Sql.RunQuery(billing_query)
 					#generate_year_based_billing_matrix(newdict)
 				if TableName == 'SAQTIP':
@@ -1460,7 +1460,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 					getdate = Sql.GetFirst("""SELECT CONTRACT_VALID_FROM, CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'""".format(Quote.GetGlobal("contract_quote_record_id"), quote_revision_record_id))
 					if getdate:
 						Log.Info("SYSECTSAVE - SAQSGB")
-						billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
+						billing_query = "UPDATE SAQRIB SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}'  WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
 						Sql.RunQuery(billing_query)
 
 						quoteinfo_query = "UPDATE SAQTMT SET CONTRACT_VALID_FROM = '{}', CONTRACT_VALID_TO = '{}'  WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}'".format(getdate.CONTRACT_VALID_FROM, getdate.CONTRACT_VALID_TO, Product.GetGlobal('contract_quote_record_id'),quote_revision_record_id)
@@ -1738,7 +1738,7 @@ if (
 	ObjectName = "SYPRTB"
 	TableId = "SYOBJR-93159"
 if TreeParam == 'Billing Matrix':    
-	ObjectName = "SAQTBP"
+	ObjectName = "SAQRIB"
 elif TreeParentParam == "Questions" and TopSuperParentParam == "Sections":
 	ObjectName = "SYPRQN"
 	TableId = "SYOBJR-93188"

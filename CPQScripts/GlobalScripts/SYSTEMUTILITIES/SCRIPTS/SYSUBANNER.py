@@ -177,7 +177,7 @@ def Related_Sub_Banner(
                 else:
                     Trace.Write('173--'+str(subTabName))
                     try:
-                        if subTabName.startswith("Year") and str(ObjName) == "SAQTBP":
+                        if subTabName.startswith("Year") and str(ObjName) == "SAQRIB":
                             Trace.Write('176---------------')
                             add_button = '<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button>'
                     except:
@@ -188,7 +188,7 @@ def Related_Sub_Banner(
             add_button = ""
         Trace.Write("add_button_ Trace ------- "+str(add_button))
         try:
-            if subTabName.startswith("Year") and str(ObjName) == "SAQTBP":
+            if subTabName.startswith("Year") and str(ObjName) == "SAQRIB":
                 Trace.Write('176---------------')
                 sec_rel_sub_bnr +=('<button id="billingmatrix_save" onclick="showSBillMatBulksave(this)" style= "display: none;" class="btnconfig" >SAVE</button><button id="billingmatrix_cancel" onclick="showSBillMatBulkcancel(this)"  style= "display: none;" class="btnconfig" >CANCEL</button><button id="generatingbillingmatrix" onclick="generatingbillingmatrix(this)" class="btnconfig">GENERATE BILLING MATRIX</button>')
         except:
@@ -658,7 +658,7 @@ def Related_Sub_Banner(
                 PrimaryLable = ""
                 PrimaryValue = "" 
             elif TreeParam == "Billing":
-                ObjName = "SAQTBP"
+                ObjName = "SAQRIB"
                 PrimaryLable = str(TreeParam)
                 PrimaryValue = "All"   
             elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
@@ -863,9 +863,9 @@ def Related_Sub_Banner(
                 # if str(ObjName)  == "SYPROH" and str(TreeParentParam) == "Object Level Permissions": 					
                     #str(columns[0]) = str(column[0]).replace("OBJECT_RECORD_ID", "PROFILE_OBJECT_RECORD_ID")
                 
-                if str(ObjName) == "SAQTBP":
+                if str(ObjName) == "SAQRIB":
                     contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-                    getbillid = Sql.GetFirst("select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP(nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                    getbillid = Sql.GetFirst("select QUOTE_BILLING_PLAN_RECORD_ID from SAQRIB(nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if getbillid:
                         CurrentRecordId = getbillid.QUOTE_BILLING_PLAN_RECORD_ID
                 
@@ -1023,7 +1023,7 @@ def Related_Sub_Banner(
                         PrimaryValue = CPQID.KeyCPQId.GetCPQId(str(ObjName), str(ListVal[0]))
                         
                 try:					
-                    if ObjName == "SAQTBP":
+                    if ObjName == "SAQRIB":
                         SecondLable = ListKey[1]
                         SecondValue = str(ListVal[1].split(" ")[0])
                     else:
@@ -1061,7 +1061,7 @@ def Related_Sub_Banner(
                         ##changed if to elif A055S000P01-3182
                         if (ObjName == "SAQFGB" or ObjName == "SAQFEQ"):
                             Trace.Write("ThirdLable objectName"+str(ThirdLable))		
-                        elif ObjName == "SAQTBP":
+                        elif ObjName == "SAQRIB":
                             ThirdLable = ListKey[2]
                             ThirdValue = str(ListVal[2].split(" ")[0])
                         elif ObjName == "SAQTIP":
@@ -2336,7 +2336,7 @@ def Related_Sub_Banner(
                 elif CurrentRecordId == "SYOBJR-95825":					
                     for btn in multi_buttons:
                         sec_rel_sub_bnr += (btn)
-                elif TreeParam == "Billing" and ObjName == "SAQTBP":
+                elif TreeParam == "Billing" and ObjName == "SAQRIB":
                     Trace.Write("Billing")
                     for btn in multi_buttons:
                         sec_rel_sub_bnr += (btn)		
@@ -2771,7 +2771,7 @@ def Related_Sub_Banner(
     if subTabName == 'Involved Parties' and TreeParam == "Quote Information":
         Trace.Write("Involved Parties button")
         sec_rel_sub_bnr += (add_button)
-    if TreeParam == "Billing" and subTabName =="Details" and ObjName == "SAQTBP":
+    if TreeParam == "Billing" and subTabName =="Details" and ObjName == "SAQRIB":
     # 	Trace.Write("button")
         if quote_status.QUOTE_STATUS != 'APPROVED':
             sec_rel_sub_bnr += (add_button)	
@@ -3000,7 +3000,7 @@ if CurrentTab == 'Quotes':
         getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()
     except:
         getQuotetype = ""
-    # if str(ObjName) == "SAQTBP":
+    # if str(ObjName) == "SAQRIB":
     # 	CurrentRecordId = "8A70EAA9-094B-4D42-AB91-111DCE26DD52"
     # 	crnt_Qry = Sql.GetFirst("SELECT SAPCPQ_ATTRIBUTE_NAME FROM SYOBJR (NOLOCK) WHERE RECORD_ID = '" + str(CurrentRecordId) + "'")
     if str(subTabName) == "Assembly Details":
@@ -3016,7 +3016,7 @@ if CurrentTab == 'Quotes':
     if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")):
         ObjectName = "SAQSRA"	    
     # if crnt_Qry is not None:
-    # 	if str(ObjName) != "SAQTBP":
+    # 	if str(ObjName) != "SAQRIB":
     # 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
 try:
     quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")

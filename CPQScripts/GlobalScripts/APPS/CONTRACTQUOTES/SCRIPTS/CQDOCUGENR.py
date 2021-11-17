@@ -266,7 +266,7 @@ def englishdoc():
 	try:
 		Payment_Term = SqlHelper.GetFirst(" SELECT PAYMENTTERM_NAME FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('PaymentTermName').Content = str(Payment_Term.PAYMENTTERM_NAME)
-		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass
@@ -657,7 +657,7 @@ def chinesedoc():
 		pass
 	
 	try:
-		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"'AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"'AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass
@@ -811,7 +811,7 @@ def fpmdoc():
 	Sql.RunQuery(qtqdoc)
 	
 	try:
-		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+		PO_n = SqlHelper.GetFirst(" SELECT PO_NUMBER FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 		Quote.GetCustomField('CustomerPO').Content = str(PO_n.PO_NUMBER)
 	except:
 		pass	

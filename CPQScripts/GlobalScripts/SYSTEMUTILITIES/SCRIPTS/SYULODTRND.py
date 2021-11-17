@@ -96,7 +96,7 @@ def CommonTreeViewHTMLDetail(
 		queryStr = " AND SYSECT.RECORD_ID IN " + str(sectionId)		
 	# Billing Matrix Details Load - Start
 	quote_record_id = None
-	if ObjectName == 'SAQTBP':
+	if ObjectName == 'SAQRIB':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
 	# Billing Matrix Details Load - End
 	
@@ -135,10 +135,10 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
 			canedit = "TRUE"
 	if Product.GetGlobal("TreeParentLevel0") == "Billing":
-		ObjectName = "SAQTBP"
+		ObjectName = "SAQRIB"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
 		if str(CurrentTab == "Object"):
@@ -247,7 +247,7 @@ def CommonTreeViewHTMLDetail(
 				lookup_ObjName = lookupval[1]
 
 	
-	if ObjectName != 'SAQTBP':
+	if ObjectName != 'SAQRIB':
 		sec_str += ' <div class="col-md-12"   id="alert_msg" style="display: none;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  </label></div></div></div>'
 
 	if str(ObjectName) == "SAQTRV" or  str(ObjectName) == "ACAPCH":
@@ -659,9 +659,9 @@ def CommonTreeViewHTMLDetail(
 				RECORD_ID = str(users_obj.ID)			
 		
 		# Billing Matrix Details Load - Start
-		if ObjectName == 'SAQTBP':
+		if ObjectName == 'SAQRIB':
 			billing_plan_obj = SqlHelper.GetFirst(
-					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id,quote_revision_record_id)
+					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQRIB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id,quote_revision_record_id)
 					
 				)
 			if billing_plan_obj:
@@ -893,7 +893,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ "'"
 					+ ""
 				)
-			elif ObjectName == "SAQTBP" and TreeParentParam == "Billing":
+			elif ObjectName == "SAQRIB" and TreeParentParam == "Billing":
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--867-----TreeParam-----"+str(TreeParam))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -1125,7 +1125,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					]
 					if current_obj_api_name in noninlist:						
 						add_style = "display: none;"	
-				if ObjectName == "SAQTBP" and TreeParam == "Billing":
+				if ObjectName == "SAQRIB" and TreeParam == "Billing":
 					noninlist = [						
 						"SALESORG_ID",
 						"SALESORG_NAME"					
@@ -1250,7 +1250,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							Trace.Write('check error')
 					if current_obj_api_name == "approve_condition_id" and ObjectName == "approve_condition":
 						current_obj_value = current_obj_value
-					elif ObjectName == 'SAQTBP' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
+					elif ObjectName == 'SAQRIB' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
 						billing_plan_obj = Sql.GetFirst(
 									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(
 										ObjectName=ObjectName, QuoteRecordId=quote_record_id,revision_rec_id = quote_revision_record_id)
@@ -2310,7 +2310,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 			SEC_t = Sql.GetFirst("SELECT SYSECT.RECORD_ID FROM SYSECT WHERE  PRIMARY_OBJECT_NAME = '"+ str(ObjectName)+ "' AND  SECTION_NAME = 'BASIC INFORMATION' ")
 			api_name = SEC_t.RECORD_ID
 	
-	if not RECORD_ID and ObjectName == 'SAQTBP':
+	if not RECORD_ID and ObjectName == 'SAQRIB':
 		#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 		Trace.Write('receiving---1993-------')
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
@@ -2319,9 +2319,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		#else:
 			#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
-	if RECORD_ID and ObjectName == 'SAQTBP':
+	if RECORD_ID and ObjectName == 'SAQRIB':
 		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
-						FROM SAQTBP (NOLOCK) 
+						FROM SAQRIB (NOLOCK) 
 						WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
 		# if date_diff_obj:
 		# 	if date_diff_obj.IS_CHANGED:

@@ -1023,13 +1023,13 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 						#			)
 
 						# Item Covered Object Extendted Price Update - End			
-						date_diff_obj = Sql.GetFirst("""SELECT DATEDIFF(day, SAQTMT.CONTRACT_VALID_FROM, SAQTBP.BILLING_START_DATE) as START_DATE_DIFF, 
-										DATEDIFF(day, SAQTMT.CONTRACT_VALID_TO, SAQTBP.BILLING_END_DATE) as END_DATE_DIFF, QUOTE_BILLING_PLAN_RECORD_ID
-										FROM SAQTBP (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTBP.QUOTE_RECORD_ID 
-										WHERE SAQTBP.QUOTE_RECORD_ID = '{}' AND SAQTBP.QTEREV_RECORD_ID = '{}'""".format(Rec_Id_Value,quote_revision_record_id))
+						date_diff_obj = Sql.GetFirst("""SELECT DATEDIFF(day, SAQTMT.CONTRACT_VALID_FROM, SAQRIB.BILLING_START_DATE) as START_DATE_DIFF, 
+										DATEDIFF(day, SAQTMT.CONTRACT_VALID_TO, SAQRIB.BILLING_END_DATE) as END_DATE_DIFF, QUOTE_BILLING_PLAN_RECORD_ID
+										FROM SAQRIB (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQRIB.QUOTE_RECORD_ID 
+										WHERE SAQRIB.QUOTE_RECORD_ID = '{}' AND SAQRIB.QTEREV_RECORD_ID = '{}'""".format(Rec_Id_Value,quote_revision_record_id))
 						if date_diff_obj:
 							if date_diff_obj.START_DATE_DIFF or date_diff_obj.END_DATE_DIFF:						
-								billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}' WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(tablerow.get('CONTRACT_VALID_FROM'), tablerow.get('CONTRACT_VALID_TO'), date_diff_obj.QUOTE_BILLING_PLAN_RECORD_ID)
+								billing_query = "UPDATE SAQRIB SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}' WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(tablerow.get('CONTRACT_VALID_FROM'), tablerow.get('CONTRACT_VALID_TO'), date_diff_obj.QUOTE_BILLING_PLAN_RECORD_ID)
 								Sql.RunQuery(billing_query)
 					# Billing Matrix Notification - End
 					
