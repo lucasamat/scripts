@@ -135,7 +135,11 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
+<<<<<<< Updated upstream
 	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
+=======
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
+>>>>>>> Stashed changes
 			canedit = "TRUE"
 	if Product.GetGlobal("TreeParentLevel0") == "Billing":
 		ObjectName = "SAQRIB"
@@ -631,8 +635,8 @@ def CommonTreeViewHTMLDetail(
 				API_NAMES = str(API_NAMES).replace("DEFAULT", "[DEFAULT]")	
 		if "PRIMARY" in str(API_NAMES):
 			API_NAMES = str(API_NAMES).replace("PRIMARY", "[PRIMARY]")
-		if str(ObjectName) == "SAQITM":
-			autoNumber = "LINE_ITEM_ID"
+		# if str(ObjectName) == "SAQITM":
+		# 	autoNumber = "LINE_ITEM_ID"
 		if str(ObjectName) == "SYPROH":
 			if "SYPRO" in RECORD_ID:
 				syprohval = SqlHelper.GetFirst(
@@ -840,26 +844,26 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						+ str(RECORD_ID)
 						+ "' AND RELOCATION_TYPE LIKE '%RECEIVING%'"
 					)
-			elif ObjectName == "SAQITM":
-				Trace.Write("test74_J "+str(RECORD_ID))
-				Trace.Write("Treeparam"+str(TreeParam))
-				#RECORD_ID = RECORD_ID.split("|")[0]
-				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
-				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
-				RECORD_ID = TreeParam.split("-")[0].strip()
-				script = (
-					"SELECT "
-					+ str(API_NAMES)
-					+ " FROM "
-					+ str(ObjectName)
-					+ " (NOLOCK) WHERE "
-					+ str(autoNumber)
-					+ " = '"
-					+ str(RECORD_ID) 
-					+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
-					+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
-				)
+			# elif ObjectName == "SAQITM":
+			# 	Trace.Write("test74_J "+str(RECORD_ID))
+			# 	Trace.Write("Treeparam"+str(TreeParam))
+			# 	#RECORD_ID = RECORD_ID.split("|")[0]
+			# 	Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
+			# 	quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			# 	Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
+			# 	RECORD_ID = TreeParam.split("-")[0].strip()
+			# 	script = (
+			# 		"SELECT "
+			# 		+ str(API_NAMES)
+			# 		+ " FROM "
+			# 		+ str(ObjectName)
+			# 		+ " (NOLOCK) WHERE "
+			# 		+ str(autoNumber)
+			# 		+ " = '"
+			# 		+ str(RECORD_ID) 
+			# 		+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
+			# 		+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+			# 	)
 			elif ObjectName == "SAQICO":
 				RECORD_ID = primary_value
 				Trace.Write("line_item--quote_record_id--00--------"+str(RECORD_ID))
@@ -1188,10 +1192,10 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					notinlist = ["QUOTE_ITEM_GREENBOOK_RECORD_ID"]
 					if current_obj_api_name in notinlist:
 						add_style = "display: none;"
-				elif ObjectName == "SAQITM":
-					notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
-					if current_obj_api_name in notinlist:
-						add_style = "display: none;"
+				# elif ObjectName == "SAQITM":
+				# 	notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
+				# 	if current_obj_api_name in notinlist:
+				# 		add_style = "display: none;"
 				Quote_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				if Quote_Type is not None:
 					if Quote_Type.QUOTE_TYPE == "ZWK1 - SPARES":
@@ -1821,88 +1825,88 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					Trace.Write("@1737 inside discount")			
 					precentage_columns = ['BD_DISCOUNT']
 					precent_column = ['TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','GREATER_THAN_QTLY_HRS','LESS_THAN_QTLY_HRS','LABOR_HOURS','CHAMBER_PM_HRS', 'MONTHLY_PM_HRS']					
-					if current_obj_api_name in precentage_columns and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM"):						
-						string_val = str(current_obj_value)
-						#string_val = string_val.replace('0','')
-						string_val1 = string_val.split('.')
-						str_val = str(string_val1[0])
-						#str_val1 = str_val[0]+str_val[1]
-						current_obj_value = str_val
-						if current_obj_value != "":							
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value +" %"
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)
-						else:
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)	
-					elif current_obj_api_name in precent_column and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM") and str(current_obj_value) !='':					
-						string_val = str(current_obj_value)
-						#string_val = string_val.replace('0','')
-						string_val1 = string_val.split('.')
-						#str_val = str(string_val1[1])
-						str_vaal = str(string_val1[1])
-						str_val2 = str(str_vaal[0]+str_vaal[1])
-						strr = str(string_val1[0] +"."+ str_val2)
-						current_obj_value = strr
-						if current_obj_value != "":
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)
-						else:
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)								
-					else:
-						Trace.Write("else 1812"+str(current_obj_api_name))
-						if str(ObjectName) == "SAQIGB" and current_obj_value != "":
-							decimal_val = 2
-							formatting_string = "{0:." + str(decimal_val) + "f}"
-							current_obj_value = formatting_string.format(float(current_obj_value))
-													
-						sec_str += (
-							'<td><input id="'
-							+ str(current_obj_api_name)
-							+ '" type="number" value="'
-							+ current_obj_value
-							+ '" class="form-control related_popup_css" style="'
-							+ str(add_style)
-							+ '" '
-							+ disable
-							+ "></td>"
-						)
+					# if current_obj_api_name in precentage_columns and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM"):						
+					# 	string_val = str(current_obj_value)
+					# 	#string_val = string_val.replace('0','')
+					# 	string_val1 = string_val.split('.')
+					# 	str_val = str(string_val1[0])
+					# 	#str_val1 = str_val[0]+str_val[1]
+					# 	current_obj_value = str_val
+					# 	if current_obj_value != "":							
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value +" %"
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)
+					# 	else:
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)	
+					# elif current_obj_api_name in precent_column and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM") and str(current_obj_value) !='':					
+					# 	string_val = str(current_obj_value)
+					# 	#string_val = string_val.replace('0','')
+					# 	string_val1 = string_val.split('.')
+					# 	#str_val = str(string_val1[1])
+					# 	str_vaal = str(string_val1[1])
+					# 	str_val2 = str(str_vaal[0]+str_vaal[1])
+					# 	strr = str(string_val1[0] +"."+ str_val2)
+					# 	current_obj_value = strr
+					# 	if current_obj_value != "":
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)
+					# 	else:
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)								
+					# else:
+					Trace.Write("else 1812"+str(current_obj_api_name))
+					if str(ObjectName) == "SAQIGB" and current_obj_value != "":
+						decimal_val = 2
+						formatting_string = "{0:." + str(decimal_val) + "f}"
+						current_obj_value = formatting_string.format(float(current_obj_value))
+												
+					sec_str += (
+						'<td><input id="'
+						+ str(current_obj_api_name)
+						+ '" type="number" value="'
+						+ current_obj_value
+						+ '" class="form-control related_popup_css" style="'
+						+ str(add_style)
+						+ '" '
+						+ disable
+						+ "></td>"
+					)
 						
 							
 				elif data_type == "FORMULA" and formula_data_type == "NUMBER":				

@@ -9474,19 +9474,19 @@ def ServiceFabDetails():
 	
 	return fab_rec_id
 
-def BundleCalc(REC_ID):
-	getservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM WHERE QUOTE_ITEM_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId('SAQITM', str(REC_ID))))
-	SERVICE_ID = ""
-	SERVICE_ID = getservice.SERVICE_ID
-	try:
-		query = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' and QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),str(SERVICE_ID.split("-")[0]).strip(),Quote.GetGlobal("quote_revision_record_id")))
-	except:
-		Trace.Write("check10")   
-		query = "" 
-	if query.CpqTableEntryId is not None:
-		return "YES"
-	else:
-		return "NO"
+# def BundleCalc(REC_ID):
+# 	getservice = Sql.GetFirst("SELECT SERVICE_ID FROM SAQITM WHERE QUOTE_ITEM_RECORD_ID = '{}'".format(CPQID.KeyCPQId.GetKEYId('SAQITM', str(REC_ID))))
+# 	SERVICE_ID = ""
+# 	SERVICE_ID = getservice.SERVICE_ID
+# 	try:
+# 		query = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' and QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),str(SERVICE_ID.split("-")[0]).strip(),Quote.GetGlobal("quote_revision_record_id")))
+# 	except:
+# 		Trace.Write("check10")   
+# 		query = "" 
+# 	if query.CpqTableEntryId is not None:
+# 		return "YES"
+# 	else:
+# 		return "NO"
 
 
 def GetCommonParentContract(PerPage, PageInform, A_Keys, A_Values):    
@@ -10751,6 +10751,6 @@ elif ACTION == "BREADCRUMB":
 		ApiResponse = ApiResponseFactory.JsonResponse(UpdateBreadcrumb())
 elif ACTION == 'SERVICE FAB DETAILS':
 	ApiResponse = ApiResponseFactory.JsonResponse(ServiceFabDetails())
-elif ACTION == 'BUNDLE CALC':
-	REC_ID = Param.REC_ID
-	ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
+# elif ACTION == 'BUNDLE CALC':
+# 	REC_ID = Param.REC_ID
+# 	ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))

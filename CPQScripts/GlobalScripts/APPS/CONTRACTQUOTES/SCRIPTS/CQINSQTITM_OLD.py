@@ -74,7 +74,7 @@ class ContractQuoteItem:
 		'''
 		if not quote_line_item_obj:
 			self._native_quote_edit()
-			Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+			# Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			for item in Quote.MainItems:
 				if self.service_id == item.PartNumber:
 					item.Delete()
@@ -82,131 +82,131 @@ class ContractQuoteItem:
 			self._native_quote_item_update()
 		return True
 
-	def _quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
+	# def _quote_item_insert_process(self, where_string='', join_string='', outer_where_string='', max_quote_item_count=0):
 
-		#Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
-		# Insert SAQITM - Start
-		Sql.RunQuery("""
-					INSERT SAQITM (
-					QUOTE_ITEM_RECORD_ID,
-					QUOTE_RECORD_ID,
-					QUOTE_ID,
-					QUOTE_NAME,
-					QTEREV_ID,
-					QTEREV_RECORD_ID,
-					CPQTABLEENTRYADDEDBY,
-					CPQTABLEENTRYDATEADDED,
-					CpqTableEntryModifiedBy,
-					CpqTableEntryDateModified,
-					SERVICE_DESCRIPTION,
-					SERVICE_ID,
-					SERVICE_RECORD_ID,
-					SALESORG_ID,
-					SALESORG_NAME,
-					SALESORG_RECORD_ID,
-					LINE_ITEM_ID,
-					OBJECT_QUANTITY,
-					QUANTITY,
-					CURRENCY,
-					CURRENCY_RECORD_ID,
-					ITEM_TYPE,
-					ITEM_STATUS,
-					NET_VALUE,
-					UOM_ID, 
-					UOM_RECORD_ID,
-					PLANT_RECORD_ID,
-					PLANT_ID,
-					PRICING_STATUS,
-					LINE_ITEM_FROM_DATE,
-					LINE_ITEM_TO_DATE,
-					CONTRACT_VALID_FROM,
-					CONTRACT_VALID_TO,
-					SRVTAXCAT_RECORD_ID,
-					SRVTAXCAT_DESCRIPTION,
-					SRVTAXCAT_ID,
-					SRVTAXCLA_DESCRIPTION,
-					SRVTAXCLA_ID,
-					SRVTAXCLA_RECORD_ID,
-					DOC_CURRENCY,
-					DOCCURR_RECORD_ID,
-					QUOTE_CURRENCY,
-					QUOTE_CURRENCY_RECORD_ID,
-					GLOBAL_CURRENCY,
-					GLOBAL_CURRENCY_RECORD_ID,
-					YEAR_OVER_YEAR) 
-					SELECT 
-					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_RECORD_ID,
-					SAQSCE.QUOTE_RECORD_ID,
-					SAQSCE.QUOTE_ID,
-					SAQTMT.QUOTE_NAME,
-					SAQTMT.QTEREV_ID,
-					SAQTMT.QTEREV_RECORD_ID,
-					'{UserName}' AS CPQTABLEENTRYADDEDBY,
-					GETDATE() as CPQTABLEENTRYDATEADDED,
-					{UserId} as CpqTableEntryModifiedBy,
-					GETDATE() as CpqTableEntryDateModified,
-					SAQSCE.SERVICE_DESCRIPTION,
-					CONCAT(SAQSCE.SERVICE_ID, '- BASE') as SERVICE_ID,
-					SAQSCE.SERVICE_RECORD_ID,
-					SAQSCE.SALESORG_ID,
-					SAQSCE.SALESORG_NAME,
-					SAQSCE.SALESORG_RECORD_ID,
-					IQ.LINE_ITEM_ID as LINE_ITEM_ID,
-					0 as OBJECT_QUANTITY,
-					1 as QUANTITY,
-					SAQTMT.QUOTE_CURRENCY as CURRENCY,
-					SAQTMT.QUOTE_CURRENCY_RECORD_ID as CURRENCY_RECORD_ID,
-					'ZCB1' as ITEM_TYPE,
-					'Active' as ITEM_STATUS,
-					0 as NET_VALUE,
-					MAMTRL.UNIT_OF_MEASURE, 
-					MAMTRL.UOM_RECORD_ID,
-					MAMSOP.PLANT_RECORD_ID,
-					MAMSOP.PLANT_ID,
-					null AS PRICING_STATUS,
-					SAQTMT.CONTRACT_VALID_FROM as LINE_ITEM_FROM_DATE,
-					SAQTMT.CONTRACT_VALID_TO as LINE_ITEM_TO_DATE,
-					SAQTMT.CONTRACT_VALID_FROM,
-					SAQTMT.CONTRACT_VALID_TO,
-					MAMSCT.TAXCATEGORY_RECORD_ID,
-					MAMSCT.TAXCATEGORY_DESCRIPTION, 
-					MAMSCT.TAXCATEGORY_ID, 
-					MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
-					MAMSCT.TAXCLASSIFICATION_ID,
-					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
-					SAQTRV.DOC_CURRENCY,
-					SAQTRV.DOCCURR_RECORD_ID,
-					'' as QUOTE_CURRENCY,
-					'' as QUOTE_CURRENCY_RECORD_ID,
-					SAQTRV.GLOBAL_CURRENCY,
-					SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
-					PRCFVA.FACTOR_PCTVAR as YEAR_OVER_YEAR
-					FROM SAQSCE (NOLOCK)    
-					JOIN (
-						SELECT SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSCE.ENTITLEMENT_GROUP_ID) + {ExistingCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSCE (NOLOCK) 
-						WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND ISNULL(CONFIGURATION_STATUS, '') = 'COMPLETE' {WhereString}
-						GROUP BY SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID
-					) AS IQ ON IQ.CpqTableEntryId = SAQSCE.CpqTableEntryId
-					JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID          
-					JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID 
-					JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = SAQSCE.SALESORG_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
-					LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
-					LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
-					LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'		
-					{JoinString}			
-					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} {OuterWhereString}
-			""".format(
-				QuoteRecordId=self.contract_quote_record_id,
-				RevisionRecordId=self.contract_quote_revision_record_id,
-				UserId=self.user_id,
-				UserName=self.user_name,
-				WhereString=where_string,
-				ExistingCount=max_quote_item_count,
-				JoinString=join_string,
-				OuterWhereString=outer_where_string
-			))
-		# Insert SAQITM - End
-		return True
+	# 	#Log.Info(str(self.contract_quote_id)+" ==== "+str(self.service_id)+" <== _quote_item_insert_process ==> "+str(max_quote_item_count))
+	# 	# Insert SAQITM - Start
+	# 	Sql.RunQuery("""
+	# 				INSERT SAQITM (
+	# 				QUOTE_ITEM_RECORD_ID,
+	# 				QUOTE_RECORD_ID,
+	# 				QUOTE_ID,
+	# 				QUOTE_NAME,
+	# 				QTEREV_ID,
+	# 				QTEREV_RECORD_ID,
+	# 				CPQTABLEENTRYADDEDBY,
+	# 				CPQTABLEENTRYDATEADDED,
+	# 				CpqTableEntryModifiedBy,
+	# 				CpqTableEntryDateModified,
+	# 				SERVICE_DESCRIPTION,
+	# 				SERVICE_ID,
+	# 				SERVICE_RECORD_ID,
+	# 				SALESORG_ID,
+	# 				SALESORG_NAME,
+	# 				SALESORG_RECORD_ID,
+	# 				LINE_ITEM_ID,
+	# 				OBJECT_QUANTITY,
+	# 				QUANTITY,
+	# 				CURRENCY,
+	# 				CURRENCY_RECORD_ID,
+	# 				ITEM_TYPE,
+	# 				ITEM_STATUS,
+	# 				NET_VALUE,
+	# 				UOM_ID, 
+	# 				UOM_RECORD_ID,
+	# 				PLANT_RECORD_ID,
+	# 				PLANT_ID,
+	# 				PRICING_STATUS,
+	# 				LINE_ITEM_FROM_DATE,
+	# 				LINE_ITEM_TO_DATE,
+	# 				CONTRACT_VALID_FROM,
+	# 				CONTRACT_VALID_TO,
+	# 				SRVTAXCAT_RECORD_ID,
+	# 				SRVTAXCAT_DESCRIPTION,
+	# 				SRVTAXCAT_ID,
+	# 				SRVTAXCLA_DESCRIPTION,
+	# 				SRVTAXCLA_ID,
+	# 				SRVTAXCLA_RECORD_ID,
+	# 				DOC_CURRENCY,
+	# 				DOCCURR_RECORD_ID,
+	# 				QUOTE_CURRENCY,
+	# 				QUOTE_CURRENCY_RECORD_ID,
+	# 				GLOBAL_CURRENCY,
+	# 				GLOBAL_CURRENCY_RECORD_ID,
+	# 				YEAR_OVER_YEAR) 
+	# 				SELECT 
+	# 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_RECORD_ID,
+	# 				SAQSCE.QUOTE_RECORD_ID,
+	# 				SAQSCE.QUOTE_ID,
+	# 				SAQTMT.QUOTE_NAME,
+	# 				SAQTMT.QTEREV_ID,
+	# 				SAQTMT.QTEREV_RECORD_ID,
+	# 				'{UserName}' AS CPQTABLEENTRYADDEDBY,
+	# 				GETDATE() as CPQTABLEENTRYDATEADDED,
+	# 				{UserId} as CpqTableEntryModifiedBy,
+	# 				GETDATE() as CpqTableEntryDateModified,
+	# 				SAQSCE.SERVICE_DESCRIPTION,
+	# 				CONCAT(SAQSCE.SERVICE_ID, '- BASE') as SERVICE_ID,
+	# 				SAQSCE.SERVICE_RECORD_ID,
+	# 				SAQSCE.SALESORG_ID,
+	# 				SAQSCE.SALESORG_NAME,
+	# 				SAQSCE.SALESORG_RECORD_ID,
+	# 				IQ.LINE_ITEM_ID as LINE_ITEM_ID,
+	# 				0 as OBJECT_QUANTITY,
+	# 				1 as QUANTITY,
+	# 				SAQTMT.QUOTE_CURRENCY as CURRENCY,
+	# 				SAQTMT.QUOTE_CURRENCY_RECORD_ID as CURRENCY_RECORD_ID,
+	# 				'ZCB1' as ITEM_TYPE,
+	# 				'Active' as ITEM_STATUS,
+	# 				0 as NET_VALUE,
+	# 				MAMTRL.UNIT_OF_MEASURE, 
+	# 				MAMTRL.UOM_RECORD_ID,
+	# 				MAMSOP.PLANT_RECORD_ID,
+	# 				MAMSOP.PLANT_ID,
+	# 				null AS PRICING_STATUS,
+	# 				SAQTMT.CONTRACT_VALID_FROM as LINE_ITEM_FROM_DATE,
+	# 				SAQTMT.CONTRACT_VALID_TO as LINE_ITEM_TO_DATE,
+	# 				SAQTMT.CONTRACT_VALID_FROM,
+	# 				SAQTMT.CONTRACT_VALID_TO,
+	# 				MAMSCT.TAXCATEGORY_RECORD_ID,
+	# 				MAMSCT.TAXCATEGORY_DESCRIPTION, 
+	# 				MAMSCT.TAXCATEGORY_ID, 
+	# 				MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
+	# 				MAMSCT.TAXCLASSIFICATION_ID,
+	# 				MAMSCT.TAXCLASSIFICATION_RECORD_ID,
+	# 				SAQTRV.DOC_CURRENCY,
+	# 				SAQTRV.DOCCURR_RECORD_ID,
+	# 				'' as QUOTE_CURRENCY,
+	# 				'' as QUOTE_CURRENCY_RECORD_ID,
+	# 				SAQTRV.GLOBAL_CURRENCY,
+	# 				SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
+	# 				PRCFVA.FACTOR_PCTVAR as YEAR_OVER_YEAR
+	# 				FROM SAQSCE (NOLOCK)    
+	# 				JOIN (
+	# 					SELECT SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID, MAX(CpqTableEntryId) as CpqTableEntryId, CAST(ROW_NUMBER()OVER(ORDER BY SAQSCE.ENTITLEMENT_GROUP_ID) + {ExistingCount} AS DECIMAL(5,1)) AS LINE_ITEM_ID FROM SAQSCE (NOLOCK) 
+	# 					WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' AND ISNULL(CONFIGURATION_STATUS, '') = 'COMPLETE' {WhereString}
+	# 					GROUP BY SAQSCE.QUOTE_RECORD_ID, SAQSCE.SERVICE_RECORD_ID, SAQSCE.ENTITLEMENT_GROUP_ID
+	# 				) AS IQ ON IQ.CpqTableEntryId = SAQSCE.CpqTableEntryId
+	# 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID  AND SAQTMT.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID          
+	# 				JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = SAQSCE.SERVICE_ID 
+	# 				JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = SAQSCE.SALESORG_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
+	# 				LEFT JOIN MAMSCT (NOLOCK) ON SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID = MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID AND SAQTRV.COUNTRY_RECORD_ID = MAMSCT.COUNTRY_RECORD_ID AND SAQTRV.DIVISION_ID = MAMSCT.DIVISION_ID  
+	# 				LEFT JOIN MAMSOP (NOLOCK) ON MAMSOP.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER AND MAMSOP.SALESORG_ID = SAQSCE.SALESORG_ID					
+	# 				LEFT JOIN PRCFVA (NOLOCK) ON PRCFVA.FACTOR_VARIABLE_ID = SAQSCE.SERVICE_ID AND PRCFVA.FACTOR_ID = 'YOYDIS'		
+	# 				{JoinString}			
+	# 				WHERE SAQSCE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCE.QTEREV_RECORD_ID = '{RevisionRecordId}' {WhereString} {OuterWhereString}
+	# 		""".format(
+	# 			QuoteRecordId=self.contract_quote_record_id,
+	# 			RevisionRecordId=self.contract_quote_revision_record_id,
+	# 			UserId=self.user_id,
+	# 			UserName=self.user_name,
+	# 			WhereString=where_string,
+	# 			ExistingCount=max_quote_item_count,
+	# 			JoinString=join_string,
+	# 			OuterWhereString=outer_where_string
+	# 		))
+	# 	# Insert SAQITM - End
+	# 	return True
 	
 	def _quote_item_lines_update_z0016(self):
 		Sql.RunQuery("""UPDATE SAQICO

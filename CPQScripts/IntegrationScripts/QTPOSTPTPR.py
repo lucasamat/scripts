@@ -219,44 +219,44 @@ try:
 					
 					GetTax = SqlHelper.GetFirst("SELECT SUM(TAX) AS TAX FROM SAQIFP WHERE QUOTE_ID = '{}' AND SERVICE_ID = 'Z0091'".format(QUOTE))
 					
-					Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0091%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
+					# Sql.RunQuery("UPDATE SAQITM SET EXTENDED_PRICE = {}, TOTAL_COST = {}, TAX = {}, PRICING_STATUS = 'ACQUIRED' WHERE SAQITM.QUOTE_ID = '{}' AND SAQITM.SERVICE_ID LIKE '%Z0091%'".format(GetSum.PRICE,GetSum.PRICE,GetTax.TAX,QUOTE))
 				Obj_Qty_query = SqlHelper.GetFirst("select count(*) as cnt from SAQIFP(NOLOCK) WHERE  QUOTE_ID = '"+str(QUOTE)+"' ")
 
-				if currencyType == 'docCurrency':
-					sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.EXTENDED_PRICE) AS TOTAL, SAQITM.ONSITE_PURCHASE_COMMIT, SUM(ISNULL(SAQIFP.TAX,0)) as TAX FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}' GROUP BY SAQITM.ONSITE_PURCHASE_COMMIT".format(QUOTE))
-					if sum_query:
-						total = float(sum_query.TOTAL)
-						#onsite = float(str(sum_query.ONSITE_PURCHASE_COMMIT).strip('%'))
-						#onsite = 1
-						#ext_itm = (total *onsite)/100  
-						#tax = float(sum_query.TAX)
-					'''
-					update_price = "UPDATE SAQITM SET TOTAL_COST = {total}, EXTENDED_PRICE = {ext}, TAX = {tax},OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
-						total=total,
-						ext=ext_itm,
-						tax=tax,
-						quote = QUOTE,
-						Obj_Quantity = Obj_Qty_query.cnt
-						)
-					'''
-					update_price = "UPDATE SAQITM SET  NET_VALUE = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
-						total=total,
-						quote = QUOTE,
-						Obj_Quantity = Obj_Qty_query.cnt
-						)
+				# if currencyType == 'docCurrency':
+				# 	# sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.EXTENDED_PRICE) AS TOTAL, SAQITM.ONSITE_PURCHASE_COMMIT, SUM(ISNULL(SAQIFP.TAX,0)) as TAX FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}' GROUP BY SAQITM.ONSITE_PURCHASE_COMMIT".format(QUOTE))
+				# 	# if sum_query:
+				# 	# 	total = float(sum_query.TOTAL)
+				# 	# 	#onsite = float(str(sum_query.ONSITE_PURCHASE_COMMIT).strip('%'))
+				# 	# 	#onsite = 1
+				# 	# 	#ext_itm = (total *onsite)/100  
+				# 	# 	#tax = float(sum_query.TAX)
+				# 	'''
+				# 	update_price = "UPDATE SAQITM SET TOTAL_COST = {total}, EXTENDED_PRICE = {ext}, TAX = {tax},OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
+				# 		total=total,
+				# 		ext=ext_itm,
+				# 		tax=tax,
+				# 		quote = QUOTE,
+				# 		Obj_Quantity = Obj_Qty_query.cnt
+				# 		)
+				# 	'''
+				# 	update_price = "UPDATE SAQITM SET  NET_VALUE = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
+				# 		total=total,
+				# 		quote = QUOTE,
+				# 		Obj_Quantity = Obj_Qty_query.cnt
+				# 		)
 					
-					Sql.RunQuery(update_price)
-				else:
-					sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}'".format(QUOTE))
-					if sum_query:
-						total = float(sum_query.TOTAL)
+				# 	Sql.RunQuery(update_price)
+				# else:
+					# sum_query = Sql.GetFirst("SELECT SUM(SAQIFP.UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQITM (NOLOCK) JOIN SAQIFP (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQIFP.QUOTE_RECORD_ID WHERE SAQIFP.QUOTE_ID = '{}'".format(QUOTE))
+					# if sum_query:
+					# 	total = float(sum_query.TOTAL)
 												
-					update_price = "UPDATE SAQITM SET TOTAL_AMOUNT_INGL_CURR = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
-						total=total,
-						quote = QUOTE,
-						Obj_Quantity = Obj_Qty_query.cnt
-						)
-					Sql.RunQuery(update_price)
+					# update_price = "UPDATE SAQITM SET TOTAL_AMOUNT_INGL_CURR = {total}, OBJECT_QUANTITY = '{Obj_Quantity}' WHERE SAQITM.QUOTE_ID = '{quote}'".format(
+					# 	total=total,
+					# 	quote = QUOTE,
+					# 	Obj_Quantity = Obj_Qty_query.cnt
+					# 	)
+					# Sql.RunQuery(update_price)
 				'''
 				#Log.Info('03-03-2021---QT_SAQITM---')
 				update_quote_price = "UPDATE QT__QTQITM SET FORECAST_VALUE = {total}, EXTENDED_UNIT_PRICE = {ext},TAX = {tax} WHERE QT__QTQITM.QUOTE_ID ='{quote}'".format(
@@ -274,7 +274,7 @@ try:
 					#Log.Info("456789 if QUOTE --->"+str(QUOTE))
 
 					Parameter1 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'UPD' ")
-					primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A set PRICING_STATUS = ''ACQUIRED'' FROM SAQITM a where a.QUOTE_ID = ''"+str(QUOTE)+"'' ' ")
+					# primaryQueryItems = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  A set PRICING_STATUS = ''ACQUIRED'' FROM SAQITM a where a.QUOTE_ID = ''"+str(QUOTE)+"'' ' ")
 
 
 				ApiResponse = ApiResponseFactory.JsonResponse({"Response": [{"Status": "200", "Message": "Part Pricing data succussfully updated."}]})

@@ -2233,17 +2233,17 @@ class SYLDRTLIST:
 						col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'
 					price_status = []
 					# quote_itm_rec = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) "+str(Qustr)+"")
-					if str(getQuotetype).upper() == "ZWK1 - SPARES":
-						quote_item_obj = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQITM (NOLOCK) "+str(Qustr)+"")
-						if quote_item_obj:
-							if quote_item_obj.PRICING_STATUS == 'ACQUIRED':
-								icon = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
-							else:
-								icon = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
-					else:
-						SAQICO_status = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) "+str(Qustr)+"")
-						for pricing_status in SAQICO_status:
-							price_status.append(pricing_status.STATUS)
+					# if str(getQuotetype).upper() == "ZWK1 - SPARES":
+					# 	quote_item_obj = Sql.GetFirst("SELECT PRICING_STATUS FROM SAQITM (NOLOCK) "+str(Qustr)+"")
+					# 	if quote_item_obj:
+					# 		if quote_item_obj.PRICING_STATUS == 'ACQUIRED':
+					# 			icon = '<img title="Acquired" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Green_Tick.svg>'
+					# 		else:
+					# 			icon = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/Cloud_Icon.svg>'
+					# else:
+					SAQICO_status = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) "+str(Qustr)+"")
+					for pricing_status in SAQICO_status:
+						price_status.append(pricing_status.STATUS)
 
 
 						
@@ -6770,7 +6770,7 @@ class SYLDRTLIST:
 							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					elif RECORD_ID == 'SYOBJR-98792' and str(TreeParam) == "Quote Preview":                        
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-						Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
+						# Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
 						contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 						if getyears == 1:
 							col_year =  'YEAR_1'
@@ -6782,8 +6782,8 @@ class SYLDRTLIST:
 							col_year =  'YEAR_1,YEAR_2,YEAR_3,YEAR_4'
 						else:
 							col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'
-						if TreeParam:
-							Qustr = "where QUOTE_ID = '"+str(Qustr_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
+						# if TreeParam:
+						# 	Qustr = "where QUOTE_ID = '"+str(Qustr_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
@@ -8008,7 +8008,7 @@ class SYLDRTLIST:
 						elif RECORD_ID == 'SYOBJR-98792' and str(TreeParam) == "Quote Preview":
 							
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-							Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
+							# Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
 							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 							if getyears == 1:
 								col_year =  'YEAR_1'
@@ -8020,8 +8020,8 @@ class SYLDRTLIST:
 								col_year =  'YEAR_1,YEAR_2,YEAR_3,YEAR_4'
 							else:
 								col_year = 'YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5'
-							if TreeParam:
-								Qustr = "where QUOTE_ID = '"+str(Qustr_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+							# if TreeParam:
+							# 	Qustr = "where QUOTE_ID = '"+str(Qustr_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 							Qury_str = (
 								"select DISTINCT top "
 								+ str(PerPage)

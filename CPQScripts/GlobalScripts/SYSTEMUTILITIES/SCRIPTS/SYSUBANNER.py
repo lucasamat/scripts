@@ -953,14 +953,14 @@ def Related_Sub_Banner(
                     #SecondLable = "Name"
                     #SecondValue = str(TreeParam)
                 ##commented the below code taking all the values in dynamic way...
-                elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Annualized Items":
-                    Trace.Write("663")
-                    getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    TreeParam = TreeParam.split('-')
-                    PrimaryLable = "Line"
-                    PrimaryValue = TreeParam[0].strip()
-                    SecondLable = "Product Offering ID"
-                    SecondValue = TreeParam[1].strip()
+                # elif ObjName == "SAQITM" and TreeParentParam == "Quote Items" and subTabName == "Annualized Items":
+                #     Trace.Write("663")
+                #     getname = Sql.GetFirst("select QUOTE_ITEM_RECORD_ID,LINE_ITEM_ID,SERVICE_ID,SERVICE_DESCRIPTION,PRICINGPROCEDURE_ID from SAQITM where QUOTE_ITEM_RECORD_ID ='"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                #     TreeParam = TreeParam.split('-')
+                #     PrimaryLable = "Line"
+                #     PrimaryValue = TreeParam[0].strip()
+                #     SecondLable = "Product Offering ID"
+                #     SecondValue = TreeParam[1].strip()
                 elif ObjName == "SAQIFL" and TreeSuperParentParam == "Quote Items" and subTabName == "Details":
                     Trace.Write("Quote Items")
                     get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
@@ -1936,28 +1936,28 @@ def Related_Sub_Banner(
         ThirdValue = "All"
         FourthLable = "Equipment"
         FourthValue = "All"
-    if TreeParentParam == 'Quote Items' and ObjName == 'SAQITM' and subTabName == 'Details':	
-        Trace.Write("1207")	
-        PrimaryLable = ListKey[0]
-        PrimaryValue = PrimaryValue
-        SecondLable = ListKey[1]
-        SecondValue = ListVal[1]
-        ThirdLable = ListKey[2]
-        ThirdValue = ListVal[2]
-        FourthValue = ListKey[4]
-        FourthValue = ListVal[4]
-        getQuotetype = ""
-        getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()		
-        if str(getQuotetype) == "ZTBC - TOOL BASED":
-            FourthLable = ""                        
-            FourthValue = ""
-        else:
-            FourthLable = ListKey[3]
-            FourthValue = "RVCEU1" if ListVal[3]=="" else ListVal[3]
-    elif TreeParentParam == 'Quote Items' and ObjName == 'SAQITM' and subTabName == 'Spare Parts':
-        PrimaryLable = ""
-        PrimaryValue = ""       
-    elif TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
+    # if TreeParentParam == 'Quote Items' and ObjName == 'SAQITM' and subTabName == 'Details':	
+    #     Trace.Write("1207")	
+    #     PrimaryLable = ListKey[0]
+    #     PrimaryValue = PrimaryValue
+    #     SecondLable = ListKey[1]
+    #     SecondValue = ListVal[1]
+    #     ThirdLable = ListKey[2]
+    #     ThirdValue = ListVal[2]
+    #     FourthValue = ListKey[4]
+    #     FourthValue = ListVal[4]
+    #     getQuotetype = ""
+    #     getQuotetype = Product.Attributes.GetByName("QSTN_SYSEFL_QT_00723").GetValue()		
+    #     if str(getQuotetype) == "ZTBC - TOOL BASED":
+    #         FourthLable = ""                        
+    #         FourthValue = ""
+    #     else:
+    #         FourthLable = ListKey[3]
+    #         FourthValue = "RVCEU1" if ListVal[3]=="" else ListVal[3]
+    # if TreeParentParam == 'Quote Items' and ObjName == 'SAQITM' and subTabName == 'Spare Parts':
+    #     PrimaryLable = ""
+    #     PrimaryValue = ""       
+    if TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
         Trace.Write("quoteitemshp===")
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
@@ -2598,7 +2598,7 @@ def Related_Sub_Banner(
         quote_status = Sql.GetFirst("SELECT QUOTE_STATUS,QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
         #Trace.Write("quote status------->"+str(quote_status.QUOTE_STATUS))
         Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
-        Quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM WHERE QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+        # Quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM WHERE QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
         User_Name = User.UserName 
         
         Submit_approval = ''
@@ -2614,7 +2614,7 @@ def Related_Sub_Banner(
         Trace.Write("get_quote_status"+str(get_quote_status))
         Trace.Write("QUOTE_STATUS"+str(quote_status.QUOTE_STATUS))
         Trace.Write("Submit_approval"+str(Submit_approval))
-        Trace.Write("Quote_item_obj"+str(Quote_item_obj))
+        # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
         if get_quote_status and str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' and Submit_approval == "True":
             Trace.Write("submit for approval")
@@ -2664,14 +2664,14 @@ def Related_Sub_Banner(
         if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
-                get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                if get_quote_details:
-                    get_quote = Quote.GetGlobal("contract_quote_record_id")
-                    Trace.Write('button process--')
-                    buttonvisibility = "Show_button"   
-                else:
-                    Trace.Write('No button-2454-')
-                    buttonvisibility = "Hide_button"
+                # get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                # if get_quote_details:
+                #     get_quote = Quote.GetGlobal("contract_quote_record_id")
+                #     Trace.Write('button process--')
+                #     buttonvisibility = "Show_button"   
+                # else:
+                Trace.Write('No button-2454-')
+                buttonvisibility = "Hide_button"
             # elif TreeParam == "Approvals" and CurrentTabName == 'Quotes':
             # 	Trace.Write("SUBMIT FOR APP Button")
             # 	sec_rel_sub_bnr = add_button
@@ -2713,15 +2713,15 @@ def Related_Sub_Banner(
                             if getsalesorg_ifo and getfab_info:
                                 Trace.Write('salesorg--present---')
                                 if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
-                                    get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                                    if get_quote_details:
-                                        get_quote = Quote.GetGlobal("contract_quote_record_id")
-                                        Trace.Write('button process--')
-                                        buttonvisibility = "Show_button"
-                                        Quote.SetGlobal('Show_button','Show_button')
-                                    else:
-                                        Trace.Write('No button-2454-')
-                                        buttonvisibility = "Hide_button"
+                                    # get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                                    # if get_quote_details:
+                                    #     get_quote = Quote.GetGlobal("contract_quote_record_id")
+                                    #     Trace.Write('button process--')
+                                    #     buttonvisibility = "Show_button"
+                                    #     Quote.SetGlobal('Show_button','Show_button')
+                                    # else:
+                                    Trace.Write('No button-2454-')
+                                    buttonvisibility = "Hide_button"
                                 else:
                                     Trace.Write('No button--')
                                     buttonvisibility = "Hide_button"

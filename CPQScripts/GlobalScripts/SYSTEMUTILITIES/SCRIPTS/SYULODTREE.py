@@ -2039,25 +2039,25 @@ class TreeView:
 									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
 									if get_service_name_bill:
 										NodeText_temp = NodeText +' - '+ get_service_name_bill.SERVICE_DESCRIPTION
-								elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
-									try:
-										if str(ObjName).strip() == 'SAQTSV':
-											service_id_temp =  NodeText.split('>')
-											service_id_temp = service_id_temp[len(service_id_temp) -1]
-										elif str(ObjName).strip() == 'SAQITM':
-											service_id_temp = NodeText.split('-')[1].strip()+'- BASE'
-									except:
-										service_id_temp = NodeText
-									get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,service_id_temp ) )
-									if get_service_name:
-										#Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
-										if ObjName == 'SAQITM':
+								# elif (str(ObjName).strip() == 'SAQTSV' or str(ObjName).strip() == 'SAQITM') and 'SERVICE_ID' in str(NodeName): 
+								# 	try:
+								# 		if str(ObjName).strip() == 'SAQTSV':
+								# 			service_id_temp =  NodeText.split('>')
+								# 			service_id_temp = service_id_temp[len(service_id_temp) -1]
+								# 		elif str(ObjName).strip() == 'SAQITM':
+								# 			service_id_temp = NodeText.split('-')[1].strip()+'- BASE'
+								# 	except:
+								# 		service_id_temp = NodeText
+								# 	get_service_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND SERVICE_ID = '{}'".format(ObjName, where_string,service_id_temp ) )
+								# 	if get_service_name:
+								# 		#Trace.Write("get_service_name---"+str(get_service_name.SERVICE_ID))
+								# 		if ObjName == 'SAQITM':
 											
-											NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
-											#Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
-										else:
-											NodeText_temp = NodeText
-											NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
+								# 			NodeText_temp =  re.sub("- BASE"," - " +str(get_service_name.SERVICE_DESCRIPTION)+" - BASE",NodeText)
+								# 			#Trace.Write("NodeText_temp-saqitm-"+str(NodeText_temp))
+								# 		else:
+								# 			NodeText_temp = NodeText
+								# 			NodeText_temp = NodeText +' - '+ get_service_name.SERVICE_DESCRIPTION
 								if NodeText_temp:
 									ChildDict["text"] = NodeText_temp
 								else:
@@ -2185,6 +2185,7 @@ class TreeView:
 											if flag_excluse==1:
 												subTabName = "Parts List"
 										Trace.Write("subTabName Green service list---"+str(subTabName))
+<<<<<<< Updated upstream
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
 										subTabName = ""
@@ -2196,6 +2197,16 @@ class TreeView:
 									elif subTabName == 'Spare Parts' and str(NodeName) =='SERVICE_ID' and str(ObjName) =='SAQSPT':
 										doc_type = Sql.GetFirst("SELECT DOCTYP_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 										subTabName = "" if str(doc_type.DOCTYP_ID) == "ZWK1" else str(getRightView.SUBTAB_NAME)
+=======
+									# elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
+									# 	Trace.Write("NodeText spare parts"+str(NodeText))
+									# 	subTabName = ""
+									# 	service_id = NodeText.split('-')[1].strip()
+									# 	spare_parts_object = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'".format(Product.GetGlobal("contract_quote_record_id"),quote_revision_record_id,service_id))
+									# 	if spare_parts_object is not None:
+									# 		if spare_parts_object.cnt > 0:
+									# 			subTabName = str(getRightView.SUBTAB_NAME)
+>>>>>>> Stashed changes
 									else:
 										subTabName = str(getRightView.SUBTAB_NAME)
 									RelatedId = getRightView.RELATED_RECORD_ID
