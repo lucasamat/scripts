@@ -3801,7 +3801,7 @@ def POPUPLISTVALUEADDNEW(
 						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
 					)
 				)
-			elif str(ObjName)=="SAQSPT":
+			elif str(ObjectName)=="SAQSPT":
 				where_string += ""
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
