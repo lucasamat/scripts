@@ -323,7 +323,7 @@ class ContractQuoteCrudOpertion:
 						SAQICO.SALESORG_ID,
 						SAQICO.SALESORG_NAME,
 						SAQICO.SALESORG_RECORD_ID,
-						ISNULL(SAQICO.TOTAL_AMOUNT_INGL_CURR, 0) / {get_val} as BILLING_AMOUNT,	
+						(ISNULL(SAQICO.TOTAL_AMOUNT_INGL_CURR, 0) / {get_val}) as BILLING_AMOUNT,	
 						{BillingDate} as BILLING_DATE,				
 						'MONTHLY' as BILLING_INTERVAL,
 						0 as BILLING_YEAR,
