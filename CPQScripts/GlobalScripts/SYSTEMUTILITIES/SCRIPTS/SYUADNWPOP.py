@@ -3803,6 +3803,7 @@ def POPUPLISTVALUEADDNEW(
 				)
 			elif str(ObjectName)=="SAQSPT":
 				where_string += ""
+				Pagination_M = ""
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
 					", ".join(ordered_keys_mam),
