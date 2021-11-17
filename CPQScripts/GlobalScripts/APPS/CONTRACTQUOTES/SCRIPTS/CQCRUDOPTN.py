@@ -6314,7 +6314,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 							price_impact = re.findall(pattern_priceimpact,sub_string)
 							getostfactor = cost_impact
 							getpricefactor = price_impact 
-	   						#if val.PRICE_METHOD == 'MANUAL PRICE':
+							#if val.PRICE_METHOD == 'MANUAL PRICE':
 							#getostfactor = val.ENTITLEMENT_COST_IMPACT
 							#getpricefactor = val.ENTITLEMENT_PRICE_IMPACT								
 							if str(getostfactor).strip != "" and  str(getpricefactor).strip() != "":									
