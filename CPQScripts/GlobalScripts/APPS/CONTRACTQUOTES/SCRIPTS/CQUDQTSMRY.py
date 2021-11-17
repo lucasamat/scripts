@@ -174,8 +174,8 @@ class ContractQuoteSummaryUpdate:
 										SALES_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
 										DISCOUNT_AMOUNT = ISNULL(TARGET_PRICE,0)  - ISNULL(SALES_PRICE,0),
 										DISCOUNT_AMOUNT_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0)  - ISNULL(SALES_PRICE_INGL_CURR,0),
-										NET_PRICE = ISNULL(TOTAL_AMOUNT,0)  + ISNULL(TAX_AMOUNT_INGL_CURR,0)
-										NET_PRICE_INGL_CURR = ISNULL(TOTAL_AMOUNT_INGL_CURR,0)  + ISNULL(TAX_AMOUNT,0)
+										NET_PRICE = ISNULL(TOTAL_AMOUNT,0)  + ISNULL(TAX_AMOUNT,0)
+										NET_PRICE_INGL_CURR = ISNULL(TOTAL_AMOUNT_INGL_CURR,0)  + ISNULL(TAX_AMOUNT_INGL_CURR,0)
 										DISCOUNT = '{plus}{Discount}'
 									FROM SAQICO (NOLOCK)                                     
 									WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(
@@ -184,7 +184,7 @@ class ContractQuoteSummaryUpdate:
 										DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
 										Discount=self.discount,
 										plus="+"))
-		
+
 		# Sql.RunQuery("""UPDATE SAQICO SET 
 		# 								NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
 		# 								NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
