@@ -4618,7 +4618,8 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							get_ent_id = re.findall(pattern_id,sub_string)
 							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
-								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val))
+								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
+								get_ent_val = str(get_ent_val[0])
 								break
 					Trace.Write('get_ent_val---4750--'+str(get_ent_val))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
