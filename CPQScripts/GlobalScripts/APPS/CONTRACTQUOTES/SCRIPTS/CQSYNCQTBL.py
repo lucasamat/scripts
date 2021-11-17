@@ -655,25 +655,25 @@ class SyncQuoteAndCustomTables:
 							if distribution_obj:
 								salesorg_data.update({"DISTRIBUTIONCHANNEL_ID":distribution_obj.DISTRIBUTIONCHANNEL_ID , 
 													"DISTRIBUTIONCHANNEL_RECORD_ID":distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID})
-						# if custom_fields_detail.get('SalesOrgID'):
-						# 	createddate_up = ""
-						# 	SalesOrg_obj = Sql.GetFirst(
-						# 		"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
-						# 			custom_fields_detail.get('SalesOrgID')
-						# 		)
-						# 	)
+						if custom_fields_detail.get('SalesOrgID'):
+							createddate_up = ""
+							SalesOrg_obj = Sql.GetFirst(
+								"SELECT DEF_CURRENCY, DEF_CURRENCY_RECORD_ID FROM SASORG (NOLOCK) WHERE SALESORG_ID = '{}'".format(
+									custom_fields_detail.get('SalesOrgID')
+								)
+							)
 							
 							
-						# 	salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
-						# 	if salesorg_currency:
-						# 		salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-						# 							"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
-						# 							})
-							# if SalesOrg_obj:
+							salesorg_currency = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM PRCURR (NOLOCK) WHERE CURRENCY = '"+str(custom_fields_detail.get("Currency"))+"'")
+							if salesorg_currency:
+								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
+													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+													})
+							if SalesOrg_obj:
 								
-							#     salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
-							#                         "DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
-								##A055S000P01-4418 exchange rate details starts..
+								# salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
+								# 					"DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
+								#A055S000P01-4418 exchange rate details starts..
 								if AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
 									exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
 									if exchange_rate_type_object is not None:
