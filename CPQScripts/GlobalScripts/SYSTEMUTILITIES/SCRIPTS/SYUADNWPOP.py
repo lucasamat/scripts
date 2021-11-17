@@ -3540,7 +3540,7 @@ def POPUPLISTVALUEADDNEW(
 			)
 
 		elif (str(ObjectName) == "SAQRSP" or str(ObjectName)=="SAQSPT") and str(CurrentTab) == "Quotes":
-    		Trace.Write('In '+str(ObjectName))
+			Trace.Write('In '+str(ObjectName))
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
