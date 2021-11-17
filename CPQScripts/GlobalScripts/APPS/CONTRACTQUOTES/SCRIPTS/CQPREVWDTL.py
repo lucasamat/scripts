@@ -497,7 +497,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		sec_str += '</tr></thead><tbody class ="cleanbook_chklst" >'
 		checklist_vals = Sql.GetList("select TOP 1000 CHECKLIST_ID,CHECKLIST_DESCRIPTION,SERVICE_CONTRACT,SPECIALIST_REVIEW,COMMENT FROM SAQCBC(NOLOCK) WHERE QUOTE_RECORD_ID = '{quote_recid}' AND QTEREV_RECORD_ID = '{quote_revision_recid}' ORDER BY CpqTableEntryId ASC".format(quote_recid=Quote,quote_revision_recid=quote_revision_record_id))
 		for value in checklist_vals:
-			if sect.SECTION_NAME =="TERMS AND CONDITIONS VALIDATION" and str(value.CHECKLIST_ID) in ['1','2','2.1','3','3.1','3.2','3.3','3.4']:
+			if sect.SECTION_NAME =="TERMS AND CONDITIONS VALIDATION" and str(value.CHECKLIST_ID) in ['1','2','3','4']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -517,7 +517,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['4','5','6','7','8','9','10','11','11.1','11.2','11.3','12','13','14','15','16','18','19','20']:
+			elif sect.SECTION_NAME =="IF THE CUSTOMER HAS A MASTER SERVICE AGREEMENT" and str(value.CHECKLIST_ID) in ['5','6','7','8','9','10','11','12','12.1','12.2','12.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -537,7 +537,107 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
 					sec_str += '</tr>'
 
-			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['21','22','23','24','25','26','27','27.1','27.2','27.3']:
+			elif sect.SECTION_NAME =="VALIDATE CANCELLATION FOR CONVENIENCE DAYS IN CRM ARE RECORDED ACCORDING TO TS&CS IN THE BOOKING PACKAGE (I.E. SOW, PO, CL, MSA, ETC...) AND ENTER 0, NA, OR THE NUMBER OF DAYS BASED ON THESE RULES:(DO NOT INCLUDE POSS CANCELLATION TERMS WITH SERVICE TERMS. IF MULTIPLE CANCELLATION TERMS FOR SERVICE PRODUCTS, SPLIT OUT)" and str(value.CHECKLIST_ID) in ['13','14','15','16','17']:
+				if '.' in str(value.CHECKLIST_ID):				
+					sec_str +='<tr class ="cbc_child">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
+				else:
+					sec_str +='<tr class ="cbc_parent">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+					sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+					sec_str += '</tr>'
+
+			elif sect.SECTION_NAME =="EQUIPMENT NUMBERS" and str(value.CHECKLIST_ID) in ['18']:
+				if '.' in str(value.CHECKLIST_ID):				
+					sec_str +='<tr class ="cbc_child">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
+				else:
+					sec_str +='<tr class ="cbc_parent">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+					sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+					sec_str += '</tr>'
+
+			elif sect.SECTION_NAME =="CUSTOMER PURCHASE ORDER OR SIGNED AGREEMENT" and str(value.CHECKLIST_ID) in ['19','20','21','22','23']:
+				if '.' in str(value.CHECKLIST_ID):				
+					sec_str +='<tr class ="cbc_child">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
+				else:
+					sec_str +='<tr class ="cbc_parent">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+					sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+					sec_str += '</tr>'
+
+			elif sect.SECTION_NAME =="BILL PLAN VERIFICATION" and str(value.CHECKLIST_ID) in ['24','25']:
+				if '.' in str(value.CHECKLIST_ID):				
+					sec_str +='<tr class ="cbc_child">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
+				else:
+					sec_str +='<tr class ="cbc_parent">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+					sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+					sec_str += '</tr>'
+
+			elif sect.SECTION_NAME =="NSOS/UPGRADES" and str(value.CHECKLIST_ID) in ['26','27']:
+				if '.' in str(value.CHECKLIST_ID):				
+					sec_str +='<tr class ="cbc_child">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
+				else:
+					sec_str +='<tr class ="cbc_parent">'
+					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
+					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str += ('<td class="wid_90"><input id="SERVICE_CONTRACT" type="checkbox" value="'+str(value.SERVICE_CONTRACT)+'" title="'+str(value.SERVICE_CONTRACT)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SERVICE_CONTRACT).upper() == "TRUE" or str(value.SERVICE_CONTRACT) =="1" else ""))
+					sec_str += ('<td class="wid_90"><input id="SPECIALIST_REVIEW" type="checkbox" value="'+str(value.SPECIALIST_REVIEW)+'" title="'+str(value.SPECIALIST_REVIEW)+'" class="custom" style = "z-index:-5" {checked}><span class="lbl"></span></td>'.format(checked = "checked disabled" if str(value.SPECIALIST_REVIEW).upper() == "TRUE" or str(value.SPECIALIST_REVIEW) =="1" else ""))
+					sec_str += ('<td class="wid_90"><textarea id="COMMENT" type="text" title="'+str(value.COMMENT)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.COMMENT)+'</textarea></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"><i class="fa fa-pencil" aria-hidden="true"></i></a></div></td>')
+					sec_str += '</tr>'
+
+			elif sect.SECTION_NAME =="MULTI-ELEMENT ARRANGEMENT" and str(value.CHECKLIST_ID) in ['28','28.1','28.2','28.3']:
 				if '.' in str(value.CHECKLIST_ID):				
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
