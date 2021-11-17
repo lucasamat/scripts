@@ -490,129 +490,129 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
 	
-	def _insert_quote_line_items(self, cart_id, cart_user_id):
-		Bundle_Query = ''
+	# def _insert_quote_line_items(self, cart_id, cart_user_id):
+	# 	Bundle_Query = ''
 		
-		if self.tree_parent_level_0 == 'Comprehensive Services':			
-			Bundle_Query = Sql.GetFirst("SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
-		elif self.tree_parent_level_0 == 'Add-On Products':			
-			Bundle_Query = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
-			Bundle_Query_addon = Sql.GetFirst("SELECT ADNPRD_ID,ADNPRD_DESCRIPTION FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
+	# 	if self.tree_parent_level_0 == 'Comprehensive Services':			
+	# 		Bundle_Query = Sql.GetFirst("SELECT ADNPRD_ID FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
+	# 	elif self.tree_parent_level_0 == 'Add-On Products':			
+	# 		Bundle_Query = Sql.GetFirst("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
+	# 		Bundle_Query_addon = Sql.GetFirst("SELECT ADNPRD_ID,ADNPRD_DESCRIPTION FROM SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND ADNPRD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id, self.tree_param,self.quote_revision_record_id))
 		
-		if Bundle_Query:			
-			if Bundle_Query and self.tree_parent_level_0 == 'Add-On Products':
-				bundleser = Bundle_Query.SERVICE_ID + " - BUNDLE"
-				if Bundle_Query_addon:
-					bundledes =Bundle_Query.SERVICE_DESCRIPTION+ " WITH " + Bundle_Query_addon.ADNPRD_DESCRIPTION
-				else:
-					bundledes = ''
-			else:
-				bundleser = self.tree_param + " - BUNDLE"
-				bundledes = ''
+	# 	if Bundle_Query:			
+	# 		if Bundle_Query and self.tree_parent_level_0 == 'Add-On Products':
+	# 			bundleser = Bundle_Query.SERVICE_ID + " - BUNDLE"
+	# 			if Bundle_Query_addon:
+	# 				bundledes =Bundle_Query.SERVICE_DESCRIPTION+ " WITH " + Bundle_Query_addon.ADNPRD_DESCRIPTION
+	# 			else:
+	# 				bundledes = ''
+	# 		else:
+	# 			bundleser = self.tree_param + " - BUNDLE"
+	# 			bundledes = ''
 			
-			self._process_query("""INSERT QT__SAQITM (
-						ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
-						QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
-					) 
-					SELECT 
-						SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
-						'{bundledescription}' as SERVICE_DESCRIPTION,
-						REPLACE(SAQITM.SERVICE_ID , '- BUNDLE', '') as SERVICE_ID,
-						SAQITM.SERVICE_RECORD_ID,					
-						0 AS QTY_OF_TOOLS,
-						SAQITM.CURRENCY,
-						(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
-						SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
-						SAQITM.QUANTITY,
-						0 AS FORECAST_VALUE,
-						SAQITM.ONSITE_PURCHASE_COMMIT,
-						SAQITM.QUOTE_ID,
-						SAQITM.QUOTE_RECORD_ID,
-						SAQITM.TAX_PERCENTAGE,
-						SAQITM.TAX,
-						{UserId} as ownerId,
-						{CartId} as cartId
-					FROM SAQITM (NOLOCK) 
-					JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID               
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID = '{ServiceId}' """.format(
-						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
-						ServiceId=bundleser,bundledescription = bundledes,))
-			Sql.RunQuery("""INSERT QT__SAQITM (
-						ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
-						QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
-					) 
-					SELECT 
-						SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
-						SAQITM.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
-						SUBSTRING(SAQITM.SERVICE_ID , 9, 13) as SERVICE_ID,
-						SAQITM.SERVICE_RECORD_ID,					
-						0 AS QTY_OF_TOOLS,
-						SAQITM.CURRENCY,
-						(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
-						SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
-						SAQITM.QUANTITY,
-						0 AS FORECAST_VALUE,
-						SAQITM.ONSITE_PURCHASE_COMMIT,
-						SAQITM.QUOTE_ID,
-						SAQITM.QUOTE_RECORD_ID,
-						SAQITM.TAX_PERCENTAGE,
-						SAQITM.TAX,
-						{UserId} as ownerId,
-						{CartId} as cartId
-					FROM SAQITM (NOLOCK)                 
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}'  AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID LIKE '%ADDON%' """.format(
-						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
-						ServiceId=bundleser,bundledescription = bundledes))			
-		else:
-			self._process_query("""INSERT QT__SAQITM (
-						ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
-						QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
-					) 
-					SELECT 
-						SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
-						SAQITM.SERVICE_DESCRIPTION,
-						REPLACE(SAQITM.SERVICE_ID , '- BASE', '') as SERVICE_ID,
-						SAQITM.SERVICE_RECORD_ID,					
-						0 AS QTY_OF_TOOLS,
-						SAQITM.CURRENCY,
-						(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
-						SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
-						SAQITM.QUANTITY,
-						0 AS FORECAST_VALUE,
-						SAQITM.ONSITE_PURCHASE_COMMIT,
-						SAQITM.QUOTE_ID,
-						SAQITM.QUOTE_RECORD_ID,
-						SAQITM.TAX_PERCENTAGE,
-						SAQITM.TAX,
-						{UserId} as ownerId,
-						{CartId} as cartId
-					FROM SAQITM (NOLOCK) 
-					JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID  AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID              
-					WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' """.format(
-						CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
-						ServiceId=self.tree_param,))
-		if self.tree_param == 'Z0068' and self.tree_parent_level_0 == 'Add-On Products':
-			self._process_query("""UPDATE A SET A.TARGET_PRICE = B.TARGET_PRICE,A.SALES_PRICE = B.SALES_PRICE,A.CEILING_PRICE = B.CEILING_PRICE,A.TOTAL_COST = B.TOTAL_COST,A.EXTENDED_PRICE = B.EXTENDED_PRICE,A.TAX = B.TAX,A.PRICING_STATUS = 'ACQUIRED' FROM QT__SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(SALES_PRICE) AS SALES_PRICE,SUM(CEILING_PRICE) AS CEILING_PRICE,SUM(TOTAL_COST) AS TOTAL_COST,SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_RECORD_ID from QT__SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID='{Service_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID  AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID
-			AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
-			QuoteRecordId=self.contract_quote_record_id,
-			RevisionRecordId=self.quote_revision_record_id,
-			Service_id =self.tree_param))				
-		""" if Quote is not None:
-			Quote.QuoteTables["SAQITM"].Save()
-			Quote.QuoteTables["SAQICO"].Save()
-			Quote.QuoteTables["SAQIFP"].Save()
-			Quote.Save() """
-		return True
+			# self._process_query("""INSERT QT__SAQITM (
+			# 			ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
+			# 			QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
+			# 		) 
+			# 		SELECT 
+			# 			SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
+			# 			'{bundledescription}' as SERVICE_DESCRIPTION,
+			# 			REPLACE(SAQITM.SERVICE_ID , '- BUNDLE', '') as SERVICE_ID,
+			# 			SAQITM.SERVICE_RECORD_ID,					
+			# 			0 AS QTY_OF_TOOLS,
+			# 			SAQITM.CURRENCY,
+			# 			(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
+			# 			SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
+			# 			SAQITM.QUANTITY,
+			# 			0 AS FORECAST_VALUE,
+			# 			SAQITM.ONSITE_PURCHASE_COMMIT,
+			# 			SAQITM.QUOTE_ID,
+			# 			SAQITM.QUOTE_RECORD_ID,
+			# 			SAQITM.TAX_PERCENTAGE,
+			# 			SAQITM.TAX,
+			# 			{UserId} as ownerId,
+			# 			{CartId} as cartId
+			# 		FROM SAQITM (NOLOCK) 
+			# 		JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID               
+			# 		WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID = '{ServiceId}' """.format(
+			# 			CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
+			# 			RevisionRecordId=self.quote_revision_record_id,
+			# 			ServiceId=bundleser,bundledescription = bundledes,))
+			# Sql.RunQuery("""INSERT QT__SAQITM (
+			# 			ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
+			# 			QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
+			# 		) 
+			# 		SELECT 
+			# 			SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
+			# 			SAQITM.SERVICE_DESCRIPTION as SERVICE_DESCRIPTION,
+			# 			SUBSTRING(SAQITM.SERVICE_ID , 9, 13) as SERVICE_ID,
+			# 			SAQITM.SERVICE_RECORD_ID,					
+			# 			0 AS QTY_OF_TOOLS,
+			# 			SAQITM.CURRENCY,
+			# 			(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
+			# 			SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
+			# 			SAQITM.QUANTITY,
+			# 			0 AS FORECAST_VALUE,
+			# 			SAQITM.ONSITE_PURCHASE_COMMIT,
+			# 			SAQITM.QUOTE_ID,
+			# 			SAQITM.QUOTE_RECORD_ID,
+			# 			SAQITM.TAX_PERCENTAGE,
+			# 			SAQITM.TAX,
+			# 			{UserId} as ownerId,
+			# 			{CartId} as cartId
+			# 		FROM SAQITM (NOLOCK)                 
+			# 		WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}'  AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQITM.SERVICE_ID LIKE '%ADDON%' """.format(
+			# 			CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
+			# 			RevisionRecordId=self.quote_revision_record_id,
+			# 			ServiceId=bundleser,bundledescription = bundledes))			
+		# else:
+			# self._process_query("""INSERT QT__SAQITM (
+			# 			ITEM_LINE_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTY_OF_TOOLS, CURRENCY, UNIT_PRICE, EXTENDED_UNIT_PRICE,
+			# 			QUANTITY, FORECAST_VALUE, ONSITE_PURCHASE_COMMIT, QUOTE_ID, QUOTE_RECORD_ID, TAX_PERCENTAGE, TAX,  ownerId, cartId
+			# 		) 
+			# 		SELECT 
+			# 			SAQITM.LINE_ITEM_ID as ITEM_LINE_ID,
+			# 			SAQITM.SERVICE_DESCRIPTION,
+			# 			REPLACE(SAQITM.SERVICE_ID , '- BASE', '') as SERVICE_ID,
+			# 			SAQITM.SERVICE_RECORD_ID,					
+			# 			0 AS QTY_OF_TOOLS,
+			# 			SAQITM.CURRENCY,
+			# 			(SAQITM.NET_VALUE-SAQITM.TAX) as UNIT_PRICE,
+			# 			SAQITM.NET_VALUE as EXTENDED_UNIT_PRICE,
+			# 			SAQITM.QUANTITY,
+			# 			0 AS FORECAST_VALUE,
+			# 			SAQITM.ONSITE_PURCHASE_COMMIT,
+			# 			SAQITM.QUOTE_ID,
+			# 			SAQITM.QUOTE_RECORD_ID,
+			# 			SAQITM.TAX_PERCENTAGE,
+			# 			SAQITM.TAX,
+			# 			{UserId} as ownerId,
+			# 			{CartId} as cartId
+			# 		FROM SAQITM (NOLOCK) 
+			# 		JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID  AND SAQTSV.QTEREV_RECORD_ID = SAQITM.QTEREV_RECORD_ID              
+			# 		WHERE SAQITM.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_ID = '{ServiceId}' """.format(
+			# 			CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,
+			# 			RevisionRecordId=self.quote_revision_record_id,
+			# 			ServiceId=self.tree_param,))
+		# if self.tree_param == 'Z0068' and self.tree_parent_level_0 == 'Add-On Products':
+			# self._process_query("""UPDATE A SET A.TARGET_PRICE = B.TARGET_PRICE,A.SALES_PRICE = B.SALES_PRICE,A.CEILING_PRICE = B.CEILING_PRICE,A.TOTAL_COST = B.TOTAL_COST,A.EXTENDED_PRICE = B.EXTENDED_PRICE,A.TAX = B.TAX,A.PRICING_STATUS = 'ACQUIRED' FROM QT__SAQITM A(NOLOCK) JOIN (SELECT SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(SALES_PRICE) AS SALES_PRICE,SUM(CEILING_PRICE) AS CEILING_PRICE,SUM(TOTAL_COST) AS TOTAL_COST,SUM(EXTENDED_PRICE) AS EXTENDED_PRICE,SUM(TAX) AS TAX,QUOTE_RECORD_ID,SERVICE_RECORD_ID from QT__SAQICO(NOLOCK) WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID='{Service_id}' GROUP BY QUOTE_RECORD_ID,SERVICE_RECORD_ID) B ON A.QUOTE_RECORD_ID = B.QUOTE_RECORD_ID  AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID
+			# AND A.SERVICE_RECORD_ID=B.SERVICE_RECORD_ID """.format(			
+			# QuoteRecordId=self.contract_quote_record_id,
+			# RevisionRecordId=self.quote_revision_record_id,
+			# Service_id =self.tree_param))				
+		# """ if Quote is not None:
+		# 	Quote.QuoteTables["SAQITM"].Save()
+		# 	Quote.QuoteTables["SAQICO"].Save()
+		# 	Quote.QuoteTables["SAQIFP"].Save()
+		# 	Quote.Save() """
+		# return True
 
-	def _delete_quote_line_items(self, cart_id, cart_user_id):
-		self._process_query("""DELETE QT__SAQITM FROM QT__SAQITM 
-								JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = QT__SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = QT__SAQITM.QUOTE_RECORD_ID  AND SAQTSV.QTEREV_RECORD_ID = QT__SAQITM.QTEREV_RECORD_ID
-								WHERE QT__SAQITM.cartId = '{CartId}' AND ownerId = {UserId} AND QT__SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QT__SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_DESCRIPTION = '{ServiceId}'""".format(
-									CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, ServiceId=self.tree_param))
-		return True
+	# def _delete_quote_line_items(self, cart_id, cart_user_id):
+	# 	self._process_query("""DELETE QT__SAQITM FROM QT__SAQITM 
+	# 							JOIN SAQTSV (NOLOCK) ON SAQTSV.SERVICE_RECORD_ID = QT__SAQITM.SERVICE_RECORD_ID AND SAQTSV.QUOTE_RECORD_ID = QT__SAQITM.QUOTE_RECORD_ID  AND SAQTSV.QTEREV_RECORD_ID = QT__SAQITM.QTEREV_RECORD_ID
+	# 							WHERE QT__SAQITM.cartId = '{CartId}' AND ownerId = {UserId} AND QT__SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND QT__SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQTSV.SERVICE_DESCRIPTION = '{ServiceId}'""".format(
+	# 								CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id, ServiceId=self.tree_param))
+	# 	return True
 	
 	# def _insert_quote_spare_parts(self, cart_id, cart_user_id):		
 	# 	self._process_query("""INSERT QT__SAQIFP (
