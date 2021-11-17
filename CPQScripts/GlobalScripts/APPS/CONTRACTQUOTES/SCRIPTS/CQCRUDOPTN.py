@@ -730,7 +730,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						continue
 					else:
 						existing_offering_ids.append(row_detail.get("SERVICE_ID"))
-				
+				Trace.Write('Row_Values--->'+str(row_values))
 				row_detail.update(row_values)
 				###A055S000P01-9650 START
 				getservice_count = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
