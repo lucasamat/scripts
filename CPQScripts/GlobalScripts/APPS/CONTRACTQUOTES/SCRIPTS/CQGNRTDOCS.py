@@ -38,12 +38,12 @@ audit_fields = SqlHelper.GetFirst("SELECT USERS.USERNAME,SAQDOC.CpqTableEntryDat
 
 Log.Info('16-------spare quote---'+str(recid))
 extline_pri = 0.00
-QuoteproductTotals = Quote.QuoteTables["SAQITM"]
+# QuoteproductTotals = Quote.QuoteTables["SAQITM"]
 
-for i in QuoteproductTotals.Rows:
-	Log.Info('38--extline_pri---SAQITM---'+str(extline_pri))
-	extline_pri += float(i['EXTENDED_UNIT_PRICE'])
-	Quote.SetGlobal('SubtotalLineItems', str(extline_pri))
+# for i in QuoteproductTotals.Rows:
+# 	Log.Info('38--extline_pri---SAQITM---'+str(extline_pri))
+# 	extline_pri += float(i['EXTENDED_UNIT_PRICE'])
+# 	Quote.SetGlobal('SubtotalLineItems', str(extline_pri))
 Quote.GetCustomField('SubtotalLineItems').Content = str(extline_pri)
 Log.Info('52--extline_pri------'+str(extline_pri))
 
@@ -60,15 +60,15 @@ for i in QuoteproductTotalsTM.Rows:
 	Quote.SetGlobal('SubitemextTools', str(extd_pr))
 Quote.GetCustomField('SubtotalTools').Content = str(extitm_price)
 #Log.Info('64--vextitm_price-----'+str(extitm_price))'''
-getdynamicrcords = SqlHelper.GetList("Select EXTENDED_UNIT_PRICE,TAX from QT__SAQITM where QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
-for i in getdynamicrcords:
-	Log.Info('16---spare quote-SAQITM----UNIT_PRICE entry--')
-	extd_pr += float(i.EXTENDED_UNIT_PRICE)
-	extitm_price += float(i.EXTENDED_UNIT_PRICE)
-	taxtotal += float(i.TAX)
-	Quote.SetGlobal('SubitemTools', str(extitm_price))
-	Quote.SetGlobal('SubitemextTools', str(extd_pr))
-	Quote.SetGlobal('taxtotal', str(taxtotal))
+# getdynamicrcords = SqlHelper.GetList("Select EXTENDED_UNIT_PRICE,TAX from QT__SAQITM where QUOTE_RECORD_ID = '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
+# for i in getdynamicrcords:
+# 	Log.Info('16---spare quote-SAQITM----UNIT_PRICE entry--')
+# 	extd_pr += float(i.EXTENDED_UNIT_PRICE)
+# 	extitm_price += float(i.EXTENDED_UNIT_PRICE)
+# 	taxtotal += float(i.TAX)
+# 	Quote.SetGlobal('SubitemTools', str(extitm_price))
+# 	Quote.SetGlobal('SubitemextTools', str(extd_pr))
+# 	Quote.SetGlobal('taxtotal', str(taxtotal))
 Quote.GetCustomField('SubtotalTools').Content = str(extitm_price)
 
 
