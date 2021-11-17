@@ -196,7 +196,8 @@ class EntitlementView():
 			#where = "QTQITM.QUOTE_ITEM_RECORD_ID = '" + str(RECORD_ID) + "'"
 			#join = 'JOIN QTQITM ON QTQITM.QUOTE_RECORD_ID = SAQIEN.QUOTE_RECORD_ID'
 			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparam) + "'"
-			join = 'JOIN SAQIFP ON SAQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID  = SAQIPE.QTEREV_RECORD_ID  AND SAQIFP.SERVICE_ID =SAQIPE.SERVICE_ID'
+			# join = 'JOIN SAQIFP ON SAQITM.QUOTE_RECORD_ID = SAQIPE.QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID  = SAQIPE.QTEREV_RECORD_ID  AND SAQIFP.SERVICE_ID =SAQIPE.SERVICE_ID'
+			join = ''
 		elif EntitlementType == "ITEMS":	
 			TableObj = Sql.GetFirst("select * from SAQIEN (NOLOCK) where QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			where = "QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
