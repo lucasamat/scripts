@@ -1039,33 +1039,33 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 									{WhereString}								
 									""".format(WhereString=where_string_splitted))
 				# Is Changed Information Notification - Start
-				quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_id}'".format(QuoteRecordId=getinnercon.QUOTE_RECORD_ID,revision_id = getinnercon.QTEREV_RECORD_ID))		
-				if quote_item_obj:
-					Sql.RunQuery("DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.OBJECT_APINAME = 'SAQSCE' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
+				# quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{revision_id}'".format(QuoteRecordId=getinnercon.QUOTE_RECORD_ID,revision_id = getinnercon.QTEREV_RECORD_ID))		
+				# if quote_item_obj:
+				Sql.RunQuery("DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.OBJECT_APINAME = 'SAQSCE' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(getinnercon.QUOTE_RECORD_ID))
 
-					Sql.RunQuery("""INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-									SELECT
-										CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
-										RECORD_ID as ERRORMESSAGE_RECORD_ID,
-										MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
-										OBJECT_APINAME as OBJECT_NAME,
-										MESSAGE_TYPE as OBJECT_TYPE,
-										OBJECT_RECORD_ID as OBJECT_RECORD_ID,
-										'{QuoteRecordId}' as OBJECT_VALUE_REC_ID,
-										'{QuoteId}' as OBJECT_VALUE,
-										1 as ACTIVE,
-										'{UserId}' as CPQTABLEENTRYADDEDBY, 
-										'{DateTimeValue}' as CPQTABLEENTRYDATEADDED, 
-										'{UserId}' as CpqTableEntryModifiedBy, 
-										'{DateTimeValue}' as CpqTableEntryDateModified
-									FROM SYMSGS (nolock)
-									WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
-								""".format(
-									QuoteRecordId=getinnercon.QUOTE_RECORD_ID,
-									QuoteId=getinnercon.QUOTE_ID,
-									UserId=userId,
-									DateTimeValue=datetimenow
-								))
+				Sql.RunQuery("""INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+								SELECT
+									CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
+									RECORD_ID as ERRORMESSAGE_RECORD_ID,
+									MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
+									OBJECT_APINAME as OBJECT_NAME,
+									MESSAGE_TYPE as OBJECT_TYPE,
+									OBJECT_RECORD_ID as OBJECT_RECORD_ID,
+									'{QuoteRecordId}' as OBJECT_VALUE_REC_ID,
+									'{QuoteId}' as OBJECT_VALUE,
+									1 as ACTIVE,
+									'{UserId}' as CPQTABLEENTRYADDEDBY, 
+									'{DateTimeValue}' as CPQTABLEENTRYDATEADDED, 
+									'{UserId}' as CpqTableEntryModifiedBy, 
+									'{DateTimeValue}' as CpqTableEntryDateModified
+								FROM SYMSGS (nolock)
+								WHERE OBJECT_APINAME = 'SAQSCE' AND MESSAGE_LEVEL = 'INFORMATION' AND MESSAGE_CODE = '200112'
+							""".format(
+								QuoteRecordId=getinnercon.QUOTE_RECORD_ID,
+								QuoteId=getinnercon.QUOTE_ID,
+								UserId=userId,
+								DateTimeValue=datetimenow
+							))
 				# Is Changed Information Notification - End
 
 			
