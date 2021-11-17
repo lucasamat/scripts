@@ -288,23 +288,23 @@ def englishdoc():
 	offerings_total = 0.00
 	decimal_place ="2"
 	oft = tax = totalprice = unoft = 0.00
-	QuoteproductTotal = Quote.QuoteTables["SAQITM"]
-	for i in QuoteproductTotal.Rows:
+	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
+	# for i in QuoteproductTotal.Rows:
 		
-		oft += float(i['EXTENDED_UNIT_PRICE'])
-		unoft += float(i['UNIT_PRICE'])
+	# 	oft += float(i['EXTENDED_UNIT_PRICE'])
+	# 	unoft += float(i['UNIT_PRICE'])
 		
-		tax +=  float(i['TAX'])
-		totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
-		Quote.SetGlobal('Total_price', str(oft))
-		#offerings_total = str(round(offerings_total + oft))
+	# 	tax +=  float(i['TAX'])
+	# 	totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
+	# 	Quote.SetGlobal('Total_price', str(oft))
+	# 	#offerings_total = str(round(offerings_total + oft))
 		
-		#offerings_total = round(offerings_total + float(i['EXTENDED_UNIT_PRICE'],2))
-		#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
+	# 	#offerings_total = round(offerings_total + float(i['EXTENDED_UNIT_PRICE'],2))
+	# 	#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
 		
-		Quote.SetGlobal('Total_Offerings', str(unoft))
-		Quote.SetGlobal('Total_tax', str(tax))
-		#Quote.SetGlobal('Total_Offerings', str(offerings_total))
+	# 	Quote.SetGlobal('Total_Offerings', str(unoft))
+	# 	Quote.SetGlobal('Total_tax', str(tax))
+	# 	#Quote.SetGlobal('Total_Offerings', str(offerings_total))
 	Quote.GenerateDocument('AMAT Quote', GenDocFormat.PDF)
 	
 	''' if Quote is not None and Quote.CompositeNumber == str(quoteid.C4C_QUOTE_ID):
@@ -330,12 +330,12 @@ def englishdoc():
 		Trace.Write(Data) '''
 		#QuoteHelper.Edit(quoteid.C4C_QUOTE_ID, True)
 
-	'''for action in Quote.Actions:
-		if action.Name == "Reprice" and action.IsPrimaryAction:
-			Quote.ExecuteAction(action.Id)
-			Quote.QuoteTables["SAQITM"].Save()
-			Quote.QuoteTables["SAQICO"].Save()
-			Quote.QuoteTables["SAQIFP"].Save()'''
+	# '''for action in Quote.Actions:
+	# 	if action.Name == "Reprice" and action.IsPrimaryAction:
+	# 		Quote.ExecuteAction(action.Id)
+	# 		Quote.QuoteTables["SAQITM"].Save()
+	# 		Quote.QuoteTables["SAQICO"].Save()
+	# 		Quote.QuoteTables["SAQIFP"].Save()'''
 		#QuoteproductTotals = Quote.QuoteTables["SAQITM"]
 		#QuoteproductTotals.AddNewRow()
 		#Quote.QuoteTables["SAQITM"].Save()
@@ -667,17 +667,17 @@ def chinesedoc():
 	decimal_place ="2"
 	oft = tax = totalprice =unoft =  0.00
 	
-	QuoteproductTotal = Quote.QuoteTables["SAQITM"]
-	for i in QuoteproductTotal.Rows:
-		oft += float(i['EXTENDED_UNIT_PRICE'])
-		tax += float(i['TAX'])
-		unoft += float(i['UNIT_PRICE'])
-		totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
-		#offerings_total = round(offerings_total + i['EXTENDED_UNIT_PRICE'],2)
-		#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
-		Quote.SetGlobal('Total_Offerings', str(unoft))
-		Quote.SetGlobal('Total_tax', str(tax))
-		Quote.SetGlobal('Total_price', str(oft))
+	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
+	# for i in QuoteproductTotal.Rows:
+	# 	oft += float(i['EXTENDED_UNIT_PRICE'])
+	# 	tax += float(i['TAX'])
+	# 	unoft += float(i['UNIT_PRICE'])
+	# 	totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
+	# 	#offerings_total = round(offerings_total + i['EXTENDED_UNIT_PRICE'],2)
+	# 	#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
+	# 	Quote.SetGlobal('Total_Offerings', str(unoft))
+	# 	Quote.SetGlobal('Total_tax', str(tax))
+	# 	Quote.SetGlobal('Total_price', str(oft))
 
 	Quote.GenerateDocument('AMAT Quote Chinese', GenDocFormat.PDF)
 	""" if Quote is not None and Quote.CompositeNumber == str(quoteid.C4C_QUOTE_ID):
@@ -822,19 +822,19 @@ def fpmdoc():
 	decimal_place ="2"
 	oft = tax = totalprice = unoft = 0.00
 	
-	QuoteproductTotal = Quote.QuoteTables["SAQITM"]
-	for i in QuoteproductTotal.Rows:
-		#Log.Info(i['EXTENDED_UNIT_PRICE'])
-		oft += float(i['EXTENDED_UNIT_PRICE'])
-		tax += float(i['TAX'])
-		unoft += float(i['UNIT_PRICE'])
-		totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
-		#offerings_total = round(offerings_total + i['EXTENDED_UNIT_PRICE'],2)
-		#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
+	# QuoteproductTotal = Quote.QuoteTables["SAQITM"]
+	# for i in QuoteproductTotal.Rows:
+	# 	#Log.Info(i['EXTENDED_UNIT_PRICE'])
+	# 	oft += float(i['EXTENDED_UNIT_PRICE'])
+	# 	tax += float(i['TAX'])
+	# 	unoft += float(i['UNIT_PRICE'])
+	# 	totalprice += float(i['EXTENDED_UNIT_PRICE'] +(i['TAX']))
+	# 	#offerings_total = round(offerings_total + i['EXTENDED_UNIT_PRICE'],2)
+	# 	#Quote.GetCustomField('Total_Offerings').Content = str(offerings_total)
 		
-		Quote.SetGlobal('Total_Offerings', str(unoft))
-		Quote.SetGlobal('Total_tax', str(tax))
-		Quote.SetGlobal('Total_price', str(oft))
+	# 	Quote.SetGlobal('Total_Offerings', str(unoft))
+	# 	Quote.SetGlobal('Total_tax', str(tax))
+	# 	Quote.SetGlobal('Total_price', str(oft))
 		
 	Quote.GenerateDocument('FPM Quote', GenDocFormat.PDF)
 	fileName = Quote.GetLatestGeneratedDocumentFileName()
