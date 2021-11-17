@@ -1030,12 +1030,16 @@ class SyncQuoteAndCustomTables:
 						
 						#Log.Info("CONTACT_INFO INSERT STARTS---->"+str(quote_involved_party_contact_table_info.AddRow(primary_contact_update)))
 					# A055S000P01-6618 - Ends
+					##Updating the Document currency into the SAQTRV TABLE....
+					##A055S000P01-12754 code starts...
 					if custom_fields_detail.get('SalesOrgID') and custom_fields_detail.get('Division') and custom_fields_detail.get("STPAccountID") and custom_fields_detail.get('DistributionChannel') :
 						salesorg_account_obj = Sql.GetFirst("SELECT CURRENCY,CURRENCY_RECORD_ID FROM SASAAC (NOLOCK) WHERE SALESORG_ID = '{}' AND DIVISION_ID = '{}' AND ACCOUNT_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}' ".format(custom_fields_detail.get('SalesOrgID'),custom_fields_detail.get('Division'),custom_fields_detail.get("STPAccountID"),custom_fields_detail.get('DistributionChannel')))
 						if salesorg_account_obj:
-							salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
-												"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
+							salesorg_data.update({"DOC_CURRENCY":salesorg_account_obj.CURRENCY , 
+												"DOCCURR_RECORD_ID":salesorg_account_obj.CURRENCY_RECORD_ID,
 												})
+					##A055S000P01-12754 code ends..
+					##Updating the Document currency into the SAQTRV TABLE...
 					if custom_fields_detail.get("STPAccountID"):
 						sold_to_update = {
 							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
