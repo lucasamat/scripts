@@ -4644,7 +4644,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						Trace.Write('months---'+str(months))
 						months=months/3
 						Trace.Write('months-646----'+str(months))
-						for index in range(0, months+1):
+						for index in range(0, months):
 							self.insert_items_billing_plan(total_months=months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
