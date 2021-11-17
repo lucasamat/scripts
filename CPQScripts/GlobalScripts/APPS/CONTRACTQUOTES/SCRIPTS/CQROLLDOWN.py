@@ -231,14 +231,15 @@ def CoveredObjEntitlement():
 		Log.Info("ancillary_dict--qi-"+str(ancillary_dict)+'--'+str(Qt_rec_id)) 
 		for anc_key,anc_val in ancillary_dict.items():
 			#if anc_val == 'INSERT':
-			#try:
-			temp_val = "SERVICE_ID = '{}'".format(anc_key)
-			where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
-			#where = where.replace('Z0091','{}'.format(anc_key))
-			#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
-			data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
-			#except Exception:
-				#Log.Info("Exception in Quote Item insert1111")
+			try:
+				#temp_val = "SERVICE_ID = '{}'".format(anc_key)
+				#where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
+				#where = where.replace('Z0091','{}'.format(anc_key))
+				#Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"ContractQuoteRecordId":Qt_rec_id, "ContractQuoteRevisionRecordId":rev_rec_id, "ServiceId":anc_key, "ActionType":'INSERT_LINE_ITEMS'})
+				#data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+			except Exception:
+				Log.Info("Exception in Quote Item insert1111")
 	sendEmail(level)
 
 def CoveredObjItemEntitlement():
