@@ -101,7 +101,8 @@ def Related_Sub_Banner(
     # Getting page details
     multi_buttons = []
     
-    
+    if ObjName == "SAQTBP":
+        ObjName ="SAQRIB"
     if ObjName == "SAQDOC":
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' ".format(str(ObjName)))
     else:
