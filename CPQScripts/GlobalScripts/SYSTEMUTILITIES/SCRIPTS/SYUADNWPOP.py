@@ -3539,8 +3539,8 @@ def POPUPLISTVALUEADDNEW(
 				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
 			)
 
-		elif str(ObjectName) == "SAQRSP" and str(CurrentTab) == "Quotes":
-			Trace.Write('In SAQRSP')
+		elif (str(ObjectName) == "SAQRSP" or str(ObjectName)=="SAQSPT") and str(CurrentTab) == "Quotes":
+    			Trace.Write('In '+str(ObjName))
 			where_string = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
@@ -3716,72 +3716,73 @@ def POPUPLISTVALUEADDNEW(
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-			if TreeSuperParentParam == "Product Offerings":
-				TreeParam = TreeParam
-				TableName = "SAQTSE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
-			elif TreeTopSuperParentParam == "Product Offerings":
-				Service_Id = Product.GetGlobal("TreeParentLevel0")
-				TableName = "SAQSFE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
-			else:
-				Service_Id = Product.GetGlobal("TreeParentLevel1")
-				Fab_location_Id = Product.GetGlobal("TreeParentLevel0")
-				TableName = "SAQSGE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,Fab_location_Id,TreeParam))
-			# get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,'"+str(entitlement_obj.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('{}','{}') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions') ".format(contract_quote_record_id,#quote_revision_record_id,TreeParam,non_consumable_value,consumable_value))
-			#get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions')")
-			# entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-			# import re
-			# flag=0
-			# quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			# pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_NONCNS</ENTITLEMENT_ID>')
-			# pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-			# # non_consumable_val_mamsop = consumable_value_mamsop = ''
-			# consumable_value_mamsop = ""
-			# for m in re.finditer(quote_item_tag, entitlement_xml):
-			# 	sub_string = m.group(1)
-			# 	non_consumable =re.findall(pattern_non_consumable,sub_string)
-			# 	consumable =re.findall(pattern_consumable,sub_string)
-			# 	if non_consumable:
-			# 		consumable_value_mamsop = 'N'
-			# 		break
-			# 	if consumable:
-			# 		consumable_value_mamsop = 'C'
-			# 		break
-			# 	iclusions_val_list.append(consumable_value_mamsop)
-			# for val in get_xml_val:
-			# 	#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
-			# 	if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
-			# 		consumable_value_mamsop = 'N'
-			# 	elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
-			# 		consumable_value_mamsop  = 'C'
-			# 	iclusions_val_list.append(consumable_value_mamsop)
-			#Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
-			#get consumable and non consumable values from XML end
-			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-			import re
-			flag=0
-			iclusions_val_list = []
-			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-			pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-			for m in re.finditer(quote_item_tag, entitlement_xml):
-				sub_string = m.group(1)
-				non_consumable =re.findall(pattern_non_consumable,sub_string)
-				consumable =re.findall(pattern_consumable,sub_string)
-				exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
-				if non_consumable and exclusion_or_inclusion:
-					Trace.Write("Matcheddddddddd")
-					iclusions_val_list.append('N')
-				if consumable and exclusion_or_inclusion:
-					Trace.Write("5443543")
-					iclusions_val_list.append('C')
-			iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
+			if str(ObjName)=="SAQRSP":
+				if TreeSuperParentParam == "Product Offerings":
+					TreeParam = TreeParam
+					TableName = "SAQTSE"
+					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+				elif TreeTopSuperParentParam == "Product Offerings":
+					Service_Id = Product.GetGlobal("TreeParentLevel0")
+					TableName = "SAQSFE"
+					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
+				else:
+					Service_Id = Product.GetGlobal("TreeParentLevel1")
+					Fab_location_Id = Product.GetGlobal("TreeParentLevel0")
+					TableName = "SAQSGE"
+					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,Fab_location_Id,TreeParam))
+				# get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,'"+str(entitlement_obj.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('{}','{}') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions') ".format(contract_quote_record_id,#quote_revision_record_id,TreeParam,non_consumable_value,consumable_value))
+				#get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions')")
+				# entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+				# import re
+				# flag=0
+				# quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				# pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_NONCNS</ENTITLEMENT_ID>')
+				# pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				# # non_consumable_val_mamsop = consumable_value_mamsop = ''
+				# consumable_value_mamsop = ""
+				# for m in re.finditer(quote_item_tag, entitlement_xml):
+				# 	sub_string = m.group(1)
+				# 	non_consumable =re.findall(pattern_non_consumable,sub_string)
+				# 	consumable =re.findall(pattern_consumable,sub_string)
+				# 	if non_consumable:
+				# 		consumable_value_mamsop = 'N'
+				# 		break
+				# 	if consumable:
+				# 		consumable_value_mamsop = 'C'
+				# 		break
+				# 	iclusions_val_list.append(consumable_value_mamsop)
+				# for val in get_xml_val:
+				# 	#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
+				# 	if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
+				# 		consumable_value_mamsop = 'N'
+				# 	elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
+				# 		consumable_value_mamsop  = 'C'
+				# 	iclusions_val_list.append(consumable_value_mamsop)
+				#Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
+				#get consumable and non consumable values from XML end
+				#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
+				entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+				import re
+				flag=0
+				iclusions_val_list = []
+				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+				for m in re.finditer(quote_item_tag, entitlement_xml):
+					sub_string = m.group(1)
+					non_consumable =re.findall(pattern_non_consumable,sub_string)
+					consumable =re.findall(pattern_consumable,sub_string)
+					exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
+					if non_consumable and exclusion_or_inclusion:
+						Trace.Write("Matcheddddddddd")
+						iclusions_val_list.append('N')
+					if consumable and exclusion_or_inclusion:
+						Trace.Write("5443543")
+						iclusions_val_list.append('C')
+				iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
 			#Trace.Write('iclusions_val---'+str(iclusions_val))
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
 			#Trace.Write('inner_join----'+str(inner_join))
 			#Trace.Write('ordered_keys----'+str(ordered_keys))
 			#Trace.Write('additional_where----'+str(additional_where))
@@ -3795,6 +3796,13 @@ def POPUPLISTVALUEADDNEW(
 			# 		order_by,pagination_condition
 			# 	)
 			# )
+				Pagination_M = Sql.GetFirst(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER) {} ".format(
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
+					)
+				)
+			elif str(ObjName)=="SAQSPT":
+				where_string += ""
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
 					", ".join(ordered_keys_mam),
@@ -3814,11 +3822,6 @@ def POPUPLISTVALUEADDNEW(
 					additional_where
 				)
 				)
-			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER) {} ".format(
-					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
-				)
-			)
 			if QueryCountObj is not None:
 				QryCount = QueryCountObj.cnt
 
