@@ -298,7 +298,7 @@ class ContractQuoteCrudOpertion:
 				divide_by = 12 + remaining_months
 			get_val = 1
 		#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
-		Trace.Write(str(amount_column)+'---272-----272-----'+str(service_id))
+		Trace.Write(str(amount_column)+'---301-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
 		Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, QUOTE_ID, QTEITM_RECORD_ID, 
