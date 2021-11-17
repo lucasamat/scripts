@@ -2034,7 +2034,7 @@ class TreeView:
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
-								elif str(ObjName).strip() == 'SAQTBP' and str(NodeName) == 'SERVICE_ID':
+								elif str(ObjName).strip() == 'SAQTBP' and str(NodeName) == 'PRDOFR_ID':
 									Trace.Write("Billing___conc"+str(where_string))
 									get_service_name_bill = Sql.GetFirst("SELECT * FROM SAQTSV WHERE {} AND SERVICE_ID = '{}'".format(where_string,NodeText) )
 									if get_service_name_bill:
