@@ -898,12 +898,12 @@ def Related_Sub_Banner(
                 # 	fab_gb_node = Sql.GetFirst("SELECT QUOTE_FAB_LOC_GB_RECORD_ID FROM SAQFGB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                 # 	if fab_gb_node:
                 # 		CurrentRecordId = fab_gb_node.QUOTE_FAB_LOC_GB_RECORD_ID
-                if ObjName == "SAQIGB":
-                    contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-                    itm_gb_node = Sql.GetFirst("SELECT QUOTE_ITEM_GREENBOOK_RECORD_ID FROM SAQIGB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    if itm_gb_node:
-                        CurrentRecordId = itm_gb_node.QUOTE_ITEM_GREENBOOK_RECORD_ID
-                elif ObjName == "SAQTMT":
+                # if ObjName == "SAQIGB":
+                #     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+                #     itm_gb_node = Sql.GetFirst("SELECT QUOTE_ITEM_GREENBOOK_RECORD_ID FROM SAQIGB (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                #     if itm_gb_node:
+                #         CurrentRecordId = itm_gb_node.QUOTE_ITEM_GREENBOOK_RECORD_ID
+                if ObjName == "SAQTMT":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     itm_gb_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
                     if itm_gb_node:
