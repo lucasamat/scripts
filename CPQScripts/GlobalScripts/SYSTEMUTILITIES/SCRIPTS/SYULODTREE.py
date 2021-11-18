@@ -1457,9 +1457,9 @@ class TreeView:
 				#     objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
 				elif str(ObjName).strip() == 'SYPRSF':
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
-				elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
-					ObjectName = 'SAQTMT'
-					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
+				# elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
+				# 	ObjectName = 'SAQTMT'
+				# 	objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
 				elif str(ObjName).strip() == 'SAQFBL' and str(NodeName).strip() == 'FABLOCATION_ID':
 					ObjectName = 'SAQTMT'
 					objd_where_obj = Sql.GetFirst("select * from SYOBJD (nolock) where OBJECT_NAME = '"+ str(ObjName)+ "' AND LOOKUP_OBJECT = '"+ str(ObjectName)+ "'")
@@ -1509,8 +1509,8 @@ class TreeView:
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQSFB' and str(NodeName).strip() == 'FABLOCATION_ID':
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != '' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
-					elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
-						where_string = where_string                        
+					# elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
+					# 	where_string = where_string                        
 					# elif str(ObjName).strip() == 'SAQIFL' and str(NodeName).strip() == 'FABLOCATION_ID':
 					# 	where_string = where_string
 					elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID':
@@ -2828,15 +2828,15 @@ class TreeView:
 										NodeRecId = str(eval("childdata.GREENBOOK"))
 									except:
 										NodeRecId = "-"
-							elif str(ObjName).strip() == 'SAQIGB':
-								if NodeApiName == 'FABLOCATION_ID':
-									NodeRecId = str(eval("childdata.FABLOCATION_ID"))
-									nodeId = 38
-								elif NodeApiName == 'GREENBOOK':
-									try:
-										NodeRecId = str(eval("childdata.GREENBOOK"))
-									except:
-										NodeRecId = "-"
+							# elif str(ObjName).strip() == 'SAQIGB':
+							# 	if NodeApiName == 'FABLOCATION_ID':
+							# 		NodeRecId = str(eval("childdata.FABLOCATION_ID"))
+							# 		nodeId = 38
+							# 	elif NodeApiName == 'GREENBOOK':
+							# 		try:
+							# 			NodeRecId = str(eval("childdata.GREENBOOK"))
+							# 		except:
+							# 			NodeRecId = "-"
 							elif str(ObjName).strip() == 'SAQFGB':
 								NodeRecId = str(eval("childdata.GREENBOOK"))
 							elif str(ObjName).strip() == 'ACAPTF':
