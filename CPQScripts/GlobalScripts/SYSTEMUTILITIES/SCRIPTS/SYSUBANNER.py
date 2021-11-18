@@ -2629,7 +2629,7 @@ def Related_Sub_Banner(
         Trace.Write("Submit_approval"+str(Submit_approval))
         # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
-        if get_quote_status and str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' and Submit_approval == "True":
+        if get_quote_status and (str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' or str(quote_status.QUOTE_STATUS) == 'REJECTED') and Submit_approval == "True":
             Trace.Write("submit for approval")
             sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
