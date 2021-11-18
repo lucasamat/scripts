@@ -807,7 +807,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 						# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
-						saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
+						# saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
 						saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id))
 
@@ -821,7 +821,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						Sql.RunQuery(equipment_contract_update)
 						Sql.RunQuery(assembly_contract_update)
 						# Sql.RunQuery(saqitm_contract_update)
-						Sql.RunQuery(saqifl_contract_update)
+						# Sql.RunQuery(saqifl_contract_update)
 						Sql.RunQuery(saqigb_contract_update)
 						Sql.RunQuery(saqico_contract_update)
 						# Sql.RunQuery(saqtrv_contract_update)
@@ -993,170 +993,170 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 											WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(discount = str(VALUE),quote_rec_id = contract_quote_record_id,quote_revision_rec_id = quote_revision_record_id))
 
 						Quote.Save()
-					elif TableName == "SAQIFL":
-						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
-						newdict.update(dictc)
-						tableInfo = Sql.GetTable(str(TableName))
-						tablerow = newdict
-						tableInfo.AddRow(tablerow)
-						Sql.Upsert(tableInfo)
-						VALUE = float(newdict.get("DISCOUNT"))
-						Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
-						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-						decimal_discount = VALUE / 100.0
-						Sql.RunQuery("""UPDATE SAQICO SET 
-														NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
-														YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
-														NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-														YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-														DISCOUNT = '{Discount}'
-													FROM SAQICO (NOLOCK)                                     
-													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
-														QuoteRecordId=contract_quote_record_id,
-														RevisionRecordId=quote_revision_record_id,
-														DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
-														Discount=VALUE,
-														plus="+",
-														TreeParam=TreeParam))
-						#self._update_year()
-						for count in range(2, 6):
-							Sql.RunQuery("""UPDATE SAQICO SET
-															SAQICO.YEAR_{Year} = CASE  
-																WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
-																	THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
-																ELSE 0
-															END,
-															SAQICO.YEAR_{Year}_INGL_CURR = CASE  
-																WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
-																	THEN ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) - (ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
-																ELSE 0
-															END
-														FROM SAQICO (NOLOCK) 
-														JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
-														WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'""".format(
-															QuoteRecordId=contract_quote_record_id,
-															RevisionRecordId=quote_revision_record_id,
-															Year=count,
-															Count=count - 1,
-															TreeParam=TreeParam
-															)
-										)    
-						Sql.RunQuery("""UPDATE SAQICO SET 
-														NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
-														NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0),
-														DISCOUNT_AMOUNT_INGL_CURR = TARGET_PRICE_INGL_CURR - NET_PRICE_INGL_CURR 
-													FROM SAQICO (NOLOCK)                                     
-													WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
-														QuoteRecordId=contract_quote_record_id,
-														RevisionRecordId=quote_revision_record_id,
-														TreeParam=TreeParam
-														))
-						c = Sql.GetFirst("SELECT SUM(DISCOUNT_AMOUNT_INGL_CURR) AS DISCOUNT_AMOUNT_INGL_CURR,SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_PRICE_INGL_CURR) AS SUM_PRICE_INGL_CURR, SUM(YEAR_1_INGL_CURR) AS YEAR1_INGL_CURR, SUM(YEAR_2_INGL_CURR) AS YEAR2_INGL_CURR, SUM(YEAR_3_INGL_CURR) AS YEAR3_INGL_CURR, SUM(YEAR_4_INGL_CURR) AS YEAR4_INGL_CURR, SUM(YEAR_5_INGL_CURR) AS YEAR5_INGL_CURR FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,TreeParentParam.split("-")[1].strip(),TreeParam,quote_revision_record_id))
+					# elif TableName == "SAQIFL":
+					# 	dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
+					# 	newdict.update(dictc)
+					# 	tableInfo = Sql.GetTable(str(TableName))
+					# 	tablerow = newdict
+					# 	tableInfo.AddRow(tablerow)
+					# 	Sql.Upsert(tableInfo)
+					# 	VALUE = float(newdict.get("DISCOUNT"))
+					# 	Trace.Write("Discount = "+str(newdict.get("DISCOUNT")))
+					# 	contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+					# 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+					# 	decimal_discount = VALUE / 100.0
+					# 	Sql.RunQuery("""UPDATE SAQICO SET 
+					# 									NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+					# 									YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+					# 									NET_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
+					# 									YEAR_1_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) - (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
+					# 									DISCOUNT = '{Discount}'
+					# 								FROM SAQICO (NOLOCK)                                     
+					# 								WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
+					# 									QuoteRecordId=contract_quote_record_id,
+					# 									RevisionRecordId=quote_revision_record_id,
+					# 									DecimalDiscount=decimal_discount if decimal_discount > 0 else 1,
+					# 									Discount=VALUE,
+					# 									plus="+",
+					# 									TreeParam=TreeParam))
+					# 	#self._update_year()
+					# 	for count in range(2, 6):
+					# 		Sql.RunQuery("""UPDATE SAQICO SET
+					# 										SAQICO.YEAR_{Year} = CASE  
+					# 											WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
+					# 												THEN ISNULL(SAQICO.YEAR_{Count}, 0) - (ISNULL(SAQICO.YEAR_{Count}, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+					# 											ELSE 0
+					# 										END,
+					# 										SAQICO.YEAR_{Year}_INGL_CURR = CASE  
+					# 											WHEN CAST(DATEDIFF(day,SAQTMT.CONTRACT_VALID_FROM,SAQTMT.CONTRACT_VALID_TO) / 365.2425 AS INT) >= {Count} 
+					# 												THEN ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) - (ISNULL(SAQICO.YEAR_{Count}_INGL_CURR, 0) * ISNULL(SAQICO.YEAR_OVER_YEAR, 0))/100.0                                                   
+					# 											ELSE 0
+					# 										END
+					# 									FROM SAQICO (NOLOCK) 
+					# 									JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
+					# 									WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'""".format(
+					# 										QuoteRecordId=contract_quote_record_id,
+					# 										RevisionRecordId=quote_revision_record_id,
+					# 										Year=count,
+					# 										Count=count - 1,
+					# 										TreeParam=TreeParam
+					# 										)
+					# 					)    
+					# 	Sql.RunQuery("""UPDATE SAQICO SET 
+					# 									NET_VALUE = ISNULL(YEAR_1,0) + ISNULL(YEAR_2,0) + ISNULL(YEAR_3,0) + ISNULL(YEAR_4,0) + ISNULL(YEAR_5,0),
+					# 									NET_VALUE_INGL_CURR = ISNULL(YEAR_1_INGL_CURR,0) + ISNULL(YEAR_2_INGL_CURR,0) + ISNULL(YEAR_3_INGL_CURR,0) + ISNULL(YEAR_4_INGL_CURR,0) + ISNULL(YEAR_5_INGL_CURR,0),
+					# 									DISCOUNT_AMOUNT_INGL_CURR = TARGET_PRICE_INGL_CURR - NET_PRICE_INGL_CURR 
+					# 								FROM SAQICO (NOLOCK)                                     
+					# 								WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND FABLOCATION_ID = '{TreeParam}'""".format(
+					# 									QuoteRecordId=contract_quote_record_id,
+					# 									RevisionRecordId=quote_revision_record_id,
+					# 									TreeParam=TreeParam
+					# 									))
+					# 	c = Sql.GetFirst("SELECT SUM(DISCOUNT_AMOUNT_INGL_CURR) AS DISCOUNT_AMOUNT_INGL_CURR,SUM(NET_PRICE) AS SUM_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_PRICE_INGL_CURR) AS SUM_PRICE_INGL_CURR, SUM(YEAR_1_INGL_CURR) AS YEAR1_INGL_CURR, SUM(YEAR_2_INGL_CURR) AS YEAR2_INGL_CURR, SUM(YEAR_3_INGL_CURR) AS YEAR3_INGL_CURR, SUM(YEAR_4_INGL_CURR) AS YEAR4_INGL_CURR, SUM(YEAR_5_INGL_CURR) AS YEAR5_INGL_CURR FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,TreeParentParam.split("-")[1].strip(),TreeParam,quote_revision_record_id))
 
-						FabNetValue = c.YEAR1 + c.YEAR2 + c.YEAR3 + c.YEAR4 + c.YEAR5
+					# 	FabNetValue = c.YEAR1 + c.YEAR2 + c.YEAR3 + c.YEAR4 + c.YEAR5
 
-						Sql.RunQuery("UPDATE SAQIFL SET DISCOUNT_AMOUNT_INGL_CURR = {DiscountAmt},NET_VALUE = {netvalue},DISCOUNT = {discount},NET_PRICE = '{net_price}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_PRICE_INGL_CURR = '{net_price_in_gl}',YEAR_1_INGL_CURR = {y1_gl},YEAR_2_INGL_CURR = {y2_gl},YEAR_3_INGL_CURR={y3_gl},YEAR_4_INGL_CURR={y4_gl},YEAR_5_INGL_CURR = {y5_gl}  WHERE QUOTE_RECORD_ID = '{quote_record_id}' AND SERVICE_ID LIKE '%{service_id}%' AND FABLOCATION_ID = '{fab_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(discount = float(VALUE),net_price = float(c.SUM_PRICE),net_price_in_gl = float(c.SUM_PRICE_INGL_CURR),quote_record_id = contract_quote_record_id,service_id = TreeParentParam.split("-")[1].strip(),fab_id = TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,y1_gl=c.YEAR1_INGL_CURR,y2_gl=c.YEAR2_INGL_CURR,y3_gl=c.YEAR3_INGL_CURR,y4_gl=c.YEAR4_INGL_CURR,y5_gl=c.YEAR5_INGL_CURR,quote_revision_record_id=quote_revision_record_id,netvalue=FabNetValue,DiscountAmt=c.DISCOUNT_AMOUNT_INGL_CURR))
-						# Sql.RunQuery("""UPDATE SAQITM
-						# 					SET 
-						# 					NET_VALUE = IQ.NET_VALUE,
-						# 					NET_PRICE = IQ.NET_PRICE,
-						# 					YEAR_1 = IQ.YEAR_1,
-						# 					YEAR_2 = IQ.YEAR_2,
-						# 					YEAR_3 = IQ.YEAR_3,
-						# 					YEAR_4 = IQ.YEAR_4,
-						# 					YEAR_5 = IQ.YEAR_5,
-						# 					NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
-						# 					NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-						# 					YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
-						# 					YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
-						# 					YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
-						# 					YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
-						# 					YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
-						# 					DISCOUNT = '{Discount}'					
-						# 					FROM SAQITM (NOLOCK)
-						# 					INNER JOIN (SELECT SAQITM.CpqTableEntryId,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
-						# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
-						# 								FROM SAQITM (NOLOCK) 
-						# 								JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
-						# 								WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'
-						# 								GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId,SAQITM.QTEREV_RECORD_ID)IQ
-						# 					ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
-						# 					WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
-						# 					Discount=VALUE,plus="+",TreeParam=TreeParam))
-						quote_currency = str(Quote.GetCustomField('Currency').Content)		
-						total_net_price = 0.00		
-						total_year_1 = 0.00
-						total_year_2 = 0.00
-						total_year_3 = 0.00
-						total_year_4 = 0.00
-						total_year_5 = 0.00
-						total_net_value = 0.00
-						items_data = {}
+					# 	Sql.RunQuery("UPDATE SAQIFL SET DISCOUNT_AMOUNT_INGL_CURR = {DiscountAmt},NET_VALUE = {netvalue},DISCOUNT = {discount},NET_PRICE = '{net_price}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_PRICE_INGL_CURR = '{net_price_in_gl}',YEAR_1_INGL_CURR = {y1_gl},YEAR_2_INGL_CURR = {y2_gl},YEAR_3_INGL_CURR={y3_gl},YEAR_4_INGL_CURR={y4_gl},YEAR_5_INGL_CURR = {y5_gl}  WHERE QUOTE_RECORD_ID = '{quote_record_id}' AND SERVICE_ID LIKE '%{service_id}%' AND FABLOCATION_ID = '{fab_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(discount = float(VALUE),net_price = float(c.SUM_PRICE),net_price_in_gl = float(c.SUM_PRICE_INGL_CURR),quote_record_id = contract_quote_record_id,service_id = TreeParentParam.split("-")[1].strip(),fab_id = TreeParam,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,y1_gl=c.YEAR1_INGL_CURR,y2_gl=c.YEAR2_INGL_CURR,y3_gl=c.YEAR3_INGL_CURR,y4_gl=c.YEAR4_INGL_CURR,y5_gl=c.YEAR5_INGL_CURR,quote_revision_record_id=quote_revision_record_id,netvalue=FabNetValue,DiscountAmt=c.DISCOUNT_AMOUNT_INGL_CURR))
+					# 	# Sql.RunQuery("""UPDATE SAQITM
+					# 	# 					SET 
+					# 	# 					NET_VALUE = IQ.NET_VALUE,
+					# 	# 					NET_PRICE = IQ.NET_PRICE,
+					# 	# 					YEAR_1 = IQ.YEAR_1,
+					# 	# 					YEAR_2 = IQ.YEAR_2,
+					# 	# 					YEAR_3 = IQ.YEAR_3,
+					# 	# 					YEAR_4 = IQ.YEAR_4,
+					# 	# 					YEAR_5 = IQ.YEAR_5,
+					# 	# 					NET_VALUE_INGL_CURR = IQ.NET_VALUE_INGL_CURR,
+					# 	# 					NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+					# 	# 					YEAR_1_INGL_CURR = IQ.YEAR_1_INGL_CURR,
+					# 	# 					YEAR_2_INGL_CURR = IQ.YEAR_2_INGL_CURR,
+					# 	# 					YEAR_3_INGL_CURR = IQ.YEAR_3_INGL_CURR,
+					# 	# 					YEAR_4_INGL_CURR = IQ.YEAR_4_INGL_CURR,
+					# 	# 					YEAR_5_INGL_CURR = IQ.YEAR_5_INGL_CURR,
+					# 	# 					DISCOUNT = '{Discount}'					
+					# 	# 					FROM SAQITM (NOLOCK)
+					# 	# 					INNER JOIN (SELECT SAQITM.CpqTableEntryId,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE, 0)), 0), 0) as decimal(18,2)) as NET_VALUE,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1, 0)), 0), 0) as decimal(18,2)) as YEAR_1,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2, 0)), 0), 0) as decimal(18,2)) as YEAR_2,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3, 0)), 0), 0) as decimal(18,2)) as YEAR_3,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4, 0)), 0), 0) as decimal(18,2)) as YEAR_4,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5, 0)), 0), 0) as decimal(18,2)) as YEAR_5,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_VALUE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_VALUE_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_1_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_1_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_2_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_2_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_3_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_3_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_4_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_4_INGL_CURR,
+					# 	# 								CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.YEAR_5_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as YEAR_5_INGL_CURR
+					# 	# 								FROM SAQITM (NOLOCK) 
+					# 	# 								JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.LINE_ITEM_ID = SAQITM.LINE_ITEM_ID
+					# 	# 								WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.FABLOCATION_ID = '{TreeParam}'
+					# 	# 								GROUP BY SAQITM.LINE_ITEM_ID, SAQITM.QUOTE_RECORD_ID, SAQITM.CpqTableEntryId,SAQITM.QTEREV_RECORD_ID)IQ
+					# 	# 					ON SAQITM.CpqTableEntryId = IQ.CpqTableEntryId 
+					# 	# 					WHERE SAQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=quote_revision_record_id,
+					# 	# 					Discount=VALUE,plus="+",TreeParam=TreeParam))
+					# 	quote_currency = str(Quote.GetCustomField('Currency').Content)		
+					# 	total_net_price = 0.00		
+					# 	total_year_1 = 0.00
+					# 	total_year_2 = 0.00
+					# 	total_year_3 = 0.00
+					# 	total_year_4 = 0.00
+					# 	total_year_5 = 0.00
+					# 	total_net_value = 0.00
+					# 	items_data = {}
 
-						# items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
-						# if items_obj:
-						# 	for item_obj in items_obj:
-						# 		items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
-						for item in Quote.MainItems:
-							item_number = int(item.RolledUpQuoteItem)
-							if item_number in items_data.keys():
-								if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
-									item_data = items_data.get(item_number)
-									item.NET_PRICE.Value = float(item_data.get('NET_PRICE'))
-									total_net_price += item.NET_PRICE.Value
-									item.NET_VALUE.Value = item_data.get('NET_VALUE')
-									total_net_value += item.NET_VALUE.Value	
-									item.YEAR_1.Value = item_data.get('YEAR_1')
-									total_year_1 += item.YEAR_1.Value
-									item.YEAR_2.Value = item_data.get('YEAR_2')
-									total_year_2 += item.YEAR_2.Value
-									item.YEAR_3.Value = item_data.get('YEAR_3')
-									total_year_3 += item.YEAR_3.Value
-									item.YEAR_4.Value = item_data.get('YEAR_4')
-									total_year_4 += item.YEAR_4.Value
-									item.YEAR_5.Value = item_data.get('YEAR_5')
-									total_year_5 += item.YEAR_5.Value
-									item.DISCOUNT.Value = "+"+str(VALUE)
-						##Added the percentage symbol for discount custom field...
-						Percentage = '%'
-						Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
-						#discount_value = Quote.GetCustomField('DISCOUNT').Content
-						#Trace.Write("discount"+str(discount_value))
-						# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
-						# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
-						# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
-						# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
-						# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
-						Quote.Save()
+					# 	# items_obj = Sql.GetList("SELECT SERVICE_ID, LINE_ITEM_ID, ISNULL(YEAR_1, 0) as YEAR_1 ,ISNULL(YEAR_2, 0) as YEAR_2 ,ISNULL(YEAR_3, 0) as YEAR_3 ,ISNULL(YEAR_4, 0) as YEAR_4 ,ISNULL(YEAR_5, 0) as YEAR_5 , ISNULL(NET_VALUE,0) AS NET_VALUE, ISNULL(NET_PRICE, 0) as NET_PRICE FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id,TreeParam))
+					# 	# if items_obj:
+					# 	# 	for item_obj in items_obj:
+					# 	# 		items_data[int(float(item_obj.LINE_ITEM_ID))] = {'NET_VALUE':item_obj.NET_VALUE, 'SERVICE_ID':(item_obj.SERVICE_ID.replace('- BASE', '')).strip(), 'YEAR_1':item_obj.YEAR_1, 'YEAR_2':item_obj.YEAR_2, 'NET_PRICE':item_obj.NET_PRICE}
+					# 	for item in Quote.MainItems:
+					# 		item_number = int(item.RolledUpQuoteItem)
+					# 		if item_number in items_data.keys():
+					# 			if items_data.get(item_number).get('SERVICE_ID') == item.PartNumber:
+					# 				item_data = items_data.get(item_number)
+					# 				item.NET_PRICE.Value = float(item_data.get('NET_PRICE'))
+					# 				total_net_price += item.NET_PRICE.Value
+					# 				item.NET_VALUE.Value = item_data.get('NET_VALUE')
+					# 				total_net_value += item.NET_VALUE.Value	
+					# 				item.YEAR_1.Value = item_data.get('YEAR_1')
+					# 				total_year_1 += item.YEAR_1.Value
+					# 				item.YEAR_2.Value = item_data.get('YEAR_2')
+					# 				total_year_2 += item.YEAR_2.Value
+					# 				item.YEAR_3.Value = item_data.get('YEAR_3')
+					# 				total_year_3 += item.YEAR_3.Value
+					# 				item.YEAR_4.Value = item_data.get('YEAR_4')
+					# 				total_year_4 += item.YEAR_4.Value
+					# 				item.YEAR_5.Value = item_data.get('YEAR_5')
+					# 				total_year_5 += item.YEAR_5.Value
+					# 				item.DISCOUNT.Value = "+"+str(VALUE)
+					# 	##Added the percentage symbol for discount custom field...
+					# 	Percentage = '%'
+					# 	Quote.GetCustomField('DISCOUNT').Content = str(VALUE)+ " " + Percentage
+					# 	#discount_value = Quote.GetCustomField('DISCOUNT').Content
+					# 	#Trace.Write("discount"+str(discount_value))
+					# 	# Quote.GetCustomField('TOTAL_NET_PRICE').Content =str(total_net_price) + " " + quote_currency
+					# 	# Quote.GetCustomField('YEAR_1').Content = str(total_year_1) + " " + quote_currency
+					# 	# Quote.GetCustomField('YEAR_2').Content = str(total_year_2) + " " + quote_currency
+					# 	# Quote.GetCustomField('YEAR_3').Content = str(total_year_3) + " " + quote_currency
+					# 	# Quote.GetCustomField('TOTAL_NET_VALUE').Content = str(total_net_value) + " " + quote_currency
+					# 	Quote.Save()
 
-						Sql.RunQuery("""UPDATE SAQTRV
-											SET 									
-											SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
-											SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
+					# 	Sql.RunQuery("""UPDATE SAQTRV
+					# 						SET 									
+					# 						SAQTRV.NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
+					# 						SAQTRV.TOTAL_AMOUNT_INGL_CURR = IQ.NET_VALUE,
 											
-											SAQTRV.DISCOUNT_PERCENT = '{discount}'
+					# 						SAQTRV.DISCOUNT_PERCENT = '{discount}'
 											
-											FROM SAQTRV (NOLOCK)
-											INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,
-														SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
-														SUM(ISNULL(SAQRIT.TOTAL_AMOUNT_INGL_CURR, 0)) as NET_VALUE
+					# 						FROM SAQTRV (NOLOCK)
+					# 						INNER JOIN (SELECT SAQRIT.QUOTE_RECORD_ID, SAQRIT.QTEREV_RECORD_ID,
+					# 									SUM(ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0)) as NET_PRICE_INGL_CURR,
+					# 									SUM(ISNULL(SAQRIT.TOTAL_AMOUNT_INGL_CURR, 0)) as NET_VALUE
 														
-														FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIT.QTEREV_RECORD_ID, SAQRIT.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
-											WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(discount = str(VALUE),quote_rec_id = contract_quote_record_id,quote_revision_rec_id = quote_revision_record_id))
+					# 									FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQRIT.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQRIT.QTEREV_RECORD_ID, SAQRIT.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
+					# 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' """.format(discount = str(VALUE),quote_rec_id = contract_quote_record_id,quote_revision_rec_id = quote_revision_record_id))
 
 
 					else:
@@ -1253,7 +1253,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID LIKE '%{service_id}%'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
-							saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+							# saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
@@ -1267,7 +1267,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(equipment_contract_update)
 							Sql.RunQuery(assembly_contract_update)
 							# Sql.RunQuery(saqitm_contract_update)
-							Sql.RunQuery(saqifl_contract_update)
+							# Sql.RunQuery(saqifl_contract_update)
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
@@ -1296,7 +1296,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID LIKE '%{service_id}%".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
-							saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+							# saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
@@ -1309,7 +1309,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(equipment_contract_update)
 							Sql.RunQuery(assembly_contract_update)
 							# Sql.RunQuery(saqitm_contract_update)
-							Sql.RunQuery(saqifl_contract_update)
+							# Sql.RunQuery(saqifl_contract_update)
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
@@ -1337,7 +1337,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID LIKE '%{service_id}%".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
-							saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+							# saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}' AND GREENBOOK = '{Treeparam}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID),Treeparam=Product.GetGlobal("Treeparam"))
 
@@ -1352,7 +1352,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(equipment_contract_update)
 							Sql.RunQuery(assembly_contract_update)
 							# Sql.RunQuery(saqitm_contract_update)
-							Sql.RunQuery(saqifl_contract_update)
+							# Sql.RunQuery(saqifl_contract_update)
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
@@ -1382,7 +1382,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 
 							# saqitm_contract_update = "UPDATE SAQITM SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID LIKE '%{service_id}%".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
-							saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
+							# saqifl_contract_update = "UPDATE SAQIFL SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
 							saqigb_contract_update = "UPDATE SAQIGB SET CONTRACT_VALID_FROM = '{valid_from}' , CONTRACT_VALID_TO = '{valid_to}' WHERE QUOTE_RECORD_ID = '{Quote_rec_id}' AND QTEREV_RECORD_ID = '{Quote_revision_id}' AND SERVICE_ID = '{service_id}'".format(valid_from= product_offering_contract_validity.CONTRACT_VALID_FROM, valid_to =   product_offering_contract_validity.CONTRACT_VALID_TO, Quote_rec_id= str(contract_quote_record_id),Quote_revision_id= str(quote_revision_record_id),service_id= str(product_offering_contract_validity.SERVICE_ID))
 
@@ -1397,7 +1397,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							Sql.RunQuery(item_contract_update)
 							Sql.RunQuery(assembly_contract_update)
 							# Sql.RunQuery(saqitm_contract_update)
-							Sql.RunQuery(saqifl_contract_update)
+							# Sql.RunQuery(saqifl_contract_update)
 							Sql.RunQuery(saqigb_contract_update)
 							Sql.RunQuery(saqico_contract_update)
 							Sql.RunQuery(saqtrv_contract_update)
