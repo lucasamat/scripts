@@ -1117,8 +1117,15 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			Quote = QuoteHelper.Edit(quote_obj.QUOTE_ID)
 	except Exception:
 		Log.Info("Exception in Quote Edit")
-
+	
 	try:
+		if 'GREENBOOK' in where or 'EQUIPMENT_ID' in where:			
+			Sql.RunQuery("""UPDATE SAQICO
+								SET
+									SAQICO.STATUS = ''
+								FROM SAQICO	(NOLOCK)								
+								{WhereString}
+								""".format(WhereString=where))	 
 		Log.Info('where--CQINSQTITM-'+str(where))
 		data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 	except Exception:
@@ -1133,6 +1140,13 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 				where = re.sub(r'SERVICE_ID\s*\=\s*\'[^>]*?\'', temp_val, where )
 				#where = where.replace('Z0091','{}'.format(anc_key))
 				Log.Info('where--CQINSQTITM-'+str(where)+str(anc_key))
+				if 'GREENBOOK' in where or 'EQUIPMENT_ID' in where:			
+					Sql.RunQuery("""UPDATE SAQICO
+										SET
+											SAQICO.STATUS = ''
+										FROM SAQICO	(NOLOCK)								
+										{WhereString}
+										""".format(WhereString=where))
 				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
 			except Exception:
 				Log.Info("Exception in Quote Item insert")
