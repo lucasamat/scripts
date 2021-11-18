@@ -1725,7 +1725,7 @@ class SYLDRTLIST:
 								+ ""
 							)
 							
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock)  JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) + " and M.VISIBLE_INCONFIG = 'TRUE'"
 					elif str(RECORD_ID) == "SYOBJR-98853" and str(TreeParam) == "Tracked Objects":
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00063").GetValue()
 						Qury_str = (
