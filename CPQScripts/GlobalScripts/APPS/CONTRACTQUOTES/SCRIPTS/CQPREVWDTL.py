@@ -671,7 +671,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 						
 	return sec_str
 
-def EditCBC(Qt_rec_id, Quote, MODE):		
+def editcbc(Qt_rec_id, Quote, MODE):		
 	Trace.Write('CBC Update')
 	#min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	
@@ -680,14 +680,16 @@ def EditCBC(Qt_rec_id, Quote, MODE):
 		#order = order + min.id - 1
 		if '.' not in val['CHECKLIST_ID']:
 			Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
+			
+	return True
+
+def countcbc(Qt_rec_id, Quote, MODE):
+	Trace.Write('CBC COUNT')
 	popupquery=Sql.GetFirst("SELECT COUNT(*) as cnt FROM SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND SERVICE_CONTRACT='False' AND SPECIALIST_REVIEW='FALSE' AND CHECKLIST_ID NOT IN('4.1','4.2','4.3','4.4','12.1','12.2','12.3','28.1','28.2','28.3')".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	popupquery_value = popupquery.cnt
-	# Sql.RunQuery("UPDATE SAQTRV SET	REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-	# get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-	# crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})		
 	return popupquery_value
 
-def SaveCBC(Qt_rec_id, Quote, MODE):
+def savecbc(Qt_rec_id, Quote, MODE):
 	Trace.Write('CBC SAVE')
 	Sql.RunQuery("UPDATE SAQTRV SET	REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
@@ -1448,11 +1450,15 @@ elif ACTION == "CBC_VIEW":
 elif ACTION == "CBC_EDIT":
 	MODE = "EDIT"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(EditCBC(Qt_rec_id, Quote, MODE))
+	ApiResponse = ApiResponseFactory.JsonResponse(editcbc(Qt_rec_id, Quote, MODE))
+elif ACTION == "CBC_COUNT":
+	MODE = "COUNT"
+	Quote = Quote.GetGlobal("contract_quote_record_id")
+	ApiResponse = ApiResponseFactory.JsonResponse(countcbc(Qt_rec_id, Quote, MODE))	
 elif ACTION == "CBC_SAVE":
 	MODE = "SAVE"
 	Quote = Quote.GetGlobal("contract_quote_record_id")
-	ApiResponse = ApiResponseFactory.JsonResponse(SaveCBC(Qt_rec_id, Quote, MODE))
+	ApiResponse = ApiResponseFactory.JsonResponse(savecbc(Qt_rec_id, Quote, MODE))
 elif ACTION == "OPPORTUNITY_VIEW":
 	if TreeParam == "Contract Information":
 		contract_record_id = Quote.GetGlobal("contract_record_id")
