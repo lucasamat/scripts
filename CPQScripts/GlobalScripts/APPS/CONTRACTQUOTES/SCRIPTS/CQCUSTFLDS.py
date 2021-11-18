@@ -85,32 +85,32 @@ def custfieldsupdated(saleprice,service_id,lineitemid,discount):
 	covered_obj_sale_price=covered_obj_sale_price,service_id=service_id ,QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),discount=discount,y1=yr1,y2=yr2,y3=yr3,y4=yr4,y5=yr5,ext=extended_price,sales_discount_price = sales_discount_price,lineitemid =lineitemid,yearoveryear= yearoveryear,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")
 	)
 	Sql.RunQuery(update_sales_price)
-	Sql.RunQuery("""UPDATE SAQIGB
-	SET
-	YEAR_1 = IQ.YEAR_1,
-	YEAR_2 = IQ.YEAR_2,
-	YEAR_3 = IQ.YEAR_3,
-	YEAR_4 = IQ.YEAR_4,
-	YEAR_5 = IQ.YEAR_5,
-	EXTENDED_PRICE = IQ.EXTENDED_PRICE,
-	SALES_DISCOUNT_PRICE = IQ.SALES_DISCOUNT_PRICE,
-	DISCOUNT = IQ.DISCOUNT
-	FROM SAQIGB (NOLOCK)
-	INNER JOIN (SELECT SAQICO.QUOTE_RECORD_ID,
-	SAQICO.GREENBOOK_RECORD_ID,
-	SAQICO.DISCOUNT,
-	SUM(ISNULL(SAQICO.EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
-	SUM(ISNULL(SAQICO.SALES_DISCOUNT_PRICE, 0)) as SALES_DISCOUNT_PRICE,
-	SUM(ISNULL(SAQICO.YEAR_1, 0)) as YEAR_1,
-	SUM(ISNULL(SAQICO.YEAR_2, 0)) as YEAR_2,
-	SUM(ISNULL(SAQICO.YEAR_3, 0)) as YEAR_3,
-	SUM(ISNULL(SAQICO.YEAR_4, 0)) as YEAR_4,
-	SUM(ISNULL(SAQICO.YEAR_5, 0)) as YEAR_5
-	FROM SAQICO (NOLOCK)
-	WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' and and QTEREV_RECORD_ID = '{RevisionRecordId}'
-	GROUP BY SAQICO.LINE_ITEM_ID, SAQICO.QUOTE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQICO.DISCOUNT)IQ
-	ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
-	WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
+	# Sql.RunQuery("""UPDATE SAQIGB
+	# SET
+	# YEAR_1 = IQ.YEAR_1,
+	# YEAR_2 = IQ.YEAR_2,
+	# YEAR_3 = IQ.YEAR_3,
+	# YEAR_4 = IQ.YEAR_4,
+	# YEAR_5 = IQ.YEAR_5,
+	# EXTENDED_PRICE = IQ.EXTENDED_PRICE,
+	# SALES_DISCOUNT_PRICE = IQ.SALES_DISCOUNT_PRICE,
+	# DISCOUNT = IQ.DISCOUNT
+	# FROM SAQIGB (NOLOCK)
+	# INNER JOIN (SELECT SAQICO.QUOTE_RECORD_ID,
+	# SAQICO.GREENBOOK_RECORD_ID,
+	# SAQICO.DISCOUNT,
+	# SUM(ISNULL(SAQICO.EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
+	# SUM(ISNULL(SAQICO.SALES_DISCOUNT_PRICE, 0)) as SALES_DISCOUNT_PRICE,
+	# SUM(ISNULL(SAQICO.YEAR_1, 0)) as YEAR_1,
+	# SUM(ISNULL(SAQICO.YEAR_2, 0)) as YEAR_2,
+	# SUM(ISNULL(SAQICO.YEAR_3, 0)) as YEAR_3,
+	# SUM(ISNULL(SAQICO.YEAR_4, 0)) as YEAR_4,
+	# SUM(ISNULL(SAQICO.YEAR_5, 0)) as YEAR_5
+	# FROM SAQICO (NOLOCK)
+	# WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' and and QTEREV_RECORD_ID = '{RevisionRecordId}'
+	# GROUP BY SAQICO.LINE_ITEM_ID, SAQICO.QUOTE_RECORD_ID,SAQICO.GREENBOOK_RECORD_ID,SAQICO.DISCOUNT)IQ
+	# ON SAQIGB.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGB.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
+	# WHERE SAQIGB.QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))
 	##Updating custom fields...
 	# total_item_obj = SqlHelper.GetFirst("""SELECT 
 	# SUM(ISNULL(EXTENDED_PRICE, 0)) as EXTENDED_PRICE,
