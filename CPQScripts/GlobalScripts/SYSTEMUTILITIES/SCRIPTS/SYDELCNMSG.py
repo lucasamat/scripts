@@ -524,7 +524,7 @@ class DeleteConfirmPopup:
         else:
             if GetCount.cnt == 1:
                 Trace.Write("Only one equipment")
-                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSFB","SAQIGB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN"]
+                Objects = ["SAQSCO","SAQSCA","SAQSAP","SAQSKP","SAQICO","SAQSFB","SAQSCE","SAQSAE","SAQSGE","SAQSFE","SAQIEN"]
                 for obj in Objects:
                     a = Sql.RunQuery("DELETE FROM {Obj} WHERE QUOTE_RECORD_ID = '{QuoteId}' AND SERVICE_ID LIKE '%{ServiceId}%' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(Obj=obj,QuoteId=Quote.GetGlobal("contract_quote_record_id"),ServiceId=ServiceId,quote_revision_record_id=quote_revision_record_id))
 
