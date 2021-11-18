@@ -462,7 +462,7 @@ def CommonTreeViewHTMLDetail(
 		if action_visible_obj:
 			if action_visible_obj.OBJECT_RECORD_ID:
 				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
-		if ObjectName == "SYOBFD" or ObjectName == "SAQIGB" or ObjectName == "SAQIFL":
+		if ObjectName == "SYOBFD":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
 		if editable_permission == "TRUE":			
@@ -1420,7 +1420,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						#current_obj_value = str(current_obj_api_name*int(100))				
 					if current_obj_value == "":
 						symbol = ""
-					if current_obj_api_name == "DISCOUNT" and (str(ObjectName) == "SAQIGB" or str(ObjectName) == "SAQIFL") and MODE == "EDIT":
+					if current_obj_api_name == "DISCOUNT" and MODE == "EDIT":
 						Trace.Write("@1809 inside discount")
 						sec_str += (
 							'<td><input id="'
