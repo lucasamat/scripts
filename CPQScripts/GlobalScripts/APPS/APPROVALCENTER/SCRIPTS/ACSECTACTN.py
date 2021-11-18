@@ -498,8 +498,8 @@ class approvalCenter:
 					statusUpdate = "REJECTED",
 					ObjName="SAQTMT",
 					ApiName="QUOTE_STATUS",
-					Primaryvalue="QTEREV_RECORD_ID",
-					primaryKey = str(GetCurStatus.RECORD_NAME)
+					Primaryvalue=str(GetCurStatus.APRTRXOBJ_RECORD_ID),
+					primaryKey = "QTEREV_RECORD_ID"
 				)
 
 				b = Sql.RunQuery(MainObjUpdateQuery)
