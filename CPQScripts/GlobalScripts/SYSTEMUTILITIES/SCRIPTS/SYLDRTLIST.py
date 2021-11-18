@@ -2848,7 +2848,7 @@ class SYLDRTLIST:
 										Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 									else:
 										Trace.Write("Count else")
-										Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" style="display: none;"data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
+										Action_str += ('<li style="display: none;"><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQICT":
 								Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
