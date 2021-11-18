@@ -669,7 +669,7 @@ def CommonTreeViewHTMLDetail(
 		# Billing Matrix Details Load - End	
 		
 		# Greenbook details load || Quote item Location Node - Start
-		if Product.GetGlobal("TreeParentLevel2") == 'Quote Items' or ObjectName == 'SAQIGB':
+		if Product.GetGlobal("TreeParentLevel2") == 'Quote Items':
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeParam = Product.GetGlobal("TreeParam")
@@ -685,9 +685,9 @@ def CommonTreeViewHTMLDetail(
 				Trace.Write("except")
 				Trace.Write("SuperParentParam-"+str(TreeSuperParentParam))
 				service_id = TreeSuperParentParam.split('-')[1].strip()
-			quote_item_gb = Sql.GetFirst(
-				"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
-			)
+			# quote_item_gb = Sql.GetFirst(
+			# 	"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
+			# )
 			if quote_item_gb:
 				RECORD_ID = quote_item_gb.QUOTE_ITEM_GREENBOOK_RECORD_ID				
 		# Greenbook details load || Quote item Location Node - End
@@ -1180,10 +1180,10 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					##suppress PAR_SERVICE_ID and PAR_SERVICE_DESCRIPTION if value is null ends
 					if current_obj_api_name in notinlist:
 						add_style = "display: none;"
-				elif ObjectName == "SAQIGB":
-					notinlist = ["QUOTE_ITEM_GREENBOOK_RECORD_ID"]
-					if current_obj_api_name in notinlist:
-						add_style = "display: none;"
+				# elif ObjectName == "SAQIGB":
+				# 	notinlist = ["QUOTE_ITEM_GREENBOOK_RECORD_ID"]
+				# 	if current_obj_api_name in notinlist:
+				# 		add_style = "display: none;"
 				# elif ObjectName == "SAQITM":
 				# 	notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
 				# 	if current_obj_api_name in notinlist:
@@ -1883,10 +1883,10 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					# 		)								
 					# else:
 					Trace.Write("else 1812"+str(current_obj_api_name))
-					if str(ObjectName) == "SAQIGB" and current_obj_value != "":
-						decimal_val = 2
-						formatting_string = "{0:." + str(decimal_val) + "f}"
-						current_obj_value = formatting_string.format(float(current_obj_value))
+					# if str(ObjectName) == "SAQIGB" and current_obj_value != "":
+					# 	decimal_val = 2
+					# 	formatting_string = "{0:." + str(decimal_val) + "f}"
+					# 	current_obj_value = formatting_string.format(float(current_obj_value))
 												
 					sec_str += (
 						'<td><input id="'
