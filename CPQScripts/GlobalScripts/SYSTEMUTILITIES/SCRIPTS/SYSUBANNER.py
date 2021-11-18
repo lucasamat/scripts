@@ -1141,6 +1141,59 @@ def Related_Sub_Banner(
                     # SecondValue = ListVal[1]
                     #ThirdLable = "Product Offering Type"
                     #ThirdValue = TreeParentParam
+                if TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
+                    Trace.Write("quoteitemshp===")
+                    get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                    item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+                    PrimaryLable = "Total Sales Price"
+                    PrimaryValue = str(get_quote_details.TOTAL_AMOUNT)
+                    SecondLable = "Total Discount %"
+                    SecondValue = str(get_quote_details.DISCOUNT_PERCENT)
+                    ThirdLable = "Total Discount Amount"
+                    ThirdValue = str(get_quote_details.SLSDIS_PRICE_INGL_CURR)
+                    FourthLable = "Total Credit"
+                    FourthValue = str(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
+                    FifthValue = "Total Excluding Tax/VAT"
+                    FifthValue = str(get_quote_details.TAX_AMOUNT_INGL_CURR)
+                    SixthLable = "Tax/VAT"
+                    SixthValue = str(get_quote_details.TAX_AMOUNT_INGL_CURR)
+                    SeventhLable = "Net Price"
+                    SeventhValue = str(get_quote_details.NET_PRICE_INGL_CURR)
+                    if subTabName == "Details" and ObjName == "SAQRIT":
+                        Trace.Write("SAQRIT-DETAIL222===")
+                        valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+                        Trace.Write("valid_from===="+str(valid_from))
+                        valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
+                        if item_detail:
+                            PrimaryLable = "Product Offering Id"
+                            PrimaryValue =  item_detail.SERVICE_ID
+                            SecondLable = "Quantity"
+                            SecondValue = item_detail.QUANTITY
+                            ThirdLable = "Total Excluding Tax/VAT"
+                            ThirdValue = item_detail.TAX_AMOUNT_INGL_CURR
+                            FourthLable = "Contract Start Date"
+                            FourthValue = valid_from
+                            FifthLable = "Contract End Date"
+                            FifthValue = valid_date 
+                    if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
+                        Trace.Write("SAQRIT-DETAIL333===")            
+                        if item_detail:
+                            valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+                            valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]
+                            PrimaryLable = "Line"
+                            PrimaryValue =  item_detail.LINE
+                            SecondLable = "Product Offering Id"
+                            SecondValue = item_detail.SERVICE_ID
+                            ThirdLable = "Fab Location Id"
+                            ThirdValue = item_detail.FABLOCATION_ID
+                            FourthLable = "Fab Location Name"
+                            FourthValue = item_detail.FABLOCATION_NAME
+                            FifthLable = "Total Excluding Tax/VAT"
+                            FifthValue = item_detail.TAX_AMOUNT_INGL_CURR
+                            SixthLable = "Start Date"
+                            SixthValue =  valid_from
+                            SeventhLable = "End Date"
+                            SeventhValue = valid_date
                 if (TreeParentParam == "Sending Equipment" or TreeParentParam == "Receiving Equipment") and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers"):
                     get_val = Sql.GetFirst("select SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_TYPE,FABLOCATION_ID from SAQSFB(nolock) where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
                     PrimaryLable = "Product Offering ID "
