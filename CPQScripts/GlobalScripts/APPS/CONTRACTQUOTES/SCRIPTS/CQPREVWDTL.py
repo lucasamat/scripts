@@ -658,7 +658,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str += '</tr>'
 
 		sec_str += '</tbody></table></div>'
-		#sec_str +='<div class="g4 collapse in except_sec removeHorLine iconhvr sec_edit_sty" id="cbc_savecancel" style="display:none"><button id="hidesavecancel" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcCancel(this)">CANCEL</button><button id="cbc_save_id" class="btnconfig btnMainBanner sec_edit_sty_btn" onclick="cbcSAVE(this)">SAVE</button></div>'
+		
 	values_lists = ""
 	a_test = []
 	for invsk in list(Header_details):
@@ -672,12 +672,8 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 	return sec_str
 
 def editcbc(Qt_rec_id, Quote, MODE):		
-	Trace.Write('CBC Update')
-	#min = Sql.GetFirst("SELECT MIN(CpqTableEntryId) as id from SAQCBC WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}'".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
-	
+	Trace.Write('CBC Update')	
 	for val in values:
-		Trace.Write("aaaaaaa"+str(val))#order = int(val["order"])
-		#order = order + min.id - 1
 		if '.' not in val['CHECKLIST_ID']:
 			Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 			
