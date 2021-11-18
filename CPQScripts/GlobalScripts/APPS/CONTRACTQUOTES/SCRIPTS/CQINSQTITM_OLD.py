@@ -57,11 +57,11 @@ class ContractQuoteItem:
 			#Log.Info(str(self.contract_quote_id)+" <== delete_statement ==> "+str(delete_statement))
 			Sql.RunQuery(delete_statement)
 
-		delete_statement = "DELETE DT FROM SAQIGB DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.GREENBOOK NOT IN(SELECT CO.GREENBOOK FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
-		Sql.RunQuery(delete_statement)
+		# delete_statement = "DELETE DT FROM SAQIGB DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.GREENBOOK NOT IN(SELECT CO.GREENBOOK FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
+		# Sql.RunQuery(delete_statement)
 		
-		delete_statement = "DELETE DT FROM SAQIFL DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.FABLOCATION_ID NOT IN(SELECT CO.FABLOCATION_ID FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')""".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
-		Sql.RunQuery(delete_statement) 
+		# delete_statement = "DELETE DT FROM SAQIFL DT WHERE DT.QUOTE_RECORD_ID='{quote_record_id}' AND DT.QTEREV_RECORD_ID='{revision_record_id}' AND DT.SERVICE_ID='{service_id}' AND DT.FABLOCATION_ID NOT IN(SELECT CO.FABLOCATION_ID FROM SAQICO CO WHERE CO.QUOTE_RECORD_ID='{quote_record_id}' AND CO.QTEREV_RECORD_ID='{revision_record_id}' AND CO.SERVICE_ID='{service_id}')""".format(quote_record_id=str(self.contract_quote_record_id), revision_record_id=str(self.contract_quote_revision_record_id), service_id=str(self.service_id))
+		# Sql.RunQuery(delete_statement) 
 
 		quote_line_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		'''
@@ -674,7 +674,7 @@ class ContractQuoteItem:
 	
 	def _delete_quote_items(self):		
 		## Delete SAQICO, SAQITM  and native quote items - Start
-		for table in ('SAQIAE','SAQICA','SAQIGB','SAQIFL','SAQIEN','SAQICO','SAQITM'):
+		for table in ('SAQIAE','SAQICA','SAQIEN','SAQICO','SAQITM'):
 			if table=='SAQITM':
 				Sql.RunQuery("DELETE FROM SAQITM WHERE QUOTE_RECORD_ID = '{ContractQuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID LIKE '{ServiceId}%'".format(
 					ContractQuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id
@@ -963,80 +963,80 @@ class ContractQuoteItem:
 		# Update - Start
 		item_line_fablocation_join_string = ""	
 		item_line_fablocation_where_string = ""		
-		if not self.service_id == 'Z0016':
-			item_line_fablocation_where_string += " AND ISNULL(SAQIFL.FABLOCATION_RECORD_ID,'') = '' "
-			item_line_fablocation_join_string += "LEFT JOIN SAQIFL (NOLOCK) ON SAQIFL.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQIFL.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQIFL.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND SAQIFL.FABLOCATION_RECORD_ID = SAQICO.FABLOCATION_RECORD_ID "
+		# if not self.service_id == 'Z0016':
+		# 	item_line_fablocation_where_string += " AND ISNULL(SAQIFL.FABLOCATION_RECORD_ID,'') = '' "
+		# 	item_line_fablocation_join_string += "LEFT JOIN SAQIFL (NOLOCK) ON SAQIFL.QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID AND SAQIFL.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID AND SAQIFL.SERVICE_RECORD_ID = SAQICO.SERVICE_RECORD_ID AND SAQIFL.FABLOCATION_RECORD_ID = SAQICO.FABLOCATION_RECORD_ID "
 		# Update - End
 
-		Sql.RunQuery(
-			"""INSERT SAQIFL(
-				FABLOCATION_ID,
-				FABLOCATION_NAME,
-				FABLOCATION_RECORD_ID,
-				SERVICE_ID,
-				SERVICE_DESCRIPTION,
-				SERVICE_RECORD_ID,
-				LINE_ITEM_ID,
-				QUOTE_ID,
-				QUOTE_NAME,
-				QUOTE_RECORD_ID,
-				QTEREV_ID,
-				QTEREV_RECORD_ID,
-				SALESORG_ID,
-				SALESORG_NAME,
-				SALESORG_RECORD_ID,
-				DOC_CURRENCY,
-				DOCCURR_RECORD_ID,
-				CONTRACT_VALID_FROM,
-				CONTRACT_VALID_TO,
-				GLOBAL_CURRENCY,
-				GLOBALCURRENCY_RECORD_ID,
-				QUOTE_ITEM_FAB_LOCATION_RECORD_ID,
-				CPQTABLEENTRYADDEDBY,
-				CPQTABLEENTRYDATEADDED,
-				CpqTableEntryModifiedBy, 
-				CpqTableEntryDateModified
-				) SELECT FB.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FAB_LOCATION_RECORD_ID,
-				'{UserName}' AS CPQTABLEENTRYADDEDBY,
-				GETDATE() as CPQTABLEENTRYDATEADDED,
-				{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-				SELECT DISTINCT
-				SAQICO.FABLOCATION_ID,
-				SAQICO.FABLOCATION_NAME,
-				SAQICO.FABLOCATION_RECORD_ID,
-				SAQICO.SERVICE_ID,
-				SAQICO.SERVICE_DESCRIPTION,
-				SAQICO.SERVICE_RECORD_ID,
-				SAQICO.LINE_ITEM_ID,
-				SAQICO.QUOTE_ID,
-				SAQICO.QUOTE_NAME,
-				SAQICO.QUOTE_RECORD_ID,
-				SAQICO.QTEREV_ID,
-				SAQICO.QTEREV_RECORD_ID,
-				SAQICO.SALESORG_ID,
-				SAQICO.SALESORG_NAME,
-				SAQICO.SALESORG_RECORD_ID,
-				SAQICO.DOC_CURRENCY,
-				SAQICO.DOCURR_RECORD_ID,
-				SAQICO.CONTRACT_VALID_FROM,
-				SAQICO.CONTRACT_VALID_TO,
-				SAQICO.GLOBAL_CURRENCY,
-				SAQICO.GLOBAL_CURRENCY_RECORD_ID
-				FROM SAQICO (NOLOCK)
-				JOIN MAFBLC (NOLOCK) ON SAQICO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID 
-				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
-									AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
-				{JoinString}
-				WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' {WhereString}
-				) FB""".format(
-								QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
-								UserId=self.user_id,
-								UserName=self.user_name,
-								ServiceId=self.service_id,
-								JoinString=item_line_fablocation_join_string,
-								WhereString=item_line_fablocation_where_string
-							)
-		)
+		# Sql.RunQuery(
+		# 	"""INSERT SAQIFL(
+		# 		FABLOCATION_ID,
+		# 		FABLOCATION_NAME,
+		# 		FABLOCATION_RECORD_ID,
+		# 		SERVICE_ID,
+		# 		SERVICE_DESCRIPTION,
+		# 		SERVICE_RECORD_ID,
+		# 		LINE_ITEM_ID,
+		# 		QUOTE_ID,
+		# 		QUOTE_NAME,
+		# 		QUOTE_RECORD_ID,
+		# 		QTEREV_ID,
+		# 		QTEREV_RECORD_ID,
+		# 		SALESORG_ID,
+		# 		SALESORG_NAME,
+		# 		SALESORG_RECORD_ID,
+		# 		DOC_CURRENCY,
+		# 		DOCCURR_RECORD_ID,
+		# 		CONTRACT_VALID_FROM,
+		# 		CONTRACT_VALID_TO,
+		# 		GLOBAL_CURRENCY,
+		# 		GLOBALCURRENCY_RECORD_ID,
+		# 		QUOTE_ITEM_FAB_LOCATION_RECORD_ID,
+		# 		CPQTABLEENTRYADDEDBY,
+		# 		CPQTABLEENTRYDATEADDED,
+		# 		CpqTableEntryModifiedBy, 
+		# 		CpqTableEntryDateModified
+		# 		) SELECT FB.*,CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FAB_LOCATION_RECORD_ID,
+		# 		'{UserName}' AS CPQTABLEENTRYADDEDBY,
+		# 		GETDATE() as CPQTABLEENTRYDATEADDED,
+		# 		{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+		# 		SELECT DISTINCT
+		# 		SAQICO.FABLOCATION_ID,
+		# 		SAQICO.FABLOCATION_NAME,
+		# 		SAQICO.FABLOCATION_RECORD_ID,
+		# 		SAQICO.SERVICE_ID,
+		# 		SAQICO.SERVICE_DESCRIPTION,
+		# 		SAQICO.SERVICE_RECORD_ID,
+		# 		SAQICO.LINE_ITEM_ID,
+		# 		SAQICO.QUOTE_ID,
+		# 		SAQICO.QUOTE_NAME,
+		# 		SAQICO.QUOTE_RECORD_ID,
+		# 		SAQICO.QTEREV_ID,
+		# 		SAQICO.QTEREV_RECORD_ID,
+		# 		SAQICO.SALESORG_ID,
+		# 		SAQICO.SALESORG_NAME,
+		# 		SAQICO.SALESORG_RECORD_ID,
+		# 		SAQICO.DOC_CURRENCY,
+		# 		SAQICO.DOCURR_RECORD_ID,
+		# 		SAQICO.CONTRACT_VALID_FROM,
+		# 		SAQICO.CONTRACT_VALID_TO,
+		# 		SAQICO.GLOBAL_CURRENCY,
+		# 		SAQICO.GLOBAL_CURRENCY_RECORD_ID
+		# 		FROM SAQICO (NOLOCK)
+		# 		JOIN MAFBLC (NOLOCK) ON SAQICO.FABLOCATION_ID = MAFBLC.FAB_LOCATION_ID 
+		# 		JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQICO.QUOTE_RECORD_ID
+		# 							AND SAQTMT.QTEREV_RECORD_ID = SAQICO.QTEREV_RECORD_ID
+		# 		{JoinString}
+		# 		WHERE SAQICO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID = '{ServiceId}' {WhereString}
+		# 		) FB""".format(
+		# 						QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id,
+		# 						UserId=self.user_id,
+		# 						UserName=self.user_name,
+		# 						ServiceId=self.service_id,
+		# 						JoinString=item_line_fablocation_join_string,
+		# 						WhereString=item_line_fablocation_where_string
+		# 					)
+		# )
 
 	def _insert_quote_item_greenbook(self):	
 		# Update - Start
