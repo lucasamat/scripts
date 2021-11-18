@@ -502,6 +502,11 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
 					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
+					sec_str += '</tr>'
 				else:
 					sec_str +='<tr class ="cbc_parent">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
@@ -517,6 +522,10 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 					sec_str +='<tr class ="cbc_child">'
 					sec_str += ('<td><input id="CHECKLIST_ID" type="text" value="'+str(value.CHECKLIST_ID)+'" title="'+str(value.CHECKLIST_ID)+'" class="form-control related_popup_css fltlt" disabled></td>')
 					sec_str += ('<td><abbr id="CHECKLIST_DESCRIPTION" title="'+str(value.CHECKLIST_DESCRIPTION)+'" class="form-control related_popup_css fltlt" disabled>'+str(value.CHECKLIST_DESCRIPTION)+'</abbr></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str +=('<td class="wid_90"></td>')
+					sec_str+=('<td class="wid_90"><div class="col-md-12 editiconright"><a href="#" class="editclick"></a></div></td>')
 					sec_str += '</tr>'
 				else:
 					sec_str +='<tr class ="cbc_parent">'
