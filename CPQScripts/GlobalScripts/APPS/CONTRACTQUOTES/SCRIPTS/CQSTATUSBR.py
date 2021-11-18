@@ -85,6 +85,7 @@ def Dynamic_Status_Bar():
         else:
             Trace.Write('No button--2')
             buttonvisibility = "Hide_button"
+    Trace.Write("buttonvisibility=="+str(buttonvisibility))        
 
     return buttonvisibility,price_bar
 
