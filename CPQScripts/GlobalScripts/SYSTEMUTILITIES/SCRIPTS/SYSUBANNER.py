@@ -1968,7 +1968,7 @@ def Related_Sub_Banner(
         #item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
         Trace.Write("valkk==="+str(get_quote_details.SLSDIS_PRICE_INGL_CURR))
         PrimaryLable = "Total Sales Price"
-        PrimaryValue = str("%.2f" % round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),2)) if str(get_quote_details.TOTAL_AMOUNT) != '' else ''
+        PrimaryValue = str("%.2f" % round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),2)) if str(get_quote_details.SLSDIS_PRICE_INGL_CURR) != '' else ''
         SecondLable = "Total Discount %"
         SecondValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_PERCENT),2)) if str(get_quote_details.DISCOUNT_PERCENT) != '' else ''
         ThirdLable = "Total Discount Amount"
