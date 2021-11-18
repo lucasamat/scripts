@@ -1967,19 +1967,19 @@ def Related_Sub_Banner(
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         #item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
         PrimaryLable = "Total Sales Price"
-        PrimaryValue = str(round(float(get_quote_details.TOTAL_AMOUNT),3))
+        PrimaryValue = str(round(float(get_quote_details.TOTAL_AMOUNT),3)) if str(get_quote_details.TOTAL_AMOUNT) != '' else ''
         SecondLable = "Total Discount %"
-        SecondValue = str(round(float(get_quote_details.DISCOUNT_PERCENT),3))
+        SecondValue = str(round(float(get_quote_details.DISCOUNT_PERCENT),3)) if str(get_quote_details.DISCOUNT_PERCENT) != '' else ''
         ThirdLable = "Total Discount Amount"
-        ThirdValue = str(round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),3))
+        ThirdValue = str(round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),3)) if str(get_quote_details.SLSDIS_PRICE_INGL_CURR) != '' else ''
         FourthLable = "Total Credit"
-        FourthValue = str(round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),3))
+        FourthValue = str(round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),3)) if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else ''
         FifthValue = "Total Excluding Tax/VAT"
-        FifthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),3))
+        FifthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),3)) if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else ''
         SixthLable = "Tax/VAT"
-        SixthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),3))
+        SixthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),3)) if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else ''
         SeventhLable = "Net Price"
-        SeventhValue = str(round(float(get_quote_details.NET_PRICE_INGL_CURR),3))
+        SeventhValue = str(round(float(get_quote_details.NET_PRICE_INGL_CURR),3)) if str(get_quote_details.NET_PRICE_INGL_CURR) != '' else ''
     item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
     if item_detail:
         if subTabName == "Details" and ObjName == "SAQRIT":
@@ -1993,7 +1993,7 @@ def Related_Sub_Banner(
             SecondLable = "Quantity"
             SecondValue = item_detail.QUANTITY
             ThirdLable = "Total Excluding Tax/VAT"
-            ThirdValue = str(round(float(item_detail.TAX_AMOUNT_INGL_CURR),3))
+            ThirdValue = str(round(float(item_detail.TAX_AMOUNT_INGL_CURR),3)) if str(item_detail.TAX_AMOUNT_INGL_CURR) != '' else ''
             FourthLable = "Contract Start Date"
             FourthValue = valid_from
             FifthLable = "Contract End Date"
@@ -2012,7 +2012,7 @@ def Related_Sub_Banner(
                 FourthLable = "Fab Location Name"
                 FourthValue = item_detail.FABLOCATION_NAME
                 FifthLable = "Total Excluding Tax/VAT"
-                FifthValue = str(round(float(item_detail.TAX_AMOUNT_INGL_CURR),3))
+                FifthValue = str(round(float(item_detail.TAX_AMOUNT_INGL_CURR),3)) if str(item_detail.TAX_AMOUNT_INGL_CURR) != '' else ''
                 SixthLable = "Start Date"
                 SixthValue =  valid_from
                 SeventhLable = "End Date"
