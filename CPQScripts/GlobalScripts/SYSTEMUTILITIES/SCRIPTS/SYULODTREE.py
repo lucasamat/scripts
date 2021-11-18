@@ -1511,8 +1511,8 @@ class TreeView:
 						where_string = " QUOTE_RECORD_ID = '{quote}' AND SERVICE_ID = '{service}' AND FABLOCATION_ID != '' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(quote=Quote.GetGlobal("contract_quote_record_id"),service=Quote.GetGlobal("SERVICE"),quote_revision_record_id=quote_revision_record_id)
 					elif str(ObjName).strip() == 'SAQIGB' and str(NodeName).strip() == 'GREENBOOK':
 						where_string = where_string                        
-					elif str(ObjName).strip() == 'SAQIFL' and str(NodeName).strip() == 'FABLOCATION_ID':
-						where_string = where_string
+					# elif str(ObjName).strip() == 'SAQIFL' and str(NodeName).strip() == 'FABLOCATION_ID':
+					# 	where_string = where_string
 					elif str(ObjName).strip() == 'ACACSA' and str(NodeName).strip() == 'APRCHNSTP_APPROVER_ID':
 						where_string = where_string                        
 					elif str(ObjName).strip() == 'ACAPMA' and str(NodeName).strip() == 'APRCHN_ID':
@@ -2030,7 +2030,7 @@ class TreeView:
 										image_url = '<img class="leftside-bar-status_icon" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
 										NodeText = image_url+NodeText
 								##concatenate name with ID
-								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB' or  str(ObjName).strip() == 'SAQIFL') and str(NodeName) == 'FABLOCATION_ID': 
+								if (str(ObjName).strip() == 'SAQFBL' or str(ObjName).strip() == 'SAQSFB' and str(NodeName) == 'FABLOCATION_ID': 
 									get_fab_name = Sql.GetFirst("SELECT * FROM {} WHERE {} AND FABLOCATION_ID = '{}'".format(ObjName, where_string,NodeText))
 									if get_fab_name:
 										NodeText_temp = NodeText +' - '+ get_fab_name.FABLOCATION_NAME
