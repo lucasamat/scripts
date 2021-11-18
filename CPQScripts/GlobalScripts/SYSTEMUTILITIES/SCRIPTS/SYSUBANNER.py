@@ -1971,16 +1971,15 @@ def Related_Sub_Banner(
         SecondLable = "Total Discount %"
         SecondValue = str(get_quote_details.DISCOUNT_PERCENT)
         ThirdLable = "Total Discount Amount"
-        ThirdValue = str(get_quote_details.SLSDIS_PRICE_INGL_CURR)
+        ThirdValue = str(round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),2))
         FourthLable = "Total Credit"
-        FourthValue = str(get_quote_details.TOTAL_AMOUNT_INGL_CURR)
+        FourthValue = str(round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))
         FifthValue = "Total Excluding Tax/VAT"
-        FifthValue = str(get_quote_details.TAX_AMOUNT_INGL_CURR)
+        FifthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))
         SixthLable = "Tax/VAT"
-        SixthValue = str(get_quote_details.TAX_AMOUNT_INGL_CURR)
+        SixthValue = str(round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))
         SeventhLable = "Net Price"
-        SeventhValue = str(get_quote_details.NET_PRICE_INGL_CURR)
-
+        SeventhValue = str(round(float(get_quote_details.NET_PRICE_INGL_CURR),2))
     item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
     if item_detail:
         if subTabName == "Details" and ObjName == "SAQRIT":
