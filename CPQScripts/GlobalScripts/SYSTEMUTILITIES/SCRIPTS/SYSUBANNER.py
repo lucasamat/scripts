@@ -1966,6 +1966,7 @@ def Related_Sub_Banner(
         Trace.Write("quoteitemshp===")
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         #item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+        Trace.Write("valkk==="+str(get_quote_details.SLSDIS_PRICE_INGL_CURR))
         PrimaryLable = "Total Sales Price"
         PrimaryValue = str(round(float(get_quote_details.TOTAL_AMOUNT),3)) if str(get_quote_details.TOTAL_AMOUNT) != '' else ''
         SecondLable = "Total Discount %"
