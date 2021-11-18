@@ -1982,6 +1982,7 @@ def Related_Sub_Banner(
         if subTabName == "Details" and ObjName == "SAQRIT":
             Trace.Write("SAQRIT-DETAIL222===")
             valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+            Trace.Write("valid_from===="+str(valid_from))
             valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
             if item_detail:
                 PrimaryLable = "Product Offering Id"
