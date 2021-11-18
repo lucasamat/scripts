@@ -2017,7 +2017,7 @@ def Related_Sub_Banner(
     if TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
         Trace.Write("quoteitemshp===")
         get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+        #item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
         PrimaryLable = "Total Sales Price"
         PrimaryValue = str(get_quote_details.TOTAL_AMOUNT)
         SecondLable = "Total Discount %"
@@ -2032,22 +2032,25 @@ def Related_Sub_Banner(
         SixthValue = str(get_quote_details.TAX_AMOUNT_INGL_CURR)
         SeventhLable = "Net Price"
         SeventhValue = str(get_quote_details.NET_PRICE_INGL_CURR)
+
+    item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+    if item_detail:
         if subTabName == "Details" and ObjName == "SAQRIT":
             Trace.Write("SAQRIT-DETAIL222===")
             valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
             Trace.Write("valid_from===="+str(valid_from))
             valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
-            if item_detail:
-                PrimaryLable = "Product Offering Id"
-                PrimaryValue =  item_detail.SERVICE_ID
-                SecondLable = "Quantity"
-                SecondValue = item_detail.QUANTITY
-                ThirdLable = "Total Excluding Tax/VAT"
-                ThirdValue = item_detail.TAX_AMOUNT_INGL_CURR
-                FourthLable = "Contract Start Date"
-                FourthValue = valid_from
-                FifthLable = "Contract End Date"
-                FifthValue = valid_date 
+            #if item_detail:
+            PrimaryLable = "Product Offering Id"
+            PrimaryValue =  item_detail.SERVICE_ID
+            SecondLable = "Quantity"
+            SecondValue = item_detail.QUANTITY
+            ThirdLable = "Total Excluding Tax/VAT"
+            ThirdValue = item_detail.TAX_AMOUNT_INGL_CURR
+            FourthLable = "Contract Start Date"
+            FourthValue = valid_from
+            FifthLable = "Contract End Date"
+            FifthValue = valid_date 
         if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
             Trace.Write("SAQRIT-DETAIL333===")            
             if item_detail:
