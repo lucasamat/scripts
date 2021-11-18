@@ -31,19 +31,19 @@ except:
 try:
     TabName = TestProduct.CurrentTab
 except:
-    TabName = CurrentTab
+    TabName = "Quotes"
 
-CurrentTabName = ""
+# CurrentTabName = ""
 
-crnt_prod_Qry = Sql.GetFirst(
-    "SELECT APP_ID, APP_LABEL FROM SYAPPS (NOLOCK) WHERE APP_LABEL = '" + str(current_prod) + "' "
-)
-crnt_product = str(crnt_prod_Qry.APP_LABEL)
-try:
-    CurrentTabName = TestProduct.CurrentTab
-except:
-    CurrentTabName = ""
-Trace.Write("curr_tab@@"+str(CurrentTabName))
+# crnt_prod_Qry = Sql.GetFirst(
+#     "SELECT APP_ID, APP_LABEL FROM SYAPPS (NOLOCK) WHERE APP_LABEL = '" + str(current_prod) + "' "
+# )
+# crnt_product = str(crnt_prod_Qry.APP_LABEL)
+# try:
+#     CurrentTabName = TestProduct.CurrentTab
+# except:
+#     CurrentTabName = ""
+# Trace.Write("curr_tab@@"+str(CurrentTabName))
 
 def Dynamic_Status_Bar():
     if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
