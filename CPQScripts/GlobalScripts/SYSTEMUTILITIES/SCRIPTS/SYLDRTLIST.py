@@ -1703,7 +1703,7 @@ class SYLDRTLIST:
 								+ str(Page_End)
 								+ ""
 							)
-							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
+							QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock)  JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID " + str(Qustr) + " and M.VISIBLE_INCONFIG = 'TRUE'"
 						else: 
 							Trace.Write('checking----') 
 							#Qustr = "where QUOTE_ID = '"+str(contract_quote_record_id)+"'"                          
@@ -6771,7 +6771,7 @@ class SYLDRTLIST:
 					elif RECORD_ID == 'SYOBJR-98792' and str(TreeParam) == "Quote Preview":                        
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						# Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
-						contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+						#contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 						if getyears == 1:
 							col_year =  'YEAR_1'
 						elif getyears == 2:
@@ -8009,7 +8009,7 @@ class SYLDRTLIST:
 							
 							contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 							# Qustr_id = Sql.GetFirst("SELECT QUOTE_ID FROM SAQITM WHERE QUOTE_RECORD_ID ='" + str(
-							contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+							#contract_quote_record_id) + "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
 							if getyears == 1:
 								col_year =  'YEAR_1'
 							elif getyears == 2:
