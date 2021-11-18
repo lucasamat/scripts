@@ -913,8 +913,8 @@ def Related_Sub_Banner(
                 #     ip_equipment = Sql.GetFirst("SELECT QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID FROM SAQSTE (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
                 #     if ip_equipment:
                 #         CurrentRecordId = ip_equipment.QUOTE_SOURCE_TARGET_FAB_LOC_EQUIP_RECORD_ID
-                elif ObjName == "SAQIFL" and subTabName != 'Details':
-                    ListKey[0] = ''
+                # elif ObjName == "SAQIFL" and subTabName != 'Details':
+                #     ListKey[0] = ''
                 # elif ObjName == "CTCSCO":
                 # 	Trace.Write('ctcsco=====')
                 # 	contract_quote_record_id = Quote.GetGlobal("contract_record_id")		
@@ -962,11 +962,11 @@ def Related_Sub_Banner(
                 #     PrimaryValue = TreeParam[0].strip()
                 #     SecondLable = "Product Offering ID"
                 #     SecondValue = TreeParam[1].strip()
-                elif ObjName == "SAQIFL" and TreeSuperParentParam == "Quote Items" and subTabName == "Details":
-                    Trace.Write("Quote Items")
-                    get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
-                    PrimaryLable = "Fab Location ID"
-                    PrimaryValue = TreeParam
+                # elif ObjName == "SAQIFL" and TreeSuperParentParam == "Quote Items" and subTabName == "Details":
+                #     Trace.Write("Quote Items")
+                #     get_fab = SqlHelper.GetList("select SERVICE_ID,SERVICE_DESCRIPTION,FABLOCATION_ID,FABLOCATION_NAME from SAQIFL where QUOTE_ITEM_FAB_LOCATION_RECORD_ID = '"+str(CurrentRecordId)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
+                #     PrimaryLable = "Fab Location ID"
+                #     PrimaryValue = TreeParam
                 elif ObjName == "SAQICO":
                     contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
                     qte_fab_node = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '" +str(quote_revision_record_id)+"'")
