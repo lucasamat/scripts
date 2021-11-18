@@ -1997,6 +1997,8 @@ def Related_Sub_Banner(
         if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
             Trace.Write("SAQRIT-DETAIL333===")            
             if item_detail:
+                valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+                valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]
                 PrimaryLable = "Line"
                 PrimaryValue =  item_detail.LINE
                 SecondLable = "Product Offering Id"
@@ -2008,9 +2010,9 @@ def Related_Sub_Banner(
                 FifthLable = "Total Excluding Tax/VAT"
                 FifthValue = item_detail.TAX_AMOUNT_INGL_CURR
                 SixthLable = "Start Date"
-                SixthValue =  item_detail.CONTRACT_VALID_FROM
+                SixthValue =  valid_from
                 SeventhLable = "End Date"
-                SeventhValue = item_detail.CONTRACT_VALID_TO        
+                SeventhValue = valid_date        
     elif TreeParam == 'Cart Items':
         PrimaryLable = "Cart Items"
         PrimaryValue = "ALL"
