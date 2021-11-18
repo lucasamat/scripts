@@ -525,6 +525,7 @@ class ConfigUpdateScript:
 		return res
 		#return []
 
+	#This Function validate recall button is required or not for quote specific.
 	def recall_button_validate(self):
 		getQuote = Sql.GetFirst("SELECT COUNT(OWNER_NAME) AS CNT FROM SAQTMT WHERE QUOTE_ID='{}' AND OWNER_NAME='{}'".format(Quote.CompositeNumber,User.Name))
 		return getQuote.CNT
