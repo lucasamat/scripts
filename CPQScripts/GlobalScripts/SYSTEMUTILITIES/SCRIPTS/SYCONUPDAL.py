@@ -525,7 +525,10 @@ class ConfigUpdateScript:
 		return res
 		#return []
 
-
+	def recall_button_validate(self):
+		getQuote = Sql.GetFirst("SELECT COUNT(OWNER_NAME) AS CNT FROM SAQTMT WHERE QUOTE_ID='{}' AND OWNER_NAME='{}'".format(Quote.CompositeNumber,User.Name))
+		return getQuote.CNT
+	
 	def ConfiguratorCall(self, keyData_val):
 		"""TO DO."""
 		try:
@@ -545,8 +548,10 @@ class ConfigUpdateScript:
 		Trace.Write('At line 474')
 		restrict_section_edit = self.restrict_section_level_edit()
 		Trace.Write('At line 476')
-
-		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit
+		# This function call only add recall button if Quote Owner & User are same.
+		recall_button_flag = self.recall_button_validate()
+  
+		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit, recall_button_flag
 
 configobj = ConfigUpdateScript()
 
