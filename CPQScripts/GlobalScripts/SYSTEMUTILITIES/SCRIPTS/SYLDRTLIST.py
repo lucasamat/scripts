@@ -414,7 +414,7 @@ class SYLDRTLIST:
 				+ table_id
 				+ '" data-pagination="false" data-filter-control="true" data-detail-view="true" data-maintain-selected="true" data-locale = "en-US"><thead>'
 			)
-		elif 'SYOBJR_98872' in table_id:
+		elif 'SYOBJR_98872' in table_id or 'SYOBJR_98873' in table_id:
 			table_header = (
 				'<table id="'
 				+ table_id
@@ -3561,8 +3561,8 @@ class SYLDRTLIST:
 									)  
 							# elif RECORD_ID == "SYOBJR-98872":
 							# 	table_header += ""
-							elif RECORD_ID == "SYOBJR-98873":
-								table_header += ""	
+							# elif RECORD_ID == "SYOBJR-98873":
+							# 	table_header += ""	
 							elif RECORD_ID == "SYOBJR-98875":
 								table_header += ""								
 								
