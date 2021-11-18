@@ -2875,7 +2875,11 @@ def Related_Sub_Banner(
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products":
-                sec_rel_sub_bnr += str(add_button)
+                if str(multi_buttons) != "":
+                    for btn in multi_buttons:
+                        sec_rel_sub_bnr += (btn)
+                else:
+                    sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes":
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
         elif  (str(TreeTopSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and (subTabName)!="Parts List":
