@@ -1980,7 +1980,9 @@ def Related_Sub_Banner(
         SeventhLable = "Net Price"
         SeventhValue = str(get_quote_details.NET_PRICE_INGL_CURR)
         if subTabName == "Details" and ObjName == "SAQRIT":
-            Trace.Write("SAQRIT-DETAIL222===")            
+            Trace.Write("SAQRIT-DETAIL222===")
+            valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
+            valid_date = str(item_detail.CONTRACT_VALID_TO).split(" ")[0]            
             if item_detail:
                 PrimaryLable = "Product Offering Id"
                 PrimaryValue =  item_detail.SERVICE_ID
@@ -1989,9 +1991,9 @@ def Related_Sub_Banner(
                 ThirdLable = "Total Excluding Tax/VAT"
                 ThirdValue = item_detail.TAX_AMOUNT_INGL_CURR
                 FourthLable = "Contract Start Date"
-                FourthValue = item_detail.CONTRACT_VALID_FROM
+                FourthValue = valid_from
                 FifthLable = "Contract End Date"
-                FifthValue = item_detail.CONTRACT_VALID_TO 
+                FifthValue = valid_date 
         if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
             Trace.Write("SAQRIT-DETAIL333===")            
             if item_detail:
