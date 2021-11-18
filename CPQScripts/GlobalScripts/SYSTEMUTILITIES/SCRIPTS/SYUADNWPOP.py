@@ -3790,7 +3790,7 @@ def POPUPLISTVALUEADDNEW(
 					)
 				)
 			elif str(popup_obj)=="SAQSPT":
-				where_string += ""
+				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQSPT.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
 				Pagination_M = ""
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
