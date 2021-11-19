@@ -635,7 +635,7 @@ class Entitlements:
 						if sectional_current_dict:
 							#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
 							for key,value in sectional_current_dict.items():
-								approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
+								approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0]).replace("'","''")) )
 								if approval_status:
 									if approval_status.APPROVAL_REQUIRED == True:
 										approval_list[key] = 'True'
@@ -867,7 +867,7 @@ class Entitlements:
 					if sectional_current_dict:
 						#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
 						for key,value in sectional_current_dict.items():
-							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0])) )
+							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0]).replace("'","''") ) )
 							if approval_status:
 								if approval_status.APPROVAL_REQUIRED == True:
 									approval_list[key] = 'True'
