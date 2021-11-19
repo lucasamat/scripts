@@ -60,7 +60,6 @@ class AncillaryProductOperation:
 			self._entitlement_rolldown()
 			#if self.service_id in ('Z0091','Z0035'):
 			self._update_entitlement()
-			self._entitlement_rolldown()
 			
 		# elif self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	self._delete_entitlement_tables()
@@ -735,7 +734,8 @@ class AncillaryProductOperation:
 								Trace.Write("AttributeID_Pass--"+str(AttributeID_Pass)+'---'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 								#ServiceId = 'Z0046'
 								#whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
-								ent_params_list = str(self.where_string)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + str(self.tablename)
+								whereReq = self.where_string.replace(self.service_id, ServiceId)
+								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + str(self.tablename)
 								
 								result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
 						except Exception as e:
