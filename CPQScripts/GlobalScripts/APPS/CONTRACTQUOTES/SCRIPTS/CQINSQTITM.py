@@ -902,6 +902,7 @@ keysofparameters = {
 	"EQUIPMENT_ID" : "equipment_id",
 }
 parameters['action_type']=str(action_type)
+parameters['entitlement_level_obj'] = str(entitlement_level_obj)
 if action_type == "UPDATE_LINE_ITEMS":
 	for key in keysofparameters.keys():
 		if str(key) in where_condition_string:
