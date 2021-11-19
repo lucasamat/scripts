@@ -398,13 +398,16 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 		obj_name = str(objh_obj.OBJECT_NAME)
 		objh_head = str(objh_obj.RECORD_NAME)
 		item_lines_record_ids = []
-		if (obj_name == "SAQSAP" or obj_name == "SAQRSP") and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')):
-			selected_rows = selectPN
+		if (obj_name == "SAQSAP" or obj_name == "SAQRSP" or obj_name == "SAQSPT") and (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')):
+    			selected_rows = selectPN
 			if(SELECTALL=="PM_BULKEDIT_ALL" and obj_name == "SAQSAP" and TITLE == "PM_FREQUENCY"):
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value=ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
 				return ""
 			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQRSP" and TITLE == "QUANTITY"):
 				Sql.RunQuery("""UPDATE SAQRSP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND PAR_SERVICE_ID = '{service_id}' AND FABLOCATION_ID = '{fab_id}' AND GREENBOOK = '{greenbook}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeSuperParentParam,fab_id=TreeParentParam,greenbook=TreeParam))
+				return ""
+			elif(SELECTALL=="PARTS_BULKEDIT_ALL" and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
+				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND SERVICE_ID = '{service_id}' """.format(column=TITLE,value = ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),service_id=TreeParam))
 				return ""
 		for index,rec in enumerate(selected_rows):
 			row = {}
@@ -454,6 +457,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				recordslist = str(tuple(recordslist)).replace(',)',')')
 				Trace.Write("recordslist--->"+str(recordslist))
 			##multi select bulk edit..	
+			elif (TreeParentParam == 'Complementary Products' and obj_name == "SAQSPT" and TITLE == "CUSTOMER_ANNUAL_QUANTITY"):
+				Sql.RunQuery("""UPDATE SAQSPT SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_PART_RECORD_ID))
 			elif str(obj_name) == "SAQSPT":
 				
 				getserid = row.get("QUOTE_SERVICE_PART_RECORD_ID")
