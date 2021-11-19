@@ -2050,7 +2050,7 @@ class SyncQuoteAndCustomTables:
 					"PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
 					"EMAIL": saempl_data.EMAIL,
 					"MEMBER_ID": saempl_data.EMPLOYEE_ID,
-					"MEMBER_NAME": "CREATED BY",
+					"MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
 					"MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
 					"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
 					"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
