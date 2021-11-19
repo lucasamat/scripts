@@ -707,9 +707,14 @@ def CommonTreeViewHTMLDetail(
 			Trace.Write('ObjectName---')		
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			prd_location_gb = Sql.GetFirst(
+				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND SERVICE_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
+			)
+			''' ## REMOVAL FOR FAB LOCATIONS.
+			prd_location_gb = Sql.GetFirst(
 				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,Product.GetGlobal("TreeParentLevel1").split(" ")[0].strip())
 			)
+			'''
 			if prd_location_gb:
 				RECORD_ID = prd_location_gb.QUOTE_SERVICE_GREENBOOK_RECORD_ID
 		# Greenbook details load || Product offering  Node - End
