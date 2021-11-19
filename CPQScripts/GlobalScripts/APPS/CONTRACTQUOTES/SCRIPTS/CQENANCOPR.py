@@ -57,6 +57,7 @@ class AncillaryProductOperation:
 		elif  self.action_type == "INSERT_ENT_EQUIPMENT":
 			self._delete_entitlement_tables()
 			self._insert_service_ent()
+			self._entitlement_rolldown()
 			#if self.service_id in ('Z0091','Z0035'):
 			self._update_entitlement()
 			self._entitlement_rolldown()
