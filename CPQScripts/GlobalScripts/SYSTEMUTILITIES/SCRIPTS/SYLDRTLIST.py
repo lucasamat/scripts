@@ -3911,7 +3911,7 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
 						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel3"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Product Offerings"):
-    							table_header += (
+							table_header += (
 								'<th  data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
