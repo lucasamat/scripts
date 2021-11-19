@@ -19,8 +19,8 @@ userId = str(User.Id)
 userName = str(User.UserName)
 
 ancillary_flag = ""
-Log.Info(str(type(Param))+" =============== param ========== "+str(Param))
-Log.Info(str(type(Param))+" =============== param1111111 ========== "+str(Param['objectName']))
+#Log.Info(str(type(Param))+" =============== param ========== "+str(Param))
+#Log.Info(str(type(Param))+" =============== param1111111 ========== "+str(Param['objectName']))
 try:
 	objs = Param.CPQ_Columns['objectName']    
 	wherecon = Param.CPQ_Columns['where']
