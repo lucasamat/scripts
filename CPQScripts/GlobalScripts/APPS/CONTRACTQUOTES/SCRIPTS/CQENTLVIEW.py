@@ -784,7 +784,7 @@ class EntitlementView():
 			#Trace.Write('after inserting in table---ObjectName-----'+str(ObjectName))
 			#Trace.Write('after inserting in table---where-----'+str(where))
 			inserted_value_dict = {}
-			#temp_table_dyn = SqlHelper.GetFirst("sp_executesql @T=N' create table entl_tmp (entitlement_id varchar(100))'")
+			#temp_table_dyn = Sql.GetFirst("sp_executesql @T=N' create table entl_tmp (entitlement_id varchar(100))'")
 			get_c4c_quote_id = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quoteid,self.quote_revision_record_id))
 			ent_temp = "ENT_BKP_"+str(get_c4c_quote_id.C4C_QUOTE_ID)
 			ent_temp_drop = Sql.GetFirst("sp_executesql @T=N'IF EXISTS (SELECT ''X'' FROM SYS.OBJECTS WHERE NAME= ''"+str(ent_temp)+"'' ) BEGIN DROP TABLE "+str(ent_temp)+" END  ' ")
@@ -1085,7 +1085,7 @@ class EntitlementView():
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
 														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
-														approval_status = SqlHelper.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE)) )
+														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE).replace("'","''")) )
 														if approval_status:
 															if approval_status.APPROVAL_REQUIRED == True:
 																imgstr = ('<img title=Acquired src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>')
@@ -1450,7 +1450,7 @@ class EntitlementView():
 									)
 										
 								elif DType == "Free Input, no Matching":
-									STDVALUES =  SqlHelper.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
+									STDVALUES =  Sql.GetFirst("SELECT STANDARD_ATTRIBUTE_VALUE from STANDARD_ATTRIBUTE_VALUES  where  SYSTEM_ID like '%{sys_id}%' ".format(sys_id = str(attrSysId))  )							
 									sec_str1 = ""
 									
 									if attrValue == "DefaultValue":
