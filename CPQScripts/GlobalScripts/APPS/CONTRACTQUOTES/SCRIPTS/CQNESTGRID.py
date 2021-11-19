@@ -6746,6 +6746,25 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+ str(ContractRecordId)
 					+ "'  and QTEREV_RECORD_ID = '"
 					+ str(RevisionRecordId)
+					+ "' and SERVICE_TYPE = '"
+					+ str(TreeSuperParentParam)
+					+ "'and SERVICE_ID = '"
+					+ str(TreeParentParam)
+					+ "' and GREENBOOK = '"
+					+ str(TreeParam)
+					+ "') m where m.ROW BETWEEN "
+					+ str(Page_start)
+					+ " and "
+					+ str(Page_End)
+				) # NO FAB FOR PRODUCT OFFERINGS IN SPRINT-06
+				'''
+				Qstr = (
+					"select top "
+					+ str(PerPage)
+					+ " * from ( select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,EQUIPMENT_ID,EQUIPMENT_DESCRIPTION,SERIAL_NO,GREENBOOK,FABLOCATION_ID,WARRANTY_END_DATE,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,MNT_PLANT_ID,EQUIPMENT_STATUS,CUSTOMER_TOOL_ID,EQUIPMENTCATEGORY_DESCRIPTION AS EQUIPMENT_CATEGORY_DESCRIPTION,SNDFBL_ID from SAQSCO (NOLOCK) where QUOTE_RECORD_ID = '"
+					+ str(ContractRecordId)
+					+ "'  and QTEREV_RECORD_ID = '"
+					+ str(RevisionRecordId)
 					+ "'and SERVICE_ID = '"
 					+ str(TreeSuperParentParam)
 					+ "' and SERVICE_TYPE = '"
@@ -6759,6 +6778,7 @@ def GetCovObjMaster(PerPage, PageInform, A_Keys, A_Values):
 					+ " and "
 					+ str(Page_End)
 				)
+    			'''
 		
 		elif TreeTopSuperParentParam == "Complementary Products" and TreeSuperParentParam in ("Receiving Equipment","Sending Equipment"):
 			Qstr = (
