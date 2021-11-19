@@ -1150,7 +1150,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 										FROM SAQICO	(NOLOCK)								
 										{WhereString}
 										""".format(WhereString=where_str))
-				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS'})
+				data = ScriptExecutor.ExecuteGlobal("CQINSQTITM",{"WhereString":where, "ActionType":'UPDATE_LINE_ITEMS', "EntitlementLevel":objectName})
 			except Exception:
 				Log.Info("Exception in Quote Item insert")
 

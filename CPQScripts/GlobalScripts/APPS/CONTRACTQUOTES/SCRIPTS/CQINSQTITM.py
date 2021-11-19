@@ -27,7 +27,8 @@ class ContractQuoteItem:
 		self.service_id = kwargs.get('service_id')
 		self.greenbook_id = kwargs.get('greenbook_id')
 		self.fablocation_id = kwargs.get('fablocation_id')
-		self.equipment_id = kwargs.get('equipment_id')       
+		self.equipment_id = kwargs.get('equipment_id') 
+		self.entitlement_level_obj = kwargs.get('entitlement_level_obj')      
 		self.pricing_temp_table = ''
 		self.quote_line_item_temp_table = '' 
 		self.quote_service_entitlement_type = ''
@@ -371,8 +372,11 @@ class ContractQuoteItem:
 		# 								) as OQ 
 		# 								WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
 		#if service_entitlement_obj:
-		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM SAQTSE (NOLOCK) 
-		 										WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id ))
+		if self.action_type == 'UPDATE_LINE_ITEMS' and self.entitlement_level_obj != 'SAQTSE':
+			where_str = where_condition_string.replace('SRC','')
+		else:
+			where_str = " WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id)
+		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM {obj_name} (NOLOCK) {where_str}""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id, obj_name = self.entitlement_level_obj, where_str = where_str))
 		if service_entitlement_obj:
 			quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
@@ -884,6 +888,10 @@ try:
 except:
 	where_condition_string = ''
 action_type = Param.ActionType
+try:
+	entitlement_level_obj = Param.EntitlementLevel
+except:
+	entitlement_level_obj = "SAQTSE"
 parameters = {}
 keysofparameters = {
 	"QUOTE_RECORD_ID" : "contract_quote_record_id",
