@@ -3278,11 +3278,11 @@ class SYLDRTLIST:
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			#A055S000P01-4401
-			if RECORD_ID == 'SYOBJR-00009':
+			#if RECORD_ID == 'SYOBJR-00009':
 				# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
 				# 	rowspan = 'rowspan="3"' 
 				# else:
-				rowspan = 'rowspan="2"' 
+				#rowspan = 'rowspan="2"' 
 				
 				#table_header += '<th colspan="23" data-align="right"><div><label class="onlytext"><div>QUOTE ITEMS</div></label></div></th>'
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
@@ -3301,7 +3301,7 @@ class SYLDRTLIST:
 				table_header += ''
 			else:
 				#A055S000P01-682 end to hide the Select column for related list                
-				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'></th>'
+				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'> <div class="pad0brdbt">SELECT</div></th>'
 			# if RECORD_ID == 'SYOBJR-00006':
 			#     table_header += (
 			#         '<th data-field="emp"  data-filter-control="input" data-title-tooltip="emp" data-formatter="" data-sortable="true"></th>'
