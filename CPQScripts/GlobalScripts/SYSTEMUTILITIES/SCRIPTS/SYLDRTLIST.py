@@ -4665,7 +4665,8 @@ class SYLDRTLIST:
 					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_list)+"  QuoteitemContainerSorting(name, order, '"
 					+ str(table_id)
 					+ "',"+ str(list(eval(Columns)))+", ATTRIBUTE_VALUEList,'"+str(PR_CURR)+"','"+str(TP)+"','"+str(SubTab)+"'); }); "
-					)          
+					)  
+			Trace.Write("@40910----->"+str(SAQICO_dbl_clk_function))		        
 
 			
 			dbl_clk_function = SAQICO_dbl_clk_function		          
