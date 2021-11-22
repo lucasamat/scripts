@@ -4305,7 +4305,7 @@ class SYLDRTLIST:
 								+ '">'
 							)
 						else:
-							Trace.Write("pickk777---")
+							Trace.Write("pickk777---"+str(col_name))
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
