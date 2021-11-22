@@ -4653,9 +4653,9 @@ class SYLDRTLIST:
 			Trace.Write("@4099----->"+str(SAQICO_dbl_clk_function))
 
 			SAQICO_dbl_clk_function += (
-					'$("'
+					'console.log("checking--select");$("'
 					+ str(table_ids)
-					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");$("'
+					+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");console.log("checking--column select");$("'
 					+ str(table_ids)
 					+ '").on("all.bs.table", function (e, name, args) { console.log("sort.bs.table ============>11");$(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); });  $("'
 					+ str(table_ids)
