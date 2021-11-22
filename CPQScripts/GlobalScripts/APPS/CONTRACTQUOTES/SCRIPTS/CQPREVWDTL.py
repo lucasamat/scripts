@@ -256,13 +256,13 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 										+ str(quote_revision_record_id)
 										+ "'  ) "
 										)			
-							if curr_symbol_obj is not None:
-								if curr_symbol_obj != "":
-									curr_symbol = curr_symbol_obj.CURRENCY
-									decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963							
-							if current_obj_value != "" and decimal_val != "":
-								formatting_string = "{0:." + str(decimal_val) + "f}"
-								current_obj_value = formatting_string.format(float(current_obj_value))
+						if curr_symbol_obj is not None:
+							if curr_symbol_obj != "":
+								curr_symbol = curr_symbol_obj.CURRENCY
+								decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963							
+						if current_obj_value != "" and decimal_val != "":
+							formatting_string = "{0:." + str(decimal_val) + "f}"
+							current_obj_value = formatting_string.format(float(current_obj_value))
 					except:
 						Trace.Write("currency symbol details error")
 					if current_obj_value is not None:
