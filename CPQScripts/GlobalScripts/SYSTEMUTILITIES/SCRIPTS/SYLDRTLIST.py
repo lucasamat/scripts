@@ -4271,22 +4271,21 @@ class SYLDRTLIST:
 					except:
 						Trace.Write('4260---'+str(col_name))
 					if str(objss_obj.PICKLIST).upper() == "TRUE":
-						Trace.Write('chkpick--'+str(key)+str(col_name)) 
-						if  col_name == "STATUS" and  RECORD_ID == "SYOBJR-00009":                                            
-							filter_level_data = "select"                        
-							filter_clas_name = (
-								'<div dropDownWidth="true" id = "'
-								+ str(table_id)
-								+ "_RelatedMutipleCheckBoxDrop_"
-								+ str(key)
-								+ '" class="form-control bootstrap-table-filter-control-'
-								+ str(col_name)
-								+ " RelatedMutipleCheckBoxDrop_"
-								+ str(key)
-								+ ' "></div>'
-							)
-							filter_level_list.append(filter_level_data)
-							Trace.Write("filterclass==="+str(filter_clas_name))
+						Trace.Write('chkpick--'+str(key)+str(col_name))		                                          
+						filter_level_data = "select"                        
+						filter_clas_name = (
+							'<div dropDownWidth="true" id = "'
+							+ str(table_id)
+							+ "_RelatedMutipleCheckBoxDrop_"
+							+ str(key)
+							+ '" class="form-control bootstrap-table-filter-control-'
+							+ str(col_name)
+							+ " RelatedMutipleCheckBoxDrop_"
+							+ str(key)
+							+ ' "></div>'
+						)
+						filter_level_list.append(filter_level_data)
+						Trace.Write("filterclass==="+str(filter_clas_name))
 					else:
 						Trace.Write("pickk---")                        
 						filter_level_data = "input"
