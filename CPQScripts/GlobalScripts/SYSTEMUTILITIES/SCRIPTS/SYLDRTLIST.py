@@ -3302,6 +3302,7 @@ class SYLDRTLIST:
 			else:
 				#A055S000P01-682 end to hide the Select column for related list                
 				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'> <div class="pad0brdbt">SELECT</div></th>'
+				Trace.Write("table_header=="+str(table_header))
 			# if RECORD_ID == 'SYOBJR-00006':
 			#     table_header += (
 			#         '<th data-field="emp"  data-filter-control="input" data-title-tooltip="emp" data-formatter="" data-sortable="true"></th>'
