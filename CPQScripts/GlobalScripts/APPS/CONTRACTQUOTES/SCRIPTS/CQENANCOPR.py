@@ -892,9 +892,9 @@ class AncillaryProductOperation:
 
 	def _delete_entitlement_tables(self):
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
-		elif self.tablename == "SAQSFE":
-			delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+			delete_obj_list = ["SAQTSE","SAQSGE","SAQSCE","SAQSAE"]
+		# elif self.tablename == "SAQSFE":
+		# 	delete_obj_list = ["SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
 		elif self.tablename == "SAQSGE":
 			delete_obj_list = ["SAQSGE","SAQSCE","SAQSAE"] 
 		elif self.tablename == "SAQSCE":
@@ -918,9 +918,9 @@ class AncillaryProductOperation:
 	def _delete_operation(self):
 		delete_obj_list = []
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
-		elif self.tablename == "SAQSFE":
-			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
+			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
+		# elif self.tablename == "SAQSFE":
+		# 	delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		elif self.tablename == "SAQSGE":
 			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"] 
 		elif self.tablename == "SAQSCE":
