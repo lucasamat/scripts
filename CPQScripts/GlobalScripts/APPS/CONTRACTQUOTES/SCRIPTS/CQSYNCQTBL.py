@@ -1529,6 +1529,7 @@ class SyncQuoteAndCustomTables:
 								for employee in payload_json.get('SAQICT'):
 									update_contact_master_table = "UPDATE SACONT SET EXTERNAL_ID = '"+str(employee.get("PRIMARY_CONTACT_ID"))+"' WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'"
 									Sql.RunQuery(update_contact_master_table)
+									
 							Log.Info("TRAZE_CHECK_4")
 							contact_master_table = Sql.GetFirst("SELECT CONTACT_RECORD_ID FROM SACONT (NOLOCK) WHERE CONTACT_ID = '"+str(custom_fields_detail.get("PrimaryContactId"))+"'")
 							
