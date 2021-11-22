@@ -4281,7 +4281,8 @@ class SYLDRTLIST:
 							+ ' "></div>'
 						)
 						filter_level_list.append(filter_level_data)
-					else:                        
+					else:
+						Trace.Write("pickk---")                        
 						filter_level_data = "input"
 						if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
 							# filter_level_data = "select"                        
@@ -4304,6 +4305,7 @@ class SYLDRTLIST:
 								+ '">'
 							)
 						else:
+							Trace.Write("pickk777---")
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
