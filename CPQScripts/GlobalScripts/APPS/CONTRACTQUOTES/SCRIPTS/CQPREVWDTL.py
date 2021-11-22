@@ -239,8 +239,10 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					Trace.Write('@@@SEFL_API** --> '+str(sefl_api))
 					curr_symbol = ""
 					current_obj_value = eval("col_name." + sefl_api)
-					decimal_val = 3					
+					decimal_val = 3				
+					Trace.Write('243')	
 					try:					
+						Trace.Write('245')
 						curr_symbol_obj = Sql.GetFirst(
 										"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
 										+ curr_index
@@ -256,10 +258,12 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 										+ str(quote_revision_record_id)
 										+ "'  ) "
 										)			
+						Trace.Write('261')
 						if curr_symbol_obj is not None:
 							if curr_symbol_obj != "":
 								curr_symbol = curr_symbol_obj.CURRENCY
-								decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963							
+								decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963	
+						Trace.Write('266')						
 						if current_obj_value != "" and decimal_val != "":
 							formatting_string = "{0:." + str(decimal_val) + "f}"
 							current_obj_value = formatting_string.format(float(current_obj_value))
