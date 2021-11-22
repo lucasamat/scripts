@@ -36,7 +36,10 @@ def GSCONTLOOKUPPOPUP(
     var_str = ""
     pagination_app_total_count=0
     ContractRecordId = Product.GetGlobal("contract_record_id")
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    try:
+        quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    except:
+        quote_revision_record_id = ""
     xx_objname = SegmentsClickParam = VAL_Obj = xz_objname = ""
     
     if TABLENAME is not None:
