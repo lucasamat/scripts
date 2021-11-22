@@ -4287,7 +4287,7 @@ class SYLDRTLIST:
 						filter_level_list.append(filter_level_data)
 						Trace.Write("filterclass==="+str(filter_clas_name))
 					else:
-						Trace.Write("pickk---")                        
+						Trace.Write("pickk---"+str(col_name))                        
 						filter_level_data = "input"
 						if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
 							# filter_level_data = "select"                        
