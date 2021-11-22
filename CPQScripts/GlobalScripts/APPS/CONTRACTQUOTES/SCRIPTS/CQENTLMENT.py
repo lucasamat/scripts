@@ -22,8 +22,8 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
-from CQQTMODULE import QuoteModule
-QuoteModule = QuoteModule()
+from CQQTMODULE import QuoteModule as Quote_Module()
+QuoteModule = Quote_Module()
 #import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
