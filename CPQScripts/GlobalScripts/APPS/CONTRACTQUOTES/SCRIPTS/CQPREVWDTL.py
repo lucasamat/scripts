@@ -243,21 +243,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 					Trace.Write('243')	
 					try:					
 						Trace.Write('245')
-						curr_symbol_obj = Sql.GetFirst(
-										"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
-										+ curr_index
-										+ " from "
-										+ str(ObjectName)
-										+ " where "
-										+ str(autoNumber)
-										+ " = '"
-										+ str(RECORD_ID)
-										+ "'  AND QUOTE_RECORD_ID = '"
-										+ str(quote_record_id)
-										+ "' AND QTEREV_RECORD_ID = '"
-										+ str(quote_revision_record_id)
-										+ "'  ) "
-										)			
+						curr_symbol_obj = Sql.GetFirst("select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 " + curr_index + " from "+ str(ObjectName)+ " where "+ str(autoNumber)+ " = '"+ str(RECORD_ID)+ "'  AND QUOTE_RECORD_ID = '"+ str(quote_record_id)+ "' AND QTEREV_RECORD_ID = '"+ str(quote_revision_record_id)+ "'  ) ")			
 						Trace.Write('261')
 						if curr_symbol_obj is not None:
 							if curr_symbol_obj != "":
