@@ -2819,7 +2819,7 @@ class SYLDRTLIST:
 									if ObjectName =='SAQICT':
 										Trace.Write("SAQICT")
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">REPLACE CONTACT</a></li>')
-									elif str(ObjectName) =='':
+									elif str(ObjectName) =='SAQSPT':
 										pass
 									else:
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
