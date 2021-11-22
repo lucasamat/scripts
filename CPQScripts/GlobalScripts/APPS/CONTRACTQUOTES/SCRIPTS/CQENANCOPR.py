@@ -937,7 +937,7 @@ class AncillaryProductOperation:
 			if obj in ('SAQICO','SAQRIT','SAQRIO'):
 				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
-				ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', self.ancillary_where )
+				ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
 			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
 
 	
