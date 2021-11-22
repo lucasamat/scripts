@@ -22,7 +22,7 @@ import sys
 from SYDATABASE import SQL
 import datetime
 import CQENTIFLOW
-import CQQTMODULE
+from CQQTMODULE import QuoteModule
 #import CQTVLDRIFW
 userId = str(User.Id)
 userName = str(User.UserName)
@@ -1105,7 +1105,7 @@ class Entitlements:
 					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE','SAQSFE'):
 						#ancillary_object = 'Z0101'
 						if tableName == "SAQTSE":
-							CQQTMODULE.service_level_entitlement(serviceId,1)
+							QuoteModule.service_level_entitlement(serviceId,1)
 						Trace.Write("entitlement_value -----"+str(entitlement_value))
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_object_dict['Z0101'] = "INSERT"
