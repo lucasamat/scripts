@@ -2746,7 +2746,9 @@ class SYLDRTLIST:
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW CONTACT</a></li>'
 							elif ObjectName== "SAQTIP":
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW ACCOUNT</a></li>'
-							elif ObjectName != "SAQIBP" :
+							elif ObjectName == "SAQSPT":
+								pass
+							elif ObjectName != "SAQIBP":
 								Trace.Write('VIEw 2698')
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							elif ObjectName == "SAQSAO":
@@ -2817,6 +2819,8 @@ class SYLDRTLIST:
 									if ObjectName =='SAQICT':
 										Trace.Write("SAQICT")
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">REPLACE CONTACT</a></li>')
+									elif str(ObjName) =='':
+										pass
 									else:
 										Action_str += ('<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>')
 								elif str(current_tab).upper() == "PROFILE":
