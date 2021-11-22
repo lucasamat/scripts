@@ -867,6 +867,7 @@ class QueryBuilder:
                         "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
                     )
         else:
+            Trace.Write("where_condition_string_J "+str(where_condition_string))
             result_obj = Sql.GetList(
                 "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
             )
