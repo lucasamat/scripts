@@ -267,7 +267,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 						Trace.Write("currency symbol details error")
 					if current_obj_value is not None:
 						if current_obj_value != "":
-							current_obj_value = current_obj_value + " " + curr_symbol	
+							current_obj_value = str(current_obj_value) + " " + str(curr_symbol)
 					
 					try:
 						sec_str += (
