@@ -6,6 +6,7 @@
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
+entitlement_service_dictonary = {}
 class QuoteModule:
 
     def __init__(self):
