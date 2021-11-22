@@ -4351,6 +4351,7 @@ class SYLDRTLIST:
 								)
 						filter_level_list.append(filter_level_data)
 				cv_list.append(filter_clas_name)
+				Trace.Write("cv_list==="+str(cv_list))
 			
 			#A055S000P01-4401
 			##filter control for entitlement category for pricing view
