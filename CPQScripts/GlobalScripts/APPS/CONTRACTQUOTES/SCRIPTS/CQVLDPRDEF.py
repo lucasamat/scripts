@@ -192,7 +192,7 @@ def fab_predefined():
 		#Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
 
 		##rolldown
-		for roll_obj in ['SAQSFE','SAQSGE','SAQSCE','SAQSAE']:
+		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID   ) )
 			
 
@@ -320,7 +320,7 @@ try:
 	elif LEVEL == 'ONCHNGAE_DRIVERS':
 		valuedriver_onchage()
 	else:
-		obj_list = ['SAQSFE','SAQSGE','SAQSCE']
+		obj_list = ['SAQSGE','SAQSCE']
 		for obj in obj_list:
 			# if obj == "SAQSFE":
 			# 	fab_predefined()
