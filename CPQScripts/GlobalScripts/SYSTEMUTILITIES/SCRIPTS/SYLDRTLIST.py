@@ -3290,7 +3290,9 @@ class SYLDRTLIST:
 			else:
 				# A055S000P01-682 end to hide the Actions column for related list                 
 				table_header += (
-					'<th data-field="ACTIONS" ><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
+					'<th data-field="ACTIONS" '
+					+ rowspan
+					+'><div class="action_col">ACTIONS</div><button class="searched_button" id="Act_'
 					+ str(table_id)
 					+ '">Search</button></th>'
 				)
@@ -3299,7 +3301,7 @@ class SYLDRTLIST:
 				table_header += ''
 			else:
 				#A055S000P01-682 end to hide the Select column for related list                
-				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true"> <div class="pad0brdbt">SELECT</div></th>'
+				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'> <div class="pad0brdbt">SELECT</div></th>'
 			# if RECORD_ID == 'SYOBJR-00006':
 			#     table_header += (
 			#         '<th data-field="emp"  data-filter-control="input" data-title-tooltip="emp" data-formatter="" data-sortable="true"></th>'
