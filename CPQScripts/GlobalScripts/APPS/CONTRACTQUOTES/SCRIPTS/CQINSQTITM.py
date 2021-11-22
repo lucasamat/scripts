@@ -386,7 +386,7 @@ class ContractQuoteItem:
 		# 								WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
 		#if service_entitlement_obj:
 		if self.action_type == 'UPDATE_LINE_ITEMS' and self.entitlement_level_obj != 'SAQTSE' and parent_service_id:
-			where_str = where_condition_string.replace('SRC.','').replace(self.service_id,parent_service_id)
+			where_str = where_condition_string.replace('SRC.','').replace(self.service_id,parent_service_id).replace('WHERE','')
 		else:
 			where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id)
 		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id, obj_name = self.entitlement_level_obj, where_str = where_str))
