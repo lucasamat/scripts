@@ -264,12 +264,12 @@ def entitlement_price_rollup(objectname,ent_temp):
 				pricing_attr_list.append(y)
 		#pricing_attr_list = ["AGS_Z0046_PQB_AP1PCP",""]
 	#Log.Info('price rollup'+str(ent_roll_temp))
-	if objectname == 'SAQSFE':
+	# if objectname == 'SAQSFE':
+	# 	obj_list = ['SAQTSE']
+	if objectname == 'SAQSGE':
 		obj_list = ['SAQTSE']
-	elif objectname == 'SAQSGE':
-		obj_list = ['SAQSFE','SAQTSE']
 	elif objectname == 'SAQSCE':
-		obj_list = ['SAQSGE','SAQSFE','SAQTSE']
+		obj_list = ['SAQSGE','SAQTSE']
 	for pricing_attr in pricing_attr_list:
 		for obj in obj_list:
 			##Z0016 ROLLUP
@@ -603,12 +603,12 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
 	if 'Z0007' in get_serviceid:
 		objectName = 'SAQSCE'
-		obj_list = ['SAQTSE','SAQSFE','SAQSGE','SAQIEN','SAQSAE']
+		obj_list = ['SAQTSE','SAQSGE','SAQIEN','SAQSAE']
 	if objectName == 'SAQTSE':
-		obj_list = ['SAQSCE','SAQSFE','SAQSGE','SAQIEN','SAQSAE']
-	elif objectName == 'SAQSFE':
 		obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
-		is_changed = True
+	# elif objectName == 'SAQSFE':
+	# 	obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
+	# 	is_changed = True
 	elif objectName == 'SAQSGE':
 		obj_list = ['SAQSCE','SAQIEN','SAQSAE']
 		is_changed = True
@@ -1165,8 +1165,8 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 level = ""
 if objectName == 'SAQTSE':
 	level = "Offering Entitlement "
-elif objectName == 'SAQSFE':
-	level = "Fab Location Entitlement "
+# elif objectName == 'SAQSFE':
+# 	level = "Fab Location Entitlement "
 elif objectName == 'SAQSGE':
 	level = "Greenbook Entitlement "
 elif objectName == "SAQSCE":
