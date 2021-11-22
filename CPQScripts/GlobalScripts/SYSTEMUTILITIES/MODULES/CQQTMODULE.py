@@ -1,6 +1,6 @@
 # =========================================================================================================================================
 #   __script_name : CQQTMODULE.PY
-#   __script_description :  THIS SCRIPT IS USED TO GET THE DATE RELATED TO QUOTES
+#   __script_description :  THIS SCRIPT IS USED TO GET THE DATA RELATED TO THE CURRENT QUOTE
 #   __primary_author__ : 
 #   __create_date :
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
