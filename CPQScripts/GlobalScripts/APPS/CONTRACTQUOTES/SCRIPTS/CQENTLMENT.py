@@ -2297,10 +2297,10 @@ class Entitlements:
 				serviceId = self.treesuperparentparam
 				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}'  AND SRC.EQUIPMENT_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid, serviceId,EquipmentId,self.treeparam,self.treeparentparam)
 			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
-				tableName = 'SAQSAE'
+				objName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
-				whereReq = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
+				where = "WHERE SRC.QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SRC.SERVICE_ID = '{}' AND SRC.GREENBOOK ='{}' AND SRC.EQUIPMENT_ID = '{}' AND SRC.FABLOCATION_ID = '{}' AND SRC.ASSEMBLY_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId,self.treeparentparam,AssemblyId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND SRC.QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 		get_status = Sql.GetFirst("SELECT * FROM {} {}".format(objName,where.replace("SRC.","")))
 		if get_status:
