@@ -675,6 +675,7 @@ def editcbc(Qt_rec_id, Quote, MODE):
 	Trace.Write('CBC Update')	
 	for val in values:
 		if '.' not in val['CHECKLIST_ID']:
+			val['COMMENT'] = val['COMMENT'].replace("'", "").replace("<", "").replace(">", "")
 			Sql.RunQuery("UPDATE SAQCBC SET SERVICE_CONTRACT = '{service_contract}',SPECIALIST_REVIEW = '{specialist_review}',COMMENT = '{comment}' WHERE CHECKLIST_ID = '{checklist_id}' AND QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' ".format(checklist_id = val['CHECKLIST_ID'] if val['CHECKLIST_ID'] !="" else "",service_contract = val['SERVICE_CONTRACT'],specialist_review = val['SPECIALIST_REVIEW'],comment = val['COMMENT'],quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 			
 	return True
