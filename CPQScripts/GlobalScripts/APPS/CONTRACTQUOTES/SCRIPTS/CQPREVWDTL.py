@@ -212,7 +212,7 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 
 
 		Oppp_SEFL = Sql.GetList(
-			"SELECT TOP 1000 FIELD_LABEL, API_FIELD_NAME,RECORD_ID FROM SYSEFL WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
+			"SELECT TOP 1000 SYSEFL.FIELD_LABEL, SYSEFL.API_FIELD_NAME,SYSEFL.RECORD_ID,SYSEFL.DISPLAY_ORDER,SYOBJD.DATA_TYPE,SYOBJD.FORMULA_DATA_TYPE,SYOBJD.CURRENCY_INDEX FROM SYSEFL JOIN SYOBJD ON SYOBJD.API_NAME = SYSEFL.API_FIELD_NAME AND SYOBJD.OBJECT_NAME = SYSEFL.API_NAME WHERE SECTION_RECORD_ID = '" + str(sect.RECORD_ID) + "' ORDER BY DISPLAY_ORDER"
 		)
 		for sefl in Oppp_SEFL:
 			sec_str += '<div id="sec_' + str(sect.RECORD_ID) + '" class=  "sec_' + str(sect.RECORD_ID) + ' collapse in "> '
@@ -225,6 +225,9 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 				+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(sefl.FIELD_LABEL)+"' class='col-md-1 bgcccwth10' style='text-align:right;padding: 7px 5px;color:green;' data-original-title=''><i title='"+str(sefl.FIELD_LABEL)+"' class='fa fa-info-circle fltlt'></i></a> </div>"
 			)
 			sefl_api = sefl.API_FIELD_NAME
+			objd_datatype = sefl.DATA_TYPE
+			objd_formulatype = sefl.FORMULA_DATA_TYPE
+			curr_index = sefl.CURRENCY_INDEX
 			#sefl_api = sefl_api.encode('ascii', 'ignore').decode('ascii')
 			if ACTION == "CONTRACT_INFO": 
 				col_name = Sql.GetFirst("SELECT * from CTCNRT (NOLOCK) WHERE CONTRACT_RECORD_ID = '{contract_record_id}' ".format(contract_record_id= str(contract_record_id) ))
@@ -232,7 +235,54 @@ def constructquoteinformation(Qt_rec_id, Quote, MODE):
 			else:
 				col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' AND QTEREV_RECORD_ID = '" + str(quote_revision_record_id) + "' ") 
 			if col_name:
-				if sefl_api == "CpqTableEntryModifiedBy":
+				if objd_datatype =="CURRENCY" or objd_formulatype == "CURRENCY":
+					Trace.Write('@@@SEFL_API** --> '+str(sefl_api))
+					curr_symbol = ""
+					current_obj_value = eval("col_name." + sefl_api)
+					decimal_val = 3					
+					try:					
+						curr_symbol_obj = Sql.GetFirst(
+										"select SYMBOL,CURRENCY,isnull(DISPLAY_DECIMAL_PLACES,3) AS DISPLAY_DECIMAL_PLACES  from PRCURR WITH (NOLOCK) where CURRENCY_RECORD_ID = (select top 1 "
+										+ curr_index
+										+ " from "
+										+ str(ObjectName)
+										+ " where "
+										+ str(autoNumber)
+										+ " = '"
+										+ str(RECORD_ID)
+										+ "'  AND QUOTE_RECORD_ID = '"
+										+ str(quote_record_id)
+										+ "' AND QTEREV_RECORD_ID = '"
+										+ str(quote_revision_record_id)
+										+ "'  ) "
+										)			
+							if curr_symbol_obj is not None:
+								if curr_symbol_obj != "":
+									curr_symbol = curr_symbol_obj.CURRENCY
+									decimal_val = curr_symbol_obj.DISPLAY_DECIMAL_PLACES  # modified for A043S001P01-9963							
+							if current_obj_value != "" and decimal_val != "":
+								formatting_string = "{0:." + str(decimal_val) + "f}"
+								current_obj_value = formatting_string.format(float(current_obj_value))
+					except:
+						Trace.Write("currency symbol details error")
+					if current_obj_value is not None:
+						if current_obj_value != "":
+							current_obj_value = current_obj_value + " " + curr_symbol	
+					
+					try:
+						sec_str += (
+								"<div class='col-md-3 pad-0'> <input type='text' id ='"+sefl_api+"' title = '"+ current_obj_value+"' value = '"
+								+ current_obj_value
+								+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						)
+					except Exception:
+						sec_str += (
+							"<div class='col-md-3 pad-0'> <input type='text' id ='"+str(sefl_api)+"' title = '"+  str(current_obj_value)+"' value = '"
+							+ str(current_obj_value)
+							+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
+						)	
+
+				elif sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy	
 					current_user = Sql.GetFirst(
 						"SELECT USERNAME FROM USERS WHERE ID = " + str(current_obj_value) + ""
@@ -472,7 +522,7 @@ def constructCBC(Qt_rec_id, Quote, MODE):
 		"SERVICE_CONTRACT",
 		"SPECIALIST_REVIEW",
 		"COMMENT",    
-	]            
+	]
 	dynamic_sect = Sql.GetList("SELECT TOP 1000 RECORD_ID,SECTION_NAME FROM SYSECT WHERE SECTION_DESC = '' AND PRIMARY_OBJECT_NAME = 'SAQCBC' AND SECTION_NAME NOT IN ('BASIC INFORMATION','AUDIT INFORMATION') ORDER BY DISPLAY_ORDER")
 	for sect in dynamic_sect:
 		sec_str += '<div id="container" class="wdth100 margtop10 ' + str(sect.RECORD_ID) + '">'
