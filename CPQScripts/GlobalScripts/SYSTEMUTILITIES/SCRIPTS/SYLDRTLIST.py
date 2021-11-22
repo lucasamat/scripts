@@ -3299,6 +3299,8 @@ class SYLDRTLIST:
 				#A055S000P01-682 start to hide the Select column for related list    
 			if TreeParam == "Quote Preview" or TreeParam == "Contract Preview":
 				table_header += ''
+			elif RECORD_ID == 'SYOBJR-00009':
+				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'> <div class="pad0brdbt">SELECT</div></th>'	
 			else:
 				#A055S000P01-682 end to hide the Select column for related list                
 				table_header += '<th data-field="SELECT"  class="wth45" data-checkbox="true" '+rowspan+'> <div class="pad0brdbt">SELECT</div></th>'
