@@ -202,9 +202,9 @@ class EntitlementView():
 			TableObj = Sql.GetFirst("select * from SAQIEN (NOLOCK) where QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'")
 			where = "QTEITMCOB_RECORD_ID = '" + str(RECORD_ID) + "'"
 			
-		elif EntitlementType == "FABLOCATION":			
-			TableObj = Sql.GetFirst("select * from SAQSFE (NOLOCK) where  QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparam) + "'")
-			where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"
+		# elif EntitlementType == "FABLOCATION":			
+		# 	TableObj = Sql.GetFirst("select * from SAQSFE (NOLOCK) where  QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparam) + "'")
+		# 	where = "QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treeparentparam) + "' AND FABLOCATION_ID ='"+str(self.treeparam)+"'"
 					
 		elif EntitlementType == "BUSINESSUNIT":
 			TableObj = Sql.GetFirst("select * from SAQSGE (NOLOCK) where QUOTE_RECORD_ID = '" + str(quoteid) + "' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SERVICE_ID = '" + str(self.treesuperparentparam) + "' AND FABLOCATION_ID = '" + str(self.treeparentparam) + "' AND GREENBOOK = '"+str(self.treeparam)+"'")
@@ -1688,9 +1688,9 @@ if SectionList is not None and (
 			mode = "Quote"
 			EntitlementType = "EQUIPMENT"
 		##fab level
-		elif SectionObjectName == "SAQSFE":	
-			mode = "Quote"
-			EntitlementType = "FABLOCATION"		
+		# elif SectionObjectName == "SAQSFE":	
+		# 	mode = "Quote"
+		# 	EntitlementType = "FABLOCATION"		
 		##greenbook level
 		elif SectionObjectName == "SAQSGE":	
 			mode = "Quote"
