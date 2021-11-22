@@ -853,6 +853,7 @@ class QueryBuilder:
                         where_condition_string += " AND " + remove_empty_records_where
                     else:
                         where_condition_string += " WHERE " + remove_empty_records_where
+                    Trace.Write("CHK_J "+str(selection_column)+" - "+str(selection_column[:-2])+ " - "+str(table)+ " - "+str(where_condition_string))
                     result_obj = Sql.GetList(
                         "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
                             selection_column,
