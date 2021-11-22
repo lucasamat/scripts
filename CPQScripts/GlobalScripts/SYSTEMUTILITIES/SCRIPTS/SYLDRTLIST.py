@@ -4281,6 +4281,7 @@ class SYLDRTLIST:
 							+ ' "></div>'
 						)
 						filter_level_list.append(filter_level_data)
+						Trace.Write("filterclass==="+str(filter_clas_name))
 					else:
 						Trace.Write("pickk---")                        
 						filter_level_data = "input"
