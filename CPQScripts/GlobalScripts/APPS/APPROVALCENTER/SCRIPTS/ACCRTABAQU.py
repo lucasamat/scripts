@@ -892,7 +892,8 @@ class QueryBuilder:
             for data_obj in result_obj:
                 for obj in data_obj:
                     if obj.Value and obj.Value != "-":
-                        data[obj.Key].append(obj.Value)
+                        # data[obj.Key].append(obj.Value)
+                        data[obj.Key] = obj.Value
 
         for key, value in data.items():
             values_dict = {}
