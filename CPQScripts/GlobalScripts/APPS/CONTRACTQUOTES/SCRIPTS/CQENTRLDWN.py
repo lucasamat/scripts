@@ -601,6 +601,7 @@ def dividend_critical_price_sumup(ent_temp):
 ## Entitlement rolldown fn
 def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 	is_changed = False
+	Log.Info('604--objectName----'+str(objectName))
 	if 'Z0007' in get_serviceid:
 		objectName = 'SAQSCE'
 		obj_list = ['SAQTSE','SAQSGE','SAQIEN','SAQSAE']
