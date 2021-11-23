@@ -8631,7 +8631,7 @@ class SYLDRTLIST:
 				footer_tot = ""
 				if ObjectName == "SAQIBP":
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column))))
+					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 					if gettotaldateamt:
 						my_format = "{:,." + str(decimal_place) + "f}"
 						for val in gettotaldateamt: 
