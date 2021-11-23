@@ -626,8 +626,8 @@ class SyncQuoteAndCustomTables:
 						Quote.GetCustomField('QUOTE_REVISION_ID').Content = quote_revision_id
 						#UPDATE BLUEBOOK TO SAQTRV
 						bluebook_obj = Sql.GetFirst(
-							"SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SASAAC(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' ".format(
-								custom_fields_detail.get("STPAccountID")
+							"SELECT BLUEBOOK,BLUEBOOK_RECORD_ID FROM SASAAC(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}' AND DISTRIBUTIONCHANNEL_ID = '{}' AND DIVISION_ID = '{}' AND SALESORG_ID = '{}'".format(
+								custom_fields_detail.get("STPAccountID"), custom_fields_detail.get('DistributionChannel'), custom_fields_detail.get('Division'), custom_fields_detail.get("SalesOrgID")
 							)
 						)
 						if bluebook_obj:
