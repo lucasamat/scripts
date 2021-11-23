@@ -13,9 +13,6 @@ import re
 from SYDATABASE import SQL
 from datetime import date
 import re
-from CQQTMODULE import entitlement_service_dictonary
-from CQQTMODULE import QuoteModule as Quote_Module
-QuoteModule = Quote_Module()
 
 Sql = SQL()
 
