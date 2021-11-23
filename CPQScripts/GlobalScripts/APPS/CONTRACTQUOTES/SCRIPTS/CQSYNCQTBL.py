@@ -1937,7 +1937,6 @@ class SyncQuoteAndCustomTables:
 		Log.Info("Sync end==> "+str(sync_end_time - sync_start_time))   
 	##A055S000P01-8690 starts..
 	def salesteam_insert(self,employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
-		Log.Info("CONTRACT_MANAGER_CHK"+str(employee.get("C4C_PARTNER_FUNCTION")))
 		Sql.RunQuery("""INSERT SAQDLT (
 								C4C_PARTNERFUNCTION_ID,
 								CRM_PARTNERFUNCTION_ID,
