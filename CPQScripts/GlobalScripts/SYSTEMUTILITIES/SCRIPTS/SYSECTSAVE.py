@@ -14,6 +14,7 @@ from datetime import datetime,date
 #import datetime
 from SYDATABASE import SQL
 import CQCPQC4CWB
+import re
 
 Sql = SQL()
 #from PAUPDDRYFG import DirtyFlag
@@ -746,6 +747,13 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 						dictc = {"CpqTableEntryId": str(sql_cpq.CpqTableEntryId)}
 						newdict.update(dictc)
 						tableInfo = Sql.GetTable(str(TableName))
+						newdict["SLSDIS_PRICE_INGL_CURR"] = re.sub('USD','',newdict["SLSDIS_PRICE_INGL_CURR"])
+						newdict["BD_PRICE_INGL_CURR"] = re.sub('USD','',newdict["BD_PRICE_INGL_CURR"])
+						newdict["CEILING_PRICE_INGL_CURR"] = re.sub('USD','',newdict["CEILING_PRICE_INGL_CURR"])
+						newdict["TOTAL_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TOTAL_AMOUNT_INGL_CURR"])
+						newdict["NET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["NET_PRICE_INGL_CURR"])
+						newdict["TAX_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["TAX_AMOUNT_INGL_CURR"])
+						newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
 						tablerow = newdict
 						Trace.Write("SAQTRV UPSERT"+str(tablerow))
 						tableInfo.AddRow(tablerow)
