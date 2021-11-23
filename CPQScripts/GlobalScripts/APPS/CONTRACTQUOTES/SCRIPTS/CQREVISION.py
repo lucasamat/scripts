@@ -97,8 +97,7 @@ def create_new_revision(Opertion,cartrev):
 			quote_rev_data = {
 				"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
 				"QUOTE_ID": get_quote_info_details.QUOTE_ID,
-				"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,
-				"QUOTE_NAME":get_quote_info_details.QUOTE_NAME,
+				"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,				
 				"QUOTE_RECORD_ID": quote_contract_recordId,
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),

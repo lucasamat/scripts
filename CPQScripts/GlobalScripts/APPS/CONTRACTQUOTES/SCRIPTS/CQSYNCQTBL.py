@@ -583,8 +583,7 @@ class SyncQuoteAndCustomTables:
 						quote_salesorg_table_info = Sql.GetTable("SAQTRV")
 						salesorg_data = {
 							"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
-							"QUOTE_ID": quote_id,
-							"QUOTE_NAME": contract_quote_data.get("contract_quote_data"),
+							"QUOTE_ID": quote_id,							
 							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
 							"SALESORG_ID": custom_fields_detail.get("SalesOrgID"),
 							"COUNTRY": salesorg_country.COUNTRY,

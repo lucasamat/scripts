@@ -1235,14 +1235,14 @@ class Entitlements:
 								break
 						Trace.Write("total price = "+str(total_price))
 						getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-						import datetime as dt
-						fmt = '%m/%d/%Y'
-						d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
-						d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
-						days = (d2 - d1).days
-						total = (total_price/365)*int(days)
+						# import datetime as dt
+						# fmt = '%m/%d/%Y'
+						# d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+						# d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+						# days = (d2 - d1).days
+						# total = (total_price/365)*int(days)
 						#UPDATE TOTAL PRICE IN SAQTRV
-						Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = '{}' WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
+						#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = '{}' WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
 					# ##A055S000P01-9646  code ends..
 					
 					totalpriceent = ""					
