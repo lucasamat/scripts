@@ -679,10 +679,10 @@ class SyncQuoteAndCustomTables:
 									if exchange_rate_type_object is not None:
 										exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
 										salesorg_data.update({"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
-										Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
+										
 								else:
 									exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
-									Log.Info("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+									
 								
 								if exchange_obj:
 									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
@@ -1212,23 +1212,23 @@ class SyncQuoteAndCustomTables:
 							"QTEREV_ID":quote_rev_id
 						}
 						quote_involved_party_table_info.AddRow(SourceAccountDetails)		
-					if custom_fields_detail.get("ContractManagerName"):
-						EmployeeResponsibleDetails = {
-							"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
-							"ADDRESS": custom_fields_detail.get("ContractManagerAddress"),
-							"EMAIL": custom_fields_detail.get("ContractManagerEmail"),
-							"IS_MAIN": "1",
-							"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-							"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
-							"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
-							"PARTY_ID": custom_fields_detail.get("ContractManagerID"),
-							"PARTY_NAME": custom_fields_detail.get("ContractManagerName"),
-							"PARTY_ROLE": "CONTRACT MANAGER",
-							"PHONE": custom_fields_detail.get("ContractManagerPhone"),
-							"QTEREV_RECORD_ID":quote_revision_id,
-							"QTEREV_ID":quote_rev_id
-						}
-						quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails) 
+					# if custom_fields_detail.get("ContractManagerName"):
+					# 	EmployeeResponsibleDetails = {
+					# 		"QUOTE_INVOLVED_PARTY_RECORD_ID": str(Guid.NewGuid()).upper(),
+					# 		"ADDRESS": custom_fields_detail.get("ContractManagerAddress"),
+					# 		"EMAIL": custom_fields_detail.get("ContractManagerEmail"),
+					# 		"IS_MAIN": "1",
+					# 		"QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
+					# 		"QUOTE_NAME": custom_fields_detail.get("STPAccountName"),
+					# 		"QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+					# 		"PARTY_ID": custom_fields_detail.get("ContractManagerID"),
+					# 		"PARTY_NAME": custom_fields_detail.get("ContractManagerName"),
+					# 		"PARTY_ROLE": "CONTRACT MANAGER",
+					# 		"PHONE": custom_fields_detail.get("ContractManagerPhone"),
+					# 		"QTEREV_RECORD_ID":quote_revision_id,
+					# 		"QTEREV_ID":quote_rev_id
+					# 	}
+					# 	quote_involved_party_table_info.AddRow(EmployeeResponsibleDetails) 
 					#Log.Info("FAB =====>>>>>> " + str(custom_fields_detail.get("FabLocationID")))                      
 					""" if custom_fields_detail.get("FabLocationID"):
 						fab_locations = custom_fields_detail.get("FabLocationID").split(",")
