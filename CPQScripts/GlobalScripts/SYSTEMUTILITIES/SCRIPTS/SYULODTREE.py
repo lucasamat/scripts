@@ -2170,28 +2170,28 @@ class TreeView:
 										subTabName = ""
 										service_id = Product.GetGlobal("SERVICE")
 										#CQQTMODULE.entitlement_service_dictonary
-										if	entitlement_service_dictonary.get(service_id) == 1:
-											subTabName = "Parts List"
-										if	entitlement_service_dictonary.get(service_id) == 0:
-											subTabName = " "
-										if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
-											X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-											if X is not None:
-												updateentXML = X.ENTITLEMENT_XML
-												flag_excluse=0
-												pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-												pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-												pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-												for m in re.finditer(pattern_tag, updateentXML):
-													sub_string = m.group(1)
-													get_ent_id =re.findall(pattern_id,sub_string)
-													get_ent_name=re.findall(pattern_name,sub_string)
-													if get_ent_id and get_ent_name:
-														flag_excluse=1
-														Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
-														break
-												if flag_excluse==1:
-													subTabName = "Parts List"
+										# if	entitlement_service_dictonary.get(service_id) == 1:
+										# 	subTabName = "Parts List"
+										# if	entitlement_service_dictonary.get(service_id) == 0:
+										# 	subTabName = " "
+										# if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
+										greenbook_entitlement_object=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
+										if greenbook_entitlement_object is not None:
+											updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
+											flag_excluse=0
+											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+											for m in re.finditer(pattern_tag, updateentXML):
+												sub_string = m.group(1)
+												get_ent_id =re.findall(pattern_id,sub_string)
+												get_ent_name=re.findall(pattern_name,sub_string)
+												if get_ent_id and get_ent_name:
+													flag_excluse=1
+													Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
+													break
+											if flag_excluse==1:
+												subTabName = "Parts List"
 										Trace.Write("subTabName Green service list---"+str(subTabName))
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
@@ -2908,28 +2908,28 @@ class TreeView:
 									subTabName = ""
 									service_id = Product.GetGlobal("SERVICE")
 									#CQQTMODULE.entitlement_service_dictonary
-									if	entitlement_service_dictonary.get(service_id) == 1:
-										subTabName = "Parts List"
-									if	entitlement_service_dictonary.get(service_id) == 0:
-										subTabName = " "
-									if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
-										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
-										if X is not None:
-											updateentXML = X.ENTITLEMENT_XML
-											flag_excluse=0
-											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-											for m in re.finditer(pattern_tag, updateentXML):
-												sub_string = m.group(1)
-												get_ent_id =re.findall(pattern_id,sub_string)
-												get_ent_name=re.findall(pattern_name,sub_string)
-												if get_ent_id and get_ent_name:
-													flag_excluse=1
-													Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
-													break
-											if flag_excluse==1:
-												subTabName = "Parts List"
+									# if	entitlement_service_dictonary.get(service_id) == 1:
+									# 	subTabName = "Parts List"
+									# if	entitlement_service_dictonary.get(service_id) == 0:
+									# 	subTabName = " "
+									# if	Quote.GetGlobal("Greenbook_Entitlement") == "Yes":
+									greenbook_entitlement_object =Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
+									if greenbook_entitlement_object is not None:
+										updateentXML = greenbook_entitlement_object.ENTITLEMENT_XML
+										flag_excluse=0
+										pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+										pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+										pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+										for m in re.finditer(pattern_tag, updateentXML):
+											sub_string = m.group(1)
+											get_ent_id =re.findall(pattern_id,sub_string)
+											get_ent_name=re.findall(pattern_name,sub_string)
+											if get_ent_id and get_ent_name:
+												flag_excluse=1
+												Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
+												break
+										if flag_excluse==1:
+											subTabName = "Parts List"
 									Trace.Write("subTabName Green service list---"+str(subTabName))
 								if subTabName:
 									if getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
@@ -3247,32 +3247,7 @@ if LOAD == "Treeload":
 		else:
 			ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonLeftTreeView())	
 	elif (str(ProductName).upper() == "SALES" or str(ProductName).upper() == "APPROVAL CENTER" ):
-		if str(ProductName).upper() == "SALES":
-			import re
-			service_dict = {}
-			entitlement_service_dictonary = {}
-			contract_quote_record_id = Product.GetGlobal("contract_quote_record_id")
-			quote_revision_record_id = Product.GetGlobal("quote_revision_record_id")
-			service_entitlement_objects =SqlHelper.GetList("""select ENTITLEMENT_XML,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}'  """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id))
-			for service_entitlement_obj in service_entitlement_objects:
-				updateentXML = service_entitlement_obj.ENTITLEMENT_XML
-				pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-				pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-				pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-				service_dict.update({service_entitlement_obj.SERVICE_ID:0})
-				for m in re.finditer(pattern_tag, updateentXML):
-					sub_string = m.group(1)
-					get_ent_id =re.findall(pattern_id,sub_string)
-					get_ent_name=re.findall(pattern_name,sub_string)
-					if get_ent_id and get_ent_name:
-						service_dict.update({service_entitlement_obj.SERVICE_ID:1})
-						Trace.Write("fdsfdsfds"+str(service_dict))
-						break
-			entitlement_service_dictonary.update(service_dict)
-			Trace.Write("service_dict_updated"+str(entitlement_service_dictonary))
-			ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonDynamicLeftTreeView())
-		else:
-			ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonDynamicLeftTreeView())
+		ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonDynamicLeftTreeView())
 	elif str(ProductName).upper() == "PRICE MODELS":        
 		ApiResponse = ApiResponseFactory.JsonResponse(tree.CommonDynamicLeftTreeView())
 	else:
