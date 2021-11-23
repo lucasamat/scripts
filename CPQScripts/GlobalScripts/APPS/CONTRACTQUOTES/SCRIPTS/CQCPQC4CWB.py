@@ -36,6 +36,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         c4c_quote_object_id = opportunity_obj.C4C_QTEOBJ_ID
 
         c4c_employee_obj = Sql.GetFirst("SELECT SAEMPL.C4C_EMPLOYEE_ID FROM SAEMPL INNER JOIN SAQTMT ON SAEMPL.EMPLOYEE_ID = SAQTMT.OWNER_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        c4c_employee_id = ""
         if c4c_employee_obj is not None:
             c4c_employee_id = c4c_employee_obj.C4C_EMPLOYEE_ID
 
