@@ -1105,20 +1105,18 @@ class Entitlements:
 					Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName))
 					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
 						#ancillary_object = 'Z0101'
-						if tableName == "SAQTSE":
-							QuoteModule.service_level_entitlement(str(serviceId),1)
 						Trace.Write("entitlement_value -----"+str(entitlement_value))
 						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
 							ancillary_object_dict['Z0101'] = "INSERT"
-							if tableName == "SAQTSE":
-								QuoteModule.service_level_entitlement(str(serviceId),1)
+							# if tableName == "SAQTSE":
+							# 	QuoteModule.service_level_entitlement({str(serviceId):1})
 							#ancillary_flag = "INSERT"
 						else:
 							count_temp_z0101 += 1
 							if  count_temp_z0101 == 2:
 								ancillary_object_dict['Z0101'] = "DELETE"
-							if tableName == "SAQTSE":
-								QuoteModule.service_level_entitlement(str(serviceId),0)
+							# if tableName == "SAQTSE":
+							# 	QuoteModule.service_level_entitlement({str(serviceId):1})
 							#ancillary_flag = "DELETE"
 
 					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
