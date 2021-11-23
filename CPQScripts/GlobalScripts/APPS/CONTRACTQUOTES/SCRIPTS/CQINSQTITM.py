@@ -134,7 +134,7 @@ class ContractQuoteItem:
 		Log.Info('join_condition_string---'+str(join_condition_string))
 		annualized_item_where_string = "AND ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = '' "
 		annualized_item_join_string = "LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
-				
+		Log.Info('join_condition_string---'+str(join_condition_string))		
 		if self.is_ancillary == True:
 			dynamic_value_for_status = "'ACQUIRED' AS STATUS"
 		else:
