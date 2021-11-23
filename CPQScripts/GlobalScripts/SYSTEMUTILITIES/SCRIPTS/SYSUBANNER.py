@@ -1965,19 +1965,19 @@ def Related_Sub_Banner(
     #     PrimaryValue = ""       
     if TreeParam == 'Quote Items' and (subTabName == "Summary" or subTabName == "Items" or subTabName == "Annualized Items" or subTabName == "Entitlement Cost/price"):
         Trace.Write("quoteitemshp===")
-        get_quote_details = Sql.GetFirst("select TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        get_quote_details = Sql.GetFirst("select CREDIT_INGL_CURR,DISCOUNT_AMOUNT_INGL_CURR,SALES_PRICE_INGL_CURR,TOTAL_AMOUNT,DISCOUNT_PERCENT,SLSDIS_PRICE_INGL_CURR,TOTAL_AMOUNT_INGL_CURR,TAX_AMOUNT_INGL_CURR,NET_PRICE_INGL_CURR from SAQTRV (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         #item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
         Trace.Write("valkk==="+str(get_quote_details.SLSDIS_PRICE_INGL_CURR))
         PrimaryLable = "Total Sales Price"
-        PrimaryValue = str("%.2f" % round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),2)) if str(get_quote_details.SLSDIS_PRICE_INGL_CURR) != '' else ''
+        PrimaryValue = str("%.2f" % round(float(get_quote_details.SALES_PRICE_INGL_CURR),2)) if str(get_quote_details.SALES_PRICE_INGL_CURR) != '' else ''
         SecondLable = "Total Discount %"
         SecondValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_PERCENT),2)) if str(get_quote_details.DISCOUNT_PERCENT) != '' else ''
         ThirdLable = "Total Discount Amount"
-        ThirdValue = str("%.2f" % round(float(get_quote_details.SLSDIS_PRICE_INGL_CURR),2)) if str(get_quote_details.SLSDIS_PRICE_INGL_CURR) != '' else ''
+        ThirdValue = str("%.2f" % round(float(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR),2)) if str(get_quote_details.DISCOUNT_AMOUNT_INGL_CURR) != '' else ''
         FourthLable = "Total Credit"
-        FourthValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2)) if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else ''
+        FourthValue = str("%.2f" % round(float(get_quote_details.CREDIT_INGL_CURR),2)) if str(get_quote_details.CREDIT_INGL_CURR) != '' else ''
         FifthValue = "Total Excluding Tax/VAT"
-        FifthValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2)) if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else ''
+        FifthValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2)) if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else ''
         SixthLable = "Tax/VAT"
         SixthValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2)) if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else ''
         SeventhLable = "Net Price"
