@@ -1968,6 +1968,7 @@ class SyncQuoteAndCustomTables:
 								WHEN 'Z3' THEN 'SALES ADMIN'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
+								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
 								ELSE 'FOB'
 								END ) AS C4C_PARTNERFUNCTION_ID,
@@ -1980,6 +1981,7 @@ class SyncQuoteAndCustomTables:
 								WHEN 'Z3' THEN 'SALES ADMIN'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
+								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
 								ELSE 'FOB'
 								END ) AS CRM_PARTNERFUNCTION_ID,
@@ -1992,6 +1994,7 @@ class SyncQuoteAndCustomTables:
 								WHEN 'Z3' THEN 'SALES ADMIN'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
+								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_DESC,
@@ -2004,6 +2007,7 @@ class SyncQuoteAndCustomTables:
 								WHEN 'Z3' THEN 'SALES ADMIN'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
+								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_ID,
@@ -2016,6 +2020,7 @@ class SyncQuoteAndCustomTables:
 								WHEN 'Z3' THEN 'SALES ADMIN'
 								WHEN 'Z4' THEN 'SALES MANAGER'
 								WHEN 'Z5' THEN 'SALES REP'
+								WHEN 'ZCM' THEN 'CONTRACT MANAGER'
 								WHEN 'ZFM' THEN 'FINANCE MANAGER'
 								ELSE 'FOB'
 								END ) AS PARTNERFUNCTION_RECORD_ID,
