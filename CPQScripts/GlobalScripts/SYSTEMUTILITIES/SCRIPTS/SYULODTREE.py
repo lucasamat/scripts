@@ -2911,7 +2911,7 @@ class TreeView:
 									if	entitlement_service_dictonary.get(service_id) == 1:
 										subTabName = "Parts List"
 									if	entitlement_service_dictonary.get(service_id) == 0:
-										subTabName = "Parts List"
+										subTabName = " "
 									else:
 										X=Sql.GetFirst("""select ENTITLEMENT_XML from SAQSGE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' and GREENBOOK = '{NodeText}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = Product.GetGlobal("SERVICE"),NodeText = NodeText))
 										if X is not None:
