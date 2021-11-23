@@ -883,12 +883,11 @@ class QueryBuilder:
                     result_obj = Sql.GetList(
                         "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
                     )
-        else:
-            Trace.Write("where_condition_string_J "+str(where_condition_string))
-            if selection_column != "BANK_ID":
-                result_obj = Sql.GetList(
-                    "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
-                )
+        # else:
+        #     Trace.Write("where_condition_string_J "+str(where_condition_string))
+            # result_obj = Sql.GetList(
+            #     "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
+            # )
         if result_obj is not None:
             for data_obj in result_obj:
                 for obj in data_obj:
