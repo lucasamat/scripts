@@ -8307,7 +8307,7 @@ class SYLDRTLIST:
 				for inm in ik:
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
-					Trace.Write('**value123--->'+str(value123)+' value1234-->'+str(value1234))
+					Trace.Write('**value123--->'+str(value123)+' value1234-->'+value1234)
 					if value123 == objRecName:
 						#current_rec_id = ""
 						current_rec_id = value1234
