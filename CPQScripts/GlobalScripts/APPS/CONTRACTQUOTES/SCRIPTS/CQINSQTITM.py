@@ -131,6 +131,7 @@ class ContractQuoteItem:
 		if self.quote_service_entitlement_type == 'OFFERING + EQUIPMENT':
 			join_condition_string = ' AND SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID'
 		#if update:
+		Log.Info('join_condition_string---'+str(join_condition_string))
 		annualized_item_where_string = "AND ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = '' "
 		annualized_item_join_string = "LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = SAQSCE.GREENBOOK_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQICO.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
 				
@@ -890,7 +891,7 @@ class ContractQuoteItem:
 				else:
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
-					self._quote_annualized_items_insert()
+					self.cqent()
 					self._quote_item_line_entitlement_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
