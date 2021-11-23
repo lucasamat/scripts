@@ -496,10 +496,10 @@ class approvalCenter:
 					{ApiName} = '{statusUpdate}'
 					WHERE {primaryKey} = '{Primaryvalue}' """.format(
 					statusUpdate = "REJECTED",
-					ObjName="SAQTMT",
-					ApiName="QUOTE_STATUS",
+					ObjName="SAQTRV",
+					ApiName="REVISION_STATUS",
 					Primaryvalue=str(GetCurStatus.APRTRXOBJ_RECORD_ID),
-					primaryKey = "QTEREV_RECORD_ID"
+					primaryKey = "QUOTE_REVISION_RECORD_ID"
 				)
 
 				b = Sql.RunQuery(MainObjUpdateQuery)
