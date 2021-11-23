@@ -40,7 +40,7 @@ def insert_items_billing_plan(contract_quote_record_id=None, total_months=1, bil
 					SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
 					SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
 					SAQTSE.ENTITLEMENT_VALUE_CODE as BILLING_TYPE,
-					SAQICO.LINE_ITEM_ID AS LINE,                                       
+					SAQICO.LINE AS LINE,                                       
 					SAQICO.QUOTE_ID,
 					SAQICO.QTEITM_RECORD_ID,					
 					SAQICO.QUOTE_RECORD_ID,
