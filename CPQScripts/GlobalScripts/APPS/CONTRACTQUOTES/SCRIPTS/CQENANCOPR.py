@@ -916,11 +916,12 @@ class AncillaryProductOperation:
 			Sql.RunQuery(delete_statement)
 
 	def _delete_operation(self):
+		self._set_quote_service_entitlement_type()
 		delete_obj_list = []
 		if self.tablename == "SAQTSE": 
-			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
-		# elif self.tablename == "SAQSFE":
-		# 	delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
+			delete_obj_list = ["SAQTSV","SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
+		elif self.tablename == "SAQSFE":
+			delete_obj_list = ["SAQSFB","SAQSGB","SAQSCO","SAQSCA","SAQSFE","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"]
 		elif self.tablename == "SAQSGE":
 			delete_obj_list = ["SAQSGB","SAQSCO","SAQSCA","SAQSGE","SAQSCE","SAQSAE","SAQICO","SAQRIT","SAQRIO"] 
 		elif self.tablename == "SAQSCE":
@@ -930,16 +931,84 @@ class AncillaryProductOperation:
 		
 		# if self.action_type == "DELETE_ENT_EQUIPMENT":
 		# 	delete_obj_list = ["SAQTSE","SAQSFE","SAQSGE","SAQSCE","SAQSAE"]
+		addtional_where = ""
+		if self.fab:
+			addtional_where = " AND FABLOCATION_ID = '{}' ".format(self.fab)
+		if self.greenbook:
+			addtional_where += " AND GREENBOOK = '{}'".format(self.greenbook)
+		if self.equipment_id:
+			addtional_where += " AND EQUIPMENT_ID = '{}'".format(self.equipment_id)
+		if self.assembly:
+			addtional_where += " AND ASSEMBLY_ID = '{}'".format(self.assembly)
 		for obj in delete_obj_list:
 			#Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(obj, self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
 			
 			ancillary_where = re.sub("SERVICE_ID","PAR_SERVICE_ID",self.where_string)
 			if obj in ('SAQICO','SAQRIT','SAQRIO'):
 				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
+			if obj == 'SAQRIO':
+				ancillary_where = re.sub(r'AND FABLOCATION_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
+			if obj in ('SAQICO','SAQRIT','SAQRIO'):
+				ancillary_where = re.sub(r'AND SERVICE_ID\s*\=\s*\'[^>]*?\'', '', self.where_string )
 			if obj == 'SAQRIT' and 'EQUIPMENT_ID' in ancillary_where:
-				ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
+				if self.quote_service_entitlement_type != "OFFERING + EQUIPMENT":
+					ancillary_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '', ancillary_where )
+				else:
+					ancillary_where = re.sub('EQUIPMENT_ID', 'OBJECT_ID', ancillary_where )
 			Sql.RunQuery("DELETE FROM {} WHERE {} AND SERVICE_ID = '{}'".format(obj,ancillary_where,self.ancillary_obj))
+		
+		##deleting higher table records based on below level 
+		if self.tablename != "SAQTSE":
+			obj_list = ["SAQSCA","SAQSCO","SAQSGB"]
+			for rec in obj_list:
+				if rec == "SAQSCA":
+					addtional_where = re.sub(r'AND ASSEMBLY_ID\s*\=\s*\'[^>]*?\'', '',addtional_where )
+				elif rec == "SAQSCO":
+					addtional_where = re.sub(r'AND EQUIPMENT_ID\s*\=\s*\'[^>]*?\'', '',addtional_where )
+					addtional_where = re.sub(r'AND ASSEMBLY_ID\s*\=\s*\'[^>]*?\'', '',addtional_where )
+				elif rec == "SAQSGB":
+					addtional_where =''
+				get_count = Sql.GetFirst("select count(CpqTableEntryId) as cnt from {} (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' {}".format(rec,self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id,addtional_where ))
+				if rec == "SAQSCA" and get_count.cnt == 0:
+					for del_obj in ['SAQSCO','SAQSCE']:
+						Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' {}".format(del_obj,self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id,addtional_where ))
+				elif rec == "SAQSCO" and get_count.cnt == 0:
+					
+					for del_obj in ['SAQSGB','SAQSGE']:
+						Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' {}".format(del_obj,self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id,addtional_where ))
+				elif rec == "SAQSGB" and get_count.cnt == 0:
+					for del_obj in ['SAQTSE','SAQTSV']:
+						Sql.RunQuery("DELETE FROM {} WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}' ".format(del_obj,self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id ))
 
+	def _set_quote_service_entitlement_type(self):
+		self.quote_service_entitlement_type = ""
+		##chk ancillary offering
+		
+		if self.tablename != 'SAQTSE' :
+			Trace.Write('yess')
+			where_str = self.where_string.replace('SRC.','').replace('WHERE','')
+		else:
+			where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.ancillary_obj)
+		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id, obj_name = self.tablename, where_str = where_str))
+		if service_entitlement_obj:
+			quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.ancillary_obj)+'_PQB_QTITST</ENTITLEMENT_ID>')
+			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
+				quote_item_tag_content = quote_item_tag.group(1)
+				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)				
+				if entitlement_id_tag_match:
+					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+					if entitlement_display_value_tag_match:
+						self.quote_service_entitlement_type = entitlement_display_value_tag_match[0].upper()
+						break
+				else:
+					continue
+			# if self.service_id == 'Z0101':
+			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
+		Trace.Write("quote_service_entitlement_type"+str(self.quote_service_entitlement_type))
+	
+	
 	
 	
 try:			
