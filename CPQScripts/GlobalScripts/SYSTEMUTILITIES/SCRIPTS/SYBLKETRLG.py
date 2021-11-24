@@ -576,9 +576,9 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				
 				ext_price = year1 + year2 + year3 + year4 + year5
 
-				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}',NET_PRICE_INGL_CURR = {VALUE}, DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext},TOTAL_AMOUNT_INGL_CURR = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
+				#Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}',NET_PRICE_INGL_CURR = {VALUE}, DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext},TOTAL_AMOUNT_INGL_CURR = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=VALUE,cpqid=cpqid,discount=discount,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
 
-				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
+				b = Sql.GetFirst("SELECT  SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 				#(float(a.TARGET_PRICE)-float(VALUE))/float(a.TARGET_PRICE)
 				
 				TotalDiscount = ((float(b.TARGET_PRICE)-float(b.SUM_PRICE))/float(b.TARGET_PRICE)) * 100.00
@@ -593,7 +593,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 				
 				# Sql.RunQuery("UPDATE SAQIGB SET NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.GREENBOOK,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
 
-				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
+				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
 				
 				TotalServiceDiscount = ((float(getServiceSum.TARGET_PRICE)-float(getServiceSum.SUM_PRICE))/float(getServiceSum.TARGET_PRICE)) *100.00
 				Trace.Write("Total Service Discount = "+str(TotalServiceDiscount))
@@ -695,14 +695,14 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 
 				Sql.RunQuery("UPDATE SAQICO SET NET_PRICE = '{VALUE}',NET_PRICE_INGL_CURR = '{VALUE}', DISCOUNT = '{discount}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5},NET_VALUE = {ext} WHERE CpqTableEntryId = {cpqid}".format(VALUE=amt,cpqid=cpqid,discount=VALUE,y1=year1,y2=year2,y3=year3,y4=year4,y5=year5,ext=ext_price))
 
-				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
+				b = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,quote_revision_record_id))
 				
 				TotalDiscount = ((float(b.TARGET_PRICE)-float(b.SUM_PRICE))/float(b.TARGET_PRICE)) * 100.00
 				Trace.Write("Total Discount = "+str(TotalDiscount))
 
-				c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(NET_VALUE) AS NET_VALUE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK,quote_revision_record_id))
+				c = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.GREENBOOK,quote_revision_record_id))
 				greenbook_discount = (float(c.TARGET_PRICE) - float(c.SUM_PRICE))*100/float(c.TARGET_PRICE)
-				fab = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE,SUM(NET_VALUE) AS NET_VALUE,SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5 FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.FABLOCATION_ID,quote_revision_record_id))
+				fab = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE, SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,a.SERVICE_ID,a.FABLOCATION_ID,quote_revision_record_id))
 				
 				fab_discount = (float(fab.TARGET_PRICE) - float(fab.SUM_PRICE))*100/float(fab.TARGET_PRICE)
 				fab_net_value = fab.YEAR1 + fab.YEAR2 + fab.YEAR3 + fab.YEAR4 + fab.YEAR5
@@ -716,7 +716,7 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 
 				# Sql.RunQuery("UPDATE SAQIFL SET NET_VALUE = {},DISCOUNT = '{}',NET_PRICE = '{}',YEAR_1 = {y1},YEAR_2 = {y2},YEAR_3={y3},YEAR_4={y4},YEAR_5 = {y5}  WHERE QUOTE_RECORD_ID = '{}' AND SERVICE_ID LIKE '%{}%' AND FABLOCATION_ID = '{}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(fab_net_value,fab_discount,float(b.SUM_PRICE),Quote.GetGlobal("contract_quote_record_id"),a.SERVICE_ID,a.FABLOCATION_ID,y1=c.YEAR1,y2=c.YEAR2,y3=c.YEAR3,y4=c.YEAR4,y5=c.YEAR5,quote_revision_record_id=quote_revision_record_id))
 
-				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE, SUM(YEAR_1) AS YEAR1, SUM(YEAR_2) AS YEAR2, SUM(YEAR_3) AS YEAR3, SUM(YEAR_4) AS YEAR4, SUM(YEAR_5) AS YEAR5, SUM(NET_VALUE) AS NET_VALUE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
+				getServiceSum = Sql.GetFirst("SELECT SUM(NET_PRICE) AS SUM_PRICE,SUM(TARGET_PRICE) AS TARGET_PRICE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(a.QUOTE_RECORD_ID,quote_revision_record_id))
 				
 				TotalServiceDiscount = ((float(getServiceSum.TARGET_PRICE)-float(getServiceSum.SUM_PRICE))/float(getServiceSum.TARGET_PRICE)) *100.00
 				Trace.Write("Total Service Discount = "+str(TotalServiceDiscount))
