@@ -1317,16 +1317,16 @@ class approvalCenter:
 			)
 			if GetCurStatus:
 				
-				# #MainObjUpdateQuery = """UPDATE SAQTRV SET
-				# 	REVISION_STATUS = 'APPROVAL PENDING'
-				# 	WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
-				# 	statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
-				# 	ObjName=str(GetCurStatus.OBJECT_NAME),
-				# 	ApiName=str(GetCurStatus.API_NAME),
-				# 	Primaryvalue=str(GetCurStatus.APRTRXOBJ_RECORD_ID),
-				# 	primaryKey = str(GetCurStatus.RECORD_NAME )
-				# )
-				# #b = Sql.RunQuery(MainObjUpdateQuery)
+				MainObjUpdateQuery = """UPDATE SAQTRV SET
+					REVISION_STATUS = 'APPROVAL PENDING'
+					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
+					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
+					ObjName=str(GetCurStatus.OBJECT_NAME),
+					ApiName=str(GetCurStatus.API_NAME),
+					Primaryvalue=str(GetCurStatus.APRTRXOBJ_RECORD_ID),
+					primaryKey = str(GetCurStatus.RECORD_NAME )
+				)
+				b = Sql.RunQuery(MainObjUpdateQuery)
 				getQuote = Sql.GetFirst(
 					"SELECT QUOTE_ID,REVISION_STATUS FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"
 					+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
