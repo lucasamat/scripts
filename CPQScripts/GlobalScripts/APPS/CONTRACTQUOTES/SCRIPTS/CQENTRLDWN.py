@@ -1,6 +1,6 @@
 # =========================================================================================================================================
 #   __script_name : CQENTRLDWN.PY
-#   __script_description : THIS SCRIPT IS USED FOR ENTITLEMENT ROLLDOWN 
+#   __script_description : THIS SCRIPT IS USED FOR ENTITLEMENT ROLLDOWN when editing in entitlement
 #   __primary_author__ : ASHA LYSANDAR
 #   __create_date : 12-11-2020
 #   � BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
