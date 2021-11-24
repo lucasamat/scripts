@@ -2622,16 +2622,16 @@ def Related_Sub_Banner(
         else:
             Submit_approval = "False"
         get_quote_status = Sql.GetList("SELECT CpqTableEntryId FROM ACAPTX (NOLOCK) WHERE APPROVAL_ID LIKE '%{}%'".format(quote_status.QUOTE_ID))
-        if not get_quote_status and str(quote_status.QUOTE_STATUS) != 'APPROVED':
+        if not get_quote_status and str(quote_status.REVISION_STATUS) != 'APPROVED':
             sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn" id="APPROVE" onclick="quote_approval(this.id)">APPROVE</button>'
                 )
         Trace.Write("get_quote_status"+str(get_quote_status))
-        Trace.Write("QUOTE_STATUS"+str(quote_status.QUOTE_STATUS))
+        Trace.Write("QUOTE_STATUS"+str(quote_status.REVISION_STATUS))
         Trace.Write("Submit_approval"+str(Submit_approval))
         # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
-        if get_quote_status and (str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' or str(quote_status.QUOTE_STATUS) == 'APPROVAL PENDING') and Submit_approval == "True":
+        if get_quote_status and (str(quote_status.REVISION_STATUS) == 'IN-PROGRESS' or str(quote_status.REVISION_STATUS) == 'APPROVAL PENDING') and Submit_approval == "True":
             Trace.Write("submit for approval")
             sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
