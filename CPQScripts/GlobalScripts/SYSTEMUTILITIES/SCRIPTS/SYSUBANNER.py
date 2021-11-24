@@ -2610,7 +2610,7 @@ def Related_Sub_Banner(
         
 
     elif TreeParam == 'Approvals' and (TabName == "Quotes" or TabName == "Quote"):
-        quote_status = Sql.GetFirst("SELECT QUOTE_STATUS,QUOTE_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
+        quote_status = Sql.GetFirst("SELECT REVISION_STATUS,QUOTE_ID FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
         #Trace.Write("quote status------->"+str(quote_status.QUOTE_STATUS))
         Quote_Owner = Sql.GetFirst("SELECT CPQTABLEENTRYADDEDBY FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
         # Quote_item_obj = Sql.GetFirst("SELECT QUOTE_ITEM_RECORD_ID FROM SAQITM WHERE QUOTE_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id")))
@@ -2631,7 +2631,7 @@ def Related_Sub_Banner(
         Trace.Write("Submit_approval"+str(Submit_approval))
         # Trace.Write("Quote_item_obj"+str(Quote_item_obj))
         
-        if get_quote_status and (str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' or str(quote_status.QUOTE_STATUS) == 'REJECTED') and Submit_approval == "True":
+        if get_quote_status and (str(quote_status.QUOTE_STATUS) == 'IN-PROGRESS' or str(quote_status.QUOTE_STATUS) == 'APPROVAL PENDING') and Submit_approval == "True":
             Trace.Write("submit for approval")
             sec_rel_sub_bnr += (
                     '<button class="btnconfig cust_def_btn submitbutton" data-target="#SUBMIT_MODAL_SECTION" data-toggle="modal" id="submit_for_approval" onclick="submit_comment()">SUBMIT FOR APPROVAL</button>'
