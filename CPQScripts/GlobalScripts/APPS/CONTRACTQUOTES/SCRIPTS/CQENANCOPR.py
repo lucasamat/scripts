@@ -695,7 +695,7 @@ class AncillaryProductOperation:
 	
 	def _update_entitlement(self):
 		Log.Info('attr--685--ttributeList----'+str(self.attributeList))
-		attr_id =''
+		attr_id = value_application = ''
 
 		try:
 			#Log.Info('636--646--700--'+str(self.contract_quote_record_id))
@@ -722,13 +722,13 @@ class AncillaryProductOperation:
 								AttributeID_Pass = 'AGS_Z0035_KPI_BPTKPI'
 							elif str(val.ENTITLEMENT_ID) == "AGS_{}_PQB_PPCPRM".format(self.service_id) and NewValue == "Yes":
 								AttributeID_Pass = 'AGS_Z0046_PQB_PPCPRM'
+								value_application = 'YES'
 							else:
 								if 'AGS_Z0046' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 								elif 'AGS_Z0101' in val.ENTITLEMENT_ID:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 							if AttributeID_Pass:
-								Trace.Write("AttributeID_Pass--"+str(AttributeID_Pass)+'---'+str(val.ENTITLEMENT_DISPLAY_VALUE))
 								ServiceId = 'Z0046'
 								whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
 								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
