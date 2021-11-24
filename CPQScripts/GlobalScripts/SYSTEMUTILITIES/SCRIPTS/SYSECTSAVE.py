@@ -1659,13 +1659,16 @@ def getting_cps_tax(item_obj,quote_type):
 		# )
 		# Sql.RunQuery(update_tax)
 		if quote_type == 'tool':
-			update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' ".format(
-			TaxPercentage=tax_percentage,			
-			ServiceId=TreeParam.split('-')[1].strip(),
-			QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
-			revision_rec_id = quote_revision_record_id
-			)
-			Sql.RunQuery(update_tax_item_covered_obj)
+			Trace.Write("update saqico---")
+			#commented the query because of removing the api_name TAX_PERCENTAGE from SAQICO - start
+			# update_tax_item_covered_obj = "UPDATE SAQICO SET TAX_PERCENTAGE = {TaxPercentage} WHERE SAQICO.SERVICE_ID = '{ServiceId}' and QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}' ".format(
+			# TaxPercentage=tax_percentage,			
+			# ServiceId=TreeParam.split('-')[1].strip(),
+			# QuoteRecordId=Quote.GetGlobal("contract_quote_record_id"),
+			# revision_rec_id = quote_revision_record_id
+			# )
+			# Sql.RunQuery(update_tax_item_covered_obj)
+			#commented the query because of removing the api_name TAX_PERCENTAGE from SAQICO - end	
 			#update TAX column  and Extended price for each SAQICO records
 			'''QueryStatement ="""UPDATE a SET a.TAX = CASE WHEN a.TAX_PERCENTAGE > 0 THEN (ISNULL(a.YEAR_1, 0)+ISNULL(a.YEAR_2, 0)+ISNULL(a.YEAR_3, 0)+ISNULL(a.YEAR_4, 0)+ISNULL(a.YEAR_5, 0)) * (a.TAX_PERCENTAGE/100) ELSE a.TAX_PERCENTAGE END FROM SAQICO a INNER JOIN SAQICO b on a.EQUIPMENT_ID = b.EQUIPMENT_ID and a.QUOTE_RECORD_ID = b.QUOTE_RECORD_ID and  a.QTEREV_RECORD_ID = b.QTEREV_RECORD_ID where a.QUOTE_RECORD_ID = '{QuoteRecordId}' and a.SERVICE_ID = '{ServiceId}' AND a.QTEREV_RECORD_ID='{revision_rec_id}'""".format(			
 			ServiceId=TreeParam.split('-')[1].strip(),
