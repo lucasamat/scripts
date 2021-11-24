@@ -1,6 +1,6 @@
 # =========================================================================================================================================
 #   __script_name : CQENANCOPR.py
-#   __script_description : THIS SCRIPT IS USED FOR ANCILLARY PRODUCT OPERATIONS
+#   __script_description : THIS SCRIPT IS USED FOR ANCILLARY PRODUCT OPERATIONS(insert,roll down)
 #   __primary_author__ : 
 #   __create_date :8/23/2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
