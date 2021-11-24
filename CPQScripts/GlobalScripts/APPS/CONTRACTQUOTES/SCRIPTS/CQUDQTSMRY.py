@@ -49,8 +49,7 @@ class ContractQuoteSummaryUpdate:
 	
 	def _quote_item_lines_update(self):
 		decimal_discount = float(int(self.discount)) / 100.0
-		Sql.RunQuery("""UPDATE SAQICO SET 
-										NET_PRICE = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+		Sql.RunQuery("""UPDATE SAQICO SET
 										YEAR_1 = ISNULL(TARGET_PRICE,0) - (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
 										DISCOUNT = {Discount}
 									FROM SAQICO (NOLOCK)                                     
@@ -169,7 +168,6 @@ class ContractQuoteSummaryUpdate:
 										SALES_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
 										DISCOUNT_AMOUNT = ISNULL(TARGET_PRICE,0),
 										DISCOUNT_AMOUNT_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0)  - ISNULL(SALES_PRICE_INGL_CURR,0),
-										NET_PRICE = ISNULL(TAX_AMOUNT,0),
 										NET_PRICE_INGL_CURR = ISNULL(TOTAL_AMOUNT_INGL_CURR,0)  + ISNULL(TAX_AMOUNT_INGL_CURR,0),
 										DISCOUNT = '{plus}{Discount}'
 									FROM SAQICO (NOLOCK)                                     
@@ -199,7 +197,6 @@ class ContractQuoteSummaryUpdate:
 							SALES_PRICE_INGL_CURR = IQ.SALES_PRICE_INGL_CURR,
 							DISCOUNT_AMOUNT = IQ.DISCOUNT_AMOUNT,
 							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
-							NET_PRICE = IQ.NET_PRICE,
 							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 							DISCOUNT = '{Discount}'					
 							FROM SAQIRT (NOLOCK)
@@ -207,7 +204,6 @@ class ContractQuoteSummaryUpdate:
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.SALES_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as SALES_PRICE_INGL_CURR,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
-										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE, 0)), 0), 0) as decimal(18,2)) as NET_PRICE,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.NET_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as NET_PRICE_INGL_CURR
 										FROM SAQIRT (NOLOCK) 
 										JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = SAQIRT.QUOTE_RECORD_ID  AND SAQICO.QTEREV_RECORD_ID = SAQIRT.QTEREV_RECORD_ID 
