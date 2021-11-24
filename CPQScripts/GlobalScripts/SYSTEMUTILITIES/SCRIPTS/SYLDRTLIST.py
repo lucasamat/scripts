@@ -3071,7 +3071,13 @@ class SYLDRTLIST:
 							Trace.Write('At line 2805 ---2960----- Else'+str(value123))
 							# Trace.Write(' - '+str(value1234))
 							imgValue = ''
-							if value1234.startswith("<img"):
+                            if str(ObjectName) == "SAQRIT":
+								if value1234 != "":
+									imgValue = str(value1234).split(">")[0]
+									imgValue = str(imgValue)+">"
+								else:
+									imgValue = ""
+							elif value1234.startswith("<img"):
 								# value1234 = value1234.replace('"', "&quot;")
 								value1234 = value1234.replace("<p>", " ")
 								value1234 = value1234.replace("</p>", " ")
