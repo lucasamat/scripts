@@ -165,10 +165,9 @@ class ContractQuoteSummaryUpdate:
 	def CalculatePlusDiscount(self):
 		Trace.Write("Plus")
 		decimal_discount = float(self.discount) / 100.0
-		Sql.RunQuery("""UPDATE SAQICO SET 
-										SALES_PRICE = ISNULL(TARGET_PRICE,0) + (ISNULL(TARGET_PRICE,0) * {DecimalDiscount}),
+		Sql.RunQuery("""UPDATE SAQICO SET										
 										SALES_PRICE_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0) + (ISNULL(TARGET_PRICE_INGL_CURR,0) * {DecimalDiscount}),
-										DISCOUNT_AMOUNT = ISNULL(TARGET_PRICE,0)  - ISNULL(SALES_PRICE,0),
+										DISCOUNT_AMOUNT = ISNULL(TARGET_PRICE,0),
 										DISCOUNT_AMOUNT_INGL_CURR = ISNULL(TARGET_PRICE_INGL_CURR,0)  - ISNULL(SALES_PRICE_INGL_CURR,0),
 										NET_PRICE = ISNULL(TAX_AMOUNT,0),
 										NET_PRICE_INGL_CURR = ISNULL(TOTAL_AMOUNT_INGL_CURR,0)  + ISNULL(TAX_AMOUNT_INGL_CURR,0),
@@ -196,8 +195,7 @@ class ContractQuoteSummaryUpdate:
 		# 								plus="+"))
 		self._update_year()
 		Sql.RunQuery("""UPDATE SAQIRT
-							SET 
-							SALES_PRICE = IQ.SALES_PRICE,
+							SET							
 							SALES_PRICE_INGL_CURR = IQ.SALES_PRICE_INGL_CURR,
 							DISCOUNT_AMOUNT = IQ.DISCOUNT_AMOUNT,
 							DISCOUNT_AMOUNT_INGL_CURR = IQ.DISCOUNT_AMOUNT_INGL_CURR,
@@ -205,8 +203,7 @@ class ContractQuoteSummaryUpdate:
 							NET_PRICE_INGL_CURR = IQ.NET_PRICE_INGL_CURR,
 							DISCOUNT = '{Discount}'					
 							FROM SAQIRT (NOLOCK)
-							INNER JOIN (SELECT SAQIRT.CpqTableEntryId,
-										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.SALES_PRICE, 0)), 0), 0) as decimal(18,2)) as SALES_PRICE,
+							INNER JOIN (SELECT SAQIRT.CpqTableEntryId,										
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.SALES_PRICE_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as SALES_PRICE_INGL_CURR,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT,
 										CAST(ROUND(ISNULL(SUM(ISNULL(SAQICO.DISCOUNT_AMOUNT_INGL_CURR, 0)), 0), 0) as decimal(18,2)) as DISCOUNT_AMOUNT_INGL_CURR,
