@@ -3633,7 +3633,7 @@ class SYLDRTLIST:
 								+ "</th>"
 							)           
 					continue
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENC','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('SSCM_PM_FREQUENCY','ADJ_PM_FREQUENCY','PM_COUNT_YEAR','PER_EVENT_PMSA_COST','ANNUAL_PMSA_COST'):
 					align = ''
 					rowspan_level1 = ""
 					if not table_group_columns2:
