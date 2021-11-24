@@ -673,7 +673,9 @@ class SyncQuoteAndCustomTables:
 								# salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 								# 					"DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								#A055S000P01-4418 exchange rate details starts..
-								if AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
+								if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
+									exchange_obj = None
+								elif AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
 									exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
 									if exchange_rate_type_object is not None:
 										exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
@@ -687,12 +689,15 @@ class SyncQuoteAndCustomTables:
 									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
 									#ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
 								
-									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-									if createddate > ex_rate_begin:										
-										createddate_up = createddate
+									# createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									# if createddate > ex_rate_begin:										
+									# 	createddate_up = createddate
 									
-									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID,'BANK_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
+									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':ex_rate_begin,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID,'BANK_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
 									##A055S000P01-4418 exchange rate details ends..
+								else:
+									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									salesorg_data.update({'EXCHANGE_RATE':1.00,'EXCHANGE_RATE_DATE':createddate})
 								##Commented the below code already we updated the exchange rate details in the above code..
 								# TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
 								# if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
