@@ -886,7 +886,7 @@ class QueryBuilder:
         else:
             Trace.Write("where_condition_string_J "+str(where_condition_string))
             result_obj = Sql.GetList(
-                "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
+                "SELECT DISTINCT {Columns} FROM {TableName} (NOLOCK) WHERE ISNULL({Columns},'')<>''".format(Columns=selection_column, TableName=table)
             )
         if result_obj is not None:
             for data_obj in result_obj:
