@@ -3655,13 +3655,8 @@ class SYLDRTLIST:
 							)           
 					continue
 				##annulaized cost
-				elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):
-					
+				elif RECORD_ID == 'SYOBJR-00009' and invs in ('LABOR_COST','GREATER_THAN_QTLY_PM_COST','LESS_THAN_QTLY_PM_COST','CM_PART_COST','PM_PART_COST','REPLACE_COST','REFURB_COST','CLEANING_COST','METROLOGY_COST','KPI_COST','SEEDSTOCK_COST','FAILURE_COST','LOGISTICS_COST','OUTSOURCE_COST','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','ENTITLEMENT_COST_IMPACT','ADD_COST_IMPACT'):	
 					align = ''
-					#A055S000P01-4401
-					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					# 	rowspan_level1 = 'rowspan="2"'
-					# else:
 					rowspan_level1 = ""
 					if not table_group_columns2:
 						table_header += '<th colspan="18" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED COSTS<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="cost_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
