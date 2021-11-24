@@ -730,6 +730,7 @@ class AncillaryProductOperation:
 									AttributeID_Pass = val.ENTITLEMENT_ID
 							if AttributeID_Pass:
 								ServiceId = 'Z0046'
+							
 								whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,ServiceId,self.contract_quote_revision_record_id)
 								ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID_Pass)+"||"+str(NewValue)+"||"+str(ServiceId) + "||" + 'SAQTSE'
 								
