@@ -862,6 +862,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	# 			serv_desct = ' WITH '+ check_upsell_ext.SERVICE_DESCRIPTION'''
 	
 	#for gettotal_bundle_query in gettotal_bundle_query:
+	
 	if gettotal_bundle_query:
 		
 		YEAR_1 = YEAR_2 = YEAR_3 = YEAR_4 = YEAR_5 = service_desc = ext_price = ""
@@ -910,7 +911,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						MNT_PLANT_RECORD_ID, PM_PART_COST,	SALE_DISCOUNT, 
 						SALES_MARGIN, SALE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_MARGIN, 
 						TARGET_MARGIN_THRESHOLD_RECORD_ID, END_DATE, START_DATE,
-						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, YEAR_OVER_YEAR, TAX_PERCENTAGE, TAX,  ownerId, cartId
+						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, YEAR_OVER_YEAR, TAX_PERCENTAGE, TAX,  ownerId, cartId
 					) 
 					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, 
@@ -963,11 +964,6 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						SAQICO.GREENBOOK_RECORD_ID,
 						SAQICO.EQUIPMENT_LINE_ID,
 						SAQICO.EXTENDED_PRICE as SUBTOTAL,
-						{YEAR_1} as YEAR_1,                        
-						{YEAR_2} as YEAR_2,                        
-						{YEAR_3} as YEAR_3,                        
-						{YEAR_4} as YEAR_4,                        
-						{YEAR_5} as YEAR_5,
 						ISNULL(SAQICO.YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR,
 						{TAX_PER} as TAX_PERCENTAGE,
 						{TAX} as TAX,
@@ -979,7 +975,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 					CartId=cart_id,
 					UserId=cart_user_id,
 					QuoteRecordId=Qt_rec_id,
-					Service_id =getserid.SERVICE_ID,YEAR_1 = YEAR_1,YEAR_2 = YEAR_2,YEAR_3=YEAR_3,YEAR_4=YEAR_4,YEAR_5=YEAR_5,TAX_PER=TAX_PER,TAX=TAX,service_desc=service_desc,ext_price=ext_pric,
+					Service_id =getserid.SERVICE_ID,TAX_PER=TAX_PER,TAX=TAX,service_desc=service_desc,ext_price=ext_pric,
 							)))
 		Sql.RunQuery("""INSERT QT__SAQICO (
 						QUOTE_ITEM_COVERED_OBJECT_RECORD_ID, EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID,
@@ -992,7 +988,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						MNT_PLANT_RECORD_ID, PM_PART_COST,	SALE_DISCOUNT, 
 						SALES_MARGIN, SALE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_MARGIN, 
 						TARGET_MARGIN_THRESHOLD_RECORD_ID, END_DATE, START_DATE,
-						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, YEAR_OVER_YEAR, TAX_PERCENTAGE, TAX,  ownerId, cartId
+						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL,YEAR_OVER_YEAR, TAX_PERCENTAGE, TAX,  ownerId, cartId
 					) 
 					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,
@@ -1045,11 +1041,6 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						SAQICO.GREENBOOK_RECORD_ID,
 						SAQICO.EQUIPMENT_LINE_ID,
 						SAQICO.EXTENDED_PRICE as SUBTOTAL,
-						{YEAR_1} as YEAR_1,                        
-						{YEAR_2} as YEAR_2,                        
-						{YEAR_3} as YEAR_3,                        
-						{YEAR_4} as YEAR_4,                        
-						{YEAR_5}as YEAR_5,
 						ISNULL(SAQICO.YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR,
 						{TAX_PER} as TAX_PERCENTAGE,
 						{TAX} as TAX,
@@ -1061,7 +1052,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 					CartId=cart_id,
 					UserId=cart_user_id,
 					QuoteRecordId=Qt_rec_id,
-					Service_id =getserid.SERVICE_ID,YEAR_1 = YEAR_1,YEAR_2 = YEAR_2,YEAR_3=YEAR_3,YEAR_4=YEAR_4,YEAR_5=YEAR_5,TAX_PER=TAX_PER,TAX=TAX,service_desc=serv_desct,ext_price=ext_pric
+					Service_id =getserid.SERVICE_ID,TAX_PER=TAX_PER,TAX=TAX,service_desc=serv_desct,ext_price=ext_pric
 							))
 	else:      
 		quote_item_covered_obj_insert = """INSERT QT__SAQICO (
@@ -1074,7 +1065,7 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						MNT_PLANT_RECORD_ID, PM_PART_COST,	SALE_DISCOUNT, 
 						SALES_MARGIN, SALE_MARGIN_RECORD_ID, SALESORG_ID, SALESORG_NAME, SALESORG_RECORD_ID, TARGET_MARGIN, 
 						TARGET_MARGIN_THRESHOLD_RECORD_ID, END_DATE, START_DATE,
-						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, YEAR_1, YEAR_2, YEAR_3, YEAR_4, YEAR_5, YEAR_OVER_YEAR, TAX_PERCENTAGE,  ownerId, cartId
+						GREENBOOK, GREENBOOK_RECORD_ID, EQUIPMENT_LINE_ID, SUBTOTAL, YEAR_OVER_YEAR, TAX_PERCENTAGE,  ownerId, cartId
 					) 
 					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,
@@ -1127,11 +1118,6 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 						SAQICO.GREENBOOK_RECORD_ID,
 						SAQICO.EQUIPMENT_LINE_ID,
 						SAQICO.EXTENDED_PRICE as SUBTOTAL,
-						ISNULL(SAQICO.YEAR_1, 0) as YEAR_1,                        
-						ISNULL(SAQICO.YEAR_2, 0) as YEAR_2,                        
-						ISNULL(SAQICO.YEAR_3, 0) as YEAR_3,                        
-						ISNULL(SAQICO.YEAR_4, 0) as YEAR_4,                        
-						ISNULL(SAQICO.YEAR_5, 0) as YEAR_5,
 						ISNULL(SAQICO.YEAR_OVER_YEAR, 0) as YEAR_OVER_YEAR,
 						SAQICO.TAX_PERCENTAGE,
 						{UserId} as ownerId,
