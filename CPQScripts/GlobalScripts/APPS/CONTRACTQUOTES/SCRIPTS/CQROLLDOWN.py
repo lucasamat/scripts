@@ -865,33 +865,34 @@ def quote_SAQICOupdate(cart_id,cart_user_id):
 	
 	if gettotal_bundle_query:
 		
-		YEAR_1 = YEAR_2 = YEAR_3 = YEAR_4 = YEAR_5 = service_desc = ext_price = ""
+	#	YEAR_1 = YEAR_2 = YEAR_3 = YEAR_4 = YEAR_5 = 
+	    service_desc = ext_price = ""
 		TAX_PER = 0.00
 		TAX = 0.00
-		if gettotal_bundle_query.YEAR_1:
-			YEAR_1 = gettotal_bundle_query.YEAR_1
-		else:
-			YEAR_1 = 0
-		if gettotal_bundle_query.YEAR_2:
-			YEAR_2 = gettotal_bundle_query.YEAR_2
-		else:
-			YEAR_2 = 0
-		if gettotal_bundle_query.YEAR_3:
-			YEAR_3=gettotal_bundle_query.YEAR_3
-		else:
-			YEAR_3 = 0
-		if gettotal_bundle_query.YEAR_4:
-			YEAR_4=gettotal_bundle_query.YEAR_4
-		else:
-			YEAR_4 = 0
-		if gettotal_bundle_query.YEAR_5:
-			YEAR_5=gettotal_bundle_query.YEAR_5
-		else:
-			YEAR_5 = 0
-		if gettotal_bundle_query.YEAR_5:
-			YEAR_5=gettotal_bundle_query.YEAR_5
-		else:
-			YEAR_5 = 0
+	#	if gettotal_bundle_query.YEAR_1:
+	#		YEAR_1 = gettotal_bundle_query.YEAR_1
+	#	else:
+	#		YEAR_1 = 0
+	#	if gettotal_bundle_query.YEAR_2:
+	#		YEAR_2 = gettotal_bundle_query.YEAR_2
+	#	else:
+	#		YEAR_2 = 0
+	#	if gettotal_bundle_query.YEAR_3:
+	#		YEAR_3=gettotal_bundle_query.YEAR_3
+	#	else:
+	#		YEAR_3 = 0
+	#	if gettotal_bundle_query.YEAR_4:
+	#		YEAR_4=gettotal_bundle_query.YEAR_4
+	#	else:
+	#		YEAR_4 = 0
+	#	if gettotal_bundle_query.YEAR_5:
+	#		YEAR_5=gettotal_bundle_query.YEAR_5
+	#	else:
+	#		YEAR_5 = 0
+	#	if gettotal_bundle_query.YEAR_5:
+	#		YEAR_5=gettotal_bundle_query.YEAR_5
+	#	else:
+	#		YEAR_5 = 0
 		if gettotal_bundle_query.EXTENDED_PRICE and check_spare:
 			ext_pric = getdiv
 		else:
