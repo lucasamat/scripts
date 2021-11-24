@@ -1414,6 +1414,8 @@ class SyncQuoteAndCustomTables:
 								else:
 									c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
 									Sql.RunQuery(c4c_employee_update)
+								employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_RECORD_ID FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeResponsibleID}'".format(EmployeeResponsibleID = custom_fields_detail.get('EmployeeResponsibleID')))
+								Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.FIRST_NAME+" "+employee_object.LAST_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
 								self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 							else:
 								for employee in payload_json.get('SAEMPL'):
@@ -1450,6 +1452,9 @@ class SyncQuoteAndCustomTables:
 									else:
 										c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
 										Sql.RunQuery(c4c_employee_update)
+									employee_object = Sql.GetFirst("SELECT FIRST_NAME,LAST_NAME,EMPLOYEE_ID,EMPLOYEE_RECORD_ID FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeResponsibleID}'".format(EmployeeResponsibleID = custom_fields_detail.get('EmployeeResponsibleID')))
+									Sql.RunQuery("""UPDATE SAQTMT SET OWNER_ID ='{owner_id}',OWNER_NAME = '{owner_name}',OWNER_RECORD_ID = '{owner_record_id}' WHERE QUOTE_ID = '{Quote_Id}'""".format(Quote_Id = contract_quote_data.get('C4C_QUOTE_ID'),owner_id = employee_object.EMPLOYEE_ID,owner_name = employee_object.FIRST_NAME+" "+employee_object.LAST_NAME,owner_record_id = employee_object.EMPLOYEE_RECORD_ID))
+									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 									self.salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
 						##A055S000P01-8690 endss..
 						if custom_fields_detail.get("PrimaryContactName"):
