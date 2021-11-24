@@ -2962,7 +2962,7 @@ class SYLDRTLIST:
 									if "-" in value1234:
 										Trace.Write("beforeformat0"+str(value123)+"qqq00"+str(value1234))
 										##A055S000P01-12021
-										if (str(value123) == "NET_VALUE_INGL_CURR" or str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) == "SAQICO":
+										if (str(value123) == "NET_PRICE_INGL_CURR") and str(ObjectName) == "SAQICO":
 											my_format = "{:,." + str(decimal_place) + "f}"
 											value1234 = str(my_format.format(round(float(value1234), int(decimal_place))))
 											value1234 = value1234 + " " + curr_symbol
