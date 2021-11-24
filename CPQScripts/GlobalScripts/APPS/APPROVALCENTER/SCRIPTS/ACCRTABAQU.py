@@ -846,39 +846,39 @@ class QueryBuilder:
                     )
             else:
                 try:
-                    if str(selection_column[:-2]) == "ACCTAXCLA_" or str(selection_column[:-2]) == "ACCTAXCAT_":
-                        remove_empty_records_where = "ISNULL({},'') <> '' AND  ISNULL({},'') <> '' ".format(
-                            selection_column, "DESCRIPTION" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "DESCRIPTION"
-                        )
-                    else:
-                        remove_empty_records_where = "ISNULL({},'') <> '' AND  ISNULL({},'') <> '' ".format(
-                            selection_column, "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME"
-                        )
+                    # if str(selection_column[:-2]) == "ACCTAXCLA_" or str(selection_column[:-2]) == "ACCTAXCAT_":
+                    #     remove_empty_records_where = "ISNULL({},'') <> '' AND  ISNULL({},'') <> '' ".format(
+                    #         selection_column, "DESCRIPTION" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "DESCRIPTION"
+                    #     )
+                    # else:
+                    remove_empty_records_where = "ISNULL({},'') <> '' AND  ISNULL({},'') <> '' ".format(
+                        selection_column, "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME"
+                    )
                     if where_condition_string:
                         where_condition_string += " AND " + remove_empty_records_where
                     else:
                         where_condition_string += " WHERE " + remove_empty_records_where
                     Trace.Write("CHK_J "+str(selection_column)+" - "+str(selection_column[:-2])+ " - "+str(table)+ " - "+str(where_condition_string))
-                    if str(selection_column[:-2]) == "ACCTAXCLA_" or str(selection_column[:-2]) == "ACCTAXCAT_":
-                        result_obj = Sql.GetList(
-                            "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
-                                selection_column,
-                                "DESCRIPTION" if selection_column == "DESCRIPTION" else selection_column[:-2] + "DESCRIPTION",
-                                selection_column,
-                                table,
-                                where_condition_string,
-                            )
+                    # if str(selection_column[:-2]) == "ACCTAXCLA_" or str(selection_column[:-2]) == "ACCTAXCAT_":
+                    #     result_obj = Sql.GetList(
+                    #         "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
+                    #             selection_column,
+                    #             "DESCRIPTION" if selection_column == "DESCRIPTION" else selection_column[:-2] + "DESCRIPTION",
+                    #             selection_column,
+                    #             table,
+                    #             where_condition_string,
+                    #         )
+                    #     )
+                    # else:
+                    result_obj = Sql.GetList(
+                        "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
+                            selection_column,
+                            "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME",
+                            selection_column,
+                            table,
+                            where_condition_string,
                         )
-                    else:
-                        result_obj = Sql.GetList(
-                            "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
-                                selection_column,
-                                "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME",
-                                selection_column,
-                                table,
-                                where_condition_string,
-                            )
-                        )
+                    )
                 except Exception, e:
                     result_obj = Sql.GetList(
                         "SELECT DISTINCT {0} FROM {1} (NOLOCK) {2} ".format(selection_column, table, where_condition_string)
