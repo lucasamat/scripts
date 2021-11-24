@@ -1328,13 +1328,13 @@ class approvalCenter:
 				)
 				b = Sql.RunQuery(MainObjUpdateQuery)
 				getQuote = Sql.GetFirst(
-					"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
+					"SELECT QUOTE_ID,REVISION_STATUS FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"
 					+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
 					+ "' AND QTEREV_RECORD_ID = '"
 					+str(self.quote_revision_record_id)
 					+"'"
 				)
-				if getQuote.QUOTE_STATUS == "APPROVED":
+				if getQuote.REVISION_STATUS == "APPROVED":
 					
 					result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
 			if parallel == "True":
