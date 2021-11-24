@@ -24,6 +24,8 @@ def replace_contact(repalce_values,cont_rec_id,table_name):
     con_data_chk = Sql.GetFirst("Select * from SAQICT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{}'".format(contract_quote_record_id,quote_revision_record_id,cont_rec_id))
     rpl_con_data_chk =Sql.GetFirst("Select * FROM SACONT(NOLOCK) WHERE CONTACT_RECORD_ID = '{}'".format(repalce_values))
     if con_data_chk:
+        delete_saqict = ("DELETE SAQICT WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{}'".format(cont_rec_id))
+        Sql.RunQuery(delete_saqict)
         tableInfo = Sql.GetTable("SAQICT")
         row = {}	
         row['CITY'] = rpl_con_data_chk.CITY
