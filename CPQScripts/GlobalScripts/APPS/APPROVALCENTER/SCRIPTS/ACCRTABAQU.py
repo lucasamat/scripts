@@ -894,9 +894,10 @@ class QueryBuilder:
                 
                     if obj.Value and obj.Value != "-":
                         if obj.Key in data:
-                            data[obj.Key] = [obj.Value]
-                        else:
                             data[obj.Key].append(obj.Value)
+                        else:
+                            data[obj.Key] = [obj.Value]
+                            
                         # data[obj.Key] = obj.Value
                     
 
