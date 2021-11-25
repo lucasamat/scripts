@@ -1038,6 +1038,10 @@ try:
 					+ str(Parameter1.QUERY_CRITERIA_1)
 					+ "  SAQTRV SET REVISION_STATUS=''APPROVAL PENDING'' FROM SAQTRV A(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'' AND NOT EXISTS (SELECT ''X'' FROM SAQICO B(NOLOCK)  WHERE  STATUS IN(''PARTIALLY PRICED'',''ERROR'',''ASSEMBLY IS MISSING'') AND QUOTE_ID = ''"+str(Qt_Id.QUOTE_ID)+"'' AND QTEREV_ID = ''"+str(Qt_Id.REVISION_ID)+"'') '")
 					
+					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+
 					"""primaryQueryItems = SqlHelper.GetFirst(
 						""
 					+ str(Parameter1.QUERY_CRITERIA_1)
