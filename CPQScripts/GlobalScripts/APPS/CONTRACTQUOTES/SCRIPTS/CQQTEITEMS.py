@@ -44,7 +44,7 @@ def LoadSummary():
         #Trace.Write("DICT="+str(ToolId))
         for x,y in zip(ToolId,ToolDesc):
 
-            sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td><td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style="">'
+            sec_str += '<tr data-index="'+str(i)+'" class="hovergreyent" ><td style="text-align: left;"><abbr title="'+x+'">'+x+'</abbr></td><td style="text-overflow:ellipsis; overflow: hidden; max-width:1px;"><abbr title="'+y+'">'+y+'</abbr></td>'
 
             
             i = int(i)
@@ -53,19 +53,19 @@ def LoadSummary():
             if getDefaultValue:
                 if x == "Idle Notice Exception":
                     Trace.Write("Idle Notice")
-                    sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'" style="color:#1B78D2" title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'
+                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control no_border_bg disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsNoticeOnChange()" data-content="'+x.replace(" ","_")+'" style="color:#1B78D2" title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "">'
                 elif x == "Idle Duration Exception":
                     Trace.Write("Idle Duration")
-                    sec_str += '<input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" style="color:#1B78D2" >'
+                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><input '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsDurationOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" style="color:#1B78D2" >'
                 elif x == "Idling Exception Notes":
                     Trace.Write("Idle Exception")
-                    sec_str += '<textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" rows = "1" cols="100" style="color:#1B78D2" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
+                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><textarea '+'value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'"  class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text" onchange="QuoteItemsExceptionOnChange()" data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = "" rows = "1" cols="100" style="color:#1B78D2" >'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</textarea>'
                 else:
                     Trace.Write("Idle Else")
                     # style = ""
                     # if "of Tools" in x or "Fee" in x or "Notice" in x or "Duration" in x or "Exception" in x:
                     #     style = ' style="color:#1B78D2"'
-                    sec_str += '<select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
 
                 
                     getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
