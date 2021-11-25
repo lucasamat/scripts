@@ -32,7 +32,8 @@ User_Id = ScriptExecutor.ExecuteGlobal("SYUSDETAIL", "USERID")
 def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id):
     saqtrv_values = Sql.GetFirst("SELECT * from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id,quote_revision_record_id))
     
-    QueryStatement = (""" INSERT SAQRSH (							
+    QueryStatement = (""" INSERT SAQRSH (
+                        QUOTE_REVISION_STATUS_HISTROY_ID,							
                         QUOTE_RECORD_ID,
                         QUOTE_ID,
                         QTEREV_RECORD_ID,
@@ -44,7 +45,7 @@ def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id)
                         CpqTableEntryModifiedBy,
                         CpqTableEntryDateModified
                         ) SELECT
-                            CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_STATUS_HISTROY_ID,								
+                            CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_STATUS_HISTROY_ID,							
                             SAQTRV.QUOTE_RECORD_ID,
                             SAQTRV.QUOTE_ID,
                             SAQTRV.QTEREV_RECORD_ID,
