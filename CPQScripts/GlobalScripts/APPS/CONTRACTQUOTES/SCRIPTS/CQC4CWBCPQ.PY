@@ -15,8 +15,9 @@ if payload_json_obj:
     payload_json = eval(payload_json.get('Param'))
     payload_json = payload_json.get('CPQ_Columns')
     if payload_json.get('C4C_Opportunity_Object_ID'):
-        opportunity_object =Sql.GetFirst("SELECT OPPORTUNITY_ID FROM SAOPPR WHERE C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')) )
+        opportunity_object =Sql.GetFirst("SELECT OPPORTUNITY_ID FROM SAOPPR(NOLOCK) WHERE C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')) )
         revision_object = Sql.GetFirst("SELECT SAQTRV.QUOTE_RECORD_ID ,SAQTRV.QTEREV_RECORD_ID FROM SAQTRV(NOLOCK) JOIN SAOPQT ON SAQTRV.QUOTE_RECORD_ID = SAOPQT.QUOTE_RECORD_ID JOIN SAOPPR ON SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID WHERE SAQTRV.ACTIVE = 'True' AND SAOPPR.C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')))
+        quote_object = Sql.GetFirst("SELECT QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID))
         Sql.RunQuery("DELETE FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID,revision_object.QTEREV_RECORD_ID))
     if payload_json.get('SAEMPL'):
         employee = payload_json.get('SAEMPL')
@@ -54,7 +55,7 @@ if payload_json_obj:
             else:
                 c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
                 Sql.RunQuery(c4c_employee_update)
-            salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
+            salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail)
         else:
             for employee in payload_json.get('SAEMPL'):
                 employee_obj = SqlHelper.GetFirst("select EMPLOYEE_ID from SAEMPL(nolock) where EMPLOYEE_ID = '{employee_id}'".format(employee_id = employee.get("EMPLOYEE_ID")))
@@ -90,8 +91,8 @@ if payload_json_obj:
                 else:
                     c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
                     Sql.RunQuery(c4c_employee_update)
-                salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail)
-def salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id,custom_fields_detail):
+                salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail)
+def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail):
         Sql.RunQuery("""INSERT SAQDLT (
                                 C4C_PARTNERFUNCTION_ID,
                                 CRM_PARTNERFUNCTION_ID,
@@ -193,8 +194,8 @@ def salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id
                                 EmployeeId = employee.get("EMPLOYEE_ID"),
                                 C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
                                 UserName=User.Name,
-                                QuoteId = contract_quote_data.get("QUOTE_ID"),
-                                QuoteRecordId=contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                                QuoteId = quote_object.QUOTE_ID,
+                                QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
                                 RevisionId=quote_rev_id,
                                 RevisionRecordId=quote_revision_id,
                                 )
@@ -203,7 +204,7 @@ def salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id
         created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
         if created_by_master_rec:
             saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
-            saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"))+"' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'")
+            saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
             if not saqdlt_data:
                 sales_team_table = Sql.GetTable("SAQDLT")
                 sales_team_createdby_insert ={
@@ -216,8 +217,8 @@ def salesteam_insert(employee,contract_quote_data,quote_rev_id,quote_revision_id
                     "MEMBER_ID": saempl_data.EMPLOYEE_ID,
                     "MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
                     "MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
-                    "QUOTE_ID": contract_quote_data.get("QUOTE_ID"),
-                    "QUOTE_RECORD_ID": contract_quote_data.get("MASTER_TABLE_QUOTE_RECORD_ID"),
+                    "QUOTE_ID": quote_object."QUOTE_ID",
+                    "QUOTE_RECORD_ID": quote_object."MASTER_TABLE_QUOTE_RECORD_ID",
                     "QTEREV_ID": quote_rev_id,
                     "QTEREV_RECORD_ID": quote_revision_id,
                 }
