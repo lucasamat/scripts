@@ -1084,385 +1084,387 @@ class Entitlements:
 				count_temp_z0046 = 0
 				count_temp_z0101 = 0
 				for key,dict_val in ENT_IP_DICT.items():
-					Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
-					getcostbaborimpact =""
-					getpriceimpact = ""
-					calculation_factor =""
-					pricemethodupdate = ""
-					#Trace.Write("val---"+str(dict_val))
-					#Trace.Write("key---"+str(key))
-					Trace.Write("self.treeparam--"+str(self.treeparam)+"self.treeparentparam"+str(self.treeparentparam)+"self.treesuperparentparam"+str(self.treesuperparentparam))
-					#getregionvalq = "AMT"
-					getvalue = str((dict_val).split("||")[4]).strip()
-					##A055S000P01-9646 code starts..
-					#if str(self.treeparam) in "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
-					entitlement_value = str((dict_val).split("||")[0]).strip()
-					##Ancillary Object auto insert based on conditions
-					ancillary_flag = "False"
-					#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
-					Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName))
-					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId),"AGS_{}_TSC_RPPNNW".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
-						#ancillary_object = 'Z0101'
-						if tableName == "SAQSGE":
-							Quote.SetGlobal("Greenbook_Entitlement","Yes")
-						Trace.Write("entitlement_value -----"+str(entitlement_value))
-						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes"):
-							ancillary_object_dict['Z0101'] = "INSERT"
-							# if tableName == "SAQTSE":
-							# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-							#ancillary_flag = "INSERT"
-						else:
-							count_temp_z0101 += 1
-							if  count_temp_z0101 == 2:
-								ancillary_object_dict['Z0101'] = "DELETE"
-							# if tableName == "SAQTSE":
-							# 	QuoteModule.service_level_entitlement({str(serviceId):1})
-							#ancillary_flag = "DELETE"
-
-					elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
-						#ancillary_object = 'A6200'
-						if entitlement_value.upper() == "YES":
-							ancillary_object_dict['A6200'] = "INSERT"
-							#ancillary_flag = "INSERT"
-						else:
-							ancillary_object_dict['A6200'] = "DELETE"
-							#ancillary_flag = "DELETE"
-					elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0091","Z0035")) or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
-						#Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
-						#ancillary_object = 'Z0046'
-						if entitlement_value == "Yes":
-							ancillary_object_dict['Z0046'] = "INSERT"
-							#Quote.SetGlobal("ANCILLARY","YES")
-							#ancillary_flag = "INSERT"
-						
-						else:
-							count_temp_z0046 += 1
-							if  count_temp_z0046 == 2:
-								#Trace.Write("inside delete")
-								ancillary_object_dict['Z0046'] = "DELETE"
-							#Quote.SetGlobal("ANCILLARY","NO")
-							#ancillary_flag = "DELETE"
-						
-						
-					# ##calling script ancillary insert	
-					# if ancillary_flag != "False" and ancillary_object:
-					# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
-					# 	ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
-						
-						# if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
-						# 	if ancillary_flag == "INSERT":
-						# 		Quote.SetGlobal("ANCILLARY","YES")
-						# 	else:
-						# 		Quote.SetGlobal("ANCILLARY","NO")
-						# 	ActionType = "{}_SERVICE".format(ancillary_flag)
-						# 	Trace.Write("ActionType--"+str(ActionType))
-						# 	Trace.Write("whereReq---"+str(whereReq))
-						# 	Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
-						# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
-					elif "GEN_IDLALW" in key:
-						Trace.Write("1125 entvalue"+str(entitlement_value))
-						if entitlement_value == "Yes":
-							Quote.SetGlobal("IdlingAllowed","Yes")
-							GetSAQTDA = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID= '{}'".format(self.revision_recordid))
-							getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(self.revision_recordid))
-							if getQuoteDetails:
-								QuoteId = getQuoteDetails.QUOTE_ID
-								#QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
-								QuoteRevisionId = getQuoteDetails.QTEREV_ID
-							if GetSAQTDA:
-								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-							getPRTIAV = Sql.GetList("SELECT PRTIDA.TOOLIDLING_ID,PRTIDA.DISPLAY_ORDER,PRTIAV.TOOLIDLING_NAME,PRTIAV.TOOLIDLING_VALUE_CODE,PRTIAV.TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) JOIN PRTIDA (NOLOCK) ON PRTIAV.TOOLIDLING_ID = PRTIDA.TOOLIDLING_ID WHERE PRTIDA.TOOLIDLING_ID != 'Idling Allowed' AND [DEFAULT] = 1 AND PRTIDA.DISPLAY_ORDER%5 =0")
-							VALUES = {}
-							VALUES["Idling Allowed"] = "Yes"
-							for x in getPRTIAV:
-								VALUES[x.TOOLIDLING_ID] = x.TOOLIDLING_VALUE_CODE
-							for x,y in VALUES.items():
-								if "28 Days" in y or "30 Days" in y:
-									#y = ord(y)
-									a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y.encode('utf-8').decode('utf-8'),x))
-								else:    
-									Sql.RunQuery(""" INSERT SAQTDA(
-										QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
-										QUOTE_ID,
-										QUOTE_RECORD_ID,
-										QTEREV_ID,
-										QTEREV_RECORD_ID,
-										TOLIDLVAL_RECORD_ID,
-										TOOLIDLING_DISPLAY_VALUE,
-										TOOLIDLING_ID,
-										TOOLIDLING_NAME,
-										TOOLIDLING_RECORD_ID,
-										TOOLIDLING_VALUE_CODE,
-										CPQTABLEENTRYADDEDBY,
-										CPQTABLEENTRYDATEADDED
-										) SELECT 
-										CONVERT(VARCHAR(4000),NEWID()),
-										'{}' AS QUOTE_ID,
-										'{}' AS QUOTE_RECORD_ID,
-										'{}' AS QTEREV_ID,
-										'{}' AS QTEREV_RECORD_ID,
-										PRTIAV.TOLIDLATTVAL_RECORD_ID,
-										PRTIAV.TOOLIDLING_DISPLAY_VALUE,
-										PRTIAV.TOOLIDLING_ID,
-										PRTIAV.TOOLIDLING_NAME,
-										PRTIAV.TOOLIDLING_RECORD_ID,
-										PRTIAV.TOOLIDLING_VALUE_CODE,
-										'{}' AS CPQTABLEENTRYADDEDBY,
-										GETDATE() AS CPQTABLEENTRYDATEADDED
-										FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
-										""".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
-						elif entitlement_value == "No":
-							Quote.SetGlobal("IdlingAllowed","No")
-							Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
-					elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
-						Trace.Write("@1181---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
-
-						total_price = 0.00
-
-						for i in range(1,11):
-							if i < 9:
-								x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
-							else:
-								x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
-							Trace.Write("x="+str(x))
-							y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
-							Trace.Write("y="+str(y))
-							try:
-								if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
-									total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
-							except:
-								total_price = total_price
-								break
-						Trace.Write("total price = "+str(total_price))
-						getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-						# import datetime as dt
-						# fmt = '%m/%d/%Y'
-						# d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
-						# d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
-						# days = (d2 - d1).days
-						# total = (total_price/365)*int(days)
-						#UPDATE TOTAL PRICE IN SAQTRV
-						#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = '{}' WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
-					# ##A055S000P01-9646  code ends..
-					
-					totalpriceent = ""					
-					decimal_place ="2"
-					my_format = "{:." + str(decimal_place) + "f}"
-					try:
-						if getvalue:
-							if str((dict_val).split("||")[1]) == "CE":	
-								
-								getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
-								if getcostbabor:
-									cecost = str(getcostbabor.CE_COST).strip()
-									getcostbaborimpact = str(float(getvalue)*float(cecost))
-									#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
-									
-									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-									#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
-									getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
-									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-									
-							elif str((dict_val).split("||")[1]) == "Technician_or_3rd_Party":			
-								gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
-								if gettechlabor:
-									getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
-									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-									getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
-									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-									
-							elif str((dict_val).split("||")[1]) == "PSE":							
-								getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
-								if getpselabor:
-									getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
-									getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
-									getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
-									getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
-					except:
-						pass
-					##assigning cost impact, price impact, calc factor value  starts
-					else:
-						getcostbaborimpact = costimpact
-						getpriceimpact = priceimapct
-					try:
-						attr_level_pricing = eval(Product.GetGlobal('attr_level_pricing')) 
-						getcostbaborimpact = attr_level_pricing[key]['price']
-
-					except:	
-						attr_level_pricing = ""
-						#Trace.Write("")
-					
-					if attr_level_pricing:
-						getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
-						getpriceimpact = attr_level_pricing[key]['total_price']
-						calculation_factor =  attr_level_pricing[key]['factor']
-						pricemethodupdate =  attr_level_pricing[key]['currency']
-					else:	
-						#Trace.Write("attr_level_pricing"+str(dict_val))
-						if str((dict_val).split("||")[5]).strip() and str((dict_val).split("||")[5]).strip() not in ('undefined','NULL'):
-							getcostbaborimpact = str((dict_val).split("||")[5]).replace(',','').strip()
-							try:
-								getcostbaborimpact = getcostbaborimpact.split(" ")[0].strip()
-								#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
-							except:
-								getcostbaborimpact = getcostbaborimpact	
-							#Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
-						if str((dict_val).split("||")[6]).strip() and str((dict_val).split("||")[6]).strip()not in ('undefined','NULL'):
-							getpriceimpact = str((dict_val).split("||")[6]).replace(',','').strip()
-							try:
-								price_split = getpriceimpact.split(" ")
-								getpriceimpact = price_split[0].strip()
-								pricemethodupdate = price_split[1].strip()
-							except:
-								getpriceimpact = getpriceimpact	
-							#Trace.Write("getpriceimpact---"+str(getpriceimpact))
-						if str((dict_val).split("||")[4]).strip() and str((dict_val).split("||")[4]).strip() not in ('undefined','NULL'):
-							calculation_factor = str((dict_val).split("||")[4]).strip()
-							#Trace.Write("calculation_factor---"+str(calculation_factor))
-						# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
-						# 	pricemethodupdate = str((val).split("||")[7]).strip()
-
-					##assigning cost impact, price impact, calc factor value ends
-					
-					if getcostbaborimpact == "" or getcostbaborimpact in ('NULL', 'null'):
-						getcostbaborimpact = 0.00
-					if getpriceimpact == "" or getpriceimpact in ('NULL', 'null'):
-						getpriceimpact = 0.00
-					totalcostent += float(getcostbaborimpact)
-					totalpriceimpact += float(getpriceimpact)
-					if calculation_factor in ('undefined','NULL', 'null'):
-						calculation_factor =""	
-					if getcostbaborimpact == 0.00:
-						getcostbaborimpact = ""
-					if getpriceimpact == 0.00:
+					if str(key) != 'undefined' and str((dict_val).split("||")[3]) != 'undefined':
+						Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
+						getcostbaborimpact =""
 						getpriceimpact = ""
-					##storing values for multi select  starts
-					#Trace.Write('product_id---'+str(product_obj.PRD_ID))
-					if str((dict_val).split("||")[2]) == "Check Box" :
-						display_vals = str((dict_val).split("||")[0])
-						if display_vals:
-							display_vals = str(tuple(eval(display_vals))).replace(',)',')')
-							#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
-							
-							STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
-							#Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
-							if STANDARD_ATTRIBUTE_VALUES:
-								attr_code = [code.STANDARD_ATTRIBUTE_VALUE for code in STANDARD_ATTRIBUTE_VALUES]
-								display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
-								#Trace.Write('attr_code--if'+str(attr_code))
-								ent_val_code =  str(attr_code).replace("'", '"')
-								#try:
-								entitlement_desc =Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
-								if entitlement_desc:
-									if entitlement_desc.ATTRDESC:
-										get_tool_desc= entitlement_desc.ATTRDESC
-								# except:
-								# 	get_tool_desc = ''
-								#multi_select_attr_list[str(key)] = display_value_arr
-						else:
-							attr_code = ""
-					elif str((dict_val).split("||")[2]) == "DropDown":
-						try:
-							display_vals = str((dict_val).split("||")[0])
-						except:
-							display_vals = ''
-						
-						if display_vals:
-							
-							#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals ))
-
-							STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals, prd_id = product_obj.PRD_ID))
-							if STANDARD_ATTRIBUTE_VALUES:
-								if key == "AGS_Z0091_PQB_PPCPRM" and display_vals == "Yes":
-									Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
-
-									total_price = 0.00
-
-									for i in range(1,11):
-										if i < 9:
-											x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
-										else:
-											x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
-										Trace.Write("x="+str(x))
-										y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
-										Trace.Write("y="+str(y))
-										try:
-											if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
-												total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
-										except:
-											total_price = total_price
-											break
-									Trace.Write("total price = "+str(total_price))
-									getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-									import datetime as dt
-									fmt = '%m/%d/%Y'
-									d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
-									d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
-									days = (d2 - d1).days
-									total = (total_price/365)*int(days)
-									#UPDATE TOTAL PRICE IN SAQTRV
-									#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
-									#objects = ["SAQSFE","SAQSGE","SAQSCE"]
-									# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-									# eqcount = getCount.cnt
-									# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
-									# fab = []
-									# gbk = []
-									# for x in getfab:
-									# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(self.revision_recordid,x.FABLOCATION_ID))
-									# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
-									# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(self.revision_recordid,x.FABLOCATION_ID,x.GREENBOOK))
-									# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
-									
-									
-									
-								
-								ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+						calculation_factor =""
+						pricemethodupdate = ""
+						#Trace.Write("val---"+str(dict_val))
+						#Trace.Write("key---"+str(key))
+						Trace.Write("self.treeparam--"+str(self.treeparam)+"self.treeparentparam"+str(self.treeparentparam)+"self.treesuperparentparam"+str(self.treesuperparentparam))
+						#getregionvalq = "AMT"
+						getvalue = str((dict_val).split("||")[4]).strip()
+						##A055S000P01-9646 code starts..
+						#if str(self.treeparam) in "Z0091" or str(self.treeparam) == "Z0004" or str(self.treeparam) == "Z0007" or str(self.treeparam) == "Z0006" or str(self.treeparam) == "Z0092":
+						entitlement_value = str((dict_val).split("||")[0]).strip()
+						##Ancillary Object auto insert based on conditions
+						ancillary_flag = "False"
+						#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
+						Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName))
+						if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId),"AGS_{}_TSC_RPPNNW".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
+							#ancillary_object = 'Z0101'
+							if tableName == "SAQSGE":
+								Quote.SetGlobal("Greenbook_Entitlement","Yes")
+							Trace.Write("entitlement_value -----"+str(entitlement_value))
+							if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes"):
+								ancillary_object_dict['Z0101'] = "INSERT"
+								# if tableName == "SAQTSE":
+								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
+								#ancillary_flag = "INSERT"
 							else:
-								ent_val_code =''
+								count_temp_z0101 += 1
+								if  count_temp_z0101 == 2:
+									ancillary_object_dict['Z0101'] = "DELETE"
+								# if tableName == "SAQTSE":
+								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
+								#ancillary_flag = "DELETE"
+
+						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
+							#ancillary_object = 'A6200'
+							if entitlement_value.upper() == "YES":
+								ancillary_object_dict['A6200'] = "INSERT"
+								#ancillary_flag = "INSERT"
+							else:
+								ancillary_object_dict['A6200'] = "DELETE"
+								#ancillary_flag = "DELETE"
+						elif (key == "AGS_{}_KPI_BPTKPI".format(serviceId) and serviceId in ("Z0091","Z0035")) or (key == 'AGS_{}_PQB_PPCPRM'.format(serviceId) and serviceId in ("Z0091","Z0035")):
+							#Trace.Write("entiltmnt value---"+str(key)+'--'+str(entitlement_value)+'--'+str(count_temp_z0046))
+							#ancillary_object = 'Z0046'
+							if entitlement_value == "Yes":
+								ancillary_object_dict['Z0046'] = "INSERT"
+								#Quote.SetGlobal("ANCILLARY","YES")
+								#ancillary_flag = "INSERT"
+							
+							else:
+								count_temp_z0046 += 1
+								if  count_temp_z0046 == 2:
+									#Trace.Write("inside delete")
+									ancillary_object_dict['Z0046'] = "DELETE"
+								#Quote.SetGlobal("ANCILLARY","NO")
+								#ancillary_flag = "DELETE"
+							
+							
+						# ##calling script ancillary insert	
+						# if ancillary_flag != "False" and ancillary_object:
+						# 	Trace.Write("vall--"+str(key)+'--'+str(entitlement_value)  )
+						# 	ancillary_object_qry = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTSV WHERE SERVICE_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND PAR_SERVICE_ID = '{}'".format(ancillary_object, self.ContractRecordId,self.revision_recordid,serviceId ))
+							
+							# if (ancillary_object_qry is None and ancillary_flag == "INSERT") or (ancillary_flag == "DELETE" and ancillary_object_qry) :
+							# 	if ancillary_flag == "INSERT":
+							# 		Quote.SetGlobal("ANCILLARY","YES")
+							# 	else:
+							# 		Quote.SetGlobal("ANCILLARY","NO")
+							# 	ActionType = "{}_SERVICE".format(ancillary_flag)
+							# 	Trace.Write("ActionType--"+str(ActionType))
+							# 	Trace.Write("whereReq---"+str(whereReq))
+							# 	Trace.Write("ancillary_object---"+str(ancillary_object)+'--'+str(serviceId))
+							# 	ancillary_result = ScriptExecutor.ExecuteGlobal("CQENANCOPR",{"where_string": whereReq, "quote_record_id": self.ContractRecordId, "revision_rec_id": self.revision_recordid, "ActionType":ActionType,   "ancillary_obj": ancillary_object, "service_id" : serviceId })
+						elif "GEN_IDLALW" in key:
+							Trace.Write("1125 entvalue"+str(entitlement_value))
+							if entitlement_value == "Yes":
+								Quote.SetGlobal("IdlingAllowed","Yes")
+								GetSAQTDA = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTDA (NOLOCK) WHERE QTEREV_RECORD_ID= '{}'".format(self.revision_recordid))
+								getQuoteDetails = Sql.GetFirst("SELECT QUOTE_ID, QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(self.revision_recordid))
+								if getQuoteDetails:
+									QuoteId = getQuoteDetails.QUOTE_ID
+									#QuoteRecordId = getQuoteDetails.QUOTE_RECORD_ID
+									QuoteRevisionId = getQuoteDetails.QTEREV_ID
+								if GetSAQTDA:
+									Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+								getPRTIAV = Sql.GetList("SELECT PRTIDA.TOOLIDLING_ID,PRTIDA.DISPLAY_ORDER,PRTIAV.TOOLIDLING_NAME,PRTIAV.TOOLIDLING_VALUE_CODE,PRTIAV.TOOLIDLING_DISPLAY_VALUE FROM PRTIAV (NOLOCK) JOIN PRTIDA (NOLOCK) ON PRTIAV.TOOLIDLING_ID = PRTIDA.TOOLIDLING_ID WHERE PRTIDA.TOOLIDLING_ID != 'Idling Allowed' AND [DEFAULT] = 1 AND PRTIDA.DISPLAY_ORDER%5 =0")
+								VALUES = {}
+								VALUES["Idling Allowed"] = "Yes"
+								for x in getPRTIAV:
+									VALUES[x.TOOLIDLING_ID] = x.TOOLIDLING_VALUE_CODE
+								for x,y in VALUES.items():
+									if "28 Days" in y or "30 Days" in y:
+										#y = ord(y)
+										a = SqlHelper.GetFirst("sp_executesql @T=N'INSERT SAQTDA( QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, TOLIDLVAL_RECORD_ID, TOOLIDLING_DISPLAY_VALUE, TOOLIDLING_ID, TOOLIDLING_NAME, TOOLIDLING_RECORD_ID, TOOLIDLING_VALUE_CODE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED ) SELECT CONVERT(VARCHAR(4000),NEWID()), ''{}'' AS QUOTE_ID, ''{}'' AS QUOTE_RECORD_ID, ''{}'' AS QTEREV_ID, ''{}'' AS QTEREV_RECORD_ID, PRTIAV.TOLIDLATTVAL_RECORD_ID, PRTIAV.TOOLIDLING_DISPLAY_VALUE, PRTIAV.TOOLIDLING_ID, PRTIAV.TOOLIDLING_NAME, PRTIAV.TOOLIDLING_RECORD_ID, PRTIAV.TOOLIDLING_VALUE_CODE, ''{}'' AS CPQTABLEENTRYADDEDBY, GETDATE() AS CPQTABLEENTRYDATEADDED FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = N''{}'' AND TOOLIDLING_ID = ''{}'' '".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y.encode('utf-8').decode('utf-8'),x))
+									else:    
+										Sql.RunQuery(""" INSERT SAQTDA(
+											QUOTE_REV_TOOL_IDLING_ATTR_VAL_RECORD_ID,
+											QUOTE_ID,
+											QUOTE_RECORD_ID,
+											QTEREV_ID,
+											QTEREV_RECORD_ID,
+											TOLIDLVAL_RECORD_ID,
+											TOOLIDLING_DISPLAY_VALUE,
+											TOOLIDLING_ID,
+											TOOLIDLING_NAME,
+											TOOLIDLING_RECORD_ID,
+											TOOLIDLING_VALUE_CODE,
+											CPQTABLEENTRYADDEDBY,
+											CPQTABLEENTRYDATEADDED
+											) SELECT 
+											CONVERT(VARCHAR(4000),NEWID()),
+											'{}' AS QUOTE_ID,
+											'{}' AS QUOTE_RECORD_ID,
+											'{}' AS QTEREV_ID,
+											'{}' AS QTEREV_RECORD_ID,
+											PRTIAV.TOLIDLATTVAL_RECORD_ID,
+											PRTIAV.TOOLIDLING_DISPLAY_VALUE,
+											PRTIAV.TOOLIDLING_ID,
+											PRTIAV.TOOLIDLING_NAME,
+											PRTIAV.TOOLIDLING_RECORD_ID,
+											PRTIAV.TOOLIDLING_VALUE_CODE,
+											'{}' AS CPQTABLEENTRYADDEDBY,
+											GETDATE() AS CPQTABLEENTRYDATEADDED
+											FROM PRTIAV (NOLOCK) WHERE TOOLIDLING_VALUE_CODE = '{}' AND TOOLIDLING_ID = '{}'
+											""".format(QuoteId,self.ContractRecordId,QuoteRevisionId,self.revision_recordid,User.UserName,y,x))
+							elif entitlement_value == "No":
+								Quote.SetGlobal("IdlingAllowed","No")
+								Sql.RunQuery("DELETE FROM SAQTDA WHERE QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id")))
+						elif key == "AGS_Z0091_PQB_PPCPRM" and entitlement_value == "Yes":
+							Trace.Write("@1181---"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+
+							total_price = 0.00
+
+							for i in range(1,11):
+								if i < 9:
+									x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
+								else:
+									x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
+								Trace.Write("x="+str(x))
+								y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+								Trace.Write("y="+str(y))
+								try:
+									if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
+										total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
+								except:
+									total_price = total_price
+									break
+							Trace.Write("total price = "+str(total_price))
+							getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+							# import datetime as dt
+							# fmt = '%m/%d/%Y'
+							# d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+							# d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+							# days = (d2 - d1).days
+							# total = (total_price/365)*int(days)
+							#UPDATE TOTAL PRICE IN SAQTRV
+							#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = '{}' WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
+						# ##A055S000P01-9646  code ends..
 						
-					else:
-						ent_val_code = 	str((dict_val).split("||")[0]).replace("'","&apos;")
-					#'+str(key)+'--'+str(ent_val_code))
-					##ends
+						totalpriceent = ""					
+						decimal_place ="2"
+						my_format = "{:." + str(decimal_place) + "f}"
+						try:
+							if getvalue:
+								if str((dict_val).split("||")[1]) == "CE":	
+									
+									getcostbabor = Sql.GetFirst("select CE_COST,CE_PRICE from SAREGN where REGION='{}'".format(getregionval))
+									if getcostbabor:
+										cecost = str(getcostbabor.CE_COST).strip()
+										getcostbaborimpact = str(float(getvalue)*float(cecost))
+										#getcostbaborimpact = '{:.2f}'.format(round(float(getcostbaborimpact), 2))
+										
+										getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+										#value1234 = str(my_format.format(round(float(getcostbaborimpact))))								
+										getpriceimpact = str(float(getvalue)*float(getcostbabor.CE_PRICE))
+										getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+										
+								elif str((dict_val).split("||")[1]) == "Technician_or_3rd_Party":			
+									gettechlabor = Sql.GetFirst("select TECH_COST,TECH_PRICE from SAREGN where REGION='{}'".format(getregionval))
+									if gettechlabor:
+										getcostbaborimpact = str(float(getvalue)*float(gettechlabor.TECH_COST))
+										getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+										getpriceimpact = str(float(getvalue)*float(gettechlabor.TECH_PRICE))
+										getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+										
+								elif str((dict_val).split("||")[1]) == "PSE":							
+									getpselabor = Sql.GetFirst("select PSE_COST,PSE_PRICE from SAREGN where REGION='{}' ".format(getregionval))
+									if getpselabor:
+										getcostbaborimpact = str(float(getvalue)*float(getpselabor.PSE_COST))
+										getcostbaborimpact = str(my_format.format(round(float(getcostbaborimpact), int(decimal_place))))
+										getpriceimpact = str(float(getvalue)*float(getpselabor.PSE_PRICE))
+										getpriceimpact = str(my_format.format(round(float(getpriceimpact), int(decimal_place))))
+						except:
+							pass
+						##assigning cost impact, price impact, calc factor value  starts
+						else:
+							getcostbaborimpact = costimpact
+							getpriceimpact = priceimapct
+						try:
+							attr_level_pricing = eval(Product.GetGlobal('attr_level_pricing')) 
+							getcostbaborimpact = attr_level_pricing[key]['price']
 
-					##------ commented and assign the default currency ---++
-					#GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str((val).split("||")[0]).replace("'","&apos;")))
-					## replace fn &apos; added for A055S000P01-3158
-					#Trace.Write("getcostbaborimpact--1--"+str(getcostbaborimpact))
-					#Trace.Write("getpriceimpact--1--"+str(getpriceimpact))
-					#if GetDefault:
-					#	pricemethodupdate = GetDefault.PRICE_METHOD
-					#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
-					#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
-					is_default = ''
-					try:
-						ent_disp_val = str((dict_val).split("||")[0]).replace("'","&apos;")
-					except:
-						ent_disp_val = ''
-					# if str((val).split("||")[2]) == 'FreeInputNoMatching':
+						except:	
+							attr_level_pricing = ""
+							#Trace.Write("")
+						
+						if attr_level_pricing:
+							getcostbaborimpact = "{0:.2f}".format(float(attr_level_pricing[key]['price'])) 	
+							getpriceimpact = attr_level_pricing[key]['total_price']
+							calculation_factor =  attr_level_pricing[key]['factor']
+							pricemethodupdate =  attr_level_pricing[key]['currency']
+						else:	
+							#Trace.Write("attr_level_pricing"+str(dict_val))
+							if str((dict_val).split("||")[5]).strip() and str((dict_val).split("||")[5]).strip() not in ('undefined','NULL'):
+								getcostbaborimpact = str((dict_val).split("||")[5]).replace(',','').strip()
+								try:
+									getcostbaborimpact = getcostbaborimpact.split(" ")[0].strip()
+									#pricemethodupdate = getpriceimpact.split(" ")[1].strip()
+								except:
+									getcostbaborimpact = getcostbaborimpact	
+								#Trace.Write("getcostbaborimpact---"+str(getcostbaborimpact))
+							if str((dict_val).split("||")[6]).strip() and str((dict_val).split("||")[6]).strip()not in ('undefined','NULL'):
+								getpriceimpact = str((dict_val).split("||")[6]).replace(',','').strip()
+								try:
+									price_split = getpriceimpact.split(" ")
+									getpriceimpact = price_split[0].strip()
+									pricemethodupdate = price_split[1].strip()
+								except:
+									getpriceimpact = getpriceimpact	
+								#Trace.Write("getpriceimpact---"+str(getpriceimpact))
+							if str((dict_val).split("||")[4]).strip() and str((dict_val).split("||")[4]).strip() not in ('undefined','NULL'):
+								calculation_factor = str((dict_val).split("||")[4]).strip()
+								#Trace.Write("calculation_factor---"+str(calculation_factor))
+							# if (str((val).split("||")[7]).strip() and str((val).split("||")[7]).strip() not in ('undefined','NULL') ) :
+							# 	pricemethodupdate = str((val).split("||")[7]).strip()
 
-					# 	if attributevalues.get(key) is None:
-					# 		ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
-					# 	else:
-					# 		ent_disp_val = attributevalues.get(key)
+						##assigning cost impact, price impact, calc factor value ends
+						
+						if getcostbaborimpact == "" or getcostbaborimpact in ('NULL', 'null'):
+							getcostbaborimpact = 0.00
+						if getpriceimpact == "" or getpriceimpact in ('NULL', 'null'):
+							getpriceimpact = 0.00
+						totalcostent += float(getcostbaborimpact)
+						totalpriceimpact += float(getpriceimpact)
+						if calculation_factor in ('undefined','NULL', 'null'):
+							calculation_factor =""	
+						if getcostbaborimpact == 0.00:
+							getcostbaborimpact = ""
+						if getpriceimpact == 0.00:
+							getpriceimpact = ""
+						##storing values for multi select  starts
+						#Trace.Write('product_id---'+str(product_obj.PRD_ID))
+						if str((dict_val).split("||")[2]) == "Check Box" :
+							display_vals = str((dict_val).split("||")[0])
+							if display_vals:
+								display_vals = str(tuple(eval(display_vals))).replace(',)',')')
+								#STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals  ))
+								
+								STANDARD_ATTRIBUTE_VALUES=Sql.GetList("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL in {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
+								#Trace.Write('Check Box--------'+str(val)+'----'+str(type(str((val).split("||")[0]))) +'----'+str(str((val).split("||")[0])) ) 
+								if STANDARD_ATTRIBUTE_VALUES:
+									attr_code = [code.STANDARD_ATTRIBUTE_VALUE for code in STANDARD_ATTRIBUTE_VALUES]
+									display_value_arr = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in STANDARD_ATTRIBUTE_VALUES]
+									#Trace.Write('attr_code--if'+str(attr_code))
+									ent_val_code =  str(attr_code).replace("'", '"')
+									#try:
+									entitlement_desc =Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE,PA.ATTRDESC FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = {display_vals} ".format(sys_id = str(key),display_vals = display_vals, prd_id = product_obj.PRD_ID  ))
+									if entitlement_desc:
+										if entitlement_desc.ATTRDESC:
+											get_tool_desc= entitlement_desc.ATTRDESC
+									# except:
+									# 	get_tool_desc = ''
+									#multi_select_attr_list[str(key)] = display_value_arr
+							else:
+								attr_code = ""
+						elif str((dict_val).split("||")[2]) == "DropDown":
+							try:
+								display_vals = str((dict_val).split("||")[0])
+							except:
+								display_vals = ''
+							
+							if display_vals:
+								
+								#STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT S.STANDARD_ATTRIBUTE_VALUE,S.STANDARD_ATTRIBUTE_DISPLAY_VAL FROM STANDARD_ATTRIBUTE_VALUES (nolock) S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE A.SYSTEM_ID = '{sys_id}' and S.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals ))
 
-					# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
-					#Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
-					updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
-						<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
-						<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
-						<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
-						<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
-						<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
-						<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
-						<IS_DEFAULT>{is_default}</IS_DEFAULT>
-						<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
-						<PRICE_METHOD>{pm}</PRICE_METHOD>
-						<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
-						<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-						</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
-					#Trace.Write("updateentXML-970------"+str(updateentXML))
+								STANDARD_ATTRIBUTE_VALUES=Sql.GetFirst("SELECT V.STANDARD_ATTRIBUTE_DISPLAY_VAL, V.STANDARD_ATTRIBUTE_VALUE FROM PRODUCT_ATTRIBUTES PA INNER JOIN ATTRIBUTES A ON PA.PA_ID=A.PA_ID INNER JOIN STANDARD_ATTRIBUTE_VALUES V ON A.STANDARD_ATTRIBUTE_VALUE_CD = V.STANDARD_ATTRIBUTE_VALUE_CD INNER JOIN ATTRIBUTE_DEFN (NOLOCK) AD ON AD.STANDARD_ATTRIBUTE_CODE=V.STANDARD_ATTRIBUTE_CODE WHERE PA.PRODUCT_ID ={prd_id} AND AD.SYSTEM_ID = '{sys_id}' and V.STANDARD_ATTRIBUTE_DISPLAY_VAL = '{display_vals}' ".format(sys_id = str(key),display_vals = display_vals.replace("'","''") if  "'"  in display_vals else display_vals, prd_id = product_obj.PRD_ID))
+								if STANDARD_ATTRIBUTE_VALUES:
+									if key == "AGS_Z0091_PQB_PPCPRM" and display_vals == "Yes":
+										Trace.Write("@1641-----"+str(ENT_IP_DICT["AGS_Z0046_PQB_AP01FU"]))
+
+										total_price = 0.00
+
+										for i in range(1,11):
+											if i < 9:
+												x = "AGS_Z0046_PQB_AP0{}FU".format(str(i))
+											else:
+												x = "AGS_Z0046_PQB_AP{}FU".format(str(i))
+											Trace.Write("x="+str(x))
+											y = "AGS_Z0046_PQB_AP{}PCP".format(str(i))
+											Trace.Write("y="+str(y))
+											try:
+												if ENT_IP_DICT[x] and ENT_IP_DICT[y]:
+													total_price += float(str(ENT_IP_DICT[x]).split("||")[0]) * float(str(ENT_IP_DICT[y]).split("||")[0])
+											except:
+												total_price = total_price
+												break
+										Trace.Write("total price = "+str(total_price))
+										getdates = Sql.GetFirst("SELECT CONTRACT_VALID_FROM,CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+										import datetime as dt
+										fmt = '%m/%d/%Y'
+										d1 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_FROM).split(" ")[0], fmt)
+										d2 = dt.datetime.strptime(str(getdates.CONTRACT_VALID_TO).split(" ")[0], fmt)
+										days = (d2 - d1).days
+										total = (total_price/365)*int(days)
+										#UPDATE TOTAL PRICE IN SAQTRV
+										#Sql.RunQuery("UPDATE SAQTRV SET TOTAL_AMOUNT = {} WHERE QUOTE_REVISION_RECORD_ID = '{}'".format(total,self.revision_recordid))
+										#objects = ["SAQSFE","SAQSGE","SAQSCE"]
+										# getCount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+										# eqcount = getCount.cnt
+										# getfab = Sql.GetList("SELECT FABLOCATION_ID, GREENBOOK FROM SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}'".format(self.revision_recordid))
+										# fab = []
+										# gbk = []
+										# for x in getfab:
+										# 	getfabcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}'".format(self.revision_recordid,x.FABLOCATION_ID))
+										# 	fab.append(str(x.FABLOCATION_ID)+"_"+str(getfabcount.cnt))
+										# 	getgbkcount = Sql.GetFirst("SELECT COUNT(CpqTableEntryId) as cnt from SAQSCO (NOLOCK) WHERE QTEREV_RECORD_ID = '{}' AND FABLOCATION_ID = '{}' AND GREEBOOK = '{}'".format(self.revision_recordid,x.FABLOCATION_ID,x.GREENBOOK))
+										# 	gbk.append(str(x.GREENBOOK)+"_"+str(getgbkcount.cnt))
+										
+										
+										
+									
+									ent_val_code =  STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_VALUE
+								else:
+									ent_val_code =''
+							
+						else:
+							ent_val_code = 	str((dict_val).split("||")[0]).replace("'","&apos;")
+						#'+str(key)+'--'+str(ent_val_code))
+						##ends
+
+						##------ commented and assign the default currency ---++
+						#GetDefault = Sql.GetFirst("SELECT PRICE_METHOD FROM PRENVL WHERE ENTITLEMENT_NAME = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str((val).split("||")[0]).replace("'","&apos;")))
+						## replace fn &apos; added for A055S000P01-3158
+						#Trace.Write("getcostbaborimpact--1--"+str(getcostbaborimpact))
+						#Trace.Write("getpriceimpact--1--"+str(getpriceimpact))
+						#if GetDefault:
+						#	pricemethodupdate = GetDefault.PRICE_METHOD
+						#getpriceimpact = str(getpriceimpact)+" "+str(pricemethodupdate)
+						#getcostbaborimpact = str(getcostbaborimpact)+" "+str(pricemethodupdate)
+						is_default = ''
+						try:
+							ent_disp_val = str((dict_val).split("||")[0]).replace("'","&apos;")
+						except:
+							ent_disp_val = ''
+						# if str((val).split("||")[2]) == 'FreeInputNoMatching':
+
+						# 	if attributevalues.get(key) is None:
+						# 		ent_disp_val = str((val).split("||")[0]).replace("'","&apos;")
+						# 	else:
+						# 		ent_disp_val = attributevalues.get(key)
+
+						# 		Trace.Write('attr_value--962---11'+str(ent_disp_val))
+						#Trace.Write('attr_value'+str(ent_disp_val)+'-637--'+str(key))
+						updateentXML  += """<QUOTE_ITEM_ENTITLEMENT>
+							<ENTITLEMENT_ID>{ent_name}</ENTITLEMENT_ID>
+							<ENTITLEMENT_VALUE_CODE>{ent_val_code}</ENTITLEMENT_VALUE_CODE>
+							<ENTITLEMENT_DESCRIPTION>{tool_desc}</ENTITLEMENT_DESCRIPTION>
+							<ENTITLEMENT_DISPLAY_VALUE>{ent_disp_val}</ENTITLEMENT_DISPLAY_VALUE>
+							<ENTITLEMENT_COST_IMPACT>{ct}</ENTITLEMENT_COST_IMPACT>
+							<ENTITLEMENT_PRICE_IMPACT>{pi}</ENTITLEMENT_PRICE_IMPACT>
+							<IS_DEFAULT>{is_default}</IS_DEFAULT>
+							<ENTITLEMENT_TYPE>{ent_type}</ENTITLEMENT_TYPE>
+							<PRICE_METHOD>{pm}</PRICE_METHOD>
+							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
+							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = str(key),ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if str(key) in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
+						#Trace.Write("updateentXML-970------"+str(updateentXML))
+					
 				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
 				#Quote.SetGlobal("ancillary_object_dict",str(ancillary_object_dict))
 				Trace.Write('ancillary_object_dict----'+str(ancillary_object_dict))
