@@ -1251,20 +1251,20 @@ def Related_Sub_Banner(
                         SecondValue = getService.SERVICE_DESCRIPTION
                         ThirdLable = "Product Offering Type"
                         ThirdValue = str(TreeTopSuperParentParam)
-                        FourthLable = "Fab Location ID"
-                        FourthValue = str(TreeParam)
-                        FifthLable = "Greenbooks"
-                        FifthValue = "All"
-                        SixthLable = "Equipment"
-                        SixthValue = "All" 
+                        #FourthLable = "Fab Location ID"
+                        #FourthValue = str(TreeParam)
+                        FourthLable = "Greenbooks"
+                        FourthValue = "All"
+                        FifthLable = "Equipment"
+                        FifthValue = "All" 
                     else:
                         Trace.Write("Lineno:1179")
                         PrimaryLable = "Product Offering ID"
                         PrimaryValue = str(TreeSuperParentParam)
-                        SecondLable = "Fab Location ID"
-                        SecondValue = str(TreeParentParam)
-                        ThirdLable = "Greenbook"
-                        ThirdValue = str(TreeParam)
+                        #SecondLable = "Fab Location ID"
+                        #SecondValue = str(TreeParentParam)
+                        SecondLable = "Greenbook"
+                        SecondValue = str(TreeParam)
                         # FourthLable = "Fab Location ID"
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
@@ -1676,26 +1676,26 @@ def Related_Sub_Banner(
         PrimaryValue = str(TreeParentParam)
         SecondLable = "Product Offering Description"
         SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Fab Location ID"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Greenbooks"
+        #ThirdLable = "Fab Location ID"
+        #ThirdValue = str(TreeParam)
+        ThirdLable = "Greenbooks"
+        ThirdValue = "ALL"
+        FourthLable = "Equipment"
         FourthValue = "ALL"
-        FifthLable = "Equipment"
-        FifthValue = "ALL"
     elif TopSuperParentParam == "Product Offerings" and (subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Fab Value Drivers" or subTabName == "Fab Cost and Value Drivers" or subTabName == "Service Fab Value Drivers" or subTabName == "Service Cost and Value Drivers" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers") and current_prod !='SYSTEM ADMIN' and CurrentTab == 'Contracts':
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from CTCTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeParentParam)
         SecondLable = "Product Offering Description"
         SecondValue = getService.SERVICE_DESCRIPTION
-        ThirdLable = "Fab Location ID"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Greenbooks"
-        FourthValue = "ALL"
-        FifthLable = "Equipment"
-        FifthValue = "ALL"	
-        SixthLable = ""
-        SixthValue = ""
+        #ThirdLable = "Fab Location ID"
+        #ThirdValue = str(TreeParam)
+        ThirdLable = "Greenbooks"
+        ThirdValue = "ALL"
+        FourthLable = "Equipment"
+        FourthValue = "ALL"	
+        FifthLable = ""
+        FifthValue = ""
     elif TreeParentParam == "Quote Items" and subTabName == "Entitlements" and getQuotetype == "ZWK1 - SPARES":
         PrimaryLable = ""
         PrimaryValue = ""
@@ -1727,25 +1727,25 @@ def Related_Sub_Banner(
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
             SecondValue = getService.SERVICE_DESCRIPTION
-            ThirdLable = "Fab Location ID"
-            ThirdValue = str(TreeParentParam)
-            FourthLable = "Greenbook"
-            FourthValue = str(TreeParam)
-            FifthLable = "Equipment ID"
-            FifthValue = str(EquipmentId)
-            SixthLable = "Serial Number"
-            SixthValue = str(SerialNumber)
+            #ThirdLable = "Fab Location ID"
+            #ThirdValue = str(TreeParentParam)
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParam)
+            FourthLable = "Equipment ID"
+            FourthValue = str(EquipmentId)
+            FifthLable = "Serial Number"
+            FifthValue = str(SerialNumber)
         elif((subTabName == "Details" or subTabName == "Equipment" or subTabName == "Entitlements" or subTabName == "Greenbook Fab Value Drivers" or subTabName == "Greenbook Cost and Value Drivers") and subTabName != "Assembly Details" or subTabName == "Customer Value Drivers" or subTabName == "Product Value Drivers"):
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(TreeSuperParentParam)
             SecondLable = "Product Offering Description"
             SecondValue = desc
-            ThirdLable = "Fab Location ID"
-            ThirdValue = str(TreeParentParam)
-            FourthLable = "Greenbook"
-            FourthValue = str(TreeParam)
+            #ThirdLable = "Fab Location ID"
+            #ThirdValue = str(TreeParentParam)
+            ThirdLable = "Greenbook"
+            ThirdValue = str(TreeParam)
             if subTabName != "Details":
-                FifthLable = "Equipment"
+                FourthLable = "Equipment"
                 FifthValue = "All"
         elif subTabName == "Details":			
             PrimaryLable = ListKey[0]
@@ -1755,14 +1755,14 @@ def Related_Sub_Banner(
         Trace.Write("1356")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
-        FourthLable = "Equipment ID"
-        FourthValue = str(EquipmentId)
-        FifthLable = "Serial Number"
-        FifthValue = str(SerialNumber)
+        #SecondLable = "Fab Location ID"
+        #SecondValue = str(TreeParentParam)
+        SecondLable = "Greenbook"
+        SecondValue = str(TreeParam)
+        ThirdLable = "Equipment ID"
+        ThirdValue = str(EquipmentId)
+        FourthLable = "Serial Number"
+        FourthValue = str(SerialNumber)
         Trace.Write("check345"+str(FifthValue))
         #FourthLable = "Equipment"
         #FourthValue = "ALL"
@@ -1771,10 +1771,10 @@ def Related_Sub_Banner(
         Trace.Write("1359")
         PrimaryLable = "Product Offering ID"
         PrimaryValue = str(TreeTopSuperParentParam)
-        SecondLable = "Fab Location ID"
-        SecondValue = str(TreeParentParam)
-        ThirdLable = "Greenbook"
-        ThirdValue = str(TreeParam)
+        #SecondLable = "Fab Location ID"
+        #SecondValue = str(TreeParentParam)
+        SecondLable = "Greenbook"
+        SecondValue = str(TreeParam)
     elif TreeTopSuperParentParam == "Complementary Products"  and (subTabName == "Details"):		
         #getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         Trace.Write("1359===========")
