@@ -3296,7 +3296,7 @@ class SYLDRTLIST:
 						new_dict["primary"] = primary
 						list_lineup.append(value123)
 					table_list.append(new_dict)
-				table_header += "<tr id='getbannername' class='annual_fixed_tr'>"
+				table_header += "<tr id='getbannername' >"
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			#A055S000P01-4401
