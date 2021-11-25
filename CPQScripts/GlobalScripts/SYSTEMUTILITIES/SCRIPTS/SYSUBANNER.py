@@ -1978,7 +1978,7 @@ def Related_Sub_Banner(
             FourthLable = "Total Credit"
             FourthValue = str("%.2f" % round(float(get_quote_details.CREDIT_INGL_CURR),2))+" "+curr if str(get_quote_details.CREDIT_INGL_CURR) != '' else '0.00'+" "+curr
             FifthValue = "Total Excluding Tax/VAT"
-            FifthValue = str("%.2f" % round(float(get_quote_details.TOTAL_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TOTAL_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
+            FifthValue = '0.00'+" "+curr
             SixthLable = "Tax/VAT"
             SixthValue = str("%.2f" % round(float(get_quote_details.TAX_AMOUNT_INGL_CURR),2))+" "+curr if str(get_quote_details.TAX_AMOUNT_INGL_CURR) != '' else '0.00'+" "+curr
             SeventhLable = "Total Amount Including Tax/VAT"
