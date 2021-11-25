@@ -3981,6 +3981,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
 		data_dict["SERIAL_NO"] = str(par.SERIAL_NO)
 		data_dict["GOT_CODE"] = str(par.GOT_CODE)
+		data_dict["KIT_ID"] = str(par.KIT_ID)
 		data_dict["KIT_NAME"] = str(par.KIT_NAME)
 		# data_dict["KIT_NUMBER"] = str(par.KIT_NUMBER)
 		data_dict["PM_ID"] = str(par.PM_ID)
