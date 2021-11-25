@@ -4128,7 +4128,7 @@ class SYLDRTLIST:
 				grouping_columns += table_group_columns4
 			if table_group_columns5:
 				grouping_columns += table_group_columns5
-			table_header += '<tr>{}</tr>'.format(grouping_columns)
+			table_header += "<tr class='{}'>{}</tr>".format(annual_fixed_tr,grouping_columns)
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
