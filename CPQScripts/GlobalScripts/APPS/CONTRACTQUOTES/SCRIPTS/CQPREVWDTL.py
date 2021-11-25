@@ -11,6 +11,7 @@ from datetime import datetime
 Sql = SQL()
 import SYCNGEGUID as CPQID
 import CQVLDRIFLW
+import CQCPQC4CWB
 
 # import CMGTRULRAC as CMRUL
 try:
@@ -730,6 +731,10 @@ def savecbc(Qt_rec_id, Quote, MODE):
 	Sql.RunQuery("UPDATE SAQTRV SET	REVISION_STATUS = 'SUBMITTED FOR BOOKING' WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	get_quote_details = Sql.GetFirst("Select QUOTE_ID,QTEREV_ID FROM SAQTRV WHERE QUOTE_RECORD_ID = '{quote_rec_id}' AND QTEREV_RECORD_ID = '{quote_rev_recid}' AND ACTIVE = '1' ".format(quote_rec_id = Quote,quote_rev_recid = quote_revision_record_id))
 	crm_result = ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':str(get_quote_details.QUOTE_ID),'REVISION_ID':str(get_quote_details.QTEREV_ID),'Fun_type':'cpq_to_crm'})	
+	
+	##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+	CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+	CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 	return True
 def constructlegalsow(Qt_rec_id, Quote, MODE):    
 	VAR1 = ""
