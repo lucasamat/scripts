@@ -512,7 +512,7 @@ class ContractQuoteItem:
 					{ObjectName}.FABLOCATION_NAME,
 					{ObjectName}.FABLOCATION_RECORD_ID,
 					{ObjectName}.GREENBOOK,
-					{ObjectName}.GREENBOOK_RECORD_ID,
+					{ObjectName}.GREENBOOK_RECORD_ID
 					
 				FROM {ObjectName} (NOLOCK) 
 				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID     
