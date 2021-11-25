@@ -3277,10 +3277,11 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			getdate = Sql.GetFirst("select CONTRACT_VALID_FROM,CONTRACT_VALID_TO from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 			#get_warrent_dates= SqlHelper.GetList("select QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,WARRANTY_END_DATE_ALERT,WARRANTY_START_DATE,WARRANTY_END_DATE from SAQSCO where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			update_warranty_enddate_alert = ''
-			get_warrent_dates= SqlHelper.GetList("SELECT B.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,B.WARRANTY_END_DATE_ALERT,B.WARRANTY_END_DATE FROM SAQTMT A JOIN SAQSCO B ON A.MASTER_TABLE_QUOTE_RECORD_ID=B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID WHERE A.MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(self.contract_quote_record_id)+"' AND A.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND B.WARRANTY_END_DATE >= A.CONTRACT_VALID_FROM and B.WARRANTY_END_DATE <=A.CONTRACT_VALID_TO")
-			for val in get_warrent_dates:
-				update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
-				Sql.RunQuery(update_warranty_enddate_alert)
+			warrant_enddat_alert_update = SqlHelper.GetFirst("sp_executesql @T=N'update B SET B.WARRANTY_END_DATE_ALERT = (CASE WHEN B.WARRANTY_END_DATE >= A.CONTRACT_VALID_FROM AND B.WARRANTY_END_DATE <=A.CONTRACT_VALID_TO THEN 1 ELSE 0 END) FROM SAQTMT A JOIN SAQSCO B ON A.MASTER_TABLE_QUOTE_RECORD_ID=B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID WHERE A.MASTER_TABLE_QUOTE_RECORD_ID = ''"+str(self.contract_quote_record_id)+"'' AND A.QTEREV_RECORD_ID = ''"+str(self.quote_revision_record_id)+"'' AND B.WARRANTY_END_DATE >= A.CONTRACT_VALID_FROM and B.WARRANTY_END_DATE <=A.CONTRACT_VALID_TO '")
+			# get_warrent_dates= SqlHelper.GetList("SELECT B.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID,B.WARRANTY_END_DATE_ALERT,B.WARRANTY_END_DATE FROM SAQTMT A JOIN SAQSCO B ON A.MASTER_TABLE_QUOTE_RECORD_ID=B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID=B.QTEREV_RECORD_ID WHERE A.MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(self.contract_quote_record_id)+"' AND A.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND B.WARRANTY_END_DATE >= A.CONTRACT_VALID_FROM and B.WARRANTY_END_DATE <=A.CONTRACT_VALID_TO")
+			# for val in get_warrent_dates:
+			# 	update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+			# 	Sql.RunQuery(update_warranty_enddate_alert)
 			# for val in get_warrent_dates:
 			# 	if val.WARRANTY_END_DATE:
 			# 		WARRANTY_val = datetime.datetime.strptime(str(val.WARRANTY_END_DATE), "%Y-%m-%d")
