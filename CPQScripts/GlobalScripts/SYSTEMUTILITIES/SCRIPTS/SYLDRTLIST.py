@@ -4438,19 +4438,37 @@ class SYLDRTLIST:
 						if str(col_name) == 'TRACKING_TYPE':
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00159").GetValue()
 							Wh_API_NAME = "APPROVAL_TRACKED_FIELD_RECORD_ID"
-						xcdStr = (
-							"SELECT DISTINCT TOP 10000000 "
-							+ col_name
-							+ " FROM "
-							+ str(ObjectName)
-							+ " (nolock) where "
-							+ str(Wh_API_NAME)
-							+ " = '"
-							+ str(RecAttValue)
-							+ "'"
-							+ " ORDER BY "
-							+ str(col_name)
-						)
+						if str(RECORD_ID) == "SYOBJR-98788":
+							xcdStr = (
+								"SELECT DISTINCT TOP 10000000 "
+								+ col_name
+								+ " FROM "
+								+ str(ObjectName)
+								+ " (nolock) JOIN (SELECT distinct PRDOFR_ID FROM MAADPR WHERE VISIBLE_INCONFIG = 'TRUE' )M ON SERVICE_ID = M.PRDOFR_ID  where "
+								+ str(Wh_API_NAME)
+								+ " = '"
+								+ str(RecAttValue) 
+								+ "'"
+								+ " AND QTEREV_RECORD_ID = '"
+								+ str(quote_revision_record_id)
+								+ "'" 
+								+ "ORDER BY "
+								+ str(col_name)
+							)
+						else:	
+							xcdStr = (
+								"SELECT DISTINCT TOP 10000000 "
+								+ col_name
+								+ " FROM "
+								+ str(ObjectName)
+								+ " (nolock) where "
+								+ str(Wh_API_NAME)
+								+ " = '"
+								+ str(RecAttValue)
+								+ "'"
+								+ " ORDER BY "
+								+ str(col_name)
+							)
 					xcd = Sql.GetList(xcdStr)
 				except:
 					
