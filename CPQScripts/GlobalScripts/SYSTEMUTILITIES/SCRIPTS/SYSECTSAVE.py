@@ -14,6 +14,7 @@ from datetime import datetime,date
 #import datetime
 from SYDATABASE import SQL
 import CQCPQC4CWB
+import CQREVSTSCH
 import re
 
 Sql = SQL()

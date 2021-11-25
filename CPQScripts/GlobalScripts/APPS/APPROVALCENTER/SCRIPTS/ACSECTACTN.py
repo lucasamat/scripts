@@ -12,6 +12,7 @@ import re
 import sys
 import datetime
 import CQCPQC4CWB
+import CQREVSTSCH
 import clr
 
 import SYCNGEGUID as CPQID
@@ -504,6 +505,8 @@ class approvalCenter:
 				)
 
 				b = Sql.RunQuery(MainObjUpdateQuery)
+				##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+				CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				##update ARCHIVED as True If one step user rejected the transactn starts
 				Trans_update_archive = Sql.RunQuery("""UPDATE ACAPTX SET ARCHIVED = 1 WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
 					AND APRCHN_RECORD_ID = '{chainRecordId}'  """.format(
@@ -1206,6 +1209,8 @@ class approvalCenter:
 						primaryKey = str(GetCurStatus.RECORD_NAME )
 					)
 					b = Sql.RunQuery(MainObjUpdateQuery)
+					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				
 				try:
 					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
@@ -1342,6 +1347,9 @@ class approvalCenter:
 					primaryKey = str(GetCurStatus.RECORD_NAME )
 				)
 				b = Sql.RunQuery(MainObjUpdateQuery)
+				##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+				CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+
 				getQuote = Sql.GetFirst(
 					"SELECT QUOTE_ID,REVISION_STATUS FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"
 					+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
@@ -1472,6 +1480,9 @@ class approvalCenter:
 									primaryKey = str(GetCurStatus.RECORD_NAME )
 								)
 							b = Sql.RunQuery(MainObjUpdateQuery)
+							##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+							CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+							
 							UpdateAppoval = """UPDATE ACAPMA SET
 								ACAPMA.APROBJ_STATUSFIELD_VALUE = ACACSS.APROBJ_STATUSFIELD_VAL,
 								ACAPMA.APRSTAMAP_APPROVALSTATUS = ACACSS.APPROVALSTATUS
