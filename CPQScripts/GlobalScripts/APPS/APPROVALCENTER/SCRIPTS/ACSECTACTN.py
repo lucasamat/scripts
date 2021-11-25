@@ -514,8 +514,9 @@ class approvalCenter:
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			except:
-				Trace.Write("EXCEPTION: QUOTE WRITE BACK ")
+			except Exception, e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
+				
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
@@ -1209,8 +1210,8 @@ class approvalCenter:
 					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-				except:
-					Trace.Write("EXCEPTION: QUOTE WRITE BACK ")
+				except Exception, e:
+					Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 
 				if submit.APPROVAL_METHOD == "PARALLEL STEP APPROVAL":
 					requestresponse = self.sendmailNotification("ParallelRequest")
@@ -1355,8 +1356,8 @@ class approvalCenter:
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-			except:
-				Trace.Write("EXCEPTION: QUOTE WRITE BACK ")
+			except Exception, e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK " +str(e))
 
 			if parallel == "True":
 				requestresponse = self.sendmailNotification("ParallelRequest")
@@ -1490,8 +1491,8 @@ class approvalCenter:
 							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
 							CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 							CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
-						except:
-							Trace.Write("EXCEPTION: QUOTE WRITE BACK ")
+						except Exception, e:
+							Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
