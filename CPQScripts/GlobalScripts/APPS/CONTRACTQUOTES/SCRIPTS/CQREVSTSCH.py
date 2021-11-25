@@ -27,7 +27,7 @@ Sql = SQL()
  
 
 def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id):
-    saqtrv_values = Sql.GetFirst("SELECT SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id,quote_revision_record_id))
+    saqtrv_values = Sql.GetFirst("SELECT * from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(quote_revision_record_id,quote_revision_record_id))
     
     self._process_query(""" INSERT SAQRSH (							
                         QUOTE_RECORD_ID,
