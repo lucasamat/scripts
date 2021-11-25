@@ -3288,7 +3288,10 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and  QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 					Sql.RunQuery(update_warranty_enddate_alert)
 				else:
-					update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+					if WARRANTY_val > get_con_end_date:
+						update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
+					else:
+						update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 					Sql.RunQuery(update_warranty_enddate_alert)
 				#4393 end
 				# if val.WARRANTY_START_DATE:
