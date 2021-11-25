@@ -65,7 +65,7 @@ def LoadSummary():
                     # style = ""
                     # if "of Tools" in x or "Fee" in x or "Notice" in x or "Duration" in x or "Exception" in x:
                     #     style = ' style="color:#1B78D2"'
-                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'">*</abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
+                    sec_str += '<td class="required_symbol" style=""><abbr class="required_symbol" title="'+x+'"> </abbr></td><td style=""><select class="form-control remove_yellow disable_edit" style="" id="'+x.replace(" ","_")+'" type="text"  data-content="'+x.replace(" ","_")+'"  title="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" disabled = ""><option value="select" style="display:none;"> </option><option id="'+x.replace(" ","_")+'" value="'+getDefaultValue.TOOLIDLING_VALUE_CODE+'" selected = "">'+getDefaultValue.TOOLIDLING_VALUE_CODE+'</option>'
 
                 
                     getAllValues = Sql.GetList("SELECT TOOLIDLING_VALUE_CODE FROM SAQTDA (NOLOCK) WHERE TOOLIDLING_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(x,quote_revision_record_id))
