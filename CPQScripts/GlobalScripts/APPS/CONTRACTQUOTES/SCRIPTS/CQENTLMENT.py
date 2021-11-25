@@ -1101,12 +1101,12 @@ class Entitlements:
 					ancillary_flag = "False"
 					#Trace.Write("entitlement_value--"+str(entitlement_value)+'key--'+str(key))
 					Trace.Write("serviceId--"+str(serviceId)+"key"+str(key)+"tableName-->"+str(tableName))
-					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
+					if str(serviceId) in ("Z0091","Z0004","Z0007","Z0006","Z0092","Z0035") and key in ( "AGS_{}_TSC_CONSUM".format(serviceId), "AGS_{}_TSC_NONCNS".format(serviceId), "AGS_{}_NON_CONSUMABLE".format(serviceId),"AGS_{}_TSC_RPPNNW".format(serviceId)) and str(tableName) in ('SAQSGE','SAQTSE'):
 						#ancillary_object = 'Z0101'
 						if tableName == "SAQSGE":
 							Quote.SetGlobal("Greenbook_Entitlement","Yes")
 						Trace.Write("entitlement_value -----"+str(entitlement_value))
-						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions"):
+						if (entitlement_value == "Some Exclusions" or entitlement_value == "Some Inclusions" or entitlement_value == "Yes"):
 							ancillary_object_dict['Z0101'] = "INSERT"
 							# if tableName == "SAQTSE":
 							# 	QuoteModule.service_level_entitlement({str(serviceId):1})
