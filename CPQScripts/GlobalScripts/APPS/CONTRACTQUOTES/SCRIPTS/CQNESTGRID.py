@@ -3862,17 +3862,23 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	)
 	Columns = [
 		"QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID",
+		"EQUIPMENT_DESCRIPTION",
+		"EQUIPMENT_ID",
+		"SERIAL_NO",
+		"ASSEMBLY_ID",
+		"GOT_CODE",
 		"PM_ID",
 		"PM_NAME",
 		"PM_LABOR_LEVEL",
 		#"ANNUAL_FREQUENCY_BASE",
 		"SSCM_PM_FREQUENCY",
 		"PM_FREQUENCY",
-		# "KIT_ID",
+		"KIT_ID",
 		"KIT_NAME",
-		"KIT_NUMBER",
+		# "KIT_NUMBER",
 		"TKM_FLAG",
 	]
+	
 	Objd_Obj = Sql.GetList(
 		"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE from SYOBJD (NOLOCK) where OBJECT_NAME = 'SAQSAP'"
 	)
