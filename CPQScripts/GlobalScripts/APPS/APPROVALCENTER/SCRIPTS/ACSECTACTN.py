@@ -511,8 +511,11 @@ class approvalCenter:
 				)
 				##update ARCHIVED as True If one step user rejected the transactn ends
 			##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
 			CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
+
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
@@ -1202,8 +1205,11 @@ class approvalCenter:
 					)
 					b = Sql.RunQuery(MainObjUpdateQuery)
 				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+				contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 				CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
+
 				if submit.APPROVAL_METHOD == "PARALLEL STEP APPROVAL":
 					requestresponse = self.sendmailNotification("ParallelRequest")
 				else:
@@ -1343,8 +1349,11 @@ class approvalCenter:
 					
 					result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
 			##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+			contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 			CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
 			CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
+
 			if parallel == "True":
 				requestresponse = self.sendmailNotification("ParallelRequest")
 			else:
@@ -1473,6 +1482,11 @@ class approvalCenter:
 							c = Sql.RunQuery(UpdateAppoval)
 							d = Sql.RunQuery(Transupdate)
 							#self.RecallSmartApprovalAction()
+						##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+						quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+						CQCPQC4CWB.writeback_to_c4c("quote_header",contract_quote_record_id,quote_revision_record_id)
+						CQCPQC4CWB.writeback_to_c4c("opportunity_header",contract_quote_record_id,quote_revision_record_id)
 
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
