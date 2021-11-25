@@ -3296,7 +3296,7 @@ class SYLDRTLIST:
 						new_dict["primary"] = primary
 						list_lineup.append(value123)
 					table_list.append(new_dict)
-				table_header += "<tr id='getbannername'>"
+				table_header += "<tr id='getbannername' class='annual_fixed_tr'>"
 			#A055S000P01-682 start to hide the Actions column for related list
 			rowspan = ''
 			#A055S000P01-4401
@@ -4128,7 +4128,7 @@ class SYLDRTLIST:
 				grouping_columns += table_group_columns4
 			if table_group_columns5:
 				grouping_columns += table_group_columns5 
-			table_header += "<tr class='annual_fixed_tr'>{}</tr>".format(grouping_columns)
+			table_header += "<tr >{}</tr>".format(grouping_columns)
 			Trace.Write("table_header--"+str(table_header))
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
