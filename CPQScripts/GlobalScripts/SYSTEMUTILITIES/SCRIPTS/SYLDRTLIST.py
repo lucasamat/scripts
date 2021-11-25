@@ -3721,7 +3721,7 @@ class SYLDRTLIST:
 									+ str(align)
 									+'" data-title-tooltsip="'
 									+ str(qstring)
-									+ '" data-formatter="partsListEditLink" data-sortable="true">'
+									+ '" data-formatter="discount_adjustmentLink" data-sortable="true">'
 									+ str(qstring)
 									+ "</th>"
 								)
