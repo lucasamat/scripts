@@ -3713,17 +3713,31 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns4 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)           
+					if str(invs) == "DISCOUNT":
+						table_group_columns4 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-formatter="partsListEditLink" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)
+					else:
+						 table_group_columns4 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)     
+					           
 					continue
 				
 				##contractual cost and price
