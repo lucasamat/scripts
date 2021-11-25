@@ -867,7 +867,7 @@ class ContractQuoteItem:
 				else:
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
-					self.cqent()
+					#self.cqent()
 					self._quote_item_line_entitlement_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
