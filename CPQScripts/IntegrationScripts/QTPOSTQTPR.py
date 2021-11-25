@@ -5,6 +5,7 @@ import System.Net
 from System.Text.Encoding import UTF8
 from System import Convert
 from SYDATABASE import SQL
+import CQCPQC4CWB
 import CQVLDRIFLW
 
 clr.AddReference("System.Net")
