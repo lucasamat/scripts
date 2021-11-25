@@ -99,7 +99,7 @@ def LoadSummary():
         TotalSalesPrice = "{0:.2f}".format(float(getRevisionDetails.SALES_PRICE_INGL_CURR))
         TotalDiscount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_PERCENT))
         Tax = "{0:.2f}".format(float(getRevisionDetails.TAX_AMOUNT_INGL_CURR))
-        #TotalCost = "{0:.2f}".format(float(getRevisionDetails.TOTAL_AMOUNT_INGL_CURR))
+        TotalCost = ""
         DiscountAmount = "{0:.2f}".format(float(getRevisionDetails.DISCOUNT_AMOUNT_INGL_CURR))
         #BDPrice = "{0:.2f}".format(float(getRevisionDetails.BD_PRICE_INGL_CURR))
         #CeilingPrice = "{0:.2f}".format(float(getRevisionDetails.CEILING_PRICE_INGL_CURR))
