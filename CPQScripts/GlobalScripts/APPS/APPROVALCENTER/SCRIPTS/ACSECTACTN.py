@@ -11,6 +11,7 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 import sys
 import datetime
+import CQCPQC4CWB
 import clr
 
 import SYCNGEGUID as CPQID
@@ -516,7 +517,7 @@ class approvalCenter:
 				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 			except Exception, e:
 				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
-				
+
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
