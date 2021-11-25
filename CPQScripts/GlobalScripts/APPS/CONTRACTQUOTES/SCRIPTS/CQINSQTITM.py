@@ -812,6 +812,7 @@ class ContractQuoteItem:
 		if self.action_type == "INSERT_LINE_ITEMS":			
 			if self.is_spare_service == True:				
 				# Spare Parts Insert/Update
+				self._quote_items_summary_insert()
 				self._quote_items_insert()
 				self._insert_quote_item_forecast_parts()
 				self._quote_annualized_items_insert()
@@ -820,6 +821,7 @@ class ContractQuoteItem:
 				self._simple_items_object_insert()
 				self._simple_quote_annualized_items_insert()
 			else:	
+				self._quote_items_summary_insert()
 				self._quote_items_insert()		
 				self._quote_items_object_insert()	
 				self._quote_annualized_items_insert()	
@@ -835,6 +837,7 @@ class ContractQuoteItem:
 				if self.service_id == 'Z0101':	
 					if self.is_spare_service == True:			
 						# Spare Parts Insert/Update
+						self._quote_items_summary_insert()
 						self._quote_items_insert()
 						self._insert_quote_item_forecast_parts()
 						self._quote_annualized_items_insert()
@@ -844,6 +847,7 @@ class ContractQuoteItem:
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
 				else:
+					self._quote_items_summary_insert()
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
 					#self.cqent()
@@ -856,6 +860,7 @@ class ContractQuoteItem:
 				if self.service_id == 'Z0101':	
 					if self.is_spare_service == True:			
 						# Spare Parts Insert/Update
+						self._quote_items_summary_insert()
 						self._quote_items_insert()
 						self._insert_quote_item_forecast_parts()
 						self._quote_annualized_items_insert()
@@ -865,6 +870,7 @@ class ContractQuoteItem:
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
 				else:
+					self._quote_items_summary_insert()
 					self._quote_items_insert(update=True)		
 					self._quote_items_object_insert(update=True)	
 					self._quote_annualized_items_insert(update=True)
