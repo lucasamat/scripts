@@ -58,8 +58,8 @@ def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id)
                             AND SAQTRV.QTEREV_RECORD_ID = '{}'                     
                     """.format(
                             contract_quote_record_id,quote_revision_record_id,				
-                            UserName=self.user_name,
-                            UserId=self.user_id,rev_sts_chg_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")								
+                            UserName=User.UserName,
+                            UserId=User.Id,rev_sts_chg_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")								
                         ))
     Sql.RunQuery(QueryStatement)                    
         
