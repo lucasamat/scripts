@@ -363,8 +363,7 @@ class SyncQuoteAndCustomTables:
 				#Log.Info('inseryservice_ent-----columns-----values----'+str(insert_qtqtse_query))
 
 	def create_custom_table_record(self):
-		contract_quote_data = {}
-		Region_Object = None
+		contract_quote_data = {}		
 		sync_start_time = time.time()
 		#Log.Info("Sync start ==> "+str(sync_start_time))
 		
@@ -559,22 +558,7 @@ class SyncQuoteAndCustomTables:
 								contract_quote_data.update({"OWNER_ID":Employee_obj.EMPLOYEE_ID , 
 													"OWNER_NAME": Owner_name,
 													"OWNER_RECORD_ID":Employee_obj.EMPLOYEE_RECORD_ID})			
-					Region_Object = None
-					if custom_fields_detail.get('AccountAssignmentGroup'):
-						Region_Object = Sql.GetFirst(
-								"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
-									custom_fields_detail.get('AccountAssignmentGroup')
-								)
-							)
-					exchange_rate_type_object = None
-					if custom_fields_detail.get('AccountAssignmentGroup'):
-						exchange_rate_type_object = Sql.GetFirst(
-							"SELECT BANK_ID,BANK_NAME FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(AccountAssignmentGroup)
-						)
-						if exchange_rate_type_object:
-							bank_id = exchange_rate_type_object.BANK_ID
-							bank_name = exchange_rate_type_object.BANK_NAME
-					Log.Info("END DATE TO CONTRACT VALID TO revision "+str(end_date))
+					
 						
 					#insert in revision table while creating quote 
 					if salesorg_obj and get_rev_details:
@@ -590,9 +574,6 @@ class SyncQuoteAndCustomTables:
 							"COUNTRY_NAME": salesorg_country_name.COUNTRY_NAME,
 							"COUNTRY_RECORD_ID":salesorg_country.COUNTRY_RECORD_ID,
 							"REGION":str(AccountAssignmentGroup),
-							"REGION_RECORD_ID":Region_Object.REGION_RECORD_ID if Region_Object else "",
-							"BANK_ID":bank_id if exchange_rate_type_object else "",
-							"BANK_NAME":bank_name if exchange_rate_type_object else "",
 							"SALESORG_NAME": salesorg_obj.SALESORG_NAME,
 							"SALESORG_RECORD_ID": salesorg_obj.SALES_ORG_RECORD_ID,							
 							"GLOBAL_CURRENCY":contract_quote_data.get("GLOBAL_CURRENCY"),							
@@ -619,6 +600,24 @@ class SyncQuoteAndCustomTables:
 							"COMPANY_RECORD_ID":salesorg_obj.COMPANY_RECORD_ID,
 							"HLV_ORG_BUN":"AGS - SSC"
 						}
+						
+						if custom_fields_detail.get('AccountAssignmentGroup'):
+							region_object = Sql.GetFirst(
+									"SELECT REGION_RECORD_ID FROM SAREGN (NOLOCK) WHERE EXTERNAL_ID = '{}'".format(
+										custom_fields_detail.get('AccountAssignmentGroup')
+									)
+								)
+							if region_object:
+								salesorg_data['REGION_RECORD_ID'] = region_object.REGION_RECORD_ID
+						exchange_rate_type_object = None
+						if custom_fields_detail.get('AccountAssignmentGroup'):
+							exchange_rate_type_object = Sql.GetFirst(
+								"SELECT BANK_ID, BANK_NAME, EXCRATTYP_ID, EXCHANGE_RATE_RECORD_ID FROM PRERTY (NOLOCK) WHERE REGION = '{}'".format(AccountAssignmentGroup)
+							)						
+							if exchange_rate_type_object:								
+								salesorg_data.update({"BANK_ID":exchange_rate_type_object.BANK_ID,"BANK_NAME":exchange_rate_type_object.BANK_NAME,"BANK_RECORD_ID":exchange_rate_type_object.EXCHANGE_RATE_RECORD_ID,"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
+								
+						Log.Info("END DATE TO CONTRACT VALID TO revision "+str(end_date))
 						# UPDATE REVISION DETAILS TO SAQTMT
 						contract_quote_data.update({"QTEREV_RECORD_ID":quote_revision_id, 
 													"QTEREV_ID":quote_rev_id })
@@ -631,20 +630,11 @@ class SyncQuoteAndCustomTables:
 						)
 						if bluebook_obj:
 							salesorg_data.update({"BLUEBOOK":bluebook_obj.BLUEBOOK,"BLUEBOOK_RECORD_ID":bluebook_obj.BLUEBOOK_RECORD_ID,})
-						if custom_fields_detail.get("Incoterms"):
-							incid = ""
-							incdesc = ""
-							increc = ""
+						if custom_fields_detail.get("Incoterms"):							
 							getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
 							if getInc:
-								incid = getInc.INCOTERM_ID
-								incdesc = getInc.DESCRIPTION
-								increc = getInc.INCOTERM_RECORD_ID
-						else:
-							incid = ""
-							incdesc = ""
-							increc = ""
-						salesorg_data.update({"INCOTERM_ID":incid,"INCOTERM_NAME":incdesc,"INCOTERM_RECORD_ID":increc})
+								salesorg_data.update({"INCOTERM_ID":getInc.INCOTERM_ID,"INCOTERM_NAME":getInc.DESCRIPTION,"INCOTERM_RECORD_ID":getInc.INCOTERM_RECORD_ID})
+						
 						if custom_fields_detail.get('DistributionChannel'):
 							distribution_obj = Sql.GetFirst(
 								"SELECT DISTRIBUTION_CHANNEL_RECORD_ID, DISTRIBUTIONCHANNEL_ID FROM SADSCH (NOLOCK) WHERE DISTRIBUTIONCHANNEL_ID = '{}'".format(
@@ -668,36 +658,24 @@ class SyncQuoteAndCustomTables:
 								salesorg_data.update({"DOC_CURRENCY":salesorg_currency.CURRENCY , 
 													"DOCCURR_RECORD_ID":salesorg_currency.CURRENCY_RECORD_ID,
 													})
-							if SalesOrg_obj:
-								
+							if SalesOrg_obj:								
 								# salesorg_data.update({"DOC_CURRENCY":SalesOrg_obj.DEF_CURRENCY, 
 								# 					"DOCCURR_RECORD_ID":SalesOrg_obj.DEF_CURRENCY_RECORD_ID})
 								#A055S000P01-4418 exchange rate details starts..
-								if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
-									exchange_obj = None
-								elif AccountAssignmentGroup == "AMC" or AccountAssignmentGroup == "AMK":
-									exchange_rate_type_object = Sql.GetFirst("SELECT EXCRATTYP_ID from PRERTY where REGION = '{}' ".format(AccountAssignmentGroup))
-									if exchange_rate_type_object is not None:
-										exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,exchange_rate_type_object.EXCRATTYP_ID))
-										salesorg_data.update({"EXCHANGE_RATE_TYPE":exchange_rate_type_object.EXCRATTYP_ID})
-										
-								else:
-									exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))
+								exchange_obj = Sql.GetFirst("SELECT EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_END_DATE,EXCHANGE_RATE_RECORD_ID from PREXRT where FROM_CURRENCY = '{}' and TO_CURRENCY='{}' AND ACTIVE = 1 and EXCHANGE_RATE_TYPE = '{}'".format(contract_quote_data.get("GLOBAL_CURRENCY"),salesorg_currency.CURRENCY,salesorg_data.get("EXCHANGE_RATE_TYPE")))								
+								if exchange_obj:									
+									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+									if createddate > exchange_obj.EXCHANGE_RATE_BEGIN_DATE:										
+										createddate_up = createddate
+									else:
+										createddate_up = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
 									
-								
-								if exchange_obj:
-									ex_rate_begin = exchange_obj.EXCHANGE_RATE_BEGIN_DATE
-									#ex_rate_end = exchange_obj.EXCHANGE_RATE_END_DATE
-								
-									# createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-									# if createddate > ex_rate_begin:										
-									# 	createddate_up = createddate
-									
-									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':ex_rate_begin,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID,'BANK_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
+									salesorg_data.update({'EXCHANGE_RATE':exchange_obj.EXCHANGE_RATE,'EXCHANGE_RATE_DATE':createddate_up,'EXCHANGERATE_RECORD_ID':exchange_obj.EXCHANGE_RATE_RECORD_ID})
 									##A055S000P01-4418 exchange rate details ends..
 								else:
-									createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
-									salesorg_data.update({'EXCHANGE_RATE':1.00,'EXCHANGE_RATE_DATE':createddate})
+									if contract_quote_data.get("GLOBAL_CURRENCY") == salesorg_currency.CURRENCY:
+										createddate= datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")
+										salesorg_data.update({'EXCHANGE_RATE':1.00,'EXCHANGE_RATE_DATE':createddate})
 								##Commented the below code already we updated the exchange rate details in the above code..
 								# TO_CURRENCY_val = contract_quote_data.get("GLOBAL_CURRENCY")
 								# if 	TO_CURRENCY_val == 'USD' and SalesOrg_obj.DEF_CURRENCY == 'USD':
@@ -740,8 +718,7 @@ class SyncQuoteAndCustomTables:
 								# salesorg_data.update({"DOC_CURRENCY":salesorg_obj.DEF_CURRENCY , 
 								#                     "DOCCURR_RECORD_ID":salesorg_obj.DEF_CURRENCY_RECORD_ID,
 								#                     })
-						if str(salesorg_data.get('SALESORG_ID')):
-							Log.Info("TAX_DETAILS=====")
+						if str(salesorg_data.get('SALESORG_ID')):							
 							tax_details = Sql.GetFirst("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							Log.Info("SELECT * FROM SAASCT (NOLOCK) WHERE SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID= '{}' AND DIVISION_ID = '{}' AND COUNTRY_NAME = '{}' AND ACCOUNT_ID LIKE '%{}%'".format(salesorg_data.get('SALESORG_ID'),salesorg_data.get('DISTRIBUTIONCHANNEL_ID'),salesorg_data.get('DIVISION_ID'),salesorg_data.get('COUNTRY_NAME'),custom_fields_detail.get("STPAccountID")))
 							if tax_details:
@@ -792,11 +769,11 @@ class SyncQuoteAndCustomTables:
 							Sql.RunQuery("""INSERT INTO SAACNT (ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,ACCOUNT_TYPE,ACTIVE,ADDRESS_1,CITY,COUNTRY,COUNTRY_RECORD_ID,PHONE,POSTAL_CODE,REGION,REGION_RECORD_ID,STATE,STATE_RECORD_ID,CPQTABLEENTRYADDEDBY,CPQTABLEENTRYDATEADDED)VALUES('{AccountRecordId}','{AccountId}','{AccountName}','{Type}',1,'{Address}','{City}','{Country}','{CountryRecordId}','{Phone}','{PostalCode}','{Region}','{RegionRecordId}','{State}','{StateRecordId}','{UserName}',GETDATE())
 							""".format(AccountRecordId=NewAccountRecordId,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),Type=custom_fields_detail.get("STPAccountType"),Address=custom_fields_detail.get("PayerAddress1"),City=custom_fields_detail.get("PayerCity"),Country=custom_fields_detail.get("PayerCountry"),CountryRecordId=salesorg_country.COUNTRY_RECORD_ID,Phone=custom_fields_detail.get("PayerPhone"),PostalCode=custom_fields_detail.get("PayerPostalCode"),Region='',RegionRecordId='',State=custom_fields_detail.get("PayerState"),StateRecordId=getState.STATE_RECORD_ID,UserName=User.UserName))
 							account_obj = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID, ACCOUNT_TYPE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
-						getAcc = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID FROM SAACNT WHERE ACCOUNT_ID = '{}'".format(custom_fields_detail.get("STPAccountID")))
+						getAcc = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '{}'".format(custom_fields_detail.get("STPAccountID")))
 						
-						getDistr = Sql.GetFirst("SELECT CpqTableEntryId FROM SASOAC WHERE ACCOUNT_ID = '{}' AND SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("STPAccountID"),custom_fields_detail.get("SalesOrgID"),distribution_obj.DISTRIBUTIONCHANNEL_ID))
+						getDistr = Sql.GetFirst("SELECT CpqTableEntryId FROM SASOAC (NOLOCK) WHERE ACCOUNT_ID = '{}' AND SALESORG_ID = '{}' AND DISTRIBUTIONCHANNEL_ID = '{}'".format(custom_fields_detail.get("STPAccountID"),custom_fields_detail.get("SalesOrgID"),distribution_obj.DISTRIBUTIONCHANNEL_ID))
 
-						getDiv = Sql.GetFirst("SELECT CpqTableEntryId FROM SASAAC WHERE ACCOUNT_ID = '{}' AND SALESORG_ID = '{}' AND DIVISION_ID = '{}'".format(custom_fields_detail.get("STPAccountID"),custom_fields_detail.get("SalesOrgID"),division_obj.DIVISION_ID))
+						getDiv = Sql.GetFirst("SELECT CpqTableEntryId FROM SASAAC (NOLOCK) WHERE ACCOUNT_ID = '{}' AND SALESORG_ID = '{}' AND DIVISION_ID = '{}'".format(custom_fields_detail.get("STPAccountID"),custom_fields_detail.get("SalesOrgID"),division_obj.DIVISION_ID))
 
 						if not getSales:
 							NewSalesAccountRecordId = str(Guid.NewGuid()).upper()
@@ -804,23 +781,18 @@ class SyncQuoteAndCustomTables:
 							""".format(RecordId=NewSalesAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME))
 
 							if not getDiv or not getDistr:
-								if custom_fields_detail.get("Incoterms"):
-									incid = ""
-									incdesc = ""
-									increc = ""
+								incid = ""
+								incdesc = ""
+								increc = ""
+								if custom_fields_detail.get("Incoterms"):									
 									getInc = Sql.GetFirst("SELECT INCOTERM_ID,DESCRIPTION,INCOTERM_RECORD_ID FROM SAICTM WHERE INCOTERM_ID = '{}'".format(custom_fields_detail.get("Incoterms")))
 									if getInc:
 										incid = getInc.INCOTERM_ID
 										incdesc = getInc.DESCRIPTION
-										increc = getInc.INCOTERM_RECORD_ID
-								else:
-									incid = ""
-									incdesc = ""
-									increc = ""
-								
+										increc = getInc.INCOTERM_RECORD_ID							
 
 								NewSalesAreaAccountRecordId = str(Guid.NewGuid()).upper()
-								insert = Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE,INCOTERM_ID,INCOTERM_DESCRIPTION,INCOTERM_RECORD_ID,PAYMENTTERM_ID,PAYMENTTERM_DESCRIPTION,PAYMENTTERM_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}','{incid}','{incdesc}','{increc}','{payid}','{paydesc}','{payrec}')
+								Sql.RunQuery("""INSERT INTO SASAAC (SALES_AREA_ACCOUNT_RECORD_ID,ACCOUNT_RECORD_ID,ACCOUNT_ID,ACCOUNT_NAME,DISTRIBUTIONCHANNEL_RECORD_ID,DISTRIBUTIONCHANNEL_ID,SALESORG_RECORD_ID,SALESORG_ID,SALESORG_NAME, DIVISION_ID,DIVISION_RECORD_ID,EXCHANGE_RATE_TYPE,CUSTOMER_PRICING_PROCEDURE,INCOTERM_ID,INCOTERM_DESCRIPTION,INCOTERM_RECORD_ID,PAYMENTTERM_ID,PAYMENTTERM_DESCRIPTION,PAYMENTTERM_RECORD_ID)VALUES('{RecordId}','{AccountRecordId}','{AccountId}','{AccountName}','{DistRecordId}','{DistId}','{SalesRecordId}','{SalesOrgId}','{SalesOrgName}','{DivisionId}','{DivisionRecordId}','{Exch}','{CustPricing}','{incid}','{incdesc}','{increc}','{payid}','{paydesc}','{payrec}')
 								""".format(RecordId=NewSalesAreaAccountRecordId,AccountRecordId=getAcc.ACCOUNT_RECORD_ID,AccountId=custom_fields_detail.get("STPAccountID"),AccountName=custom_fields_detail.get("STPAccountName"),DistRecordId=distribution_obj.DISTRIBUTION_CHANNEL_RECORD_ID,DistId=distribution_obj.DISTRIBUTIONCHANNEL_ID,SalesRecordId=salesorg_obj.SALES_ORG_RECORD_ID,SalesOrgId=custom_fields_detail.get("SalesOrgID"),SalesOrgName=salesorg_obj.SALESORG_NAME,DivisionId=division_obj.DIVISION_ID,DivisionRecordId=division_obj.DIVISION_RECORD_ID,Exch=custom_fields_detail.get("ExchangeRateType"),CustPricing=CustPricing,incid=incid,incdesc=incdesc,increc=increc,payid=payid,paydesc=paydesc,payrec=payrec))
 								#Log.Info("@@@728------>"+str(insert))
 								getCtry = Sql.GetFirst("SELECT COUNTRY_RECORD_ID FROM SACTRY WHERE COUNTRY = '{}'".format(custom_fields_detail.get("PayerCountry")))
