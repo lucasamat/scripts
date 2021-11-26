@@ -3713,18 +3713,17 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					if str(invs) == "DISCOUNT":
-						table_group_columns4 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)     
+					table_group_columns4 += (
+							'<th data-toggle="bootstrap-table" data-field="'
+							+ str(invs)
+							+ '" data-filter-control="input" data-align="'
+							+ str(align)
+							+'" data-title-tooltsip="'
+							+ str(qstring)
+							+ '" data-sortable="true">'
+							+ str(qstring)
+							+ "</th>"
+						)     
 					           
 					continue
 				
@@ -3743,18 +3742,18 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					if str(invs) == "YEAR_OVER_YEAR":
-						table_group_columns5 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)     
+
+					table_group_columns5 += (
+							'<th data-toggle="bootstrap-table" data-field="'
+							+ str(invs)
+							+ '" data-filter-control="input" data-align="'
+							+ str(align)
+							+'" data-title-tooltsip="'
+							+ str(qstring)
+							+ '" data-sortable="true">'
+							+ str(qstring)
+							+ "</th>"
+						)     
 					continue
 				
 				##A055S000P01-4401 
