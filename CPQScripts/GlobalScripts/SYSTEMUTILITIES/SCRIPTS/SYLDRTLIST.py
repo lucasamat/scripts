@@ -2092,18 +2092,12 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-00029":
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-							
 							if TreeSuperParentParam == "Product Offerings":
 								service_id = TreeParam.split('-')[0]		
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"
+								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"	
 							elif TopTreeSuperParentParam == "Product Offerings":
-								service_id = TreeParentParam.split('-')[0]
-								fab_id = TreeParam.split('-')[0]
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"'"	
-							elif TreeFirstSuperTopParentParam == "Product Offerings":
 								service_id = TreeSuperParentParam.split('-')[0]
-								fab_id = TreeParentParam.split('-')[0]
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
+								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874":
@@ -7013,15 +7007,10 @@ class SYLDRTLIST:
 						
 						if TreeSuperParentParam == "Product Offerings":
 							service_id = TreeParam.split('-')[0]		
-							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' "
+							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' "	
 						elif TopTreeSuperParentParam == "Product Offerings":
-							service_id = TreeParentParam.split('-')[0]
-							fab_id = TreeParam.split('-')[0]
-							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' "	
-						elif TreeFirstSuperTopParentParam == "Product Offerings":
 							service_id = TreeSuperParentParam.split('-')[0]
-							fab_id = TreeParentParam.split('-')[0]
-							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
+							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						#Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 					else:    
 						Trace.Write('Record Id -->'+str(RECORD_ID))
@@ -8209,15 +8198,10 @@ class SYLDRTLIST:
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")					
 							if TreeSuperParentParam == "Product Offerings":
 								service_id = TreeParam.split('-')[0]		
-								Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' "
+								Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' "	
 							elif TopTreeSuperParentParam == "Product Offerings":
 								service_id = TreeParentParam.split('-')[0]
-								fab_id = TreeParam.split('-')[0]
-								Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' "	
-							elif TreeFirstSuperTopParentParam == "Product Offerings":
-								service_id = TreeSuperParentParam.split('-')[0]
-								fab_id = TreeParentParam.split('-')[0]
-								Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
+								Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 							#Qustr = " where "+ str(Wh_API_NAME) + " = '" +str(RecAttValue)+ "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						elif str(RECORD_ID) == "SYOBJR-00013":
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_AC_00001").GetValue()
