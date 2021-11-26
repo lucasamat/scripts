@@ -65,7 +65,7 @@ def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id)
                         CPQTABLEENTRYDATEADDED,
                         CpqTableEntryModifiedBy,
                         CpqTableEntryDateModified
-                        ) SELECT
+                        ) SELECT TOP 1
                             CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_STATUS_HISTROY_ID,							
                             SAQTRV.QUOTE_RECORD_ID,
                             SAQTRV.QUOTE_ID,
@@ -86,6 +86,8 @@ def Revisionstatusdatecapture(contract_quote_record_id,quote_revision_record_id)
                             UserName=User_name,
                             UserId=User_Id,rev_sts_chg_date = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p")								
                         ))
-    Sql.RunQuery(QueryStatement)                    
+    latest_status = Sql.GetFirst("SELECT TOP 1 SAQRSH.* FROM SAQRSH (NOLOCK) INNER JOIN SAQTRV ON SAQTRV.QUOTE_RECORD_ID = SAQRSH.QUOTE_RECORD_ID AND SAQTRV.REVISION_STATUS = SAQRSH.REVISION_STATUS WHERE SAQTRV.QUOTE_RECORD_ID = '{}' AND SAQTRV.QTEREV_RECORD_ID = '{}' Order By CpqTableEntryId Desc".format(contract_quote_record_id,quote_revision_record_id)) 
+    if latest_status is None:                                       
+        Sql.RunQuery(QueryStatement)                    
         
 
