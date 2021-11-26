@@ -675,7 +675,7 @@ class EntitlementView():
 							#getnameentallowed.append(attrName)
 							#totaldisallowlist = [item for item in attributesdisallowedlst if item not in getnameentallowed]
 							new_value_dicta["APPROVAL"] = ""	
-							new_value_dicta["ENTITLEMENT"] = str(attrName)
+							new_value_dicta["ENTITLEMENT"] = attrName
 							new_value_dicta["DESCRIPTION"] = ""
 							new_value_dicta["REQUIRED"] = ""
 							#Trace.Write('sec_str1---2372---'+str(sec_str1))
