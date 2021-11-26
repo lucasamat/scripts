@@ -850,7 +850,9 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						val_list.extend(val_coeff)
 					#Log.Info("val_list--grn-"+str(val_list))
 					for grnbk in get_value_query:
-						where_condition = where_cond + "AND GREENBOOK = '{}' ".format(grnbk.GREENBOOK)
+						#where_condition = where_cond + "AND GREENBOOK = '{}' ".format(grnbk.GREENBOOK)
+						#where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
+						where_condition = where_cond + " AND GREENBOOK = '{}' ".format(grnbk.GREENBOOK)
 						updateentXML = ""
 						for value in GetXMLsecField:
 							####value driver
