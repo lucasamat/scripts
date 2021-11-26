@@ -2850,7 +2850,7 @@ def Related_Sub_Banner(
             else:
                 recall_edit = "False"
         
-        elif str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Involved Parties" and TabName == "Quotes":
+        if str(TreeParam).upper() == "QUOTE INFORMATION" and subTabName == "Involved Parties" and TabName == "Quotes":
             sec_rel_sub_bnr += (
                         '<button id="ADDNEW__SYOBJR_98798_7F4F4C8D_73C7_4779_9BE5_38C695" onclick="cont_openaddnew(this, \'div_CTR_Involved_Parties\')" class="btnconfig addNewRel HideAddNew">ADD NEW</button>'
                     )
