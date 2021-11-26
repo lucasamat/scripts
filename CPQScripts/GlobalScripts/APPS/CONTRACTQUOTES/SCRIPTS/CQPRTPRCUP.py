@@ -232,4 +232,4 @@ else:
 today = datetime.datetime.now()
 Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 
-#Log.Info("CQPRTPRCUP  end time ---->"+str(Modi_date))
+Log.Info("CQPRTPRCUP  end time ---->"+str(Modi_date))
