@@ -37,6 +37,7 @@ try:
 					else:
 						Dirct_record[tbl] = str(table_dict.Value)
 						if str(tbl).upper() == "QUOTE_ID":
+							Log.Info("quote id empty==>"+str(table_dict.Value))
 							quote_id = str(table_dict.Value)
 							
 				
