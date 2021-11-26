@@ -411,20 +411,20 @@ class Entitlements:
 			# 	parentObj = 'SAQTSE'
 			# 	whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 			# 	ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)	
-			elif ((self.treesupertopparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				tableName = 'SAQSGE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQTSE'
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
+			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
 				tableName = 'SAQSCE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSGE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND EQUIPMENT_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,EquipmentId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
-			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
+			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
 				tableName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
@@ -2026,20 +2026,20 @@ class Entitlements:
 				parentObj = 'SAQTSE'
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND FABLOCATION_ID ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif ((self.treesupertopparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
+			elif ((self.treetopsuperparentparam == 'Product Offerings' or (self.treetopsuperparentparam == 'Add-On Products' and self.treetopsupertopparentparam == 'Comprehensive Services')) and subtabName == 'Entitlements' and self.treeparentparam != 'Add-On Products'):
 				tableName = 'SAQSGE'
 				parentObj = 'SAQTSE'
 				serviceId = self.treesuperparentparam
 				#join = "JOIN SAQSFE ON SAQSFE.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID AND SAQSFE.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQSFE.QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID = SAQSGE.QTSFBLENT_RECORD_ID "
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND FABLOCATION_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,self.treeparentparam)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' ".format(self.ContractRecordId,self.revision_recordid,serviceId)
-			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
+			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Equipment Entitlements'):
 				tableName = 'SAQSCE'
 				parentObj = 'SAQSGE'
 				serviceId = self.treesuperparentparam
 				whereReq = "QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}' AND EQUIPMENT_ID = '{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam,EquipmentId)
 				ParentwhereReq="QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID = '{}' AND GREENBOOK ='{}'".format(self.ContractRecordId,self.revision_recordid,serviceId,self.treeparam)
-			elif (self.treesupertopparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
+			elif (self.treetopsuperparentparam == 'Product Offerings' and subtabName == 'Assembly Entitlements'):
 				tableName = 'SAQSAE'
 				serviceId = self.treesuperparentparam
 				parentObj = 'SAQSCE'
