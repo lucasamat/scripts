@@ -153,7 +153,7 @@ def CoveredObjEntitlement():
 	# 	SAQTSE (NOLOCK)
 	# 	JOIN SAQSCO  (NOLOCK) ON SAQSCO.SERVICE_RECORD_ID = SAQTSE.SERVICE_RECORD_ID AND SAQSCO.QUOTE_RECORD_ID = SAQTSE.QUOTE_RECORD_ID  AND SAQSCO.QTEREV_RECORD_ID = SAQTSE.QTEREV_RECORD_ID  
 	# 	WHERE SAQTSE.QUOTE_RECORD_ID = '{QuoteRecordId}'  AND SAQTSE.QTEREV_RECORD_ID = '{revision_rec_id}' AND SAQTSE.SERVICE_ID = '{ServiceId}') IQ )OQ""".format(UserId=userId, QuoteRecordId=Qt_rec_id, ServiceId=TreeParam, revision_rec_id = rev_rec_id)
-	Log.Info("qtqtse_query---163--156--saqsgeinsert----"+str(qtqtse_query))
+	Log.Info("SAQSGE_query---163--156--saqsgeinsert----"+str(qtqtse_query))
 	Sql.RunQuery(qtqtse_query)
 	#ENTITLEMENT SV TO CE
 	qtqsce_query="""
