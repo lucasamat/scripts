@@ -3127,7 +3127,7 @@ class approvalCenter:
 			msg.CC.Add(copyEmail1)
 			#copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
 			#msg.CC.Add(copyEmail2)
-			copyEmail2 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail2)
 			#copyEmail4 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
 			#msg.CC.Add(copyEmail4)
