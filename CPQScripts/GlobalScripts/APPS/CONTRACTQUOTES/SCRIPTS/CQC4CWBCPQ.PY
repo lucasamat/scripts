@@ -10,6 +10,139 @@ import sys
 import datetime 
 Sql = SQL()
 
+def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail):
+    Sql.RunQuery("""INSERT SAQDLT (
+                            C4C_PARTNERFUNCTION_ID,
+                            CRM_PARTNERFUNCTION_ID,
+                            PARTNERFUNCTION_DESC,
+                            PARTNERFUNCTION_ID,
+                            PARTNERFUNCTION_RECORD_ID,
+                            EMAIL,
+                            MEMBER_ID,
+                            MEMBER_NAME,
+                            MEMBER_RECORD_ID,
+                            QUOTE_ID,
+                            QUOTE_RECORD_ID,
+                            QTEREV_ID,
+                            QTEREV_RECORD_ID,
+                            QUOTE_REV_DEAL_TEAM_MEMBER_ID,
+                            CPQTABLEENTRYADDEDBY,
+                            CPQTABLEENTRYDATEADDED,
+                            CpqTableEntryModifiedBy, 
+                            CpqTableEntryDateModified
+                            ) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+                            SELECT DISTINCT  
+                            (SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION =
+                            CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS C4C_PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS CRM_PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_DESC,
+                            (SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_RECORD_ID,
+                            SAEMPL.EMAIL,
+                            SAEMPL.EMPLOYEE_ID,
+                            SAEMPL.EMPLOYEE_NAME,
+                            SAEMPL.EMPLOYEE_RECORD_ID,
+                            '{QuoteId}' as QUOTE_ID,
+                            '{QuoteRecordId}' as QUOTE_RECORD_ID,
+                            '{RevisionId}' as QTEREV_ID,
+                            '{RevisionRecordId}' as QTEREV_RECORD_ID
+                            FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
+                            ) emp """.format(
+                            UserId = User.Id,
+                            EmployeeId = employee.get("EMPLOYEE_ID"),
+                            C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
+                            UserName=User.Name,
+                            QuoteId = quote_object.QUOTE_ID,
+                            QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
+                            RevisionId=quote_rev_id,
+                            RevisionRecordId=quote_revision_id,
+                            )
+                        )
+    created_by_master_rec = None
+    created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
+    if created_by_master_rec:
+        saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
+        saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
+        if not saqdlt_data:
+            sales_team_table = Sql.GetTable("SAQDLT")
+            sales_team_createdby_insert ={
+                "QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
+                "C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
+                "PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
+                "PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
+                "PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
+                "EMAIL": saempl_data.EMAIL,
+                "MEMBER_ID": saempl_data.EMPLOYEE_ID,
+                "MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
+                "MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
+                "QUOTE_ID": quote_object.QUOTE_ID,
+                "QUOTE_RECORD_ID": quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
+                "QTEREV_ID": quote_rev_id,
+                "QTEREV_RECORD_ID": quote_revision_id,
+            }
+            sales_team_table.AddRow(sales_team_createdby_insert)
+            Sql.Upsert(sales_team_table)
+
 try:
     if 'Param' in globals(): 	
         if hasattr(Param, 'CPQ_Columns'):
@@ -109,139 +242,8 @@ try:
                                             c4c_employee_update = "UPDATE SAEMPL SET C4C_EMPLOYEE_ID = '{c4c_employee_id}' WHERE EMPLOYEE_ID = '{employee_id}'".format(c4c_employee_id= employee.get("C4C_EMPLOYEE_ID"),employee_id= employee.get("EMPLOYEE_ID"))
                                             Sql.RunQuery(c4c_employee_update)
                                         salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail)
-                        def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_id,custom_fields_detail):
-                                Sql.RunQuery("""INSERT SAQDLT (
-                                                        C4C_PARTNERFUNCTION_ID,
-                                                        CRM_PARTNERFUNCTION_ID,
-                                                        PARTNERFUNCTION_DESC,
-                                                        PARTNERFUNCTION_ID,
-                                                        PARTNERFUNCTION_RECORD_ID,
-                                                        EMAIL,
-                                                        MEMBER_ID,
-                                                        MEMBER_NAME,
-                                                        MEMBER_RECORD_ID,
-                                                        QUOTE_ID,
-                                                        QUOTE_RECORD_ID,
-                                                        QTEREV_ID,
-                                                        QTEREV_RECORD_ID,
-                                                        QUOTE_REV_DEAL_TEAM_MEMBER_ID,
-                                                        CPQTABLEENTRYADDEDBY,
-                                                        CPQTABLEENTRYDATEADDED,
-                                                        CpqTableEntryModifiedBy, 
-                                                        CpqTableEntryDateModified
-                                                        ) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
-                                                        SELECT DISTINCT  
-                                                        (SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION =
-                                                        CASE '{C4c_partner_function}' 
-                                                        WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
-                                                        WHEN '46' THEN 'SALES EMPLOYEE'
-                                                        WHEN '213' THEN 'PARTNER CONTACT'
-                                                        WHEN 'Z1' THEN 'BD'
-                                                        WHEN 'Z2' THEN 'BD MANAGER'
-                                                        WHEN 'Z3' THEN 'SALES ADMIN'
-                                                        WHEN 'Z4' THEN 'SALES MANAGER'
-                                                        WHEN 'Z5' THEN 'SALES REP'
-                                                        WHEN 'ZCM' THEN 'CONTRACT MANAGER'
-                                                        WHEN 'ZFM' THEN 'FINANCE MANAGER'
-                                                        ELSE 'FOB'
-                                                        END ) AS C4C_PARTNERFUNCTION_ID,
-                                                        (SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
-                                                        WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
-                                                        WHEN '46' THEN 'SALES EMPLOYEE'
-                                                        WHEN '213' THEN 'PARTNER CONTACT'
-                                                        WHEN 'Z1' THEN 'BD'
-                                                        WHEN 'Z2' THEN 'BD MANAGER'
-                                                        WHEN 'Z3' THEN 'SALES ADMIN'
-                                                        WHEN 'Z4' THEN 'SALES MANAGER'
-                                                        WHEN 'Z5' THEN 'SALES REP'
-                                                        WHEN 'ZCM' THEN 'CONTRACT MANAGER'
-                                                        WHEN 'ZFM' THEN 'FINANCE MANAGER'
-                                                        ELSE 'FOB'
-                                                        END ) AS CRM_PARTNERFUNCTION_ID,
-                                                        (SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
-                                                        WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
-                                                        WHEN '46' THEN 'SALES EMPLOYEE'
-                                                        WHEN '213' THEN 'PARTNER CONTACT'
-                                                        WHEN 'Z1' THEN 'BD'
-                                                        WHEN 'Z2' THEN 'BD MANAGER'
-                                                        WHEN 'Z3' THEN 'SALES ADMIN'
-                                                        WHEN 'Z4' THEN 'SALES MANAGER'
-                                                        WHEN 'Z5' THEN 'SALES REP'
-                                                        WHEN 'ZCM' THEN 'CONTRACT MANAGER'
-                                                        WHEN 'ZFM' THEN 'FINANCE MANAGER'
-                                                        ELSE 'FOB'
-                                                        END ) AS PARTNERFUNCTION_DESC,
-                                                        (SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
-                                                        WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
-                                                        WHEN '46' THEN 'SALES EMPLOYEE'
-                                                        WHEN '213' THEN 'PARTNER CONTACT'
-                                                        WHEN 'Z1' THEN 'BD'
-                                                        WHEN 'Z2' THEN 'BD MANAGER'
-                                                        WHEN 'Z3' THEN 'SALES ADMIN'
-                                                        WHEN 'Z4' THEN 'SALES MANAGER'
-                                                        WHEN 'Z5' THEN 'SALES REP'
-                                                        WHEN 'ZCM' THEN 'CONTRACT MANAGER'
-                                                        WHEN 'ZFM' THEN 'FINANCE MANAGER'
-                                                        ELSE 'FOB'
-                                                        END ) AS PARTNERFUNCTION_ID,
-                                                        (SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
-                                                        WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
-                                                        WHEN '46' THEN 'SALES EMPLOYEE'
-                                                        WHEN '213' THEN 'PARTNER CONTACT'
-                                                        WHEN 'Z1' THEN 'BD'
-                                                        WHEN 'Z2' THEN 'BD MANAGER'
-                                                        WHEN 'Z3' THEN 'SALES ADMIN'
-                                                        WHEN 'Z4' THEN 'SALES MANAGER'
-                                                        WHEN 'Z5' THEN 'SALES REP'
-                                                        WHEN 'ZCM' THEN 'CONTRACT MANAGER'
-                                                        WHEN 'ZFM' THEN 'FINANCE MANAGER'
-                                                        ELSE 'FOB'
-                                                        END ) AS PARTNERFUNCTION_RECORD_ID,
-                                                        SAEMPL.EMAIL,
-                                                        SAEMPL.EMPLOYEE_ID,
-                                                        SAEMPL.EMPLOYEE_NAME,
-                                                        SAEMPL.EMPLOYEE_RECORD_ID,
-                                                        '{QuoteId}' as QUOTE_ID,
-                                                        '{QuoteRecordId}' as QUOTE_RECORD_ID,
-                                                        '{RevisionId}' as QTEREV_ID,
-                                                        '{RevisionRecordId}' as QTEREV_RECORD_ID
-                                                        FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
-                                                        ) emp """.format(
-                                                        UserId = User.Id,
-                                                        EmployeeId = employee.get("EMPLOYEE_ID"),
-                                                        C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
-                                                        UserName=User.Name,
-                                                        QuoteId = quote_object.QUOTE_ID,
-                                                        QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
-                                                        RevisionId=quote_rev_id,
-                                                        RevisionRecordId=quote_revision_id,
-                                                        )
-                                                    )
-                                created_by_master_rec = None
-                                created_by_master_rec = Sql.GetFirst("SELECT * FROM SYPFTY (NOLOCK) WHERE C4C_PARTNER_FUNCTION = 'CREATED BY'")
-                                if created_by_master_rec:
-                                    saempl_data = Sql.GetFirst("SELECT * FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = custom_fields_detail.get('EmployeeResponsibleID')))
-                                    saqdlt_data = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
-                                    if not saqdlt_data:
-                                        sales_team_table = Sql.GetTable("SAQDLT")
-                                        sales_team_createdby_insert ={
-                                            "QUOTE_REV_DEAL_TEAM_MEMBER_ID": str(Guid.NewGuid()).upper(),
-                                            "C4C_PARTNERFUNCTION_ID": created_by_master_rec.C4C_PARTNER_FUNCTION,
-                                            "PARTNERFUNCTION_DESC": created_by_master_rec.PARTNERFUNCTION_DESCRIPTION,
-                                            "PARTNERFUNCTION_ID": created_by_master_rec.PARTNERFUNCTION_ID,
-                                            "PARTNERFUNCTION_RECORD_ID": created_by_master_rec.PARTNERFUNCTION_RECORD_ID,
-                                            "EMAIL": saempl_data.EMAIL,
-                                            "MEMBER_ID": saempl_data.EMPLOYEE_ID,
-                                            "MEMBER_NAME": saempl_data.EMPLOYEE_NAME,
-                                            "MEMBER_RECORD_ID": saempl_data.EMPLOYEE_RECORD_ID,
-                                            "QUOTE_ID": quote_object.QUOTE_ID,
-                                            "QUOTE_RECORD_ID": quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
-                                            "QTEREV_ID": quote_rev_id,
-                                            "QTEREV_RECORD_ID": quote_revision_id,
-                                        }
-                                        sales_team_table.AddRow(sales_team_createdby_insert)
-                                        Sql.Upsert(sales_team_table)
-
+                        
+    
 
 except:		
 	Log.Info("CQC4CWBCPQ---->:" + str(sys.exc_info()[1]))
