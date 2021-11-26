@@ -527,6 +527,8 @@ class ConfigUpdateScript:
 
 	#This Function validate recall button is required or not for quote specific.
 	def recall_button_validate(self):
+		getRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(Quote.CompositeNumber))
+		quote_revision_record_id = getRevision.QUOTE_REVISION_RECORD_ID
 		getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(quote_revision_record_id,User.Name,'REJECTED'))
 		return getQuote.CNT
 	
