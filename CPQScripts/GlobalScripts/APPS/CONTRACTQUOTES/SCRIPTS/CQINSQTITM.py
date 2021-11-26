@@ -761,7 +761,7 @@ class ContractQuoteItem:
 	
 		
 	def _insert_quote_item_fpm_forecast_parts(self):
-		Sql.RunQuery("""INSERT SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE ) 
+		Sql.RunQuery("""INSERT SAQIFP (QUOTE_ITEM_FORECAST_PART_RECORD_ID,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED,CpqTableEntryModifiedBy,CpqTableEntryDateModified, PART_DESCRIPTION, PART_NUMBER, PART_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_QUANTITY, QUOTE_ID, QTEITM_RECORD_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, LINE ) 
 			SELECT 
 				CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_FORECAST_PART_RECORD_ID,
 				'{UserName}' AS CPQTABLEENTRYADDEDBY,
@@ -774,7 +774,7 @@ class ContractQuoteItem:
 				SAQSPT.SERVICE_DESCRIPTION,
 				SAQSPT.SERVICE_ID,
 				SAQSPT.SERVICE_RECORD_ID,
-				SAQSPT.QUANTITY,
+				SAQSPT.CUSTOMER_ANNUAL_QUANTITY,
 				SAQSPT.QUOTE_ID,
 				SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,
 				SAQSPT.QUOTE_RECORD_ID,
@@ -782,10 +782,10 @@ class ContractQuoteItem:
 				SAQSPT.QTEREV_RECORD_ID,
 				SAQRIT.LINE
 			FROM SAQSPT (NOLOCK) 
-			JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQSPT.SERVICE_RECORD_ID AND SAQRIT.GREENBOOK_RECORD_ID = SAQSPT.GREENBOOK_RECORD_ID AND SAQRIT.FABLOCATION_RECORD_ID = SAQSPT.FABLOCATION_RECORD_ID 
+			JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQSPT.SERVICE_RECORD_ID 
 			LEFT JOIN SAQIFP (NOLOCK) ON SAQIFP.QUOTE_RECORD_ID = SAQSPT.QUOTE_RECORD_ID AND SAQIFP.QTEREV_RECORD_ID = SAQSPT.QTEREV_RECORD_ID AND SAQIFP.SERVICE_RECORD_ID = SAQSPT.SERVICE_RECORD_ID AND SAQIFP.PART_RECORD_ID = SAQSPT.PART_RECORD_ID 
 			WHERE SAQSPT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSPT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSPT.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQIFP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-	
+		'''
 		Sql.RunQuery("""UPDATE SAQTRV
 						SET 
 						SAQTRV.TARGET_PRICE_INGL_CURR = IQ.TARGET_PRICE_INGL_CURR,
@@ -808,7 +808,7 @@ class ContractQuoteItem:
 									SUM(ISNULL(SAQITM.YEAR_2_INGL_CURR, 0)) as YEAR_2_INGL_CURR						
 									FROM SAQITM (NOLOCK) WHERE SAQITM.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_rec_id}' GROUP BY SAQITM.QTEREV_RECORD_ID, SAQITM.QUOTE_RECORD_ID) IQ ON SAQTRV.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQTRV.QUOTE_REVISION_RECORD_ID = IQ.QTEREV_RECORD_ID
 						WHERE SAQTRV.QUOTE_RECORD_ID = '{quote_rec_id}' AND SAQTRV.QUOTE_REVISION_RECORD_ID = '{quote_revision_rec_id}' 	""".format( quote_rec_id = self.contract_quote_record_id,quote_revision_rec_id = self.contract_quote_revision_record_id ) )
-		
+		'''
 		##calling the iflow for pricing..
 		try:
 			Log.Info("PART PRICING IFLOW STARTED!")
@@ -981,7 +981,7 @@ class ContractQuoteItem:
 					self._quote_items_assembly_entitlement_insert(update=True)
 				
 		# Pricing Calculation - Start
-		quote_line_item_obj = Sql.GetFirst("SELECT EQUIPMENT_LINE_ID FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
+		quote_line_item_obj = Sql.GetFirst("SELECT LINE FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}' AND ISNULL(STATUS,'') = ''".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		if quote_line_item_obj:
 			ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
 			SqlHelper.GetFirst("sp_executesql @T=N'update A SET A.STATUS = (CASE WHEN A.STATUS =''ERROR'' THEN ''ERROR'' WHEN A.STATUS =''PARTIALLY PRICED'' THEN ''ERROR'' END) from SAQRIT A inner join ( select SERVICE_ID,LINE,SAQICO.QUOTE_ID from SAQICO WHERE SAQICO.QUOTE_ID = ''"+str(self.contract_quote_id)+"'' group by SERVICE_ID,LINE,SAQICO.QUOTE_ID Having count(*) > 1 ) as od on od.LINE = A.LINE AND od.SERVICE_ID = A.SERVICE_ID '")
