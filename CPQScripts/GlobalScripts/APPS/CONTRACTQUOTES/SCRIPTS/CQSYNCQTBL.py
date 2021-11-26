@@ -1239,6 +1239,8 @@ class SyncQuoteAndCustomTables:
 					#Log.Info("contact_Info_update "+str(contact_info_update))
 					quote_salesorg_table_info.AddRow(salesorg_data)
 					Sql.Upsert(quote_salesorg_table_info)
+					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 					quote_table_info.AddRow(contract_quote_data)
 					Sql.Upsert(quote_table_info)
 					Sql.Upsert(quote_opportunity_table_info)
