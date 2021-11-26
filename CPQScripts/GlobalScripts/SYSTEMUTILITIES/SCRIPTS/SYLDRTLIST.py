@@ -3700,12 +3700,7 @@ class SYLDRTLIST:
 				
 				##annulaized price
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('ENTPRCIMP_INGL_CURR','ADD_PRICE_IMPACT','PER_EVENT_PMSA_PRICE','ANNUAL_PMSA_PRICE','CEILING_PRICE_MARGIN','TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','DISCOUNT','SALES_PRICE_INGL_CURR'):
-					
 					align = ''
-					#A055S000P01-4401
-					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					# 	rowspan_level1 = 'rowspan="2"'
-					# else:
 					rowspan_level1 = ""
 					if not table_group_columns4:
 						table_header += '<th colspan="9" '+rowspan_level1+'  data-align="center"><div>ANNUALIZED PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="price_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
@@ -3729,12 +3724,7 @@ class SYLDRTLIST:
 				
 				##contractual cost and price
 				elif RECORD_ID == 'SYOBJR-00009' and invs in ('YEAR','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','WARRANTY_START_DATE','WARRANTY_END_DATE','CNTCST_INGL_CURR','CNTPRI_INGL_CURR'):
-					
 					align = ''
-					#A055S000P01-4401
-					# if pricing_picklist_value == 'Pricing' and str(TreeParam) == "Quote Items":
-					# 	rowspan_level1 = 'rowspan="2"'
-					# else:
 					rowspan_level1 = ""
 					if not table_group_columns5:
 						table_header += '<th colspan="8" '+rowspan_level1+'  data-align="center"><div>CONTRACTUAL COSTS AND PRICES<button style="border:none;" class="glyphicon glyphicon-minus-sign" id="contractual_info_column_toggle" onclick="quote_items_column_toggle(this)"></button></div></th>'
@@ -3742,7 +3732,6 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-
 					table_group_columns5 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
