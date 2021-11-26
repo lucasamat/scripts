@@ -2875,6 +2875,7 @@ def Related_Sub_Banner(
         #     sec_rel_sub_bnr += ('<button id="delete_parts" onclick="bulk_del_yes()"  class="btnconfig" disabled = "">DELETE</button>') 
         elif  (str(TreeSuperParentParam).upper() == "PRODUCT OFFERINGS")  and TabName == "Quotes" and str(subTabName)!="Parts List" and str(subTabName)!= "New Parts Only":     
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig hidebtn">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig hidebtn">CANCEL</button>'  )    
+            Trace.Write('### _ Multi_buttons'+str(multi_buttons))
             if str(subTabName)=="PM Events":
                 sec_rel_sub_bnr += str(add_button)
             elif str(subTabName)=="Spare Parts" and str(TreeParentParam)=="Complementary Products":
