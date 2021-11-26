@@ -527,7 +527,7 @@ class ConfigUpdateScript:
 
 	#This Function validate recall button is required or not for quote specific.
 	def recall_button_validate(self):
-		getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(Quote.GetGlobal("quote_revision_record_id"),User.Name,'REJECTED'))
+		getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(quote_revision_record_id,User.Name,'REJECTED'))
 		return getQuote.CNT
 	
 	def ConfiguratorCall(self, keyData_val):
@@ -561,9 +561,10 @@ if hasattr(Param, "keyData_val"):
 	# Changes for sales app primary banner load - start
 	if not keyData_val:
 		try:
-			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
+			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 			if quote_obj:
 				keyData_val = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+				quote_revision_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
 		except Exception:
 			pass
 	# Changes for sales app primary banner load - End
