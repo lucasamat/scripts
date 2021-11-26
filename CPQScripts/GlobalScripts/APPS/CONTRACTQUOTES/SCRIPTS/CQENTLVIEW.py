@@ -354,7 +354,7 @@ class EntitlementView():
 						tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
 			#Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 		
-			#Trace.Write('overall_attribute_list'+str(overall_attribute_list))
+			#Trace.Write('overall_attribute_list---'+str(overall_attribute_list))
 
 
 
