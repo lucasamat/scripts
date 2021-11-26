@@ -11,6 +11,112 @@ import datetime
 Sql = SQL()
 
 def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id,quote_record_id):
+    Log.Info("""INSERT SAQDLT (
+                            C4C_PARTNERFUNCTION_ID,
+                            CRM_PARTNERFUNCTION_ID,
+                            PARTNERFUNCTION_DESC,
+                            PARTNERFUNCTION_ID,
+                            PARTNERFUNCTION_RECORD_ID,
+                            EMAIL,
+                            MEMBER_ID,
+                            MEMBER_NAME,
+                            MEMBER_RECORD_ID,
+                            QUOTE_ID,
+                            QUOTE_RECORD_ID,
+                            QTEREV_ID,
+                            QTEREV_RECORD_ID,
+                            QUOTE_REV_DEAL_TEAM_MEMBER_ID,
+                            CPQTABLEENTRYADDEDBY,
+                            CPQTABLEENTRYDATEADDED,
+                            CpqTableEntryModifiedBy, 
+                            CpqTableEntryDateModified
+                            ) SELECT emp.*, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_DEAL_TEAM_MEMBER_ID,'{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+                            SELECT DISTINCT  
+                            (SELECT TOP 1 C4C_PARTNER_FUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION =
+                            CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS C4C_PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 CRM_PARTNERFUNCTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS CRM_PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 PARTNERFUNCTION_DESCRIPTION FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_DESC,
+                            (SELECT TOP 1 PARTNERFUNCTION_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_ID,
+                            (SELECT TOP 1 PARTNERFUNCTION_RECORD_ID FROM SYPFTY WHERE C4C_PARTNER_FUNCTION  = CASE '{C4c_partner_function}' 
+                            WHEN '39' THEN 'EMPLOYEE RESPONSIBLE'
+                            WHEN '46' THEN 'SALES EMPLOYEE'
+                            WHEN '213' THEN 'PARTNER CONTACT'
+                            WHEN 'Z1' THEN 'BD'
+                            WHEN 'Z2' THEN 'BD MANAGER'
+                            WHEN 'Z3' THEN 'SALES ADMIN'
+                            WHEN 'Z4' THEN 'SALES MANAGER'
+                            WHEN 'Z5' THEN 'SALES REP'
+                            WHEN 'ZCM' THEN 'CONTRACT MANAGER'
+                            WHEN 'ZFM' THEN 'FINANCE MANAGER'
+                            ELSE 'FOB'
+                            END ) AS PARTNERFUNCTION_RECORD_ID,
+                            SAEMPL.EMAIL,
+                            SAEMPL.EMPLOYEE_ID,
+                            SAEMPL.EMPLOYEE_NAME,
+                            SAEMPL.EMPLOYEE_RECORD_ID,
+                            '{QuoteId}' as QUOTE_ID,
+                            '{QuoteRecordId}' as QUOTE_RECORD_ID,
+                            '{RevisionId}' as QTEREV_ID,
+                            '{RevisionRecordId}' as QTEREV_RECORD_ID
+                            FROM SAEMPL WHERE EMPLOYEE_ID = '{EmployeeId}'
+                            ) emp """.format(
+                            UserId = User.Id,
+                            EmployeeId = employee.get("EMPLOYEE_ID"),
+                            C4c_partner_function = employee.get("C4C_PARTNER_FUNCTION"),
+                            UserName=User.Name,
+                            QuoteId = quote_object.QUOTE_ID,
+                            QuoteRecordId=quote_object.MASTER_TABLE_QUOTE_RECORD_ID,
+                            RevisionId=quote_rev_id,
+                            RevisionRecordId=quote_revision_record_id,
+                            ))
     Sql.RunQuery("""INSERT SAQDLT (
                             C4C_PARTNERFUNCTION_ID,
                             CRM_PARTNERFUNCTION_ID,
@@ -159,7 +265,7 @@ if 'Param' in globals():
                         payload_json = eval(payload_json.get('Param'))
                         payload_json = payload_json.get('CPQ_Columns')
                         if payload_json.get('C4C_Opportunity_Object_ID'):
-                            
+                            Log.Info("payload_json.get('C4C_Opportunity_Object_ID')-----"+str(payload_json.get('C4C_Opportunity_Object_ID')))
                             ##To get the opportunity id from the opportunity table by passing opportunity object id receiving from the c4c...
                             opportunity_object =Sql.GetFirst("SELECT OPPORTUNITY_ID FROM SAOPPR(NOLOCK) WHERE C4C_OPPOBJ_ID = '{c4c_opppbj_id}'".format(c4c_opppbj_id = payload_json.get('C4C_Opportunity_Object_ID')) )
                             
@@ -170,6 +276,7 @@ if 'Param' in globals():
                             quote_object = Sql.GetFirst("SELECT QUOTE_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID))
                             
                             ##To delete the SAQDLT table before insert the updated record from c4c...
+                            Log.Info("DELETE FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID,revision_object.QTEREV_RECORD_ID))
                             Sql.RunQuery("DELETE FROM SAQDLT WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(revision_object.QUOTE_RECORD_ID,revision_object.QTEREV_RECORD_ID))
                         if payload_json.get('SAEMPL'):
                             employee = payload_json.get('SAEMPL')
