@@ -606,7 +606,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		objectName = 'SAQSCE'
 		obj_list = ['SAQTSE','SAQSGE','SAQIEN','SAQSAE']
 	if objectName == 'SAQTSE':
-		obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
+		obj_list = ['SAQSGE','SAQSCE','SAQIEN','SAQSAE']
 	# elif objectName == 'SAQSFE':
 	# 	obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
 	# 	is_changed = True
@@ -625,6 +625,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			join =""
 			update_fields = " CPS_CONFIGURATION_ID = '{}', CpqTableEntryModifiedBy = {}, CpqTableEntryDateModified = '{}',CONFIGURATION_STATUS = '{}'".format(getinnercon.CPS_CONFIGURATION_ID,userid,datetimenow,getinnercon.CONFIGURATION_STATUS)
 			if objectName == 'SAQSGE' and obj == 'SAQIEN':
+				Log.Info('628--objectName--'+str(objectName))
 				join = " JOIN SAQICO ON SAQICO.QUOTE_RECORD_ID = SRC.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = SRC.QTEREV_RECORD_ID AND SAQICO.SERVICE_ID = SRC.SERVICE_ID AND SAQICO.FABLOCATION_ID = SRC.FABLOCATION_ID AND SAQICO.GREENBOOK = SRC.GREENBOOK AND TGT.QTEITMCOB_RECORD_ID = SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID "
 			
 			elif obj in ('SAQSAE','SAQIEN') and objectName == 'SAQSCE':
