@@ -3685,7 +3685,20 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns3 += (
+					if str(invs) == 'ADD_COST_IMPACT':
+						table_group_columns3 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-formatter="cost_impact_edit_link" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)
+					else:
+						table_group_columns3 += (
 								'<th data-toggle="bootstrap-table" data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="'
@@ -3695,7 +3708,7 @@ class SYLDRTLIST:
 								+ '" data-sortable="true">'
 								+ str(qstring)
 								+ "</th>"
-							)           
+							)		           
 					continue
 				
 				##annulaized price
@@ -3708,7 +3721,19 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					if str(invs) == 'DISCOUNT':
+					if str(invs) == 'ADD_PRICE_IMPACT':
+						table_group_columns4 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-formatter="price_impact_edit_link" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)
+					elif str(invs) == 'DISCOUNT':
 						table_group_columns4 += (
 									'<th data-toggle="bootstrap-table" data-field="'
 									+ str(invs)
@@ -3744,17 +3769,30 @@ class SYLDRTLIST:
 						align = 'right'
 					elif str(invs) in center_align_list:
 						align = 'center'
-					table_group_columns5 += (
-								'<th data-toggle="bootstrap-table" data-field="'
-								+ str(invs)
-								+ '" data-filter-control="input" data-align="'
-								+ str(align)
-								+'" data-title-tooltsip="'
-								+ str(qstring)
-								+ '" data-sortable="true">'
-								+ str(qstring)
-								+ "</th>"
-							)
+					if str(invs) == 'YEAR_OVER_YEAR':
+						table_group_columns5 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-formatter="yoy_edit_link" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)
+					else:	
+						table_group_columns5 += (
+									'<th data-toggle="bootstrap-table" data-field="'
+									+ str(invs)
+									+ '" data-filter-control="input" data-align="'
+									+ str(align)
+									+'" data-title-tooltsip="'
+									+ str(qstring)
+									+ '" data-sortable="true">'
+									+ str(qstring)
+									+ "</th>"
+								)
 					continue
 				
 				##A055S000P01-4401 
