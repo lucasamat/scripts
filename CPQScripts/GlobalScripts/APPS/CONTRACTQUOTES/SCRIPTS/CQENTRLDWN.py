@@ -854,9 +854,10 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 						#where_condition = where_cond + "AND FABLOCATION_ID = '{}' AND GREENBOOK = '{}' ".format(grnbk.FABLOCATION_ID,grnbk.GREENBOOK)
 						where_condition = where_cond + " AND GREENBOOK = '{}' ".format(grnbk.GREENBOOK)
 						updateentXML = ""
+						get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
 						for value in GetXMLsecField:
 							####value driver
-							get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
+							# get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
 
 							get_value = value.ENTITLEMENT_DISPLAY_VALUE
 							get_cost_impact = value.ENTITLEMENT_COST_IMPACT
@@ -922,6 +923,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					val_coeff = [i.ENTITLEMENT_ID for i in get_coeffi]
 					val_list.extend(val_coeff)
 				#Log.Info("val_list--equp-"+str(val_list))
+				get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
 				for value in GetXMLsecField:
 					get_value = value.ENTITLEMENT_DISPLAY_VALUE
 					get_cost_impact = value.ENTITLEMENT_COST_IMPACT
@@ -930,7 +932,6 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					get_currency = value.PRICE_METHOD
 					get_code = value.ENTITLEMENT_VALUE_CODE
 					####value driver
-					get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
 						
 					#if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid:
 					if (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid) or (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and ('AGS_Z0046_PQB_AP' in value.ENTITLEMENT_ID and 'DESCRIPTION' not in value.ENTITLEMENT_NAME.upper()) and 'Z0091' in get_serviceid):	
