@@ -152,7 +152,7 @@ try:
                 if str(Key).upper() == "QUOTE_ID":
                     quote_id = str(values.Value)
                     if quote_id:
-                        payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = ''".format(quote_id))
+                        payload_json_obj = Sql.GetFirst("SELECT INTEGRATION_PAYLOAD, CpqTableEntryId FROM SYINPL (NOLOCK) WHERE INTEGRATION_KEY = '{}' AND ISNULL(STATUS,'') = '' ORDER BY CpqTableEntryId DESC".format(quote_id))
                         if payload_json_obj:
                             payload_json = eval(payload_json_obj.INTEGRATION_PAYLOAD)
                             payload_json = eval(payload_json.get('Param'))
