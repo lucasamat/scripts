@@ -564,7 +564,7 @@ if hasattr(Param, "keyData_val"):
 			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 			if quote_obj:
 				keyData_val = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
-				quote_revision_record_id = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+				quote_revision_record_id = quote_obj.QTEREV_RECORD_ID
 		except Exception:
 			pass
 	# Changes for sales app primary banner load - End
