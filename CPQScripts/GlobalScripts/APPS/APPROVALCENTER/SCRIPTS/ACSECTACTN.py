@@ -3007,14 +3007,21 @@ class approvalCenter:
 				#if "CURRENCY" not in bodyAPIName:
 				#    bodyAPIName.append("CURRENCY")
 			bodycolumn = str(bodyAPIName).replace("[", "").replace("]", "").replace("'", "")
+			# getcurrentdata = Sql.GetList(
+			# 	"""SELECT {bodycolumn} FROM {testedObj} (NOLOCK)
+			# 	WHERE {iskeyName} = '{ApprovalObjeId}' AND {condition} """.format(
+			# 		bodycolumn=bodycolumn,
+			# 		testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
+			# 		iskeyName=str(iskey.API_NAME),
+			# 		ApprovalObjeId=str(getnotify.APRTRXOBJ_RECORD_ID),
+			# 		condition=str(getnotify.WHERE_CONDITION_01),
+			# 	)
+			# )
 			getcurrentdata = Sql.GetList(
-				"""SELECT {bodycolumn} FROM {testedObj} (NOLOCK)
-				WHERE {iskeyName} = '{ApprovalObjeId}' AND {condition} """.format(
+				"""SELECT {bodycolumn} FROM SAQTMT (NOLOCK)
+				WHERE QTEREV_RECORD_ID ='{quote_rev}' """.format(
 					bodycolumn=bodycolumn,
-					testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
-					iskeyName=str(iskey.API_NAME),
-					ApprovalObjeId=str(getnotify.APRTRXOBJ_RECORD_ID),
-					condition=str(getnotify.WHERE_CONDITION_01),
+					quote_rev = self.quote_revision_record_id,
 				)
 			)
 			if getcurrentdata:
