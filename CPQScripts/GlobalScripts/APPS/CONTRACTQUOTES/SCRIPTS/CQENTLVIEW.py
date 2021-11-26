@@ -339,7 +339,7 @@ class EntitlementView():
 			if product_attributes_obj:
 				for product_attribute_obj in product_attributes_obj:
 					overall_attribute ={}
-					attr_detail = {'attribute_name':str(product_attribute_obj.STANDARD_ATTRIBUTE_NAME), 
+					attr_detail = {'attribute_name':product_attribute_obj.STANDARD_ATTRIBUTE_NAME, 
 								'attribute_label':str(product_attribute_obj.LABEL), 
 								'attribute_system_id':str(product_attribute_obj.SYSTEM_ID),
 								'attribute_dtype':str(product_attribute_obj.ATT_DISPLAY_DESC),
