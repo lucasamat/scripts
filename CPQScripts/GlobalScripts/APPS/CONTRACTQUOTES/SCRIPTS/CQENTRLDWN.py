@@ -605,7 +605,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 		objectName = 'SAQSCE'
 		obj_list = ['SAQTSE','SAQSGE','SAQIEN','SAQSAE']
 	if objectName == 'SAQTSE':
-		obj_list = ['SAQSGE','SAQSCE','SAQIEN','SAQSAE']
+		obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
 	# elif objectName == 'SAQSFE':
 	# 	obj_list = ['SAQSCE','SAQSGE','SAQIEN','SAQSAE']
 	# 	is_changed = True
