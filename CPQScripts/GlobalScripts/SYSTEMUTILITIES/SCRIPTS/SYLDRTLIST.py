@@ -2096,7 +2096,7 @@ class SYLDRTLIST:
 								service_id = TreeParam.split('-')[0]		
 								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"	
 							elif TopTreeSuperParentParam == "Product Offerings":
-								service_id = TreeSuperParentParam.split('-')[0]
+								service_id = TreeParentParam.split('-')[0]
 								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
@@ -7009,7 +7009,7 @@ class SYLDRTLIST:
 							service_id = TreeParam.split('-')[0]		
 							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' "	
 						elif TopTreeSuperParentParam == "Product Offerings":
-							service_id = TreeSuperParentParam.split('-')[0]
+							service_id = TreeParentParam.split('-')[0]
 							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						#Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 					else:    
