@@ -914,10 +914,10 @@ class ContractQuoteItem:
 				self._insert_quote_item_forecast_parts()
 				self._quote_annualized_items_insert()
 			elif self.is_fpm_spare_service == True:				
-				# Spare Parts Insert/Update
-				self._quote_items_insert()
+				# Spare Parts Insert/Update (Z0108)
+				self._simple_quote_items_insert()
 				self._insert_quote_item_fpm_forecast_parts()
-				self._quote_annualized_items_insert()
+				self._simple_quote_annualized_items_insert()
 			elif self.is_simple_service == True:
 				self._simple_quote_items_insert()
 				self._simple_items_object_insert()
