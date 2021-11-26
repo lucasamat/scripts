@@ -2236,7 +2236,9 @@ class Entitlements:
 
 	def Rolldown(self):
 		configuration_status =''
-		Trace.Write("Newdict------523----> "+str(Newdict))
+		Trace.Write("treeparentparam----ROLL DOWN IN CQ--523----> "+str(treeparentparam))
+		Trace.Write("treesuperparentparam----ROLL DOWN IN CQ--523----> "+str(treesuperparentparam))
+		Trace.Write("treeparam----ROLL DOWN IN CQ--523----> "+str(treeparam))
 		try:
 			Log.Info("Newdict-----745---> "+str(Newdict))
 			AttributeList = ','.join(map(str, Newdict))
