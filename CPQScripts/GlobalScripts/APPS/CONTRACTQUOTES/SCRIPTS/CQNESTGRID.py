@@ -4856,7 +4856,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"' and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ")
 		elif TreeParentParam == 'Comprehensive Services' or TreeParentParam == "Complementary Products":
 			parent_obj = Sql.GetList(
-				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,TKM_FLAG,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,CpqTableEntryId from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)            
 				+ "' and QTEREV_RECORD_ID = '"
 				+ str(RevisionRecordId)
@@ -4869,8 +4869,6 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 				+ "' AND SERVICE_ID = '"+str(TreeParam)+"' ")
 		if Count:
 			QueryCount = Count.cnt
-
-
 	else:
 		#Trace.Write("conditional searh --->")
 		if TreeTopSuperParentParam == "Comprehensive Services" or TreeTopSuperParentParam == "Complementary Products":
@@ -4894,7 +4892,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 			
 		elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 			parent_obj = Sql.GetList(
-				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
+				"select top "+str(PerPage)+" QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_NAME,KIT_NUMBER,PM_ID,PM_LABOR_LEVEL,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY,TKM_FLAG from SAQSAP (NOLOCK) where "
 				+ str(ATTRIBUTE_VALUE_STR)
 				+ " 1=1 and QUOTE_RECORD_ID = '"
 				+ str(ContractRecordId)
@@ -4940,6 +4938,11 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		data_dict["KIT_ID"] = str(par.KIT_ID)
 		data_dict["KIT_NAME"] = str(par.KIT_NAME)
 		data_dict["KIT_NUMBER"] = str(par.KIT_NUMBER)
+		data_dict["EQUIPMENT_DESCRIPTION"] = str(par.EQUIPMENT_DESCRIPTION)
+		data_dict["EQUIPMENT_ID"] = str(par.EQUIPMENT_ID)
+		data_dict["SERIAL_NO"] = str(par.SERIAL_NO)
+		data_dict["GOT_CODE"] = str(par.GOT_CODE)
+		data_dict["ASSEMBLY_ID"] = str(par.ASSEMBLY_ID)
 		data_dict["PM_ID"] = str(par.PM_ID)
 		data_dict["PM_NAME"] = str(par.PM_NAME)
 		data_dict["PM_LABOR_LEVEL"] = str(par.PM_LABOR_LEVEL)
@@ -4947,7 +4950,6 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		data_dict["SSCM_PM_FREQUENCY"] = str(par.SSCM_PM_FREQUENCY)
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
-
 		data_list.append(data_dict)
 
 	page = ""
