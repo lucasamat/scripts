@@ -863,12 +863,13 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 							get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 							get_calc_factor = value.CALCULATION_FACTOR
 							get_currency = value.PRICE_METHOD
+							get_code = value.ENTITLEMENT_VALUE_CODE
 							#if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid:
 
 							if (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid) or (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and ('AGS_Z0046_PQB_AP' in value.ENTITLEMENT_ID and 'DESCRIPTION' not in value.ENTITLEMENT_NAME.upper()) and 'Z0091' in get_serviceid):	
 								
 								if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE and value.ENTITLEMENT_ID in grnbk_dict.keys() :
-									get_val = float(grnbk_dict[value.ENTITLEMENT_ID]) * float(grnbk.cnt)
+									get_code = get_val = float(grnbk_dict[value.ENTITLEMENT_ID]) * float(grnbk.cnt)
 									if value.ENTITLEMENT_COST_IMPACT and get_value and 'Z0016' in get_serviceid:
 										get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
 									else:
@@ -876,7 +877,6 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 									get_calc_factor = get_value = round(get_val,2)
 							
 							get_desc = value.ENTITLEMENT_DESCRIPTION
-							get_code = value.ENTITLEMENT_VALUE_CODE
 							###updating exisitng value for non editable value drivers
 							if val_list and get_previous_xml and  value.ENTITLEMENT_ID in val_list:
 								#Log.Info("value driver--"+str(value.ENTITLEMENT_ID))
@@ -928,13 +928,14 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 					get_price_impact = value.ENTITLEMENT_PRICE_IMPACT
 					get_calc_factor = value.CALCULATION_FACTOR
 					get_currency = value.PRICE_METHOD
+					get_code = value.ENTITLEMENT_VALUE_CODE
 					####value driver
 					get_previous_xml = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM {} {}".format(obj, where_condition))
 						
 					#if value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid:
 					if (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and 'AGS_LAB_OPT' in value.ENTITLEMENT_ID and 'Z0016' in get_serviceid) or (value.ENTITLEMENT_TYPE == 'FreeInputNoMatching' and ('AGS_Z0046_PQB_AP' in value.ENTITLEMENT_ID and 'DESCRIPTION' not in value.ENTITLEMENT_NAME.upper()) and 'Z0091' in get_serviceid):	
 						if get_value_query and value.ENTITLEMENT_DISPLAY_VALUE:
-							get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
+							get_code = get_val = float(value.ENTITLEMENT_DISPLAY_VALUE) / float(get_value_query.cnt)
 							grnbk_dict[value.ENTITLEMENT_ID] = get_val
 							if value.ENTITLEMENT_COST_IMPACT and get_val and 'Z0016' in get_serviceid:
 								get_price_impact = get_val * float(value.ENTITLEMENT_COST_IMPACT)
@@ -942,7 +943,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 								get_price_impact = 0.00
 							get_calc_factor = get_value = round(get_val,2)
 					get_desc = value.ENTITLEMENT_DESCRIPTION
-					get_code = value.ENTITLEMENT_VALUE_CODE
+					
 					###updating exisitng value for non editable value drivers
 					if val_list and get_previous_xml and  value.ENTITLEMENT_ID in val_list:
 						get_val_list =re.findall(r''+str(value.ENTITLEMENT_ID)+'<[\w\W]*?</ENTITLEMENT_DISPLAY_VALUE>',get_previous_xml.ENTITLEMENT_XML)
