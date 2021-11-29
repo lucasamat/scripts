@@ -553,7 +553,7 @@ def Related_Sub_Banner(
                 query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
                 PrimaryLable = "Product Offering ID"
                 PrimaryValue = str(query_result.SERVICE_ID)
-                SecondaryLable = "Product Offering Description"
+                SecondLable = "Product Offering Description"
                 SecondValue = str(query_result.SERVICE_DESCRIPTION)
                 ThirdLable = "Fab Location ID"
                 ThirdValue = str(query_result.FABLOCATION_ID)
