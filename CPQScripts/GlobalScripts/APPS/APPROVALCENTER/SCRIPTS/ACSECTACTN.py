@@ -2937,7 +2937,7 @@ class approvalCenter:
 				ON ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
 				INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID
 				INNER JOIN {approvalObj} (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = {approvalObj}.{iskeyName}
-				INNER JOIN SAQTSV(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTSV.QTEREV_RECORD_ID 
+				LEFT JOIN SAQTSV(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTSV.QTEREV_RECORD_ID 
 				INNER JOIN SAQTMT (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID		
 				INNER JOIN SAQTIP(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTIP.QTEREV_RECORD_ID 
 				WHERE {wherecondition} """.format(
@@ -2971,14 +2971,14 @@ class approvalCenter:
 					GETDATE = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_FROM, 101) as A FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
 					if GETDATE:
 						values=str(GETDATE.A)
-				# elif str(eachsplit[1]) == "CONTRACT_VALID_TO" :
-				# 	GETDATES = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_TO, 101) as B FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
-				# 	if GETDATES:
-				# 		values=str(GETDATES.B)
-				# elif str(eachsplit[1]) == "OBJECT_QUANTITY":
-				# 	GETFPM = Sql.GetFirst("SELECT CAST(OBJECT_QUANTITY AS INT) AS C FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
-				# 	if GETFPM:
-				# 		values=str(GETFPM.C)
+				elif str(eachsplit[1]) == "CONTRACT_VALID_TO" :
+					GETDATES = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_TO, 101) as B FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
+					if GETDATES:
+						values=str(GETDATES.B)
+				elif str(eachsplit[1]) == "OBJECT_QUANTITY":
+					GETFPM = Sql.GetFirst("SELECT CAST(OBJECT_QUANTITY AS INT) AS C FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if GETFPM:
+						values=str(GETFPM.C)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
