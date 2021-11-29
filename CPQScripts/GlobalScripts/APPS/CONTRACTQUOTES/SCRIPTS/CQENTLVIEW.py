@@ -807,10 +807,10 @@ class EntitlementView():
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write('766---ObjectName-----'+str(overallattributeslist_visible))
 			Trace.Write(str(inserted_value_list)+'----802-----overallattributeslist_visible----'+str(overallattributeslist_visible))
-			if self.treeparam == "Quote Items":
-				get_attr_leve_based_list = overallattributeslist_visible
-			else:
-				get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
+			#if self.treeparam == "Quote Items":
+				#get_attr_leve_based_list = overallattributeslist_visible
+			#else:
+			get_attr_leve_based_list = ScriptExecutor.ExecuteGlobal("CQENTLNVAL", {'where_cond':where,'partnumber':ProductPartnumber,'ent_level_table':ObjectName,'inserted_value_list':inserted_value_list,'action':'get_from_prenli'})
 			
 			Trace.Write('---766---get_attr_leve_based_list-----'+str(list(get_attr_leve_based_list)))
 			for val in GetXMLsecField:
