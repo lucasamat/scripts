@@ -549,7 +549,16 @@ def Related_Sub_Banner(
             elif TreeParam =="Sales Team":
                 PrimaryLable = "Sales Team"
                 PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
-                  
+            elif TreeParam == "Quote Items" and str(subTabName)=="Entitlements" and str(CurrentRecordId) == "SYOBJR-00010":
+                query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
+                PrimaryLable = "Product Offering ID"
+                PrimaryValue = str(query_result.SERVICE_ID)
+                SecondaryLable = "Product Offering Description"
+                SecondValue = str(query_result.SERVICE_DESCRIPTION)
+                ThirdLable = "Fab Location ID"
+                ThirdValue = str(query_result.FABLOCATION_ID)
+                FourthLable = "Greenbook"
+                FourthValue =  str(query_result.GREENBOOK)
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
