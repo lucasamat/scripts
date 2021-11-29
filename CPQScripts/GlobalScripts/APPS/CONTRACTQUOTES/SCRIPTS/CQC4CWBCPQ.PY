@@ -229,7 +229,7 @@ def salesteam_insert(employee,quote_object,quote_rev_id,quote_revision_record_id
     if created_by_master_rec:
         salesteam_object = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CREATED BY'".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
         if not salesteam_object:
-            quote_employee_obj = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' ".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
+            quote_employee_obj = Sql.GetFirst("SELECT MEMBER_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'EMPLOYEE RESPONSIBLE' ".format(quote_object.MASTER_TABLE_QUOTE_RECORD_ID))
             if quote_employee_obj is not None:
                 employee_object = Sql.GetFirst("SELECT EMAIL,EMPLOYEE_ID,EMPLOYEE_NAME,EMPLOYEE_RECORD_ID FROM SAEMPL (NOLOCK) WHERE EMPLOYEE_ID = '{EmployeeId}'".format(EmployeeId = quote_employee_obj.MEMBER_ID))
                 sales_team_table = Sql.GetTable("SAQDLT")
