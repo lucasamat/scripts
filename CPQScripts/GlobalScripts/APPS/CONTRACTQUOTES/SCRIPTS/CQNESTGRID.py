@@ -3966,6 +3966,10 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModal_Material_Delete" data-toggle="modal" onclick="Material_delete_obj(this)" href="#">DELETE</a></li>'
 		Action_str += "</ul></div></div>"
 
+
+		decimal_place = 2 
+		my_format = "{:,." + str(decimal_place) + "f}"
+		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
 		# Data formation in dictonary format.
 		## hyperlink
 		data_dict = {}
@@ -3987,7 +3991,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["PM_NAME"] = str(par.PM_NAME)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
-		data_dict["SSCM_PM_FREQUENCY"] = str(par.SSCM_PM_FREQUENCY)
+		data_dict["SSCM_PM_FREQUENCY"] = str(original_PM_frequency)
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_list.append(data_dict)
 
