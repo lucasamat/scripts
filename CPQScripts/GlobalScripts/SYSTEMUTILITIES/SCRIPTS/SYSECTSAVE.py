@@ -757,7 +757,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
 							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
 							newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
-						if sect_name == "PRICING INFORMATION":
 							exchange_rate_type = newdict.get("EXCHANGE_RATE_TYPE")
 							exchange_rate_object = Sql.GetFirst("SELECT  EXCHANGE_RATE ,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_RECORD_ID FROM PREXRT(NOLOCK) WHERE FROM_CURRENCY = '{}' AND TO_CURRENCY = '{}' AND EXCHANGE_RATE_TYPE = '{}' ".format(newdict.get("EXCHANGE_RATE_TYPE"),newdict.get("DOC_CURRENCY"),newdict.get("EXCHANGE_RATE_TYPE")))
 							if exchange_rate_object:
@@ -766,7 +765,6 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 								newdict["EXCHANGERATE_RECORD_ID"] = exchange_rate_object.EXCHANGE_RATE_RECORD_ID or ""
 						tablerow = newdict
 						Trace.Write("SAQTRV UPSERT"+str(tablerow))
-						Trace.Write("sect_name sect_name"+str(sect_name))
 						tableInfo.AddRow(tablerow)
 						Trace.Write("TEZTZ--475---"+str(tablerow))
 						Sql.Upsert(tableInfo)				
