@@ -3970,6 +3970,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		decimal_place = 2 
 		my_format = "{:,." + str(decimal_place) + "f}"
 		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
+		Trace.Write("original_PM_frequency_J"+str(original_PM_frequency))
 		# Data formation in dictonary format.
 		## hyperlink
 		data_dict = {}
