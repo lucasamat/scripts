@@ -1215,8 +1215,6 @@ def Related_Sub_Banner(
                     PrimaryValue = str(TreeParentParam)
                     SecondLable = "Product Offering Description"
                     SecondValue = getService.SERVICE_DESCRIPTION
-                    ThirdLable = "Fab Location ID"
-                    ThirdValue = str(TreeParentParam)
                     FourthLable = "Greenbooks"
                     FourthValue = str(TreeParam)
                     FifthLable = "Equipment"
