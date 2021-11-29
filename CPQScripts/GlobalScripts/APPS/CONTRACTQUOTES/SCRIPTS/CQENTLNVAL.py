@@ -65,7 +65,28 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	elif ent_level_table == "SAQSFE":
 		level_name = 'OFFERING FAB LEVEL'
 	elif ent_level_table == "SAQITE":
+		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where {where_condition}".format(where_condition= where))
+		flag_excluse=0
+		get_service_val ='Z0046'
+		#condition based on quote item strcuture start
+		if get_entitlement_qt_item_sctructure:
+			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
+			updateentXML = get_billing_cycle.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_QTITST)</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id = re.findall(pattern_id,sub_string)
+				get_ent_val= re.findall(pattern_name,sub_string)
+				if get_ent_id:
+					Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
+					get_ent_val = str(get_ent_val[0])
+					flag_excluse=1
+					break
+		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
 		level_name = 'OFFERING LEVEL'
+		#condition based on quote item strcuture end
 	elif ent_level_table == "SAQSGE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK LEVEL'
