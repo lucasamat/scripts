@@ -559,6 +559,8 @@ def Related_Sub_Banner(
                 ThirdValue = str(query_result.FABLOCATION_ID)
                 FourthLable = "Greenbook"
                 FourthValue =  str(query_result.GREENBOOK)
+                FifthLable = "Equipment ID"
+                FifthValue = str(query_result.OBJECT_ID)
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
