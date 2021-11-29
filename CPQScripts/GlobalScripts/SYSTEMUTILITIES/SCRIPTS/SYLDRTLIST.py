@@ -2100,7 +2100,7 @@ class SYLDRTLIST:
 								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
-						if str(RECORD_ID) == "SYOBJR-98874":
+						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825"):
 							Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
