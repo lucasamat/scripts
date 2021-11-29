@@ -35,7 +35,7 @@ class EntitlementView():
 	):
 		quoteid = self.contract_quote_record_id
 		cpsConfigID = get_last_secid = get_tooltip = ''
-		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ""
+		msg_txt = insertservice  = sec_str_boot = sec_bnr = imgstr = dbl_clk_function = getprevdicts = sec_str_cf = sec_str1 = getTlab = getquote_sales_val = ent_temp = ""
 		tablistnew =  []
 		TableObj = ""
 		ChangedList = totaldisallowlist = section_not_list = []
