@@ -757,8 +757,10 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							newdict["TARGET_PRICE_INGL_CURR"] = re.sub('USD','',newdict["TARGET_PRICE_INGL_CURR"])
 							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
 							newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
+						
 						tablerow = newdict
 						Trace.Write("SAQTRV UPSERT"+str(tablerow))
+						Trace.Write("sect_name sect_name"+str(sect_name))
 						tableInfo.AddRow(tablerow)
 						Trace.Write("TEZTZ--475---"+str(tablerow))
 						Sql.Upsert(tableInfo)				
