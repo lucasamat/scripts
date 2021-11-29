@@ -758,7 +758,7 @@ def MaterialSave(ObjectName, RECORD, warning_msg, SectionRecId=None,subtab_name=
 							newdict["NET_VALUE_INGL_CURR"] = re.sub('USD','',newdict["NET_VALUE_INGL_CURR"])
 							newdict["DISCOUNT_AMOUNT_INGL_CURR"] = re.sub('USD','',newdict["DISCOUNT_AMOUNT_INGL_CURR"])
 							exchange_rate_type = newdict.get("EXCHANGE_RATE_TYPE")
-							exchange_rate_object = Sql.GetFirst("SELECT  EXCHANGE_RATE ,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_RECORD_ID FROM PREXRT(NOLOCK) WHERE FROM_CURRENCY = '{}' AND TO_CURRENCY = '{}' AND EXCHANGE_RATE_TYPE = '{}' ".format(newdict.get("EXCHANGE_RATE_TYPE"),newdict.get("DOC_CURRENCY"),newdict.get("EXCHANGE_RATE_TYPE")))
+							exchange_rate_object = Sql.GetFirst("SELECT  EXCHANGE_RATE,EXCHANGE_RATE_BEGIN_DATE,EXCHANGE_RATE_RECORD_ID FROM PREXRT(NOLOCK) WHERE FROM_CURRENCY = '{}' AND TO_CURRENCY = '{}' AND EXCHANGE_RATE_TYPE = '{}' ".format(newdict.get("GLOBAL_CURRENCY"),newdict.get("DOC_CURRENCY"),newdict.get("EXCHANGE_RATE_TYPE")))
 							if exchange_rate_object:
 								newdict["EXCHANGE_RATE"] = exchange_rate_object.EXCHANGE_RATE or ""
 								newdict["EXCHANGE_RATE_DATE"] = exchange_rate_object.EXCHANGE_RATE_BEGIN_DATE or ""
