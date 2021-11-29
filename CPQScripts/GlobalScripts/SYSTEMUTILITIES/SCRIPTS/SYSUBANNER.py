@@ -1205,14 +1205,12 @@ def Related_Sub_Banner(
                         # FourthValue = get_val.FABLOCATION_ID
                         # FifthLable = "Equipment"
                         # FifthValue = "ALL" 
-                if (TreeSuperTopParentParam == "Product Offerings") and subTabName == "Parts List":
-                    Trace.Write("Parts==list==") 
+                if (TopSuperParentParam == "Product Offerings") and subTabName == "Parts List":
                     try:
                         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
                         desc = getService.SERVICE_DESCRIPTION
                     except:
                         desc = ""
-                    Trace.Write("Line No:1201 - Testing")
                     PrimaryLable = "Product Offering ID"
                     PrimaryValue = str(TreeSuperParentParam)
                     SecondLable = "Product Offering Description"
