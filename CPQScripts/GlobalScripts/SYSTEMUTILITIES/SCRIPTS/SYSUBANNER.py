@@ -2026,12 +2026,10 @@ def Related_Sub_Banner(
                 ThirdValue = item_detail.FABLOCATION_ID
                 FourthLable = "Fab Location Name"
                 FourthValue = item_detail.FABLOCATION_NAME
-                FifthLable = "Total Excluding Tax/VAT"
-                FifthValue = str("%.2f" % round(float(item_detail.TAX_AMOUNT_INGL_CURR),2)) if str(item_detail.TAX_AMOUNT_INGL_CURR) != '' else ''
-                SixthLable = "Start Date"
-                SixthValue =  valid_from
-                SeventhLable = "End Date"
-                SeventhValue = valid_date        
+                FifthLable = "Start Date"
+                FifthValue = valid_from
+                SixthLable = "End Date"
+                SixthValue =  valid_date        
     elif TreeParam == 'Cart Items':
         PrimaryLable = "Cart Items"
         PrimaryValue = "ALL"
