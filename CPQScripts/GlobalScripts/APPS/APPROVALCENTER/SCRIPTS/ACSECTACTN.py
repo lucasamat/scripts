@@ -1114,7 +1114,7 @@ class approvalCenter:
 			retrunRecall = violationruleInsert.InsertAction(
 				Objh_Id, str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), "RECALL"
 			)
-			
+			Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APRCHNSTP_ID != 1 AND ARCHIVED = 0 AND APRTRXOBJ_ID = '{}' ".format(Quote.CompositeNumber))
 			approval_id_without_auto_inc = '-'.join((GetCurStatus.APPROVAL_ID).split('-')[0:-1])
 			Sql.RunQuery("""UPDATE ACAPTX SET APPROVALSTATUS = IQ.APPROVALSTATUS, APPROVED_BY = IQ.APPROVED_BY,
 												APPROVEDBY_RECORD_ID = IQ.APPROVEDBY_RECORD_ID,
@@ -1142,8 +1142,8 @@ class approvalCenter:
 											FROM ACAPTX (NOLOCK) INNER JOIN ACACST (NOLOCK) 
 											ON ACAPTX.APRCHN_RECORD_ID = ACACST.APRCHN_RECORD_ID 
 											AND ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID 
-											WHERE ACAPTX.APPROVAL_RECORD_ID = '{approval_rec_id}' AND ACACST.ENABLE_SMARTAPPROVAL = 0 AND APRCHNSTP_ID != '1' AND ARCHIVED = 0 """.format(approval_rec_id = 
-											ele.APPROVAL_RECORD_ID))
+											WHERE ACAPTX.APRTRXOBJ_ID = '{approval_rec_id}' AND ACACST.ENABLE_SMARTAPPROVAL = 0 AND ACAPTX.APRCHNSTP_ID != '1' AND ACAPTX.ARCHIVED = 0 """.format(approval_rec_id = 
+											Quote.CompositeNumber))
 					Sql.RunQuery("""UPDATE ACAPTX SET RECIPIENT_COMMENTS = '' WHERE APPROVAL_RECORD_ID = '{}'
 											AND APPROVALSTATUS = 'APPROVAL REQUIRED' AND ARCHIVED = 0""".format(
 											ele.APPROVAL_RECORD_ID))
