@@ -66,10 +66,16 @@ def equipment_predefined():
 		entxmldict = {}
 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+		entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+		display_val_dict = {}
 		updateentXML = rec.ENTITLEMENT_XML
 		for m in re.finditer(pattern_tag, updateentXML):
 			sub_string = m.group(1)
 			x=re.findall(pattern_name,sub_string)
+			if x:
+				entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,sub_string)
+				if entitlement_display_value_tag_match:
+					display_val_dict[x[0]] = entitlement_display_value_tag_match[0].upper()
 			entxmldict[x[0]]=sub_string
 		for val in get_valuedriver_ids:
 			Trace.Write("vallls"+str(val.ENTITLEMENT_DESCRIPTION.upper()))
@@ -81,6 +87,20 @@ def equipment_predefined():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
+			elif 'CONTRACT COVERAGE & RESPONSE TIME' in val.ENTITLEMENT_DESCRIPTION.upper():	
+				response_time = ""
+				coverage_time = ""
+				if "AGS_"+str(TreeParam)+"_CVR_CNTCOV" in display_val_dict.keys():
+					coverage_time = display_val_dict["AGS_"+str(TreeParam)+"_CVR_CNTCOV"]
+				if "AGS_"+str(TreeParam)+"_CVR_RSPTIM" in display_val_dict.keys():
+					response_time = display_val_dict["AGS_"+str(TreeParam)+"_CVR_RSPTIM"]
+				if coverage_time and response_time:
+					#COVERAGE 7X12 / RESPONSE 8
+					ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time,response_time.split(' ')[0] )
+					if ent_value:
+						Trace.Write("inside11")
+						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+					Trace.Write("contract cov-"+str(coverage_time)+'---'+str(response_time)+'--'+str(ent_value))
 			elif 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
 				Trace.Write("csa")
 				ent_value = ""
@@ -147,8 +167,6 @@ def greenbook_predefined():
 		##rolldown
 		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
-			
-
 
 def fab_predefined():
 	getxml_query = Sql.GetList("""SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQSFE {}""".format(str(where_condition) ))
@@ -226,6 +244,7 @@ def service_level_predefined():
 	
 	
 def updating_xml(entxmldict, input_xml, ent_id, ent_value):
+	Trace.Write("inside")
 	where =""
 	if ent_value:
 		get_value_code = Sql.GetFirst("SELECT ENTITLEMENT_VALUE_CODE FROM PRENVL WHERE ENTITLEMENT_ID ='{}' AND SERVICE_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(ent_id, TreeParam, ent_value) )
