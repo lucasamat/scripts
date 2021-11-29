@@ -96,7 +96,7 @@ def equipment_predefined():
 					response_time = display_val_dict["AGS_"+str(TreeParam)+"_CVR_RSPTIM"]
 				if coverage_time and response_time:
 					#COVERAGE 7X12 / RESPONSE 8
-					ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time,response_time.split(' ')[0] )
+					ent_value = "COVERAGE {} / RESPONSE {}".format(coverage_time.replace("X","x"),response_time.split(' ')[0] )
 					if ent_value:
 						Trace.Write("inside11")
 						updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
@@ -307,7 +307,7 @@ def valuedriver_onchage():
 			update=Sql.GetFirst("Select ENTITLEMENT_DISPLAY_VALUE,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_COEFFICIENT FROM PRENVL WHERE ENTITLEMENT_DISPLAY_VALUE LIKE '%{uptime}%' AND SERVICE_ID = '{dynamic_service}'".format(uptime=uptime,dynamic_service=dynamic_service))
 			for key in entxmldict.keys():
 				if uptime_coeff == key:
-					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_DISPLAY_VALUE)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_coeff])
+					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_DISPLAY_VALUE>[^>]*?</ENTITLEMENT_DISPLAY_VALUE>','<ENTITLEMENT_DISPLAY_VALUE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_DISPLAY_VALUE>',entxmldict[uptime_coeff])
 					entxmldict[uptime_coeff] = re.sub('<ENTITLEMENT_VALUE_CODE>[^>]*?</ENTITLEMENT_VALUE_CODE>','<ENTITLEMENT_VALUE_CODE>'+str(update.ENTITLEMENT_COEFFICIENT)+'</ENTITLEMENT_VALUE_CODE>',entxmldict[uptime_coeff])
 					querystring = querystring + entxmldict[uptime_coeff]
 				elif uptime_key == key:
