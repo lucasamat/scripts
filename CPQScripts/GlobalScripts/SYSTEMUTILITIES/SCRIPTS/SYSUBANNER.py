@@ -2007,12 +2007,10 @@ def Related_Sub_Banner(
             PrimaryValue =  item_detail.SERVICE_ID
             SecondLable = "Quantity"
             SecondValue = item_detail.QUANTITY
-            ThirdLable = "Total Excluding Tax/VAT"
-            ThirdValue = str("%.2f" % round(float(item_detail.TAX_AMOUNT_INGL_CURR),2)) if str(item_detail.TAX_AMOUNT_INGL_CURR) != '' else ''
-            FourthLable = "Contract Start Date"
-            FourthValue = valid_from
-            FifthLable = "Contract End Date"
-            FifthValue = valid_date 
+            ThirdLable = "Contract Start Date"
+            ThirdValue = valid_from
+            FourthLable = "Contract End Date"
+            FourthValue = valid_date
         if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
             Trace.Write("SAQRIT-DETAIL333===")            
             if item_detail:
