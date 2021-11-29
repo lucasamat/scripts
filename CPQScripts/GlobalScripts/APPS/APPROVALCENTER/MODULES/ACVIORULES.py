@@ -570,7 +570,7 @@ class ViolationConditions:
                         # Approval Rounding - End
 
                         CheckViolaionRule2 = Sql.GetList(
-                            "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
+                            "SELECT ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
                             + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
                             + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                             + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
@@ -650,8 +650,14 @@ class ViolationConditions:
                                     )
                                     if method is None:
                                         where_conditon += " AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
+                                        flag = 0
                                     else:
                                         where_conditon += " AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
+                                        if result.APPROVAL_METHOD == "SERIES STEP APPROVAL":
+                                            flag = 1
+                                        else:
+                                            flag = 0
+
                                     where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
                                     APPRO.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID,ACACST.APRCHNSTP_NUMBER ,
@@ -666,7 +672,9 @@ class ViolationConditions:
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
                                     Log.Info("ACAPTX Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
-
+                                    #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
+                                    if flag == 1:
+                                        Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
                                     GetTrackedFields = Sql.GetList(
                                         """SELECT APPROVAL_TRACKED_FIELD_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
 										INNER JOIN SYOBJD (NOLOCK)
