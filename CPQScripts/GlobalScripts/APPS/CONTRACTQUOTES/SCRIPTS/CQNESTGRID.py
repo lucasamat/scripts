@@ -4935,6 +4935,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		decimal_place = 2 
 		my_format = "{:,." + str(decimal_place) + "f}"
 		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
+		Trace.Write("original_PM_frequency_J"+str(original_PM_frequency))
 
 		data_dict["ACTIONS"] = str(Action_str)
 		data_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId("SAQSAP", str(par.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
