@@ -672,9 +672,9 @@ class ViolationConditions:
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
                                     Log.Info("ACAPTX Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
-                                    #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
-                                    if flag == 1:
-                                        Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
+                                    # #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
+                                    # if flag == 1:
+                                    #     Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
                                     GetTrackedFields = Sql.GetList(
                                         """SELECT APPROVAL_TRACKED_FIELD_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
 										INNER JOIN SYOBJD (NOLOCK)
