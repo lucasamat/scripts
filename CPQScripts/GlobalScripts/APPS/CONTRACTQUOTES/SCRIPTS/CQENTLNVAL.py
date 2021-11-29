@@ -71,6 +71,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		#condition based on quote item strcuture start
 		if get_entitlement_qt_item_sctructure:
 			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
+			get_ent_val = ''
 			updateentXML = get_billing_cycle.ENTITLEMENT_XML
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_QTITST)</ENTITLEMENT_ID>')
@@ -85,7 +86,10 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 					flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		level_name = 'OFFERING LEVEL'
+		if get_ent_val == "OFFERING + EQUIPMENT"
+			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
+		else:
+			level_name = 'OFFERING LEVEL'
 		#condition based on quote item strcuture end
 	elif ent_level_table == "SAQSGE":
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
