@@ -4931,6 +4931,11 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 			Action_str += '<li><a class="dropdown-item" data-target="#" data-toggle="modal" onclick="Material_clone_obj(this)" href="#">CLONE</a></li>'
 
 		Action_str += "</ul></div></div>"
+
+		decimal_place = 2 
+		my_format = "{:,." + str(decimal_place) + "f}"
+		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
+
 		data_dict["ACTIONS"] = str(Action_str)
 		data_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId("SAQSAP", str(par.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
 		data_dict["KIT_ID"] = str(par.KIT_ID)
@@ -4944,7 +4949,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		data_dict["PM_ID"] = str(par.PM_ID)
 		data_dict["PM_NAME"] = str(par.PM_NAME)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
-		data_dict["SSCM_PM_FREQUENCY"] = str(par.SSCM_PM_FREQUENCY)
+		data_dict["SSCM_PM_FREQUENCY"] = str(original_PM_frequency)
 		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 		data_list.append(data_dict)
