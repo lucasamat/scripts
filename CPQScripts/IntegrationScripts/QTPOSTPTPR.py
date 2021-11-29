@@ -173,7 +173,7 @@ try:
 			getpartsdata = Sql.GetFirst("select * from SAQIFP where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			if getpartsdata:
 				Sql.RunQuery("INSERT INTO SYSPBT (BATCH_RECORD_ID, SAP_PART_NUMBER, QUANTITY, UNIT_PRICE, BATCH_STATUS, QUOTE_ID, QUOTE_RECORD_ID, BATCH_GROUP_RECORD_ID,TAXRATE) VALUES {}".format(', '.join(map(str, insert_data))))			
-				Log.Info('getpartsdata -->'+str(getpartsdata))
+				Log.Info('getpartsdata -->'+str(getpartsdata.PART_NUMBER))
 
 				if currencyType == 'docCurrency':
 					Sql.RunQuery("""UPDATE SAQIFP
@@ -183,7 +183,7 @@ try:
 							WHERE SAQIFP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}'
 						""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
 					GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
-					
+					Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))					
 					Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
 					JOIN SAQIFP (NOLOCK) ON SAQIFP.SAP_PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id))
 					
@@ -196,7 +196,7 @@ try:
 						""".format(BatchGroupRecordId=batch_group_record_id, QuoteRecordId=contract_quote_record_id))
 					
 					GetSum = SqlHelper.GetFirst( "SELECT SUM(UNIT_PRICE_INGL_CURR) AS TOTAL FROM SAQIFP WHERE QUOTE_ID = '{}' ".format(QUOTE))
-					
+					Log.Info("QTPOSTPTPR TOTAL ==> "+str(GetSum.TOTAL))
 					Sql.RunQuery("""UPDATE SAQRIT SET STATUS='ACQUIRED', UNIT_PRICE_INGL_CURR = SAQIFP.UNIT_PRICE, NET_PRICE_INGL_CURR={total} FROM SAQRIT
 					JOIN SAQIFP (NOLOCK) ON SAQIFP.SAP_PART_NUMBER = SAQRIT.OBJECT_ID AND SAQIFP.QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(total=GetSum.TOTAL, QuoteRecordId=contract_quote_record_id))
 					
