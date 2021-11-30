@@ -3070,7 +3070,7 @@ class approvalCenter:
 				emailId = str(getnotify.EMAIL)
 			splitformailbodyappend = str(bodywithformatsplit[1]).split("</tbody>")
 			if mailbody.startswith("<!DOCTYPE html>", 0) == True:
-				
+				Trace.Write("ifmessage body")
 				mailbdyready = (
 					str(bodywithformatsplit[0])
 					+ "</style>"
