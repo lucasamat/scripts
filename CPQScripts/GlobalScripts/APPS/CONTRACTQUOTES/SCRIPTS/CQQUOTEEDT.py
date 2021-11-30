@@ -39,8 +39,11 @@ def bannerdetails(Quoteid,active_tab_name):
 		Quoteid=str(matchObj)
 		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
 		if get_rev_info:
-			Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
-			Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+			try:
+				Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
+				Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+			except Exception:
+				pass
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
 			#qid=str(matchObj.group(1))
