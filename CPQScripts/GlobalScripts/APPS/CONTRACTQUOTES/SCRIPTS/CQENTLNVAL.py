@@ -10,7 +10,7 @@ from datetime import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
 from SYDATABASE import SQL
 Sql = SQL()
-
+import re
 import System.Net
 import sys
 
