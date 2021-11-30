@@ -3785,7 +3785,7 @@ def POPUPLISTVALUEADDNEW(
 			
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}".format(
-						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",additional_where
+						ObjectName,ObjectName,inner_join if inner_join else "",str(where_string) if where_string else "",additional_where
 					)
 				)
 			elif str(popup_obj)=="SAQSPT":
