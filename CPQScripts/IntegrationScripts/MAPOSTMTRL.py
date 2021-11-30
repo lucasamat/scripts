@@ -74,11 +74,11 @@ try :
 
 
 
-									for col in ['ERP_CREATE_DATE','HAZMAT_ID','SAP_PART_NUMBER','SAP_DESCRIPTION','MATERIALGROUP_ID','MATERIALSTATUS_ID','MATERIALTYPE_ID','MINIMUM_ORDER_QUANTITY','UNIT_OF_MEASURE','DIVISION_ID','MATERIALCONFIG_TYPE','PROD_INSP_MEMO']: 
+									for col in ['ERP_CREATE_DATE','HAZMAT_ID','SAP_PART_NUMBER','SAP_DESCRIPTION','MATERIALGROUP_ID','MATERIALSTATUS_ID','MATERIALTYPE_ID','MINIMUM_ORDER_QUANTITY','UNIT_OF_MEASURE','DIVISION_ID','MATERIALCONFIG_TYPE','PROD_INSP_MEMP']: 
 										if col not in record_dict:
 											record_dict[col] = ''
 									
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAMTRL_INBOUND (ERP_CREATE_DATE,HAZMAT_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,MATERIALCONFIG_TYPE,PROD_INSP_MEMO,MATERIALTYPE_ID,MINIMUM_ORDER_QUANTITY,UNIT_OF_MEASURE,DIVISION_ID,MATERIALSTATUS_ID,MATERIALGROUP_ID,cpqtableentrydatemodified,SESSION_ID)  select  ''"+str(record_dict['ERP_CREATE_DATE'])+ "'',''"+str(record_dict['HAZMAT_ID'])+ "'',''"+record_dict['SAP_PART_NUMBER']+ "'',''"+record_dict['SAP_DESCRIPTION']+ "'',''"+str(record_dict['MATERIALCONFIG_TYPE'])+ "'',N''"+str(record_dict['PROD_INSP_MEMO'])+ "'',''"+str(record_dict['MATERIALTYPE_ID'])+ "'',''"+str(record_dict['MINIMUM_ORDER_QUANTITY'])+ "'',''"+str(record_dict['UNIT_OF_MEASURE'])+ "'',''"+str(record_dict['DIVISION_ID'])+ "'',''"+str(record_dict['MATERIALSTATUS_ID'])+ "'',''"+str(record_dict['MATERIALGROUP_ID'])+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")								
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAMTRL_INBOUND (ERP_CREATE_DATE,HAZMAT_ID,SAP_PART_NUMBER,SAP_DESCRIPTION,MATERIALCONFIG_TYPE,PROD_INSP_MEMO,MATERIALTYPE_ID,MINIMUM_ORDER_QUANTITY,UNIT_OF_MEASURE,DIVISION_ID,MATERIALSTATUS_ID,MATERIALGROUP_ID,cpqtableentrydatemodified,SESSION_ID)  select  ''"+str(record_dict['ERP_CREATE_DATE'])+ "'',''"+str(record_dict['HAZMAT_ID'])+ "'',''"+record_dict['SAP_PART_NUMBER']+ "'',''"+record_dict['SAP_DESCRIPTION']+ "'',''"+str(record_dict['MATERIALCONFIG_TYPE'])+ "'',N''"+str(record_dict['PROD_INSP_MEMP'])+ "'',''"+str(record_dict['MATERIALTYPE_ID'])+ "'',''"+str(record_dict['MINIMUM_ORDER_QUANTITY'])+ "'',''"+str(record_dict['UNIT_OF_MEASURE'])+ "'',''"+str(record_dict['DIVISION_ID'])+ "'',''"+str(record_dict['MATERIALSTATUS_ID'])+ "'',''"+str(record_dict['MATERIALGROUP_ID'])+ "'',''"+ str(Modi_date)+ "'',''"+ str(primaryQuerysession.A)+ "'' ' ")								
 									
 									MATNR = record_dict['SAP_PART_NUMBER']
 									MATKL = str(record_dict['MATERIALGROUP_ID'])
