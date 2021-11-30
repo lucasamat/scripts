@@ -87,7 +87,7 @@ def equipment_predefined():
 				get_val = Sql.GetFirst(""" SELECT M.VALDRV_DEVICETYPE as VALDRV_DEVICETYPE FROM MAEQUP M JOIN PRENVL P ON M.VALDRV_DEVICETYPE=P.ENTITLEMENT_DISPLAY_VALUE WHERE M.EQUIPMENT_RECORD_ID='{}' """.format(str(rec.EQUIPMENT_RECORD_ID)))
 				if get_val:
 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,get_val.VALDRV_DEVICETYPE)
-			elif 'CONTRACT COVERAGE & RESPONSE TIME' in val.ENTITLEMENT_DESCRIPTION.upper():	
+			elif  val.ENTITLEMENT_DESCRIPTION.upper() in ('CONTRACT COVERAGE & RESPONSE TIME','CONTRACT COVERAGE & RESP TIME'):		
 				response_time = ""
 				coverage_time = ""
 				if "AGS_"+str(TreeParam)+"_CVR_CNTCOV" in display_val_dict.keys():
