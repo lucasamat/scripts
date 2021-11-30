@@ -3543,6 +3543,7 @@ def POPUPLISTVALUEADDNEW(
 			Trace.Write('In '+str(ObjectName))
 			popup_obj = ObjectName
 			where_string = ""
+			where_string_1 = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
 				A_Values = list(A_Values)
