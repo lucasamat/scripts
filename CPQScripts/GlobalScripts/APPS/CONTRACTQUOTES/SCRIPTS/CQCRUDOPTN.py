@@ -352,8 +352,27 @@ class ContractQuoteCrudOpertion:
 		#Trace.Write('insert data in insert_quote_billing_plan--start') 
 		# Sql.RunQuery("""DELETE FROM QT__Billing_Matrix_Header WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		# Sql.RunQuery("""DELETE FROM QT__BM_YEAR_1 WHERE cartId = '{CartId}' AND ownerId = {UserId} AND QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(CartId=cart_id, UserId=cart_user_id, QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		get_ent_val =''
 		services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		#get billing type form quote item entitlement-start
+		get_billing_type = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =self.contract_quote_record_id,qt_rev_id=self.quote_revision_record_id,get_service = str(get_service_val).strip()))
+		if get_billing_type:
+			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
+			updateentXML = get_billing_type.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, updateentXML):
+				sub_string = m.group(1)
+				get_ent_id = re.findall(pattern_id,sub_string)
+				get_ent_val= re.findall(pattern_name,sub_string)
+				if get_ent_id:
+					Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
+					get_ent_val = str(get_ent_val[0])
+					break
+		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
+		#get billing type form quote item entitlement-end
 		if item_billing_plan_obj is not None and services_obj:
 			quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 			years = quotient + (1 if remainder > 0 else 0)
