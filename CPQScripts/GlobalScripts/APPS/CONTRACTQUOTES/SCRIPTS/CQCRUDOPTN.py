@@ -867,7 +867,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					)
 				elif self.action_type == "ADD_SPARE_PARTS":
 					parent_based_condition = ""
-					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"
 					
 					
