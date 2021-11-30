@@ -3,7 +3,8 @@
 #   __script_description : THIS SCRIPT IS USED TO GET SSCM DATA FROM THE QTQCAS TABLE AND RETURN IN JSON FORMAT RESULT
 #   __primary_author__ : SURESH MUNIYANDI, Baji
 #   __create_date :
-#   Ãƒâ€šÃ‚Â© BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
+#	Modified Date : 25-Nov-2020 JIRA 12516 (PMSA Tool Based)
+#  BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 import sys
 import clr
@@ -84,7 +85,7 @@ try:
 			else:
 				Check_flag=0 """
 		
-		SAQSCA_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,CONVERT(VARCHAR(100),NULL) AS COVERAGE,CONVERT(VARCHAR(100),NULL) AS WETCLEAN,CONVERT(VARCHAR(100),NULL) AS PERFGUARANTEE,CONVERT(VARCHAR(100),NULL) AS PMLABOR,CONVERT(VARCHAR(100),NULL) AS CMLABOR INTO "+str(SAQSCA)+" from SAQSCA(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' ) ' ")
+		SAQSCA_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select DISTINCT QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,CONVERT(VARCHAR(100),NULL) AS COVERAGE,CONVERT(VARCHAR(100),NULL) AS WETCLEAN,CONVERT(VARCHAR(100),NULL) AS PERFGUARANTEE,CONVERT(VARCHAR(100),NULL) AS PMLABOR,CONVERT(VARCHAR(100),NULL) AS CMLABOR,CONVERT(VARCHAR(100),NULL) AS PMEVENT INTO "+str(SAQSCA)+" from SAQSCA(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE'' ) ' ")
 		
 		SAQSCO_DEL = SqlHelper.GetFirst("sp_executesql @T=N'DELETE FROM "+str(SAQSCO)+" WHERE EQUIPMENT_ID NOT IN (SELECT DISTINCT EQUIPMENT_ID FROM "+str(SAQSCA)+" ) ' ")
 		
@@ -114,6 +115,9 @@ try:
 				#Z0035 Contract Coverage
 				S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET COVERAGE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_CVR_CNTCOV<'',entitlement_xml),charindex (''>Contract Coverage</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_CVR_CNTCOV<'',entitlement_xml)+len(''>Contract Coverage</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0035'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y))B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Contract Coverage'' '")
 				
+				#Z0009 Contract Coverage
+				S = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET COVERAGE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_CVR_CNTCOV<'',entitlement_xml),charindex (''>Contract Coverage</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_CVR_CNTCOV<'',entitlement_xml)+len(''>Contract Coverage</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0009'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y))B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Contract Coverage'' '")
+				
 				#Z0091 Wet Cleans Labor
 				S1 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET WETCLEAN=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0091_NET_WECLLB<'',entitlement_xml),charindex (''Wet Cleans Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0091_NET_WECLLB<'',entitlement_xml)+len(''Wet Cleans Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0091'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Wet Cleans Labor'' '")
 				
@@ -129,6 +133,9 @@ try:
 				#Z0035 Wet Cleans Labor
 				S1 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET WETCLEAN=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_WECLLB<'',entitlement_xml),charindex (''Wet Cleans Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_WECLLB<'',entitlement_xml)+len(''Wet Cleans Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0035'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Wet Cleans Labor'' '")
 				
+				#Z0009 Wet Cleans Labor
+				S1 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET WETCLEAN=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_NET_WECLLB<'',entitlement_xml),charindex (''Wet Cleans Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_NET_WECLLB<'',entitlement_xml)+len(''Wet Cleans Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0009'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Wet Cleans Labor'' '")
+				
 				#Z0091 Preventive Maintenance Labor
 				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0091_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0091_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0091'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
 				
@@ -143,6 +150,9 @@ try:
 				
 				#Z0035 Preventive Maintenance Labor
 				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0035'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
+				
+				#Z0009 Preventive Maintenance Labor
+				S2 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT 	quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+ substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_NET_PRMALB<'',entitlement_xml),charindex (''Preventative Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_NET_PRMALB<'',entitlement_xml)+len(''Preventative Maintenance Labor</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0009'' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Preventative Maintenance Labor''  '")
 				
 				#Z0004 Corrective Maintenance Labor
 				S3 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET CMLABOR=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0004_NET_CRMALB<'',entitlement_xml),charindex (''Corrective Maintenance Labor</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0004_NET_CRMALB<'',entitlement_xml)+len(''Corrective Maintenance Labor</ENTITLEMENT_NAME>''))+''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID=''Z0004'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Corrective Maintenance Labor''  '")
@@ -174,6 +184,12 @@ try:
 				#Z0035 Primary KPI. Perf Guarantee
 				S4 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PERFGUARANTEE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0035_KPI_PRPFGT<'',entitlement_xml),charindex (''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0035_KPI_PRPFGT<'',entitlement_xml)+len(''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0035'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Primary KPI. Perf Guarantee''  '")
 				
+				#Z0009 Primary KPI. Perf Guarantee
+				S4 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PERFGUARANTEE=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_KPI_PRPFGT<'',entitlement_xml),charindex (''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_KPI_PRPFGT<'',entitlement_xml)+len(''Primary KPI. Perf Guarantee</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0009'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''Primary KPI. Perf Guarantee''  '")
+				
+				#Z0009 PM Event
+				S4 = SqlHelper.GetFirst("sp_executesql @T=N'UPDATE A SET PMEVENT=ENTITLEMENT_DISPLAY_VALUE FROM  "+str(SAQSCA)+" A(NOLOCK) JOIN (SELECT distinct quote_ID,equipment_id,service_id, replace(X.Y.value(''(ENTITLEMENT_DISPLAY_VALUE)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_DISPLAY_VALUE,replace(X.Y.value(''(ENTITLEMENT_NAME)[1]'', ''VARCHAR(128)''),'';#38'',''&'') as ENTITLEMENT_NAME FROM (SELECT quote_ID,equipment_id,service_id,CONVERT(XML,''<QUOTE_ENTITLEMENT>''+substring(entitlement_xml,charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_PMEVNT<'',entitlement_xml),charindex (''PM Events</ENTITLEMENT_NAME>'',entitlement_xml)-charindex (''<ENTITLEMENT_ID>AGS_Z0009_STT_PMEVNT<'',entitlement_xml)+len(''PM Events</ENTITLEMENT_NAME>'')) +''</QUOTE_ENTITLEMENT>'') as entitlement_xml FROM "+str(SAQSAE)+" (nolock)a WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND EQUIPMENT_ID IN (SELECT DISTINCT equipment_id FROM (SELECT DISTINCT equipment_id, ROW_NUMBER()OVER(ORDER BY equipment_id) AS SNO FROM "+str(SAQSCO)+"  (NOLOCK) where quote_id=''"+str(Qt_id)+"'' ) A WHERE SNO>= "+str(start)+" AND SNO<="+str(end)+") AND SERVICE_ID = ''Z0009'') e OUTER APPLY e.ENTITLEMENT_XML.nodes(''QUOTE_ENTITLEMENT'') as X(Y) )B ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID = B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID  WHERE B.ENTITLEMENT_NAME=''PM Events''  '")
+				
 				start = start + 500
 				end = end + 500
 				Log.Info("789 crm_response --->"+str(end))
@@ -184,7 +200,7 @@ try:
 		SAQSAP_SEL = SqlHelper.GetFirst("sp_executesql @T=N'select QUOTE_ID,EQUIPMENT_ID,SERVICE_ID,ASSEMBLY_ID,PM_FREQUENCY, PM_NAME INTO "+str(SAQSAP)+" from SAQSAP(NOLOCK) WHERE QUOTE_ID = ''"+str(Qt_id)+"'' AND QTEREV_ID=''"+str(REVISION_ID) +"'' AND PM_NAME = ''Wet Clean'' AND SERVICE_ID IN (SELECT DISTINCT SERVICE_ID FROM PRSPRV(NOLOCK) WHERE ISNULL(SSCM_COST,''FALSE'')=''TRUE''  )' ")
 		
 		table = SqlHelper.GetFirst(
-			"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"CONTRACT_VALID_FROM\" : \"'+CONTRACT_VALID_FROM+'\",\"CONTRACT_VALID_TO\" : \"'+CONTRACT_VALID_TO+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"SALESORG_ID\" : \"'+SALESORG_ID+'\",\"REGION\" : \"'+REGION+'\",\"ASSEMBLY_ID\" : \"'+ASSEMBLY_ID+'\",\"LABOR_COVERAGE\" : \"'+LABOR_COVERAGE+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"PERFORMANCE_GUARANTEE\" : \"'+PERFORMANCE_GUARANTEE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\",\"PM_NAME\" : \"'+PM_NAME+'\",\"PM_PER_YEAR\" : \"'+PM_PER_YEAR+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+" as SESSION_ID, B.QUOTE_ID+'-'+ CONVERT(VARCHAR,B.QTEREV_ID) AS QUOTE_ID,ISNULL(SALESORG_ID,'') AS SALESORG_ID,ISNULL(REGION,'') AS REGION, ISNULL(B.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(B.SERVICE_ID,'') AS SERVICE_ID,ISNULL(A.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL( COVERAGE,'' ) AS LABOR_COVERAGE,ISNULL(PMLABOR,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLABOR,'') AS CORRECTIVE_MAINTENANCE,ISNULL(PERFGUARANTEE,'') AS PERFORMANCE_GUARANTEE,ISNULL(WETCLEAN,'') AS WET_CLEAN, ISNULL(PM_NAME,'') AS PM_NAME,ISNULL(CONVERT(VARCHAR(50),PM_FREQUENCY),'') AS PM_PER_YEAR,CONVERT(VARCHAR(11),B.CONTRACT_VALID_FROM,121) AS CONTRACT_VALID_FROM,CONVERT(VARCHAR(11),B.CONTRACT_VALID_TO,121) AS CONTRACT_VALID_TO FROM "+str(SAQSCO)+" B(NOLOCK) JOIN "+str(SAQSCA)+"(NOLOCK) A ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID= B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID LEFT JOIN "+str(SAQSAP)+" C(NOLOCK) ON A.QUOTE_ID = C.QUOTE_ID AND A.SERVICE_ID = C.SERVICE_ID AND A.EQUIPMENT_ID = C.EQUIPMENT_ID AND A.ASSEMBLY_ID=C.ASSEMBLY_ID WHERE B.QUOTE_ID = '"+str(Qt_id)+"' ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT "
+			"SELECT replace ('{\"QTQICA\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"SESSION_ID\" : \"'+SESSION_ID+'\",\"QUOTE_ID\" : \"'+QUOTE_ID+'\",\"EQUIPMENT_ID\" : \"'+EQUIPMENT_ID+'\",\"CONTRACT_VALID_FROM\" : \"'+CONTRACT_VALID_FROM+'\",\"CONTRACT_VALID_TO\" : \"'+CONTRACT_VALID_TO+'\",\"SERVICE_ID\" : \"'+SERVICE_ID+'\",\"SALESORG_ID\" : \"'+SALESORG_ID+'\",\"REGION\" : \"'+REGION+'\",\"ASSEMBLY_ID\" : \"'+ASSEMBLY_ID+'\",\"LABOR_COVERAGE\" : \"'+LABOR_COVERAGE+'\",\"PREVENTIVE_MAINTENANCE\" : \"'+PREVENTIVE_MAINTENANCE+'\",\"CORRECTIVE_MAINTENANCE\" : \"'+CORRECTIVE_MAINTENANCE+'\",\"PERFORMANCE_GUARANTEE\" : \"'+PERFORMANCE_GUARANTEE+'\",\"WET_CLEAN\" : \"'+WET_CLEAN+'\",\"PM_EVENTS\" : \"'+PMEVENT+'\",\"PM_NAME\" : \"'+PM_NAME+'\",\"PM_PER_YEAR\" : \"'+PM_PER_YEAR+'\"}' AS JSON from (SELECT DISTINCT  "+str(timestamp_sessionid)+" as SESSION_ID, B.QUOTE_ID+'-'+ CONVERT(VARCHAR,B.QTEREV_ID) AS QUOTE_ID,ISNULL(SALESORG_ID,'') AS SALESORG_ID,ISNULL(REGION,'') AS REGION, ISNULL(B.EQUIPMENT_ID,'') AS EQUIPMENT_ID,ISNULL(B.SERVICE_ID,'') AS SERVICE_ID,ISNULL(A.ASSEMBLY_ID,'') AS ASSEMBLY_ID,ISNULL( COVERAGE,'' ) AS LABOR_COVERAGE,ISNULL(PMLABOR,'') AS PREVENTIVE_MAINTENANCE,ISNULL(CMLABOR,'') AS CORRECTIVE_MAINTENANCE,ISNULL(PERFGUARANTEE,'') AS PERFORMANCE_GUARANTEE,ISNULL(WETCLEAN,'') AS WET_CLEAN,ISNULL(PMEVENT,'') AS PMEVENT, ISNULL(PM_NAME,'') AS PM_NAME,ISNULL(CONVERT(VARCHAR(50),PM_FREQUENCY),'') AS PM_PER_YEAR,CONVERT(VARCHAR(11),B.CONTRACT_VALID_FROM,121) AS CONTRACT_VALID_FROM,CONVERT(VARCHAR(11),B.CONTRACT_VALID_TO,121) AS CONTRACT_VALID_TO FROM "+str(SAQSCO)+" B(NOLOCK) JOIN "+str(SAQSCA)+"(NOLOCK) A ON A.QUOTE_ID = B.QUOTE_ID AND A.SERVICE_ID= B.SERVICE_ID AND A.EQUIPMENT_ID = B.EQUIPMENT_ID LEFT JOIN "+str(SAQSAP)+" C(NOLOCK) ON A.QUOTE_ID = C.QUOTE_ID AND A.SERVICE_ID = C.SERVICE_ID AND A.EQUIPMENT_ID = C.EQUIPMENT_ID AND A.ASSEMBLY_ID=C.ASSEMBLY_ID WHERE B.QUOTE_ID = '"+str(Qt_id)+"' ) t 	) A FOR XML PATH ('')  ), 1, 1, '')+']}','amp;#','#') AS RESULT "
 		)
 			
 		if str(table).upper() != "NONE" and str(type(table.RESULT)) == "<type 'str'>":
@@ -286,29 +302,11 @@ try:
 			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail1) 
 
-			copyEmail2 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail2)
-
-			copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail3) 
-
 			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail4)
 
 			copyEmail5 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail5)
-			
-			copyEmail6 = MailAddress("arivazhagan_natarajan@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail6)
-
-			copyEmail7 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail7)
-
-			copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
-			msg.Bcc.Add(copyEmail8)
-			
-			copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail9)
 
 			# Send the message
 			mailClient.Send(msg)		
@@ -356,26 +354,11 @@ try:
 			copyEmail1 = MailAddress("ranjani.parkavi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail1) 		
 
-			copyEmail3 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			copyEmail3 = MailAddress("suresh.muniyandi@bostonharborconsulting.com")
 			msg.Bcc.Add(copyEmail3)	
 
 			copyEmail4 = MailAddress("baji.baba@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail4)
-
-			copyEmail5 = MailAddress("arivazhagan.natarajan@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail5)
-
-			copyEmail6 = MailAddress("indira.priyadarsini@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail6)
-
-			copyEmail7 = MailAddress("zeeshan.ahamed@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail7)
-
-			copyEmail8 = MailAddress("siva.subramani@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail8)
-			
-			copyEmail9 = MailAddress("deepa.ganesh@bostonharborconsulting.com")
-			msg.CC.Add(copyEmail9)
 			
 			# Send the message
 			mailClient.Send(msg)
@@ -408,7 +391,7 @@ except:
 
 		Qt_id = crmifno[0]
 		REVISION_ID = crmifno[-1]
-		Log.Info("---->"+str(Qt_id))
+		Log.Info("--->"+str(Qt_id))
 		CRMQT = SqlHelper.GetFirst("select convert(varchar(100),c4c_quote_id) as c4c_quote_id from SAQTMT(nolock) WHERE QUOTE_ID = '"+str(Qt_id)+"' ")
 		
 		SAQSCO = "SAQSCO_BKP_1"+str(CRMQT.c4c_quote_id)+str(sess.sess)
