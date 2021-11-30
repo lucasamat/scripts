@@ -4034,7 +4034,7 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-				sec_str = '<div class="row modulebnr brdr ma_mar_btm">REPLACE CONTACT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
+				sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD CONTACT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
 				sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Contacts</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">Select a valid Contact record below to add it to the list of Contacts associated with your Quote</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-parts" class="btnconfig" onclick="addPartsList()" data-dismiss="modal">ADD</button></div></div>'
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
