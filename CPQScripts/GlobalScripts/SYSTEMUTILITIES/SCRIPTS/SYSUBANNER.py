@@ -2172,7 +2172,21 @@ def Related_Sub_Banner(
         FifthLable = ''
         FifthValue = ''
         SixthLable = ''
-        SixthValue = ''        
+        SixthValue = ''
+    elif ObjName == "SAQSGB" and subTabName == "Equipment":
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeParentParam)
+        SecondLable = "Product Offering Description"
+        SecondValue = getService.SERVICE_DESCRIPTION
+        ThirdLable = "Greenbooks"
+        ThirdValue = str(TreeParam)
+        FourthLable = "Equipment"
+        FourthValue = "ALL"	
+        FifthLable = ""
+        FifthValue = ""
+        SixthLable = ''
+        SixthValue = ''
     #elif TreeSuperTopParentParam == "Product Offerings" and TreeTopSuperParentParam == "Complementary Products" and (TreeParentParam == "Receiving Equipment" or TreeParentParam == "Sending Equipment") and (ObjName == "SAQSSF" or ObjName == "SAQSSF"):
     #	getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeSuperParentParam)+"'")
     #	PrimaryLable = "Product Offering ID"
