@@ -3713,7 +3713,7 @@ def POPUPLISTVALUEADDNEW(
 				"MAMSOP.MATPRIGRP_ID"
 				]
 			#get consumable and non consumable values from XML start
-			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV(NOLOCK) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
