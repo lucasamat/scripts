@@ -271,7 +271,7 @@ class ContractQuoteCrudOpertion:
 	def _delete(self):
 		pass	
 							
-	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None):
+	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None):
 		#QTQIBP_INS=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
 		if get_ent_val_type == "Monthly":
 			year = int(amount_column.split('_')[-1])
@@ -355,24 +355,7 @@ class ContractQuoteCrudOpertion:
 		get_ent_val =''
 		services_obj = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		item_billing_plan_obj = Sql.GetFirst("SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID".format(self.contract_quote_record_id,self.quote_revision_record_id))
-		#get billing type form quote item entitlement-start
-		get_billing_type = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =self.contract_quote_record_id,qt_rev_id=self.quote_revision_record_id,get_service = str(get_service_val).strip()))
-		if get_billing_type:
-			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
-			updateentXML = get_billing_type.ENTITLEMENT_XML
-			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
-			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
-			for m in re.finditer(pattern_tag, updateentXML):
-				sub_string = m.group(1)
-				get_ent_id = re.findall(pattern_id,sub_string)
-				get_ent_val= re.findall(pattern_name,sub_string)
-				if get_ent_id:
-					Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
-					get_ent_val = str(get_ent_val[0])
-					break
-		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		#get billing type form quote item entitlement-end
+		
 		if item_billing_plan_obj is not None and services_obj:
 			quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 			years = quotient + (1 if remainder > 0 else 0)
@@ -4621,7 +4604,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		#Trace.Write('4739---------------')
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
-		get_ent_val = ''
+		get_ent_val = get_ent_bill_type = get_ent_billing_type_value = ''
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 			#Trace.Write('4739---------4744------')
@@ -4638,16 +4621,21 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						updateentXML = get_billing_cycle.ENTITLEMENT_XML
 						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 						pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILCYC)</ENTITLEMENT_ID>')
+						pattern_id_billing_type = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
 						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 						for m in re.finditer(pattern_tag, updateentXML):
 							sub_string = m.group(1)
 							get_ent_id = re.findall(pattern_id,sub_string)
+							get_ent_bill_type = re.findall(pattern_id_billing_type,sub_string)
 							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
 								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
 								get_ent_val = str(get_ent_val[0])
 								break
-					Trace.Write('get_ent_val---4750--'+str(get_ent_val))
+							if get_ent_bill_type:
+								get_ent_billing_type_value = str(get_ent_bill_type[0])
+								break
+					Trace.Write(str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_val---4750--'+str(get_ent_val))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					if str(get_ent_val) == "Monthly":
 						if billing_day in (29,30,31):
@@ -4679,7 +4667,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
 					elif str(get_ent_val).upper() == "QUARTELY":
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						ct_start_date =contract_start_date
@@ -4697,7 +4685,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/4) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
 					else:
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						if billing_day in (29,30,31):
@@ -4723,7 +4711,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
 						columns=["CART_ID", "USERID"],
