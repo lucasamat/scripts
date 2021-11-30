@@ -1144,7 +1144,7 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			
 		
 		##rollup for pricing
-		if ('Z0091' in get_serviceid or 'Z0016' in get_serviceid) and objectName != 'SAQTSE' :
+		if ( 'Z0016' in get_serviceid) and objectName != 'SAQTSE' :
 			entitlement_price_rollup(objectName, ent_temp)
 		##ancillary_service insert
 		#if 'Z0091' in get_serviceid :
@@ -1153,6 +1153,14 @@ def entitlement_rolldown(objectName,get_serviceid,where,ent_temp):
 			dividend_critical_price_sumup(ent_temp)
 		except Exception as e:
 			Log.Info("error on dividend--"+str(e)+str(get_serviceid))
+		try:
+			#Log.Info("PREDEFINED WAFER DRIVER IFLOW")
+			where_condition = " WHERE QUOTE_RECORD_ID='{}' AND QTEREV_RECORD_ID='{}' AND SERVICE_ID = '{}' ".format(quote, revision, get_serviceid)
+			
+			predefined = ScriptExecutor.ExecuteGlobal("CQVLDPRDEF",{"where_condition": where_condition,"quote_rec_id": quote ,"level":"EQUIPMENT_LEVEL", "treeparam": get_serviceid,"user_id": userid, "quote_rev_id":revision})
+
+		except:
+			Log.Info("EXCEPT----PREDEFINED DRIVER IFLOW")
 		sendEmail(level)
 
 	except Exception as e:
