@@ -423,7 +423,8 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			row = {}
 			if TITLE == 'DISCOUNT' and '%' in VALUE:
 				VALUE = VALUE.replace('%','')
-			row = {TITLE: str(VALUE)}
+			TITLE_NAME = TITLE.split(',')[0]
+			row = {TITLE_NAME: str(VALUE)}
 			
 			cpqid = rec.split("-")[1].lstrip("0")
 			##to update changed value in related tables in tool relcoation matrix
