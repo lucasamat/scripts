@@ -300,6 +300,8 @@ class ContractQuoteCrudOpertion:
 		#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
 		Trace.Write(str(amount_column)+'---301-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
+		if str(get_ent_billing_type_value).upper() == "FIXED":
+			Trace.Write('304---')
 		Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
 						LINE, QUOTE_ID, QTEITM_RECORD_ID, 
