@@ -58,6 +58,7 @@ def bannerdetails(Quoteid,active_tab_name):
 				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID, QTEREV_RECORD_ID, MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
 				if get_rev_info:
 					# C4C to CPQ - New Revision - Start
+					Trace.Write("===> "+str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
 					Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
 					# C4C to CPQ - New Revision - End
 					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
