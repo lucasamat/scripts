@@ -136,13 +136,13 @@ def child_ent_request(tableName,where,serviceId):
 	response = Request_access_token()
 	webclient = System.Net.WebClient()		
 	Trace.Write(response["access_token"])
-	Log.Info(str(tableName)+'--serviceId---'+str(serviceId))
+	#Log.Info(str(tableName)+'--serviceId---'+str(serviceId))
 	ent_temp =''
 	Request_URL="https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations?autoCleanup=False"
 	webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])    
 	gettodaydate = datetime.now().strftime("%Y-%m-%d")
 	ProductPartnumber = serviceId#'Z0035'
-	Log.Info('inside----')
+	#Log.Info('inside----')
 	try:        
 		requestdata = '{"productKey":"'+ ProductPartnumber+ '","date":"'+gettodaydate+'","context":[{"name":"VBAP-MATNR","value":"'+ ProductPartnumber+ '"}]}'
 		Trace.Write("requestdata" + str(requestdata))
@@ -187,7 +187,7 @@ def child_ent_request(tableName,where,serviceId):
 							
 							requestdata +='{"id":"'+ str(row.ENTITLEMENT_ID) + '","values":[' 
 							if row.ENTITLEMENT_TYPE in ('Check Box','CheckBox'):
-								Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
+								#Log.Info('ENTITLEMENT_VALUE_CODE----'+str(row.ENTITLEMENT_VALUE_CODE)+'---'+str(eval(row.ENTITLEMENT_VALUE_CODE)))
 								for code in eval(row.ENTITLEMENT_VALUE_CODE):
 									requestdata += '{"value":"' + str(code) + '","selected":true}'
 									requestdata +=','
@@ -196,7 +196,7 @@ def child_ent_request(tableName,where,serviceId):
 								requestdata+= '{"value":"' +str(row.ENTITLEMENT_VALUE_CODE) + '","selected":true}]},'
 							requestdata += ']}'
 							requestdata = requestdata.replace('},]','}]')
-							Log.Info("requestdata--child-- " + str(requestdata))
+							#Log.Info("requestdata--child-- " + str(requestdata))
 							response1 = webclient.UploadString(Request_URL, "PATCH", str(requestdata))
 							#cpsmatchID = cpsmatchID + 1			
 							cpsmatchID = webclient.ResponseHeaders["Etag"]
@@ -304,9 +304,9 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 		cpsmatc_incr = re.sub('"',"",cpsmatc_incr)
 		Request_URL = "https://cpservices-product-configuration.cfapps.us10.hana.ondemand.com/api/v2/configurations/"+str(cpsConfigID)
 		webclient.Headers[System.Net.HttpRequestHeader.Authorization] = "Bearer " + str(response["access_token"])
-		Log.Info("requestdata---180--265----" + str(requestdata))
+		#Log.Info("requestdata---180--265----" + str(requestdata))
 		response2 = webclient.DownloadString(Request_URL)
-		Log.Info('response2--182----267-----'+str(response2))
+		#Log.Info('response2--182----267-----'+str(response2))
 		response2 = str(response2).replace(": true", ': "true"').replace(": false", ': "false"')
 		Fullresponse= eval(response2)
 		##getting configuration_status status
@@ -519,9 +519,9 @@ elif ACTION == 'EDIT_ASSEMBLY':
 
 elif ACTION == 'UPDATE_ENTITLEMENT' and ent_params_list and len(ent_params_list) == 6:
 	Trace.Write('inside update')
-	Log.Info('ent_params_lis----------'+str(ent_params_list))
+	#Log.Info('ent_params_lis----------'+str(ent_params_list))
 	ent_where = ent_params_list[0]
-	Log.Info('ent_params_lis------ent_where----'+str(ent_where))
+	#Log.Info('ent_params_lis------ent_where----'+str(ent_where))
 	ent_add_where = ent_params_list[1]
 	ent_attr_id = ent_params_list[2]
 	ent_newval = ent_params_list[3]
