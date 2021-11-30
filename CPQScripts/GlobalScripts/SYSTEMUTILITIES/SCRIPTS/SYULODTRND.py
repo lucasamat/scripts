@@ -1464,12 +1464,12 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				):	
 					Trace.Write(str(lookup_val)+'--lookup_val---'+str(readonly)+'current_obj_api_name--1440---'+str(current_obj_api_name))
 					##A055S000P01-10459 code starts...
-					if current_obj_api_name == "EXCHANGE_RATE_TYPE":
-						revision_object = SqlHelper.GetFirst("select REGION FROM SAQTRV where QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-						if revision_object.REGION == "AMC" or revision_object.REGION == "AMK":
-							readonly = ""
-						else:
-							readonly = "readonly"
+					# if current_obj_api_name == "EXCHANGE_RATE_TYPE":
+					# 	revision_object = SqlHelper.GetFirst("select REGION FROM SAQTRV where QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+					# 	if revision_object.REGION == "AMC" or revision_object.REGION == "AMK":
+					# 		readonly = ""
+					# 	else:
+					# 		readonly = "readonly"
 					##A055S000P01-10459 code ends...
 					if current_obj_api_name in lookup_val and str(readonly) != "readonly":
 						Trace.Write(str(readonly)+'current_obj_api_name--1443---'+str(current_obj_api_name))	
