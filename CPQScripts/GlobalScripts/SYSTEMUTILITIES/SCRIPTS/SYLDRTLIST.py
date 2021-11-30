@@ -2812,7 +2812,7 @@ class SYLDRTLIST:
 								elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
 									if ObjectName =='SAQICT':
 										Trace.Write("SAQICT")
-										Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">REPLACE CONTACT</a></li>')
+										Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
 									elif str(ObjectName) =='SAQSPT':
 										pass
 									else:
