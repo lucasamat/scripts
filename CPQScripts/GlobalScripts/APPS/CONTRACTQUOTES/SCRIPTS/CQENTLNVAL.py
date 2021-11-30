@@ -72,7 +72,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		if get_entitlement_qt_item_sctructure:
 			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
 			get_ent_val = ''
-			updateentXML = get_billing_cycle.ENTITLEMENT_XML
+			updateentXML = get_entitlement_qt_item_sctructure.ENTITLEMENT_XML
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_QTITST)</ENTITLEMENT_ID>')
 			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
