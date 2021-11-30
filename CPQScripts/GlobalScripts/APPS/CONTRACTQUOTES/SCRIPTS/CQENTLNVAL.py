@@ -86,8 +86,10 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 					flag_excluse=1
 					break
 		Trace.Write('get_ent_val---4750--'+str(get_ent_val))
-		if get_ent_val == "OFFERING + EQUIPMENT"
+		if str(get_ent_val).upper() == "OFFERING + EQUIPMENT":
 			level_name = 'OFFERING FAB GREENBOOK TOOL LEVEL'
+		elif str(get_ent_val).upper() == "OFFERING + GREENBOOK + GR EQUI":
+			level_name = 'OFFERING FAB GREENBOOK LEVEL'
 		else:
 			level_name = 'OFFERING LEVEL'
 		#condition based on quote item strcuture end
