@@ -510,6 +510,9 @@ class ContractQuoteItem:
 					MAMSCT.TAXCLASSIFICATION_ID,
 					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
 					{dynamic_net_values}
+					{ObjectName}.FABLOCATION_ID,
+					{ObjectName}.FABLOCATION_NAME,
+					{ObjectName}.FABLOCATION_RECORD_ID,
 					{ObjectName}.GREENBOOK,
 					{ObjectName}.GREENBOOK_RECORD_ID,
 					SAQRIS.QUOTE_REV_ITEM_SUMMARY_RECORD_ID as QTEITMSUM_RECORD_ID
