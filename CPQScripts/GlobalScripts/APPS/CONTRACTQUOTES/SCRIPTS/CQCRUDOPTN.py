@@ -305,97 +305,105 @@ class ContractQuoteCrudOpertion:
 		if str(get_ent_billing_type_value).upper() == "FIXED":
 			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 			object_name = 'SAQSCO'
+			divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
+			annaul_bill_amt = 'SAQRIT.NET_PRICE'
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
-			Sql.RunQuery("""INSERT SAQIBP (
-							
-							QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, 
-							QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
-							BILLING_DATE, BILLING_YEAR,
-							EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
-							SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
-						) 
-						SELECT 
-							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-							{object_name}.WARRANTY_END_DATE as BILLING_END_DATE,
-							{object_name}.WARRANTY_START_DATE as BILLING_START_DATE,
-							ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0) / {get_val}  as BILLING_VALUE,
-							SAQRIT.NET_PRICE AS ANNUAL_BILLING_AMOUNT,
-							'{billing_type}' as BILLING_TYPE,
-							SAQRIT.LINE AS LINE,
-							{object_name}.QUOTE_ID,
-							SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
-							{object_name}.QUOTE_RECORD_ID,
-							{object_name}.QTEREV_ID,
-							{object_name}.QTEREV_RECORD_ID,
-							{BillingDate} as BILLING_DATE,						
-							0 as BILLING_YEAR,
-							{object_name}.EQUIPMENT_DESCRIPTION,
-							{object_name}.EQUIPMENT_ID,									
-							{object_name}.EQUIPMENT_RECORD_ID,						
-							'' as QTEITMCOB_RECORD_ID,
-							{object_name}.SERVICE_DESCRIPTION,
-							{object_name}.SERVICE_ID,
-							{object_name}.SERVICE_RECORD_ID, 
-							{object_name}.GREENBOOK,
-							{object_name}.GREENBOOK_RECORD_ID,
-							{object_name}.SERIAL_NO AS SERIAL_NUMBER,
-							{object_name}.WARRANTY_START_DATE,
-							{object_name}.WARRANTY_END_DATE,    
-							{UserId} as CPQTABLEENTRYADDEDBY, 
-							GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM {object_name} (NOLOCK) {join_condition}
-						WHERE {object_name}.QUOTE_RECORD_ID='{QuoteRecordId}' AND {object_name}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {object_name}.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,object_name=object_name,
-							UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
-							RevisionRecordId=self.quote_revision_record_id,
-							BillingDate=billing_date,
-							get_val=get_val,
-							service_id = service_id,billing_type =get_ent_billing_type_value ))
 		else:
-			Sql.RunQuery("""INSERT SAQIBP (
-							QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
-							LINE, QUOTE_ID, QTEITM_RECORD_ID, 
-							QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
-							BILLING_VALUE, BILLING_DATE, BILLING_YEAR,
-							EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
-							SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_BILLING_AMOUNT, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
-						) 
-						SELECT 
-							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-							SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
-							SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
-							'Variable Billing' as BILLING_TYPE,
-							SAQICO.LINE AS LINE,	
-							SAQICO.QUOTE_ID,
-							SAQICO.QTEITM_RECORD_ID,						
-							SAQICO.QUOTE_RECORD_ID,
-							SAQICO.QTEREV_ID,
-							SAQICO.QTEREV_RECORD_ID,						
-							'' as BILLING_VALUE,	
-							{BillingDate} as BILLING_DATE,						
-							0 as BILLING_YEAR,
-							SAQICO.EQUIPMENT_DESCRIPTION,
-							SAQICO.EQUIPMENT_ID,						
-							SAQICO.EQUIPMENT_RECORD_ID,						
-							SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,
-							SAQICO.SERVICE_DESCRIPTION,
-							SAQICO.SERVICE_ID,
-							SAQICO.SERVICE_RECORD_ID,     
-							'' AS ANNUAL_BILLING_AMOUNT,
-							SAQICO.GREENBOOK,
-							SAQICO.GREENBOOK_RECORD_ID,
-							SAQICO.SERIAL_NO AS SERIAL_NUMBER,
-							SAQICO.WARRANTY_START_DATE,
-							SAQICO.WARRANTY_END_DATE,    
-							{UserId} as CPQTABLEENTRYADDEDBY, 
-							GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM SAQICO (NOLOCK) 
-						WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID ='{service_id}'""".format(
-							UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
-							RevisionRecordId=self.quote_revision_record_id,
-							BillingDate=billing_date,
-							get_val=get_val,
-							DivideBy=divide_by,
-							service_id = service_id))		
+			object_name = 'SAQSGB'
+			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSGB.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSGB.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSGB.SERVICE_ID  and SAQSGB.GREENBOOK = SAQRIT.GREENBOOK"
+			divide_amt = 'SAQRIT.ESTVAL_INGL_CURR'
+			annaul_bill_amt = 'SAQRIT.NET_VALUE'
+
+		Sql.RunQuery("""INSERT SAQIBP (
+						
+						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, 
+						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
+						BILLING_DATE, BILLING_YEAR,
+						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
+						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
+					) 
+					SELECT 
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
+						{object_name}.WARRANTY_END_DATE as BILLING_END_DATE,
+						{object_name}.WARRANTY_START_DATE as BILLING_START_DATE,
+						ISNULL({divide_amt}, 0) / {get_val}  as BILLING_VALUE,
+						{annaul_bill_amt} AS ANNUAL_BILLING_AMOUNT,
+						'{billing_type}' as BILLING_TYPE,
+						SAQRIT.LINE AS LINE,
+						{object_name}.QUOTE_ID,
+						SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
+						{object_name}.QUOTE_RECORD_ID,
+						{object_name}.QTEREV_ID,
+						{object_name}.QTEREV_RECORD_ID,
+						{BillingDate} as BILLING_DATE,						
+						0 as BILLING_YEAR,
+						{object_name}.EQUIPMENT_DESCRIPTION,
+						{object_name}.EQUIPMENT_ID,									
+						{object_name}.EQUIPMENT_RECORD_ID,						
+						'' as QTEITMCOB_RECORD_ID,
+						{object_name}.SERVICE_DESCRIPTION,
+						{object_name}.SERVICE_ID,
+						{object_name}.SERVICE_RECORD_ID, 
+						{object_name}.GREENBOOK,
+						{object_name}.GREENBOOK_RECORD_ID,
+						{object_name}.SERIAL_NO AS SERIAL_NUMBER,
+						{object_name}.WARRANTY_START_DATE,
+						{object_name}.WARRANTY_END_DATE,    
+						{UserId} as CPQTABLEENTRYADDEDBY, 
+						GETDATE() as CPQTABLEENTRYDATEADDED
+					FROM {object_name} (NOLOCK) {join_condition}
+					WHERE {object_name}.QUOTE_RECORD_ID='{QuoteRecordId}' AND {object_name}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {object_name}.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,object_name=object_name,
+						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
+						RevisionRecordId=self.quote_revision_record_id,
+						BillingDate=billing_date,
+						get_val=get_val,
+						service_id = service_id,billing_type =get_ent_billing_type_value,divide_amt=divide_amt,annaul_bill_amt=annaul_bill_amt ))
+		# else:
+		# 	Sql.RunQuery("""INSERT SAQIBP (
+		# 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
+		# 					LINE, QUOTE_ID, QTEITM_RECORD_ID, 
+		# 					QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
+		# 					BILLING_VALUE, BILLING_DATE, BILLING_YEAR,
+		# 					EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
+		# 					SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, ANNUAL_BILLING_AMOUNT, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
+		# 				) 
+		# 				SELECT 
+		# 					CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
+		# 					SAQICO.WARRANTY_END_DATE as BILLING_END_DATE,
+		# 					SAQICO.WARRANTY_START_DATE as BILLING_START_DATE,
+		# 					'Variable Billing' as BILLING_TYPE,
+		# 					SAQICO.LINE AS LINE,	
+		# 					SAQICO.QUOTE_ID,
+		# 					SAQICO.QTEITM_RECORD_ID,						
+		# 					SAQICO.QUOTE_RECORD_ID,
+		# 					SAQICO.QTEREV_ID,
+		# 					SAQICO.QTEREV_RECORD_ID,						
+		# 					'' as BILLING_VALUE,	
+		# 					{BillingDate} as BILLING_DATE,						
+		# 					0 as BILLING_YEAR,
+		# 					SAQICO.EQUIPMENT_DESCRIPTION,
+		# 					SAQICO.EQUIPMENT_ID,						
+		# 					SAQICO.EQUIPMENT_RECORD_ID,						
+		# 					SAQICO.QUOTE_ITEM_COVERED_OBJECT_RECORD_ID as QTEITMCOB_RECORD_ID,
+		# 					SAQICO.SERVICE_DESCRIPTION,
+		# 					SAQICO.SERVICE_ID,
+		# 					SAQICO.SERVICE_RECORD_ID,     
+		# 					'' AS ANNUAL_BILLING_AMOUNT,
+		# 					SAQICO.GREENBOOK,
+		# 					SAQICO.GREENBOOK_RECORD_ID,
+		# 					SAQICO.SERIAL_NO AS SERIAL_NUMBER,
+		# 					SAQICO.WARRANTY_START_DATE,
+		# 					SAQICO.WARRANTY_END_DATE,    
+		# 					{UserId} as CPQTABLEENTRYADDEDBY, 
+		# 					GETDATE() as CPQTABLEENTRYDATEADDED
+		# 				FROM SAQICO (NOLOCK) 
+		# 				WHERE SAQICO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQICO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQICO.SERVICE_ID ='{service_id}'""".format(
+		# 					UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
+		# 					RevisionRecordId=self.quote_revision_record_id,
+		# 					BillingDate=billing_date,
+		# 					get_val=get_val,
+		# 					DivideBy=divide_by,
+		# 					service_id = service_id))		
 		return True
 	
 	def insert_quote_billing_plan(self,cart_id,cart_user_id):
