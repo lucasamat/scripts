@@ -127,8 +127,14 @@ def POPUPLISTVALUEADDNEW(
 	except:
 		CurrentTab = 'Quotes'    
 	Trace.Write('TABLEID----'+str(TABLEID))
-	table1 = table[2] + "-" + table[3]
-	popup_table_id = table[0] + "-" + table[1]
+	try:
+		table1 = table[2] + "-" + table[3]
+	except:
+		table1 = ""
+	try:	
+		popup_table_id = table[0] + "-" + table[1]
+	except:
+		popup_table_id = ""
 
 	filter_tags = []
 	filter_types = []
