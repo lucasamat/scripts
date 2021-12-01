@@ -302,6 +302,7 @@ class ContractQuoteCrudOpertion:
 		Trace.Write('---301---get_ent_billing_type_value--get_ent_val_type--'+str(get_ent_val_type)+'---'+str(get_ent_billing_type_value))
 		Trace.Write(str(get_val)+"--get=--divide_by---"+str(divide_by))
 		if str(get_ent_billing_type_value).upper() == "FIXED":
+			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
 			Sql.RunQuery("""INSERT SAQIBP (
 							
@@ -340,8 +341,8 @@ class ContractQuoteCrudOpertion:
 							SAQSCO.WARRANTY_END_DATE,    
 							{UserId} as CPQTABLEENTRYADDEDBY, 
 							GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK
-						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'""".format(
+						FROM SAQSCO (NOLOCK) '{join_condition}'
+						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,
 							UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id,
 							BillingDate=billing_date,
