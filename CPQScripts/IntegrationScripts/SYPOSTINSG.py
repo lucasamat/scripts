@@ -64,6 +64,14 @@ try:
 
 			Parameter = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'SELECT' ")
 			
+			Parameter2 = SqlHelper.GetFirst("SELECT QUERY_CRITERIA_1 FROM SYDBQS (NOLOCK) WHERE QUERY_NAME = 'DEL' ")
+
+			primaryQueryItems = SqlHelper.GetFirst(
+			""
+			+ str(Parameter2.QUERY_CRITERIA_1)
+			+ " SYINPL FROM SYINPL(NOLOCK) WHERE INTEGRATION_KEY = ''"+str(quote_id)+"'' and ISNULL(STATUS,'''') = '''' '"
+			)
+			
 			primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " SYINPL (INTEGRATION_PAYLOAD,SESSION_ID,INTEGRATION_KEY)  select ''"+str(Final_data)+ "'','"+ str(timestamp_sessionid)+ "',''"+str(quote_id)+"'' ' ")
 			
 			ApiResponse = ApiResponseFactory.JsonResponse(
