@@ -3094,8 +3094,10 @@ class SYLDRTLIST:
 								value1234 = value1234.replace("</p>", " ")
 								imgValue = value1234
 								value1234 = value1234.split('"')
-								
-								value1234 = value1234[1]
+								try:
+									value1234 = value1234[1]
+								except:
+									value1234 = value1234
 								
 							else:
 								value1234 = value1234.replace('"', "&quot;")
