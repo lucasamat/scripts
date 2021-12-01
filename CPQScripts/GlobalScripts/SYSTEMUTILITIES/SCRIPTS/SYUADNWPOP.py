@@ -3793,19 +3793,30 @@ def POPUPLISTVALUEADDNEW(
 				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
 				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				pattern_new_parts_only = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
 				pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+				pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Yes)</ENTITLEMENT_DISPLAY_VALUE>')
 				for m in re.finditer(quote_item_tag, entitlement_xml):
 					sub_string = m.group(1)
 					non_consumable =re.findall(pattern_non_consumable,sub_string)
 					consumable =re.findall(pattern_consumable,sub_string)
 					exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
-					if non_consumable and exclusion_or_inclusion:
-						iclusions_val_list.append('N')
-					if consumable and exclusion_or_inclusion:
-						iclusions_val_list.append('C')
-				iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
-				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
-				where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+					new_parts_only = re.findall(pattern_new_parts_only,sub_string)
+					new_parts_only_value = re.findall(pattern_new_parts_only_yes,sub_string)
+					if new_parts_only and new_parts_only_value:
+						new_parts_only = "Yes"
+					if new_parts_only != "Yes":
+						if non_consumable and exclusion_or_inclusion:
+							iclusions_val_list.append('N')
+						if consumable and exclusion_or_inclusion:
+							iclusions_val_list.append('C')
+				if new_parts_only == "Yes":
+					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND  MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE  MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+				else:
+					iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
+					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
 			
 				Pagination_M = Sql.GetFirst(
 					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
