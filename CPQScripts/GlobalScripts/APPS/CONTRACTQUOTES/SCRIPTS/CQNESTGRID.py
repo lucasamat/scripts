@@ -3970,7 +3970,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		decimal_place = 2 
 		my_format = "{:,." + str(decimal_place) + "f}"
 		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
-		Trace.Write("original_PM_frequency_J"+str(original_PM_frequency))
+		pm_frequency = str(my_format.format(round(float(par.PM_FREQUENCY), int(decimal_place))))
+
 		# Data formation in dictonary format.
 		## hyperlink
 		data_dict = {}
@@ -3993,7 +3994,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
 		data_dict["SSCM_PM_FREQUENCY"] = str(original_PM_frequency)
-		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
+		data_dict["PM_FREQUENCY"] = str(pm_frequency)
 		data_list.append(data_dict)
 
 	hyper_link = ["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID","PM_FREQUENCY"]
@@ -4940,7 +4941,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		decimal_place = 2 
 		my_format = "{:,." + str(decimal_place) + "f}"
 		original_PM_frequency = str(my_format.format(round(float(par.SSCM_PM_FREQUENCY), int(decimal_place))))
-		Trace.Write("original_PM_frequency_J"+str(original_PM_frequency))
+		pm_frequency = str(my_format.format(round(float(par.PM_FREQUENCY), int(decimal_place))))
 
 		data_dict["ACTIONS"] = str(Action_str)
 		data_dict["QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"] = CPQID.KeyCPQId.GetCPQId("SAQSAP", str(par.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
@@ -4956,7 +4957,7 @@ def QuoteAssemblyPreventiveMaintainenceParentFilter(ATTRIBUTE_NAME, ATTRIBUTE_VA
 		data_dict["PM_NAME"] = str(par.PM_NAME)
 		data_dict["ANNUAL_FREQUENCY_BASE"] = str(par.ANNUAL_FREQUENCY_BASE)
 		data_dict["SSCM_PM_FREQUENCY"] = str(original_PM_frequency)
-		data_dict["PM_FREQUENCY"] = str(par.PM_FREQUENCY)
+		data_dict["PM_FREQUENCY"] = str(pm_frequency)
 		data_dict["TKM_FLAG"] = str(par.TKM_FLAG)
 		data_list.append(data_dict)
 
