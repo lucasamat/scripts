@@ -4326,7 +4326,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
 
-		elif str(ObjectName) == SAQRAT:
+		elif str(ObjectName) == "SAQRAT":
 			Trace.Write('upload att=====')
 			sec_str += (
 						'<div class="top-market-code-sec"><div style="margin-bottom: -1px;" class="row modulebnr brdr">'                
