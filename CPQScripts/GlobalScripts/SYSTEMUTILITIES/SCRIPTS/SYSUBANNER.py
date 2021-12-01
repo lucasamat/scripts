@@ -618,7 +618,9 @@ def Related_Sub_Banner(
                     ObjName = "SAQTMT"
 
             elif TreeParam =="Quote Documents":
+                Trace.Write("qcdoc=====")
                 if subTabName == "Attachments":
+                    Trace.Write("qcdoc=====1111")
                     PrimaryLable = "Attachments"
                     PrimaryValue = "Use this page to upload .pdf attachments to your quote revision"
                 else:                
