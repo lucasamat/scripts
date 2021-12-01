@@ -3817,13 +3817,8 @@ def POPUPLISTVALUEADDNEW(
 					iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
 					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
 					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
-			
-				Pagination_M = Sql.GetFirst(
-					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
-						ObjectName,ObjectName,str(where_string_1) if where_string_1 else "",additional_where
-					)
-				)
-			elif str(popup_obj)=="SAQSPT":
+		
+  			elif str(popup_obj)=="SAQSPT":
 				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQSPT.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
 				Pagination_M = ""
 			table_data = Sql.GetList(
@@ -3836,6 +3831,11 @@ def POPUPLISTVALUEADDNEW(
 					order_by,pagination_condition
 				)
 			)
+			Pagination_M = Sql.GetFirst(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
+						ObjectName,ObjectName,str(where_string_1) if where_string_1 else "",additional_where
+					)
+				)
 			#Trace.Write('3721-----')
 			# QueryCountObj = Sql.GetFirst(
 			# 		"select count(*) as cnt from {} (NOLOCK) {} {} ".format(
