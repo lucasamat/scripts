@@ -20,7 +20,6 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id):
-    Log.Info("writeback --------?"+str(writeback))
     if writeback == "quote_header":
         revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         ##date time conversion
@@ -46,7 +45,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##quote header write back details starts...
         quote_header_data = '{\"BuyerPartyID\":"'+str(quote_obj.ACCOUNT_ID)+'", \"EmployeeResponsiblePartyID\":"'+str(c4c_employee_id)+'", \"SalesUnitPartyID\":"'+str(revision_obj.SALESORG_ID)+'", \"DistributionChannelCode\":"'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+'", \"DivisionCode\":"'+str(revision_obj.DIVISION_ID)+'", \"ZWB_ContractValidFrom_KUT\":"'+str(valid_from)+'", \"ZWB_ContractValidTo_KUT\":"'+str(valid_to)+'", \"ZWB_QuoteRevisionID_KUT\":"'+str(revision_obj.QTEREV_ID)+'", \"ZWB_RevisionDescription_KUT\":"'+str(revision_obj.REVISION_DESCRIPTION)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'", \"ZWB_TotalQuoteContent_KUT\":"'+str(quote_obj.NET_VALUE)+'", \"ZWB_TotalQuotecurrencyCode_KUT\":"USD"}'
         ##quote header write back details ends...
-        Trace.Write("quote_header_data-----"+str(quote_header_data))
         
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
@@ -84,7 +82,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##opportunity header write back details starts...
         opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(net_value)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_from)+'",\"ExpectedProcessingEndDate\":"'+str(valid_from)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
-        Trace.Write("opportunity_header_data-----"+str(opportunity_header_data))
         
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
@@ -117,5 +114,4 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
         response = webclient.UploadString(URL, requestdata)
-        Trace.Write("response    " + str(response))
     
