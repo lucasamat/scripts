@@ -4028,12 +4028,12 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 				+ "</abbr></th>"
 			)
 		elif hyper_link is not None and invs in hyper_link:            
-			if invs == "PM_FREQUENCY" 
+			if invs == "PM_FREQUENCY":
 				data_formatter = "PMFrequencyBulkEditHyperLink" 
-			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"
-				data-formatter = "EquipHyperLinkTreeLink" 
+			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID":
+				data_formatter = "EquipHyperLinkTreeLink" 
 			else:
-				data-formatter = ""
+				data_formatter = ""
 			table_header += (
 				'<th  id="'
 				+ str(invs)
