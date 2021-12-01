@@ -4031,9 +4031,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			if invs == "PM_FREQUENCY" 
 				data_formatter = "PMFrequencyBulkEditHyperLink" 
 			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID"
-				data-formatter = "" 
+				data-formatter = "EquipHyperLinkTreeLink" 
 			else:
-				data-formatter = "EquipHyperLinkTreeLink"
+				data-formatter = ""
 			table_header += (
 				'<th  id="'
 				+ str(invs)
