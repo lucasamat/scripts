@@ -299,7 +299,7 @@ class ContractQuoteCrudOpertion:
 				divide_by = 12 + remaining_months
 			get_val = 1
 		#amount_column = 'TOTAL_AMOUNT_INGL_CURR' # Hard Coded for Sprint 5
-		Trace.Write('---301---get_ent_billing_type_value--'+str(service_id)+'---'+str(get_ent_billing_type_value))
+		Trace.Write('---301---get_ent_billing_type_value--get_ent_val_type--'+str(get_ent_val_type)+'---'+str(get_ent_billing_type_value))
 		Trace.Write(str(get_val)+"--get=--divide_by---"+str(divide_by))
 		if str(get_ent_billing_type_value).upper() == "FIXED":
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
