@@ -1073,7 +1073,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				else:
 					ent_disp_val = ent_disp_val	
 				#A055S000P01-7401 START
-				if str(attrs) == 'AGS_POA_PROD_TYPE' and ent_disp_val != '':
+				if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.SERVICE_ID) ) and ent_disp_val != '':
 					val = ""
 					if str(ent_disp_val) == 'Comprehensive':
 						val = "COMPREHENSIVE SERVICES"
