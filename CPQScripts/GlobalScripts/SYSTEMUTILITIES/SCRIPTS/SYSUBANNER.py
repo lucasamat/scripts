@@ -196,6 +196,9 @@ def Related_Sub_Banner(
         except:
             Trace.Write('176--------EXCEPT-------')
             add_button = ""
+        if str(ObjName) == "SAQRIB":
+            Trace.Write('176---200------------')
+            sec_rel_sub_bnr += add_button
         Trace.Write(str(sec_rel_sub_bnr)+"--ObjName---178--ADD+BUT_J----"+str(add_button))
         Trace.Write("Multi buttons--> "+str(multi_buttons))
             
