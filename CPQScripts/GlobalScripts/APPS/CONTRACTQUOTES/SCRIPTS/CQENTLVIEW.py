@@ -1348,7 +1348,10 @@ class EntitlementView():
 									else:
 										required_symbol_class = get_requiredicon = ""
 									new_value_dicta["APPROVAL"] = imgstr
-									new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")	
+									try:
+										new_value_dicta["ENTITLEMENT"] = str("<abbr title='"+str(attrName)+"'>"+str(attrName)+"</abbr>")
+									except:
+										new_value_dicta["ENTITLEMENT"] = "<abbr title='{entitlement_name}'>{entitlement_name}</abbr>".format(entitlement_name=attrName)
 									try:
 										new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
 									except:
