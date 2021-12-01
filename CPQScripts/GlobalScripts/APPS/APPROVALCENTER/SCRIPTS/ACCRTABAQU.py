@@ -873,7 +873,7 @@ class QueryBuilder:
                     Trace.Write("selection_column_J "+str(selection_column)+" - "+str(table))
                     # "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME",
                     result_obj = Sql.GetList(
-                        "SELECT DISTINCT {0}+'-'+ AS {1}	FROM {2} (NOLOCK) {3} ".format(
+                        "SELECT DISTINCT {0}+ AS {1}	FROM {2} (NOLOCK) {3} ".format(
                             selection_column,
                             selection_column,
                             table,
