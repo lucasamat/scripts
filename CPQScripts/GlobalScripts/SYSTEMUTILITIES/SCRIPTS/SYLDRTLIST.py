@@ -349,7 +349,7 @@ class SYLDRTLIST:
 				try:
 					if SubTab:
 						item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
-						if item_billing_plan_obj is not None and services_obj:
+						if item_billing_plan_obj is not None:
 							quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
 							years = quotient + (1 if remainder > 0 else 0)
 							if not years:
