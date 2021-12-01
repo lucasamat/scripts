@@ -217,9 +217,10 @@ class SYLDRTLIST:
 				quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 				quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 				if  quote_rec_id:                  
-					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+					getQuote = Sql.GetFirst("SELECT QUOTE_TYPE,QUOTE_STATUS FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_rec_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
 					if getQuote:
 						getQuotetype = getQuote.QUOTE_TYPE
+						getQuotestatus = getQuote.QUOTE_STATUS
 					else:
 						getQuotetype =''
 										
@@ -4003,12 +4004,13 @@ class SYLDRTLIST:
 						if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_AMOUNT':                            
 							visible = 'data-visible="false"'  
 						if (str(RECORD_ID) == "SYOBJR-00029" and str(invs)=="QUANTITY" and str(Product.GetGlobal("TreeParentLevel2"))=="Product Offerings") or (str(RECORD_ID)=="SYOBJR-00005" and str(invs) == "CUSTOMER_ANNUAL_QUANTITY" and str(TreeParentParam)=="Complementary Products"):
+							data_formatter = "partsListEditLink" if getQuotestatus!='APPROVED' else ''
 							table_header += (
 								'<th  data-field="'
 								+ str(invs)
 								+ '" data-filter-control="input" data-align="right" data-title-tooltip="'
 								+ str(qstring)
-								+ '" data-formatter="partsListEditLink" data-sortable="true" '
+								+ '" data-formatter="'+str(data_formatter)+'" data-sortable="true" '
 								+ rowspan
 								+'>'
 								+ str(qstring)
