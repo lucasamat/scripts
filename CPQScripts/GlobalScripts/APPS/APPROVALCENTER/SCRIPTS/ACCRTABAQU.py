@@ -870,6 +870,7 @@ class QueryBuilder:
                     #         )
                     #     )
                     # else:
+                    Trace.Write("selection_column_J "+str(selection_column)+" - "+str(table))
                     result_obj = Sql.GetList(
                         "SELECT DISTINCT {0}+'-'+{1} AS {2}	FROM {3} (NOLOCK) {4} ".format(
                             selection_column,
