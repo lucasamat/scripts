@@ -2320,10 +2320,10 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		#else:
 			#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
-	if RECORD_ID and ObjectName == 'SAQRIB':
-		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
-						FROM SAQRIB (NOLOCK) 
-						WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
+	# if RECORD_ID and ObjectName == 'SAQRIB':
+	# 	date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
+	# 					FROM SAQRIB (NOLOCK) 
+	# 					WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
 		# if date_diff_obj:
 		# 	if date_diff_obj.IS_CHANGED:
 		# 		notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
