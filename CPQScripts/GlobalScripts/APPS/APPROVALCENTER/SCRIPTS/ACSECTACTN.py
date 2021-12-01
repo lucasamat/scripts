@@ -3138,7 +3138,6 @@ class approvalCenter:
 			msg.Subject = Subject
 			msg.IsBodyHtml = True
 			msg.Body = mailBody
-			#copyEmail1 = MailAddress("mayura.priya@bostonharborconsulting.com")
 			copyEmail1 = MailAddress("surendar.murugachandran@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail1)
 			#copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
