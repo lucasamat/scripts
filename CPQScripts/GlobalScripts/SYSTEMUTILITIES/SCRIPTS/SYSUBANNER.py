@@ -617,9 +617,13 @@ def Related_Sub_Banner(
                 else:
                     ObjName = "SAQTMT"
 
-            elif TreeParam =="Quote Documents":
-                PrimaryLable = "Dynamic Document Generator"
-                PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
+            elif TreeParam =="Quo'te Documents":
+                if subTabName == "Attachments":
+                    PrimaryLable = "Attachments"
+                    PrimaryValue = "Use this page to upload .pdf attachments to your quote revision"
+                else:                
+                    PrimaryLable = "Dynamic Document Generator"
+                    PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
              
                     
 
