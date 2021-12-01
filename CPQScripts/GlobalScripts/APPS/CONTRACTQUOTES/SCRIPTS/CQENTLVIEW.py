@@ -1353,9 +1353,9 @@ class EntitlementView():
 									except:
 										new_value_dicta["ENTITLEMENT"] = "<abbr title='{entitlement_name}'>{entitlement_name}</abbr>".format(entitlement_name=attrName)
 									try:
-										new_value_dicta["DESCRIPTION"] = str("<abbr title='"+str(get_tooltip)+"'>"+str(get_tooltip)+"</abbr>")
+										new_value_dicta["DESCRIPTION"] = str('<abbr title="'+str(get_tooltip)+'">'+str(get_tooltip)+'</abbr>')
 									except:
-										new_value_dicta["DESCRIPTION"] = "<abbr title='{get_tooltip}'>{get_tooltip}</abbr>".format(get_tooltip=get_tooltip)
+										new_value_dicta["DESCRIPTION"] = '<abbr title="{get_tooltip}">{get_tooltip}</abbr>'.format(get_tooltip=get_tooltip)
 									new_value_dicta["REQUIRED"] = get_requiredicon
 									if DType in( "Drop Down", "Check Box", "Free Input, no Matching"):
 										new_value_dicta["VALUE"] = sec_str1 									
