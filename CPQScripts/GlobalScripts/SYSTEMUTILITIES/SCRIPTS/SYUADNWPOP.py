@@ -192,12 +192,13 @@ def POPUPLISTVALUEADDNEW(
 	i = 0
 	id_list = []
 	dict_list1 = []
-	selected_offerings_list_preslect = []
-	Trace.Write("ObjectNameObjectName====###"+str(ObjectName))
+	selected_offerings_list_preslect = []	
 
 	if Question_obj is not None:
 		if DIVNAME == "div_CTR_Assigned_Apps":
 			ObjectName = "SYPRAP"
+		elif DIVNAME == "div_CTR_Attachments":
+			ObjectName = "SAQRAT"
 		else:
 			ObjectName = Question_obj.OBJECT_NAME.strip()
 		if str(ObjectName) == "USERS" and str(CurrentTab) == "Profile":
