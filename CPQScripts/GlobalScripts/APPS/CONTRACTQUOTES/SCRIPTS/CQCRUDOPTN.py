@@ -4666,7 +4666,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							if get_ent_id:
 								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val))
 								if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
-									get_ent_val = str(get_ent_val)
+									get_ent_val = str(get_ent_val[0])
 								else:
 									get_ent_billing_type_value = str(get_ent_val)
 						
