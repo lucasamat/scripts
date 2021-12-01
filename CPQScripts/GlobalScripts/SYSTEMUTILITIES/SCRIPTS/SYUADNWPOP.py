@@ -3786,10 +3786,8 @@ def POPUPLISTVALUEADDNEW(
 					consumable =re.findall(pattern_consumable,sub_string)
 					exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
 					if non_consumable and exclusion_or_inclusion:
-						Trace.Write("Matcheddddddddd")
 						iclusions_val_list.append('N')
 					if consumable and exclusion_or_inclusion:
-						Trace.Write("5443543")
 						iclusions_val_list.append('C')
 				iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
 				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
