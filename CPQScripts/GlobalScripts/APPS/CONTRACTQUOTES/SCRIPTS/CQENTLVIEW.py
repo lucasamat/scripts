@@ -1087,11 +1087,11 @@ class EntitlementView():
 															+ "</option>"
 														)
 												except:
-													Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
+													#Trace.Write(str(default)+'----except dropdown ----'+str(attrName)+'--1043--')
 													#VAR1 = '<option value="select" ' +str(default)+'  style="display;none;"> </option>'
 													if val.ENTITLEMENT_DISPLAY_VALUE == value.STANDARD_ATTRIBUTE_DISPLAY_VAL:
 														selected_option = val.ENTITLEMENT_DISPLAY_VALUE
-														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
+														#Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
 														approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(attrSysId),str(val.ENTITLEMENT_DISPLAY_VALUE).replace("'","''")) )
 														if approval_status:
 															if approval_status.APPROVAL_REQUIRED == True:
@@ -1099,7 +1099,7 @@ class EntitlementView():
 														VAR1 += (
 															'<option  id="'+str(value.SYSTEM_ID)+'" value = "{value}" selected>{value}</option>'.format(value= val.ENTITLEMENT_DISPLAY_VALUE)
 														)
-														Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
+														#Trace.Write(str(selected_option)+'---selected_option---except dropdown ----'+str(attrName))
 													else:
 														VAR1 += (
 															'<option '
