@@ -1472,7 +1472,7 @@ class Entitlements:
 							<PRICE_METHOD>{pm}</PRICE_METHOD>
 							<CALCULATION_FACTOR>{cf}</CALCULATION_FACTOR>
 							<ENTITLEMENT_NAME>{ent_desc}</ENTITLEMENT_NAME>
-							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = key,ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if key in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=str((dict_val).split("||")[3]) ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
+							</QUOTE_ITEM_ENTITLEMENT>""".format(ent_name = key,ent_val_code = ent_val_code,ent_disp_val = ent_disp_val,ct = getcostbaborimpact,pi = getpriceimpact,is_default = '1' if key in attributedefaultvalue else '0',ent_type = str((dict_val).split("||")[2]),ent_desc=(dict_val).split("||")[3] ,pm = pricemethodupdate ,cf =calculation_factor,tool_desc= get_tool_desc.replace("'","''") if "'" in get_tool_desc else get_tool_desc )
 						#Trace.Write("updateentXML-970------"+str(updateentXML))
 					
 				Quote.GetCustomField('ANCILLARY_DICT').Content = str(ancillary_object_dict)
