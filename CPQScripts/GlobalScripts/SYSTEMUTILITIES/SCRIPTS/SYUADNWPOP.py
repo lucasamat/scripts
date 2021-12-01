@@ -3748,7 +3748,7 @@ def POPUPLISTVALUEADDNEW(
 					TableName = "SAQTSE"
 					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
 				else:
-    					Service_Id = Product.GetGlobal("TreeParentLevel0")
+					Service_Id = Product.GetGlobal("TreeParentLevel0")
 					TableName = "SAQSGE"
 					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
 				
