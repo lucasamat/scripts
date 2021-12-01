@@ -193,6 +193,7 @@ def POPUPLISTVALUEADDNEW(
 	id_list = []
 	dict_list1 = []
 	selected_offerings_list_preslect = []
+	Trace.Write("ObjectNameObjectName====###"+str(ObjectName))
 
 	if Question_obj is not None:
 		if DIVNAME == "div_CTR_Assigned_Apps":
