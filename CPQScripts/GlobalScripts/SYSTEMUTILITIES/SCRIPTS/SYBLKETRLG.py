@@ -356,7 +356,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								label = "UPDATED NEW PART"
 								input_id = "updatedNewPart"
 								input_type = "type = \'checkbox\' "
-								checked = "checked"
+								checked = "checked" if bool(VALUE)==True else ""
 							k = Sql.GetFirst("SELECT QUOTE_REV_PO_PRODUCT_LIST_ID FROM SAQRSP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))
 							apply_all = ''
 							if len(list(RECORDID)) > 1:
