@@ -103,6 +103,7 @@ def Related_Sub_Banner(
     Trace.Write('ObjName---103--'+str(ObjName))
     if ObjName == "SAQIGS":
         ObjName ="SAQRIB"
+        page_type = "OBJECT PAGE LAYOUT"
     if ObjName == "SAQDOC":
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' ".format(str(ObjName)))
     else:
