@@ -65,7 +65,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	elif ent_level_table == "SAQSFE":
 		level_name = 'OFFERING FAB LEVEL'
 	elif ent_level_table == "SAQITE":
-		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where {where_condition}".format(where_condition= where))
+		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where {where_condition}".format(where_condition= where_cond))
 		flag_excluse=0
 		get_service_val ='Z0046'
 		#condition based on quote item strcuture start
