@@ -3971,7 +3971,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				"""
 					INSERT SAQSGB (
 						QUOTE_SERVICE_GREENBOOK_RECORD_ID,
-						FABLOCATION_ID,
 						GREENBOOK,
 						GREENBOOK_RECORD_ID,
 						QUOTE_ID,
@@ -3986,8 +3985,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						SERVICE_ID,
 						SERVICE_RECORD_ID,
 						EQUIPMENT_QUANTITY,
-						FABLOCATION_NAME,
-						FABLOCATION_RECORD_ID,
 						CONTRACT_VALID_FROM,
 						CONTRACT_VALID_TO,
 						UOM_ID,
@@ -3999,7 +3996,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified
 						) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
-							SAQSCO.SNDFBL_ID,
 							SAQSCO.GREENBOOK,
 							SAQSCO.GREENBOOK_RECORD_ID,
 							SAQSCO.QUOTE_ID,
@@ -4014,8 +4010,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQSCO.SERVICE_ID,
 							SAQSCO.SERVICE_RECORD_ID,
 							SAQSCO.EQUIPMENT_QUANTITY,								
-							SAQSCO.FABLOCATION_NAME,
-							SAQSCO.FABLOCATION_RECORD_ID,
 							SAQTMT.CONTRACT_VALID_FROM,
 							SAQTMT.CONTRACT_VALID_TO,
 							SAQTSV.UOM_ID,
@@ -4034,7 +4028,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
 							WHERE 
 							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
-							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
+							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
 					""".format(
 							TreeParam=self.tree_param if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type == 'TOOL RELOCATION' else self.tree_parent_level_0,
 							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type == 'TOOL RELOCATION' else self.tree_parent_level_1,
@@ -4050,7 +4044,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 				"""
 					INSERT SAQSGB (
 						QUOTE_SERVICE_GREENBOOK_RECORD_ID,
-						FABLOCATION_ID,
 						GREENBOOK,
 						GREENBOOK_RECORD_ID,
 						QUOTE_ID,
@@ -4065,8 +4058,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						SERVICE_ID,
 						SERVICE_RECORD_ID,
 						EQUIPMENT_QUANTITY,
-						FABLOCATION_NAME,
-						FABLOCATION_RECORD_ID,
 						CONTRACT_VALID_FROM,
 						CONTRACT_VALID_TO,
 						PAR_SERVICE_DESCRIPTION,
@@ -4077,7 +4068,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 						CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified
 						) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
-							SAQSCO.FABLOCATION_ID,
 							SAQSCO.GREENBOOK,
 							SAQSCO.GREENBOOK_RECORD_ID,
 							SAQSCO.QUOTE_ID,
@@ -4092,8 +4082,6 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							SAQSCO.SERVICE_ID,
 							SAQSCO.SERVICE_RECORD_ID,
 							SAQSCO.EQUIPMENT_QUANTITY,								
-							SAQSCO.FABLOCATION_NAME,
-							SAQSCO.FABLOCATION_RECORD_ID,
 							SAQTMT.CONTRACT_VALID_FROM,
 							SAQTMT.CONTRACT_VALID_TO,
 							SAQTSV.PAR_SERVICE_DESCRIPTION,
@@ -4111,7 +4099,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 							JOIN SYSPBT (NOLOCK) ON SYSPBT.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SYSPBT.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID
 							WHERE 
 							SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}'
-							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.FABLOCATION_RECORD_ID =A.FABLOCATION_RECORD_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
+							AND SYSPBT.BATCH_GROUP_RECORD_ID = '{BatchGroupRecordId}')A LEFT JOIN SAQSGB (NOLOCK) AS M ON A.QUOTE_RECORD_ID = M.QUOTE_RECORD_ID AND M.SERVICE_ID = A.SERVICE_ID AND M.GREENBOOK = A.GREENBOOK WHERE M.QUOTE_RECORD_ID is null                  
 					""".format(
 							TreeParam=self.tree_param if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_0,
 							TreeParentParam=self.tree_parent_level_0 if (self.tree_parent_level_0.upper() == 'COMPREHENSIVE SERVICES' or self.tree_parent_level_0.upper() == 'COMPLEMENTARY PRODUCTS') and self.sale_type != 'TOOL RELOCATION' else self.tree_parent_level_1,
