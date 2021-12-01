@@ -4656,17 +4656,21 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						updateentXML = get_billing_cycle.ENTITLEMENT_XML
 						pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 						pattern_id = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILCYC)</ENTITLEMENT_ID>')
-						pattern_id_billing_type = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
+						pattern_id_billing_type = re.compile(r'<ENTITLEMENT_ID>(AGS_'+str(get_service_val)+'_PQB_BILTYP|AGS_'+str(get_service_val)+'_PQB_BILTYP)</ENTITLEMENT_ID>')
 						pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 						for m in re.finditer(pattern_tag, updateentXML):
 							sub_string = m.group(1)
 							get_ent_id = re.findall(pattern_id,sub_string)
-							get_ent_bill_type = re.findall(pattern_id_billing_type,sub_string)
+							#get_ent_bill_type = re.findall(pattern_id_billing_type,sub_string)
 							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
-								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val[0]))
-								get_ent_val = str(get_ent_val[0])
-								get_ent_billing_type_value = str(get_ent_bill_type[0])
+								Trace.Write(str(sub_string)+'---get_ent_name---'+str(get_ent_val))
+								if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
+									get_ent_val = str(get_ent_val)
+								else:
+									get_ent_billing_type_value = str(get_ent_val)
+						
+								#get_ent_billing_type_value = str(get_ent_bill_type[0])
 								break
 					Trace.Write(str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_val---4750--'+str(get_ent_val))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
