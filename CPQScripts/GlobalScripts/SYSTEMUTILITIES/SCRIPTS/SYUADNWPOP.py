@@ -84,7 +84,8 @@ def POPUPLISTVALUEADDNEW(
 		quote_revision_record_id = ''
 	#page = ''
 	pagedata = ''  
-	QryCount = ""  
+	QryCount = ""
+	disable = ''  
 	try:
 		if (TABLEID != "ADDNEW__SYOBJR_93123_SYOBJ_00267" and TABLEID != "ADDNEW__SYOBJR_98788_SYOBJ_00907") and RECORD_FEILD != "":
 			Trace.Write('trace-----')
@@ -4335,6 +4336,7 @@ def POPUPLISTVALUEADDNEW(
 
 		elif str(ObjectName) == "SAQRAT":
 			Trace.Write('upload att=====')
+			disable = 'disabled'
 			sec_str += (
 						'<div class="top-market-code-sec"><div style="margin-bottom: -1px;" class="row modulebnr brdr">'                
 						+ "UPLOAD ATTACHMENT"
