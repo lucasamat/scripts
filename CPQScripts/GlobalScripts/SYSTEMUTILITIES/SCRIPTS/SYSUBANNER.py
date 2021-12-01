@@ -3056,6 +3056,8 @@ if CurrentTab == 'Quotes':
     # if str(ObjName) == "SAQRIB":
     # 	CurrentRecordId = "8A70EAA9-094B-4D42-AB91-111DCE26DD52"
     # 	crnt_Qry = Sql.GetFirst("SELECT SAPCPQ_ATTRIBUTE_NAME FROM SYOBJR (NOLOCK) WHERE RECORD_ID = '" + str(CurrentRecordId) + "'")
+    if str(subTabName) == "Attachments":
+        ObjName = "SAQRAT"
     if str(subTabName) == "Assembly Details":
         ObjName = "SAQSCA"
     if TreeSuperParentParam == "Fab Locations" and (subTabName == "Equipment Details" or subTabName == "Equipment Fab Value Drivers"):
