@@ -2675,7 +2675,7 @@ def Related_Sub_Banner(
         sec_rel_sub_bnr += (add_button)
         Trace.Write("Qddd----"+str(sec_rel_sub_bnr))    
     Trace.Write("tabNameeee"+str(TabName))
-    Trace.Write("sec_rel_sub_bnr---->"+str(sec_rel_sub_bnr))
+    Trace.Write("sec_rel_sub_bnr--2678-->"+str(sec_rel_sub_bnr))
     # Added to update configure status in work flow status bar - start
     # if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
     #     Trace.Write('sales11=======')
@@ -2938,7 +2938,7 @@ def Related_Sub_Banner(
                     if quote_status.QUOTE_STATUS != 'APPROVED':
                         sec_rel_sub_bnr += (btn)
             
-        Trace.Write('sec_rel_sub_bnr----'+str(sec_rel_sub_bnr))
+        Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
 try:
     CurrentRecordId = Param.CurrentRecordId
