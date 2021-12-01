@@ -4013,7 +4013,7 @@ def POPUPLISTVALUEADDNEW(
 			DIVNAME = "VIEW_DIV_ID"
 			new_value_dict = {}
 			ObjectName = "SACONT"
-			table_id = "contact_replace_addnew_model"
+			table_id = "contact_addnew"
 			Header_details = {
 				"CONTACT_RECORD_ID": "KEY",
 				"CONTACT_ID": "CONTACT ID",
@@ -4077,7 +4077,7 @@ def POPUPLISTVALUEADDNEW(
 						+ "</th>"
 					)
 			sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
-			sec_str += '<div id="contact_replace_addnew_model_footer"></div>'
+			sec_str += '<div id="contact_addnew_footer"></div>'
 			values_list = ""
 			values_lists = ""
 			a_test = []
@@ -4104,7 +4104,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 					+ str(table_ids)
-					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#contact_replace_addnew_model").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#contact_addnew").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
 					+ str(table_ids)
