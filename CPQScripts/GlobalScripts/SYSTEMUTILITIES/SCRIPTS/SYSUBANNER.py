@@ -617,7 +617,7 @@ def Related_Sub_Banner(
                 else:
                     ObjName = "SAQTMT"
 
-            elif TreeParam =="Quo'te Documents":
+            elif TreeParam =="Quote Documents":
                 if subTabName == "Attachments":
                     PrimaryLable = "Attachments"
                     PrimaryValue = "Use this page to upload .pdf attachments to your quote revision"
