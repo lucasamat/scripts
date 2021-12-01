@@ -347,9 +347,23 @@ class SYLDRTLIST:
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
 				try:
 					if SubTab:
-						Trace.Write('SubTab----'+str(SubTab))
-						end = int(SubTab.split(' ')[-1]) * 12
-						start = end - 12 + 1
+						item_billing_plan_obj = Sql.GetFirst("""SELECT count(CpqTableEntryId) as cnt FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'GROUP BY EQUIPMENT_ID,SERVICE_ID""".format(contract_quote_record_id,quote_revision_record_id))
+						if item_billing_plan_obj is not None and services_obj:
+							quotient, remainder = divmod(item_billing_plan_obj.cnt, 12)
+							years = quotient + (1 if remainder > 0 else 0)
+							if not years:
+								years = 1
+							for index in range(1, years+1):
+								YearCount = "Year {}".format(index)
+								no_of_year = index
+								#YearCount1 = index
+								if YearCount:
+									end = int(YearCount.split(' ')[-1]) * 12
+									start = end - 12 + 1
+						#commented for loading grid in billing plan 
+						# Trace.Write('SubTab----'+str(SubTab))
+						# end = int(SubTab.split(' ')[-1]) * 12
+						# start = end - 12 + 1
 				except:
 					end = ""
 					start = ""
