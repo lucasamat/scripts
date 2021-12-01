@@ -301,7 +301,7 @@ class ContractQuoteCrudOpertion:
 		Trace.Write(str(amount_column)+'---301-----'+str(service_id))
 		Trace.Write("divide_by---"+str(divide_by))
 		if str(get_ent_billing_type_value).upper() == "FIXED":
-			Trace.Write('304---')
+			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
 		Sql.RunQuery("""INSERT SAQIBP (
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
 						LINE, QUOTE_ID, QTEITM_RECORD_ID, 
