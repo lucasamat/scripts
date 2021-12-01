@@ -867,7 +867,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					)
 				elif self.action_type == "ADD_SPARE_PARTS":
 					parent_based_condition = ""
-					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+					if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
 						parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"
 					
 					
@@ -928,7 +928,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 										""".format(
 							green_book =self.tree_param,
 							fab_location_id = self.tree_parent_level_0,
-							service_id = self.tree_parent_level_1 if self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007") else self.tree_param,
+							service_id = self.tree_parent_level_0 if self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") else self.tree_param,
 							BatchGroupRecordId=batch_group_record_id,
 							QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 							UserId=self.user_id,
@@ -1313,7 +1313,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 				)
 			elif self.action_type == "ADD_PART":
 				parent_based_condition = ""
-				if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_1 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
+				if self.tree_param in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035") or  self.tree_parent_level_0 in ("Z0091","Z0092","Z0004","Z0006","Z0007","Z0035"):
 					parent_based_condition = " AND SAQTSV.SERVICE_ID = 'Z0101'"
 				
 
@@ -3306,7 +3306,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 			# 			update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 1 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
 			# 		else:
 			# 			update_warranty_enddate_alert = "UPDATE SAQSCO SET WARRANTY_END_DATE_ALERT = 0 where QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' and QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID = '"+str(val.QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID)+"'"
-					Sql.RunQuery(update_warranty_enddate_alert)
+				#Sql.RunQuery(update_warranty_enddate_alert)
 				#4393 end
 				# if val.WARRANTY_START_DATE:
 				# 	if val.WARRANTY_END_DATE >= get_contract_date.CONTRACT_VALID_FROM:
