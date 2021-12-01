@@ -101,7 +101,7 @@ def Related_Sub_Banner(
     # Getting page details
     multi_buttons = []
     Trace.Write('ObjName---103--'+str(ObjName))
-    if ObjName == "SAQTBP":
+    if ObjName == "SAQIGS":
         ObjName ="SAQRIB"
     if ObjName == "SAQDOC":
         page_details = Sql.GetFirst("SELECT RECORD_ID FROM SYPAGE WHERE OBJECT_APINAME = '{}' ".format(str(ObjName)))
