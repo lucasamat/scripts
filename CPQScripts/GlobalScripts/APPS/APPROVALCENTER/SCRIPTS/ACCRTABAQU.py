@@ -851,8 +851,8 @@ class QueryBuilder:
                     #         selection_column, "DESCRIPTION" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "DESCRIPTION"
                     #     )
                     # else:
-                    remove_empty_records_where = "ISNULL({},'') <> '' AND  ISNULL({},'') <> '' ".format(
-                        selection_column, "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME"
+                    remove_empty_records_where = "ISNULL({},'') <> ''".format(
+                        selection_column
                     )
                     if where_condition_string:
                         where_condition_string += " AND " + remove_empty_records_where
@@ -873,8 +873,7 @@ class QueryBuilder:
                     Trace.Write("selection_column_J "+str(selection_column)+" - "+str(table))
                     # "NAME" if selection_column == "PRICECLASS_ID" else selection_column[:-2] + "NAME",
                     result_obj = Sql.GetList(
-                        "SELECT DISTINCT {0}+ AS {1}	FROM {2} (NOLOCK) {3} ".format(
-                            selection_column,
+                        "SELECT DISTINCT {0}	FROM {1} (NOLOCK) {2} ".format(
                             selection_column,
                             table,
                             where_condition_string,
