@@ -4669,7 +4669,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value)
 					elif str(get_ent_val).upper() == "QUARTELY":
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						ct_start_date =contract_start_date
@@ -4687,7 +4687,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/4) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value)
 					else:
 						Trace.Write('get_ent_val---'+str(get_ent_val))
 						if billing_day in (29,30,31):
@@ -4713,7 +4713,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
 						columns=["CART_ID", "USERID"],
