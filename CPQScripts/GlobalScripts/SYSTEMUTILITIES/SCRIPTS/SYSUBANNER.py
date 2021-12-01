@@ -562,6 +562,16 @@ def Related_Sub_Banner(
                 FourthValue =  str(query_result.GREENBOOK)
                 FifthLable = "Equipment ID"
                 FifthValue = str(query_result.OBJECT_ID)
+
+            elif TreeParam == "Quote Documents":
+                Trace.Write("qcdoc=====")
+                if subTabName == "Attachments":
+                    Trace.Write("qcdoc=====1111")
+                    PrimaryLable = "Attachments"
+                    PrimaryValue = "Use this page to upload .pdf attachments to your quote revision"
+                else:                
+                    PrimaryLable = "Dynamic Document Generator"
+                    PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents" 
             else:
                 ThirdQuery = Sql.GetFirst(
                 "select * from SYOBJD (nolock) where OBJECT_NAME = '" + str(ObjName) + "' AND IS_KEY = 'True' "
