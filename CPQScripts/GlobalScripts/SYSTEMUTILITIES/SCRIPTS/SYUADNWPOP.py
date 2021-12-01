@@ -4337,13 +4337,16 @@ def POPUPLISTVALUEADDNEW(
 		elif str(ObjectName) == "SAQRAT":
 			Trace.Write('upload att=====')
 			disable = 'disabled'
-			sec_str += (
-						'<div class="top-market-code-sec"><div style="margin-bottom: -1px;" class="row modulebnr brdr">'                
-						+ "UPLOAD ATTACHMENT"
-						+ '<button type="button" style="float:right;" class="close"  data-dismiss= "modal" onclick="close_popup()">X</button></div></div>'
-					)
-			sec_str += '<div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr">'
-			sec_str += '<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src=""><div class="product_txt_div_child secondary_highlight text-left" style="display: block;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div>'
+			# sec_str += (
+			# 			'<div class="top-market-code-sec"><div style="margin-bottom: -1px;" class="row modulebnr brdr">'                
+			# 			+ "UPLOAD ATTACHMENT"
+			# 			+ '<button type="button" style="float:right;" class="close"  data-dismiss= "modal" onclick="close_popup()">X</button></div></div>'
+			# 		)
+			sec_str = '<div class="row modulebnr brdr ma_mar_btm">UPLOAD ATTACHMENT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
+
+			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div></div></div>'
+			# sec_str += '<div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr">'
+			# sec_str += '<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src=""><div class="product_txt_div_child secondary_highlight text-left" style="display: block;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div>'
 
 			sec_str += "</div></div>"
 			FieldsList = ['Attachment File Name','Attachment Type']
