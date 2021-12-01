@@ -1120,7 +1120,7 @@ class Entitlements:
 								# 	QuoteModule.service_level_entitlement({str(serviceId):1})
 								#ancillary_flag = "DELETE"
 
-						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004') :
+						elif key == "AGS_{}_TSC_CUOWPN".format(serviceId) and serviceId in ("Z0091",'Z0092','Z0004','Z0009') :
 							#ancillary_object = 'A6200'
 							if entitlement_value.upper() == "YES":
 								ancillary_object_dict['A6200'] = "INSERT"
