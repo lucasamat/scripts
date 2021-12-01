@@ -100,7 +100,7 @@ def Related_Sub_Banner(
     dynamic_Button = None
     # Getting page details
     multi_buttons = []
-    
+    Trace.Write('ObjName---103--'+str(ObjName))
     if ObjName == "SAQTBP":
         ObjName ="SAQRIB"
     if ObjName == "SAQDOC":
