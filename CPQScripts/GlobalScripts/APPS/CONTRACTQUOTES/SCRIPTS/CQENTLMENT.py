@@ -881,6 +881,8 @@ class Entitlements:
 									approval_list[key] = 'True'
 								else:
 									approval_list[key] = 'False'
+							else:
+								approval_list[key] = 'False'
 				except:
 					Trace.Write('error-622--'+str(key))
 							
