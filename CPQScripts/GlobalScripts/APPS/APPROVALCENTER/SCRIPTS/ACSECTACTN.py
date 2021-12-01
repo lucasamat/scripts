@@ -3050,8 +3050,8 @@ class approvalCenter:
 			#    approvalid=str(getnotify.APPROVAL_RECORD_ID),
 			#    priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
 			#)
-			ApproveLink = """https://my347401-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
-			RejectLink = """https://my347401-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
+			ApproveLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
+			RejectLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			ViewLink ="""https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			mailbdyready = mailbdyready.replace("ApproveLink", ApproveLink)
 			mailbdyready = mailbdyready.replace("RejectLink", RejectLink)
