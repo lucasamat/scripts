@@ -331,7 +331,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 								+ str(VALUE)
 								+ '">'
 							)
-					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY','NEW_PART') :
+					if TITLE not in ('NET_PRICE','DISCOUNT','PM_FREQUENCY','QUANTITY','CUSTOMER_ANNUAL_QUANTITY') :
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 					else:
