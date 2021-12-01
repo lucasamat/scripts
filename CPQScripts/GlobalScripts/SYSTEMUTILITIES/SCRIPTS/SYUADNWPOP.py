@@ -99,17 +99,27 @@ def POPUPLISTVALUEADDNEW(
 			RECORD_FEILD = ""
 	except:
 		RECORD_FEILD = ""
-	if TABLEID.startswith("SYOBJR"):
+	try:	
+		if TABLEID.startswith("SYOBJR"):
+			TABLE_ID = ""
+		else:
+			TABLE_ID = TABLEID.split("__")
+	except:		
 		TABLE_ID = ""
-	else:
-		TABLE_ID = TABLEID.split("__")
+		
 	TreeParentParam = ""
 	TreeSuperParentParam = ""
-	if TABLE_ID:
-		table = TABLE_ID[1]
-	else:
-		table = TABLEID
-	table = table.split("_")
+	try:
+		if TABLE_ID:
+			table = TABLE_ID[1]
+		else:
+			table = TABLEID
+	except:
+		table = ""
+	try:
+		table = table.split("_")
+	except:
+		table = ""
 	count_value = 0
 	filter_control_function = ""
 	try:
