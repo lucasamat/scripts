@@ -303,6 +303,7 @@ class ContractQuoteCrudOpertion:
 		Trace.Write(str(get_val)+"--get=--divide_by---"+str(divide_by))
 		if str(get_ent_billing_type_value).upper() == "FIXED":
 			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
+			object_name = 'SAQSCO'
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
 			Sql.RunQuery("""INSERT SAQIBP (
 							
@@ -314,35 +315,35 @@ class ContractQuoteCrudOpertion:
 						) 
 						SELECT 
 							CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-							SAQSCO.WARRANTY_END_DATE as BILLING_END_DATE,
-							SAQSCO.WARRANTY_START_DATE as BILLING_START_DATE,
+							{object_name}.WARRANTY_END_DATE as BILLING_END_DATE,
+							{object_name}.WARRANTY_START_DATE as BILLING_START_DATE,
 							ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0) / {get_val}  as BILLING_VALUE,
 							SAQRIT.NET_PRICE AS ANNUAL_BILLING_AMOUNT,
 							'{billing_type}' as BILLING_TYPE,
 							SAQRIT.LINE AS LINE,
-							SAQSCO.QUOTE_ID,
+							{object_name}.QUOTE_ID,
 							SAQRIT.QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
-							SAQSCO.QUOTE_RECORD_ID,
-							SAQSCO.QTEREV_ID,
-							SAQSCO.QTEREV_RECORD_ID,
+							{object_name}.QUOTE_RECORD_ID,
+							{object_name}.QTEREV_ID,
+							{object_name}.QTEREV_RECORD_ID,
 							{BillingDate} as BILLING_DATE,						
 							0 as BILLING_YEAR,
-							SAQSCO.EQUIPMENT_DESCRIPTION,
-							SAQSCO.EQUIPMENT_ID,									
-							SAQSCO.EQUIPMENT_RECORD_ID,						
+							{object_name}.EQUIPMENT_DESCRIPTION,
+							{object_name}.EQUIPMENT_ID,									
+							{object_name}.EQUIPMENT_RECORD_ID,						
 							'' as QTEITMCOB_RECORD_ID,
-							SAQSCO.SERVICE_DESCRIPTION,
-							SAQSCO.SERVICE_ID,
-							SAQSCO.SERVICE_RECORD_ID, 
-							SAQSCO.GREENBOOK,
-							SAQSCO.GREENBOOK_RECORD_ID,
-							SAQSCO.SERIAL_NO AS SERIAL_NUMBER,
-							SAQSCO.WARRANTY_START_DATE,
-							SAQSCO.WARRANTY_END_DATE,    
+							{object_name}.SERVICE_DESCRIPTION,
+							{object_name}.SERVICE_ID,
+							{object_name}.SERVICE_RECORD_ID, 
+							{object_name}.GREENBOOK,
+							{object_name}.GREENBOOK_RECORD_ID,
+							{object_name}.SERIAL_NO AS SERIAL_NUMBER,
+							{object_name}.WARRANTY_START_DATE,
+							{object_name}.WARRANTY_END_DATE,    
 							{UserId} as CPQTABLEENTRYADDEDBY, 
 							GETDATE() as CPQTABLEENTRYDATEADDED
-						FROM SAQSCO (NOLOCK) '{join_condition}'
-						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,
+						FROM {object_name} (NOLOCK) {join_condition}
+						WHERE {object_name}.QUOTE_RECORD_ID='{QuoteRecordId}' AND {object_name}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {object_name}.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,object_name=object_name,
 							UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 							RevisionRecordId=self.quote_revision_record_id,
 							BillingDate=billing_date,
