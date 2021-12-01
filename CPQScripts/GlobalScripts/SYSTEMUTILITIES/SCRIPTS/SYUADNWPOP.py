@@ -149,6 +149,10 @@ def POPUPLISTVALUEADDNEW(
 		Question_obj = Sql.GetFirst(
 			"SELECT OBJECT_NAME, LABEL FROM SYOBJH (NOLOCK) WHERE RECORD_ID='" + str(popup_lable_obj.OBJ_REC_ID) + "'"
 		)
+	elif DIVNAME == "div_CTR_Attachments":
+		Question_obj = Sql.GetFirst(
+			"SELECT OBJECT_NAME, LABEL FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='SYOBJ-1177044'"
+		)	
 
 	else:
 		Question_obj = Sql.GetFirst(
