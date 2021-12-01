@@ -263,7 +263,8 @@ class SyncQuoteAndCustomTables:
 							getquote_sales_val = getslaes_value.SALESORG_ID
 						get_il_sales = Sql.GetList("select SALESORG_ID from SASORG where country = 'IL'")
 						get_il_sales_list = [val.SALESORG_ID for val in get_il_sales]
-						if str(ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME).upper() == "FAB LOCATION":
+						AttributeID_Pass = ''
+						if ATTRIBUTE_DEFN.STANDARD_ATTRIBUTE_NAME.upper() == "FAB LOCATION":
 							AttributeID_Pass = attrs
 							if getquote_sales_val in get_il_sales_list:
 								NewValue = 'Israel'
@@ -1641,10 +1642,10 @@ class SyncQuoteAndCustomTables:
 								getRevision = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QUOTE_REVISION_RECORD_ID = '{}' AND DOCTYP_ID IS NOT NULL AND DOCTYP_ID != '' ".format(quote_record_id,quote_revision_id))
 								if getRevision is None:
 									ScriptExecutor.ExecuteGlobal('CQDOCUTYPE',{'QUOTE_RECORD_ID':quote_record_id,'QTEREV_RECORD_ID':quote_revision_id,'SERVICE_ID':ServicerecordId})
-								#try:
-								self.CreateEntitlements(quote_record_id)
-								#except:
-								#	Log.Info("CreateEntitlements Error")
+								try:
+									self.CreateEntitlements(quote_record_id)
+								except:
+									Log.Info("CreateEntitlements Error")
 								entitle_end_time = time.time()
 								
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
