@@ -10823,4 +10823,4 @@ elif ACTION == 'SERVICE FAB DETAILS':
 	ApiResponse = ApiResponseFactory.JsonResponse(ServiceFabDetails())
 # elif ACTION == 'BUNDLE CALC':
 # 	REC_ID = Param.REC_ID
-# 	ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
+## 	ApiResponse = ApiResponseFactory.JsonResponse(BundleCalc(REC_ID))
