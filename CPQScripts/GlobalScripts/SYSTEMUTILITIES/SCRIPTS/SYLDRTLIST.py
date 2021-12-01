@@ -2747,6 +2747,8 @@ class SYLDRTLIST:
 								Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							elif ObjectName == "SAQSAO":
 								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
+							elif ObjectName == "SAQRAT":
+								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="download_file(this)">DOWNLOAD</a></li>'
 							
 
 
