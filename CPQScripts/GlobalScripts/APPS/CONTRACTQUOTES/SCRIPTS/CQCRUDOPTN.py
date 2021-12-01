@@ -527,7 +527,31 @@ class ContractQuoteCrudOpertion:
 							# Total based on service - end
 		return True
 		
-					
+
+class QuoteContactModel(ContractQuoteCrudOpertion):
+	
+	def __init__(self, **kwargs):
+		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
+											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'),tree_parent_level_1=kwargs.get('tree_parent_level_1'))
+		self.opertion = kwargs.get('opertion')
+		self.action_type = kwargs.get('action_type')
+		self.values = kwargs.get('values')
+		self.table_name = kwargs.get('table_name')
+		self.all_values = kwargs.get('all_values')		
+		self.node_id = ""
+	
+	def _create(self):
+		mylist = []
+		row_values = {}
+		if self.action_type == "ADD_CONTACT":
+			master_object_name = "SACONT"
+			columns = [
+				
+			]
+			table_name = "SAQICT"
+			condition_column = "CONTACT_RECORD_ID"		
+
+
 class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
@@ -6512,7 +6536,8 @@ def Factory(node=None):
 		"QUOTE APPROVAL LEVEL NOTIFICATION":ContractQuoteNoficationApprovalModel,
 		"QUOTE APPROVAL MODEL":ContractQuoteApprovalModel,
 		#"QUOTE ITEMS MODEL":ContractQuoteItemsModel,
-		"PARTS MODEL": PartsListModel
+		"PARTS MODEL": PartsListModel,
+		"CONTACT MODEL":QuoteContactModel
 	}
 	return models[node]
 
