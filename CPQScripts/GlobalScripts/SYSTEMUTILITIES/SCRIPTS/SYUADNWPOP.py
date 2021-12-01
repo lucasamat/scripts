@@ -3803,16 +3803,16 @@ def POPUPLISTVALUEADDNEW(
 					order_by,pagination_condition
 				)
 			)
-			Trace.Write('3721-----')
-			QueryCountObj = Sql.GetFirst(
-					"select count(*) as cnt from {} (NOLOCK) {} {} ".format(
-					ObjectName,
-					"WHERE " + where_string_1 if where_string_1 else "",
-					additional_where
-				)
-				)
-			if QueryCountObj is not None:
-				QryCount = QueryCountObj.cnt
+			#Trace.Write('3721-----')
+			# QueryCountObj = Sql.GetFirst(
+			# 		"select count(*) as cnt from {} (NOLOCK) {} {} ".format(
+			# 		ObjectName,
+			# 		"WHERE " + where_string_1 if where_string_1 else "",
+			# 		additional_where
+			# 	)
+			# 	)
+			#if QueryCountObj is not None:
+			QryCount = Pagination_M.count
 
 			if table_data is not None:
 				for row_data in table_data:
