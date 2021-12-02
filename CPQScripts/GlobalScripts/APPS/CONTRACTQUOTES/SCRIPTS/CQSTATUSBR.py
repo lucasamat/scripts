@@ -68,9 +68,9 @@ def Dynamic_Status_Bar():
             Trace.Write("NO Quote Items")
             price_bar = "no_quote_items"
                             
-        if getsalesorg_ifo and getfab_info and incomplete_status == '':
+        if getsalesorg_ifo and getfab_info:
             Trace.Write('salesorg--present---')
-            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:                
+            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID and complete_status == 'YES':                
                 Trace.Write('No button-2454-')
                 buttonvisibility = "show_button"            
             else:
