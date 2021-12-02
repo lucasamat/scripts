@@ -151,6 +151,9 @@ class ContractQuoteItem:
 		if self.is_ancillary == True:
 			dynamic_value_for_status = "'ACQUIRED' AS STATUS,'0' AS NET_PRICE_INGL_CURR, "
 			dynamic_col_names = " NET_PRICE_INGL_CURR,"
+			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
+				dynamic_value_for_status += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR, '0' AS COMVAL_INGL_CURR,"
+				dynamic_col_names = "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 		else:
 			dynamic_value_for_status = "null AS STATUS, "
 		
@@ -231,9 +234,6 @@ class ContractQuoteItem:
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinString=annualized_item_join_string, JoinConditionString=join_condition_string, WhereConditionString=annualized_item_where_string, dynamic_value_for_status = dynamic_value_for_status,dynamic_col_names = dynamic_col_names)
 			)
-
-		if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
-			self._update_variable_pricing()
 
 	def _quote_item_line_entitlement_insert(self, update=False):
 		# Update - Start
@@ -483,6 +483,10 @@ class ContractQuoteItem:
 		if self.is_ancillary == True:
 			dynamic_net_values = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
 			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,"
+			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
+				dynamic_net_values += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR, '0' AS COMVAL_INGL_CURR,"
+				dynamic_columns = "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
+
 
 		if self.source_object_name:		
 			equipments_count = 0
@@ -988,9 +992,6 @@ class ContractQuoteItem:
 		)
 	
 		return True		
-
-	def _update_variable_pricing(self):
-		pass
 
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
