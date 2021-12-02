@@ -351,8 +351,8 @@ class ContractQuoteCrudOpertion:
 						{object_name}.WARRANTY_END_DATE,    
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
-					FROM {object_name} (NOLOCK) {join_condition}
-					WHERE {object_name}.QUOTE_RECORD_ID='{QuoteRecordId}' AND {object_name}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {object_name}.SERVICE_ID ='{service_id}'""".format(join_condition=join_condition,object_name=object_name,
+					FROM {object_name} (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK
+					WHERE {object_name}.QUOTE_RECORD_ID='{QuoteRecordId}' AND {object_name}.QTEREV_RECORD_ID = '{RevisionRecordId}' AND {object_name}.SERVICE_ID ='{service_id}'""".format(object_name=object_name,
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
