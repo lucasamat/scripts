@@ -875,13 +875,17 @@ class Entitlements:
 					if sectional_current_dict:
 						#Trace.Write("sectional_current_dict-"+str(sectional_current_dict))
 						for key,value in sectional_current_dict.items():
-							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(str(key),str(value.split('||')[0]).replace("'","''") ) )
+							approval_status = Sql.GetFirst("SELECT APPROVAL_REQUIRED FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(key,value.split('||')[0]).replace("'","''")  )
 							if approval_status:
+								Trace.Write("if approval_list"+str(key))
 								if approval_status.APPROVAL_REQUIRED == True:
+									Trace.Write("if1 approval_list"+str(key))
 									approval_list[key] = 'True'
 								else:
+									Trace.Write("else approval_list"+str(key))
 									approval_list[key] = 'False'
 							else:
+								Trace.Write("else1 approval_list"+str(key))
 								approval_list[key] = 'False'
 				except:
 					Trace.Write('error-622--'+str(key))
@@ -1980,6 +1984,7 @@ class Entitlements:
 				# 	factcurreny = factcurr.GS
 		#Trace.Write('attributeEditonlylst---Durga---1730--'+str(attributeEditonlylst))
 		Trace.Write('attriburesrequired_list---'+str(attriburesrequired_list))
+		Trace.Write('approval_list---'+str(approval_list))
 		#if 'AGS_Z0091_CVR_FABLCY' in attributeEditonlylst:
 		attributeEditonlylst = [recrd for recrd in attributeEditonlylst if recrd != 'AGS_{}_CVR_FABLCY'.format(serviceId) ]
 		return attributesdisallowedlst,get_attr_leve_based_list,attributevalues,attributeReadonlylst,attributeEditonlylst,factcurreny, dataent, attr_level_pricing,dropdownallowlist,dropdowndisallowlist,attribute_non_defaultvalue,dropdownallowlist_selected,attributevalues_textbox,multi_select_attr_list,attr_tab_list_allow,attr_tab_list_disallow,attributesallowedlst,approval_list,attriburesrequired_list
