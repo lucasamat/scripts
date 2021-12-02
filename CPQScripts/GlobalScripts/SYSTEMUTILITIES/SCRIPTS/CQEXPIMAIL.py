@@ -70,10 +70,10 @@ class qt_expiration_mail_trigger:
                     #msg.CC.Add(copyEmail5)    
                     mailClient.Send(msg)
                     Trace.Write("Mail Sent Successfully")
-                    Quote.GetCustomField("quote_expiration_mail").Content = "FALSE"
+                    #Quote.GetCustomField("quote_expiration_mail").Content = "FALSE"
                     # quote_expiration_mail = "FALSE"
-                except Exception, e:
-                    self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+                except Exception:
+                    self.exceptMessage = "SYCONUPDAL : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : "
                     Trace.Write(self.exceptMessage)
         return True
 
