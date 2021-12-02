@@ -273,6 +273,8 @@ class ContractQuoteCrudOpertion:
 							
 	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None):
 		get_val =''
+		Trace.Write('get_ent_billing_type_value--'+str(get_ent_billing_type_value))
+		Trace.Write('get_ent_val_type--'+str(get_ent_val_type))
 		#QTQIBP_INS=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
 		if get_ent_val_type == "Monthly":
 			year = int(amount_column.split('_')[-1])
