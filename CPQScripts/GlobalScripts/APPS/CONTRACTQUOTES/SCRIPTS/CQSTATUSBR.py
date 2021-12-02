@@ -51,7 +51,8 @@ def Dynamic_Status_Bar():
                 complete_status = 'YES'
             else:
                 incomplete_status = 'YES'
-        
+        Trace.Write("complete_status"+str(complete_status))
+        Trace.Write("incomplete_status"+str(incomplete_status))
         price_preview_status = []
         item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         if item_covered_obj:
