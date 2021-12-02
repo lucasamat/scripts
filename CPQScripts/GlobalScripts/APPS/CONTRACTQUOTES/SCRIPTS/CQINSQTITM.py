@@ -32,7 +32,9 @@ class ContractQuoteItem:
 		self.pricing_temp_table = ''
 		self.quote_line_item_temp_table = '' 
 		self.quote_service_entitlement_type = ''
+		self._ent_billing_type = ""
 		self.source_object_name = ''
+		self.where_condition_string = kwargs.get('where_condition_string') 
 		self.set_contract_quote_related_details()
 		self._set_service_type()
 		self._set_fpm_service_type()
@@ -90,7 +92,7 @@ class ContractQuoteItem:
 		else:
 			self.is_ancillary = False
 		return True
-	
+
 	def _quote_items_assembly_insert(self, update=True):
 		# Update - Start
 		#item_line_covered_object_assembly_join_string = ""	
@@ -229,6 +231,9 @@ class ContractQuoteItem:
 				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, JoinString=annualized_item_join_string, JoinConditionString=join_condition_string, WhereConditionString=annualized_item_where_string, dynamic_value_for_status = dynamic_value_for_status,dynamic_col_names = dynamic_col_names)
 			)
+
+		if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
+			self._update_variable_pricing()
 
 	def _quote_item_line_entitlement_insert(self, update=False):
 		# Update - Start
@@ -382,17 +387,20 @@ class ContractQuoteItem:
 		# 								WHERE ENTITLEMENT_ID LIKE '{EntitlementAttrId}'""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id if not parent_service_id else parent_service_id,EntitlementAttrId='AGS_'+str(self.service_id)+'_PQB_QTITST'))
 		#if service_entitlement_obj:
 		if self.action_type == 'UPDATE_LINE_ITEMS' and self.entitlement_level_obj != 'SAQTSE' and parent_service_id:
-			where_str = where_condition_string.replace('SRC.','').replace(self.service_id,parent_service_id).replace('WHERE','')
+			where_str = self.where_condition_string.replace('SRC.','').replace(self.service_id,parent_service_id).replace('WHERE','')
 		else:
 			where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id)
 		service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=self.service_id, obj_name = self.entitlement_level_obj, where_str = where_str))
 		if service_entitlement_obj:
 			quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
 			entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
+			##getting billing type
+			billing_type_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(self.service_id)+'_PQB_BILTYP</ENTITLEMENT_ID>')
 			entitlement_display_value_tag_pattern = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>([^>]*?)</ENTITLEMENT_DISPLAY_VALUE>')
 			for quote_item_tag in re.finditer(quote_item_tag_pattern, service_entitlement_obj.ENTITLEMENT_XML):
 				quote_item_tag_content = quote_item_tag.group(1)
-				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)				
+				entitlement_id_tag_match = re.findall(entitlement_id_tag_pattern,quote_item_tag_content)	
+				entitlement_billing_id_tag_match = re.findall(billing_type_pattern,quote_item_tag_content)
 				if entitlement_id_tag_match:
 					entitlement_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
 					if entitlement_display_value_tag_match:
@@ -403,11 +411,16 @@ class ContractQuoteItem:
 							self.source_object_name = 'SAQSGE'
 
 						break
+				elif entitlement_billing_id_tag_match:
+					ent_billing_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
+					if ent_billing_display_value_tag_match:
+						self._ent_billing_type = ent_billing_display_value_tag_match[0].upper()
 				else:
 					continue
 			# if self.service_id == 'Z0101':
 			# 	self.quote_service_entitlement_type = 'OFFERING + GREENBOOK + GR EQUI'
 			Log.Info(str(self.contract_quote_id)+"_set_quote_service_entitlement_type ===> 2"+str(self.quote_service_entitlement_type))
+			Trace.Write("self._ent_billing_type--"+str(self._ent_billing_type))
 
 	def _quote_items_summary_insert(self, update=False):
 		if self.source_object_name:	
@@ -809,8 +822,7 @@ class ContractQuoteItem:
 			LEFT JOIN SAQRIP (NOLOCK) ON SAQRIP.QUOTE_RECORD_ID = SAQRSP.QUOTE_RECORD_ID AND SAQRIP.QTEREV_RECORD_ID = SAQRSP.QTEREV_RECORD_ID AND SAQRIP.SERVICE_RECORD_ID = SAQRSP.SERVICE_RECORD_ID AND SAQRIP.PART_RECORD_ID = SAQRSP.PART_RECORD_ID 
 
 			WHERE SAQRSP.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRSP.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRSP.SERVICE_ID = '{ServiceId}' AND ISNULL(SAQRIP.PART_RECORD_ID,'') = '' """.format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id, RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
-	
-		
+			
 	def _insert_quote_item_fpm_forecast_parts(self):
 			
 		Sql.RunQuery("DELETE FROM SAQIFP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(
@@ -977,6 +989,9 @@ class ContractQuoteItem:
 	
 		return True		
 
+	def _update_variable_pricing(self):
+		pass
+
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
 		if self.action_type == "INSERT_LINE_ITEMS":			
@@ -1086,6 +1101,8 @@ keysofparameters = {
 }
 parameters['action_type']=str(action_type)
 parameters['entitlement_level_obj'] = str(entitlement_level_obj)
+if where_condition_string:
+	parameters['where_condition_string'] = str(where_condition_string)
 if action_type == "UPDATE_LINE_ITEMS":
 	for key in keysofparameters.keys():
 		if str(key) in where_condition_string:
