@@ -2948,7 +2948,8 @@ class approvalCenter:
 				INNER JOIN {approvalObj} (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = {approvalObj}.{iskeyName}
 				LEFT JOIN SAQTSV(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTSV.QTEREV_RECORD_ID 
 				INNER JOIN SAQTMT (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID		
-				INNER JOIN SAQTIP(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTIP.QTEREV_RECORD_ID 
+				INNER JOIN SAQRIT(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQRIT.QTEREV_RECORD_ID
+				INNER JOIN SAQDLT(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQDLT.QTEREV_RECORD_ID
 				WHERE {wherecondition} """.format(
 					approvalObj=str(objlableandobj.get(objectdic.get("approvalObj"))),
 					testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
@@ -2989,7 +2990,7 @@ class approvalCenter:
 					if GETDATES:
 						values=str(GETDATES.B)
 				elif str(eachsplit[1]) == "OBJECT_QUANTITY":
-					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
 				else:
