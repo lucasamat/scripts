@@ -457,8 +457,11 @@ class Entitlements:
 		Gettabledata = Sql.GetFirst("SELECT * FROM {} (NOLOCK) WHERE {} ".format(tableName,whereReq))
 		if Gettabledata:
 			configg_status = Gettabledata.CONFIGURATION_STATUS
-		Trace.Write('458--'+str(configg_status))
-		Product.SetGlobal('configg_status',configg_status)
+		#Trace.Write('458--'+str(configg_status))
+		try:
+			Product.SetGlobal('configg_status',configg_status)
+		except:
+			Trace.Write('error info--')
 		if multiselect_flag != 'true':
 			GetDefault = Sql.GetFirst("SELECT * FROM PRENVL WHERE ENTITLEMENT_ID = '{}' AND ENTITLEMENT_DISPLAY_VALUE = '{}'".format(AttributeID,NewValue.replace("'","''")))
 		else:
