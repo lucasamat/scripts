@@ -123,7 +123,7 @@ class ContractQuoteCrudOpertion:
 			single_record=True,
 		)		
 		
-		if contract_quote_record_obj:
+		if contract_quote_record_obj and salesorg_obj:
 			self.contract_quote_id = contract_quote_record_obj.QUOTE_ID
 			self.contract_quote_name = contract_quote_record_obj.QUOTE_NAME
 			self.quote_type = contract_quote_record_obj.QUOTE_TYPE
