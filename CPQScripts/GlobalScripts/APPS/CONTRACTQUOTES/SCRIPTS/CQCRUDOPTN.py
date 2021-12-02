@@ -4895,7 +4895,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 					start_date = datetime.datetime.strptime(UserPersonalizationHelper.ToUserFormat(contract_start_date), '%m/%d/%Y')
 					billing_day = int(val.BILLING_DAY)
 					get_service_val = val.PRDOFR_ID
-					get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQITE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =self.contract_quote_record_id,qt_rev_id=self.quote_revision_record_id,get_service = str(get_service_val).strip()))
+					get_billing_cycle = Sql.GetFirst("select ENTITLEMENT_XML from SAQTSE where QUOTE_RECORD_ID = '{qtid}' AND QTEREV_RECORD_ID = '{qt_rev_id}' and SERVICE_ID = '{get_service}'".format(qtid =self.contract_quote_record_id,qt_rev_id=self.quote_revision_record_id,get_service = str(get_service_val).strip()))
 					if get_billing_cycle:
 						Trace.Write('get_service_val-32--')
 						updateentXML = get_billing_cycle.ENTITLEMENT_XML
