@@ -527,9 +527,9 @@ class ContractQuoteItem:
 					MAMSCT.TAXCLASSIFICATION_ID,
 					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
 					{dynamic_net_values}
-					{ObjectName}.FABLOCATION_ID,
-					{ObjectName}.FABLOCATION_NAME,
-					{ObjectName}.FABLOCATION_RECORD_ID,
+					null as FABLOCATION_ID,
+					null as FABLOCATION_NAME,
+					null as FABLOCATION_RECORD_ID,
 					{ObjectName}.GREENBOOK,
 					{ObjectName}.GREENBOOK_RECORD_ID,
 					SAQRIS.QUOTE_REV_ITEM_SUMMARY_RECORD_ID as QTEITMSUM_RECORD_ID
@@ -1045,6 +1045,7 @@ class ContractQuoteItem:
 					self._quote_items_object_insert()	
 					#self.cqent()
 					self._quote_item_line_entitlement_insert()
+					self._quote_annualized_items_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
 			else:
