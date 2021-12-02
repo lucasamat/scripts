@@ -2741,7 +2741,10 @@ class SYLDRTLIST:
 							if get_activerev:
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'
 							else:
-								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>'  
+								Action_str += '<li><a id = "" class="dropdown-item" href="#"  style="display: none;" onclick="edit_desc(this)">EDIT DESC</a></li>' 
+
+						elif ObjectName == "SAQDOC":
+							Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="edit_desc(this)">EDIT DESC</a></li>'		 
 						
 						# elif str(current_tab).upper() == "APP" and str(ObjectName)=="SYTABS":                    
 						#     Action_str += '<li><a class="dropdown-item" href="#" onclick="Move_to_parent_obj(this)">VIEW<a><li>'  
@@ -2764,6 +2767,7 @@ class SYLDRTLIST:
 								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 							elif ObjectName == "SAQRAT":
 								Action_str += '<li><a id = '' class="dropdown-item" href="#" onclick="download_file(this)">DOWNLOAD</a></li>'
+								
 							
 
 
@@ -2818,7 +2822,10 @@ class SYLDRTLIST:
 								if get_activerev:
 									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" style="display: none;" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
 								else:
-									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'     
+									Action_str += '<li><a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick="set_as_active(this)">SET AS ACTIVE</a></li>'
+
+							elif ObjectName == "SAQDOC":
+								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
 							
 							else:
 								if str(current_tab).upper() == "PROFILE":
