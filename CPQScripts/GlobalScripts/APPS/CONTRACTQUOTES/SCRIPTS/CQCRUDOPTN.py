@@ -702,9 +702,8 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 			self._process_query(
 					"""
 						INSERT SAQICT (
-							
+							QUOTE_REV_INVOLVED_PARTY_RECORD_ID,
 							QUOTE_ID,
-							QUOTE_NAME,
 							QTEREV_ID,
 							QTEREV_RECORD_ID,
 							CPQTABLEENTRYADDEDBY,
@@ -723,7 +722,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 							POSTAL_CODE
 
 							) SELECT
-								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
+								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_INVOLVED_PARTY_RECORD_ID,
 								'{QuoteId}' as QUOTE_ID,
 								'{RevisionId}' as QTEREV_ID,
 								'{RevisionRecordId}' as QTEREV_RECORD_ID,
@@ -741,9 +740,9 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 								SACONT.EMAIL,
 								SACONT.PHONE,
 								SACONT.POSTAL_CODE
-								FROM SAQICT (NOLOCK)
+								FROM SACONT (NOLOCK)
 								WHERE 
-								SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}'                       
+								SACONT.QUOTE_RECORD_ID = '{QuoteRecId}'                       
 						""".format(
 						QuoteId=self.contract_quote_id,
 						UserName=self.user_name,
