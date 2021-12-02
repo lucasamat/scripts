@@ -581,7 +581,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 	
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
-											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'),tree_parent_level_1=kwargs.get('tree_parent_level_1'))
+											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0')
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
@@ -590,15 +590,78 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 		self.node_id = ""
 	
 	def _create(self):
-		mylist = []
-		row_values = {}
-		if self.action_type == "ADD_CONTACT":
+		if self.action_type == "ADD_CONTACT" :
 			master_object_name = "SACONT"
-			columns = [
-				
-			]
-			table_name = "SAQICT"
-			condition_column = "CONTACT_RECORD_ID"		
+			if self.values:
+				record_ids = []
+				get_fab = "('"+str(self.tree_param)+"')"
+				record_ids = [
+					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+					if value.strip() != "" and master_object_name in value
+					else value
+					for value in self.values
+				]
+			record_ids = str(str(record_ids)[1:-1].replace("'",""))
+
+
+			self._process_query(
+					"""
+						INSERT SAQICT (
+							
+							QUOTE_ID,
+							QUOTE_NAME,
+							QTEREV_ID,
+							QTEREV_RECORD_ID,
+							CPQTABLEENTRYADDEDBY,
+							CPQTABLEENTRYDATEADDED,
+							CpqTableEntryModifiedBy,
+							CpqTableEntryDateModified,
+							CONTACT_NAME,
+							CONTACT_RECORD_ID,
+							CITY,							
+							COUNTRY,
+							COUNTRY_RECORD_ID,
+							STATE,
+							STATE_RECORD_ID,
+							EMAIL,
+							PHONE,
+							POSTAL_CODE
+
+							) SELECT
+								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_FAB_LOCATION_EQUIPMENTS_RECORD_ID,
+								'{QuoteId}' as QUOTE_ID,
+								'{RevisionId}' as QTEREV_ID,
+								'{RevisionRecordId}' as QTEREV_RECORD_ID,
+								'{UserName}' AS CPQTABLEENTRYADDEDBY,
+								GETDATE() as CPQTABLEENTRYDATEADDED,
+								{UserId} as CpqTableEntryModifiedBy,
+								GETDATE() as CpqTableEntryDateModified,
+								SACONT.CONTACT_NAME,
+								SACONT.CONTACT_RECORD_ID,
+								SACONT.CITY,
+								SACONT.COUNTRY,
+								SACONT.COUNTRY_RECORD_ID,
+								SACONT.STATE,
+								SACONT.STATE_RECORD_ID,
+								SACONT.EMAIL,
+								SACONT.PHONE,
+								SACONT.POSTAL_CODE
+								FROM SAQICT (NOLOCK)
+								WHERE 
+								SYSPBT.QUOTE_RECORD_ID = '{QuoteRecId}'                       
+						""".format(
+						QuoteId=self.contract_quote_id,
+						UserName=self.user_name,
+						UserId=self.user_id,
+						QuoteRecId=self.contract_quote_record_id,
+						RevisionId=self.quote_revision_id,
+						RevisionRecordId=self.quote_revision_record_id,
+					)
+				)
+		else:
+			""	
+
+	
 
 
 class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
