@@ -72,7 +72,7 @@ def Dynamic_Status_Bar():
             Trace.Write('salesorg--present---')
             if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:                
                 Trace.Write('No button-2454-')
-                buttonvisibility = "Hide_button"            
+                buttonvisibility = "show_button"            
             else:
                 Trace.Write('No button--1')
                 buttonvisibility = "Hide_button"
