@@ -344,7 +344,7 @@ class SYLDRTLIST:
 			# 	Columns = str([ele for ele in  eval(Columns) if ele not in rem_list_sp])
 				
 			# Billing Matrix - Pivot - Start
-			if Wh_OBJECT_NAME == 'SAQIBP' and TreeParam != 'Billing Plan':
+			if Wh_OBJECT_NAME == 'SAQIBP' and SubTab != 'Billing Plan':
 				Trace.Write('452----TreeParam-----'+str(TreeParam))
 				try:
 					if SubTab:
