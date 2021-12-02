@@ -2972,7 +2972,9 @@ class approvalCenter:
 				elif str(eachsplit[1]) == "ACCOUNT_ID":
 					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getaccountid:
-						values =str(getaccountid.ACCOUNT_ID)
+						acct_id=str(getaccountid.ACCOUNT_ID)
+						acct_name=str(getaccountid.ACCOUNT_NAME)
+						values =str(acct_name)+"-"+str(acct_id)
 				elif str(eachsplit[1]) == "MEMBER_ID":
 					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
@@ -2989,7 +2991,7 @@ class approvalCenter:
 					GETDATES = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_TO, 101) as B FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
 					if GETDATES:
 						values=str(GETDATES.B)
-				elif str(eachsplit[1]) == "OBJECT_QUANTITY":
+				elif str(eachsplit[1]) == "QUANTITY":
 					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
