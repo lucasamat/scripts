@@ -3958,6 +3958,8 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 					)			
 	
 		else:
+			Trace.Write("FAB REMOVAL -> SAQSFB NO INSERT")
+			'''
 			self._process_query(
 				"""INSERT SAQSFB(
 					FABLOCATION_ID,
@@ -4044,6 +4046,7 @@ class ContractQuoteCoveredObjModel(ContractQuoteCrudOpertion):
 									UserName=self.user_name,
 								)
 				)
+				'''
 		
 	def _insert_quote_service_greenbook(self, **kwargs):
 		if self.sale_type == "TOOL RELOCATION":
