@@ -4056,8 +4056,7 @@ class SYLDRTLIST:
 						# 			+ str("Equipment Line ID")
 						# 			+ "</th>"
 						# 		)                      
-					elif str(invs) in center_align_list:    
-						Trace.Write("center_align_list_j"+str(qstring)) 
+					elif str(invs) in center_align_list:
 						if RECORD_ID == 'SYOBJR-00010' and str(invs) == 'SERVICE_ID' and TreeParam != "Quote Preview":
 							table_header += (
 								'<th class="wth60" data-field="'
@@ -4070,8 +4069,7 @@ class SYLDRTLIST:
 								+ str("STATUS")
 								+ "</th>"
 							)
-						else:      
-							Trace.Write("center_align_hyper_link")                      
+						else:                     
 							visible = ""
 							if RECORD_ID == 'SYOBJR-00007' and str(invs) == 'BILLING_DATE':
 								visible = 'data-visible="false"'                   
@@ -4088,8 +4086,7 @@ class SYLDRTLIST:
 								+ str(qstring)
 								+ "</th>"
 							)
-					else: 
-						Trace.Write("@3776"+str(qstring))                       
+					else:                       
 						if str(qstring) == "Key": 
 							
 							if ObjectName == "CTCICO":
@@ -4105,7 +4102,6 @@ class SYLDRTLIST:
 									+ "</th>"
 								)
 							else:
-								Trace.Write("@3877"+str(qstring))
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
@@ -4184,7 +4180,6 @@ class SYLDRTLIST:
 			if table_group_columns5:
 				grouping_columns += table_group_columns5 
 			table_header += "<tr >{}</tr>".format(grouping_columns)
-			Trace.Write("table_header--"+str(table_header))
 		if RECORD_ID == 'SYOBJR-00009':
 			cls = "eq(3)"
 			table_header += '</thead><tbody onclick="Table_Onclick_Scroll(this)"></tbody></table>'
@@ -4220,11 +4215,9 @@ class SYLDRTLIST:
 				+ str(table_id)
 				+ "'); }); "
 			)
-			Trace.Write("@3633------->"+str(dbl_clk_function))
 
 		else:
 			if RECORD_ID != "SYOBJR-00009":
-				Trace.Write("@4009")
 				dbl_clk_function += (
 					'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 					+ str(table_ids)
@@ -4311,8 +4304,7 @@ class SYLDRTLIST:
 					+ "_SortColumnOrder', order); RelatedContainerSorting(name, order, '"
 					+ str(table_id)
 					+ "'); }); "
-				)                      
-				Trace.Write("@3681-------->"+str(dbl_clk_function))
+				)
 		
 
 		NORECORDS = ""
@@ -4363,8 +4355,7 @@ class SYLDRTLIST:
 						FORMULA_table = FORMULA_LOGIC.split(" ")[3].strip()
 					except:
 						Trace.Write('4260---'+str(col_name))
-					if str(objss_obj.PICKLIST).upper() == "TRUE":
-						Trace.Write('chkpick--'+str(key)+str(col_name))		                                          
+					if str(objss_obj.PICKLIST).upper() == "TRUE":		                                          
 						filter_level_data = "select"                        
 						filter_clas_name = (
 							'<div dropDownWidth="true" id = "'
@@ -4378,9 +4369,7 @@ class SYLDRTLIST:
 							+ ' "></div>'
 						)
 						filter_level_list.append(filter_level_data)
-						Trace.Write("filterclass==="+str(filter_clas_name))
-					else:
-						Trace.Write("pickk---"+str(col_name))                        
+					else:                     
 						filter_level_data = "input"
 						if str(col_name) == "QUOTE_REVISION_CONTRACT_ITEM_ID":
 							# filter_level_data = "select"                        
@@ -4403,18 +4392,14 @@ class SYLDRTLIST:
 								+ '">'
 							)
 						else:
-							Trace.Write("pickk777---"+str(col_name))
 							filter_clas_name = (
 								'<input type="text"   class="width100_vis form-control bootstrap-table-filter-control-'
 								+ str(col_name)
 								+ '">'
 							)
 						filter_level_list.append(filter_level_data)
-					Trace.Write('4260--filter_level_list----'+str(col_name)+'-----'+str(filter_level_data))
 				except:
-					Trace.Write("except-filter-"+str(col_name))
-					if str(objss_obj.PICKLIST).upper() == "TRUE": 
-						Trace.Write("except-filter-4284---"+str(col_name))			
+					if str(objss_obj.PICKLIST).upper() == "TRUE":		
 						filter_level_data = "select"
 						filter_clas_name = (
 							'<div  id = "'
@@ -4444,7 +4429,6 @@ class SYLDRTLIST:
 								)
 						filter_level_list.append(filter_level_data)
 				cv_list.append(filter_clas_name)
-				Trace.Write("cv_list==="+str(cv_list))
 			
 			#A055S000P01-4401
 			##filter control for entitlement category for pricing view
@@ -4582,14 +4566,12 @@ class SYLDRTLIST:
 						string_value = string
 					StringValue_lists.append(string_value)
 				DropDownList.append(StringValue_lists)
-				Trace.Write("DropDownList------> "+str(DropDownList))
 				
 			elif col_name in checkbox_list:
 				DropDownList.append(["True", "False"])
 			elif ObjectName == 'SAQIBP' and (col_name in billing_date_column or col_name == 'BILLING_CURRENCY'):# Billing Matrix - Pivot - Start
 				try:
 					gettotaldateamt =""
-					Trace.Write('col_name--table_list----'+str(table_list))
 					if col_name in billing_date_column:                    
 						my_format = "{:,." + str(decimal_place) + "f}"
 						tovalue = 0.00
@@ -4599,7 +4581,6 @@ class SYLDRTLIST:
 							#Trace.Write('getval ---------'+str(float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))))
 							tovalue += float(re.findall(r'value=["](.*?)["]',data.get(col_name))[0].replace(",",""))
 							getamt = str(my_format.format(round(float(tovalue), int(decimal_place))))
-						Trace.Write('getamt----'+str(getamt)+'-----tovalue----'+str(tovalue))
 						footer += '<th class="text-right">{}</th>'.format(getamt)
 					else:
 						if table_list:
@@ -4759,8 +4740,7 @@ class SYLDRTLIST:
 				+ "_SortColumn', name); localStorage.setItem('" 
 				+ str(table_id) 
 				+ "_SortColumnOrder', order); }); " 
-			)   
-			Trace.Write("@4099----->"+str(SAQICO_dbl_clk_function))
+			)
 
 			SAQICO_dbl_clk_function += (
 					'console.log("checking--select");$("'
@@ -4776,8 +4756,7 @@ class SYLDRTLIST:
 					+ "_SortColumnOrder', order); ATTRIBUTE_VALUEList = []; "+str(values_list)+"  QuoteitemContainerSorting(name, order, '"
 					+ str(table_id)
 					+ "',"+ str(list(eval(Columns)))+", ATTRIBUTE_VALUEList,'"+str(PR_CURR)+"','"+str(TP)+"','"+str(SubTab)+"'); }); "
-					)  
-			Trace.Write("@40910----->"+str(SAQICO_dbl_clk_function))		        
+					)	        
 
 			
 			dbl_clk_function = SAQICO_dbl_clk_function		          
@@ -4820,7 +4799,6 @@ class SYLDRTLIST:
 			+ str(table_id)
 			+ '_page_count" class="currentPage page_right_content">1</span><span class="page_right_content pad_rt_2"  >Page </span></div></div>'
 		)
-		Trace.Write("cv_list--"+str(cv_list))
 		return (
 			table_header,
 			table_list,
@@ -4951,8 +4929,7 @@ class SYLDRTLIST:
 					Product.GetGlobal("TreeParentLevel2"),
 					Product.GetGlobal("TreeParentLevel3"),
 					Product.GetGlobal("TreeParentLevel4"),
-				)                
-		Trace.Write("subtab name----->"+str(SubTab))
+				)
 		if obj_obj is None:
 			return "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
 		Action_permission = {}
@@ -4979,9 +4956,7 @@ class SYLDRTLIST:
 				contract_quote_record_id = ''    
 			
 			if Wh_OBJECT_NAME == 'SAQIBP':
-				Trace.Write('SubTab--ww11--'+str(SubTab))
 				if SubTab:
-					Trace.Write('SubTab--ww--'+str(SubTab))
 					end = int(SubTab.split(' ')[-1]) * 12
 					start = end - 12 + 1
 					if TreeParam == "Billing":
@@ -5083,9 +5058,6 @@ class SYLDRTLIST:
 							and attr.LOOKUP_API_NAME != ""
 							and str(attr.LOOKUP_API_NAME) not in ["CONTROLLING_FIELD", "DEPENDENT_FIELD"]
 						):
-							Trace.Write('##'+str(attr.LOOKUP_API_NAME is not None))
-							Trace.Write('##'+str(type(attr.LOOKUP_API_NAME)))
-							Trace.Write('##'+str(attr.LOOKUP_API_NAME != ""))
 							lookup_disply_list.append(str(attr.API_NAME))
 						checkbox_list = [
 							inn.API_NAME
@@ -5093,7 +5065,6 @@ class SYLDRTLIST:
 							if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 						]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-				Trace.Write(str(lookup_disply_list)+'---lookup_disply_list---###Lookup List-->'+str(lookup_list))
 				if "QUOTE_REV_PO_PRODUCT_LIST_ID" in lookup_disply_list and ObjectName == "SAQRSP":
 					try:
 						lookup_disply_list.remove("QUOTE_REV_PO_PRODUCT_LIST_ID")
@@ -5121,14 +5092,9 @@ class SYLDRTLIST:
 			lookup_str = ",".join(list(lookup_disply_list))
 			obj_str = ",".join(list(eval(Columns)))
 			if lookup_str != "":
-				Trace.Write("okokok"+str(obj_str)+" - "+str(lookup_str))
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
-				Trace.Write("okoko___sec")
 				select_obj_str = str(obj_str)
-			Trace.Write("select_obj_str_select_obj_str_select--lookup_str---"+str(lookup_str))
-			Trace.Write("select_obj_str---- "+str(select_obj_str))
-			Trace.Write("obj_str---- "+str(type(obj_str)))
 			#Trace.Write("obj_str---- "+str(obj_str))
 			lookup_disply_list123 = ""
 			lookup_str = ",".join(list(lookup_disply_list))
@@ -5190,8 +5156,6 @@ class SYLDRTLIST:
 				else:
 					Wh_API_NAMEs = Wh_API_NAME
 
-				Trace.Write("Wh_API_NAMEs---->" + str(Wh_API_NAMEs))
-
 				if (
 					RECORD_ID != "SYOBJR-92121"
 					and RECORD_ID != "SYOBJR-92122"
@@ -5211,9 +5175,7 @@ class SYLDRTLIST:
 						if not "DESC" in Wh_API_NAMEs and "ASC" in Wh_API_NAMEs:
 							Wh_API_NAMEs = Wh_API_NAMEs + " ASC"
 					else:                        
-						Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper() 
-											
-				Trace.Write('Sort param '+str(Wh_API_NAMEs))
+						Wh_API_NAMEs = str(SortColumn) + " " + str(SortColumnOrder).upper()
 				ATTRIBUTE_VALUE_STR = ""
 				Dict_formation = dict(zip(ATTRIBUTE_NAME, ATTRIBUTE_VALUE))
 							
@@ -5289,7 +5251,6 @@ class SYLDRTLIST:
 				for quer_key, quer_value in enumerate(Dict_formation):                    
 					if Dict_formation.get(quer_value) != "" and Dict_formation.get(quer_value) is not None:
 						quer_values = str(Dict_formation.get(quer_value)).strip()
-						Trace.Write('**API_NAME-->'+str(quer_value))
 						SYOBJD_obj = Sql.GetFirst(
 							"select DATA_TYPE, PICKLIST, FORMULA_DATA_TYPE from SYOBJD (nolock) where API_NAME = '"
 							+ str(quer_value)
@@ -5526,7 +5487,6 @@ class SYLDRTLIST:
 						getyears = 1
 					
 				#Contract valid start date & End date Calculation--END
-				Trace.Write('Attr str--->'+str(ATTRIBUTE_VALUE_STR))
 				if ATTRIBUTE_VALUE_STR != "":
 					
 					TreeParam = Product.GetGlobal("TreeParam")
@@ -6087,7 +6047,6 @@ class SYLDRTLIST:
 										str(qt_rec_id.QUOTE_ID),quote_revision_record_id)
 							)
 					elif str(RECORD_ID) == "SYOBJR-00009":
-						Trace.Write("123")
 						# if Quote.GetCustomField('PRICING_PICKLIST').Content == '':
 						# 	Quote.GetCustomField('PRICING_PICKLIST').Content = 'Document Currency'
 						if Product.GetGlobal("TreeParentLevel2") == "Quote Items":  
@@ -6284,8 +6243,6 @@ class SYLDRTLIST:
 									SELECT DISTINCT TOP {PerPage} * FROM ( SELECT * FROM ({InnerQuery}) OQ WHERE ROW BETWEEN {Start} AND {End} ) AS FQ ORDER BY EQUIPMENT_ID
 									""".format(PerPage=PerPage, OrderByColumn=Wh_API_NAMEs, InnerQuery=pivot_query_str, Start=Page_start, End=Page_End)
 						QuryCount_str = "SELECT COUNT(*) AS cnt FROM ({InnerQuery}) OQ".format(InnerQuery=pivot_query_str)
-						Trace.Write("====>>>>>>>>>>>> Qury_str "+str(Qury_str))
-						Trace.Write("====>>>>>>>>>>>> QuryCount_str "+str(QuryCount_str))
 						# Billing Matrix - Pivot - End
 					elif str(RECORD_ID) == "SYOBJR-00015" and str(TreeParentParam) == "Approval Chain Steps":
 						Qury_str = (
@@ -6408,8 +6365,7 @@ class SYLDRTLIST:
 										"select count(*) as cnt FROM CTCICO where SERVICE_ID = '{}' and CONTRACT_ID = '{}'".format(
 											SERV_DESC, str(qt_rec_id.CONTRACT_ID))
 								)
-					elif str(RECORD_ID) == "SYOBJR-98788":   
-						Trace.Write("test2")       
+					elif str(RECORD_ID) == "SYOBJR-98788":       
 						contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 						qt_rec_id= Sql.GetFirst("SELECT QUOTE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID ='"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 						
@@ -6515,7 +6471,6 @@ class SYLDRTLIST:
 							+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 						)
 					elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
-						Trace.Write('6026-------------')
 						Qury_str = ("select DISTINCT TOP "
 							+ str(PerPage)
 							+ " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where "+str(ATTRIBUTE_VALUE_STR)+ " QUOTE_RECORD_ID = '" 
@@ -6661,7 +6616,6 @@ class SYLDRTLIST:
 						QuryCount_str = "select count(SAQSTE.CpqTableEntryId) as cnt from SAQSTE  inner join SAQSCF(nolock) on SAQSTE.QUOTE_RECORD_ID = SAQSCF.QUOTE_RECORD_ID  and SAQSTE.QTEREV_RECORD_ID = SAQSCF.QTEREV_RECORD_ID and SAQSTE.SRCFBL_ID= SAQSCF.SRCFBL_ID where SAQSTE.QUOTE_RECORD_ID = '{contract_quote_record_id}' AND QTEREV_RECORD_ID='{revision_rec_id}' and SAQSTE.{ATTRIBUTE_VALUE_STR} SAQSTE.SRCACC_ID = '{account_id}'".format(account_id = account_id,contract_quote_record_id=str(RecAttValue),ATTRIBUTE_VALUE_STR = ATTRIBUTE_VALUE_STR,revision_rec_id = quote_revision_record_id)
 					##involved parties equipmemt ends
 					elif str(RECORD_ID) == "SYOBJR-98859":
-						Trace.Write("5512")
 						#"where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"'"
 						Qustr += " where "+ str(ATTRIBUTE_VALUE_STR)+" QUOTE_RECORD_ID ='"+str(RecAttValue)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND  SERVICE_ID = '"+str(TreeParentParam)+"' "
 						Qury_str = (
@@ -6796,7 +6750,6 @@ class SYLDRTLIST:
 						
 						QuryCount_str = "select count(*) as cnt from " + str(ObjectName) + " (nolock) " + str(Qustr)
 					elif str(RECORD_ID) == "SYOBJR-93188":
-						Trace.Write('SYOBJR-93188@1111')
 						RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 						GetAppname_query = ""
 						Qustr = " WHERE TAB_NAME = '"+str(TreeParentParam)+"'and "+str(ATTRIBUTE_VALUE_STR)+" PROFILE_ID ='"+str(RecAttValue)+"'"
@@ -6989,8 +6942,7 @@ class SYLDRTLIST:
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"                             
 					elif RECORD_ID == "SYOBJR-98782":
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" TAB_LABEL = '" + str(TreeParentParam) + "'"
-					elif RECORD_ID == "SYOBJR-94441":
-						Trace.Write('94441@@@@------')                        
+					elif RECORD_ID == "SYOBJR-94441":                        
 						RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00152").GetValue()
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 					elif str(RECORD_ID) == "SYOBJR-95824":
@@ -7032,10 +6984,7 @@ class SYLDRTLIST:
 							service_id = TreeParentParam.split('-')[0]
 							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
 						#Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND PAR_SERVICE_ID = '"+str(service_id)+"' AND FABLOCATION_ID = '"+str(fab_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' "
-					else:    
-						Trace.Write('Record Id -->'+str(RECORD_ID))
-						Trace.Write("attri"+str(ATTRIBUTE_VALUE_STR))    
-						Trace.Write("sort param 2 "+str(Wh_API_NAMEs))                                        
+					else:                                        
 						Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 
 				else:  
@@ -7181,8 +7130,7 @@ class SYLDRTLIST:
 						)
 						Qustr = Qustr1.replace("Active", "True").replace("Inactive", "False")
 
-					elif RECORD_ID == "SYOBJR-94441":
-						Trace.Write('94441@@@@------')                        
+					elif RECORD_ID == "SYOBJR-94441":                       
 						RecAttValue = productAttributesGetByName("QSTN_SYSEFL_SY_00152").GetValue()
 						Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 
@@ -7615,7 +7563,6 @@ class SYLDRTLIST:
 									##A055S000P01-4578 strts
 									#Trace.Write('xchk--')
 									saqico_cols =""
-									Trace.Write('column---'+str(Columns)+str(type(Columns)))
 									#pricing_curr = pricing_picklist_value
 										
 									# if pricing_picklist_value == 'Document Currency':
@@ -7838,7 +7785,6 @@ class SYLDRTLIST:
 							if TreeParentParam:
 								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_TYPE = '{}'".format(TreeParam)
 							else:
-								Trace.Write("Next")
 								Qustr = "where QUOTE_ID = '"+str(qt_rec_id.QUOTE_ID)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 							##aa = SqlHelper.GetList(" select DISTINCT top 10 QUOTE_SERVICE_RECORD_ID,SERVICE_ID,SERVICE_DESCRIPTION,SERVICE_TYPE,QUOTE_RECORD_ID,SALESORG_RECORD_ID,UOM_RECORD_ID,PAR_SERVICE_RECORD_ID,QTEREV_RECORD_ID,SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],CpqTableEntryId from ( select TOP 10 ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW,S.QUOTE_SERVICE_RECORD_ID,S.SERVICE_ID,S.SERVICE_DESCRIPTION,S.PAR_SERVICE_ID,S.SERVICE_TYPE,S.QUOTE_RECORD_ID,S.SALESORG_RECORD_ID,S.UOM_RECORD_ID,S.PAR_SERVICE_RECORD_ID,S.QTEREV_RECORD_ID,S.SERVICE_RECORD_ID,CONVERT(VARCHAR(10),CONTRACT_VALID_FROM,101) AS [CONTRACT_VALID_FROM],CONVERT(VARCHAR(10),CONTRACT_VALID_TO,101) AS [CONTRACT_VALID_TO],S.CpqTableEntryId  from SAQTSV S JOIN MAADPR M ON S.SERVICE_ID = M.PRDOFR_ID  where S.QUOTE_ID = '3050006088' AND S.QTEREV_RECORD_ID = '545092F3-0315-41C6-A7FD-71F9079DE8C0'  and M.VISIBLE_INCONFIG = 'True' ) m where m.ROW BETWEEN 1 and 10")
 							Qury_str = (
@@ -7937,7 +7883,6 @@ class SYLDRTLIST:
 								+ "' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' "
 							)
 						elif RECORD_ID == 'SYOBJR-98869' and TreeParam == "Revisions":
-							Trace.Write('7423--------------')
 							Qury_str = ("select DISTINCT TOP "
 								+ str(PerPage)
 								+ " QUOTE_REVISION_RECORD_ID,CONCAT(QUOTE_ID, '-', QTEREV_ID) AS QTEREV_ID,REVISION_DESCRIPTION,REV_CREATE_DATE,REV_EXPIRE_DATE,REVISION_STATUS,ACTIVE,CONTRACT_VALID_FROM,CONTRACT_VALID_TO,SALESORG_RECORD_ID,QUOTE_RECORD_ID,CpqTableEntryId from ( select  ROW_NUMBER() OVER(order by QUOTE_RECORD_ID) AS ROW, * from SAQTRV (nolock)  where QUOTE_RECORD_ID = '" 
@@ -7997,7 +7942,6 @@ class SYLDRTLIST:
 								icon = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/clock_exe.svg>'
 							else:
 								icon = '<img title="Acquiring" src=/mt/APPLIEDMATERIALS_TST/Additionalfiles/exclamation_icon.svg'
-							Trace.Write("dhshjdd"+str(icon))
 
 
 						elif RECORD_ID == 'SYOBJR-00008':
@@ -8184,7 +8128,6 @@ class SYLDRTLIST:
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_03295").GetValue()
 							Qustr = " where "+str(ATTRIBUTE_VALUE_STR)+" "+ str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						elif str(RECORD_ID) == "SYOBJR-93188":
-							Trace.Write('SYOBJR-93188@66666')
 							RecAttValue = Product.Attributes.GetByName("QSTN_SYSEFL_SY_00128").GetValue()
 							GetAppname_query = ""
 							Qustr = " WHERE TAB_NAME = '"+str(TreeParentParam)+"' AND PROFILE_ID ='"+str(RecAttValue)+"'" 
@@ -8192,7 +8135,6 @@ class SYLDRTLIST:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"   
 							if "SRCFBL_ID" in Wh_API_NAMEs:
 								Wh_API_NAMEs=Wh_API_NAMEs.replace("SRCFBL_ID", "CAST(SRCFBL_ID AS int)")
-								Trace.Write("sort param 3  "+str(Wh_API_NAMEs))
 						elif  str(RECORD_ID) == "SYOBJR-98789" and "Sending Account -" in TreeParam :
 							Qustr += " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "' AND RELOCATION_FAB_TYPE = 'SENDING FAB'"
 						elif  str(RECORD_ID) == "SYOBJR-98789" and "Receiving Account -" in TreeParam :
@@ -8200,7 +8142,6 @@ class SYLDRTLIST:
 						elif str(RECORD_ID) == "SYOBJR-95985":
 							Qustr += " WHERE TREE_NAME = '"+str(TreeParentParam)+"'"
 						elif str(RECORD_ID) == "SYOBJR-98869":
-							Trace.Write('1196---contract_quote_record_id-------'+str(contract_quote_record_id))
 							RecAttValue = contract_quote_record_id
 							#Trace.Write('1196---RecAttValue--RecAttValue-----'+str(RecAttValue))
 							Qustr =  " where QUOTE_RECORD_ID = '" + str(contract_quote_record_id) + "'" 
@@ -8228,15 +8169,11 @@ class SYLDRTLIST:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
 						else:
 							Qustr = " where " + str(Wh_API_NAME) + " = '" + str(RecAttValue) + "'"
-							Trace.Write("7100"+str(Qustr))
 				
-				if str(Qury_str) == "" and str(QuryCount_str) == "": 
-					Trace.Write("7105")
-					Trace.Write(str(RECORD_ID)+"----select_obj_str+++---"+str(select_obj_str))    
+				if str(Qury_str) == "" and str(QuryCount_str) == "":  
 					select_obj_str = select_obj_str.replace("DEFAULT","[DEFAULT]") 
 					select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
 					if str(RECORD_ID) == "SYOBJR-00007":
-						Trace.Write("Pagination ifffff")
 						pivot_columns = ",".join(['[{}]'.format(billing_date) for billing_date in billing_date_column])
 						if Qustr:
 							if str(TreeParentParam)== "Billing":
@@ -8366,8 +8303,7 @@ class SYLDRTLIST:
 
 				elif str(current_tab).upper() == "ROLE":                    
 					Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW<a><li>'  
-				else:
-					Trace.Write('ObjectName--7353----'+str(ObjectName))                  
+				else:              
 					if ObjectName != "SAQIBP" and ObjectName != "SAQTRV":
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commonteree_view_RL(this)">VIEW</a></li>'
 
@@ -8407,7 +8343,6 @@ class SYLDRTLIST:
 				for inm in ik:
 					value123 = str(inm).split(",")[0].replace("[", "").lstrip()
 					value1234 = str(inm).split(",")[1].replace("]", "").lstrip()
-					Trace.Write('**value123--->'+str(value123)+' value1234-->'+value1234)
 					if value123 == objRecName:
 						#current_rec_id = ""
 						current_rec_id = value1234
@@ -8425,8 +8360,7 @@ class SYLDRTLIST:
 					if cur_api_name is not None:
 						data_type_val = cur_api_name.DATA_TYPE
 						formu_data_type_val = cur_api_name.FORMULA_DATA_TYPE
-					
-					Trace.Write("CURRENCY_DATA_TYPE"+str(data_type_val)+"-"+str(formu_data_type_val))
+
 					if str(cur_api_name) is not None and (
 						str(data_type_val) == "CURRENCY" or str(formu_data_type_val) == "CURRENCY"
 					):                        
@@ -8481,7 +8415,6 @@ class SYLDRTLIST:
 						if value1234 is not None and value1234 != '':
 							my_format = "{:." + str(decimal_place) + "f}"
 							value1234 = str(my_format.format(round(float(value1234), int(decimal_place)))) + " %"
-					Trace.Write("@8221----->LOOKUP DISPLAY LIST"+str(lookup_list))
 					if value123 in lookup_disply_list:
 						for key, value in lookup_list.items():
 							if value == value123:
@@ -8520,7 +8453,7 @@ class SYLDRTLIST:
 											)
 										if not value1234:
 											value1234 = ""
-										Trace.Write("POP_3 "+str(value1234))
+
 										if product_id != "" and product_id is not None:
 											if key:
 												pop_val[key] = str(value1234) + "|" + tab_val + "," + str(product_id.PRODUCT_ID)                                            
@@ -8534,7 +8467,7 @@ class SYLDRTLIST:
 											)
 											if not value1234:
 												value1234 = ""
-											Trace.Write("POP_2 "+str(value1234))
+											
 											lookup_val = str(lookup_obj.LOOKUP_OBJECT)
 											if key:
 												pop_val[key] = str(value1234) + "|" + lookup_val
@@ -8548,7 +8481,7 @@ class SYLDRTLIST:
 									)
 									if not value1234:
 										value1234 = ""
-									Trace.Write("POP_1 "+str(value1234))
+									
 									lookup_val = str(lookup_obj.LOOKUP_OBJECT)
 									if key:
 										pop_val[key] = str(value1234) + "|" + lookup_val
@@ -8724,9 +8657,9 @@ class SYLDRTLIST:
 					new_dict["seg_pric"] = seg_pric
 					new_dict["pop_val"] = pop_val
 					new_dict["primary"] = primary
-				Trace.Write('new_dict-->'+str(new_dict))
+
 				table_list.append(new_dict)
-				Trace.Write('After append table_list--->'+str(table_list))
+				
 				footer_str, footer = "", ""
 				footer_tot = ""
 				if ObjectName == "SAQIBP":
@@ -8830,8 +8763,7 @@ class SYLDRTLIST:
 				+ str(table_id) 
 				+ "_SortColumnOrder', order); }); " 
 			)   
-			
-			Trace.Write("@8275----->"+str(SAQICO_dbl_clk_function))            
+			            
 			dbl_clk_function = SAQICO_dbl_clk_function
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
@@ -8873,7 +8805,6 @@ except:
 	TP= ""
 try:
 	equipment_id = Param.equipment_id
-	Trace.Write("EQUIPM_ID_CHK "+str(equipment_id))
 except:
 	equipment_id = ""
 
