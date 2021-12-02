@@ -672,7 +672,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 	
 	def __init__(self, **kwargs):
 		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
-											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0')
+											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
