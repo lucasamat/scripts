@@ -2968,14 +2968,18 @@ class approvalCenter:
 						)
 					)
 					values = str(GetOwnerMailId.USERNAME)
-				elif str(eachsplit[1]) == "PARTY_ID":
-					getcontractmanager = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE = 'CONTRACT MANAGER' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				elif str(eachsplit[1]) == "ACCOUNT_ID":
+					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getaccountid:
+						values =str(getaccountid.ACCOUNT_ID)
+				elif str(eachsplit[1]) == "MEMBER_ID":
+					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
-						values =str(getcontractmanager.PARTY_NAME)
-				elif str(eachsplit[1]) == "PARTY_NAME":
-					getcontractrole = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE = 'SALES EMPLOYEE' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+						values =str(getcontractmanager.MEMBER_NAME)
+				elif str(eachsplit[1]) == "MEMBER_NAME":
+					getcontractrole = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'BD' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractrole:
-						values =str(getcontractrole.PARTY_NAME)
+						values =str(getcontractrole.MEMBER_NAME)
 				elif str(eachsplit[1]) == "CONTRACT_VALID_FROM":
 					GETDATE = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_FROM, 101) as A FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
 					if GETDATE:
@@ -2985,9 +2989,9 @@ class approvalCenter:
 					if GETDATES:
 						values=str(GETDATES.B)
 				elif str(eachsplit[1]) == "OBJECT_QUANTITY":
-					GETFPM = Sql.GetFirst("SELECT CAST(OBJECT_QUANTITY AS INT) AS C FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
-						values=str(GETFPM.C)
+						values=str(GETFPM.QUANTITY)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
