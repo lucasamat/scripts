@@ -308,13 +308,7 @@ class ContractQuoteCrudOpertion:
 			divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
 			annaul_bill_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
-		else:
-			object_name = 'SAQSGB'
-			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSGB.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSGB.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSGB.SERVICE_ID  and SAQSGB.GREENBOOK = SAQRIT.GREENBOOK"
-			divide_amt = 'SAQRIT.ESTVAL_INGL_CURR'
-			annaul_bill_amt = 'SAQRIT.NET_VALUE'
-
-		Sql.RunQuery("""INSERT SAQIBP (
+			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, 
 						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
@@ -353,12 +347,19 @@ class ContractQuoteCrudOpertion:
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK
-					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'""".format(
+					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}' and SAQRIT.OBJECT_ID IS NOT NULL""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_ent_billing_type_value))
+		else:
+			object_name = 'SAQSGB'
+			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSGB.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSGB.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSGB.SERVICE_ID  and SAQSGB.GREENBOOK = SAQRIT.GREENBOOK"
+			divide_amt = 'SAQRIT.ESTVAL_INGL_CURR'
+			annaul_bill_amt = 'SAQRIT.NET_VALUE'
+
+		
 		# else:
 		# 	Sql.RunQuery("""INSERT SAQIBP (
 		# 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
