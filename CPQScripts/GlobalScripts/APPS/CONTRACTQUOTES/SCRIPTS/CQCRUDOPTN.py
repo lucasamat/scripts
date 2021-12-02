@@ -306,7 +306,7 @@ class ContractQuoteCrudOpertion:
 			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 			object_name = 'SAQSCO'
 			divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
-			annaul_bill_amt = 'SAQRIT.NET_PRICE'
+			annaul_bill_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
 			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
 		else:
 			object_name = 'SAQSGB'
@@ -326,8 +326,8 @@ class ContractQuoteCrudOpertion:
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
 						SAQSCO.WARRANTY_END_DATE as BILLING_END_DATE,
 						SAQSCO.WARRANTY_START_DATE as BILLING_START_DATE,
-						ISNULL({divide_amt}, 0) / {get_val}  as BILLING_VALUE,
-						{annaul_bill_amt} AS ANNUAL_BILLING_AMOUNT,
+						ISNULL(SAQRIT.NET_PRICE_INGL_CURR, 0) / {get_val}  as BILLING_VALUE,
+						SAQRIT.NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						'{billing_type}' as BILLING_TYPE,
 						SAQRIT.LINE AS LINE,
 						SAQSCO.QUOTE_ID,
@@ -357,7 +357,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_ent_billing_type_value,divide_amt=divide_amt,annaul_bill_amt=annaul_bill_amt ))
+						service_id = service_id,billing_type =get_ent_billing_type_value))
 		# else:
 		# 	Sql.RunQuery("""INSERT SAQIBP (
 		# 					QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE, BILLING_TYPE, 
