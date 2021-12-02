@@ -40,6 +40,17 @@ def Dynamic_Status_Bar():
         getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+
+        quote_ser_level_entitlement_obj = Sql.GetList(" SELECT CONFIGURATION_STATUS,SERVICE_ID FROM SAQTSE WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+
+        complete_status = incomplete_status = ""
+
+        for configure in quote_ser_level_entitlement_obj:
+            status = configure.CONFIGURATION_STATUS
+            if status == "COMPLETE" and status != "":
+                complete_status = 'YES'
+            else:
+                incomplete_status = 'YES'
         
         price_preview_status = []
         item_covered_obj = Sql.GetList("SELECT DISTINCT STATUS FROM SAQICO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
@@ -57,15 +68,9 @@ def Dynamic_Status_Bar():
             Trace.Write("NO Quote Items")
             price_bar = "no_quote_items"
                             
-        if getsalesorg_ifo and getfab_info:
+        if getsalesorg_ifo and getfab_info and incomplete_status == '':
             Trace.Write('salesorg--present---')
-            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:
-                # get_quote_details = Sql.GetFirst("SELECT  SERVICE_ID from SAQITM where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                # if get_quote_details:
-                #     get_quote = Quote.GetGlobal("contract_quote_record_id")
-                #     Trace.Write('button process--')
-                #     buttonvisibility = "Show_button"   
-                # else:
+            if get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID:                
                 Trace.Write('No button-2454-')
                 buttonvisibility = "Hide_button"            
             else:
