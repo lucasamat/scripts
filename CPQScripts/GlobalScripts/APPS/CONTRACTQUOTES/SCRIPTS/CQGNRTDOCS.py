@@ -278,7 +278,7 @@ except:
 
 
 if attach == "YES":
-	attachments()
+	ApiResponse = ApiResponseFactory.JsonResponse(attachments())
 if Language == "English" and quoteid.QUOTE_TYPE != 'ZWK1 - SPARES':
 	english_doc()
 elif Language == "English" and quoteid.QUOTE_TYPE == 'ZWK1 - SPARES':
