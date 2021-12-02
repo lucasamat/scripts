@@ -4924,7 +4924,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 									get_ent_bill_cycle = get_ent_val
 								else:
 									get_ent_billing_type_value = str(get_ent_val)
-					Trace.Write(str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_val---4750--'+str(get_ent_bill_cycle))
+					Trace.Write(str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					if str(get_ent_bill_cycle) == "Monthly":
 						if billing_day in (29,30,31):
