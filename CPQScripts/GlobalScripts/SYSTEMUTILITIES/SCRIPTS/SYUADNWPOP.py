@@ -4337,7 +4337,7 @@ def POPUPLISTVALUEADDNEW(
 			# sec_str += '<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src=""><div class="product_txt_div_child secondary_highlight text-left" style="display: block;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div>'
 
 			sec_str += "</div></div>"
-			FieldsList = ['Attachment File Name','Attachment Type']
+			FieldsList = ['Attachment File Name']
 			for FIELD_LABEL in FieldsList:
 				field_label_id = FIELD_LABEL.replace(" ", "__")
 				sec_str += "<div data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr icon-hvr-style' : 'g1 except_sec removeHorLine iconhvr icon-hvr-style' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
@@ -4355,17 +4355,7 @@ def POPUPLISTVALUEADDNEW(
 								+ field_label_id
 								+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
 							)
-				sec_str += (
-							'<select id="'
-							+ str(field_label_id)
-							+ '" onchange ="marketcodevalue(this)" value="'
-							+ field_label_id
-							+ '" type="text" title="'
-							+ str(field_label_id)
-							+ '" class="form-control pop_up_brd_rad related_popup_css fltlt cart-transInfo-select-width light_yellow"  '
-							+ disable
-							+ " ><option value='Select'>..Select</option>"
-						)		
+					
 		else:
 			#Trace.Write("===============> Else")
 			overflow_val = ""
