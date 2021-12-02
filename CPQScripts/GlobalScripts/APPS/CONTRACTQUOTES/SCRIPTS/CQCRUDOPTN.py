@@ -1359,7 +1359,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				else:
 					ent_disp_val = ent_disp_val	
 				#A055S000P01-7401 START
-				if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.SERVICE_ID) ) and ent_disp_val != '':
+				if str(attrs) in ('AGS_POA_PROD_TYPE','AGS_{}_GEN_POAPDT'.format(OfferingRow_detail.get("SERVICE_ID")) ) and ent_disp_val != '':
 					val = ""
 					if str(ent_disp_val) == 'Comprehensive':
 						val = "COMPREHENSIVE SERVICES"
@@ -1434,7 +1434,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						AttributeID = 'AGS_CON_DAY'
 						NewValue = ent_disp_val
 						add_where =''
-						ServiceId = OfferingRow_detail.SERVICE_ID
+						ServiceId = OfferingRow_detail.get("SERVICE_ID")
 						whereReq = "QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get('QUOTE_RECORD_ID'))+"' and SERVICE_ID like '%Z0016%' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' "
 
 						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
