@@ -333,7 +333,7 @@ class ContractQuoteCrudOpertion:
 						{BillingDate} as BILLING_DATE,						
 						0 as BILLING_YEAR,
 						SAQSCO.EQUIPMENT_DESCRIPTION,
-						SAQSCO.OBJECT_ID,									
+						SAQSCO.EQUIPMENT_ID,									
 						SAQSCO.EQUIPMENT_RECORD_ID,						
 						'' as QTEITMCOB_RECORD_ID,
 						SAQSCO.SERVICE_DESCRIPTION,
@@ -348,6 +348,51 @@ class ContractQuoteCrudOpertion:
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK
 					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}' and SAQRIT.OBJECT_ID IS NOT NULL""".format(
+						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
+						RevisionRecordId=self.quote_revision_record_id,
+						BillingDate=billing_date,
+						get_val=get_val,
+						service_id = service_id,billing_type =get_ent_billing_type_value))
+			Sql.RunQuery("""INSERT SAQIBP (
+						
+						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, 
+						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
+						BILLING_DATE, BILLING_YEAR,
+						EQUIPMENT_DESCRIPTION, EQUIPMENT_ID, EQUIPMENT_RECORD_ID, QTEITMCOB_RECORD_ID, 
+						SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERIAL_NUMBER, WARRANTY_START_DATE, WARRANTY_END_DATE,CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED
+					) 
+					SELECT 
+						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
+						'' as BILLING_END_DATE,
+						'' as BILLING_START_DATE,
+						ISNULL(NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
+						ISNULL(NET_PRICE_INGL_CURR, 0) / {get_val}  as as BILLING_VALUE_INGL_CURR
+						NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
+						'{billing_type}' as BILLING_TYPE,
+						LINE,
+						QUOTE_ID,
+						QUOTE_REVISION_CONTRACT_ITEM_ID as QTEITM_RECORD_ID,						
+						QUOTE_RECORD_ID,
+						QTEREV_ID,
+						QTEREV_RECORD_ID,
+						{BillingDate} as BILLING_DATE,						
+						0 as BILLING_YEAR,
+						''.EQUIPMENT_DESCRIPTION,
+						'' as EQUIPMENT_ID,									
+						'' as EQUIPMENT_RECORD_ID,						
+						'' as QTEITMCOB_RECORD_ID,
+						SERVICE_DESCRIPTION,
+						SERVICE_ID,
+						SERVICE_RECORD_ID, 
+						GREENBOOK,
+						GREENBOOK_RECORD_ID,
+						'' AS SERIAL_NUMBER,
+						'' as WARRANTY_START_DATE,
+						'' as WARRANTY_END_DATE,    
+						{UserId} as CPQTABLEENTRYADDEDBY, 
+						GETDATE() as CPQTABLEENTRYDATEADDED
+					FROM  SAQRIT (NOLOCK) 
+					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' and OBJECT_ID IS NULL""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
