@@ -268,6 +268,7 @@ class ConfigUpdateScript:
 				# 	Trace.Write("999"+str(vallist[4]))
 				# 	if vallist[4] == True:					
 				# 		vallist[4] = 'ACTIVE'
+				Trace.Write(" field_lables "+str(field_lables)+"field_values "+str(field_values))
 		return field_lables, field_values
 
 	def get_attributes_permission_details(self):
