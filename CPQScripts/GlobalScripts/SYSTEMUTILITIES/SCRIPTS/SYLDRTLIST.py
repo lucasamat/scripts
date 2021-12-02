@@ -1833,7 +1833,7 @@ class SYLDRTLIST:
 											) AS IQ
 											PIVOT
 											(
-												SUM(BILLING_AMOUNT)
+												SUM(BILLING_VALUE)
 												FOR BILLING_DATE IN ({PivotColumns})
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
@@ -3365,7 +3365,7 @@ class SYLDRTLIST:
 			dict_form = {}
 			ATTRIBUTE_NAME_List = []
 			cv_list = []
-			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT']
+			ignorecol = ['BILLING_DATE', 'BILLING_AMOUNT', 'BILLING_VALUE']
 			Trace.Write("Columns_chk_J"+str(Columns))
 			for invs in list(eval(Columns)):
 				table_ids = "#" + str(table_id)
@@ -4326,7 +4326,7 @@ class SYLDRTLIST:
 		gettotalamt = getgrandtotalamt = ""
 		if ObjectName == "SAQIBP":
 			ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-			gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
+			gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 			if gettotaldateamt:
 				my_format = "{:,." + str(decimal_place) + "f}"
 				for val in gettotaldateamt: 
@@ -4339,7 +4339,7 @@ class SYLDRTLIST:
 				footer_tot += '<th colspan="1" class="text-left">{}</th>'.format(curr_symbol)
 				footer_tot += '<th colspan="1" class="text-right">{}</th>'.format(gettotalamt)
 				for val in gettotaldateamt:
-					getamt = str(my_format.format(round(float(val.BILLING_AMOUNT), int(decimal_place))))
+					getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
 					footer_tot += '<th class="text-right">{}</th>'.format(getamt)
 		# if  RECORD_ID == 'SYOBJR-00009' and str(TreeParam) == "Quote Items":
 				#Columns = "['STATUS','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','EQUIPMENT_DESCRIPTION','YEAR_OVER_YEAR','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','SERIAL_NO','CUSTOMER_TOOL_ID','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','TOOL_CONFIGURATION','TARGET_PRICE_INGL_CURR','SLSDIS_PRICE_INGL_CURR','BD_PRICE_INGL_CURR','CEILING_PRICE_INGL_CURR','NET_VALUE_INGL_CURR','DISCOUNT','TOTAL_AMOUNT_INGL_CURR','TAX_PERCENTAGE','NET_PRICE_INGL_CURR']"
@@ -5374,8 +5374,8 @@ class SYLDRTLIST:
 												if str(quer_values) != ""
 												else " 1=1 and "
 											)
-								elif ObjectName == 'SAQIBP' and (str(quer_value) in 'BILLING_AMOUNT' or 'BILLING_DATE' in str(quer_value) or '20' in str(quer_value)):                                    
-									ATTRIBUTE_VALUE_STR += "BILLING_DATE = '" + str(SortColumn) + "' and BILLING_AMOUNT like '%" + str(quer_values) + "%' and "                                  
+								elif ObjectName == 'SAQIBP' and (str(quer_value) in 'BILLING_VALUE' or 'BILLING_DATE' in str(quer_value) or '20' in str(quer_value)):                                    
+									ATTRIBUTE_VALUE_STR += "BILLING_DATE = '" + str(SortColumn) + "' and BILLING_VALUE like '%" + str(quer_values) + "%' and "                                  
 								else:
 																		
 									ATTRIBUTE_VALUE_STR += str(quer_value) + " like '%" + str(quer_values) + "%' and "
@@ -6241,7 +6241,7 @@ class SYLDRTLIST:
 										) AS IQ
 										PIVOT
 										(
-											SUM(BILLING_AMOUNT)
+											SUM(BILLING_VALUE)
 											FOR BILLING_DATE IN ({PivotColumns})
 										)AS PVT
 									""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
@@ -8198,7 +8198,7 @@ class SYLDRTLIST:
 											) AS IQ
 											PIVOT
 											(
-												SUM(BILLING_AMOUNT)
+												SUM(BILLING_VALUE)
 												FOR BILLING_DATE IN ({PivotColumns})
 											)AS PVT
 										""".format(OrderByColumn=Wh_API_NAMEs, Columns=column_before_pivot_change, ObjectName=ObjectName,
@@ -8671,7 +8671,7 @@ class SYLDRTLIST:
 				footer_tot = ""
 				if ObjectName == "SAQIBP":
 					ContractRecordId = Product.GetGlobal("contract_quote_record_id")
-					gettotaldateamt = Sql.GetList("SELECT BILLING_AMOUNT=SUM(BILLING_AMOUNT),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
+					gettotaldateamt = Sql.GetList("SELECT BILLING_VALUE=SUM(BILLING_VALUE),ANNUAL_BILLING_AMOUNT = SUM(ANNUAL_BILLING_AMOUNT),BILLING_DATE FROM SAQIBP WHERE BILLING_DATE in {billing_date_column} and QUOTE_RECORD_ID ='{cq}' AND QTEREV_RECORD_ID='{revision_rec_id}' AND SERVICE_ID = '{service_id}' group by BILLING_DATE ".format(cq=str(ContractRecordId),revision_rec_id = quote_revision_record_id,billing_date_column=str(tuple(billing_date_column)),service_id = TreeParam))
 					if gettotaldateamt:
 						my_format = "{:,." + str(decimal_place) + "f}"
 						for val in gettotaldateamt: 
@@ -8682,7 +8682,7 @@ class SYLDRTLIST:
 						footer_tot += '<th colspan="1" class="text-left">{}</th>'.format(curr_symbol)
 						footer_tot += '<th colspan="1" class="text-right">{}</th>'.format(gettotalamt)
 						for val in gettotaldateamt:
-							getamt = str(my_format.format(round(float(val.BILLING_AMOUNT), int(decimal_place))))
+							getamt = str(my_format.format(round(float(val.BILLING_VALUE), int(decimal_place))))
 							footer_tot += '<th class="text-right">{}</th>'.format(getamt)
 					
 					
