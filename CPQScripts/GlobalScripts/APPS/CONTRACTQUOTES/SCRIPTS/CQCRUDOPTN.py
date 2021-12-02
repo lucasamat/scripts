@@ -349,7 +349,7 @@ class ContractQuoteCrudOpertion:
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM SAQSCO (NOLOCK) JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK
-					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}' and SAQRIT.OBJECT_ID IS NOT NULL""".format(
+					WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}' and SAQRIT.NET_PRICE > 0 and ISNULL(SAQRIT.OBJECT_ID,'')""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
@@ -394,7 +394,7 @@ class ContractQuoteCrudOpertion:
 						{UserId} as CPQTABLEENTRYADDEDBY, 
 						GETDATE() as CPQTABLEENTRYDATEADDED
 					FROM  SAQRIT (NOLOCK) 
-					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' and OBJECT_ID IS NULL""".format(
+					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
