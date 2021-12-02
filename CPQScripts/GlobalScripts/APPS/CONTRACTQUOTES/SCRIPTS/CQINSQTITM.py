@@ -484,8 +484,8 @@ class ContractQuoteItem:
 			dynamic_net_values = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
 			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,"
 			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
-				dynamic_net_values += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR, '0' AS COMVAL_INGL_CURR,"
-				dynamic_columns = "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
+				dynamic_net_values += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
+				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 
 
 		if self.source_object_name:		
