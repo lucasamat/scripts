@@ -112,10 +112,11 @@ expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM
 
 # if today_date_string == mail_trigger_date:
 expired_quotes = []
-for quotes in expired_quotes_query:   
-    expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
-    # Trace.Write("expire_date_CHK_J "+str(target_mail_date)+" - "+str(expire_date) + " - " +  str(quotes.QUOTE_EXPIRE_DATE))
-    if str(target_mail_date) == str(expire_date):
-        expired_quotes.append(quotes.QUOTE_ID)
-    if expired_quotes is not None:
-        expiration_obj.mailtrigger(expired_quotes)
+if expired_quotes_query is not None:
+    for quotes in expired_quotes_query:   
+        expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
+        # Trace.Write("expire_date_CHK_J "+str(target_mail_date)+" - "+str(expire_date) + " - " +  str(quotes.QUOTE_EXPIRE_DATE))
+        if str(target_mail_date) == str(expire_date):
+            expired_quotes.append(quotes.QUOTE_ID)
+        if expired_quotes is not None:
+            expiration_obj.mailtrigger(expired_quotes)
