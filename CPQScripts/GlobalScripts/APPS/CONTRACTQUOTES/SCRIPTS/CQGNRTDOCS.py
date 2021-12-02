@@ -25,7 +25,11 @@ userId = str(User.Id)
 userName = str(User.UserName)
 
 tableInfo = SqlHelper.GetTable("SAQDOC")
-recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+try:
+
+	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+except:
+	pass
 try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
@@ -113,7 +117,10 @@ for i in QuoteproductTotals.Rows:
 	Quote.GetCustomField('SubtotalTools').Content = str(ext_price)
 Log.Info(str(ext_price))
 tableInfo = SqlHelper.GetTable("SAQDOC")
-recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+try:
+	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+except:
+	pass
 
 
 def english_doc():
@@ -279,7 +286,10 @@ try:
 	quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 except:
 	quote_revision_record_id = ""
-recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+try:
+	recid = Product.Attr('QSTN_SYSEFL_QT_00001').GetValue()
+except:
+	pass
 
 quoteid = SqlHelper.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(recid)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
 
