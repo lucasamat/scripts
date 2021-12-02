@@ -152,8 +152,8 @@ class ContractQuoteItem:
 			dynamic_value_for_status = "'ACQUIRED' AS STATUS,'0' AS NET_PRICE_INGL_CURR, "
 			dynamic_col_names = " NET_PRICE_INGL_CURR,"
 			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
-				dynamic_value_for_status += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR, '0' AS COMVAL_INGL_CURR,"
-				dynamic_col_names = "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
+				dynamic_value_for_status += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
+				dynamic_col_names += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 		else:
 			dynamic_value_for_status = "null AS STATUS, "
 		
