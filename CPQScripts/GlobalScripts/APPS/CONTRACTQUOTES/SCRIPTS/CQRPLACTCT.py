@@ -46,10 +46,10 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #update_saqict = update_saqict.encode('ascii', 'ignore').decode('ascii')
         #Sql.RunQuery(update_saqict)
 
-def add_contact(values,all_values):
+def add_contact(values,AllValues):
 	Trace.Write("inside")
 	Trace.Write("1"+str(values))
-	Trace.Write("2"+str(all_values))
+	Trace.Write("2"+str(AllValues))
 
 
 
@@ -58,7 +58,7 @@ try:
 	repalce_values = Param.repalce_values
 	cont_rec_id = Param.cont_rec_id
 	table_name = Param.table_name
-	all_values = Param.AllValues
+	AllValues = Param.AllValues
 	values = Param.Values
 	action_type = Param.ActionType
 
@@ -70,7 +70,7 @@ except:
 	values = ''
 	action_type = ''
 
-Trace.Write("inside"+str(values))
+Trace.Write("inside"+str(param))
 
 if action_type == "ADD_CONTACTS":
-	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,all_values))
+	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,AllValues))
