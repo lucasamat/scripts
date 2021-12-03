@@ -759,7 +759,11 @@ class SyncQuoteAndCustomTables:
 
 							#Log.Info(UpdateSAQTRV)
 							Sql.RunQuery(UpdateSAQTRV)
-					
+							
+					##Calling the iflow for quote header writeback to cpq to c4c code starts..
+					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					##Calling the iflow for quote header writeback to cpq to c4c code ends...
 					
 					if custom_fields_detail.get("STPAccountID"):
 						account_obj = Sql.GetFirst("SELECT ACCOUNT_RECORD_ID, ACCOUNT_TYPE FROM SAACNT(NOLOCK) WHERE ACCOUNT_ID LIKE '%{}'".format(custom_fields_detail.get("STPAccountID")))
