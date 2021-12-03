@@ -451,7 +451,7 @@ class ContractQuoteCrudOpertion:
 						EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
 						WHERE SAQRIT.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQRIT.SERVICE_ID ='{service_id}'  and ISNULL(SAQRIT.OBJECT_ID,'') = '' )A """.format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
+						RevisionRecordId=self.quote_revision_record_id,billing_end_date=billing_end_date,
 						BillingDate=billing_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type))
@@ -467,7 +467,7 @@ class ContractQuoteCrudOpertion:
 					) 
 					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
-						SAQSCO.WARRANTY_END_DATE as BILLING_END_DATE,
+						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
 						SAQRIT.ESTVAL_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
@@ -501,7 +501,7 @@ class ContractQuoteCrudOpertion:
 						EXISTS (SELECT * FROM  SAQIBP (NOLOCK) WHERE SAQIBP.ANNUAL_BILLING_AMOUNT <> SAQRIT.NET_PRICE AND SAQRIT.QUOTE_RECORD_ID = SAQIBP.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQIBP.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQIBP.SERVICE_ID)
 						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'  and ISNULL(SAQRIT.OBJECT_ID,'') <> 0 )A """.format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
-						RevisionRecordId=self.quote_revision_record_id,
+						RevisionRecordId=self.quote_revision_record_id,billing_end_date=billing_end_date,
 						BillingDate=billing_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type))
@@ -515,7 +515,7 @@ class ContractQuoteCrudOpertion:
 					) 
 					SELECT 
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
-						'' as BILLING_END_DATE,
+						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
 						NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						ISNULL(NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
@@ -550,7 +550,7 @@ class ContractQuoteCrudOpertion:
 					WHERE QUOTE_RECORD_ID='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID ='{service_id}' AND (OBJECT_ID  IS NULL OR OBJECT_ID = '')""".format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
-						BillingDate=billing_date,
+						BillingDate=billing_date,billing_end_date=billing_end_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type))
 
