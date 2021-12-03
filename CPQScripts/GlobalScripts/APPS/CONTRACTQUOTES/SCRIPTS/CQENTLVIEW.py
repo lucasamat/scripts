@@ -916,8 +916,11 @@ class EntitlementView():
 					add_style = ""
 					attributes_disallowed_list = []
 					attribute_Name_list = []
+					get_tab_attr_length =""
+					tab_get_disallow_list =[]
 					if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 						Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
+						get_tab_attr_length = len(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID))
 						for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 							get_tooltip = ""
 							sec_validation = ""
@@ -1368,6 +1371,7 @@ class EntitlementView():
 									new_value_dicta["ENTITLEMENT PRICE IMPACT"]= str(sec_str_primp)
 									new_value_dicta["CALCULATION FACTOR"] = str("<abbr title='"+str(sec_str_cf)+"'>"+str(sec_str_cf)+"</abbr>")						
 							else:
+								tab_get_disallow_list.append(attrSysId)
 								if attrSysId not in attributesdisallowedlst and attrSysId:
 									attributesdisallowedlst.append(attrSysId)
 								add_style = "display:none"							
@@ -1515,8 +1519,10 @@ class EntitlementView():
 					
 					sec_str_boot += ('</div>')
 					##section hide starts..
-					if len(attribute_Name_list) == len(attributes_disallowed_list):
-						section_not_list.append('sec_'+Section_id)
+					Trace.Write('nott section--'+str(get_tab_attr_length)+'--'+str(tab_get_disallow_list))
+					if len(tab_get_disallow_list) == get_tab_attr_length :
+						Trace.Write("yess----"+str(Section_id))
+						section_not_list.append(Section_id)
 						
 					##section hide ends...
 					#getprevdicts +=   ("try{var dict_new = {};$('"+str(table_ids)+" tbody tr td select').each(function () {dict_new[$(this).find('td:nth-child(3) select').attr('id')] = $(this).children(':selected').val();});$('"+str(table_ids)+" tbody tr td input').each(function () {if($(this).attr('id') != 'T0_T1_LABOR_calc'){dict_new[$(this).find('td:nth-child(3) input').attr('id')] =  $(this).find('td:nth-child(3) input').val();}});console.log('dict_new-2796--',dict_new);localStorage.setItem('prventdict', JSON.stringify(dict_new))}catch{console.log('')}")
