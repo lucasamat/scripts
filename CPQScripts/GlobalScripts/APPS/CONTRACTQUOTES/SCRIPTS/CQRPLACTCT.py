@@ -48,6 +48,8 @@ def replace_contact(repalce_values,cont_rec_id,table_name):
 
 
 
+
+
 class QuoteContactModel:
 	
 	def __init__(self, **kwargs):
@@ -148,7 +150,7 @@ except:
     cont_rec_id = '' 
     table_name = '' 
 
-replace_contact(repalce_values,cont_rec_id,table_name)
+#replace_contact(repalce_values,cont_rec_id,table_name)
 
 def Factory(node=None):
 	"""Factory Method"""
