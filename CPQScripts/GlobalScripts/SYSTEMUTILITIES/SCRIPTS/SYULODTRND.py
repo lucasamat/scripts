@@ -911,7 +911,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
 					+ " = '"
 					+ str(quote_record_id)
-					+ "' and SERVICE_ID = '"+str(TreeParam)+"'"
+					+ "' and PRDOFR_ID = '"+str(TreeParam)+"'"
 					+ ""
 				)
 			elif ObjectName == "ACAPCH" and TreeParam == "Approval Chain Information":
