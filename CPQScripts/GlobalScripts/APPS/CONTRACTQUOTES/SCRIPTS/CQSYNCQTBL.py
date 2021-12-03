@@ -1519,7 +1519,7 @@ class SyncQuoteAndCustomTables:
 									"CONTACT_ID": custom_fields_detail.get("PrimaryContactId"),
 									"CONTACT_NAME": custom_fields_detail.get("PrimaryContactName"),
 									"CONTACT_RECORD_ID": contact_master_table.CONTACT_RECORD_ID,
-									"PRIMARY": "",
+									"PRIMARY": "TRUE",
 									"PHONE": employee_obj.PHONE,
 									"QTEREV_RECORD_ID":quote_revision_id,
 									"QTEREV_ID":quote_rev_id,
