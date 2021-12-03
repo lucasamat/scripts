@@ -2873,13 +2873,13 @@ class SYLDRTLIST:
 										Action_str += ('<li style="display: none;"><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQICT":
-								Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
-								if str(ik.['PRIMARY']).upper() != "TRUE":
-									Action_str += (
-									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
-									+ str(onclick)
-									+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">MARK PRIMARY</a></li>'
-								)								
+								# Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
+								# if str(ik.'[PRIMARY]').upper() != "TRUE":
+								# 	Action_str += (
+								# 	'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+								# 	+ str(onclick)
+								# 	+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">MARK PRIMARY</a></li>'
+								# )								
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
