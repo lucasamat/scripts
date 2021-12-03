@@ -271,7 +271,7 @@ class ContractQuoteCrudOpertion:
 	def _delete(self):
 		pass	
 							
-	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict):
+	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 		get_val =get_billing_cycle = get_billing_type = ''
 		Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 		Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
