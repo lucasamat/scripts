@@ -315,7 +315,7 @@ class ContractQuoteCrudOpertion:
 		return True
 
 
-	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
+	def insert_items_billing_plan(self, total_months=1, billing_date='',billing_end_date ='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 		get_val =get_billing_cycle = get_billing_type = ''
 		Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 		Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
@@ -4922,6 +4922,8 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							self.insert_items_billing_plan(total_months=total_months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
+														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					elif str(get_ent_bill_cycle).upper() == "QUARTELY":
@@ -4940,7 +4942,9 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							self.insert_items_billing_plan(total_months=months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														), amount_column="YEAR_"+str((index/4) + 1),
+														), billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
+														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
+														),amount_column="YEAR_"+str((index/4) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					else:
 						Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
@@ -4966,7 +4970,9 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							self.insert_items_billing_plan(total_months=years, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														), amount_column="YEAR_"+str((index) + 1),
+														), billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
+														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
+														),amount_column="YEAR_"+str((index) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
