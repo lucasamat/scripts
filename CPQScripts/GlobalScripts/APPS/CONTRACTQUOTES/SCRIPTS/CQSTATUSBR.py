@@ -37,7 +37,7 @@ def Dynamic_Status_Bar():
     if (str(TabName) == "Quotes" or str(TabName) == "Quote") and current_prod == "Sales":
         #Trace.Write('sales11=======')
         getsalesorg_ifo = Sql.GetFirst("SELECT SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-        getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+        #getfab_info = Sql.GetFirst("SELECT FABLOCATION_NAME from SAQSFB where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_service_ifo = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQTSV where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
         get_equip_details = Sql.GetFirst("SELECT COUNT(DISTINCT SERVICE_ID) as SERVICE_ID from SAQSCO where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
 
@@ -69,7 +69,8 @@ def Dynamic_Status_Bar():
             Trace.Write("NO Quote Items")
             price_bar = "no_quote_items"
                             
-        if getsalesorg_ifo and getfab_info:
+        #if getsalesorg_ifo and getfab_info:
+        if getsalesorg_ifo:
             Trace.Write('salesorg--present---')
             if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and complete_status == 'YES':                
                 Trace.Write('No button-2454-')
