@@ -1616,7 +1616,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 											SAQTSV.PAR_SERVICE_RECORD_ID as PAR_SERVICE_RECORD_ID,
 											'{green_book}' as GREENBOOK,
 											SAQFGB.GREENBOOK_RECORD_ID as GREENBOOK_RECORD_ID,
-											'{fab_location_id}' as FABLOCATION_ID,
+											SAQFGB.FABLOCATION_ID as FABLOCATION_ID,
 											SAQFGB.FABLOCATION_NAME as FABLOCATION_NAME,
 											SAQFGB.FABLOCATION_RECORD_ID as FABLOCATION_RECORD_ID
 										FROM SYSPBT (NOLOCK)
