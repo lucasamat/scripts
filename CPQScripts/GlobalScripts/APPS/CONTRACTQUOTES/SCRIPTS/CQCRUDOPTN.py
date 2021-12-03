@@ -276,7 +276,7 @@ class ContractQuoteCrudOpertion:
 		Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
 		Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
 		#QTQIBP_INS=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
-		for data,val in get_billling_data_dict:
+		for data,val in get_billling_data_dict.items():
 			if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
 				get_billing_cycle = val
 			elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
