@@ -312,7 +312,7 @@ class ContractQuoteCrudOpertion:
 				LEFT JOIN SAQIGS (NOLOCK) ON SAQIGS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGS.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQIGS.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
 				WHERE ISNULL(SAQIGS.GREENBOOK_RECORD_ID,'') = ''
 		""".format(UserId=User.Id, UserName=User.UserName, QuoteRecordId= self.contract_quote_record_id,QuoteRevisionRecordId=self.quote_revision_record_id, ItemGreenbookSummaryLastLineNo=greenbook_summary_last_line_no))
-	return True
+		return True
 
 
 	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
