@@ -101,19 +101,34 @@ def add_contact(values,allvalues):
 
 try:
 	allvalues = Param.AllValues
-	values = Param.Values
-	action_type = Param.ActionType
-	cont_rec_id = Param.cont_rec_id
-	table_name = Param.table_name
-	repalce_values = Param.repalce_values
-
 except:
-	repalce_values =''
-	cont_rec_id = ''
-	table_name = ''
 	allvalues = ''
-	values = ''
+
+try:
+	values = Param.Values
+except:
+	values= ''
+
+try:
+	action_type = Param.ActionType
+except:
 	action_type = ''
+try:
+	cont_rec_id = Param.cont_rec_id
+except:
+	cont_rec_id = ''
+try:
+	table_name = Param.table_name
+except:
+	table_name =''
+try:
+	repalce_values = Param.repalce_values
+except:
+	repalce_values = ''
+
+	
+
+
 
 Trace.Write("inside"+str(allvalues))
 Trace.Write("inside"+str(values))
