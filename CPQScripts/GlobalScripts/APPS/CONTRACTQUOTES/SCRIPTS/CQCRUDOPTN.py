@@ -695,6 +695,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		if self.action_type == "ADD_CONTACT" :
+			Trace.Write('@@Contact'+str(list(values)))
 			master_object_name = "SACONT"
 			if self.values:
 				record_ids = []
