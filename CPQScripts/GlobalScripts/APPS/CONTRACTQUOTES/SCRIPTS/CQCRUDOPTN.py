@@ -270,7 +270,51 @@ class ContractQuoteCrudOpertion:
 
 	def _delete(self):
 		pass	
-							
+
+
+
+
+	def _quote_items_greenbook_summary_insert(self):	
+		greenbook_summary_last_line_no = 0
+		quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=contract_quote_revision_record_id))
+		if quote_item_summary_obj:
+			greenbook_summary_last_line_no = int(quote_item_summary_obj.LINE) 	
+		
+		Sql.RunQuery("""INSERT SAQIGS (CONTRACT_VALID_FROM, CONTRACT_VALID_TO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, QTEITMSUM_RECORD_ID, COMMITTED_VALUE_INGL_CURR, ESTVAL_INGL_CURR, NET_VALUE_INGL_CURR, DOC_CURRENCY, DOCCURR_RECORD_ID, COMMITTED_VALUE, ESTIMATED_VALUE, NET_VALUE, LINE, QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+			SELECT IQ.*, ROW_NUMBER()OVER(ORDER BY(IQ.GREENBOOK)) + {ItemGreenbookSummaryLastLineNo} as LINE, CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_ITEM_GREENBK_SUMRY_RECORD_ID, '{UserName}' as CPQTABLEENTRYADDEDBY, GETDATE() as CPQTABLEENTRYDATEADDED,{UserId} as CpqTableEntryModifiedBy, GETDATE() as CpqTableEntryDateModified FROM (
+				SELECT DISTINCT
+					SAQTRV.CONTRACT_VALID_FROM,
+					SAQTRV.CONTRACT_VALID_TO,
+					SAQTRV.GLOBAL_CURRENCY,
+					SAQTRV.GLOBAL_CURRENCY_RECORD_ID,						
+					SAQRIT.GREENBOOK,
+					SAQRIT.GREENBOOK_RECORD_ID,
+					SAQRIT.SERVICE_DESCRIPTION,
+					SAQRIT.SERVICE_ID,
+					SAQRIT.SERVICE_RECORD_ID,
+					SAQTRV.QUOTE_ID,
+					SAQTRV.QUOTE_RECORD_ID,
+					SAQTMT.QTEREV_ID,
+					SAQTMT.QTEREV_RECORD_ID,
+					SAQRIT.QTEITMSUM_RECORD_ID,
+					null as COMMITTED_VALUE_INGL_CURR,
+					null as ESTVAL_INGL_CURR,
+					null as NET_VALUE_INGL_CURR,
+					SAQRIT.DOC_CURRENCY,
+					SAQRIT.DOCURR_RECORD_ID as DOCCURR_RECORD_ID,
+					null as COMMITTED_VALUE,
+					null as ESTIMATED_VALUE,
+					null as NET_VALUE
+				FROM SAQRIT (NOLOCK) 
+				JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQRIT.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID     
+				JOIN SAQTRV (NOLOCK) ON SAQTRV.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID			
+				WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}') IQ			
+				LEFT JOIN SAQIGS (NOLOCK) ON SAQIGS.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQIGS.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQIGS.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQIGS.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID
+				WHERE ISNULL(SAQIGS.GREENBOOK_RECORD_ID,'') = ''
+		""".format(UserId=User.Id, UserName=User.UserName, QuoteRecordId= self.contract_quote_record_id,QuoteRevisionRecordId=self.quote_revision_record_id, ItemGreenbookSummaryLastLineNo=greenbook_summary_last_line_no))
+	return True
+
+
 	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict=None):
 		get_val =get_billing_cycle = get_billing_type = ''
 		Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
@@ -414,10 +458,7 @@ class ContractQuoteCrudOpertion:
 						get_val=get_val,
 						service_id = service_id,billing_type =get_ent_billing_type_value))
 		else:
-			object_name = 'SAQSGB'
-			join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSGB.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSGB.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSGB.SERVICE_ID  and SAQSGB.GREENBOOK = SAQRIT.GREENBOOK"
-			divide_amt = 'SAQRIT.ESTVAL_INGL_CURR'
-			annaul_bill_amt = 'SAQRIT.NET_VALUE'
+			
 			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -4808,6 +4849,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	
 	def _create(self):
 		#Trace.Write('4739---------------')
+		self._quote_items_greenbook_summary_insert()
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
 		get_billling_data_dict = {}
 		get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
