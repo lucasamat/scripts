@@ -5,13 +5,15 @@
 #   __create_date : 19/10/2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
-import datetime
 import Webcom.Configurator.Scripting.Test.TestProduct
-import sys
-import re
-import System.Net
-import SYCNGEGUID as CPQID
 from SYDATABASE import SQL
+import datetime
+from datetime import datetime
+Sql = SQL()
+import SYCNGEGUID as CPQID
+import CQVLDRIFLW
+import CQCPQC4CWB
+import CQREVSTSCH
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
