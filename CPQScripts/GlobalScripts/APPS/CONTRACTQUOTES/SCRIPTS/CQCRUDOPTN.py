@@ -316,7 +316,7 @@ class ContractQuoteCrudOpertion:
 			#object_name = 'SAQSCO'
 			#divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
 			#annaul_bill_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
-			Trace.Write('304--get_ent_billing_type_value---'+str(get_ent_billing_type_value))
+			Trace.Write('304--get_ent_billing_type_value-----'+str(get_ent_billing_type_value))
 			Sql.RunQuery(""" INSERT SAQIBP (
 
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
