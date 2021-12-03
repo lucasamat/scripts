@@ -4156,6 +4156,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 
 	ObjectName = "SAQSAP"
 	DropDownList = []
+	RelatedDrop_str = ""
 	filter_level_list = []
 	filter_clas_name = ""
 	cv_list = []
