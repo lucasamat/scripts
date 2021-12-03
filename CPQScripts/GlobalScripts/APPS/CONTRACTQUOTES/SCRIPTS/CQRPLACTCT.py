@@ -131,7 +131,7 @@ except:
 
 
 Trace.Write("inside"+str(allvalues))
-Trace.Write("inside"+str(values))
+Trace.Write("inside"+(values))
 Trace.Write("inside"+str(action_type))
 
 if action_type == "ADD_CONTACTS":
