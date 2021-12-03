@@ -70,7 +70,7 @@ except:
 	values = ''
 	action_type = ''
 
-Trace.Write("inside"+str(Param))
+Trace.Write("inside"+str(action_type))
 
 if action_type == "ADD_CONTACTS":
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,AllValues))
