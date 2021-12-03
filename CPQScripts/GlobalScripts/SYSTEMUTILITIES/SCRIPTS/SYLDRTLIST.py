@@ -605,7 +605,7 @@ class SYLDRTLIST:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
 			# Billing Matrix - Pivot - End
-			col = col.replace("PRIMARY","[PRIMARY]")
+			col = col.replace("PRIMARY","[PRIMARY]") # CODE COMMON FOR ALL PRIMARY CHECK BOC API NAME
 			select_obj_str = col
 			
 			orderStr = """
