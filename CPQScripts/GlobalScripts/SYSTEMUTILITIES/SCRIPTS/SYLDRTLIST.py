@@ -562,7 +562,7 @@ class SYLDRTLIST:
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
 				select_obj_str = str(obj_str)
-			select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
+			#select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
 			name = select_obj_str.split(",")
 			for text in name:                
 				s = Sql.GetList(
@@ -605,6 +605,7 @@ class SYLDRTLIST:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
 			# Billing Matrix - Pivot - End
+			col = col.replace("PRIMARY","[PRIMARY]")
 			select_obj_str = col
 			
 			orderStr = """
@@ -2119,6 +2120,7 @@ class SYLDRTLIST:
 							Qustr += " AND LINE = '"+str(line_item)+"'"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
 							Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+						
 						Qury_str = (
 							"select DISTINCT top "
 							+ str(PerPage)
