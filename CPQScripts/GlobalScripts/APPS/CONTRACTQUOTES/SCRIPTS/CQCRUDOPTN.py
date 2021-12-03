@@ -279,7 +279,7 @@ class ContractQuoteCrudOpertion:
 		for data,val in get_billling_data_dict:
 			if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
 				get_billing_cycle = val
-			elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data::
+			elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
 				get_billing_type =val
 		Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
 		Trace.Write('get_billing_type---'+str(get_billing_type))
