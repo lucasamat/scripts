@@ -168,7 +168,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 	TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 	objh_obj = Sql.GetFirst("select OBJECT_NAME from SYOBJH where RECORD_ID = '" + str(obj_id) + "'")
 	objr_obj = Sql.GetFirst("select CAN_EDIT from SYOBJR where SAPCPQ_ATTRIBUTE_NAME = '" + str(objr_id) + "'")
-	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))
+	quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,quote_revision_record_id))
 	canedit = str(objr_obj.CAN_EDIT)
 		
 	if str(CLICKEDID) == "SYOBJR_00007_26B8147E_C59C_4010_AA3A_38176869E305":
@@ -336,7 +336,7 @@ def RELATEDMULTISELECTONEDIT(TITLE, VALUE, CLICKEDID, RECORDID,SELECTALL):
 						edt_str += "</div></td></tr></tbody></table>"
 						edt_str += '<div class="row pad-10"><button class="btnconfig" onclick="multiedit_RL_cancel();" type="button" value="Cancel" id="cancelButton">CANCEL</button><button class="btnconfig" type="button" value="Save" onclick="multiedit_save_RL()" id="saveButton">SAVE</button></div></div>'
 					else:
-						if quote_status.QUOTE_STATUS=='APPROVED':
+						if quote_status.REVISION_STATUS=='APPROVED':
 							edt_str = "NO"
 						elif obj_obj == 'SAQSAP':
 							k = Sql.GetFirst("SELECT QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID FROM SAQSAP WHERE CpqTableEntryId = {}".format(str(RECORDID[0]).split("-")[1]))

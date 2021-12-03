@@ -3851,7 +3851,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	objs_obj = Sql.GetFirst(
 		"select CAN_ADD,CAN_EDIT,COLUMNS,CAN_DELETE from SYOBJR (NOLOCK) where OBJ_REC_ID = '" + str(obj_id) + "' "
 	)
-	quote_status = Sql.GetFirst("SELECT QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,RevisionRecordId))
+	quote_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(ContractRecordId,RevisionRecordId))
 	can_edit = str(objs_obj.CAN_EDIT)
 	can_add = str(objs_obj.CAN_ADD)
 	can_delete = str(objs_obj.CAN_DELETE)
@@ -4030,7 +4030,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			)
 		elif hyper_link is not None and invs in hyper_link:            
 			if invs == "PM_FREQUENCY":
-				data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.QUOTE_STATUS!="APPROVED" else ""
+				data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.REVISION_STATUS!="APPROVED" else ""
 			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID":
 				data_formatter = "PreventiveMaintainenceHyperLinkTreeLink" 
 			else:
