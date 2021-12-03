@@ -407,7 +407,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_ent_billing_type_value))
+						service_id = service_id,billing_type =get_billing_type))
 			Sql.RunQuery(""" INSERT SAQIBP (
 
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -456,7 +456,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_ent_billing_type_value))
+						service_id = service_id,billing_type =get_billing_type))
 		else:
 			
 			Sql.RunQuery("""INSERT SAQIBP (
@@ -506,7 +506,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_ent_billing_type_value))
+						service_id = service_id,billing_type =get_billing_type))
 			Sql.RunQuery("""INSERT SAQIBP (
 						
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID, COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
@@ -554,7 +554,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_ent_billing_type_value))
+						service_id = service_id,billing_type =get_billing_type))
 
 		
 		# else:
