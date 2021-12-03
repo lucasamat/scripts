@@ -47,9 +47,15 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #Sql.RunQuery(update_saqict)
 
 def add_contact(values,allvalues):
-	Trace.Write("inside")
-	Trace.Write("1"+str(values))
-	Trace.Write("2"+str(allvalues))
+	record_ids= []
+	master_object_name='SACONT'
+	record_ids = [
+					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+					if value.strip() != "" and master_object_name in value
+					else value
+					for value in values
+				]
+	record_ids = str(str(record_ids)[1:-1].replace("'",""))
 	Sql.RunQuery ("""
 	INSERT SAQICT (
 	QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
@@ -92,8 +98,8 @@ def add_contact(values,allvalues):
 	SACONT.POSTAL_CODE
 	FROM SACONT (NOLOCK)
 	WHERE
-	SACONT.CONTACT_RECORD_ID IN ('{val}')
-	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
+	SACONT.CONTACT_RECORD_ID IN ({record_ids})
+	""".format(record_ids = record_ids,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
 
 
@@ -131,7 +137,7 @@ except:
 
 
 Trace.Write("inside"+str(allvalues))
-Trace.Write("inside"+str(values))
+Trace.Write("inside"+str(values[0]))
 Trace.Write("inside"+str(action_type))
 
 if action_type == "ADD_CONTACTS":
