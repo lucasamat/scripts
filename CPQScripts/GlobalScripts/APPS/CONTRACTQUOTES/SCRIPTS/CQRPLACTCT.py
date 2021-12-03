@@ -56,6 +56,7 @@ def add_contact(values,allvalues):
 					else value
 					for value in values
 				]
+	val= tuple(record_ids)
 	#record_ids = str(str(record_ids)[1:-1].replace("'",""))
 	getquotedetails = SqlHelper.GetFirst("SELECT * FROM SAQTMT  (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
 	Sql.RunQuery ("""
@@ -100,8 +101,8 @@ def add_contact(values,allvalues):
 	SACONT.POSTAL_CODE
 	FROM SACONT (NOLOCK)
 	WHERE
-	SACONT.CONTACT_RECORD_ID IN ({record_ids})
-	""".format(record_ids = record_ids,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
+	SACONT.CONTACT_RECORD_ID IN ({val})
+	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
 def mark_primary_contact(mark_primary_contact):
 	
