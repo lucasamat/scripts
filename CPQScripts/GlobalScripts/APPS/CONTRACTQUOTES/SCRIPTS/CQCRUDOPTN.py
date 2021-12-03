@@ -407,7 +407,7 @@ class ContractQuoteCrudOpertion:
 						BillingDate=billing_date,billing_end_date=billing_end_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type))
-			'''Sql.RunQuery(""" INSERT SAQIBP (
+			Sql.RunQuery(""" INSERT SAQIBP (
 
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
@@ -419,10 +419,9 @@ class ContractQuoteCrudOpertion:
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
+						SAQRIT.ESTVAL_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 						ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
-
-						SAQRIT.ESTVAL_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						'{billing_type}' as BILLING_TYPE,
 						SAQRIT.LINE AS LINE,
 						SAQRIT.QUOTE_ID,
@@ -455,7 +454,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_billing_type))'''
+						service_id = service_id,billing_type =get_billing_type))
 		else:
 			
 			Sql.RunQuery("""INSERT SAQIBP (
@@ -470,9 +469,9 @@ class ContractQuoteCrudOpertion:
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
 						SAQSCO.WARRANTY_END_DATE as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
+						SAQRIT.ESTVAL_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 						ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
-						SAQRIT.ESTVAL_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						'{billing_type}' as BILLING_TYPE,
 						SAQRIT.LINE AS LINE,
 						SAQSCO.QUOTE_ID,
@@ -518,9 +517,9 @@ class ContractQuoteCrudOpertion:
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,  
 						'' as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
+						NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						ISNULL(NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 						ISNULL(NET_PRICE_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
-						NET_PRICE_INGL_CURR AS ANNUAL_BILLING_AMOUNT,
 						'{billing_type}' as BILLING_TYPE,
 						LINE,
 						QUOTE_ID,
