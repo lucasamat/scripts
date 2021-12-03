@@ -155,6 +155,11 @@ def create_new_revision(Opertion,cartrev):
 		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
 		#get quote data for update in SAQTMT start
+
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 		
 		quote_table_info = Sql.GetTable("SAQTMT")
 		if get_quote_info_details:
