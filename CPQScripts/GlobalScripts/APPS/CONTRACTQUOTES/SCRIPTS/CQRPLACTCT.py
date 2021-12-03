@@ -115,7 +115,7 @@ except:
 	values = ''
 	action_type = ''
 
-Trace.Write("inside"+str(AllValues))
+Trace.Write("inside"+str(allvalues))
 Trace.Write("inside"+str(values))
 Trace.Write("inside"+str(action_type))
 
