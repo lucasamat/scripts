@@ -369,7 +369,7 @@ class ContractQuoteCrudOpertion:
 						)
 						SELECT
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
-						SAQSCO.WARRANTY_END_DATE as BILLING_END_DATE,
+						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
 						ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 						ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
@@ -405,10 +405,10 @@ class ContractQuoteCrudOpertion:
 						WHERE SAQSCO.QUOTE_RECORD_ID='{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{RevisionRecordId}' AND SAQSCO.SERVICE_ID ='{service_id}'  and ISNULL(SAQRIT.OBJECT_ID,'') <> 0 )A """.format(
 						UserId=self.user_id, QuoteRecordId=self.contract_quote_record_id,
 						RevisionRecordId=self.quote_revision_record_id,
-						BillingDate=billing_date,
+						BillingDate=billing_date,billing_end_date=billing_end_date,
 						get_val=get_val,
 						service_id = service_id,billing_type =get_billing_type))
-			Sql.RunQuery(""" INSERT SAQIBP (
+			'''Sql.RunQuery(""" INSERT SAQIBP (
 
 						QUOTE_ITEM_BILLING_PLAN_RECORD_ID, BILLING_END_DATE, BILLING_START_DATE,ANNUAL_BILLING_AMOUNT,BILLING_VALUE, BILLING_VALUE_INGL_CURR,BILLING_TYPE,LINE, QUOTE_ID, QTEITM_RECORD_ID,COMMITTED_VALUE_INGL_CURR,ESTVAL_INGL_CURR,
 						QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID,
@@ -418,7 +418,7 @@ class ContractQuoteCrudOpertion:
 						)
 						SELECT
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_ITEM_BILLING_PLAN_RECORD_ID,A.* from (SELECT DISTINCT  
-						'' as BILLING_END_DATE,
+						{billing_end_date} as BILLING_END_DATE,
 						{BillingDate} as BILLING_START_DATE,
 						ISNULL(SAQRIT.NET_PRICE, 0) / {get_val}  as BILLING_VALUE,
 						ISNULL(SAQRIT.ESTVAL_INGL_CURR, 0) / {get_val}  as  BILLING_VALUE_INGL_CURR,
@@ -456,7 +456,7 @@ class ContractQuoteCrudOpertion:
 						RevisionRecordId=self.quote_revision_record_id,
 						BillingDate=billing_date,
 						get_val=get_val,
-						service_id = service_id,billing_type =get_billing_type))
+						service_id = service_id,billing_type =get_billing_type))'''
 		else:
 			
 			Sql.RunQuery("""INSERT SAQIBP (
