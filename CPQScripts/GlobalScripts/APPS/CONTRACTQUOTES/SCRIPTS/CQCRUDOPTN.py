@@ -4805,6 +4805,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		#Trace.Write('4739---------------')
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		gtet_billling_data_dict = {}
 		get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
@@ -4832,6 +4833,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
 								Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
+								gtet_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
 								get_ent_bill_cycle = str(get_ent_val)
 								if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
 									get_ent_val = str(get_ent_val)
@@ -4839,7 +4841,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 									#get_ent_bill_cycle = get_ent_val
 								else:
 									get_ent_billing_type_value = str(get_ent_val)
-					Trace.Write(str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
+					Trace.Write(str(gtet_billling_data_dict)+'--dict--'+str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					if str(get_ent_bill_cycle) == "Monthly":
 						if billing_day in (29,30,31):
