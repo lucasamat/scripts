@@ -4892,6 +4892,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 								# else:
 								# 	get_ent_billing_type_value = str(get_ent_val)
 					Trace.Write(str(get_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
+					billing_month_end = 0
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					if str(get_ent_bill_cycle).upper() == "MONTHLY":
 						if billing_day in (29,30,31):
@@ -4918,12 +4919,14 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						#Sql.RunQuery("""DELETE FROM QT__QTQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id))
 						#entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 						#entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+						
 						for index in range(0, total_months+1):
+							billing_month_end += 1
 							self.insert_items_billing_plan(total_months=total_months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														),billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
-														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					elif str(get_ent_bill_cycle).upper() == "QUARTELY":
@@ -4939,11 +4942,12 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						months=months/3
 						Trace.Write('months-646----'+str(months))
 						for index in range(0, months):
+							billing_month_end += 1
 							self.insert_items_billing_plan(total_months=months, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														), billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
-														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 														),amount_column="YEAR_"+str((index/4) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					else:
@@ -4967,11 +4971,12 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 						years, remainder = divmod(diff1.days, avgyear)
 						years, months = int(years), int(remainder // avgmonth)
 						for index in range(0, years+1):
+							billing_month_end += 1
 							self.insert_items_billing_plan(total_months=years, 
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
-														), billing_end_date="DATEADD(Day, {Day}, '{BillingDate}')".format(
-														Day=30, BillingDate=start_date.strftime('%m/%d/%Y')
+														),billing_end_date="DATEADD(month, {Month_add}, '{BillingDate}')".format(
+														Month_add=billing_month_end, BillingDate=start_date.strftime('%m/%d/%Y')
 														),amount_column="YEAR_"+str((index) + 1),
 														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					#self.insert_quote_items_billing_plan()
