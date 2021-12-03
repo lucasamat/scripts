@@ -135,12 +135,6 @@ except:
 
 	
 
-
-
-Trace.Write("inside"+str(allvalues))
-Trace.Write("inside"+str(values[0]))
-Trace.Write("inside"+str(action_type))
-
-if action_type == "ADD_CONTACTS":
+if action_type == "ADD_CONTACT":
 	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
