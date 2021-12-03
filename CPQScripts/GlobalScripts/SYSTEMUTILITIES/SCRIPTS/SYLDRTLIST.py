@@ -211,8 +211,7 @@ class SYLDRTLIST:
 			# 	##column for pricing view
 			# 	Columns = "['STATUS','QUOTE_ITEM_COVERED_OBJECT_RECORD_ID','EQUIPMENT_LINE_ID','SERVICE_ID','EQUIPMENT_ID','SERIAL_NO','ASSEMBLY_ID','GREENBOOK','FABLOCATION_ID','KPU','TECHNOLOGY','YEAR_OVER_YEAR','YEAR_1','YEAR_2','YEAR_3','YEAR_4','YEAR_5','ENTITLEMENT_CATEGORY','TOTAL_COST_WOSEEDSTOCK','TOTAL_COST_WSEEDSTOCK','MODEL_PRICE','TARGET_PRICE','CEILING_PRICE','SALES_DISCOUNT_PRICE','NET_PRICE','BD_PRICE_MARGIN','DISCOUNT','SRVTAXCLA_DESCRIPTION','TAX_PERCENTAGE','NET_VALUE','PRICE_BENCHMARK_TYPE','TOOL_CONFIGURATION','ANNUAL_BENCHMARK_BOOKING_PRICE','CONTRACT_ID','CONTRACT_VALID_FROM','CONTRACT_VALID_TO','BENCHMARKING_THRESHOLD']"
 			# else:
-			Columns = obj_obj.COLUMNS
-			Columns = Columns.replace("PRIMARY","[PRIMARY]") 
+			Columns = obj_obj.COLUMNS 
 			#Hide columns in Related list based on Quote type start
 			if Currenttab == 'Quotes':
 				quote_rec_id = Product.GetGlobal("contract_quote_record_id")
@@ -558,6 +557,7 @@ class SYLDRTLIST:
 				if len(list(eval(Columns))) > 1:
 					lookup_disply_list123 = list(eval(Columns))[0]
 			obj_str = ",".join(list(eval(Columns)))
+			obj_str = obj_str.replace("PRIMARY","[PRIMARY]")
 			Trace.Write("Chkng_tracez"+str(obj_str)+" - "+str(lookup_str))
 			if lookup_str != "":
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
