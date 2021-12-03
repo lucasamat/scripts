@@ -46,10 +46,10 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #update_saqict = update_saqict.encode('ascii', 'ignore').decode('ascii')
         #Sql.RunQuery(update_saqict)
 
-def add_contact(values,AllValues):
+def add_contact(values,allvalues):
 	Trace.Write("inside")
 	Trace.Write("1"+str(values))
-	Trace.Write("2"+str(AllValues))
+	Trace.Write("2"+str(allvalues))
 	Sql.RunQuery ("""
 	INSERT SAQICT (
 	QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
@@ -100,7 +100,7 @@ def add_contact(values,AllValues):
 
 
 try:
-	AllValues = Param.AllValues
+	allvalues = Param.AllValues
 	values = Param.Values
 	action_type = Param.ActionType
 	cont_rec_id = Param.cont_rec_id
@@ -111,11 +111,13 @@ except:
 	repalce_values =''
 	cont_rec_id = ''
 	table_name = ''
-	all_values = ''
+	allvalues = ''
 	values = ''
 	action_type = ''
 
 Trace.Write("inside"+str(AllValues))
+Trace.Write("inside"+str(values))
+Trace.Write("inside"+str(action_type))
 
 if action_type == "ADD_CONTACTS":
-	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,AllValues))
+	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
