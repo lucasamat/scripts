@@ -240,6 +240,8 @@ class ContractQuoteItem:
 		#item_line_covered_object_entitlement_join_string = ""	
 		#item_line_covered_object_entitlement_where_string = ""		
 		#if update:
+		##deleteing SAQIEN record
+		Sql.RunQuery("DELETE SAQIEN FROM SAQIEN (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		item_line_covered_object_entitlement_where_string = " AND ISNULL(SAQIEN.EQUIPMENT_RECORD_ID,'') = '' "
 		item_line_covered_object_entitlement_join_string = "LEFT JOIN SAQIEN (NOLOCK) ON SAQIEN.QUOTE_RECORD_ID = SAQSCE.QUOTE_RECORD_ID AND SAQIEN.QTEREV_RECORD_ID = SAQSCE.QTEREV_RECORD_ID AND SAQIEN.SERVICE_RECORD_ID = SAQSCE.SERVICE_RECORD_ID AND SAQIEN.FABLOCATION_RECORD_ID = SAQSCE.FABLOCATION_RECORD_ID AND SAQIEN.EQUIPMENT_RECORD_ID = SAQSCE.EQUIPMENT_RECORD_ID"
 		# Update - End
