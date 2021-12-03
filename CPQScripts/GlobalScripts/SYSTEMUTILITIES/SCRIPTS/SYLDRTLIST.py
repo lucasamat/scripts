@@ -2840,7 +2840,7 @@ class SYLDRTLIST:
 										Trace.Write("SAQICT")
 										if str(ik.PRIMARY).upper() != "TRUE":
 											Trace.Write("oooooqqqqqqoooo11")
-											Action_str += ('<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">MARK PRIMARY</a></li>')
+											Action_str += ('<li><a class="dropdown-item" href="#" onclick="mark_primary_contact(this)">MARK PRIMARY</a></li>')
 										#Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
 									elif str(ObjectName) =='SAQSPT':
 										pass
