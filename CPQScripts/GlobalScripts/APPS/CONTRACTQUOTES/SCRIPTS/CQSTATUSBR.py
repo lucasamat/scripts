@@ -72,7 +72,7 @@ def Dynamic_Status_Bar():
         #if getsalesorg_ifo and getfab_info:
         if getsalesorg_ifo:
             Trace.Write('salesorg--present---')
-            if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '':                
+            if (get_service_ifo.SERVICE_ID == get_equip_details.SERVICE_ID) and incomplete_status == '' and complete_status != '':                
                 Trace.Write('No button-2454-')
                 buttonvisibility = "show_button"            
             else:
