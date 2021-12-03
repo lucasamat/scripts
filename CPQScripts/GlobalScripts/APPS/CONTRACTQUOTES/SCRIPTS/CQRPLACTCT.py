@@ -11,9 +11,7 @@ import datetime
 from datetime import datetime
 Sql = SQL()
 import SYCNGEGUID as CPQID
-import CQVLDRIFLW
-import CQCPQC4CWB
-import CQREVSTSCH
+
 
 Sql = SQL()
 ScriptExecutor = ScriptExecutor
@@ -57,12 +55,12 @@ def add_contact(values,all_values):
 
 
 try:
-	repalce_values = param.repalce_values
-	cont_rec_id = param.cont_rec_id
-	table_name = param.table_name
-	all_values = param.AllValues
-	values = param.Values
-	action_type = param.ActionType
+	repalce_values = Param.repalce_values
+	cont_rec_id = Param.cont_rec_id
+	table_name = Param.table_name
+	all_values = Param.AllValues
+	values = Param.Values
+	action_type = Param.ActionType
 
 except:
 	repalce_values =''
