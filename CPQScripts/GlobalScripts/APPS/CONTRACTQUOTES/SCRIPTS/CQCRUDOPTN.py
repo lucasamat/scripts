@@ -276,7 +276,7 @@ class ContractQuoteCrudOpertion:
 
 	def _quote_items_greenbook_summary_insert(self):	
 		greenbook_summary_last_line_no = 0
-		quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=contract_quote_record_id,RevisionRecordId=contract_quote_revision_record_id))
+		quote_item_summary_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQIGS (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		if quote_item_summary_obj:
 			greenbook_summary_last_line_no = int(quote_item_summary_obj.LINE) 	
 		
