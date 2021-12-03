@@ -6671,7 +6671,7 @@ def Factory(node=None):
 		"QUOTE APPROVAL MODEL":ContractQuoteApprovalModel,
 		#"QUOTE ITEMS MODEL":ContractQuoteItemsModel,
 		"PARTS MODEL": PartsListModel,
-		"CONTACT MODEL":QuoteContactModel
+		#"CONTACT MODEL":QuoteContactModel
 	}
 	return models[node]
 
