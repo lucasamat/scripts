@@ -4839,7 +4839,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 								get_ent_val = str(get_ent_val[0])
 								gtet_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
 								get_ent_bill_cycle = str(get_ent_val)
-								for data,val in get_billling_data_dict.items():
+								for data,val in gtet_billling_data_dict.items():
 									if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
 										get_ent_bill_cycle = val
 									elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
