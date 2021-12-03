@@ -47,6 +47,7 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #Sql.RunQuery(update_saqict)
 
 def add_contact(values,allvalues):
+	Trace.Write("inside"+str(action_type))	
 	record_ids= []
 	master_object_name='SACONT'
 	record_ids = [
@@ -141,4 +142,5 @@ Trace.Write("inside"+str(values[0]))
 Trace.Write("inside"+str(action_type))
 
 if action_type == "ADD_CONTACTS":
+	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
