@@ -46,95 +46,10 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #update_saqict = update_saqict.encode('ascii', 'ignore').decode('ascii')
         #Sql.RunQuery(update_saqict)
 
+def add_contact(Values,AllValues):
+	Trace.Write("repalce_values===="+str(repalce_values))
 
 
-class QuoteContactModel:
-	
-	def __init__(self, **kwargs):
-
-
-		self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-		self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-		self.opertion = kwargs.get('opertion')
-		self.action_type = kwargs.get('action_type')
-		self.values = kwargs.get('values')
-		self.table_name = kwargs.get('table_name')
-		self.all_values = kwargs.get('all_values')		
-		self.node_id = ""
-	
-	def _create(self):
-		if self.action_type == "ADD_CONTACT" :
-			Trace.Write('@@Contact'+str(list(values)))
-			master_object_name = "SACONT"
-			if self.values:
-				record_ids = []
-				record_ids = [
-					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
-					if value.strip() != "" and master_object_name in value
-					else value
-					for value in self.values
-				]
-			record_ids = str(str(record_ids)[1:-1].replace("'",""))
-			Trace.Write('@@Contact'+str(list(record_ids))
-
-			
-			self._process_query(
-					"""
-						INSERT SAQICT (
-							QUOTE_REV_INVOLVED_PARTY_RECORD_ID,
-							QUOTE_ID,
-							QTEREV_ID,
-							QTEREV_RECORD_ID,
-							CPQTABLEENTRYADDEDBY,
-							CPQTABLEENTRYDATEADDED,
-							CpqTableEntryModifiedBy,
-							CpqTableEntryDateModified,
-							CONTACT_NAME,
-							CONTACT_RECORD_ID,
-							CITY,							
-							COUNTRY,
-							COUNTRY_RECORD_ID,
-							STATE,
-							STATE_RECORD_ID,
-							EMAIL,
-							PHONE,
-							POSTAL_CODE
-
-							) SELECT
-								CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_INVOLVED_PARTY_RECORD_ID,
-								'{QuoteId}' as QUOTE_ID,
-								'{RevisionId}' as QTEREV_ID,
-								'{RevisionRecordId}' as QTEREV_RECORD_ID,
-								'{UserName}' AS CPQTABLEENTRYADDEDBY,
-								GETDATE() as CPQTABLEENTRYDATEADDED,
-								{UserId} as CpqTableEntryModifiedBy,
-								GETDATE() as CpqTableEntryDateModified,
-								SACONT.CONTACT_NAME,
-								SACONT.CONTACT_RECORD_ID,
-								SACONT.CITY,
-								SACONT.COUNTRY,
-								SACONT.COUNTRY_RECORD_ID,
-								SACONT.STATE,
-								SACONT.STATE_RECORD_ID,
-								SACONT.EMAIL,
-								SACONT.PHONE,
-								SACONT.POSTAL_CODE
-								FROM SACONT (NOLOCK)
-								WHERE 
-								SACONT.CONTACT_RECORD_ID in ({})                        
-						""".format(
-						QuoteId=self.contract_quote_id,
-						UserName=self.user_name,
-						UserId=self.user_id,
-						QuoteRecId=self.contract_quote_record_id,
-						RevisionId=self.quote_revision_id,
-						RevisionRecordId=self.quote_revision_record_id,
-					)
-				)
-		else:
-			""	
-
-	
 
 
 
@@ -149,19 +64,6 @@ except:
     table_name = '' 
 
 #replace_contact(repalce_values,cont_rec_id,table_name)
-
-def Factory(node=None):
-	"""Factory Method"""
-	models = {
-		"CONTACT MODEL":QuoteContactModel
-	}
-	return models[node]
-
-node_object = Factory(node_type)(
-	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
-	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
-	apr_current_record_id= apr_current_record_id,
-)
 
 
 
@@ -200,10 +102,11 @@ try:
 		Trace.Write('error-'+str(e))
 		pass	
  
+ if param.ActionType == "ADD_CONTACTS":
+	 add_contact(Values,AllValues)
 
 
-if opertion == "ADD":
-	node_object._create()
+
 
 
 
