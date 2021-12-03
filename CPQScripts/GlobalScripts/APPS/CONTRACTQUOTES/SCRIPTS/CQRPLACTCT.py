@@ -58,17 +58,17 @@ def add_contact(Values,AllValues):
 
 
 try:
-    repalce_values = Param.repalce_values
-    cont_rec_id = Param.cont_rec_id
-    table_name = Param.table_name
-	all_values = Param.AllValues
-	values = Param.Values
-	action_type = Param.ActionType
+	repalce_values = param.repalce_values
+	cont_rec_id = param.cont_rec_id
+	table_name = param.table_name
+	all_values = param.AllValues
+	values = param.Values
+	action_type = param.ActionType
 
 except:
-    repalce_values ='' 
-    cont_rec_id = '' 
-    table_name = ''
+	repalce_values =''
+	cont_rec_id = ''
+	table_name = ''
 	all_values = ''
 	values = ''
 	action_type = ''
