@@ -4880,7 +4880,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=str(gtet_billling_data_dict))
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=gtet_billling_data_dict)
 					elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 						Trace.Write('get_ent_val-billicycle--'+str(get_ent_bill_cycle))
 						ct_start_date =contract_start_date
