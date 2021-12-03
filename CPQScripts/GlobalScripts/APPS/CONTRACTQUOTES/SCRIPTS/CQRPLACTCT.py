@@ -100,12 +100,12 @@ def add_contact(values,AllValues):
 
 
 try:
-	repalce_values = Param.repalce_values
-	cont_rec_id = Param.cont_rec_id
-	table_name = Param.table_name
 	AllValues = Param.AllValues
 	values = Param.Values
 	action_type = Param.ActionType
+	cont_rec_id = Param.cont_rec_id
+	table_name = Param.table_name
+	repalce_values = Param.repalce_values
 
 except:
 	repalce_values =''
@@ -115,7 +115,7 @@ except:
 	values = ''
 	action_type = ''
 
-Trace.Write("inside"+str(repalce_values))
+Trace.Write("inside"+str(AllValues))
 
 if action_type == "ADD_CONTACTS":
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,AllValues))
