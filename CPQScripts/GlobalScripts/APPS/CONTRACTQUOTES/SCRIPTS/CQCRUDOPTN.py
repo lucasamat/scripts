@@ -4809,7 +4809,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 	def _create(self):
 		#Trace.Write('4739---------------')
 		billing_plan_obj = Sql.GetList("SELECT * FROM SAQRIB (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
-		gtet_billling_data_dict = {}
+		get_billling_data_dict = {}
 		get_ent_val = get_ent_bill_type = get_ent_billing_type_value = get_ent_bill_cycle = ''
 		if self.contract_start_date and self.contract_end_date and billing_plan_obj:
 			Sql.RunQuery("""DELETE FROM SAQIBP WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'""".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
@@ -4836,9 +4836,9 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
-								gtet_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
+								get_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
 								#get_ent_bill_cycle = str(get_ent_val)
-								for data,val in gtet_billling_data_dict.items():
+								for data,val in get_billling_data_dict.items():
 									if 'AGS_'+str(get_service_val)+'_PQB_BILCYC' in data:
 										get_ent_bill_cycle = val
 									elif 'AGS_'+str(get_service_val)+'_PQB_BILTYP' in data:
@@ -4849,7 +4849,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 								# 	#get_ent_bill_cycle = get_ent_val
 								# else:
 								# 	get_ent_billing_type_value = str(get_ent_val)
-					Trace.Write(str(gtet_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
+					Trace.Write(str(get_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					if str(get_ent_bill_cycle).upper() == "MONTHLY":
 						if billing_day in (29,30,31):
@@ -4881,7 +4881,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/12) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=gtet_billling_data_dict)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_bill_cycle,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					elif str(get_ent_bill_cycle).upper() == "QUARTELY":
 						Trace.Write('get_ent_val-billicycle--'+str(get_ent_bill_cycle))
 						ct_start_date =contract_start_date
@@ -4899,7 +4899,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index/4) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=gtet_billling_data_dict)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value=get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					else:
 						Trace.Write('get_ent_val---'+str(get_ent_bill_cycle))
 						if billing_day in (29,30,31):
@@ -4925,7 +4925,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=gtet_billling_data_dict)
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=get_billling_data_dict)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
 						columns=["CART_ID", "USERID"],
