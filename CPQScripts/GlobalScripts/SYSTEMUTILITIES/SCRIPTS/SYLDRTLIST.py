@@ -557,13 +557,12 @@ class SYLDRTLIST:
 				if len(list(eval(Columns))) > 1:
 					lookup_disply_list123 = list(eval(Columns))[0]
 			obj_str = ",".join(list(eval(Columns)))
-			obj_str = obj_str.replace("PRIMARY","[PRIMARY]")
 			Trace.Write("Chkng_tracez"+str(obj_str)+" - "+str(lookup_str))
 			if lookup_str != "":
 				select_obj_str = str(obj_str) + "," + str(lookup_str)
 			else:
 				select_obj_str = str(obj_str)
-			
+			select_obj_str = select_obj_str.replace("PRIMARY","[PRIMARY]")
 			name = select_obj_str.split(",")
 			for text in name:                
 				s = Sql.GetList(
