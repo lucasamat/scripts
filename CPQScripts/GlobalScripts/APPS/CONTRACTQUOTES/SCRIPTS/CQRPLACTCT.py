@@ -55,67 +55,23 @@ def add_contact(Values,AllValues):
 
 
 
+
+
 try:
     repalce_values = Param.repalce_values
     cont_rec_id = Param.cont_rec_id
     table_name = Param.table_name
+	all_values = Param.AllValues
+	values = Param.Values
+	action_type = Param.ActionType
 
 except:
     repalce_values ='' 
     cont_rec_id = '' 
-    table_name = '' 
+    table_name = ''
+	all_values = ''
+	values = ''
+	action_type = ''
 
-#replace_contact(repalce_values,cont_rec_id,table_name)
-
-if param.ActionType == "ADD_CONTACTS":
+if action_Type == "ADD_CONTACTS":
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,all_values))
-
-
-
-
-try:
-	opertion = Param.Opertion
-	node_type = Param.NodeType
-	try:
-		values = Param.Values
-	except Exception:
-		values = []
-	try:
-		A_Keys = Param.A_Keys
-		A_Values = Param.A_Values
-	except:
-		A_Keys = ""
-		A_Values = ""
-	try:
-		all_values = Param.AllValues
-	except Exception:
-		all_values = False
-	try:
-		table_name = Param.ObjectName
-	except Exception:
-		table_name = None
-	try:
-		action_type = Param.ActionType
-	except Exception:
-		action_type = None
-	try:
-		contract_quote_record_id = Param.ContractQuoteRecordId	
-	except Exception:
-		contract_quote_record_id = False
-		
-except Exception as e:
-	Trace.Write('error-'+str(e))
-	pass	
- 
-
-	 
-
-
-
-
-
-
-
-
-
-
