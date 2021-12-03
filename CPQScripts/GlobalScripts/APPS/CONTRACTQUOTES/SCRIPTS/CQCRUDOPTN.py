@@ -4837,18 +4837,22 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							get_ent_val= re.findall(pattern_name,sub_string)
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
-								Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
 								gtet_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
 								get_ent_bill_cycle = str(get_ent_val)
-								if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
-									get_ent_val = str(get_ent_val)
-									Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
-									#get_ent_bill_cycle = get_ent_val
-								else:
-									get_ent_billing_type_value = str(get_ent_val)
-					Trace.Write(str(gtet_billling_data_dict)+'--dict--'+str(get_ent_billing_type_value)+'--get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
+								for data,val in get_billling_data_dict.items():
+									if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
+										get_ent_bill_cycle = val
+									elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
+										get_billing_type =val
+								# if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
+								# 	get_ent_val = str(get_ent_val)
+								# 	Trace.Write(str(get_ent_val)+'---get_ent_name---'+str(get_ent_id[0]))
+								# 	#get_ent_bill_cycle = get_ent_val
+								# else:
+								# 	get_ent_billing_type_value = str(get_ent_val)
+					Trace.Write(str(gtet_billling_data_dict)+'--dict----get_ent_billing_type_value--get_ent_bill_cycle--4750--'+str(get_ent_bill_cycle))
 					entitlement_obj = Sql.GetFirst("select convert(xml,replace(replace(replace(replace(replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39'),' < ',' &lt; ' ),' > ',' &gt; ' ),'_>','_&gt;'),'_<','_&lt;')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId =self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-					if str(get_ent_bill_cycle) == "Monthly":
+					if str(get_ent_bill_cycle).upper() == "MONTHLY":
 						if billing_day in (29,30,31):
 							if start_date.month == 2:
 								isLeap = lambda x: x % 4 == 0 and (x % 100 != 0 or x % 400 == 0)
