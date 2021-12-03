@@ -271,12 +271,19 @@ class ContractQuoteCrudOpertion:
 	def _delete(self):
 		pass	
 							
-	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None):
-		get_val =''
-		Trace.Write('get_ent_billing_type_value--'+str(get_ent_billing_type_value))
-		Trace.Write('get_ent_val_type--'+str(get_ent_val_type))
+	def insert_items_billing_plan(self, total_months=1, billing_date='', amount_column='YEAR_1', entitlement_obj=None,service_id=None,get_ent_val_type =None,get_ent_billing_type_value=None,get_billling_data_dict):
+		get_val =get_billing_cycle = get_billing_type = ''
+		Trace.Write(str(service_id)+'--get_billling_data_dict--'+str(get_billling_data_dict))
+		Trace.Write(str(service_id)+'get_ent_val_type--'+str(get_ent_val_type))
 		#QTQIBP_INS=Sql.GetFirst("select convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML,QUOTE_RECORD_ID,SERVICE_ID from SAQTSE (nolock) where QUOTE_RECORD_ID = '{QuoteRecordId}'".format(QuoteRecordId =self.contract_quote_record_id ))
-		if get_ent_val_type == "Monthly":
+		for data,val in get_billling_data_dict:
+			if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
+				get_billing_cycle = val
+			else:
+				get_billing_type =val
+		Trace.Write('get_billing_cycle---'+str(get_billing_cycle))
+		Trace.Write('get_billing_type---'+str(get_billing_type))
+		if get_billing_cycle == "Monthly":
 			year = int(amount_column.split('_')[-1])
 			remaining_months = (total_months + 1) - (year*12)		
 			divide_by = 12
@@ -284,7 +291,7 @@ class ContractQuoteCrudOpertion:
 			if remaining_months < 0:
 				divide_by = 12 + remaining_months
 			get_val =12
-		elif str(get_ent_val_type).upper() == "QUARTERLY":
+		elif str(get_billing_cycle).upper() == "QUARTERLY":
 			year = int(amount_column.split('_')[-1])
 			remaining_months = (total_months) - (year*12)		
 			divide_by = 12
