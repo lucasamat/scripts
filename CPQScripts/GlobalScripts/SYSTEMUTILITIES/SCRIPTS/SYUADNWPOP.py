@@ -149,10 +149,6 @@ def POPUPLISTVALUEADDNEW(
 		SYOBJR_NAME = "div_CTR_" + str(popup_lable_obj.NAME).replace(" ", "_")
 		Question_obj = Sql.GetFirst(
 			"SELECT OBJECT_NAME, LABEL FROM SYOBJH (NOLOCK) WHERE RECORD_ID='" + str(popup_lable_obj.OBJ_REC_ID) + "'"
-		)
-	elif DIVNAME == "div_CTR_Attachments":
-		Question_obj = Sql.GetFirst(
-			"SELECT OBJECT_NAME, LABEL FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='SYOBJ-1177044'"
 		)	
 
 	else:
@@ -202,9 +198,7 @@ def POPUPLISTVALUEADDNEW(
 
 	if Question_obj is not None:
 		if DIVNAME == "div_CTR_Assigned_Apps":
-			ObjectName = "SYPRAP"
-		elif DIVNAME == "div_CTR_Attachments":
-			ObjectName = "SAQRAT"
+			ObjectName = "SYPRAP"		
 		else:
 			ObjectName = Question_obj.OBJECT_NAME.strip()
 		if str(ObjectName) == "USERS" and str(CurrentTab) == "Profile":
@@ -4322,39 +4316,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
 
-		elif str(ObjectName) == "SAQRAT":
-			Trace.Write('upload att=====')
-			disable = 'disabled'
-			# sec_str += (
-			# 			'<div class="top-market-code-sec"><div style="margin-bottom: -1px;" class="row modulebnr brdr">'                
-			# 			+ "UPLOAD ATTACHMENT"
-			# 			+ '<button type="button" style="float:right;" class="close"  data-dismiss= "modal" onclick="close_popup()">X</button></div></div>'
-			# 		)
-			sec_str = '<div class="row modulebnr brdr ma_mar_btm">UPLOAD ATTACHMENT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-
-			sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div></div></div>'
-			# sec_str += '<div class="col-md-12"><div class="row pad-10 bg-lt-wt brdr">'
-			# sec_str += '<img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src=""><div class="product_txt_div_child secondary_highlight text-left" style="display: block;"><div class="product_txt_child"><abbr title="Upload Attachment">Upload Attachment</abbr></div><div class="product_txt_to_top_child" style="float: left;"><abbr title="Please click on the file upload icon to add an attachment to your quote revision">Please click on the file upload icon to add an attachment to your quote revision</abbr></div></div>'
-
-			sec_str += "</div></div>"
-			FieldsList = ['Attachment File Name']
-			for FIELD_LABEL in FieldsList:
-				field_label_id = FIELD_LABEL.replace(" ", "__")
-				sec_str += "<div data-bind='attr: {'id':'mat'+stdAttrCode(),'class': isWholeRow() ? 'g4  except_sec removeHorLine iconhvr icon-hvr-style' : 'g1 except_sec removeHorLine iconhvr icon-hvr-style' }' id='mat1578' class='g4  except_sec removeHorLine iconhvr'>"
-				sec_str += (
-								"<div class='col-md-5'><abbr data-bind='attr:{'title':label}' title='"
-								+ str(FIELD_LABEL)
-								+ "'> <label class='col-md-11 pull-left incomplete-status-style lbl_id_33' data-bind='html: label, css: { requiredLabel: incomplete() &amp;&amp; $root.highlightIncomplete(), 'pull-left': hint() }'>"
-								+ str(FIELD_LABEL)
-								+ "</label> </abbr> <a href='#' title='' data-placement='auto top' data-toggle='popover' data-trigger='focus' data-content='"+str(FIELD_LABEL)+"' class='col-md-1 bgcccwth10 pull-right icon-hvr-anchor' data-original-title=''><i  class='fa fa-info-circle fltlt'></i>"
-						)
-				sec_str += '</a> </div>'
-				sec_str += "<div class='col-md-7 pad-0 cart-right-content-val-center'>"
-				sec_str += (
-								"<div class='col-md-3 pad-0'> <input type='text' id ='"+field_label_id+"' title = '"+ field_label_id+"' value = '"
-								+ field_label_id
-								+ "' 'title':userInput}, incrementalTabIndex, enable: isEnabled' class='form-control' style='height: 28px;border-top: 0 !important;border-bottom: 0 !important;' id='' title='' tabindex='' disabled=''> </div>"
-							)
+		
 					
 		else:
 			#Trace.Write("===============> Else")
