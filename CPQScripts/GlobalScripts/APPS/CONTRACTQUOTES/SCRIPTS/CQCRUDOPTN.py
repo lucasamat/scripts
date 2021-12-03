@@ -699,7 +699,6 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 			master_object_name = "SACONT"
 			if self.values:
 				record_ids = []
-				get_fab = "('"+str(self.tree_param)+"')"
 				record_ids = [
 					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
 					if value.strip() != "" and master_object_name in value
@@ -707,6 +706,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 					for value in self.values
 				]
 			record_ids = str(str(record_ids)[1:-1].replace("'",""))
+			Trace.Write('@@Contact'+str(list(record_ids))
 
 
 			self._process_query(
@@ -752,7 +752,7 @@ class QuoteContactModel(ContractQuoteCrudOpertion):
 								SACONT.POSTAL_CODE
 								FROM SACONT (NOLOCK)
 								WHERE 
-								SACONT.QUOTE_RECORD_ID = '{QuoteRecId}'                       
+								SACONT.CONTACT_RECORD_ID= '{QuoteRecId}'                       
 						""".format(
 						QuoteId=self.contract_quote_id,
 						UserName=self.user_name,
