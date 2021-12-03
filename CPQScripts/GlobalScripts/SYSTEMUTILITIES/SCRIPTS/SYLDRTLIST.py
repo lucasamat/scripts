@@ -2838,6 +2838,12 @@ class SYLDRTLIST:
 								elif Tree_Enable is not None and str(Tree_Enable.ENABLE_TREE).upper() == "TRUE":
 									if ObjectName =='SAQICT':
 										Trace.Write("SAQICT")
+										if str(ik.PRIMARY).upper() != "TRUE":
+											Trace.Write("oooooqqqqqqoooo11")
+											Action_str += (
+											'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+											+ str(onclick)
+											+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">MARK PRIMARY</a></li>')
 										#Action_str += ('<li><a class="dropdown-item" href="#" onclick="cont_openaddnew(this,'')" id ="ADDNEW__SYOBJR_98871_SYOBJ_002649">MARK PRIMARY</a></li>')
 									elif str(ObjectName) =='SAQSPT':
 										pass
@@ -2876,12 +2882,6 @@ class SYLDRTLIST:
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQICT":
 								# Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
-								if str(ik.'[PRIMARY]').upper() != "TRUE":
-									Trace.Write("oooooqqqqqqoooo11")
-									Action_str += (
-									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
-									+ str(onclick)
-									+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">MARK PRIMARY</a></li>')								
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
