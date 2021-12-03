@@ -2975,6 +2975,17 @@ class approvalCenter:
 						acct_id=str(getaccountid.ACCOUNT_ID)
 						acct_name=str(getaccountid.ACCOUNT_NAME)
 						values =str(acct_name)+"-"+str(acct_id)
+				elif str(eachsplit[1]) == "SERVICE_ID":
+					getservid = Sql.GetList("SELECT CONCAT(SERVICE_ID,'-',SERVICE_DESCRIPTION) AS SERVICE FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getservid:
+						values=''
+						for i in getservid:
+							if values =='':
+								values = i.SERVICE
+							else:
+								values +=','+i.SERVICE
+						Trace.Write(values)
+
 				elif str(eachsplit[1]) == "MEMBER_ID":
 					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
