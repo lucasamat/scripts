@@ -47,7 +47,9 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #Sql.RunQuery(update_saqict)
 
 def add_contact(Values,AllValues):
-	Trace.Write("repalce_values===="+str(repalce_values))
+	Trace.Write("inside")
+	Trace.Write("1"+str(Values))
+	Trace.Write("2"+str(AllValues))
 
 
 
@@ -103,7 +105,9 @@ try:
 		pass	
  
  if param.ActionType == "ADD_CONTACTS":
-	 add_contact(Values,AllValues)
+
+	 ApiResponse = ApiResponseFactory.JsonResponse(add_contact(Values,AllValues))
+	 
 
 
 
