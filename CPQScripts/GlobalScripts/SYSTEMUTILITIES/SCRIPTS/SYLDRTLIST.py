@@ -2874,7 +2874,7 @@ class SYLDRTLIST:
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQICT":
 								Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
-								if str(ik.PRIMARY).upper() != "TRUE":
+								if str(ik.[PRIMARY]).upper() != "TRUE":
 									Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
