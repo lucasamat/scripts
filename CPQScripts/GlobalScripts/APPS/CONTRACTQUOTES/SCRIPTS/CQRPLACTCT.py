@@ -46,10 +46,10 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #update_saqict = update_saqict.encode('ascii', 'ignore').decode('ascii')
         #Sql.RunQuery(update_saqict)
 
-def add_contact(Values,AllValues):
+def add_contact(values,all_values):
 	Trace.Write("inside")
-	Trace.Write("1"+str(Values))
-	Trace.Write("2"+str(AllValues))
+	Trace.Write("1"+str(values))
+	Trace.Write("2"+str(all_values))
 
 
 
