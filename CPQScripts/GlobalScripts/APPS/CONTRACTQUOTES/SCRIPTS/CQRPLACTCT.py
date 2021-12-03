@@ -68,42 +68,44 @@ except:
 #replace_contact(repalce_values,cont_rec_id,table_name)
 
 if param.ActionType == "ADD_CONTACTS":
-	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(Values,AllValues))
+	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,all_values))
+
+
 
 
 try:
-		opertion = Param.Opertion
-		node_type = Param.NodeType
-		try:
-			values = Param.Values
-		except Exception:
-			values = []
-		try:
-			A_Keys = Param.A_Keys
-			A_Values = Param.A_Values
-		except:
-			A_Keys = ""
-			A_Values = ""
-		try:
-			all_values = Param.AllValues
-		except Exception:
-			all_values = False
-		try:
-			table_name = Param.ObjectName
-		except Exception:
-			table_name = None
-		try:
-			action_type = Param.ActionType
-		except Exception:
-			action_type = None
-		try:
-			contract_quote_record_id = Param.ContractQuoteRecordId	
-		except Exception:
-			contract_quote_record_id = False
+	opertion = Param.Opertion
+	node_type = Param.NodeType
+	try:
+		values = Param.Values
+	except Exception:
+		values = []
+	try:
+		A_Keys = Param.A_Keys
+		A_Values = Param.A_Values
+	except:
+		A_Keys = ""
+		A_Values = ""
+	try:
+		all_values = Param.AllValues
+	except Exception:
+		all_values = False
+	try:
+		table_name = Param.ObjectName
+	except Exception:
+		table_name = None
+	try:
+		action_type = Param.ActionType
+	except Exception:
+		action_type = None
+	try:
+		contract_quote_record_id = Param.ContractQuoteRecordId	
+	except Exception:
+		contract_quote_record_id = False
 		
-	except Exception as e:
-		Trace.Write('error-'+str(e))
-		pass	
+except Exception as e:
+	Trace.Write('error-'+str(e))
+	pass	
  
 
 	 
