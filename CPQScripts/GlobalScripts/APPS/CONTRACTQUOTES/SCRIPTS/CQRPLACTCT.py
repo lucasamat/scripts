@@ -50,6 +50,51 @@ def add_contact(values,AllValues):
 	Trace.Write("inside")
 	Trace.Write("1"+str(values))
 	Trace.Write("2"+str(AllValues))
+	Sql.RunQuery ("""
+	INSERT SAQICT (
+	QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
+	QUOTE_ID,
+	QUOTE_RECORD_ID,
+	QTEREV_ID,
+	QTEREV_RECORD_ID,
+	CPQTABLEENTRYADDEDBY,
+	CPQTABLEENTRYDATEADDED,
+	CpqTableEntryDateModified,
+	CONTACT_NAME,
+	CONTACT_RECORD_ID,
+	CITY,
+	COUNTRY,
+	COUNTRY_RECORD_ID,
+	STATE,
+	STATE_RECORD_ID,
+	EMAIL,
+	PHONE,
+	POSTAL_CODE
+
+	) SELECT
+	CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
+	'{quoteid}' as QUOTE_ID,
+	'{quotrecid}' as QUOTE_RECORD_ID,
+	'{quoterevid}' as QTEREV_ID,
+	'{quoterevrecid}' as QTEREV_RECORD_ID,
+	'TEST' AS CPQTABLEENTRYADDEDBY,
+	GETDATE() as CPQTABLEENTRYDATEADDED,
+	GETDATE() as CpqTableEntryDateModified,
+	SACONT.CONTACT_NAME,
+	SACONT.CONTACT_RECORD_ID,
+	SACONT.CITY,
+	SACONT.COUNTRY,
+	SACONT.COUNTRY_RECORD_ID,
+	SACONT.STATE,
+	SACONT.STATE_RECORD_ID,
+	SACONT.EMAIL,
+	SACONT.PHONE,
+	SACONT.POSTAL_CODE
+	FROM SACONT (NOLOCK)
+	WHERE
+	SACONT.CONTACT_RECORD_ID IN ('{val}')
+	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
+
 
 
 
