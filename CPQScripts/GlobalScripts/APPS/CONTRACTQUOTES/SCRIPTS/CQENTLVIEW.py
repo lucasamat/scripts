@@ -352,7 +352,7 @@ class EntitlementView():
 						tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID].append(attr_detail)
 					else:
 						tabwise_product_attributes[product_attribute_obj.TAB_PROD_ID] = [attr_detail]
-			#Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
+			Trace.Write("tabwise_product_attributes_J "+str(tabwise_product_attributes))
 		
 			#Trace.Write('overall_attribute_list-----'+str(overall_attribute_list))
 
@@ -453,6 +453,7 @@ class EntitlementView():
 					#Trace.Write(" tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 					if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 						for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
+
 							new_value_dicta = {}
 							attrName = attribute['attribute_name']
 							attrLabel = attribute['attribute_label']	
@@ -916,7 +917,7 @@ class EntitlementView():
 					attributes_disallowed_list = []
 					attribute_Name_list = []
 					if tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
-						#Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
+						Trace.Write("tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)"+str(tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID)))
 						for attribute in tabwise_product_attributes.get(product_tab_obj.TAB_PROD_ID):
 							get_tooltip = ""
 							sec_validation = ""
