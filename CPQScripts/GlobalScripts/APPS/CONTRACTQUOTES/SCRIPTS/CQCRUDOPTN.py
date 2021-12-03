@@ -311,7 +311,7 @@ class ContractQuoteCrudOpertion:
 		Trace.Write('---301---get_ent_billing_type_value--get_ent_val_type--'+str(get_ent_val_type)+'---'+str(get_ent_billing_type_value))
 		Trace.Write(str(get_val)+"--get=--divide_by---"+str(divide_by))
 		object_name = join_condition = ''
-		if str(get_ent_billing_type_value).upper() == "FIXED":
+		if str(get_billing_type).upper() == "FIXED":
 			#join_condition = "JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSCO.QUOTE_RECORD_ID and SAQRIT.QTEREV_RECORD_ID=SAQSCO.QTEREV_RECORD_ID  and SAQRIT.SERVICE_ID = SAQSCO.SERVICE_ID and SAQRIT.OBJECT_ID = SAQSCO.EQUIPMENT_ID and SAQSCO.GREENBOOK = SAQRIT.GREENBOOK"
 			#object_name = 'SAQSCO'
 			#divide_amt = 'SAQRIT.NET_PRICE_INGL_CURR'
