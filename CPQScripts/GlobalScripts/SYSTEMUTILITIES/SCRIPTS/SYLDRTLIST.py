@@ -8660,7 +8660,7 @@ class SYLDRTLIST:
 													elif value123 == "QUOTE_REV_DEAL_TEAM_MEMBER_ID":
 														new_dict[value123] = ('<abbr id ="' + key_value + '"  title="' + str(value1234).upper() + '">' +str(value1234).upper() + "</abbr>")
 													else:
-														Trace.Write("value1234"+str(value1234)+"key_value"+str(key_value)+"value123"+str(value123))
+														#Trace.Write("value1234"+str(value1234)+"key_value"+str(key_value)+"value123"+str(value123))
 														new_dict[value123] = value1234
 
 
