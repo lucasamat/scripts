@@ -73,5 +73,5 @@ except:
 	values = ''
 	action_type = ''
 
-if action_Type == "ADD_CONTACTS":
+if action_type == "ADD_CONTACTS":
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,all_values))
