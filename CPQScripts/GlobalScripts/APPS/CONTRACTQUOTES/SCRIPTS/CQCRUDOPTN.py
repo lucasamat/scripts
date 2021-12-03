@@ -4924,7 +4924,7 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 													billing_date="DATEADD(month, {Month}, '{BillingDate}')".format(
 														Month=index, BillingDate=start_date.strftime('%m/%d/%Y')
 														), amount_column="YEAR_"+str((index) + 1),
-														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=str(gtet_billling_data_dict))
+														entitlement_obj=entitlement_obj,service_id = get_service_val,get_ent_val_type = get_ent_val,get_ent_billing_type_value = get_ent_billing_type_value,get_billling_data_dict=gtet_billling_data_dict)
 					#self.insert_quote_items_billing_plan()
 					cart_obj = self._get_record_obj(
 						columns=["CART_ID", "USERID"],
