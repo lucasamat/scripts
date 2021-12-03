@@ -2877,6 +2877,7 @@ class SYLDRTLIST:
 							elif str(ObjectName)=="SAQICT":
 								# Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
 								if str(ik.'[PRIMARY]').upper() != "TRUE":
+									Trace.Write("oooooqqqqqqoooo11")
 									Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
