@@ -4837,11 +4837,12 @@ class ContractQuoteBillingMatrixModel(ContractQuoteCrudOpertion):
 							if get_ent_id:
 								get_ent_val = str(get_ent_val[0])
 								gtet_billling_data_dict[get_ent_id[0]] = str(get_ent_val)
-								get_ent_bill_cycle = str(get_ent_val)
+								#get_ent_bill_cycle = str(get_ent_val)
 								for data,val in gtet_billling_data_dict.items():
-									if 'AGS_'+str(service_id)+'_PQB_BILCYC' in data:
+									Trace.Write('4843---')
+									if 'AGS_'+str(get_service_val)+'_PQB_BILCYC' in data:
 										get_ent_bill_cycle = val
-									elif 'AGS_'+str(service_id)+'_PQB_BILTYP' in data:
+									elif 'AGS_'+str(get_service_val)+'_PQB_BILTYP' in data:
 										get_billing_type =val
 								# if 	'AGS_'+str(get_service_val)+'_PQB_BILCYC' == str(get_ent_id[0]):
 								# 	get_ent_val = str(get_ent_val)
