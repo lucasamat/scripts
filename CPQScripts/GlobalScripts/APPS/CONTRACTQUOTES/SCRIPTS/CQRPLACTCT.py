@@ -48,11 +48,13 @@ def replace_contact(repalce_values,cont_rec_id,table_name):
 
 
 
-class QuoteContactModel(ContractQuoteCrudOpertion):
+class QuoteContactModel:
 	
 	def __init__(self, **kwargs):
-		ContractQuoteCrudOpertion.__init__(self, trigger_from=kwargs.get('trigger_from'), contract_quote_record_id=kwargs.get('contract_quote_record_id'),quote_revision_record_id=kwargs.get('quote_revision_record_id'), 
-											tree_param=kwargs.get('tree_param'), tree_parent_level_0=kwargs.get('tree_parent_level_0'))
+
+
+		self.contract_quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+		self.quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 		self.opertion = kwargs.get('opertion')
 		self.action_type = kwargs.get('action_type')
 		self.values = kwargs.get('values')
@@ -145,5 +147,67 @@ except:
     repalce_values ='' 
     cont_rec_id = '' 
     table_name = '' 
+
 replace_contact(repalce_values,cont_rec_id,table_name)
+
+def Factory(node=None):
+	"""Factory Method"""
+	models = {
+		"CONTACT MODEL":QuoteContactModel
+	}
+	return models[node]
+
+node_object = Factory(node_type)(
+	opertion=opertion, action_type=action_type, table_name=table_name, values=values, 
+	all_values=all_values, trigger_from=trigger_from, contract_quote_record_id=contract_quote_record_id, 
+	apr_current_record_id= apr_current_record_id,
+)
+
+
+
+
+try:
+		opertion = Param.Opertion
+		node_type = Param.NodeType
+		try:
+			values = Param.Values
+		except Exception:
+			values = []
+		try:
+			A_Keys = Param.A_Keys
+			A_Values = Param.A_Values
+		except:
+			A_Keys = ""
+			A_Values = ""
+		try:
+			all_values = Param.AllValues
+		except Exception:
+			all_values = False
+		try:
+			table_name = Param.ObjectName
+		except Exception:
+			table_name = None
+		try:
+			action_type = Param.ActionType
+		except Exception:
+			action_type = None
+		try:
+			contract_quote_record_id = Param.ContractQuoteRecordId	
+		except Exception:
+			contract_quote_record_id = False
+		
+	except Exception as e:
+		Trace.Write('error-'+str(e))
+		pass	
+ 
+
+
+if opertion == "ADD":
+	node_object._create()
+
+
+
+
+
+
 
