@@ -67,7 +67,8 @@ except:
 
 #replace_contact(repalce_values,cont_rec_id,table_name)
 
-
+if param.ActionType == "ADD_CONTACTS":
+	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(Values,AllValues))
 
 
 try:
@@ -104,9 +105,7 @@ try:
 		Trace.Write('error-'+str(e))
 		pass	
  
- if param.ActionType == "ADD_CONTACTS":
 
-	 ApiResponse = ApiResponseFactory.JsonResponse(add_contact(Values,AllValues))
 	 
 
 
