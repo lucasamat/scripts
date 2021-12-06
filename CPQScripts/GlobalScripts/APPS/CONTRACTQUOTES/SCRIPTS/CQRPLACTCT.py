@@ -153,5 +153,6 @@ except:
 if action_type == "ADD_CONTACT":
 	Trace.Write("inside"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
-elif action_type == "MARK_PRIMARY"
+elif action_type == "MARK_PRIMARY":
+	Trace.Write("Primary"+str(action_type))
 	ApiResponse = ApiResponseFactory.JsonResponse(mark_primary_contact(primary_value))
