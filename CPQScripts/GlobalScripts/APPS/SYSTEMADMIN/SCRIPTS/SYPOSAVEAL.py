@@ -274,6 +274,7 @@ def do_process(TABLEID, LABLE, VALUE):
                         row["QUOTE_NAME"]=quote_val.QUOTE_NAME
                         row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
                         row["QTEREV_ID"]=quote_val.QTEREV_ID
+                        Trace.Write("row==111"+str(row))
                         Table.TableActions.Create(TABLEID, row)
                     else:                       
                         if TABLEID == "SYTREE":
