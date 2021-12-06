@@ -2218,6 +2218,20 @@ def Related_Sub_Banner(
         FifthValue = ""
         SixthLable = ''
         SixthValue = ''
+    elif ObjName == "SAQSGB" and TreeTopSuperParentParam == "Product Offerings" and (subTabName in("Equipment Details","Equipment Entitlements","Equipment Assemblies")):
+        getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
+        PrimaryLable = "Product Offering ID"
+        PrimaryValue = str(TreeParentParam)
+        SecondLable = "Product Offering Description"
+        SecondValue = getService.SERVICE_DESCRIPTION
+        ThirdLable = "Greenbook"
+        ThirdValue = str(TreeParam)
+        FourthLable = "Equipment ID"
+        FourthValue = str(EquipmentId)
+        FifthLable = "Serial Number"
+        FifthValue = str(SerialNumber)
+        SixthLable = ''
+        SixthValue = ''
     elif ObjName == "SAQSCO" and subTabName == "Equipment" and TreeTopSuperParentParam == "Product Offerings":
         getService = Sql.GetFirst("select SERVICE_DESCRIPTION from SAQTSV where SERVICE_ID = '"+str(TreeParentParam)+"'")
         PrimaryLable = "Product Offering ID"
@@ -2956,7 +2970,7 @@ def Related_Sub_Banner(
                     for btn in multi_buttons:
                         sec_rel_sub_bnr += (btn)
                 else:
-                    sec_rel_sub_bnr += str(add_button)s
+                    sec_rel_sub_bnr += str(add_button)
         elif  (str(TreeSuperParentParam).upper() == "COMPREHENSIVE SERVICES")  and TabName == "Quotes" and str(subTabName)!="Parts List" :
             sec_rel_sub_bnr += ('<button id="fabcostlocate_save" onclick="fabcostlocatesave(this)" style="display: none;" class="btnconfig">SAVE</button><button id="fabcostlocate_cancel" onclick="fabcostlocatecancel(this)" style="display: none;" class="btnconfig">CANCEL</button>'  )
             if str(subTabName)=="PM Events" and revision_status.REVISION_STATUS != 'APPROVED':
