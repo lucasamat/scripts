@@ -999,6 +999,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						offering_table_info.AddRow(row_detail)
 						Trace.Write('offering_table_info-->'+str(offering_table_info))
 						Sql.Upsert(offering_table_info)
+					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
+					Sql.RunQuery(sow_update_query)
 				
 				#A055S000P01-9650 ENDS
 				#offering_table_info.AddRow(row_detail)
