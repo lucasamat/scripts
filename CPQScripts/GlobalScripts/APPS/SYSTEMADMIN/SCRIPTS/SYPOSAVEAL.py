@@ -190,6 +190,7 @@ def do_process(TABLEID, LABLE, VALUE):
             if str(TABLEID).strip() == "SYOBJC":
                 row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()                
             if Flag_unique == "True":
+                Trace.Write("Flag_unique===>>>")
                 if "CpqTableEntryModifiedBy" in row.keys() and "CpqTableEntryDateModified" in row.keys():
                     Trace.Write("Flag_unique===")
                     if TABLEID == 'SAQTIP':
