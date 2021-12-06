@@ -21,13 +21,13 @@ class pricing_call:
             self.contract_quote_record_id = contract_quote_revision_object.QUOTE_RECORD_ID
             self.contract_quote_revision_record_id = contract_quote_revision_object.QTEREV_RECORD_ID
 
-        service_object = Sql.GetList("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,contract_quote_revision_record_id))
+        service_object = Sql.GetList("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
         for service in service_object:
             service_id = service.SERVICE_ID
             material_object = Sql.GetFirst("select MATERIALCONFIG_TYPE from MAMTRL(NOLOCK) WHERE SAP_PART_NUMBER = '{}'".format(service_id))
             if material_object and material_object.MATERIALCONFIG_TYPE != "SIMPLE MATERIAL":
-                where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id,ServiceId=service_id)
-                service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id,ServiceId=service_id, obj_name = "SAQTSE", where_str = where_str))
+                where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=service_id)
+                service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id,ServiceId=service_id, obj_name = "SAQTSE", where_str = where_str))
                 if service_entitlement_obj:
                     quote_item_tag_pattern = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
                     entitlement_id_tag_pattern = re.compile(r'<ENTITLEMENT_ID>AGS_'+str(service_id)+'_PQB_QTITST</ENTITLEMENT_ID>')
@@ -48,7 +48,7 @@ class pricing_call:
                                     source_object_name = 'SAQSGE'
                             Trace.Write("source_object_name"+str(source_object_name))
                     if source_object_name == "SAQSCE":
-                        service_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSCE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,contract_quote_revision_record_id))
+                        service_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSCE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
                         for status in service_entitlement_object:
                             service_configuration_status = status.CONFIGURATION_STATUS
                             if service_configuration_status != "COMPLETE":
@@ -57,7 +57,7 @@ class pricing_call:
                                 break
                                 
                     if source_object_name == "SAQSGE":
-                        greenbook_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSGE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,contract_quote_revision_record_id))
+                        greenbook_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSGE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
                         for status in greenbook_entitlement_object:
                             greenbook_configuration_status = greenbook_entitlement_object.status
                             if greenbook_configuration_status != "COMPLETE":
