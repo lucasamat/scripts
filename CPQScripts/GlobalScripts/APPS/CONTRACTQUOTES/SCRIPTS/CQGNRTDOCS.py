@@ -21,6 +21,8 @@ from System.Net import HttpWebResponse
 
 from datetime import datetime
 import CQDOCIFLOW
+from SYDATABASE import SQL
+Sql = SQL()
 userId = str(User.Id)
 userName = str(User.UserName)
 
