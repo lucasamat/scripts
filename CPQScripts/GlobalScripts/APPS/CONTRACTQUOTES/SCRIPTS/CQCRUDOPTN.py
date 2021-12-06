@@ -6509,17 +6509,24 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		# commented for time being performance need to rework
 		#obj_list = ['SAQTSE','SAQSFE','SAQSGE','SAQSCE','SAQIEN']
 		#obj_list = ['SAQIEN']
-		
+		# gettransactionmessage = ""		
+		# get_approvaltxn_steps = Sql.GetList("select distinct ACAPCH.APRCHN_NAME,ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION from ACAPTX inner JOIN ACAPCH ON ACAPTX.APRCHN_RECORD_ID=ACAPCH.APPROVAL_CHAIN_RECORD_ID   where ACAPTX.APRTRXOBJ_ID = '{}' and  ACAPTX.APPROVALSTATUS NOT IN ('APPROVED')".format(self.contract_quote_id))		
+		# if get_approvaltxn_steps and str(current_prod).upper() == 'SALES':
+		# 	gettransactionmessage = 'This quote requires approval due to the following:'
+		# 	for val in get_approvaltxn_steps:				
+		# 		gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +val.APRCHN_DESCRIPTION+'</label></div></div>')
 		ent_message_query = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='864BA37C-7523-4C7D-A586-6CEF1CABD682' and MESSAGE_LEVEL = 'WARNING'")
 		ent_msg_txt = msg_txt = getostfactor = msg_app_txt = getpricefactor = ent_msg_gen_txt =""
 		# AllParams = Param.AllParams
 		#TreeParam = Product.GetGlobal("TreeParam")
 		#notification banner start for add on product
 		adoprod_table_value = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE OBJECT_RECORD_ID ='SYOBJ-01039' and MESSAGE_LEVEL = 'INFORMATION'")
-		
+		adoprod_message_query = check_active_query= ''
 		#adoprod_message_query=Sql.GetList("SELECT distinct SAQSAO.QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,SAQSAO.QUOTE_RECORD_ID,ACTIVE from SAQSAO inner join SAQSCO on SAQSCO.QUOTE_RECORD_ID = SAQSAO.QUOTE_RECORD_ID WHERE SAQSCO.QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
-		adoprod_message_query=Sql.GetList("SELECT distinct QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID from SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
-		check_active_query = Sql.GetList("SELECT distinct SAQSAO.QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,SAQSAO.QUOTE_RECORD_ID,ACTIVE from SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		
+		#adoprod_message_query=Sql.GetList("SELECT distinct QUOTE_SERVICE_COVERED_OBJECTS_RECORD_ID from SAQSCO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		#check_active_query = Sql.GetList("SELECT distinct SAQSAO.QUOTE_SERVICE_ADD_ON_PRODUCT_RECORD_ID,SAQSAO.QUOTE_RECORD_ID,ACTIVE from SAQSAO (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(self.contract_quote_record_id,self.quote_revision_record_id))
+		
 		#check_active = [i for i in check_active_query if i.ACTIVE == True]	
 		if adoprod_message_query and not check_active_query and str(current_prod).upper() == 'SALES':			
 			msg_app_txt = (
@@ -6559,7 +6566,8 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		#quoterecid = 'SAQTMT-'+self.contract_quote_record_id
 		#getqtrec = Sql.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
 		#get_approvaltxn_steps = Sql.GetList("select distinct ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION from ACAPMA (NOLOCK) JOIN ACAPCH ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and ACAPMA.APRSTAMAP_APPROVALSTATUS NOT IN ('APPROVED')")
-		get_approvaltxn_steps = Sql.GetList("select DISTINCT ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION, APRCHN_RECORD_ID from ACAPMA (NOLOCK) JOIN ACAPCH ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and NOT EXISTS (SELECT DISTINCT ACAPCH.APRCHN_ID from ACAPMA (NOLOCK) JOIN ACAPCH ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID ='" +str(self.contract_quote_record_id)+"' and ACAPMA.APRSTAMAP_APPROVALSTATUS IN ('APPROVED')) ")
+		#get_approvaltxn_steps = Sql.GetList("select DISTINCT ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION, APRCHN_RECORD_ID from ACAPMA (NOLOCK) JOIN ACAPCH ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID = '"+str(self.contract_quote_record_id)+"' and NOT EXISTS (SELECT DISTINCT ACAPCH.APRCHN_ID from ACAPMA (NOLOCK) JOIN ACAPCH ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID where ACAPMA.APRTRXOBJ_RECORD_ID ='" +str(self.contract_quote_record_id)+"' and ACAPMA.APRSTAMAP_APPROVALSTATUS IN ('APPROVED')) ")
+		get_approvaltxn_steps = Sql.GetList("select distinct ACAPCH.APRCHN_NAME,ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION from ACAPTX inner JOIN ACAPCH ON ACAPTX.APRCHN_RECORD_ID=ACAPCH.APPROVAL_CHAIN_RECORD_ID   where ACAPTX.APRTRXOBJ_ID = '{}' and  ACAPTX.APPROVALSTATUS NOT IN ('APPROVED')".format(self.contract_quote_id))
 		if get_approvaltxn_steps and str(current_prod).upper() == 'SALES':
 			gettransactionmessage = 'This quote requires approval due to the following:'
 			for val in get_approvaltxn_steps:
