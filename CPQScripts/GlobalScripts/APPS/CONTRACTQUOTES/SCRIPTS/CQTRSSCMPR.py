@@ -68,5 +68,5 @@ class pricing_call:
                         ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
 
 
-
-ApiResponse = ApiResponseFactory.JsonResponse(sscm_pricing_call())                
+sscm_pricing = pricing_call()
+ApiResponse = ApiResponseFactory.JsonResponse(sscm_pricing.sscm_pricing_call())                
