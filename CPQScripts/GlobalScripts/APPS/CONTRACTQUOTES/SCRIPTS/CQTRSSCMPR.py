@@ -58,8 +58,8 @@ class pricing_call:
                                 
                     if source_object_name == "SAQSGE":
                         greenbook_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSGE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
-                        for status in greenbook_entitlement_object:
-                            greenbook_configuration_status = greenbook_entitlement_object.status
+                        for greenbook_status in greenbook_entitlement_object:
+                            greenbook_configuration_status = greenbook_status.CONFIGURATION_STATUS
                             if greenbook_configuration_status != "COMPLETE":
                                 greenbook_entitlement_object_sscm_pricing_call = "NO"
                                 #Trace.Write("greenbook_entitlement_object_sscm_pricing_call  "+str(greenbook_entitlement_object_sscm_pricing_call))
