@@ -3843,6 +3843,10 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	obj_idval = "SYOBJ_00974_SYOBJ_00974"
 	rec_id = "SYOBJ_00974"
 	obj_id = "SYOBJ-00974"
+	if str(SortColumn)!='' and str(SortColumnOrder)!='':
+    	sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
+	else:
+    	sort_by = ''
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
@@ -3910,7 +3914,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "' and ASSEMBLY_ID = '"+str(ASSEMBLYID)+"'and EQUIPMENT_ID = '"+str(EQUIPMENTID)+"' ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
-			+ str(Page_End)
+			+ str(Page_End) + " "+ str(sort_by)
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
@@ -3932,7 +3936,7 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			+ "' ) m where m.ROW BETWEEN "
 			+ str(Page_start)
 			+ " and "
-			+ str(Page_End)
+			+ str(Page_End)+ " "+ str(sort_by)
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
@@ -10501,15 +10505,15 @@ except:
 try:
 	SortColumn = Param.SortColumn
 	SortColumnOrder = Param.SortColumnOrder
-	SortPerPage = Param.PerPage
-	SortPageInform = Param.PageInform
-
 	Trace.Write("SORT COLUMN-----"+str(SortColumn))
 	Trace.Write("SORT COLUMN ORDER -----"+str(SortColumnOrder))
-	
 except:
 	SortColumn = ''
 	SortColumnOrder = ''
+try:
+	SortPerPage = Param.PerPage
+	SortPageInform = Param.PageInform
+except:
 	SortPerPage = ''
 	SortPageInform = ''
 	Trace.Write("SORT EMPTY")
