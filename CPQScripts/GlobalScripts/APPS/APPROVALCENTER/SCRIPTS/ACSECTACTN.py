@@ -3014,53 +3014,7 @@ class approvalCenter:
 			#emailId = str(getnotify.EMAIL)
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
 			bodycontent = re.findall('<td class="TblHeadercolor">(.+?)</td>', bodywithformatsplit[1])
-			Trace.Write("bodycontent-->"+str(bodycontent))
-			bodyAPIName = []
-			currencylist = []
-			bodycontent.remove('CANCELLATION PERIOD')
-			bodycontent.remove('PAYMENT TERM ID')
-			for eachlable in bodycontent:
-				GetObjdAPI = Sql.GetFirst(
-					"""SELECT API_NAME,DATA_TYPE FROM SYOBJD (NOLOCK)
-					WHERE OBJECT_NAME= 'SAQTMT' AND UPPER(FIELD_LABEL) LIKE '%{}%' """.format(
-						str(eachlable)
-					)
-				)
-				
-				if str(GetObjdAPI.DATA_TYPE) == "CURRENCY":
-					currencylist.append(str(GetObjdAPI.API_NAME))
-				if str(GetObjdAPI.API_NAME) not in bodyAPIName:
-					bodyAPIName.append(str(GetObjdAPI.API_NAME))
-				#if "CURRENCY" not in bodyAPIName:
-				#    bodyAPIName.append("CURRENCY")
-			bodycolumn = str(bodyAPIName).replace("[", "").replace("]", "").replace("'", "")
-			getcurrentdata = Sql.GetList(
-				"""SELECT {bodycolumn} FROM {testedObj} (NOLOCK)
-				WHERE {iskeyName} = '{ApprovalObjeId}' AND {condition} """.format(
-					bodycolumn=bodycolumn,
-					testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
-					iskeyName=str(iskey.API_NAME),
-					ApprovalObjeId=str(getnotify.APRTRXOBJ_RECORD_ID),
-					condition=str(getnotify.WHERE_CONDITION_01),
-				)
-			)
-			if getcurrentdata:
-				for trloop in getcurrentdata:
-					bodystr += "<tr>"
-					for columnloop in bodyAPIName:
-						currenyextension = ""
-						if columnloop in currencylist:
-							currenyextension = str(trloop.CURRENCY)
-							Getcurrentrount = Sql.GetFirst(
-								"""SELECT DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY = '{currenyextension}' """.format(
-									currenyextension=currenyextension
-								)
-							)
-							tdvalues = round(int(eval("trloop." + str(columnloop))), int(Getcurrentrount.DECIMAL_PLACES))
-						else:
-							tdvalues = str(eval("trloop." + str(columnloop)))
-						bodystr += '<td class="borders">' + str(tdvalues) + "" + currenyextension + "</td>"
-					bodystr += "</tr>"
+			
 			C4QUOTE =Sql.GetFirst("SELECT C4C_QUOTE_ID,ADDUSR_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			SUBMITTERNAME = Sql.GetFirst("SELECT NAME,EMAIL FROM USERS(NOLOCK) WHERE ID = '"+str(C4QUOTE.ADDUSR_RECORD_ID)+"' ")
 			
