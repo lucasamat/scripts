@@ -257,7 +257,7 @@ def attachments():
 	return secstr
 
 def SaveAttachments():
-
+	pass
 
 try:
 	Language = Param.Language_selection
