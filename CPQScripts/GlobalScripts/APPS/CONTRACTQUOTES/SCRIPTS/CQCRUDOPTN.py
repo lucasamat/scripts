@@ -6704,7 +6704,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 					+ str(log_message_obj.MESSAGE_TEXT)
 					+ "</label></div></div>"
 				)'''
-		# Is Changed Information Notification - End
+		# Is Changed Information Notification
 		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt
 
 class ContractQuoteApprovalModel(ContractQuoteCrudOpertion):
