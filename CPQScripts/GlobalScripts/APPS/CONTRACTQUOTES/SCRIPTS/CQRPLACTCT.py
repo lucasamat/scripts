@@ -104,6 +104,8 @@ def add_contact(values,allvalues):
 	SACONT.CONTACT_RECORD_ID IN {val}
 	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
+	return  True
+
 def mark_primary_contact(values):
 	
 	updatefalsesaqict = """ UPDATE SAQICT SET [PRIMARY] = '0' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id)
