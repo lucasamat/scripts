@@ -269,7 +269,8 @@ def do_process(TABLEID, LABLE, VALUE):
                     elif TABLEID == 'SAQDLT':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
-                        quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+                        quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QUOTE_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+                        row["QUOTE_ID"]=quote_val.QUOTE_ID
                         row["QUOTE_RECORD_ID"]=quote_val.MASTER_TABLE_QUOTE_RECORD_ID                        
                         row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
                         row["QTEREV_ID"]=quote_val.QTEREV_ID
