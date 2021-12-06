@@ -6577,107 +6577,107 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				#gettransactionmessage = '<p>This quote has to be approved for the following : </p>'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +str(val.APRCHN_DESCRIPTION).upper()+'</label></div></div>')
 		
-
-		if ent_message_query:
-			#for val in obj_list:
-			tablename = 'SAQTSE'
-			#check_fabvantage_messgae_query = Sql.GetFirst("SELECT ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT from {} where QUOTE_RECORD_ID = '{}'  and PRICE_METHOD = 'MANUAL PRICE' and ENTITLEMENT_NAME  = 'ADDL_PERF_GUARANTEE_91_1'".format(val,self.contract_quote_record_id))
-			#commented on 31 maarch start
-			#check_fabvantage_messgae_query = Sql.GetList("select ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}') e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where PRICE_METHOD ='MANUAL PRICE'".format(val,self.contract_quote_record_id))
-			#end 31 march
-			if str(self.contract_quote_record_id):
-				#getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE (nolock)  where  QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
-				entitlement_obj  = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-				if entitlement_obj:
-					#check_fabvantage_messgae_query = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e  OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)  ")
-					#if check_fabvantage_messgae_query:
-					#for val in check_fabvantage_messgae_query:
-					entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-					quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-					pattern_pricemethod = re.compile(r'<PRICE_METHOD>([^>]*?)</PRICE_METHOD>')
-					pattern_costimpact = re.compile(r'<ENTITLEMENT_COST_IMPACT>([^>]*?)</ENTITLEMENT_COST_IMPACT>')
-					pattern_priceimpact = re.compile(r'<ENTITLEMENT_PRICE_IMPACT>([^>]*?)</ENTITLEMENT_PRICE_IMPACT>')
-					for m in re.finditer(quote_item_tag, entitlement_xml):
-						sub_string = m.group(1)
-						pricemethod_match = re.findall(pattern_pricemethod,sub_string)
-						if pricemethod_match == 'MANUAL PRICE':
-							cost_impact = re.findall(pattern_costimpact,sub_string)
-							price_impact = re.findall(pattern_priceimpact,sub_string)
-							getostfactor = cost_impact
-							getpricefactor = price_impact 
-							#if val.PRICE_METHOD == 'MANUAL PRICE':
-							#getostfactor = val.ENTITLEMENT_COST_IMPACT
-							#getpricefactor = val.ENTITLEMENT_PRICE_IMPACT								
-							if str(getostfactor).strip != "" and  str(getpricefactor).strip() != "":									
-								ent_msg_txt = ""									
-							else:									
-								errorLogDeleteQuery = "DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '000001' AND SYELOG.OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F'  AND SYELOG.OBJECT_VALUE = '{}' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_record_id)
-								Sql.RunQuery(errorLogDeleteQuery)
-								insertErrLogWarnQuery = """INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-									select
-									CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
-									SAPCPQ_ATTRIBUTE_NAME as ERRORMESSAGE_RECORD_ID,
-									MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
-									'{table_name}' as OBJECT_NAME,
-									MESSAGE_TYPE as OBJECT_TYPE,
-									OBJECT_RECORD_ID as OBJECT_RECORD_ID,
-									'{quoteId}' as OBJECT_VALUE_REC_ID,
-									'{quoteId}' as OBJECT_VALUE,
-									1 as ACTIVE,
-									'{Get_UserID}' as CPQTABLEENTRYADDEDBY, 
-									convert(varchar(10), '{datetime_value}', 101) as CPQTABLEENTRYDATEADDED, 
-									'{Get_UserID}' as CpqTableEntryModifiedBy, 
-									convert(varchar(10), '{datetime_value}', 101) as CpqTableEntryDateModified
-									from SYMSGS (nolock)
-									where  OBJECT_RECORD_ID = '87896663-6F9D-4D6E-B1C1-6DA146B56815' and MESSAGE_LEVEL = 'WARNING' and MESSAGE_CODE = '000001'
-								""".format(
-									quoteId=self.contract_quote_record_id,
-									Get_UserID=self.user_id,
-									datetime_value=self.datetime_value,
-									table_name = tablename
-								)
-								Sql.RunQuery(insertErrLogWarnQuery)
-								ent_msg_txt = (
-									'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
-									+ str(ent_message_query.MESSAGE_LEVEL)
-									+ " : "
-									+ str(ent_message_query.MESSAGE_CODE)
-									+ " : "
-									+ str(ent_message_query.MESSAGE_TEXT)
-									+ "</label></div></div>"
-								)
-						else:
-							ent_msg_txt = ""
-			else:
-				ent_msg_txt = ""
-			if quote_notif_obj:
-				info_message_obj = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='9A7602EE-46D9-4891-BCD9-BBCB4B3E313E' and MESSAGE_LEVEL = 'WARNING'")
+		Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
+		# if ent_message_query:
+		# 	#for val in obj_list:
+		# 	tablename = 'SAQTSE'
+		# 	#check_fabvantage_messgae_query = Sql.GetFirst("SELECT ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT from {} where QUOTE_RECORD_ID = '{}'  and PRICE_METHOD = 'MANUAL PRICE' and ENTITLEMENT_NAME  = 'ADDL_PERF_GUARANTEE_91_1'".format(val,self.contract_quote_record_id))
+		# 	#commented on 31 maarch start
+		# 	#check_fabvantage_messgae_query = Sql.GetList("select ENTITLEMENT_COST_IMPACT,ENTITLEMENT_PRICE_IMPACT from (SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(IS_DEFAULT)[1]', 'VARCHAR(128)'),';#38','&') as IS_DEFAULT,replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT,replace(X.Y.value('(ENTITLEMENT_TYPE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_TYPE,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DESCRIPTION)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DESCRIPTION,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}') e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where PRICE_METHOD ='MANUAL PRICE'".format(val,self.contract_quote_record_id))
+		# 	#end 31 march
+		# 	if str(self.contract_quote_record_id):
+		# 		#getinnercon  = Sql.GetFirst("select QUOTE_RECORD_ID,convert(xml,replace(replace(ENTITLEMENT_XML,'&',';#38'),'''',';#39')) as ENTITLEMENT_XML from SAQTSE (nolock)  where  QUOTE_RECORD_ID = '"+str(self.contract_quote_record_id)+"'")
+		# 		entitlement_obj  = Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+		# 		if entitlement_obj:
+		# 			#check_fabvantage_messgae_query = Sql.GetList("SELECT distinct e.QUOTE_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_COST_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_COST_IMPACT,replace(X.Y.value('(PRICE_METHOD)[1]', 'VARCHAR(128)'),';#38','&') as PRICE_METHOD,replace(X.Y.value('(ENTITLEMENT_PRICE_IMPACT)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_PRICE_IMPACT FROM (select '"+str(getinnercon.QUOTE_RECORD_ID)+"' as QUOTE_RECORD_ID,convert(xml,'"+str(getinnercon.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML ) e  OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y)  ")
+		# 			#if check_fabvantage_messgae_query:
+		# 			#for val in check_fabvantage_messgae_query:
+		# 			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+		# 			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+		# 			pattern_pricemethod = re.compile(r'<PRICE_METHOD>([^>]*?)</PRICE_METHOD>')
+		# 			pattern_costimpact = re.compile(r'<ENTITLEMENT_COST_IMPACT>([^>]*?)</ENTITLEMENT_COST_IMPACT>')
+		# 			pattern_priceimpact = re.compile(r'<ENTITLEMENT_PRICE_IMPACT>([^>]*?)</ENTITLEMENT_PRICE_IMPACT>')
+		# 			for m in re.finditer(quote_item_tag, entitlement_xml):
+		# 				sub_string = m.group(1)
+		# 				pricemethod_match = re.findall(pattern_pricemethod,sub_string)
+		# 				if pricemethod_match == 'MANUAL PRICE':
+		# 					cost_impact = re.findall(pattern_costimpact,sub_string)
+		# 					price_impact = re.findall(pattern_priceimpact,sub_string)
+		# 					getostfactor = cost_impact
+		# 					getpricefactor = price_impact 
+		# 					#if val.PRICE_METHOD == 'MANUAL PRICE':
+		# 					#getostfactor = val.ENTITLEMENT_COST_IMPACT
+		# 					#getpricefactor = val.ENTITLEMENT_PRICE_IMPACT								
+		# 					if str(getostfactor).strip != "" and  str(getpricefactor).strip() != "":									
+		# 						ent_msg_txt = ""									
+		# 					else:									
+		# 						errorLogDeleteQuery = "DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.RECORD_ID = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '000001' AND SYELOG.OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F'  AND SYELOG.OBJECT_VALUE = '{}' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_record_id)
+		# 						Sql.RunQuery(errorLogDeleteQuery)
+		# 						insertErrLogWarnQuery = """INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+		# 							select
+		# 							CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
+		# 							SAPCPQ_ATTRIBUTE_NAME as ERRORMESSAGE_RECORD_ID,
+		# 							MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
+		# 							'{table_name}' as OBJECT_NAME,
+		# 							MESSAGE_TYPE as OBJECT_TYPE,
+		# 							OBJECT_RECORD_ID as OBJECT_RECORD_ID,
+		# 							'{quoteId}' as OBJECT_VALUE_REC_ID,
+		# 							'{quoteId}' as OBJECT_VALUE,
+		# 							1 as ACTIVE,
+		# 							'{Get_UserID}' as CPQTABLEENTRYADDEDBY, 
+		# 							convert(varchar(10), '{datetime_value}', 101) as CPQTABLEENTRYDATEADDED, 
+		# 							'{Get_UserID}' as CpqTableEntryModifiedBy, 
+		# 							convert(varchar(10), '{datetime_value}', 101) as CpqTableEntryDateModified
+		# 							from SYMSGS (nolock)
+		# 							where  OBJECT_RECORD_ID = '87896663-6F9D-4D6E-B1C1-6DA146B56815' and MESSAGE_LEVEL = 'WARNING' and MESSAGE_CODE = '000001'
+		# 						""".format(
+		# 							quoteId=self.contract_quote_record_id,
+		# 							Get_UserID=self.user_id,
+		# 							datetime_value=self.datetime_value,
+		# 							table_name = tablename
+		# 						)
+		# 						Sql.RunQuery(insertErrLogWarnQuery)
+		# 						ent_msg_txt = (
+		# 							'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
+		# 							+ str(ent_message_query.MESSAGE_LEVEL)
+		# 							+ " : "
+		# 							+ str(ent_message_query.MESSAGE_CODE)
+		# 							+ " : "
+		# 							+ str(ent_message_query.MESSAGE_TEXT)
+		# 							+ "</label></div></div>"
+		# 						)
+		# 				else:
+		# 					ent_msg_txt = ""
+		# 	else:
+		# 		ent_msg_txt = ""
+		# 	if quote_notif_obj:
+		# 		info_message_obj = Sql.GetFirst("SELECT MESSAGE_TEXT, RECORD_ID, OBJECT_RECORD_ID, MESSAGE_CODE, MESSAGE_LEVEL,MESSAGE_TYPE, OBJECT_RECORD_ID FROM SYMSGS (NOLOCK) WHERE RECORD_ID ='9A7602EE-46D9-4891-BCD9-BBCB4B3E313E' and MESSAGE_LEVEL = 'WARNING'")
 				
-				if info_message_obj:
-					errorLogDeleteQuery = "DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.SAPCPQ_ATTRIBUTE_NAME = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '000006' AND SYELOG.OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F' AND SYELOG.OBJECT_NAME = 'SAQICO' AND SYELOG.OBJECT_VALUE = '{}' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_record_id)
-					Sql.RunQuery(errorLogDeleteQuery)
-					insertErrLogWarnQuery = """INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
-						select
-						CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
-						SAPCPQ_ATTRIBUTE_NAME as ERRORMESSAGE_RECORD_ID,
-						MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
-						OBJECT_APINAME as OBJECT_NAME,
-						MESSAGE_TYPE as OBJECT_TYPE,
-						OBJECT_RECORD_ID as OBJECT_RECORD_ID,
-						'{quoteId}' as OBJECT_VALUE_REC_ID,
-						'{quoteId}' as OBJECT_VALUE,
-						1 as ACTIVE,
-						'{Get_UserID}' as CPQTABLEENTRYADDEDBY, 
-						convert(varchar(10), '{datetime_value}', 101) as CPQTABLEENTRYDATEADDED, 
-						'{Get_UserID}' as CpqTableEntryModifiedBy, 
-						convert(varchar(10), '{datetime_value}', 101) as CpqTableEntryDateModified
-						from SYMSGS (nolock)
-						where OBJECT_APINAME = 'SAQICO' and OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F' and MESSAGE_LEVEL = 'WARNING' and MESSAGE_CODE = '000006'
-					""".format(
-						quoteId=self.contract_quote_record_id,
-						Get_UserID=self.user_id,
-						datetime_value=self.datetime_value,
-					)
+		# 		if info_message_obj:
+		# 			errorLogDeleteQuery = "DELETE SYELOG FROM SYELOG (NOLOCK) INNER JOIN SYMSGS (NOLOCK) ON SYMSGS.SAPCPQ_ATTRIBUTE_NAME = SYELOG.ERRORMESSAGE_RECORD_ID AND SYMSGS.TRACK_HISTORY = 0 WHERE SYMSGS.MESSAGE_CODE = '000006' AND SYELOG.OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F' AND SYELOG.OBJECT_NAME = 'SAQICO' AND SYELOG.OBJECT_VALUE = '{}' AND SYELOG.OBJECT_VALUE_REC_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_record_id)
+		# 			Sql.RunQuery(errorLogDeleteQuery)
+		# 			insertErrLogWarnQuery = """INSERT SYELOG (ERROR_LOGS_RECORD_ID, ERRORMESSAGE_RECORD_ID, ERRORMESSAGE_DESCRIPTION, OBJECT_NAME, OBJECT_TYPE, OBJECT_RECORD_ID, OBJECT_VALUE_REC_ID, OBJECT_VALUE, ACTIVE, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified)
+		# 				select
+		# 				CONVERT(VARCHAR(4000),NEWID()) as ERROR_LOGS_RECORD_ID, 
+		# 				SAPCPQ_ATTRIBUTE_NAME as ERRORMESSAGE_RECORD_ID,
+		# 				MESSAGE_TEXT as ERRORMESSAGE_DESCRIPTION,
+		# 				OBJECT_APINAME as OBJECT_NAME,
+		# 				MESSAGE_TYPE as OBJECT_TYPE,
+		# 				OBJECT_RECORD_ID as OBJECT_RECORD_ID,
+		# 				'{quoteId}' as OBJECT_VALUE_REC_ID,
+		# 				'{quoteId}' as OBJECT_VALUE,
+		# 				1 as ACTIVE,
+		# 				'{Get_UserID}' as CPQTABLEENTRYADDEDBY, 
+		# 				convert(varchar(10), '{datetime_value}', 101) as CPQTABLEENTRYDATEADDED, 
+		# 				'{Get_UserID}' as CpqTableEntryModifiedBy, 
+		# 				convert(varchar(10), '{datetime_value}', 101) as CpqTableEntryDateModified
+		# 				from SYMSGS (nolock)
+		# 				where OBJECT_APINAME = 'SAQICO' and OBJECT_RECORD_ID = 'E5504B40-36E7-4EA6-9774-EA686705A63F' and MESSAGE_LEVEL = 'WARNING' and MESSAGE_CODE = '000006'
+		# 			""".format(
+		# 				quoteId=self.contract_quote_record_id,
+		# 				Get_UserID=self.user_id,
+		# 				datetime_value=self.datetime_value,
+		# 			)
 				
 					""" msg_txt = (
 						'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
