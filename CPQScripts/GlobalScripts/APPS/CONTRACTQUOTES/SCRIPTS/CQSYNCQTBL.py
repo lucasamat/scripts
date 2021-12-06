@@ -1650,11 +1650,12 @@ class SyncQuoteAndCustomTables:
 								entitle_end_time = time.time()
 								
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
-								product_offering = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
+							product_offering = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
+							if product_offering:
 								if len(product_offering) > 1:
 									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
 									Sql.RunQuery(sow_update_query)
-								Log.Info("product_offering_CHK_J"+str(product_offering))
+							Log.Info("product_offering_CHK_J"+str(product_offering))
 							if equipment_data:
 								#Log.Info(""""EQUIPMENTS INSERT""")
 								
