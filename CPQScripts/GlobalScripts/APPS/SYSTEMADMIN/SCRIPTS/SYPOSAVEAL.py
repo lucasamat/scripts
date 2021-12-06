@@ -459,6 +459,7 @@ def do_process(TABLEID, LABLE, VALUE):
         if CurrentTab == "Quotes":
             rel_name = "div_CTR_related_list"
         else: 
+            Trace.Write("CurrentTab===>>"+str(CurrentTab))
             if related_name_obj is not None:
                 related_org_name = str(related_name_obj.NAME)
                 rel_name = "div_CTR_" + str(related_org_name).replace(" ", "_")
