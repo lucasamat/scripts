@@ -455,6 +455,7 @@ def do_process(TABLEID, LABLE, VALUE):
         related_name_obj = Sql.GetFirst(
                 "SELECT top 1 NAME FROM SYOBJR(NOLOCK) WHERE RECORD_ID='" + str(related_id) + "' ORDER BY CpqTableEntryId DESC "
             )
+        Trace.Write("CurrentTab==="+str(CurrentTab))
         if CurrentTab == "Quotes":
             rel_name = "div_CTR_related_list"
         else: 
