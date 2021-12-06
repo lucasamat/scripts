@@ -99,7 +99,8 @@ def do_process(TABLEID, LABLE, VALUE):
                 CONT_VALUE.insert(2, new_val)
                 CONT_LABLE.insert(1, lable)
                 CONT_LABLE.insert(2, lable)
-            row = dict(zip(LABLE, VALUE))            
+            row = dict(zip(LABLE, VALUE)) 
+            Trace.Write("row======="+str(row))           
             ##auto populate SAPCPQ_ATTRIBUTE_NAME starts
             
             if str(TABLEID) == "SYSECT":                
