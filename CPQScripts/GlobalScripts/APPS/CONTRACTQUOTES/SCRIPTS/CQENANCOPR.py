@@ -172,15 +172,14 @@ class AncillaryProductOperation:
 	def _insert_grn(self):
 		addtional_where = ""
 		get_service_details = Sql.GetFirst("SELECT * FROM SAQTSV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND SERVICE_ID ='{}' AND PAR_SERVICE_ID = '{}'".format(self.contract_quote_record_id, self.contract_quote_revision_record_id ,self.ancillary_obj, self.service_id))
-		if self.fab:
-			addtional_where = " AND FABLOCATION_ID = '{}' ".format(self.fab)
+		#if self.fab:
+		#	addtional_where = " AND FABLOCATION_ID = '{}' ".format(self.fab)
 		if self.greenbook:
 			addtional_where += " AND GREENBOOK = '{}'".format(self.greenbook)
 		Sql.RunQuery(
 				"""
 					INSERT SAQSGB (
 						QUOTE_SERVICE_GREENBOOK_RECORD_ID,
-						FABLOCATION_ID,
 						GREENBOOK,
 						GREENBOOK_RECORD_ID,
 						QUOTE_ID,
@@ -207,7 +206,6 @@ class AncillaryProductOperation:
 						CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified
 						) SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_SERVICE_GREENBOOK_RECORD_ID,A.* from (SELECT DISTINCT
-							FABLOCATION_ID,
 							GREENBOOK,
 							GREENBOOK_RECORD_ID,
 							QUOTE_ID,
