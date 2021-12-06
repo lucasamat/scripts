@@ -45,6 +45,11 @@ def do_process(TABLEID, LABLE, VALUE):
     except:
         Trace.Write("err")
 
+    try:
+        CurrentTab = TestProduct.CurrentTab
+    except:
+        CurrentTab = 'Quotes'  
+
     err_msg = ""
     err_display=""
     Flag_unique = "True"
@@ -446,13 +451,16 @@ def do_process(TABLEID, LABLE, VALUE):
     related_id = ""
     if CONT_TABLEID is not None and len(CONT_TABLEID) > 0 and str(CONT_TABLEID) != "":
         CONT_TABLEID = CONT_TABLEID.split("_")
-        related_id = CONT_TABLEID[0] + "-" + CONT_TABLEID[1]
+        related_id = CONT_TABLEID[0] + "-" + CONT_TABLEID[1]        
         related_name_obj = Sql.GetFirst(
-            "SELECT top 1 NAME FROM SYOBJR(NOLOCK) WHERE RECORD_ID='" + str(related_id) + "' ORDER BY CpqTableEntryId DESC "
-        )
-        if related_name_obj is not None:
-            related_org_name = str(related_name_obj.NAME)
-            rel_name = "div_CTR_" + str(related_org_name).replace(" ", "_")
+                "SELECT top 1 NAME FROM SYOBJR(NOLOCK) WHERE RECORD_ID='" + str(related_id) + "' ORDER BY CpqTableEntryId DESC "
+            )
+        if CurrentTab == "Quotes":
+            rel_name = "div_CTR_related_list"
+        else: 
+            if related_name_obj is not None:
+                related_org_name = str(related_name_obj.NAME)
+                rel_name = "div_CTR_" + str(related_org_name).replace(" ", "_")
         '''QueryStatement = "update PRPBMA set AVAILABLE_FORUSE='False'"
         a = Sql.RunQuery(QueryStatement)
         QueryStatement = "update PRPBMA set AVAILABLE_FORUSE='True' where PRICEBOOK_MATERIAL_RECORD_ID in (select pb.PRICEBOOK_MATERIAL_RECORD_ID  FROM PRPBMA pb INNER JOIN MAMTRL (nolock) a on a.MATERIAL_RECORD_ID =pb.MATERIAL_RECORD_ID inner join MAMAFC (nolock) b on a.SAP_PART_NUMBER=b.SAP_PART_NUMBER inner join CACTPR (nolock) c on a.SAP_PART_NUMBER=c.SAP_PART_NUMBER inner join PRLPBE (nolock) d on a.SAP_PART_NUMBER=d.SAP_PART_NUMBER inner join PRPRCL (nolock) e on d.PRICECLASS_ID=e.PRICECLASS_ID inner join MALGMA (nolock) f on a.SAP_PART_NUMBER=f.SAP_PART_NUMBER inner join CAMAIM (nolock) g on a.SAP_PART_NUMBER=g.SAP_PART_NUMBER where d.LIST_PRICE > 0 and f.LANGUAGE_ID='en_US' and pb.PROCEDURE_ID=d.PROCEDURE_ID and f.LNGMAT_WEBSHORTDESC!='' and f.LNGMAT_LONGDESC!='')"
