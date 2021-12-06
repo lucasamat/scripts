@@ -11,7 +11,7 @@ Sql = SQL()
 import re
 
 class pricing_call:
-    def sscm_pricing_call(self, query):
+    def sscm_pricing_call(self):
         service_entitlement_object_sscm_pricing_call  = ""
         greenbook_entitlement_object_sscm_pricing_call = ""
         contract_quote_revision_object = Sql.GetFirst("select QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_ID,QTEREV_ID FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
