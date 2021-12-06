@@ -3844,9 +3844,9 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 	rec_id = "SYOBJ_00974"
 	obj_id = "SYOBJ-00974"
 	if str(SortColumn)!='' and str(SortColumnOrder)!='':
-    	sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
+		sort_by = " ORDER BY "+str(SortColumn)+" "+str(SortColumnOrder)
 	else:
-    	sort_by = ''
+		sort_by = ''
 	objh_getid = Sql.GetFirst(
 		"SELECT TOP 1  RECORD_ID  FROM SYOBJH (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(obj_id) + "'"
 	)
