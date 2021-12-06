@@ -4030,7 +4030,8 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 			)
 		elif hyper_link is not None and invs in hyper_link:            
 			if invs == "PM_FREQUENCY":
-				data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.REVISION_STATUS!="APPROVED" else ""
+				# data_formatter = "PMFrequencyBulkEditHyperLink" if quote_status.REVISION_STATUS!="APPROVED" else ""
+				data_formatter = ""
 			elif invs=="QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID":
 				data_formatter = "PreventiveMaintainenceHyperLinkTreeLink" 
 			else:
