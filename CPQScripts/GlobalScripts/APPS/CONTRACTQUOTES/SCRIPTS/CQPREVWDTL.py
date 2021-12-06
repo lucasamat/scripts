@@ -808,10 +808,6 @@ def constructlegalsow(Qt_rec_id, Quote, MODE):
 			syobjd_obj = Sql.GetFirst("SELECT DATA_TYPE FROM SYOBJD WHERE API_NAME = '{}' and OBJECT_NAME ='{}'".format(sefl_api,object_name))
 			data_type = syobjd_obj.DATA_TYPE
 			col_name = Sql.GetFirst("SELECT * FROM SAQTRV WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
-			product_offering = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(Quote) + "'")
-			if len(product_offering) > 1:
-				sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
-				Sql.RunQuery(sow_update_query)
 			if col_name:
 				if sefl_api == "CpqTableEntryModifiedBy":
 					current_obj_value = col_name.CpqTableEntryModifiedBy
