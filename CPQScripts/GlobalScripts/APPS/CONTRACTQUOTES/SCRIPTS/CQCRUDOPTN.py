@@ -1403,17 +1403,17 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					except:						
 						ent_disp_val = ent_disp_val					
 
-					try:
-						AttributeID = 'AGS_CON_DAY'
-						NewValue = ent_disp_val
-						add_where =''
-						ServiceId = OfferingRow_detail.get("SERVICE_ID")
-						whereReq = "QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get('QUOTE_RECORD_ID'))+"' and SERVICE_ID like '%Z0016%' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' "
+					# try:
+					# 	AttributeID = 'AGS_CON_DAY'
+					# 	NewValue = ent_disp_val
+					# 	add_where =''
+					# 	ServiceId = OfferingRow_detail.get("SERVICE_ID")
+					# 	whereReq = "QUOTE_RECORD_ID = '"+str(OfferingRow_detail.get('QUOTE_RECORD_ID'))+"' and SERVICE_ID like '%Z0016%' and QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' "
 
-						ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
-						result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
-					except:
-						pass
+					# 	ent_params_list = str(whereReq)+"||"+str(add_where)+"||"+str(AttributeID)+"||"+str(ent_disp_val)+"||"+str(ServiceId) + "||" + 'SAQTSE'
+					# 	result = ScriptExecutor.ExecuteGlobal("CQASSMEDIT", {"ACTION": 'UPDATE_ENTITLEMENT', 'ent_params_list':ent_params_list})
+					# except:
+					# 	pass
 		
 			except:
 				pass
