@@ -24,7 +24,7 @@ class pricing_call:
         service_object = Sql.GetList("select SERVICE_ID from SAQTSV(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(contract_quote_record_id,contract_quote_revision_record_id))
         for service in service_object:
             service_id = service.SERVICE_ID
-            material_object = Sql.GetFirst("select MATERIALCONFIG_TYPE from MAMTRL(NOLOCK) WHERE SAP_PART_NUMBER = '{}'".format(service_id)))
+            material_object = Sql.GetFirst("select MATERIALCONFIG_TYPE from MAMTRL(NOLOCK) WHERE SAP_PART_NUMBER = '{}'".format(service_id))
             if material_object and material_object.MATERIALCONFIG_TYPE != "SIMPLE MATERIAL":
                 where_str = " QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' and SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id,ServiceId=service_id)
                 service_entitlement_obj = Sql.GetFirst("""SELECT SERVICE_ID, ENTITLEMENT_XML FROM  {obj_name} (NOLOCK) WHERE {where_str}""".format(QuoteRecordId=contract_quote_record_id,QuoteRevisionRecordId=contract_quote_revision_record_id,ServiceId=service_id, obj_name = "SAQTSE", where_str = where_str))
