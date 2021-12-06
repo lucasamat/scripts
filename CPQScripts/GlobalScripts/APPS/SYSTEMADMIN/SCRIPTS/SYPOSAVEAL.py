@@ -191,6 +191,7 @@ def do_process(TABLEID, LABLE, VALUE):
                 row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()                
             if Flag_unique == "True":
                 if "CpqTableEntryModifiedBy" in row.keys() and "CpqTableEntryDateModified" in row.keys():
+                    Trace.Write("Flag_unique===")
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
