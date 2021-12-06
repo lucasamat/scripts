@@ -26,7 +26,7 @@ try:
 	current_prod = Product.Name
 	Trace.Write('27---inside try--')
 except:
-	current_prod = ""
+	current_prod = "SALES"
 	Trace.Write('27----inside catch----')
 
 import time
@@ -6572,7 +6572,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		get_quote_id  = Sql.GetFirst("select QUOTE_ID from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(self.contract_quote_record_id))
 		get_approvaltxn_steps = Sql.GetList("select distinct ACAPCH.APRCHN_NAME,ACAPCH.APRCHN_ID,ACAPCH.APRCHN_DESCRIPTION from ACAPTX inner JOIN ACAPCH ON ACAPTX.APRCHN_RECORD_ID=ACAPCH.APPROVAL_CHAIN_RECORD_ID   where ACAPTX.APRTRXOBJ_ID = '{}' and  ACAPTX.APPROVALSTATUS NOT IN ('APPROVED')".format(get_quote_id.QUOTE_ID))
 		Trace.Write('6571---'+str(current_prod))
-		if get_approvaltxn_steps:
+		if get_approvaltxn_steps and str(current_prod).upper() == 'SALES':
 			gettransactionmessage = 'This quote requires approval due to the following:'
 			for val in get_approvaltxn_steps:
 				Trace.Write('6571--desc----'+str(val.APRCHN_DESCRIPTION))
