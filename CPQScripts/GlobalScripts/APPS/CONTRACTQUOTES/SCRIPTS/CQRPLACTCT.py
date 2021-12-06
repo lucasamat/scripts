@@ -145,9 +145,7 @@ try:
 except:
 	repalce_values = ''
 
-Trace.Write("Primary"+str(action_type))
 
-Trace.Write("Primary"+str(values))
 	
 
 if action_type == "ADD_CONTACT":
