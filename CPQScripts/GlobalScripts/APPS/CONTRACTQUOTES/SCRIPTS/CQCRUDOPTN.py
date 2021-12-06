@@ -24,8 +24,10 @@ import CQVLDRIFLW
 
 try:
 	current_prod = Product.Name
+	Trace.Write('27---inside try--')
 except:
 	current_prod = ""
+	Trace.Write('27----inside catch----')
 
 import time
 class ContractQuoteCrudOpertion:
