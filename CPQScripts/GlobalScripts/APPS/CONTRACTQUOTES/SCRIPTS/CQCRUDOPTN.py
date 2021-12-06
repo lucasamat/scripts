@@ -1383,7 +1383,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					Trace.Write('312---NewValue- -'+str(NewValue))
 					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
 					Trace.Write('312---whereReq--'+str(OfferingRow_detail.get("SERVICE_ID")))
-					Trace.Write('312---add_where--'+str(add_where))
+					#Trace.Write('312---add_where--'+str(add_where))
 					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
 					#Trace.Write('312---ServiceId--'+str(ServiceId))
 					add_where =''
