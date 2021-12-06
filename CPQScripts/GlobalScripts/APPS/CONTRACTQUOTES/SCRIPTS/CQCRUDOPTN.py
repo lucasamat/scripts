@@ -1382,6 +1382,10 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				try:
 					Trace.Write('312---NewValue- -'+str(NewValue))
 					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					Trace.Write('312---whereReq--'+str(whereReq))
+					Trace.Write('312---add_where--'+str(add_where))
+					Trace.Write('312---AttributeID_Pass--'+str(AttributeID_Pass))
+					Trace.Write('312---ServiceId--'+str(ServiceId))
 					add_where =''
 					ServiceId = OfferingRow_detail.get("SERVICE_ID")
 					whereReq = "QUOTE_RECORD_ID = '{}' and SERVICE_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(OfferingRow_detail.get("QUOTE_RECORD_ID"),OfferingRow_detail.get("SERVICE_ID"),self.quote_revision_record_id)
