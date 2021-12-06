@@ -7930,13 +7930,13 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 	Parent_Equipmentid = recid
 	if Parent_Equipmentid:
 		# child_obj_recid = Sql.GetList("select  top 5 EQUIPMENT_ID from SAQFEA (NOLOCK) where EQUIPMENT_ID = '{EquipmentID}' and QUOTE_RECORD_ID = '{ContractRecordId}' and FABLOCATION_ID = '{FablocationId}'".format(EquipmentID = Parent_Equipmentid.EQUIPMENT_ID,ContractRecordId = Quote.GetGlobal("contract_quote_record_id"),FablocationId = Product.GetGlobal("TreeParam")))
-		if TreeSuperParentParam == "Product Offerings" or TreeTopSuperParentParam == "Comprehensive Services":
+		if TreeTopSuperParentParam == "Product Offerings" or TreeSuperParentParam == "Comprehensive Services":
 			child_obj_recid = Sql.GetList(
-				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{TreeSuperParentParam}') m where m.ROW BETWEEN ".format(
+				"select top "+str(PerPage)+" * from (select ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID) AS ROW, QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID,EQUIPMENT_ID,ASSEMBLY_ID,ASSEMBLY_DESCRIPTION,EQUIPMENTTYPE_ID,GOT_CODE,EQUIPMENT_DESCRIPTION,MNT_PLANT_ID,FABLOCATION_ID,WARRANTY_START_DATE,WARRANTY_END_DATE,INCLUDED from SAQSCA (NOLOCK) where EQUIPMENT_ID = '{Parent_Equipmentid}' and QUOTE_RECORD_ID = '{ContractRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and SERVICE_ID = '{Service_Id}') m where m.ROW BETWEEN ".format(
 					ContractRecordId=Quote.GetGlobal("contract_quote_record_id"),
 					RevisionRecordId = Quote.GetGlobal("quote_revision_record_id"),
 					Parent_Equipmentid=Parent_Equipmentid,
-					TreeSuperParentParam=TreeSuperParentParam if TreeTopSuperParentParam == "Comprehensive Services" else TreeParam,
+					Service_Id=TreeParentParam,
 				)
 				+ str(Page_start)
 				+ " and "
@@ -7950,7 +7950,7 @@ def GetCovObjChild(recid, PerPage, PageInform, A_Keys, A_Values):
 				+ str(RevisionRecordId)
 				+ "'and EQUIPMENT_ID ='"
 				+ str(Parent_Equipmentid)
-				+ "'and SERVICE_ID ='{TreeSuperParentParam}'".format(TreeSuperParentParam=TreeSuperParentParam if TreeTopSuperParentParam == "Comprehensive Services" else TreeParam)
+				+ "'and SERVICE_ID ='{Service_Id}'".format(Service_Id=TreeParentParam)
 			)
 		elif TreeSuperParentParam == "Add-On Products":
 			child_obj_recid = Sql.GetList(
