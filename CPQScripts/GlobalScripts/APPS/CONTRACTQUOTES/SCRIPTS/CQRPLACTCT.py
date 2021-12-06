@@ -104,12 +104,12 @@ def add_contact(values,allvalues):
 	SACONT.CONTACT_RECORD_ID IN ({val})
 	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
-def mark_primary_contact(mark_primary_contact):
+def mark_primary_contact(values):
 	
 	updatefalsesaqict = """ UPDATE SAQICT SET [PRIMARY] = '0' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id)
 	Sql.RunQuery(updatefalsesaqict)
 
-	updatetruesaqict = """ UPDATE SAQICT SET [PRIMARY] = '1' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}' and QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{primaryprimary}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id,primaryprimary = primaryprimary)
+	updatetruesaqict = """ UPDATE SAQICT SET [PRIMARY] = '1' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}' and QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{primary_contact}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id,primary_contact = values)
 	Sql.RunQuery(updatetruesaqict)
 
 	return True
@@ -144,10 +144,7 @@ try:
 	repalce_values = Param.repalce_values
 except:
 	repalce_values = ''
-try:
-	primary_value = Param.primary_value
-except:
-	primary_value = ''
+
 	
 
 if action_type == "ADD_CONTACT":
@@ -155,4 +152,4 @@ if action_type == "ADD_CONTACT":
 	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
 elif action_type == "MARK_PRIMARY":
 	Trace.Write("Primary"+str(action_type))
-	ApiResponse = ApiResponseFactory.JsonResponse(mark_primary_contact(primary_value))
+	ApiResponse = ApiResponseFactory.JsonResponse(mark_primary_contact(values))
