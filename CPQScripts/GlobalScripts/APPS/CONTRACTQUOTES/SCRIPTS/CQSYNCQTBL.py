@@ -1345,7 +1345,13 @@ class SyncQuoteAndCustomTables:
 							if (re.match(r'C4C_GEN_SRV',payload_json.get('SERVICE_IDS'))):
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[1]
 							else:
-								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]							
+								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]		
+							product_offering = payload_json.get('SERVICE_IDS').split(',')
+							if product_offering:
+								if len(product_offering) > 1:
+									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
+									Sql.RunQuery(sow_update_query)
+							Log.Info("product_offering_CHK_J"+str(product_offering))
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):
 								if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
@@ -1650,12 +1656,6 @@ class SyncQuoteAndCustomTables:
 								entitle_end_time = time.time()
 								
 								#Log.Info("CreateEntitlements end==> "+str(entitle_end_time - entitle_start_time))
-							product_offering = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"'")
-							if product_offering:
-								if len(product_offering) > 1:
-									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
-									Sql.RunQuery(sow_update_query)
-							Log.Info("product_offering_CHK_J"+str(product_offering))
 							if equipment_data:
 								#Log.Info(""""EQUIPMENTS INSERT""")
 								
