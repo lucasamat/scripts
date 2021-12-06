@@ -4107,7 +4107,7 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
-			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_ID  NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
+			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_RECORD_ID  NOT IN (SELECT CONTACT_RECORD_ID FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
 
 			order_by = "order by SACONT.CONTACT_ID ASC"
 
@@ -4132,7 +4132,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 				Trace.Write("soureceequipments "+str(where_string))
 			if TreeParam == "Customer Information":
-				where_string += """ SACONT.CONTACT_ID NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
+				where_string += """ SACONT.CONTACT_RECORD_ID NOT IN (SELECT CONTACT_RECORD_ID FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
 			
 			table_data = Sql.GetList("Select {} FROM SACONT {} {} {}".format(", ".join(ordered_keys),"WHERE " +where_string if where_string else "",order_by,pagination_condition))
 			QueryCountObj = Sql.GetFirst(
