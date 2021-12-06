@@ -1372,11 +1372,7 @@ class SyncQuoteAndCustomTables:
 							else:
 								service_id_first = payload_json.get('SERVICE_IDS').split(',')[0]		
 							product_offering = payload_json.get('SERVICE_IDS').split(',')
-							if product_offering:
-								if len(product_offering) > 1:
-									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
-									Sql.RunQuery(sow_update_query)
-							Log.Info("product_offering_CHK_J"+str(product_offering))
+
 						if payload_json.get('SAQFEQ'):
 							for equipment_json_data in payload_json.get('SAQFEQ'):
 								if equipment_json_data.get('FAB_LOCATION_ID') in equipment_data:
@@ -1648,7 +1644,11 @@ class SyncQuoteAndCustomTables:
 																""".format(UserId=User.Id, UserName=User.UserName,QuoteId=quote_id, QuoteRecordId=quote_record_id, FabLocationIds=fab_location_ids,quote_revision_id=quote_revision_id,quote_rev_id=quote_rev_id))
 								SAQFBL_end = time.time()
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
-
+							if product_offering:
+								if len(product_offering) > 1:
+									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
+									Sql.RunQuery(sow_update_query)
+							Log.Info("product_offering_CHK_J"+str(product_offering))
 							if service_ids:
 								
 								SAQTSV_start = time.time()								
