@@ -258,7 +258,7 @@ def attachments():
 
 def SaveAttachments():
 	FileFormat = DocumentName.split(".")[1]
-	#Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES(CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"","","","","",""))
+	Sql.RunQuery("INSERT INTO SAQRAT(QUOTE_REV_ATTACHMENT_RECORD_ID,ATTACH_FILE_FORMAT,ATTACH_FILE_NAME,ATTACH_FILE_PATH,ATTACH_TYPE,QUOTE_ID,QUOTE_RECORD_ID,QTEREV_ID,QTEREV_RECORD_ID)VALUES(CONVERT(VARCHAR(4000), NEWID()),'{}','{}','{}','{}','{}','{}','{}','{}')".format(FileFormat,DocumentName,"","","",Quote.GetGlobal("contract_quote_record_id"),"",Quote.GetGlobal("quote_revision_record_id")))
 
 try:
 	Language = Param.Language_selection
