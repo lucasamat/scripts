@@ -46,14 +46,14 @@ class pricing_call:
                                     source_object_name = 'SAQSCE'
                                 elif quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
                                     source_object_name = 'SAQSGE'
-                            Trace.Write("source_object_name"+str(source_object_name))
+                            #Trace.Write("source_object_name"+str(source_object_name))
                     if source_object_name == "SAQSCE":
                         service_entitlement_object = Sql.GetList("select CONFIGURATION_STATUS from SAQSCE(NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(self.contract_quote_record_id,self.contract_quote_revision_record_id))
                         for status in service_entitlement_object:
                             service_configuration_status = status.CONFIGURATION_STATUS
                             if service_configuration_status != "COMPLETE":
                                 service_entitlement_object_sscm_pricing_call = "NO"
-                                Trace.Write("service_entitlement_object_sscm_pricing_call  "+str(service_entitlement_object_sscm_pricing_call))
+                                #Trace.Write("service_entitlement_object_sscm_pricing_call  "+str(service_entitlement_object_sscm_pricing_call))
                                 break
                                 
                     if source_object_name == "SAQSGE":
@@ -62,7 +62,7 @@ class pricing_call:
                             greenbook_configuration_status = greenbook_entitlement_object.status
                             if greenbook_configuration_status != "COMPLETE":
                                 greenbook_entitlement_object_sscm_pricing_call = "NO"
-                                Trace.Write("greenbook_entitlement_object_sscm_pricing_call  "+str(greenbook_entitlement_object_sscm_pricing_call))
+                                #Trace.Write("greenbook_entitlement_object_sscm_pricing_call  "+str(greenbook_entitlement_object_sscm_pricing_call))
                                 break
                     if (service_entitlement_object_sscm_pricing_call != "NO")or (greenbook_entitlement_object_sscm_pricing_call != "NO"):
                         ScriptExecutor.ExecuteGlobal('QTPOSTACRM',{'QUOTE_ID':self.contract_quote_id,'REVISION_ID':self.contract_quote_revision_id, 'Fun_type':'cpq_to_sscm'})
