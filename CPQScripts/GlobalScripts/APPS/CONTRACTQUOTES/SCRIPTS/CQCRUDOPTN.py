@@ -6577,7 +6577,7 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 				#gettransactionmessage = '<p>This quote has to be approved for the following : </p>'
 				gettransactionmessage += ('<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '+val.APRCHN_ID +' | Description : ' +str(val.APRCHN_DESCRIPTION).upper()+'</label></div></div>')
 		
-		Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
+		#Trace.Write('gettransactionmessage---'+str(gettransactionmessage))
 		# if ent_message_query:
 		# 	#for val in obj_list:
 		# 	tablename = 'SAQTSE'
@@ -6679,34 +6679,26 @@ class ContractQuoteNoficationModel(ContractQuoteCrudOpertion):
 		# 				datetime_value=self.datetime_value,
 		# 			)
 				
-					""" msg_txt = (
-						'<div class="col-md-12" id="dirty-flag-warning"><div class="col-md-12 alert-warning"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning"> '
-						+ str(info_message_obj.MESSAGE_LEVEL)
-						+ " : "
-						+ str(info_message_obj.MESSAGE_CODE)
-						+ " : "
-						+ str(info_message_obj.MESSAGE_TEXT)
-						+ "</label></div></div>"
-					) """
+				
 		# Is Changed Information Notification - Start
 		#equip_level_entitlement_obj = Sql.GetFirst("SELECT QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID FROM SAQSCE (NOLOCK) WHERE IS_CHANGED = 1 AND QUOTE_RECORD_ID= '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 		#if equip_level_entitlement_obj:
-			'''log_message_obj = Sql.GetFirst(
-					"SELECT TOP 1000 SYMSGS.MESSAGE_TEXT, SYMSGS.MESSAGE_TYPE, SYMSGS.MESSAGE_CODE, SYMSGS.MESSAGE_LEVEL FROM SYMSGS (nolock) INNER JOIN SYELOG (NOLOCK) ON SYELOG.ERRORMESSAGE_RECORD_ID = SYMSGS.RECORD_ID WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE = '{QuoteId}' AND SYELOG.OBJECT_VALUE_REC_ID = '{QuoteRecordId}' ORDER BY abs(SYMSGS.MESSAGE_CODE)".format(
-						QuoteId=self.contract_quote_id,
-						QuoteRecordId=self.contract_quote_record_id
-					)
-				)
-			if log_message_obj:
-				ent_msg_txt += (
-					'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
-					+ str(log_message_obj.MESSAGE_LEVEL)
-					+ " : "
-					+ str(log_message_obj.MESSAGE_CODE)
-					+ " : "
-					+ str(log_message_obj.MESSAGE_TEXT)
-					+ "</label></div></div>"
-				)'''
+			# log_message_obj = Sql.GetFirst(
+			# 		"SELECT TOP 1000 SYMSGS.MESSAGE_TEXT, SYMSGS.MESSAGE_TYPE, SYMSGS.MESSAGE_CODE, SYMSGS.MESSAGE_LEVEL FROM SYMSGS (nolock) INNER JOIN SYELOG (NOLOCK) ON SYELOG.ERRORMESSAGE_RECORD_ID = SYMSGS.RECORD_ID WHERE SYMSGS.MESSAGE_CODE = '200112' AND SYMSGS.MESSAGE_LEVEL = 'INFORMATION' AND SYELOG.OBJECT_VALUE = '{QuoteId}' AND SYELOG.OBJECT_VALUE_REC_ID = '{QuoteRecordId}' ORDER BY abs(SYMSGS.MESSAGE_CODE)".format(
+			# 			QuoteId=self.contract_quote_id,
+			# 			QuoteRecordId=self.contract_quote_record_id
+			# 		)
+			# 	)
+			# if log_message_obj:
+			# 	ent_msg_txt += (
+			# 		'<div class="col-md-12" id="entitlement-info"><div class="col-md-12 alert-info"><label> <img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/infocircle1.svg" alt="Info"> '
+			# 		+ str(log_message_obj.MESSAGE_LEVEL)
+			# 		+ " : "
+			# 		+ str(log_message_obj.MESSAGE_CODE)
+			# 		+ " : "
+			# 		+ str(log_message_obj.MESSAGE_TEXT)
+			# 		+ "</label></div></div>"
+			# 	)
 		# Is Changed Information Notification
 		return ent_msg_txt,msg_app_txt,gettransactionmessage,ent_msg_gen_txt
 
