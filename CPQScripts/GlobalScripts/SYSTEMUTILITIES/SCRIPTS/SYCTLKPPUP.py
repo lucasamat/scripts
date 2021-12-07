@@ -476,6 +476,7 @@ def GSCONTLOOKUPPOPUP(
         #Trace.Write("VAL_Str-------------------------------------> " + str(VAL_Str))
         
         ids = API_NAME_list[0]
+        Trace.Write('ids==='+str(ids))
         TABLEIDS = "table_" + TABLEID
         sec_str += (
             '<table id="'
