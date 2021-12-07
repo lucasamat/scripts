@@ -1010,6 +1010,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 
 
 				Trace.Write("service_id_chk_J"+str(service_id))
+				
 				if len(product_offering) > 2:
 					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 					Sql.RunQuery(sow_update_query)
