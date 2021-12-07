@@ -59,15 +59,16 @@ def entitlement_request(partnumber,request_url,request_type):
 	return eval(response1)
 
 def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level_table,where_cond):
-	level_name = get_clicked_greenbook = ''
+	level_name = get_clicked_greenbook = get_greenbook_value_itemlevel = ''
 	if ent_level_table == "SAQTSE":
 		level_name = 'OFFERING LEVEL'
 	elif ent_level_table == "SAQSFE":
 		level_name = 'OFFERING FAB LEVEL'
 	elif ent_level_table == "SAQITE":
-		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID from SAQITE where {where_condition}".format(where_condition= where_cond))
+		get_entitlement_qt_item_sctructure = Sql.GetFirst("select ENTITLEMENT_XML,SERVICE_ID,GREENBOOK from SAQITE where {where_condition}".format(where_condition= where_cond))
 		flag_excluse=0
 		get_service_val =get_entitlement_qt_item_sctructure.SERVICE_ID
+		get_greenbook_value_itemlevel = get_entitlement_qt_item_sctructure.GREENBOOK
 		#condition based on quote item strcuture start
 		if get_entitlement_qt_item_sctructure:
 			Trace.Write('get_service_val-32----'+str(get_service_val))
@@ -103,6 +104,8 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
+	if get_clicked_greenbook == "":
+		Trace.Write('107----get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
