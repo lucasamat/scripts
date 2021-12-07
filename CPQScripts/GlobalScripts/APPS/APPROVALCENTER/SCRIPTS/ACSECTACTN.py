@@ -2991,7 +2991,7 @@ class approvalCenter:
 				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
 					getprice= Sql.GetFirst("SELECT CONCAT(CREDIT_INGL_CURR,'',GLOBAL_CURRENCY) FROM SAQTRV WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getprice:
-						values=str(GETFPM.CREDIT_INGL_CURR)
+						values=str(getprice.CREDIT_INGL_CURR)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
