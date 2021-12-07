@@ -70,7 +70,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_service_val =get_entitlement_qt_item_sctructure.SERVICE_ID
 		#condition based on quote item strcuture start
 		if get_entitlement_qt_item_sctructure:
-			#Trace.Write('get_service_val-32--'+str(get_billing_cycle.ENTITLEMENT_XML))
+			Trace.Write('get_service_val-32----'+str(get_service_val))
 			get_ent_val = ''
 			updateentXML = get_entitlement_qt_item_sctructure.ENTITLEMENT_XML
 			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
