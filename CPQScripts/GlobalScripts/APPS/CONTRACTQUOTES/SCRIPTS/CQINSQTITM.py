@@ -610,7 +610,7 @@ class ContractQuoteItem:
 		return True		
 
 	def _quote_items_insert(self, update=False):
-		Log.Info("====>>> _quote_items_insert")
+		Log.Info("====>>> _quote_items_insert",)
 		dynamic_select_columns = ""
 		item_where_string = ""
 		item_join_string = ""
