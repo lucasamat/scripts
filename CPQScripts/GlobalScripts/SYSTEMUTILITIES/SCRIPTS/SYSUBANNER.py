@@ -111,7 +111,7 @@ def Related_Sub_Banner(
     # Getting page details
     multi_buttons = []
     Trace.Write('ObjName---103--'+str(ObjName))
-    if ObjName == "SAQIGS":
+    if ObjName == "SAQIGS" or ObjName == "SAQRIB":
         ObjName ="SAQRIB"
         page_type = "OBJECT PAGE LAYOUT"
     if ObjName == "SAQDOC":
