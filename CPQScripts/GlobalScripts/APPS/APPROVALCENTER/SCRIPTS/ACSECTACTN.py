@@ -2969,7 +2969,7 @@ class approvalCenter:
 						)
 					)
 					values = str(GetOwnerMailId.USERNAME)
-				elif str(eachsplit[1]) == "ACCOUNT_ID":
+				elif str(eachsplit[1]) == "OWNER_NAME":
 					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getaccountid:
 						acct_id=str(getaccountid.ACCOUNT_ID)
