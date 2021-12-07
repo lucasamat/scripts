@@ -3005,6 +3005,8 @@ class approvalCenter:
 					servicestr += '<td class="borders">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
 					servicestr += "</tr>"
 			bodystr.replace("<tr class ='productservice'></tr>",servicestr)
+			Trace.Write("mail body 22222222" + str(servicestr))
+			Trace.Write("mail body construct" + str(bodystr))
 			C4QUOTE =Sql.GetFirst("SELECT C4C_QUOTE_ID,ADDUSR_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			SUBMITTERNAME = Sql.GetFirst("SELECT NAME,EMAIL FROM USERS(NOLOCK) WHERE ID = '"+str(C4QUOTE.ADDUSR_RECORD_ID)+"' ")
 			
