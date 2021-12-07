@@ -1015,7 +1015,8 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 					Trace.Write("sow_update_query_1 "+str(sow_update_query))
 					Sql.RunQuery(sow_update_query)
 				elif len(product_offering) <= 1:
-					mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(getservice_count.SERVICE_ID)+"'")
+					for count in product_offering:
+						mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(count.SERVICE_ID)+"'")
 
 					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id)
 					Trace.Write("sow_update_query_2 "+str(sow_update_query))
