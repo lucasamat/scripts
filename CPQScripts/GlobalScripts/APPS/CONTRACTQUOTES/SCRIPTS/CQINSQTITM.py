@@ -610,7 +610,7 @@ class ContractQuoteItem:
 		return True		
 
 	def _quote_items_insert(self, update=False):
-		Log.Info("====>>> _quote_items_insert",)
+		Log.Info("====>>> _quote_items_insert")
 		dynamic_select_columns = ""
 		item_where_string = ""
 		item_join_string = ""
@@ -634,8 +634,7 @@ class ContractQuoteItem:
 			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
 				dynamic_global_curr_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
 				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
-
-		Log.Info("====>>> _quote_items_insert 111 "+str(source_object_names))
+		
 		if self.source_object_name:		
 			equipments_count = 0
 			quote_item_obj = Sql.GetFirst("SELECT TOP 1 LINE FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY LINE DESC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id))
@@ -723,7 +722,7 @@ class ContractQuoteItem:
 					SAQTRV.QUOTE_ID,
 					SAQTRV.QUOTE_RECORD_ID,
 					SAQTMT.QTEREV_ID,
-					SAQTMT.QTEREV_RECORD_ID
+					SAQTMT.QTEREV_RECORD_ID,
 					null as REF_SALESORDER,
 					'ACQUIRING' as STATUS,
 					MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
