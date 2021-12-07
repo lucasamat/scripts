@@ -5458,6 +5458,7 @@ else:
 RECORDID = Param.RECORDID
 try:
 	RECORDFEILD = Param.RECORDFEILD
+	Trace.Write("RECORDFEILD==="+str(RECORDFEILD))
 except:
 	RECORDFEILD = ""
 try:
