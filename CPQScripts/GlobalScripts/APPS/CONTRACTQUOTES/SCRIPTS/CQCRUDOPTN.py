@@ -977,36 +977,36 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				Trace.Write('Row_Values--->'+str(row_values))
 				row_detail.update(row_values)
 				###A055S000P01-9650 START
-				getservice_count = Sql.GetList("Select count(CpqTableEntryId) as COUNT,SERVICE_ID FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' GROUP BY SERVICE_ID".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				getservice_count = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				get_poes = Sql.GetFirst("Select POES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-				for count in getservice_count:
-					if count.COUNT == 0:
-						service_id = row_detail.get("SERVICE_ID")
-						document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_id,get_poes.POES))
-						if document_type_obj:
-							row_values_doctyp = {"DOCTYP_ID": document_type_obj.DOCTYP_ID,"DOCTYP_RECORD_ID": document_type_obj.DOCTYP_RECORD_ID}
-							row_detail.update(row_values_doctyp)
-							offering_table_info.AddRow(row_detail)
-							Sql.Upsert(offering_table_info)
-							Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-					elif count.COUNT <= 1:
-						mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(getservice_count.SERVICE_ID)+"'")
+				# for count in getservice_count:
+				if count.COUNT == 0:
+					service_id = row_detail.get("SERVICE_ID")
+					document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_id,get_poes.POES))
+					if document_type_obj:
+						row_values_doctyp = {"DOCTYP_ID": document_type_obj.DOCTYP_ID,"DOCTYP_RECORD_ID": document_type_obj.DOCTYP_RECORD_ID}
+						row_detail.update(row_values_doctyp)
+						offering_table_info.AddRow(row_detail)
+						Sql.Upsert(offering_table_info)
+						Sql.RunQuery("UPDATE SAQTRV SET DOCTYP_ID = '{DocumentType}',DOCTYP_RECORD_ID = '{DocumentTypeRecordId}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' ".format(DocumentType = document_type_obj.DOCTYP_ID,DocumentTypeRecordId = document_type_obj.DOCTYP_RECORD_ID,QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				# elif count.COUNT <= 1:
+				# 	mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(getservice_count.SERVICE_ID)+"'")
 
-						sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
-						Sql.RunQuery(sow_update_query)
-					else:
-						get_first_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY CpqTableEntryId ASC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
-						service_id = row_detail.get("SERVICE_ID")
-						service_maadpr = Sql.GetFirst(" SELECT COMP_PRDOFR_DOCTYP_RECORD_ID,COMP_PRDOFR_DOCTYP FROM MAADPR WHERE POES = '{}' and PRDOFR_ID = '{}' AND COMP_PRDOFR_ID ='{service_id}' ".format(get_poes.POES,get_first_service_id.SERVICE_ID,service_id = service_id))
-						if service_maadpr:
-							row_values_doctyp = {"DOCTYP_ID": service_maadpr.COMP_PRDOFR_DOCTYP,"DOCTYP_RECORD_ID": service_maadpr.COMP_PRDOFR_DOCTYP_RECORD_ID}
-							row_detail.update(row_values_doctyp)
-							Trace.Write('row_detail-->'+str(row_detail))
-							offering_table_info.AddRow(row_detail)
-							Trace.Write('offering_table_info-->'+str(offering_table_info))
-							Sql.Upsert(offering_table_info)
-						sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
-						Sql.RunQuery(sow_update_query)
+				# 	sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
+				# 	Sql.RunQuery(sow_update_query)
+				else:
+					get_first_service_id = Sql.GetFirst("SELECT SERVICE_ID FROM SAQTSV WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}' ORDER BY CpqTableEntryId ASC".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+					service_id = row_detail.get("SERVICE_ID")
+					service_maadpr = Sql.GetFirst(" SELECT COMP_PRDOFR_DOCTYP_RECORD_ID,COMP_PRDOFR_DOCTYP FROM MAADPR WHERE POES = '{}' and PRDOFR_ID = '{}' AND COMP_PRDOFR_ID ='{service_id}' ".format(get_poes.POES,get_first_service_id.SERVICE_ID,service_id = service_id))
+					if service_maadpr:
+						row_values_doctyp = {"DOCTYP_ID": service_maadpr.COMP_PRDOFR_DOCTYP,"DOCTYP_RECORD_ID": service_maadpr.COMP_PRDOFR_DOCTYP_RECORD_ID}
+						row_detail.update(row_values_doctyp)
+						Trace.Write('row_detail-->'+str(row_detail))
+						offering_table_info.AddRow(row_detail)
+						Trace.Write('offering_table_info-->'+str(offering_table_info))
+						Sql.Upsert(offering_table_info)
+					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
+					Sql.RunQuery(sow_update_query)
 				
 				#A055S000P01-9650 ENDS
 				#offering_table_info.AddRow(row_detail)
