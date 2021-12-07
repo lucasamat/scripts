@@ -1648,6 +1648,10 @@ class SyncQuoteAndCustomTables:
 								if len(product_offering) > 1:
 									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
 									Sql.RunQuery(sow_update_query)
+								elif len(product_offering) <= 1:
+									mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
+									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
+									Sql.RunQuery(sow_update_query)
 							Log.Info("product_offering_CHK_J"+str(product_offering))
 							if service_ids:
 								
