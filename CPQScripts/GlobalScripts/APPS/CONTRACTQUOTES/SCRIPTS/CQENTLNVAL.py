@@ -104,7 +104,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 		get_clicked_greenbook = Product.GetGlobal('TreeParam')
 		level_name = 'OFFERING FAB GREENBOOK TOOL ASSEMBLY LEVEL'
 	get_attr_leve_based_list =[]
-	if get_clicked_greenbook == "":
+	if get_clicked_greenbook == "" and ent_level_table == "SAQITE":
 		Trace.Write('107----get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
 		get_clicked_greenbook =get_greenbook_value_itemlevel
 	for val in inserted_value_list:
