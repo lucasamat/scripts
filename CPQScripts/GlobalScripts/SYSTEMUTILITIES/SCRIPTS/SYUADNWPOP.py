@@ -157,30 +157,16 @@ def POPUPLISTVALUEADDNEW(
 		)
 
 	if TABLEID != "ADDNEW__SYOBJR_93123_SYOBJ_00267" or TABLEID != "ADDNEW__SYOBJR_98788_SYOBJ_00907":
-		if TABLEID != "ADDNEW__SYOBJR_95800_SYOBJ_00458":			
-			if TABLEID == "ADDNEW__SYOBJR_00643_SYOBJ_0026410":
-				Trace.Write("cmng to tableid===")
-				rec_field = Sql.GetFirst(
-				"SELECT API_NAME,API_FIELD_NAME FROM SYSEFL (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(popup_table_id) + "'"
-				)
-				if rec_field is not None and rec_field != "":
-					record_field = str(eval("rec_field.API_FIELD_NAME"))
-					record_value = str(eval("rec_field.API_NAME"))
-					Trace.Write("record_field==="+str(record_field))
-					Trace.Write("record_value==="+str(record_value))
-				else:
-					record_field = ""
-					record_value = ""
+		if TABLEID != "ADDNEW__SYOBJR_95800_SYOBJ_00458":		
+			rec_field = Sql.GetFirst(
+				"SELECT API_NAME,API_FIELD_NAME FROM SYSEFL (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(RECORD_FEILD) + "'"
+			)
+			if rec_field is not None and rec_field != "":
+				record_field = str(eval("rec_field.API_FIELD_NAME"))
+				record_value = str(eval("rec_field.API_NAME"))
 			else:
-				rec_field = Sql.GetFirst(
-					"SELECT API_NAME,API_FIELD_NAME FROM SYSEFL (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(RECORD_FEILD) + "'"
-				)
-				if rec_field is not None and rec_field != "":
-					record_field = str(eval("rec_field.API_FIELD_NAME"))
-					record_value = str(eval("rec_field.API_NAME"))
-				else:
-					record_field = ""
-					record_value = ""
+				record_field = ""
+				record_value = ""
 		
 	if str(popup_table_id) == "SYOBJR-94489":
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
