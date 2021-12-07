@@ -627,13 +627,13 @@ class ContractQuoteItem:
 			item_join_string += "LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = SAQSGE.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = SAQSGE.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = SAQSGE.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = SAQSGE.GREENBOOK_RECORD_ID"	
 		else:
 			return False
-		dynamic_net_values = ""
+		dynamic_global_curr_columns = ""
 		dynamic_columns = ""
 		if self.is_ancillary == True:
-			dynamic_net_values = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
+			dynamic_global_curr_columns = " '0' AS NET_VALUE_INGL_CURR, '0' AS NET_PRICE_INGL_CURR,"
 			dynamic_columns = "NET_VALUE_INGL_CURR, NET_PRICE_INGL_CURR,"
 			if self.service_id == 'Z0046' and self._ent_billing_type.upper() == 'VARIABLE':
-				dynamic_net_values += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
+				dynamic_global_curr_columns += " '0' AS ESTVAL_INGL_CURR,  '0' AS COMVAL_INGL_CURR,"
 				dynamic_columns += "ESTVAL_INGL_CURR, COMVAL_INGL_CURR,"
 
 		Log.Info("====>>> _quote_items_insert 111 "+str(self.source_object_name))
@@ -675,7 +675,7 @@ class ContractQuoteItem:
 					MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
 					MAMSCT.TAXCLASSIFICATION_ID,
 					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
-					{dynamic_net_values}
+					{dynamic_global_curr_columns}
 					SAQSGB.FABLOCATION_ID as FABLOCATION_ID,
 					SAQSGB.FABLOCATION_NAME as FABLOCATION_NAME,
 					SAQSGB.FABLOCATION_RECORD_ID as FABLOCATION_RECORD_ID,
@@ -690,7 +690,7 @@ class ContractQuoteItem:
 				LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
 				{JoinString}
 				WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' {WhereConditionString}			
-			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, WhereConditionString=item_where_string, JoinString=item_join_string,dynamic_net_values = dynamic_net_values,dynamic_column_names = dynamic_columns))
+			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, WhereConditionString=item_where_string, JoinString=item_join_string,dynamic_global_curr_columns = dynamic_global_curr_columns,dynamic_column_names = dynamic_columns))
 			)
 			Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{dynamic_column_names} FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
 				SELECT
@@ -725,7 +725,7 @@ class ContractQuoteItem:
 					MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
 					MAMSCT.TAXCLASSIFICATION_ID,
 					MAMSCT.TAXCLASSIFICATION_RECORD_ID,
-					{dynamic_net_values}
+					{dynamic_global_curr_columns}
 					SAQSGB.FABLOCATION_ID as FABLOCATION_ID,
 					SAQSGB.FABLOCATION_NAME as FABLOCATION_NAME,
 					SAQSGB.FABLOCATION_RECORD_ID as FABLOCATION_RECORD_ID,
@@ -740,7 +740,7 @@ class ContractQuoteItem:
 				LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
 				{JoinString}
 				WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' {WhereConditionString}			
-			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, WhereConditionString=item_where_string, JoinString=item_join_string,dynamic_net_values = dynamic_net_values,dynamic_column_names = dynamic_columns))
+			""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicColumns=dynamic_select_columns, WhereConditionString=item_where_string, JoinString=item_join_string,dynamic_global_curr_columns = dynamic_global_curr_columns,dynamic_column_names = dynamic_columns))
 			# Item Level entitlement Insert
 			if self.service_id == 'Z0101':
 				self._spare_quote_items_entitlement_insert(update=update)
