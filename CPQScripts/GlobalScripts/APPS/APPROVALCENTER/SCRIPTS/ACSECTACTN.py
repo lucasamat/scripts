@@ -2999,8 +2999,16 @@ class approvalCenter:
 			
 			#emailId = str(getnotify.EMAIL)
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
-			bodycontent = re.findall('<td class="TblHeadercolor">(.+?)</td>', bodywithformatsplit[1])
-			
+			#bodycontent = re.findall('<td class="productservice">(.+?)</td>', bodywithformatsplit[1])
+			servicestr = ""
+			getservid = Sql.GetList("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			if getservid:
+				for trloop in getservid:
+					servicestr += "<tr>"
+					servicestr += '<td class="borders">' + str(trloop.SERVICE_ID)+ "</td>"
+					servicestr += '<td class="borders">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
+					servicestr += "</tr>"
+			bodystr.replace("<tr class ='productservice'></tr>",servicestr)
 			C4QUOTE =Sql.GetFirst("SELECT C4C_QUOTE_ID,ADDUSR_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			SUBMITTERNAME = Sql.GetFirst("SELECT NAME,EMAIL FROM USERS(NOLOCK) WHERE ID = '"+str(C4QUOTE.ADDUSR_RECORD_ID)+"' ")
 			
