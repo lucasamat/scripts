@@ -980,7 +980,7 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 				getservice_count = Sql.GetFirst("Select count(CpqTableEntryId) as COUNT FROM SAQTSV(NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				get_poes = Sql.GetFirst("Select POES FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
 				# for count in getservice_count:
-				if count.COUNT == 0:
+				if getservice_count.COUNT == 0:
 					service_id = row_detail.get("SERVICE_ID")
 					document_type_obj = Sql.GetFirst("select DOCTYP_ID,DOCTYP_RECORD_ID from MAMADT(NOLOCK) where SAP_PART_NUMBER = '{}' AND POES ='{}'".format(service_id,get_poes.POES))
 					if document_type_obj:
