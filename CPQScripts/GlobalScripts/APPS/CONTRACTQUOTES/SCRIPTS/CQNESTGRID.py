@@ -3925,18 +3925,13 @@ def QuoteAssemblyPreventiveMaintainenceParent(PerPage, PageInform, A_Keys, A_Val
 		)
 	elif TreeParentParam == "Comprehensive Services" or TreeParentParam == "Complementary Products":
 		Qstr = (
-			"select top "
-			+ str(PerPage)
-			+ " * from ( select  ROW_NUMBER() OVER( ORDER BY QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) AS ROW, QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
+			"select QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID,EQUIPMENT_DESCRIPTION,EQUIPMENT_ID,SERIAL_NO,GOT_CODE,ASSEMBLY_ID,KIT_ID,KIT_NAME,PM_ID,PM_NAME,TKM_FLAG,KIT_NUMBER,ANNUAL_FREQUENCY_BASE,SSCM_PM_FREQUENCY,PM_FREQUENCY from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
 			+ str(ContractRecordId)
 			+ "' and QTEREV_RECORD_ID = '"
 			+ str(RevisionRecordId)
 			+ "' and SERVICE_ID = '"
 			+ str(TreeParam).split('-')[0]
-			+ "' ) m where m.ROW BETWEEN "
-			+ str(Page_start)
-			+ " and "
-			+ str(Page_End)+ " "+ str(sort_by)
+			+ "' "+str(sort_by)+" OFFSET "+str(Page_start)+" ROWS FETCH NEXT "+str(PerPage)+" ROWS ONLY "
 		)
 		QueryCountObj = Sql.GetFirst(
 			"select count(QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID) as cnt from SAQSAP (NOLOCK) where QUOTE_RECORD_ID = '"
