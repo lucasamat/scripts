@@ -106,6 +106,7 @@ def entitlement_attributes_lvel_request(partnumber,inserted_value_list,ent_level
 	get_attr_leve_based_list =[]
 	if get_clicked_greenbook == "":
 		Trace.Write('107----get_greenbook_value_itemlevel----'+str(get_greenbook_value_itemlevel))
+		get_clicked_greenbook =get_greenbook_value_itemlevel
 	for val in inserted_value_list:
 		#Trace.Write(str(level_name)+'--level_name--value---'+str(val))
 		if level_name in ["OFFERING FAB LEVEL","OFFERING LEVEL"]:
