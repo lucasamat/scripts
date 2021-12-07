@@ -1005,9 +1005,17 @@ class ContractQuoteOfferingsModel(ContractQuoteCrudOpertion):
 						offering_table_info.AddRow(row_detail)
 						Trace.Write('offering_table_info-->'+str(offering_table_info))
 						Sql.Upsert(offering_table_info)
+
+				product_offering = Sql.GetList("SELECT SERVICE_ID FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id))
+				if len(product_offering) > 2:
 					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
 					Sql.RunQuery(sow_update_query)
-				
+				elif len(product_offering) <= 1:
+					mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(getservice_count.SERVICE_ID)+"'")
+
+					sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = '"+str(mamtrl_record.CLM_CONTRACT_TYPE)+"', CLM_TEMPLATE_NAME = '"+str(mamtrl_record.CLM_TEMPLATE_NAME)+"' WHERE QUOTE_RECORD_ID = '" + str(Quote) + "' "
+					Sql.RunQuery(sow_update_query)
+
 				#A055S000P01-9650 ENDS
 				#offering_table_info.AddRow(row_detail)
 				#Sql.Upsert(offering_table_info)
