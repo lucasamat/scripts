@@ -2829,7 +2829,10 @@ class SYLDRTLIST:
 
 							elif ObjectName == "SAQDOC":
 								Action_str += '<li><a id = "" class="dropdown-item" href="#" " onclick="submit_to_customer(this)">SUBMITTED TO CUSTOMER</a></li>'     
-							
+							elif ObjectName == "SAQDLT":
+								Action_str += (
+									'<li><a class="dropdown-item" href="#" onclick="replace_cont_manager(this)">REPLACE</a></li>'
+								) 
 							else:
 								if str(current_tab).upper() == "PROFILE":
 									Action_str += (
