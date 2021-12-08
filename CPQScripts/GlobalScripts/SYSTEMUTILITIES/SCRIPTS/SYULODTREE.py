@@ -18,6 +18,13 @@ Sql = SQL()
 
 c_total = 0
 g_total = 0
+
+
+#node visibility query based on sales emplloyee
+login_user= User.Id
+get_node_visibility = SqlHelper.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=login_user))
+#node visibility query based on sales emplloyee end
+
 try:
 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
 	
@@ -1219,7 +1226,6 @@ class TreeView:
 			+ str(ParRecId)
 			+ "' AND DISPLAY_CRITERIA != 'DYNAMIC' AND NODE_TYPE = 'STATIC'"
 			)
-			
 			if findChildOneObj is not None and len(findChildOneObj) > 0:
 				for findChildOne in findChildOneObj:
 					if DynamicQuery is not None and len(DynamicQuery) > 0:
