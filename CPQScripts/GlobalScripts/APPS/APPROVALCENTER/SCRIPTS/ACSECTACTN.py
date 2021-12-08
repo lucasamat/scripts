@@ -2996,6 +2996,30 @@ class approvalCenter:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.CREDIT_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "TAX_AMOUNT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT TAX_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.TAX_AMOUNT_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "NET_VALUE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_VALUE_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
@@ -3008,13 +3032,15 @@ class approvalCenter:
 			getservid = Sql.GetList("SELECT SAQTSV.SERVICE_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.PRODUCT_TYPE,SAQTRV.DOCTYP_ID,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) INNER JOIN SAQTRV ON SAQTSV.QUOTE_RECORD_ID =SAQTRV.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTRV.QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND SAQTRV.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SAQTRV.ACTIVE ='1'")
 			if getservid:
 				for trloop in getservid:
+					validfrom = str(trloop.CONTRACT_VALID_FROM).split(' ')[0]
+					validto = str(trloop.CONTRACT_VALID_TO).split(' ')[0]
 					servicestr += "<tr class='borders'>"
 					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_ID)+ "</td>"
 					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.SERVICE_DESCRIPTION)+"</td>"
 					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.PRODUCT_TYPE)+"</td>"
 					servicestr += '<td class="no-border bg-white">'+ str(trloop.DOCTYP_ID)+"</td>"
-					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.CONTRACT_VALID_FROM)+"</td>"
-					servicestr += '<td class="no-border bg-white">'+ str(trloop.CONTRACT_VALID_TO)+"</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(validfrom)+"</td>"
+					servicestr += '<td class="no-border bg-white">'+ str(validto)+"</td>"
 					servicestr += "</tr>"
 			#bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
 			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',servicestr,bodywithformatsplit[1])
