@@ -17,7 +17,7 @@ if 'Param' in globals():
             if str(Key).upper() == "OPPORTUNITY_ID":
                 opportunity_id = str(values.Value)
             if str(Key).upper() == "OPPORTUNITY_STATUS":
-                opportunity_status = str(values.Value)
+                opportunity_status = str(values.Value).upper()
             ##To Fetch the Picklist value based on the value from C4C...
             opportunity_status_dictionary = {"LOST":"OPPORTUNITY LOST", "CANCELLED":"OPPORTUNITY CANCELLED"}
             
