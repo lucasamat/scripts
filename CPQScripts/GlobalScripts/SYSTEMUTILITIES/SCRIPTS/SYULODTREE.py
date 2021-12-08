@@ -534,7 +534,8 @@ class TreeView:
 				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")
 				
 				Sql.RunQuery("UPDATE SYTRND SET PARENT_NODE_ID = '1',PARENT_NODE_RECORD_ID = '86EFDE54-934F-46B4-8D45-EBE8BEB9DB85' WHERE TREE_NODE_RECORD_ID IN ('06B30980-285F-44AF-99C9-7916D75DE74A','6A9C4306-D43F-4F14-A842-AD5EFCFAFA41')")'''
-
+			
+			Trace.Write('538---')
 			getParentObjQuery = Sql.GetList(
 				"SELECT top 1000 * FROM SYTRND (nolock) where TREE_NAME = '"
 				+ str(TabName)
@@ -547,6 +548,8 @@ class TreeView:
 				
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
+					if get_node_visibility and str(getParentObj.NODE_NAME) == "Quote Items":
+						continue
 					if str(getParentObj.TREEIMAGE_URL):
 						image_url = str(getParentObj.TREEIMAGE_URL)
 						image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
@@ -558,6 +561,7 @@ class TreeView:
 					ChildListData = []
 					SubTabList = []
 					NewList = []
+				
 					RecId = str(getParentObj.TREE_NODE_RECORD_ID)
 					NodeText = image_url+ active_image_url+str(getParentObj.NODE_NAME)
 					ProductDict["text"] = NodeText
