@@ -2191,7 +2191,7 @@ class TreeView:
 													Trace.Write("Green flag_excluse11111111"+str(flag_excluse))
 													break
 											if flag_excluse==1:
-												subTabName = "Parts List"
+												subTabName = "Exclusions"
 										Trace.Write("subTabName Green service list---"+str(subTabName))
 									elif subTabName == 'Equipment'and str(ObjName).strip() == 'SAQITM' and 'BASE' in NodeText:
 										Trace.Write("NodeText spare parts"+str(NodeText))
