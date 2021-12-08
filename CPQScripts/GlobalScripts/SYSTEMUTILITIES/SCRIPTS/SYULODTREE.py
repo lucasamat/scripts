@@ -2113,6 +2113,7 @@ class TreeView:
 												if get_ent_id and get_ent_name:
 													flag_excluse=1
 													break
+											Trace.Write("flag_excluse_J"+str(flag_excluse))
 											if flag_excluse==1:
 												subTabName = "New Parts"
 									elif subTabName == 'Service Parts List':
