@@ -194,8 +194,6 @@ class AncillaryProductOperation:
 						SERVICE_ID,
 						SERVICE_RECORD_ID,
 						EQUIPMENT_QUANTITY,
-						FABLOCATION_NAME,
-						FABLOCATION_RECORD_ID,
 						CONTRACT_VALID_FROM,
 						CONTRACT_VALID_TO,
 						PAR_SERVICE_DESCRIPTION,
@@ -220,8 +218,6 @@ class AncillaryProductOperation:
 							'{serviceid}' as SERVICE_ID,
 							'{rec}' as SERVICE_RECORD_ID,
 							EQUIPMENT_QUANTITY,								
-							FABLOCATION_NAME,
-							FABLOCATION_RECORD_ID,
 							CONTRACT_VALID_FROM,
 							CONTRACT_VALID_TO,
 							SERVICE_DESCRIPTION as PAR_SERVICE_DESCRIPTION,
@@ -692,7 +688,7 @@ class AncillaryProductOperation:
 					
 	
 	def _update_entitlement(self):
-		Log.Info('attr--685--ttributeList----'+str(self.attributeList))
+		#Log.Info('attr--685--ttributeList----'+str(self.attributeList))
 		attr_id = value_application = ''
 
 		try:
