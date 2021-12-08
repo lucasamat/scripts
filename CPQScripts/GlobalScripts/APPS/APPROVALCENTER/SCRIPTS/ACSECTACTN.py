@@ -2959,7 +2959,7 @@ class approvalCenter:
 					wherecondition=str(wherecondition),
 				)
 			)
-			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,DISPLAY_DECIMAL_PLACES FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			for eachkey in final_new_menu:
 				values = ""
 				eachsplit = eachkey.split(".")
@@ -2992,7 +2992,9 @@ class approvalCenter:
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice:
-						values=str(getnetprice.NET_PRICE_INGL_CURR)+''+str(getcurrency.GLOBAL_CURRENCY)
+						formatting_string = "{0:." + str(getcurrency.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
+						values=str(value)+''+str(getcurrency.GLOBAL_CURRENCY)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
@@ -3002,12 +3004,17 @@ class approvalCenter:
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
 			#bodycontent = re.findall('<td class="productservice">(.+?)</td>', bodywithformatsplit[1])
 			servicestr = ""
-			getservid = Sql.GetList("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getservid = Sql.GetList("SELECT SAQTSV.SERVICE_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.PRODUCT_TYPE,SAQTRV.DOCTYP_ID,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) INNER JOIN SAQTRV ON SAQTSV.QUOTE_RECORD_ID =SAQTRV.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTRV.QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND SAQTRV.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SAQTRV.ACTIVE ='1'")
 			if getservid:
 				for trloop in getservid:
 					servicestr += "<tr class='borders'>"
 					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_ID)+ "</td>"
 					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">{SAQTSV.SERVICE_DESCRIPTION}</td>'
+					servicestr += '<td class="no-border bg-white" colspan="2">{SAQTSV.PRODUCT_TYPE}</td>'
+					servicestr += '<td class="no-border bg-white">{SAQTRV.DOCTYP_ID}</td>'
+					servicestr +='<td class="no-border bg-white" colspan="2">{SAQTMT.CONTRACT_VALID_FROM}</td>'
+					servicestr += '<td class="no-border bg-white">{SAQTMT.CONTRACT_VALID_TO}</td>'
 					servicestr += "</tr>"
 			#bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
 			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',servicestr,bodywithformatsplit[1])
