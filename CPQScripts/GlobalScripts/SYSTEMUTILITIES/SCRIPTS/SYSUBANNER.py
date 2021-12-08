@@ -2038,7 +2038,7 @@ def Related_Sub_Banner(
             ThirdValue = valid_from
             FourthLable = "Contract End Date"
             FourthValue = valid_date
-        if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan":
+        if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
             Trace.Write("SAQRIT-DETAIL333===")            
             if item_detail:
                 valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
@@ -2047,10 +2047,10 @@ def Related_Sub_Banner(
                 PrimaryValue =  item_detail.LINE
                 SecondLable = "Product Offering Id"
                 SecondValue = item_detail.SERVICE_ID
-                ThirdLable = "Fab Location Id"
-                ThirdValue = item_detail.FABLOCATION_ID
-                FourthLable = "Fab Location Name"
-                FourthValue = item_detail.FABLOCATION_NAME
+                # ThirdLable = "Fab Location Id"
+                # ThirdValue = item_detail.FABLOCATION_ID
+                # FourthLable = "Fab Location Name"
+                # FourthValue = item_detail.FABLOCATION_NAME
                 FifthLable = "Start Date"
                 FifthValue = valid_from
                 SixthLable = "End Date"
