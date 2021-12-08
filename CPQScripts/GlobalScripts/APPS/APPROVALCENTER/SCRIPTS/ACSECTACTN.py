@@ -2959,7 +2959,7 @@ class approvalCenter:
 					wherecondition=str(wherecondition),
 				)
 			)
-			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			for eachkey in final_new_menu:
 				values = ""
 				eachsplit = eachkey.split(".")
@@ -2990,7 +2990,7 @@ class approvalCenter:
 					if GETFPM:
 						values=str(GETFPM.QUANTITY)
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
-					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice:
 						values=str(getnetprice.NET_PRICE_INGL_CURR)+''+str(getcurrency.GLOBAL_CURRENCY)
 				else:
