@@ -1337,11 +1337,9 @@ class ContractQuoteItem:
 				WHERE 
 					SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'
 				) IQ
+				
 				LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND SAQICO.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND SAQICO.GREENBOOK_RECORD_ID = IQ.GREENBOOK_RECORD_ID 
 				WHERE ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') = '' AND ISNULL(SAQICO.GREENBOOK_RECORD_ID,'') = ''
-				WHERE 
-					SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'  AND ISNULL(SAQICO.EQUIPMENT_RECORD_ID,'') = '' 
-				) IQ
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id)
 			)
 
