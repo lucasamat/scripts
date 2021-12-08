@@ -2959,7 +2959,8 @@ class approvalCenter:
 					wherecondition=str(wherecondition),
 				)
 			)
-			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID,DISPLAY_DECIMAL_PLACES FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getcurrencysymbol = SqlHelper.GetFirst("""SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
 			for eachkey in final_new_menu:
 				values = ""
 				eachsplit = eachkey.split(".")
@@ -2992,7 +2993,7 @@ class approvalCenter:
 				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
 					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getnetprice:
-						formatting_string = "{0:." + str(getcurrency.DISPLAY_DECIMAL_PLACES) + "f}"
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
 						values=str(value)+''+str(getcurrency.GLOBAL_CURRENCY)
 				else:
