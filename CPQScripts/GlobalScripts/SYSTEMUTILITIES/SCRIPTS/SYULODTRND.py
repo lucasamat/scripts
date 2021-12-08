@@ -64,6 +64,7 @@ def CommonTreeViewHTMLDetail(
 	auto_field = ""
 	date_field = []
 	primary_value = RECORD_ID
+
 	Product.SetGlobal('get_quote_item_service',primary_value)
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
 	
@@ -166,6 +167,8 @@ def CommonTreeViewHTMLDetail(
 			RECORD_ID
 		else:
 			RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
+			Trace.Write(str(ObjectName)+"@170---ObjectName-----Recordid"+str(RECORD_ID))
+
 	elif MODE == "EDIT_CLEAR":
 		MODE = "EDIT"
 	elif MODE == "CANCEL" :
