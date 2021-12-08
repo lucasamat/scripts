@@ -564,7 +564,7 @@ class TreeView:
 					ProductDict["nodeId"] = int(getParentObj.NODE_ID)
 					PageRecId = str(getParentObj.NODE_PAGE_RECORD_ID)
 					pageDetails = Sql.GetFirst("select * from SYPAGE (nolock) where RECORD_ID = '" + str(PageRecId) + "'")
-
+					Trace.Write('567--NodeText---'+str(NodeText))
 					if pageDetails is not None:
 						ObjName = pageDetails.OBJECT_APINAME
 						ProductDict["objname"] = ObjName
