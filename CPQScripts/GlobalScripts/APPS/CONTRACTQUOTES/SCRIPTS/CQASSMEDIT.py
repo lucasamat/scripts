@@ -394,8 +394,9 @@ def entitlement_update(whereReq=None,add_where=None,AttributeID=None,NewValue=No
 						get_display_val = Sql.GetList("SELECT STANDARD_ATTRIBUTE_DISPLAY_VAL  from STANDARD_ATTRIBUTE_VALUES S INNER JOIN ATTRIBUTE_DEFN (NOLOCK) A ON A.STANDARD_ATTRIBUTE_CODE=S.STANDARD_ATTRIBUTE_CODE WHERE S.STANDARD_ATTRIBUTE_CODE = '{}' AND A.SYSTEM_ID = '{}' AND S.STANDARD_ATTRIBUTE_VALUE in {} ".format(STANDARD_ATTRIBUTE_VALUES.STANDARD_ATTRIBUTE_CODE,attrs,  ent_val ) )
 						if get_display_val:
 							ent_disp_val = [i.STANDARD_ATTRIBUTE_DISPLAY_VAL for i in get_display_val if i.STANDARD_ATTRIBUTE_DISPLAY_VAL]
-							ent_disp_val = str(ent_disp_val).replace("'", '"')
+							#ent_disp_val = str(ent_disp_val).replace("'", '"')
 							#ent_val_code = str(ent_val_code).replace("'", '"')
+							ent_disp_val = ','.join(ent_disp_val)
 							ent_val_code = ','.join(ent_val_code)
 						else:
 							ent_disp_val = ent_val_code =''
