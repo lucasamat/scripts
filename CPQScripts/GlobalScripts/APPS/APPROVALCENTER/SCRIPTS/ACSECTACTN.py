@@ -3009,12 +3009,11 @@ class approvalCenter:
 				for trloop in getservid:
 					servicestr += "<tr class='borders'>"
 					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_ID)+ "</td>"
-					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
-					servicestr += '<td class="no-border bg-white" colspan="2">{SAQTSV.SERVICE_DESCRIPTION}</td>'
-					servicestr += '<td class="no-border bg-white" colspan="2">{SAQTSV.PRODUCT_TYPE}</td>'
-					servicestr += '<td class="no-border bg-white">{SAQTRV.DOCTYP_ID}</td>'
-					servicestr +='<td class="no-border bg-white" colspan="2">{SAQTMT.CONTRACT_VALID_FROM}</td>'
-					servicestr += '<td class="no-border bg-white">{SAQTMT.CONTRACT_VALID_TO}</td>'
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.SERVICE_DESCRIPTION)+"</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.PRODUCT_TYPE)+"</td>"
+					servicestr += '<td class="no-border bg-white">'+ str(trloop.DOCTYP_ID)+"</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.CONTRACT_VALID_FROM)+"</td>"
+					servicestr += '<td class="no-border bg-white">'+ str(trloop.CONTRACT_VALID_TO)+"</td>"
 					servicestr += "</tr>"
 			#bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
 			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',servicestr,bodywithformatsplit[1])
