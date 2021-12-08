@@ -2105,7 +2105,7 @@ class SYLDRTLIST:
 						elif  str(RECORD_ID) == "SYOBJR-98789" and "Receiving Account -" in TreeParam :
 							Qustr += " AND RELOCATION_FAB_TYPE = 'RECEIVING FAB'"
 						elif str(RECORD_ID) == "SYOBJR-98868":
-							#Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
+							Qustr += "AND EQUIPMENT_ID = '"+str(equipment_id)+"'"
 							Qustr += "AND SERVICE_ID = '"+str(TreeParentParam)+"'"
 						elif str(RECORD_ID) == "SYOBJR-00029":
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
