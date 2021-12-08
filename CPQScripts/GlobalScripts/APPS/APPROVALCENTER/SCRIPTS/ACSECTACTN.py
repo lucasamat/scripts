@@ -2995,7 +2995,7 @@ class approvalCenter:
 					if getnetprice:
 						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
 						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
-						values=str(value)+''+str(getcurrency.GLOBAL_CURRENCY)
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
