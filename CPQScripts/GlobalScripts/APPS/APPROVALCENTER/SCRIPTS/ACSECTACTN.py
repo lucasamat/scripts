@@ -3004,7 +3004,7 @@ class approvalCenter:
 					servicestr += '<td class="borders">' + str(trloop.SERVICE_ID)+ "</td>"
 					servicestr += '<td class="borders">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
 					servicestr += "</tr>"
-			bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
+			bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
 			Trace.Write("mail body 22222222" + str(servicestr))
 			Trace.Write("mail body construct" + str(bodywithformatsplit))
 			Trace.Write("mail body construct2" + bodywithformatsplit[1])
