@@ -934,11 +934,6 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
-				if Treeparam == "Quote Documents":
-					quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-					quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
-					document_record_id = SqlHelper.GetFirst("SELECT QUOTE_DOCUMENT_RECORD_ID FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
-					RECORD_ID = document_record_id.QUOTE_DOCUMENT_RECORD_ID
 				if current_prod == "Sales" and ObjectName != "ACAPMA" and ObjectName != "ACAPTX" and ObjectName != "ACACHR":
 					script = (
 						"SELECT "
