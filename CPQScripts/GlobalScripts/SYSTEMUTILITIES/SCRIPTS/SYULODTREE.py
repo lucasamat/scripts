@@ -20,10 +20,10 @@ c_total = 0
 g_total = 0
 
 
-#node visibility query based on sales emplloyee
+#node visibility query based on sales employee
 login_user= User.Id
 get_node_visibility = Sql.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=login_user))
-#node visibility query based on sales emplloyee end
+#node visibility query based on sales employee end
 
 try:
 	GetActiveRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID,QTEREV_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
@@ -548,8 +548,10 @@ class TreeView:
 				
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
+					#12096 start-quote item visibility start
 					if get_node_visibility and str(getParentObj.NODE_NAME) == "Quote Items":
 						continue
+					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
 						image_url = str(getParentObj.TREEIMAGE_URL)
 						image_url = '<img class="leftside-bar-icons" src="/mt/appliedmaterials_tst/Additionalfiles/AMAT/Quoteimages/{image_url}"/>'.format(image_url = image_url)
