@@ -145,7 +145,7 @@ def equipment_predefined():
 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}' AND EQUIPMENT_RECORD_ID ='{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID, rec.EQUIPMENT_RECORD_ID) )
 
 def greenbook_predefined():
-	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID,FABLOCATION_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
+	getxml_query = Sql.GetList(""" SELECT GREENBOOK,ENTITLEMENT_XML,GREENBOOK_RECORD_ID FROM SAQSGE {}""".format(str(where_condition) ))
 	
 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB GREENBOOK LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING FAB LEVEL','OFFERING LEVEL')) ".format(TreeParam) )
 	for rec in getxml_query:
@@ -166,52 +166,52 @@ def greenbook_predefined():
 
 		##rolldown
 		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
-			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
+			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {}  AND GREENBOOK_RECORD_ID ='{}'".format(roll_obj, updateentXML.replace("'","''") ,where_condition, rec.GREENBOOK_RECORD_ID   ) )
 
-def fab_predefined():
-	getxml_query = Sql.GetList("""SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQSFE {}""".format(str(where_condition) ))
+# def fab_predefined():
+# 	getxml_query = Sql.GetList("""SELECT ENTITLEMENT_XML,FABLOCATION_RECORD_ID FROM SAQSFE {}""".format(str(where_condition) ))
 	
-	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(TreeParam) )
-	for rec in getxml_query:
-		entxmldict = {}
-		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
-		updateentXML = rec.ENTITLEMENT_XML
-		#Log.Info('updateentXML---'+str(updateentXML))
-		for m in re.finditer(pattern_tag, updateentXML):
-			sub_string = m.group(1)
-			#Log.Info('sub_string---'+str(sub_string))
-			x=re.findall(pattern_name,sub_string)
-			#Log.Info('x---'+str(x))
-			entxmldict[x[0]]=sub_string
-		for val in get_valuedriver_ids:
-			if 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
-				ent_value = ""
-				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
-				account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
-				tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
-				if account_bluebook_query.BLUEBOOK != "DISPLAY":
-					if tools_count_query.COUNT > 50:
-						ent_value = '# CSA tools in Fab_>50'
-					elif tools_count_query.COUNT in range(10,51):
-						ent_value = '# CSA tools in Fab_10-50'
-					elif tools_count_query.COUNT < 10:
-						ent_value = '# CSA tools in Fab_<10'
-				elif account_bluebook_query.BLUEBOOK == "DISPLAY":
-					if tools_count_query.COUNT > 7:
-						ent_value = '# CSA tools in Fab_<7'
-					elif tools_count_query.COUNT in range(3,8):
-						ent_value = '# CSA tools in Fab_3-7'
-					elif tools_count_query.COUNT < 3:
-						ent_value = '# CSA tools in Fab_<3'
-				if ent_value:
-					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
+# 	get_valuedriver_ids = Sql.GetList("SELECT PRENTL.ENTITLEMENT_ID,PRENTL.ENTITLEMENT_DESCRIPTION from PRENTL (NOLOCK) INNER JOIN PRENLI (NOLOCK) ON PRENTL.ENTITLEMENT_ID = PRENLI.ENTITLEMENT_ID WHERE SERVICE_ID = '{}' AND ENTITLEMENT_TYPE ='VALUE DRIVER' AND PRENLI.ENTITLEMENTLEVEL_NAME = 'OFFERING FAB LEVEL' AND PRENTL.ENTITLEMENT_ID NOT IN (SELECT ENTITLEMENT_ID from PRENLI (NOLOCK) WHERE ENTITLEMENTLEVEL_NAME IN ('OFFERING LEVEL')) ".format(TreeParam) )
+# 	for rec in getxml_query:
+# 		entxmldict = {}
+# 		pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+# 		pattern_name = re.compile(r'<ENTITLEMENT_ID>([^>]*?)</ENTITLEMENT_ID>')
+# 		updateentXML = rec.ENTITLEMENT_XML
+# 		#Log.Info('updateentXML---'+str(updateentXML))
+# 		for m in re.finditer(pattern_tag, updateentXML):
+# 			sub_string = m.group(1)
+# 			#Log.Info('sub_string---'+str(sub_string))
+# 			x=re.findall(pattern_name,sub_string)
+# 			#Log.Info('x---'+str(x))
+# 			entxmldict[x[0]]=sub_string
+# 		for val in get_valuedriver_ids:
+# 			if 'CSA TOOLS PER FAB' in val.ENTITLEMENT_DESCRIPTION.upper():
+# 				ent_value = ""
+# 				account_id_query = Sql.GetFirst("SELECT ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"'")
+# 				account_bluebook_query = Sql.GetFirst("SELECT BLUEBOOK FROM SAACNT (NOLOCK) WHERE ACCOUNT_ID = '"+str(account_id_query.ACCOUNT_ID)+"'")
+# 				tools_count_query = Sql.GetFirst("SELECT COUNT(GREENBOOK) AS COUNT FROM SAQSCO (NOLOCK) {} AND FABLOCATION_RECORD_ID = '{}' GROUP BY FABLOCATION_NAME".format(where_condition, rec.FABLOCATION_RECORD_ID))
+# 				if account_bluebook_query.BLUEBOOK != "DISPLAY":
+# 					if tools_count_query.COUNT > 50:
+# 						ent_value = '# CSA tools in Fab_>50'
+# 					elif tools_count_query.COUNT in range(10,51):
+# 						ent_value = '# CSA tools in Fab_10-50'
+# 					elif tools_count_query.COUNT < 10:
+# 						ent_value = '# CSA tools in Fab_<10'
+# 				elif account_bluebook_query.BLUEBOOK == "DISPLAY":
+# 					if tools_count_query.COUNT > 7:
+# 						ent_value = '# CSA tools in Fab_<7'
+# 					elif tools_count_query.COUNT in range(3,8):
+# 						ent_value = '# CSA tools in Fab_3-7'
+# 					elif tools_count_query.COUNT < 3:
+# 						ent_value = '# CSA tools in Fab_<3'
+# 				if ent_value:
+# 					updateentXML = updating_xml(entxmldict,updateentXML,val.ENTITLEMENT_ID,ent_value)
 		
-		#Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
+# 		#Sql.RunQuery( "UPDATE SAQSGE SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' AND GREENBOOK_RECORD_ID ='{}'".format(updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID, rec.GREENBOOK_RECORD_ID   ) )
 
-		##rolldown
-		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
-			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID   ) )
+# 		##rolldown
+# 		for roll_obj in ['SAQSGE','SAQSCE','SAQSAE']:
+# 			Sql.RunQuery( "UPDATE {} SET ENTITLEMENT_XML = '{}' {} AND FABLOCATION_RECORD_ID = '{}' ".format(roll_obj, updateentXML.replace("'","''") ,where_condition,rec.FABLOCATION_RECORD_ID   ) )
 			
 
 ##service level
