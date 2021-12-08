@@ -2283,6 +2283,9 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
 		Trace.Write('Return list-->'+str(returnList))
 		Trace.Write('RECORD_ID--->'+str(RECORD_ID))
+		if Treeparam == "Quote Documents":
+			document_record_id = SqlHelper.GetFirst("SELECT QUOTE_DOCUMENT_RECORD_ID FROM SAQDOC (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'")
+			RECORD_ID = document_record_id.QUOTE_DOCUMENT_RECORD_ID
 		recur_func(returnList, RECORD_ID)
 	except:
 		Trace.Write("errrorr")
