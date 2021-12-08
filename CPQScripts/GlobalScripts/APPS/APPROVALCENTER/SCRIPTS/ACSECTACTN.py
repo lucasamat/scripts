@@ -3005,12 +3005,12 @@ class approvalCenter:
 			getservid = Sql.GetList("SELECT SERVICE_ID,SERVICE_DESCRIPTION FROM SAQTSV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			if getservid:
 				for trloop in getservid:
-					servicestr += "<tr>"
-					servicestr += '<td class="borders">' + str(trloop.SERVICE_ID)+ "</td>"
-					servicestr += '<td class="borders">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
+					servicestr += "<tr class='borders'>"
+					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_ID)+ "</td>"
+					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_DESCRIPTION) + "</td>"
 					servicestr += "</tr>"
 			#bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
-			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',a,bodywithformatsplit[1])
+			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',servicestr,bodywithformatsplit[1])
 			Trace.Write("mail body 22222222" + str(servicestr))
 			Trace.Write("mail body construct" + str(bodywithformatsplit))
 			Trace.Write("mail body construct2" + bodywithformatsplit[1])
