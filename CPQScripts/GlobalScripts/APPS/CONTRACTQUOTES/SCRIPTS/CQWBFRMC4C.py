@@ -2,7 +2,7 @@
 #   __script_name : CQWBFRMC4C.PY
 #   __script_description : TO UPDATE THE OPPORTUNITY STATUS IN  CPQ WHEN THE USER IS CHANGING THE STATUS IN C4C.
 #   __primary_author__ : GAYATHRI AMARESAN
-#   __create_date :24-11-2021
+#   __create_date :08-12-2021
 #   © BOSTON HARBOR TECHNOLOGY LLC - ALL RIGHTS RESERVED
 # ==========================================================================================================================================
 
