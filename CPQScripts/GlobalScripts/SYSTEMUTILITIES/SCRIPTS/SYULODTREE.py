@@ -2088,6 +2088,26 @@ class TreeView:
 										subTabName = str(NodeText) + " : " + str(subTabName)
 									elif getAccounts is None and (subTabName == 'Sending Equipment' or subTabName == 'Receiving Equipment'):
 										subTabName = ""
+									elif subTabName == 'New Parts':
+										subTabName = ""
+										if str(service_id) == "bar":
+											service_id = NodeText.split('/>')[1]
+										service_entitlement_obj =Sql.GetFirst("""select ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{quote_id}' AND QTEREV_RECORD_ID = '{quote_rev_id}' and SERVICE_ID = '{service_id}' """.format(quote_id = contract_quote_record_id,quote_rev_id=quote_revision_record_id,service_id = service_id))
+										if service_entitlement_obj is not None:
+											updateentXML = service_entitlement_obj.ENTITLEMENT_XML
+											flag_excluse=0
+											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+											pattern_id = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
+											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+											for j in re.finditer(pattern_tag, updateentXML):
+												sub_string = j.group(1)
+												get_ent_id =re.findall(pattern_id,sub_string)
+												get_ent_name=re.findall(pattern_name,sub_string)
+												if get_ent_id and get_ent_name:
+													flag_excluse=1
+													break
+											if flag_excluse==1:
+												subTabName = "New Parts"
 									elif subTabName == 'Service Parts List':
 										subTabName = ""
 										Trace.Write(str(service_id)+"---TreeParam-- -"+str(TreeParam)+"----"+str(NodeText))
@@ -2100,8 +2120,8 @@ class TreeView:
 											updateentXML = service_entitlement_obj.ENTITLEMENT_XML
 											flag_excluse=0
 											pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE|AGS_[^>]*?_TSC_RPPNNW)</ENTITLEMENT_ID>')
-											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions|Yes)</ENTITLEMENT_DISPLAY_VALUE>')
+											pattern_id = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_TSC_CONSUM|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+											pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
 											for m in re.finditer(pattern_tag, updateentXML):
 												sub_string = m.group(1)
 												get_ent_id =re.findall(pattern_id,sub_string)
