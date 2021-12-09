@@ -2111,11 +2111,17 @@ class SYLDRTLIST:
 							quote_rec_id = Product.GetGlobal("contract_quote_record_id")
 							quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
 							if TreeSuperParentParam == "Product Offerings":
-								service_id = TreeParam.split('-')[0]		
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"	
+								service_id = TreeParam.split('-')[0]	
+								if subTab == "New Parts":	
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"	
+								else:
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"	
 							elif TopTreeSuperParentParam == "Product Offerings":
 								service_id = TreeParentParam.split('-')[0]
-								Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"								
+								if subTab == "New Parts":
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
+								else:
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
