@@ -1540,7 +1540,9 @@ class ContractQuoteItem:
 
 	def _do_opertion(self):		
 		self._set_quote_service_entitlement_type()
-		if self.action_type == "INSERT_LINE_ITEMS":			
+		Log.Info("===> _do_opertion 0000")
+		if self.action_type == "INSERT_LINE_ITEMS":		
+			Log.Info("===> _do_opertion 1111")	
 			if self.is_spare_service == True:				
 				# Spare Parts Insert/Update
 				self._quote_items_summary_insert()
@@ -1570,7 +1572,7 @@ class ContractQuoteItem:
 			self._delete_z0046_quote_items()
 			quote_revision_item_obj = Sql.GetFirst("SELECT CpqTableEntryId FROM SAQRIT (NOLOCK) WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQRIT.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 			if not quote_revision_item_obj:
-				
+				Log.Info("===> _do_opertion 2222")
 				if self.service_id == 'Z0101':	
 					if self.is_spare_service == True:			
 						# Spare Parts Insert/Update
@@ -1580,11 +1582,13 @@ class ContractQuoteItem:
 						self._quote_annualized_items_insert()
 				##simple product quote item insert
 				elif self.is_simple_service == True:
+					Log.Info("===> _do_opertion 3333")
 					self._simple_quote_items_summary_insert()
 					self._simple_quote_items_insert()
 					self._simple_items_object_insert()
 					self._simple_quote_annualized_items_insert()
 				else:
+					Log.Info("===> _do_opertion 4444")
 					self._quote_items_summary_insert()
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
