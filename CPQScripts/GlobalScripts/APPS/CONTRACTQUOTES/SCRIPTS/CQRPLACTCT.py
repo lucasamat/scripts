@@ -130,14 +130,13 @@ def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
         row['MEMBER_ID'] = rpl_con_data_chk.EMPLOYEE_ID if str(rpl_con_data_chk.EMPLOYEE_ID) != '' else ''
         row['MEMBER_NAME'] = rpl_con_data_chk.EMPLOYEE_NAME if str(rpl_con_data_chk.EMPLOYEE_NAME) != '' else ''       
         row['MEMBER_RECORD_ID'] = rpl_con_data_chk.EMPLOYEE_RECORD_ID if str(rpl_con_data_chk.EMPLOYEE_RECORD_ID) != '' else ''       
-        row['EMAIL'] = rpl_con_data_chk.EMAIL if str(rpl_con_data_chk.EMAIL) != '' else ''
-        row['PHONE'] = rpl_con_data_chk.PHONE  if str(rpl_con_data_chk.PHONE) != '' else ''      
+        row['EMAIL'] = rpl_con_data_chk.EMAIL if str(rpl_con_data_chk.EMAIL) != '' else ''              
         row['QUOTE_RECORD_ID'] = contract_quote_record_id
         row['QTEREV_RECORD_ID'] = quote_revision_record_id
         row['QUOTE_REV_DEAL_TEAM_MEMBER_ID'] = cont_rec_id
         tableInfo.AddRow(row)
         SqlHelper.Upsert(tableInfo)
-        update_saqdlt="UPDATE SAQDLT SET MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}',PHONE ='{phone}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(member_id = rpl_con_data_chk.EMPLOYEE_ID,member_name = rpl_con_data_chk.EMPLOYEE_NAME,member_rec_id = rpl_con_data_chk.EMPLOYEE_RECORD_ID,email=rpl_con_data_chk.EMAIL,phone= rpl_con_data_chk.PHONE,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)
+        update_saqdlt="UPDATE SAQDLT SET MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(member_id = rpl_con_data_chk.EMPLOYEE_ID,member_name = rpl_con_data_chk.EMPLOYEE_NAME,member_rec_id = rpl_con_data_chk.EMPLOYEE_RECORD_ID,email=rpl_con_data_chk.EMAIL,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)
         update_saqdlt = update_saqdlt.encode('ascii', 'ignore').decode('ascii')
         Sql.RunQuery(update_saqdlt)
 
