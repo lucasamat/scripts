@@ -37,9 +37,10 @@ def bannerdetails(Quoteid,active_tab_name):
 		Trace.Write('matchObj--'+str(matchObj))
 		Trace.Write('Quoteid--'+str(Quoteid))
 		Quoteid=str(matchObj)
-		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
+		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID,MASTER_TABLE_QUOTE_RECORD_ID  FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
 		if get_rev_info:
 			try:
+				Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
 				Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
 				Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
 			except Exception:
