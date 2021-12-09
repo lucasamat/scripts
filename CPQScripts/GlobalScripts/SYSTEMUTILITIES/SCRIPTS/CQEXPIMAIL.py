@@ -6,6 +6,7 @@ import datetime
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 Sql = SQL()
+import SYCNGEGUID as CPQID
 # Param = Param
 
 
@@ -77,6 +78,10 @@ expired_quotes = []
 if expired_quotes_query is not None:
     for quotes in expired_quotes_query:   
         expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
+        if str(today_date_string) == str(expire_date):
+	        Trace.Write("quoteid"+str(quotes.QUOTE_ID))
+            updatesaqtmtexpire = """ UPDATE SAQTMT SET EXPIRED = '1' WHERE QUOTE_ID = '{quoteid}' """.format(quoteid = quotes.QUOTE_ID))
+            #Sql.RunQuery(updatesaqtmtexpire)
         if str(target_mail_date) == str(expire_date):
             expired_quotes.append(quotes.QUOTE_ID)
         if expired_quotes is not None:
