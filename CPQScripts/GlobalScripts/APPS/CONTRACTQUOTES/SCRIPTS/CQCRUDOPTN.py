@@ -1467,6 +1467,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 		self.table_name = kwargs.get('table_name')
 		self.all_values = kwargs.get('all_values')		
 		self.node_id = ""
+		self.new_part = kwargs.get('new_part')
 	
 	def _create(self):
 		if self.action_type == "ADD_PART" or self.action_type == "ADD_SPARE_PART":
@@ -1633,7 +1634,8 @@ class PartsListModel(ContractQuoteCrudOpertion):
 											FABLOCATION_NAME,
 											FABLOCATION_RECORD_ID,
 											{UserId} as CPQTABLEENTRYADDEDBY, 
-											GETDATE() as CPQTABLEENTRYDATEADDED
+											GETDATE() as CPQTABLEENTRYDATEADDED,
+											{new_part} as NEW_PART
 										FROM (
 										SELECT 
 											DISTINCT
@@ -1671,7 +1673,8 @@ class PartsListModel(ContractQuoteCrudOpertion):
 							BatchGroupRecordId=batch_group_record_id,
 							QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 							UserId=self.user_id,
-							ParentBasedCondition=parent_based_condition
+							ParentBasedCondition=parent_based_condition,
+							new_part= 'True' if self.new_part == 'True' else 'False'
 						)
 					)
 			
