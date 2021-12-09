@@ -71,7 +71,7 @@ saqdoc_output_insert="""INSERT SAQDOC (
                     'PENDING' as STATUS,
                     '{qt_revid}' as QTEREV_ID,
                     '{qt_rev_rec_id}' as QTEREV_RECORD_ID
-                    FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=recid,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
+                    FROM MALANG (NOLOCK) WHERE MALANG.LANGUAGE_NAME = 'English'""".format(quoteid=get_quote_details.QUOTE_ID,quotename=get_quote_details.QUOTE_NAME,quoterecid=contract_quote_record_id,qt_revid= get_quote_details.QTEREV_ID,qt_rev_rec_id = quote_revision_record_id,UserName=UserName,dateadded=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"),UserId=UserId,date=datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"))
 #Log.Info(qtqdoc)
 Sql.RunQuery(saqdoc_output_insert)
 
