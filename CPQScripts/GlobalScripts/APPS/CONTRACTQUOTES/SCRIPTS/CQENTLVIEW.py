@@ -630,7 +630,7 @@ class EntitlementView():
 									#sec_str += "<option id='"+str(attrcode)+"' >" + str(optionvalue) + "</option>"
 								#sec_str += "</select></td>"
 							elif DType == "Free Input, no Matching":
-								if str(attrSysId) == "AGS_REL_STDATE":
+								if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT'):
 									datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 									datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
@@ -1277,7 +1277,7 @@ class EntitlementView():
 											# else:
 											# 	imgstr  = ""
 
-											if str(attrSysId) == "AGS_REL_STDATE":
+											if str(attrSysId) in ("AGS_REL_STDATE",'AGS_Z0007_GEN_RELDAT'):
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												datepicker_onchange = "onchangedatepicker('" + attrSysId + "')"
 
