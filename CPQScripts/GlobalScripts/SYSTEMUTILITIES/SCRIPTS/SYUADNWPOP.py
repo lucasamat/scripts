@@ -4044,7 +4044,7 @@ def POPUPLISTVALUEADDNEW(
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += ('<table id="'+str(table_id)+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>')
-			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+			#sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
 			for key, invs in enumerate(list(ordered_keys)):
 
