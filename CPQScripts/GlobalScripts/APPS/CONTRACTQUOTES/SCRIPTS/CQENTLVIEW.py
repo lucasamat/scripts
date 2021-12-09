@@ -1281,7 +1281,7 @@ class EntitlementView():
 												datepicker = "onclick_datepicker_locdate('" + attrSysId + "')"
 												if attrSysId == 'AGS_Z0007_GEN_RELDAT':
 
-													datepicker = "onchangedatepicker('" + attrSysId + "')"
+													datepicker = "onclick_datepicker('" + attrSysId + "')"
 												
 												sec_str1 += (
 													'<input maxlength="255" class="form-control no_border_bg  datePickerField wth157fltltbrdbt '+str(disable_edit)+'" id = "'
