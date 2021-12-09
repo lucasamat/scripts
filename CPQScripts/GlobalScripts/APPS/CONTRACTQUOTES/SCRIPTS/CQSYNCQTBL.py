@@ -1646,7 +1646,7 @@ class SyncQuoteAndCustomTables:
 								#Log.Info("SAQFBL time----------"+str(SAQFBL_end-SAQFBL_start))
 							if product_offering:
 								if len(product_offering) > 1:
-									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'COMPREHENSIVE SERVICE AGREEMENT', CLM_TEMPLATE_NAME = 'COMPREHENSIVE SERVICE AGREEMENT' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
+									sow_update_query= "UPDATE SAQTRV SET CLM_CONTRACT_TYPE = 'Comprehensive Service Agreement', CLM_TEMPLATE_NAME = 'ComprehensiveServiceAgreement' WHERE QUOTE_RECORD_ID = '" + str(quote_record_id) + "' AND QUOTE_REVISION_RECORD_ID = '"+str(quote_revision_id)+"' "
 									Sql.RunQuery(sow_update_query)
 								elif len(product_offering) <= 1:
 									mamtrl_record = Sql.GetFirst("SELECT CLM_CONTRACT_TYPE,CLM_TEMPLATE_NAME FROM MAMTRL (NOLOCK) WHERE SAP_PART_NUMBER = '"+str(product_offering[0])+"'")
