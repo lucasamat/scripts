@@ -34,7 +34,7 @@ else:
 
 
 get_quote_details = Sql.GetFirst("SELECT QUOTE_ID,QTEREV_ID,QUOTE_NAME,C4C_QUOTE_ID, QUOTE_TYPE FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID =  '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id) + "'")
-Quote=QuoteHelper.Edit(quoteid.C4C_QUOTE_ID)
+Quote=QuoteHelper.Edit(get_quote_details.C4C_QUOTE_ID)
 saqdoc_output_insert="""INSERT SAQDOC (
                     QUOTE_DOCUMENT_RECORD_ID,
                     DOCUMENT_ID,
