@@ -63,6 +63,16 @@ def create_new_revision(Opertion,cartrev):
 	# "SAQIPE":"QUOTE_ITEM_FORECAST_PART_ENT_RECORD_ID",
 	# "SAQIFP":"QUOTE_ITEM_FORECAST_PART_RECORD_ID"
 	if Quote is not None:
+		if not quote_contract_recordId:
+			get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Param.QuoteId) + "'")
+			if get_rev_info:
+				try:
+					quote_contract_recordId = get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID
+					Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
+					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
+					Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+				except Exception:
+					pass
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		#Get Old Revision ID - Start
 		get_old_revision_id = Sql.GetFirst("SELECT QTEREV_ID FROM SAQTRV WHERE ACTIVE='True' AND QUOTE_RECORD_ID= '"+str(quote_contract_recordId)+"'")
