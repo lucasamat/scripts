@@ -1365,6 +1365,7 @@ class SyncQuoteAndCustomTables:
 							#Log.Info("""SELECT C4C_OPPOBJ_ID FROM SAOPPR (NOLOCK) WHERE OPPORTUNITY_ID = '{}'""".format(OpportunityId = custom_fields_detail.get("OpportunityId")))	
 						if payload_json.get('FAB_LOCATION_IDS'):
 							fab_location_ids = "','".join(list(set([str(int(fab_location)) for fab_location in payload_json.get('FAB_LOCATION_IDS').split(',') if fab_location])))		
+						product_offering = []
 						if payload_json.get('SERVICE_IDS'):
 							service_ids = "','".join(list(set(payload_json.get('SERVICE_IDS').split(','))))
 							if (re.match(r'C4C_GEN_SRV',payload_json.get('SERVICE_IDS'))):
