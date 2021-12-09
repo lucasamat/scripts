@@ -19,10 +19,13 @@ Sql = SQL()
 c_total = 0
 g_total = 0
 
-
+get_ohold_pricing_status = ''
 #node visibility query based on sales employee
 login_user= User.Id
 get_node_visibility = Sql.GetFirst("SELECT CP.permission_id from  CPQ_PERMISSIONS (NOLOCK) CP  INNER JOIN USERS_PERMISSIONS (NOLOCK) UP ON CP.PERMISSION_ID = UP.PERMISSION_ID  where user_id ='{login_user}' and CP.permission_id = '319'".format(login_user=login_user))
+get_pricing_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV (NOLOCK) WHERE QUOTE_ID ='{}' AND ACTIVE = 1".format(Quote.CompositeNumber))
+if get_pricing_status:	
+	get_ohold_pricing_status = get_pricing_status.REVISION_STATUS
 #node visibility query based on sales employee end
 
 try:
