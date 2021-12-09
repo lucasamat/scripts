@@ -127,11 +127,11 @@ def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
         Sql.RunQuery(delete_saqict)
         tableInfo = Sql.GetTable("SAQDLT")
         row = {}	
-        row['MEMBER_ID'] = rpl_con_data_chk.EMPLOYEE_ID
-        row['MEMBER_NAME'] = rpl_con_data_chk.EMPLOYEE_NAME        
-        row['MEMBER_RECORD_ID'] = rpl_con_data_chk.EMPLOYEE_RECORD_ID        
-        row['EMAIL'] = rpl_con_data_chk.EMAIL
-        row['PHONE'] = rpl_con_data_chk.PHONE        
+        row['MEMBER_ID'] = rpl_con_data_chk.EMPLOYEE_ID if str(rpl_con_data_chk.EMPLOYEE_ID) != '' else ''
+        row['MEMBER_NAME'] = rpl_con_data_chk.EMPLOYEE_NAME if str(rpl_con_data_chk.EMPLOYEE_NAME) != '' else ''       
+        row['MEMBER_RECORD_ID'] = rpl_con_data_chk.EMPLOYEE_RECORD_ID if str(rpl_con_data_chk.EMPLOYEE_RECORD_ID) != '' else ''       
+        row['EMAIL'] = rpl_con_data_chk.EMAIL if str(rpl_con_data_chk.EMAIL) != '' else ''
+        row['PHONE'] = rpl_con_data_chk.PHONE  if str(rpl_con_data_chk.PHONE) != '' else ''      
         row['QUOTE_RECORD_ID'] = contract_quote_record_id
         row['QTEREV_RECORD_ID'] = quote_revision_record_id
         row['QUOTE_REV_DEAL_TEAM_MEMBER_ID'] = cont_rec_id
