@@ -5818,6 +5818,12 @@ except:
 	PerPage = ''
 	PageInform = ''
 
+try:
+	ACTION = Param.ACTION
+except:
+	ACTION = ''
+Trace.Write("ACTION==="+str(ACTION))
+
 
 Trace.Write("PerPage-----"+str(PerPage))
 Trace.Write("PageInform -----"+str(PageInform))
