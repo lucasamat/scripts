@@ -2115,13 +2115,13 @@ class SYLDRTLIST:
 								if subTab == "New Parts":	
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'True'"	
 								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"'"	
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND NEW_PART = 'False'"	
 							elif TopTreeSuperParentParam == "Product Offerings":
 								service_id = TreeParentParam.split('-')[0]
 								if subTab == "New Parts":
 									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'True'"	
 								else:
-									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"'"
+									Qustr += " AND PAR_SERVICE_ID = '"+str(service_id)+"' AND GREENBOOK = '"+str(TreeParam)+"' AND NEW_PART = 'False'"
 														
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
