@@ -807,8 +807,8 @@ class EntitlementView():
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write(str(ProductPartnumber)+'----766---ObjectName-----'+str(overallattributeslist_visible))
-			if ProductPartnumber == 'Z0046':
-				inserted_value_list.append('AGS_Z0046_PQB_APPLCN')
+			#if ProductPartnumber == 'Z0046':
+				#inserted_value_list.append('AGS_Z0046_PQB_APPLCN')
 			Trace.Write(str(inserted_value_list)+'----802-----overallattributeslist_visible----'+str(overallattributeslist_visible))
 			#if self.treeparam == "Quote Items":
 				#get_attr_leve_based_list = overallattributeslist_visible
@@ -1245,7 +1245,7 @@ class EntitlementView():
 															+ "</option>"
 														)	
 												#Trace.Write('VAR1'+str(attrSysId)+str(value.STANDARD_ATTRIBUTE_VALUE))
-											#Trace.Write("CHKNG_STYLE_J "+str(add_style)+" attrSysId "+str(attrSysId))
+											Trace.Write("CHKNG_STYLE_J--- "+str(add_style)+" attrSysId --"+str(attrSysId))
 											#Trace.Write("CHKNG_STYLE_J "+str(VAR1)+" attrSysId "+str(attrSysId))
 											sec_str1 += (
 												'<select class="form-control remove_yellow div_multi_checkbox '+str(disable_edit)+'"  style ="'+str(add_style)+'" id = "'
@@ -1256,7 +1256,7 @@ class EntitlementView():
 												+ str(VAR1)
 												+ "</select>"
 											)
-										#Trace.Write('sec_str1'+str(sec_str1))
+											#Trace.Write('sec_str1'+str(sec_str1))
 									
 									
 									elif DType == "Free Input, no Matching" :
