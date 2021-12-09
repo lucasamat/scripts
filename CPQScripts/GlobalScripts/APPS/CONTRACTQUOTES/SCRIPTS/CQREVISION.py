@@ -24,6 +24,7 @@ Sql = SQL()
 ScriptExecutor = ScriptExecutor
 # When we create a new revision for existing quote from C4C, quote edit is taking some time. So if quote is not edited in backend, we do again here.
 if not Quote:
+	Trace.Write("========>>> Quote is not in edit mode")
 	try:
 		Quote = QuoteHelper.Edit(Param.QuoteId)
 	except Exception:
