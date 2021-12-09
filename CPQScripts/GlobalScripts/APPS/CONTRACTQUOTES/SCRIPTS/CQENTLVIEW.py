@@ -807,6 +807,8 @@ class EntitlementView():
 				inserted_value_dict[val.ENTITLEMENT_ID] = val.ENTITLEMENT_VALUE_CODE
 			inserted_value_list = [val.ENTITLEMENT_ID for val in GetXMLsecField if GetXMLsecField]
 			Trace.Write('766---ObjectName-----'+str(overallattributeslist_visible))
+			if ProductPartnumber == 'Z0046':
+				inserted_value_list.append('AGS_Z0046_PQB_APPLCN')
 			Trace.Write(str(inserted_value_list)+'----802-----overallattributeslist_visible----'+str(overallattributeslist_visible))
 			#if self.treeparam == "Quote Items":
 				#get_attr_leve_based_list = overallattributeslist_visible
