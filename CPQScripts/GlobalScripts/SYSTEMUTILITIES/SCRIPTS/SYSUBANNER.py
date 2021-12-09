@@ -2276,7 +2276,7 @@ def Related_Sub_Banner(
     #	FifthValue = ""
     #	SixthLable = ""
     #	SixthValue = ""
-                
+    Trace.Write(str(ObjName)+str(subTabName)+str(PrimaryLable)+str(SecondLable)+str(ThirdLable)+str(FourthLable)+str(FifthLable)+str(SixthLable))            
 
     if str(Image) != "":
         sec_rel_sub_bnr += (
