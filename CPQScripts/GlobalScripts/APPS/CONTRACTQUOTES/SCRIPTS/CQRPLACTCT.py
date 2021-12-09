@@ -24,9 +24,9 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
     #con_data_chk = Sql.GetFirst("Select * from SAQICT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{}'".format(contract_quote_record_id,quote_revision_record_id,cont_rec_id))
     #rpl_con_data_chk =Sql.GetFirst("Select * FROM SACONT(NOLOCK) WHERE CONTACT_RECORD_ID = '{}'".format(repalce_values))
     #if con_data_chk:
-     #   delete_saqict = ("DELETE SAQICT WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{}'".format(cont_rec_id))
-      #  Sql.RunQuery(delete_saqict)
-       # tableInfo = Sql.GetTable("SAQICT")
+    #   delete_saqict = ("DELETE SAQICT WHERE QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{}'".format(cont_rec_id))
+    #  Sql.RunQuery(delete_saqict)
+    # tableInfo = Sql.GetTable("SAQICT")
         #row = {}	
         #row['CITY'] = rpl_con_data_chk.CITY
         #row['CONTACT_ID'] = rpl_con_data_chk.CONTACT_ID
@@ -47,112 +47,142 @@ quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
         #Sql.RunQuery(update_saqict)
 
 def add_contact(values,allvalues):
-	Trace.Write("inside"+str(action_type))	
-	record_ids= []
-	master_object_name='SACONT'
-	record_ids = [
-					CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
-					if value.strip() != "" and master_object_name in value
-					else value
-					for value in values
-				]
-	val= tuple(record_ids)
-	#record_ids = str(str(record_ids)[1:-1].replace("'",""))
-	getquotedetails = SqlHelper.GetFirst("SELECT * FROM SAQTMT  (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
-	Sql.RunQuery ("""
-	INSERT SAQICT (
-	QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
-	QUOTE_ID,
-	QUOTE_RECORD_ID,
-	QTEREV_ID,
-	QTEREV_RECORD_ID,
-	CPQTABLEENTRYADDEDBY,
-	CPQTABLEENTRYDATEADDED,
-	CpqTableEntryDateModified,
-	CONTACT_NAME,
-	CONTACT_RECORD_ID,
-	CITY,
-	COUNTRY,
-	COUNTRY_RECORD_ID,
-	STATE,
-	STATE_RECORD_ID,
-	EMAIL,
-	PHONE,
-	POSTAL_CODE
+    Trace.Write("inside"+str(action_type))	
+    record_ids= []
+    master_object_name='SACONT'
+    record_ids = [
+                    CPQID.KeyCPQId.GetKEYId(master_object_name, str(value))
+                    if value.strip() != "" and master_object_name in value
+                    else value
+                    for value in values
+                ]
+    val= tuple(record_ids)
+    #record_ids = str(str(record_ids)[1:-1].replace("'",""))
+    getquotedetails = SqlHelper.GetFirst("SELECT * FROM SAQTMT  (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID ='{contract_quote_record_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id))
+    Sql.RunQuery ("""
+    INSERT SAQICT (
+    QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
+    QUOTE_ID,
+    QUOTE_RECORD_ID,
+    QTEREV_ID,
+    QTEREV_RECORD_ID,
+    CPQTABLEENTRYADDEDBY,
+    CPQTABLEENTRYDATEADDED,
+    CpqTableEntryDateModified,
+    CONTACT_NAME,
+    CONTACT_RECORD_ID,
+    CITY,
+    COUNTRY,
+    COUNTRY_RECORD_ID,
+    STATE,
+    STATE_RECORD_ID,
+    EMAIL,
+    PHONE,
+    POSTAL_CODE
 
-	) SELECT
-	CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
-	'{quoteid}' as QUOTE_ID,
-	'{quotrecid}' as QUOTE_RECORD_ID,
-	'{quoterevid}' as QTEREV_ID,
-	'{quoterevrecid}' as QTEREV_RECORD_ID,
-	'TEST' AS CPQTABLEENTRYADDEDBY,
-	GETDATE() as CPQTABLEENTRYDATEADDED,
-	GETDATE() as CpqTableEntryDateModified,
-	SACONT.CONTACT_NAME,
-	SACONT.CONTACT_RECORD_ID,
-	SACONT.CITY,
-	SACONT.COUNTRY,
-	SACONT.COUNTRY_RECORD_ID,
-	SACONT.STATE,
-	SACONT.STATE_RECORD_ID,
-	SACONT.EMAIL,
-	SACONT.PHONE,
-	SACONT.POSTAL_CODE
-	FROM SACONT (NOLOCK)
-	WHERE
-	SACONT.CONTACT_RECORD_ID IN {val}
-	""".format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
+    ) SELECT
+    CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REV_INVOLVED_PARTY_CONTACT_ID,
+    '{quoteid}' as QUOTE_ID,
+    '{quotrecid}' as QUOTE_RECORD_ID,
+    '{quoterevid}' as QTEREV_ID,
+    '{quoterevrecid}' as QTEREV_RECORD_ID,
+    'TEST' AS CPQTABLEENTRYADDEDBY,
+    GETDATE() as CPQTABLEENTRYDATEADDED,
+    GETDATE() as CpqTableEntryDateModified,
+    SACONT.CONTACT_NAME,
+    SACONT.CONTACT_RECORD_ID,
+    SACONT.CITY,
+    SACONT.COUNTRY,
+    SACONT.COUNTRY_RECORD_ID,
+    SACONT.STATE,
+    SACONT.STATE_RECORD_ID,
+    SACONT.EMAIL,
+    SACONT.PHONE,
+    SACONT.POSTAL_CODE
+    FROM SACONT (NOLOCK)
+    WHERE
+    SACONT.CONTACT_RECORD_ID IN {val}
+    """.format(val = val,quoteid =getquotedetails.QUOTE_ID,quotrecid=getquotedetails.MASTER_TABLE_QUOTE_RECORD_ID,quoterevid = getquotedetails.QTEREV_ID,quoterevrecid =getquotedetails.QTEREV_RECORD_ID))
 
-	return  True
+    return  True
 
 def mark_primary_contact(values):
-	
-	updatefalsesaqict = """ UPDATE SAQICT SET [PRIMARY] = '0' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id)
-	Sql.RunQuery(updatefalsesaqict)
+    
+    updatefalsesaqict = """ UPDATE SAQICT SET [PRIMARY] = '0' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id)
+    Sql.RunQuery(updatefalsesaqict)
 
-	updatetruesaqict = """ UPDATE SAQICT SET [PRIMARY] = '1' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}' and QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{primary_contact}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id,primary_contact = values)
-	Sql.RunQuery(updatetruesaqict)
+    updatetruesaqict = """ UPDATE SAQICT SET [PRIMARY] = '1' WHERE QUOTE_RECORD_ID='{contract_quote_record_id}' and QTEREV_RECORD_ID = '{quote_revision_record_id}' and QUOTE_REV_INVOLVED_PARTY_CONTACT_ID ='{primary_contact}'  """.format(contract_quote_record_id=contract_quote_record_id,quote_revision_record_id =quote_revision_record_id,primary_contact = values)
+    Sql.RunQuery(updatetruesaqict)
 
-	return True
+    return True
+
+def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
+    Trace.Write("repalce_values===="+str(repalce_values))
+    Trace.Write("cont_rec_id===="+str(cont_rec_id))
+    Trace.Write("table_name===="+str(table_name)) 
+    con_data_chk = Sql.GetFirst("Select * from SAQDLT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{}'".format(contract_quote_record_id,quote_revision_record_id,cont_rec_id))
+    rpl_con_data_chk =Sql.GetFirst("Select * FROM SAEMPL(NOLOCK) WHERE EMPLOYEE_RECORD_ID = '{}'".format(repalce_values))
+    if con_data_chk:
+        delete_saqict = ("DELETE SAQDLT WHERE QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{}'".format(cont_rec_id))
+        Sql.RunQuery(delete_saqict)
+        tableInfo = Sql.GetTable("SAQDLT")
+        row = {}	
+        row['MEMBER_ID'] = rpl_con_data_chk.EMPLOYEE_ID
+        row['MEMBER_NAME'] = rpl_con_data_chk.EMPLOYEE_NAME        
+        row['MEMBER_RECORD_ID'] = rpl_con_data_chk.EMPLOYEE_RECORD_ID        
+        row['EMAIL'] = rpl_con_data_chk.EMAIL
+        row['PHONE'] = rpl_con_data_chk.PHONE        
+        row['QUOTE_RECORD_ID'] = contract_quote_record_id
+        row['QTEREV_RECORD_ID'] = quote_revision_record_id
+        row['QUOTE_REV_DEAL_TEAM_MEMBER_ID'] = cont_rec_id
+        tableInfo.AddRow(row)
+        SqlHelper.Upsert(tableInfo)
+        update_saqdlt="UPDATE SAQDLT SET CITY = '{city}',MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}',PHONE ='{phone}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(city = rpl_con_data_chk.CITY,member_id = rpl_con_data_chk.MEMBER_ID,member_name = rpl_con_data_chk.MEMBER_NAME,member_rec_id = rpl_con_data_chk.MEMBER_RECORD_ID,email=rpl_con_data_chk.EMAIL,phone= rpl_con_data_chk.PHONE,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)
+        update_saqdlt = update_saqdlt.encode('ascii', 'ignore').decode('ascii')
+        Sql.RunQuery(update_saqdlt)
+
+    return True
 
 
 
 
 
 try:
-	allvalues = Param.AllValues
+    allvalues = Param.AllValues
 except:
-	allvalues = ''
+    allvalues = ''
 
 try:
-	values = Param.Values
+    values = Param.Values
 except:
-	values= ''
+    values= ''
 
 try:
-	action_type = Param.ActionType
+    action_type = Param.ActionType
 except:
-	action_type = ''
+    action_type = ''
 try:
-	cont_rec_id = Param.cont_rec_id
+    cont_rec_id = Param.cont_rec_id
 except:
-	cont_rec_id = ''
+    cont_rec_id = ''
 try:
-	table_name = Param.table_name
+    table_name = Param.table_name
 except:
-	table_name =''
+    table_name =''
 try:
-	repalce_values = Param.repalce_values
+    repalce_values = Param.repalce_values
 except:
-	repalce_values = ''
+    repalce_values = ''
 
 
-	
+    
 
 if action_type == "ADD_CONTACT":
-	Trace.Write("inside"+str(action_type))
-	ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
+    Trace.Write("inside"+str(action_type))
+    ApiResponse = ApiResponseFactory.JsonResponse(add_contact(values,allvalues))
 elif action_type == "MARK_PRIMARY":
-	Trace.Write("Primary"+str(action_type))
-	ApiResponse = ApiResponseFactory.JsonResponse(mark_primary_contact(values))
+    Trace.Write("Primary"+str(action_type))
+    ApiResponse = ApiResponseFactory.JsonResponse(mark_primary_contact(values))
+elif action_type == "CONTRACT_MANAGER_REPLACE":
+    Trace.Write("Primary===="+str(action_type))
+    ApiResponse = ApiResponseFactory.JsonResponse(replace_contract_manager_replace(repalce_values,cont_rec_id,table_name))
