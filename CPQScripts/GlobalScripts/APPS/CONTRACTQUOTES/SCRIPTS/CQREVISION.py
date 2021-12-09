@@ -28,7 +28,7 @@ if not Quote:
 	try:
 		Quote = QuoteHelper.Edit(Param.QuoteId)
 	except Exception:
-		pass
+		Trace.Write("========>>> Quote is edit error")
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
 Trace.Write('23----test'+str(quote_contract_recordId))
 #A055S000P01-8729 start
