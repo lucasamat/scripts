@@ -4785,6 +4785,7 @@ class SYLDRTLIST:
 			
 			dbl_clk_function = SAQICO_dbl_clk_function		 
 		if RECORD_ID == "SYOBJR-98872":
+			dbl_clk_function = ""
 			dbl_clk_function += (
 				'var checkedRows=[]; localStorage.setItem("multiedit_checkbox_clicked", []); $("'
 				+ str(table_ids)
