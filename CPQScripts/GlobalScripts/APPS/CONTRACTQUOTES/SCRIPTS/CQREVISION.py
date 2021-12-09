@@ -29,7 +29,7 @@ if not Quote:
 	except Exception:
 		pass
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
-Trace.Write('23----test')
+Trace.Write('23----test'+str(quote_contract_recordId))
 #A055S000P01-8729 start
 def create_new_revision(Opertion,cartrev):
 	cloneobject={
