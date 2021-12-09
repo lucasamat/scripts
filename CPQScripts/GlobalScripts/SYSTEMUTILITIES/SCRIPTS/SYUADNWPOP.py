@@ -4094,7 +4094,7 @@ def POPUPLISTVALUEADDNEW(
 					+ str(RECORDID)
 					+ "\", 'RECORDFEILD':  \""
 					+ str(RECORDFEILD)
-					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'ACTION':'REPLACE'}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
 					+ str(table_ids)
 					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
 					+ str(table_ids)
