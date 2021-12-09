@@ -24,6 +24,7 @@ def englishdoc():
 						QUOTE_DOCUMENT_RECORD_ID,
 						DOCUMENT_ID,
 						DOCUMENT_NAME,
+						DOCUMENT_PATH,
 						QUOTE_ID,
 						QUOTE_NAME,
 						QUOTE_RECORD_ID,
@@ -34,11 +35,14 @@ def englishdoc():
 						CPQTABLEENTRYDATEADDED,
 						CpqTableEntryModifiedBy,
 						CpqTableEntryDateModified,
-						STATUS
+						STATUS,
+						QTEREV_ID,
+						QTEREV_RECORD_ID
 						)SELECT
 						CONVERT(VARCHAR(4000),NEWID()) as QUOTE_DOCUMENT_RECORD_ID,
 						'Pending' AS DOCUMENT_ID,
 						'' AS DOCUMENT_NAME,
+						'' AS DOCUMENT_PATH,
 						'{quoteid}' AS QUOTE_ID,
 						'{quotename}' AS QUOTE_NAME,
 						'{quoterecid}' AS QUOTE_RECORD_ID,
