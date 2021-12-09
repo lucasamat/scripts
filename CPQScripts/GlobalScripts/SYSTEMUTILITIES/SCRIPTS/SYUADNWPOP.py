@@ -3991,7 +3991,7 @@ def POPUPLISTVALUEADDNEW(
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
-		elif str(ObjectName) =="SAQDLT" and str(CurrentTab) == "Quotes":
+		elif str(ObjectName) =="SAQDLT" and str(CurrentTab) == "Quotes" and ACTION == "REPLACE":
 			Trace.Write('In SAQDLT')
 			where_string = ""
 			TreeParam = Product.GetGlobal("TreeParam")
