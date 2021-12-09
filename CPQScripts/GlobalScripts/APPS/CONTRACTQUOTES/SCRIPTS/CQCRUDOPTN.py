@@ -1674,7 +1674,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 							QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.quote_revision_record_id,
 							UserId=self.user_id,
 							ParentBasedCondition=parent_based_condition,
-							new_part= self.new_part
+							new_part= self.new_part if self.new_part else 0
 						)
 					)
 			
