@@ -2597,6 +2597,14 @@ def Related_Sub_Banner(
                     elif TreeParam == "Fab Locations" and subTabName == "Equipment":
                         
                         sec_rel_sub_bnr += ""
+                    elif TreeParam == "Sales Team":
+                        Trace.Write("sales===")
+                        contract_manager_info = Sql.GetFirst("SELECT COUNT(DISTINCT MEMBER_ID) as MEMBER_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                        if contract_manager_info is None:
+                            sec_rel_sub_bnr += (str(add_button))
+                        else:
+                            sec_rel_sub_bnr += ""
+
                     # Removed Add New Button suppress functionality
                     
                     # elif TreeParam == "Customer Information":
