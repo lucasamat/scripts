@@ -1635,7 +1635,7 @@ class PartsListModel(ContractQuoteCrudOpertion):
 											FABLOCATION_RECORD_ID,
 											{UserId} as CPQTABLEENTRYADDEDBY, 
 											GETDATE() as CPQTABLEENTRYDATEADDED,
-											'{new_part}' as NEW_PART
+											{new_part} as NEW_PART
 										FROM (
 										SELECT 
 											DISTINCT
