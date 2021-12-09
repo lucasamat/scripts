@@ -552,7 +552,7 @@ class TreeView:
 				for getParentObj in getParentObjQuery:
 					##adding image along with tree params
 					#12096 start-quote item visibility start
-					if get_node_visibility and str(getParentObj.NODE_NAME) == "Quote Items":
+					if get_node_visibility and str(get_ohold_pricing_status).upper() == "ON HOLD - COSTING" and str(getParentObj.NODE_NAME) == "Quote Items":
 						continue
 					#12096 start-quote item visibility end
 					if str(getParentObj.TREEIMAGE_URL):
