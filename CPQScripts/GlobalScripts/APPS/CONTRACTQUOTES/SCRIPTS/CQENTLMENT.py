@@ -1100,6 +1100,8 @@ class Entitlements:
 				count_temp_z0046 = 0
 				count_temp_z0101 = 0
 				for key,dict_val in ENT_IP_DICT.items():
+					display_value_arr = ''
+					ent_val_code = ''
 					if key != 'undefined' and dict_val.split("||")[3] != 'undefined':
 						Trace.Write("ENT DICT---->"+str(ENT_IP_DICT))
 						getcostbaborimpact =""
