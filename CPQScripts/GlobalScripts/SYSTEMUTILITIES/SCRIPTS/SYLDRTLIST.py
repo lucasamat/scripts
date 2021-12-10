@@ -5034,13 +5034,13 @@ class SYLDRTLIST:
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id, quote_revision_record_id, start, end))
+															contract_quote_record_id, Quote.GetGlobal("quote_revision_record_id"), start, end))
 					else:
 						item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
 									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
 														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
 														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id,TreeParam, quote_revision_record_id, start, end))
+															contract_quote_record_id,TreeParam, Quote.GetGlobal("quote_revision_record_id"), start, end))
 
 				
 				if item_billing_plans_obj:
