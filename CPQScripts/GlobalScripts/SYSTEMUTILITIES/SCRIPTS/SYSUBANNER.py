@@ -2040,7 +2040,7 @@ def Related_Sub_Banner(
             FourthLable = "Contract End Date"
             FourthValue = valid_date
 
-        elif ObjName == "SAQITE":
+        elif subTabName == "Entitlements":
             Trace.Write("entitlements===")
             PrimaryLable = "Product Offering ID"
             PrimaryValue = str(item_detail.SERVICE_ID)
