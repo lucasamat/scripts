@@ -70,6 +70,7 @@ target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
 
 expired_quotes_query = Sql.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE = '{target_mail_date}'".format(target_mail_date=target_mail_date))
+###A055S000P01-12558
 updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '1' WHERE  QUOTE_EXPIRE_DATE = '{today_current_date}' """.format(today_current_date = today_current_date ))
 Sql.RunQuery(updatesaqtmtexpire)
 
