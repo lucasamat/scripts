@@ -5026,27 +5026,30 @@ class SYLDRTLIST:
 				contract_quote_record_id = ''    
 			
 			if Wh_OBJECT_NAME == 'SAQIBP':
-				if SubTab:
-					end = int(SubTab.split(' ')[-1]) * 12
-					start = end - 12 + 1
-					if TreeParam == "Billing":
-						item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
-									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
-														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id, Quote.GetGlobal("quote_revision_record_id"), start, end))
-					else:
-						item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
-									AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
-														FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
-														GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
-															contract_quote_record_id,TreeParam, Quote.GetGlobal("quote_revision_record_id"), start, end))
+				try:
+					if SubTab:
+						end = int(SubTab.split(' ')[-1]) * 12
+						start = end - 12 + 1
+						if TreeParam == "Billing":
+							item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+										AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND QTEREV_RECORD_ID='{}'
+															GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+																contract_quote_record_id, Quote.GetGlobal("quote_revision_record_id"), start, end))
+						else:
+							item_billing_plans_obj = Sql.GetList("""SELECT FORMAT(BILLING_DATE, 'MM-dd-yyyy') as BILLING_DATE FROM (SELECT ROW_NUMBER() OVER(ORDER BY BILLING_DATE)
+										AS ROW, * FROM (SELECT DISTINCT BILLING_DATE
+															FROM SAQIBP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'  AND SERVICE_ID = '{}' AND QTEREV_RECORD_ID='{}'
+															GROUP BY EQUIPMENT_ID, BILLING_DATE,SERVICE_ID) IQ) OQ WHERE OQ.ROW BETWEEN {} AND {}""".format(
+																contract_quote_record_id,TreeParam, Quote.GetGlobal("quote_revision_record_id"), start, end))
 
-				
-				if item_billing_plans_obj:
-					billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
-					billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])                    
-					Columns = Columns.replace(']', ','+billing_date_column_joined+']')                     
+					
+					if item_billing_plans_obj:
+						billing_date_column = [item_billing_plan_obj.BILLING_DATE for item_billing_plan_obj in item_billing_plans_obj]                    
+						billing_date_column_joined = ",".join(["'{}'".format(billing_data) for billing_data in billing_date_column])                    
+						Columns = Columns.replace(']', ','+billing_date_column_joined+']')                     
+				except:
+					pass
 			CurrentObj = Sql.GetFirst(
 				"select API_NAME, OBJECT_NAME from  SYOBJD (nolock) where PARENT_OBJECT_RECORD_ID = '"
 				+ str(PARENT_LOOKUP_REC_ID)
