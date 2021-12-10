@@ -2126,6 +2126,8 @@ class SYLDRTLIST:
 						Trace.Write('In 1958---*'+str(Qustr))						
 						if str(RECORD_ID) == "SYOBJR-98874" or str(RECORD_ID) == "SYOBJR-98873":
 							Qustr += " AND LINE = '"+str(line_item)+"'"
+						if str(RECORD_ID) == "SYOBJR-98872":
+							Wh_API_NAMEs +=",LINE"
 						if str(RECORD_ID) not in("SYOBJR-98869","SYOBJR-00643","SYOBJR-00013","SYOBJR-98825","SYOBJR-00016"):
 							Qustr += " AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
 						
