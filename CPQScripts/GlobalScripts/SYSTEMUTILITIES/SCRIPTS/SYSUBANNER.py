@@ -565,8 +565,7 @@ def Related_Sub_Banner(
                 PrimaryLable = "Sales Team"
                 PrimaryValue = "Use the Sale Team functionality to manage all contributors to your Quote..."
             elif TreeParam == "Quote Items" and str(subTabName)=="Entitlements" and str(CurrentRecordId) == "SYOBJR-00010":
-                #query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"' ")
-                query_result = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
+                query_result = Sql.GetFirst("select * from SAQRIT (nolock) where QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' AND QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"' ")                
                 PrimaryLable = "Product Offering ID"
                 PrimaryValue = str(query_result.SERVICE_ID)
                 SecondLable = "Product Offering Description"
@@ -2026,7 +2025,7 @@ def Related_Sub_Banner(
     item_detail = Sql.GetFirst(" SELECT * FROM SAQRIT (NOLOCK) WHERE QUOTE_REVISION_CONTRACT_ITEM_ID ='"+str(CurrentRecordId)+"'")
     if item_detail:
         #if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module" and ObjName == "SAQRIT":
-        if subTabName == "Details" or subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
+        if subTabName == "Details" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
             Trace.Write("SAQRIT-DETAIL222===")
             valid_from = str(item_detail.CONTRACT_VALID_FROM).split(" ")[0]
             Trace.Write("valid_from===="+str(valid_from))
@@ -2040,6 +2039,19 @@ def Related_Sub_Banner(
             ThirdValue = valid_from
             FourthLable = "Contract End Date"
             FourthValue = valid_date
+
+        elif subTabName == "Entitlements":
+            Trace.Write("entitlements===")
+            PrimaryLable = "Product Offering ID"
+            PrimaryValue = str(item_detail.SERVICE_ID)
+            SecondLable = "Product Offering Description"
+            SecondValue = str(item_detail.SERVICE_DESCRIPTION)
+            ThirdLable = "Fab Location ID"
+            ThirdValue = str(item_detail.FABLOCATION_ID)
+            FourthLable = "Greenbook"
+            FourthValue =  str(item_detail.GREENBOOK)
+            FifthLable = "Equipment ID"
+            FifthValue = str(item_detail.OBJECT_ID)
         # if subTabName == "Entitlements" or subTabName == "Object List" or subTabName == "Product List" or subTabName == "Billing Plan" or subTabName == "Assortment Module":
         #     Trace.Write("SAQRIT-DETAIL333===")            
         #     if item_detail:
@@ -2598,13 +2610,13 @@ def Related_Sub_Banner(
                     elif TreeParam == "Fab Locations" and subTabName == "Equipment":
                         
                         sec_rel_sub_bnr += ""
-                    # elif TreeParam == "Sales Team":
-                    #     Trace.Write("sales===")
-                    #     contract_manager_info = Sql.GetFirst("SELECT COUNT(DISTINCT MEMBER_ID) as MEMBER_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                    #     if contract_manager_info is None:
-                    #         sec_rel_sub_bnr += (str(add_button))
-                    #     else:
-                    #         sec_rel_sub_bnr += ""
+                    elif TreeParam == "Sales Team":
+                        Trace.Write("sales===")
+                        contract_manager_info = Sql.GetFirst("SELECT COUNT(DISTINCT C4C_PARTNERFUNCTION_ID) as C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                        if contract_manager_info.C4C_PARTNERFUNCTION_ID == "CONTRACT MANAGER":
+                            sec_rel_sub_bnr += ""
+                        else:
+                            sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
                     
