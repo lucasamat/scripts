@@ -1614,8 +1614,8 @@ class ContractQuoteItem:
 					self._quote_items_insert()		
 					self._quote_items_object_insert()	
 					#self.cqent()
-					self._quote_item_line_entitlement_insert()
 					self._quote_annualized_items_insert()
+					self._quote_item_line_entitlement_insert()
 					self._quote_items_assembly_insert()
 					self._quote_items_assembly_entitlement_insert()
 			else:
