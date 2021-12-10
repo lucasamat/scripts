@@ -3628,6 +3628,7 @@ class SYLDRTLIST:
 							# elif RECORD_ID == "SYOBJR-98873":
 							# 	table_header += ""	
 							else:
+								Trace.Write('@3631')
 								table_header += (
 									'<th  data-field="'
 									+ str(invs)
