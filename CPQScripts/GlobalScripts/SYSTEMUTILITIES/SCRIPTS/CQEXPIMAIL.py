@@ -60,6 +60,7 @@ class qt_expiration_mail_trigger:
 expiration_obj = qt_expiration_mail_trigger(Quote)
 
 now = datetime.datetime.now()
+today_current_date = now.strftime('%m/%d/%Y')
 current_date_obj = str(now).split(" ")[0].strip()
 today_date_obj = datetime.datetime.strptime(str(current_date_obj),"%Y-%m-%d")
 today_date_string = str(today_date_obj).split(" ")[0].strip()
@@ -67,24 +68,16 @@ target_mail_date_obj = today_date_obj + timedelta(days=7)
 target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
-target_mail_date = "10/15/2022"
-today_date_string ="12/9/2022"
 
-
-expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE != '' AND OWNER_ID = 'X0123347'")
+expired_quotes_query = Sql.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE = '{target_mail_date}'".format(target_mail_date=target_mail_date))
+updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '1' WHERE  QUOTE_EXPIRE_DATE = '{today_current_date}' """.format(today_current_date = today_current_date ))
+#Sql.RunQuery(updatesaqtmtexpire)
 
 
 expired_quotes = []
 if expired_quotes_query is not None:
     for quotes in expired_quotes_query:   
-        expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
-
-        Log.Info("Entered ---today_date_string"+str(today_date_string))
-        Log.Info("Entered expire_date"+str(expire_date))
-        if str(today_date_string) == str(expire_date):
-            Log.Info("Entered QUOTE_ID"+str(quotes.QUOTE_ID))
-            updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '1' WHERE QUOTE_ID = '{quoteid}' """.format(quoteid = quotes.QUOTE_ID))
-            #Sql.RunQuery(updatesaqtmtexpire)
+        expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]     
         if str(target_mail_date) == str(expire_date):
             expired_quotes.append(quotes.QUOTE_ID)
 if expired_quotes is not None:
