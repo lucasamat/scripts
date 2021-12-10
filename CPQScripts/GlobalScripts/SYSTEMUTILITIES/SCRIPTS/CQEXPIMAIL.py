@@ -68,7 +68,8 @@ target_mail_date_obj = today_date_obj + timedelta(days=7)
 target_mail_date_obj= target_mail_date_obj.strftime('%m-%d-%Y')
 target_mail_date = str(target_mail_date_obj).split(" ")[0].strip()
 target_mail_date = target_mail_date.replace("-","/")
-#target_mail_date = "10/15/2022"
+target_mail_date = "10/15/2022"
+today_date_string ="12/9/2022"
 
 
 expired_quotes_query = SqlHelper.GetList("SELECT QUOTE_ID,QUOTE_EXPIRE_DATE FROM SAQTMT where QUOTE_EXPIRE_DATE != ''")
@@ -78,9 +79,11 @@ expired_quotes = []
 if expired_quotes_query is not None:
     for quotes in expired_quotes_query:   
         expire_date = str(quotes.QUOTE_EXPIRE_DATE).split(" ")[0]
+        Trace.Write("1111"+str(today_date_string))
+        Trace.Write("22222"+str(expire_date))
         if str(today_date_string) == str(expire_date):
-	        Trace.Write("quoteid"+str(quotes.QUOTE_ID))
-            updatesaqtmtexpire = """ UPDATE SAQTMT SET EXPIRED = '1' WHERE QUOTE_ID = '{quoteid}' """.format(quoteid = quotes.QUOTE_ID))
+            Trace.Write("quoteid"+str(quotes.QUOTE_ID))
+            updatesaqtmtexpire = (""" UPDATE SAQTMT SET EXPIRED = '1' WHERE QUOTE_ID = '{quoteid}' """.format(quoteid = quotes.QUOTE_ID))
             #Sql.RunQuery(updatesaqtmtexpire)
         if str(target_mail_date) == str(expire_date):
             expired_quotes.append(quotes.QUOTE_ID)
