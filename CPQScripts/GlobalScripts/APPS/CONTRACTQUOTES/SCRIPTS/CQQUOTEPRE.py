@@ -23,7 +23,7 @@ def Quote_Preview(quote_id,quote_type):
 
     getpaymentterm = Sql.GetFirst("SELECT PAYMENTTERM_NAME FROM SAQTRV(NOLOCK) WHERE QUOTE_RECORD_ID =  '{QuoteRecordId}' and QUOTE_REVISION_RECORD_ID = '{RevisionRecordId}'".format(QuoteRecordId = QuoteRecordId,RevisionRecordId = Quote.GetGlobal("quote_revision_record_id")))    
     
-    PO_n = Sql.GetFirst(" SELECT PO_NUMBER FROM SAQTBP (NOLOCK) WHERE QUOTE_ID = '"+str(quote_id)+"' ")
+    PO_n = Sql.GetFirst(" SELECT PO_NUMBER FROM SAQRIB (NOLOCK) WHERE QUOTE_ID = '"+str(quote_id)+"' ")
     if PO_n is not None:
         Trace.Write("yes PO")
         PO1 = PO_n.PO_NUMBER

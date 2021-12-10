@@ -20,9 +20,8 @@ from SYDATABASE import SQL
 
 Sql = SQL()
 def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id):
-    Log.Info("writeback --------?"+str(writeback))
     if writeback == "quote_header":
-        revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select SALESORG_ID,DOCTYP_ID,DISTRIBUTIONCHANNEL_ID,DIVISION_ID,QTEREV_ID,REVISION_DESCRIPTION,REVISION_STATUS,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         ##date time conversion
         time = "T12:00:00.00"
         fromvalue = revision_obj.CONTRACT_VALID_FROM
@@ -30,13 +29,16 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         valid_from = str(fromvalue)+str(time)
         valid_to = str(tovalue)+str(time)
         ##date time conversion
-        quote_obj = Sql.GetFirst("select ISNULL(NET_VALUE,0) AS NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        quote_obj = Sql.GetFirst("select ISNULL(NET_VALUE,0) AS NET_VALUE,OWNER_NAME,ACCOUNT_ID FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         
-        opportunity_obj = Sql.GetFirst("select ISNULL(C4C_QTEOBJ_ID,0) AS C4C_QTEOBJ_ID FROM SAOPQT WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
+        opportunity_obj = Sql.GetFirst("select ISNULL(C4C_QTEOBJ_ID,0) AS C4C_QTEOBJ_ID FROM SAOPQT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         c4c_quote_object_id = opportunity_obj.C4C_QTEOBJ_ID
 
-        c4c_employee_obj = Sql.GetFirst("SELECT SAEMPL.C4C_EMPLOYEE_ID FROM SAEMPL INNER JOIN SAQTMT ON SAEMPL.EMPLOYEE_ID = SAQTMT.OWNER_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
-        c4c_employee_id = c4c_employee_obj.C4C_EMPLOYEE_ID
+        #c4c_employee_obj = Sql.GetFirst("SELECT SAEMPL.C4C_EMPLOYEE_ID FROM SAEMPL (NOLOCK) INNER JOIN SAQTMT (NOLOCK) ON SAEMPL.EMPLOYEE_ID = SAQTMT.OWNER_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}' AND SAQTMT.QTEREV_RECORD_ID = '{}'".format(contract_quote_record_id,quote_revision_record_id))
+        c4c_employee_obj = Sql.GetFirst("SELECT SAEMPL.C4C_EMPLOYEE_ID FROM SAEMPL (NOLOCK) INNER JOIN SAQTMT (NOLOCK) ON SAEMPL.EMPLOYEE_ID = SAQTMT.OWNER_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
+        c4c_employee_id = ""
+        if c4c_employee_obj is not None:
+            c4c_employee_id = c4c_employee_obj.C4C_EMPLOYEE_ID
 
         ###Fetch the code according to the revision status..code starts...
         revision_status_code = {"APPROVAL PENDING":"111", "RECALLED":"121", "REJECTED":"131", "APPROVED":"141","CUSTOMER ACCEPTED":"161","SUBMITTED FOR BOOKING":"181","CONTRACT BOOKED":"191","ON HOLD - COSTING":"221","CUSTOMER REJECTED":"171","PREPARING REVISION":"211","OPPORTUNITY CANCELLED":"231","OPPORTUNITY LOST":"241","PRICED":"101"}
@@ -44,7 +46,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##quote header write back details starts...
         quote_header_data = '{\"BuyerPartyID\":"'+str(quote_obj.ACCOUNT_ID)+'", \"EmployeeResponsiblePartyID\":"'+str(c4c_employee_id)+'", \"SalesUnitPartyID\":"'+str(revision_obj.SALESORG_ID)+'", \"DistributionChannelCode\":"'+str(revision_obj.DISTRIBUTIONCHANNEL_ID)+'", \"DivisionCode\":"'+str(revision_obj.DIVISION_ID)+'", \"ZWB_ContractValidFrom_KUT\":"'+str(valid_from)+'", \"ZWB_ContractValidTo_KUT\":"'+str(valid_to)+'", \"ZWB_QuoteRevisionID_KUT\":"'+str(revision_obj.QTEREV_ID)+'", \"ZWB_RevisionDescription_KUT\":"'+str(revision_obj.REVISION_DESCRIPTION)+'", \"ZQuoteRevisionStatus\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'", \"ZWB_TotalQuoteContent_KUT\":"'+str(quote_obj.NET_VALUE)+'", \"ZWB_TotalQuotecurrencyCode_KUT\":"USD"}'
         ##quote header write back details ends...
-        Trace.Write("quote_header_data-----"+str(quote_header_data))
         
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
@@ -61,7 +62,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         )
     elif writeback == "opportunity_header":
         ##To Fetch the values from revision table....
-        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
+        revision_obj = Sql.GetFirst("select REVISION_STATUS,DOC_CURRENCY,CONVERT(varchar, CONTRACT_VALID_FROM, 23) as CONTRACT_VALID_FROM,CONVERT(varchar, CONTRACT_VALID_TO , 23) as CONTRACT_VALID_TO FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND ACTIVE = 1 ".format(contract_quote_record_id,quote_revision_record_id))
         
         ##date time conversion
         time = "T12:00:00.00"    
@@ -71,7 +72,7 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         valid_to = tovalue+time
         ##date time conversion
         net_value = "0.0000"
-        opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
+        opportunity_object = SqlHelper.GetFirst("select ISNULL(SAOPPR.C4C_OPPOBJ_ID,0) AS C4C_OPPOBJ_ID FROM SAOPPR(NOLOCK) INNER JOIN SAOPQT (NOLOCK) ON  SAOPPR.OPPORTUNITY_ID = SAOPQT.OPPORTUNITY_ID AND SAOPPR.ACCOUNT_ID = SAOPQT.ACCOUNT_ID WHERE QUOTE_RECORD_ID = '{}'".format(contract_quote_record_id))
         opportunity_object_id = opportunity_object.C4C_OPPOBJ_ID
         
         ##Fetch the code according to the revision status..code starts...
@@ -82,7 +83,6 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         ##opportunity header write back details starts...
         opportunity_header_data = '{\"ExpectedRevenueAmount\":"'+str(net_value)+'", \"ExpectedRevenueAmountCurrencyCode\":"USD", \"ExpectedProcessingStartDate\":"'+str(valid_from)+'",\"ExpectedProcessingEndDate\":"'+str(valid_from)+'", \"ExpectedRevenueStartDate\":"'+str(valid_from)+'", \"ExpectedRevenueEndDate\":"'+str(valid_to)+'", \"ZQuoteRevisionStatus_KUT\":"'+str(revision_status_code.get(revision_obj.REVISION_STATUS))+'"}'
         ##opportunity header write back details ends...
-        Trace.Write("opportunity_header_data-----"+str(opportunity_header_data))
         
         requestdata = (
             '<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body><CPQ_Columns><writeback>'
@@ -115,5 +115,4 @@ def writeback_to_c4c(writeback,contract_quote_record_id,quote_revision_record_id
         webclient.Headers[System.Net.HttpRequestHeader.ContentType] = "application/xml"
         webclient.Headers[System.Net.HttpRequestHeader.Authorization] = authorization
         response = webclient.UploadString(URL, requestdata)
-        Trace.Write("response    " + str(response))
     

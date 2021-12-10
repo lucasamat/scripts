@@ -991,25 +991,25 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 						items_covered_object_query = "UPDATE SAQICO SET EXTENDED_PRICE = {ExtendedPrice} WHERE QUOTE_RECORD_ID ='{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'".format(ExtendedPrice=extented_price,QuoteRecordId=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id)
 						Sql.RunQuery(items_covered_object_query)
 						
-						Sql.RunQuery("""UPDATE SAQITM
-										SET EXTENDED_PRICE = SAQICO.EXTENDED_PRICE
-										FROM SAQITM
-										JOIN (SELECT 											
-												ISNULL(SUM(ISNULL(EXTENDED_PRICE, 0)), 0) as EXTENDED_PRICE, QUOTE_RECORD_ID, SERVICE_ID										
-												FROM SAQICO (NOLOCK) 
-												WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'
-												GROUP BY SERVICE_ID, QUOTE_RECORD_ID) 
-										AS SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQITM.SERVICE_ID
-										""".format(QuoteRecordId=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id)
-									)
-						Sql.RunQuery("""UPDATE QT__QTQITM
-										SET EXTENDED_UNIT_PRICE = SAQITM.EXTENDED_PRICE, UNIT_PRICE = SAQITM.EXTENDED_PRICE
-										FROM QT__QTQITM
-										JOIN SAQITM ON SAQITM.QUOTE_RECORD_ID = QT__QTQITM.QUOTE_RECORD_ID 
-														AND SAQITM.SERVICE_ID = QT__QTQITM.SERVICE_ID
-														AND SAQITM.LINE_ITEM_ID = QT__QTQITM.ITEM_LINE_ID
-										WHERE QT__QTQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(QuoteRecordId=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id)
-									)
+						# Sql.RunQuery("""UPDATE SAQITM
+						# 				SET EXTENDED_PRICE = SAQICO.EXTENDED_PRICE
+						# 				FROM SAQITM
+						# 				JOIN (SELECT 											
+						# 						ISNULL(SUM(ISNULL(EXTENDED_PRICE, 0)), 0) as EXTENDED_PRICE, QUOTE_RECORD_ID, SERVICE_ID										
+						# 						FROM SAQICO (NOLOCK) 
+						# 						WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}'
+						# 						GROUP BY SERVICE_ID, QUOTE_RECORD_ID) 
+						# 				AS SAQICO ON SAQICO.QUOTE_RECORD_ID = SAQITM.QUOTE_RECORD_ID AND SAQICO.SERVICE_ID = SAQITM.SERVICE_ID
+						# 				""".format(QuoteRecordId=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id)
+						# 			)
+						# Sql.RunQuery("""UPDATE QT__QTQITM
+						# 				SET EXTENDED_UNIT_PRICE = SAQITM.EXTENDED_PRICE, UNIT_PRICE = SAQITM.EXTENDED_PRICE
+						# 				FROM QT__QTQITM
+						# 				JOIN SAQITM ON SAQITM.QUOTE_RECORD_ID = QT__QTQITM.QUOTE_RECORD_ID 
+						# 								AND SAQITM.SERVICE_ID = QT__QTQITM.SERVICE_ID
+						# 								AND SAQITM.LINE_ITEM_ID = QT__QTQITM.ITEM_LINE_ID
+						# 				WHERE QT__QTQITM.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITM.QTEREV_RECORD_ID = '{quote_revision_record_id}'""".format(QuoteRecordId=Rec_Id_Value,quote_revision_record_id=quote_revision_record_id)
+						# 			)
 						
 						#Sql.RunQuery("""UPDATE QT__QTQICO
 						#				SET EXTENDED_PRICE = QTQICO.EXTENDED_PRICE
@@ -1023,13 +1023,13 @@ def sec_save(SEC_REC_ID, ATTR_VAL, Picklist_array):
 						#			)
 
 						# Item Covered Object Extendted Price Update - End			
-						date_diff_obj = Sql.GetFirst("""SELECT DATEDIFF(day, SAQTMT.CONTRACT_VALID_FROM, SAQTBP.BILLING_START_DATE) as START_DATE_DIFF, 
-										DATEDIFF(day, SAQTMT.CONTRACT_VALID_TO, SAQTBP.BILLING_END_DATE) as END_DATE_DIFF, QUOTE_BILLING_PLAN_RECORD_ID
-										FROM SAQTBP (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQTBP.QUOTE_RECORD_ID 
-										WHERE SAQTBP.QUOTE_RECORD_ID = '{}' AND SAQTBP.QTEREV_RECORD_ID = '{}'""".format(Rec_Id_Value,quote_revision_record_id))
+						date_diff_obj = Sql.GetFirst("""SELECT DATEDIFF(day, SAQTMT.CONTRACT_VALID_FROM, SAQRIB.BILLING_START_DATE) as START_DATE_DIFF, 
+										DATEDIFF(day, SAQTMT.CONTRACT_VALID_TO, SAQRIB.BILLING_END_DATE) as END_DATE_DIFF, QUOTE_BILLING_PLAN_RECORD_ID
+										FROM SAQRIB (NOLOCK) JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = SAQRIB.QUOTE_RECORD_ID 
+										WHERE SAQRIB.QUOTE_RECORD_ID = '{}' AND SAQRIB.QTEREV_RECORD_ID = '{}'""".format(Rec_Id_Value,quote_revision_record_id))
 						if date_diff_obj:
 							if date_diff_obj.START_DATE_DIFF or date_diff_obj.END_DATE_DIFF:						
-								billing_query = "UPDATE SAQTBP SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}' WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(tablerow.get('CONTRACT_VALID_FROM'), tablerow.get('CONTRACT_VALID_TO'), date_diff_obj.QUOTE_BILLING_PLAN_RECORD_ID)
+								billing_query = "UPDATE SAQRIB SET IS_CHANGED = 1, BILLING_START_DATE = '{}', BILLING_END_DATE = '{}' WHERE QUOTE_BILLING_PLAN_RECORD_ID ='{}'".format(tablerow.get('CONTRACT_VALID_FROM'), tablerow.get('CONTRACT_VALID_TO'), date_diff_obj.QUOTE_BILLING_PLAN_RECORD_ID)
 								Sql.RunQuery(billing_query)
 					# Billing Matrix Notification - End
 					

@@ -33,14 +33,18 @@ def bannerdetails(Quoteid,active_tab_name):
 		Quoteid = SQLObj.QUOTE_ID
 		#matchObj = re.match( r'^\s*[A-Z]{1,2}(\d+)[A-Z]{1,2}[^>]*?\-', Quoteid)
 		#matchObj = re.search(r'\d+', Quoteid).group()
-	# if active_tab_name == "Quotes":
-	# 	Trace.Write('matchObj--'+str(matchObj))
-	# 	Trace.Write('Quoteid--'+str(Quoteid))
-	# 	qid=str(matchObj.group(1))
-	# 	get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
-	# 	if get_rev_info:
-	# 		Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
-	# 		Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+	if active_tab_name == "Quotes":
+		Trace.Write('matchObj--'+str(matchObj))
+		Trace.Write('Quoteid--'+str(Quoteid))
+		Quoteid=str(matchObj)
+		get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID,MASTER_TABLE_QUOTE_RECORD_ID  FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Quoteid) + "'")
+		if get_rev_info:
+			try:
+				Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
+				Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
+				Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+			except Exception:
+				pass
 	if Quoteid is not None and str(Quoteid) !='':
 		if matchObj:
 			#qid=str(matchObj.group(1))
@@ -55,6 +59,7 @@ def bannerdetails(Quoteid,active_tab_name):
 				get_rev_info = Sql.GetFirst("SELECT QTEREV_ID, QTEREV_RECORD_ID, MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(qid) + "'")
 				if get_rev_info:
 					# C4C to CPQ - New Revision - Start
+					Trace.Write("===> "+str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
 					Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
 					# C4C to CPQ - New Revision - End
 					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))

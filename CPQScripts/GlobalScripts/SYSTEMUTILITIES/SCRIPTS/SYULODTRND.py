@@ -42,7 +42,7 @@ def CommonTreeViewHTMLDetail(
 		current_prod = Product.Name
 	except:
 		current_prod = "Sales"
-
+	Trace.Write("RECORD_ID---->"+str(RECORD_ID))
 	TestProduct = Webcom.Configurator.Scripting.Test.TestProduct()
 	CurrentModuleObj = Sql.GetFirst("select * from SYAPPS (NOLOCK) where APP_LABEL = '" + str(current_prod) + "'")
 	quote_revision_record_id = ""
@@ -64,6 +64,7 @@ def CommonTreeViewHTMLDetail(
 	auto_field = ""
 	date_field = []
 	primary_value = RECORD_ID
+
 	Product.SetGlobal('get_quote_item_service',primary_value)
 	Trace.Write(str(ObjectName)+"---ObjectName-----Recordid"+str(primary_value))
 	
@@ -96,7 +97,7 @@ def CommonTreeViewHTMLDetail(
 		queryStr = " AND SYSECT.RECORD_ID IN " + str(sectionId)		
 	# Billing Matrix Details Load - Start
 	quote_record_id = None
-	if ObjectName == 'SAQTBP':
+	if ObjectName == 'SAQRIB':
 		quote_record_id = Product.GetGlobal("contract_quote_record_id")
 	# Billing Matrix Details Load - End
 	
@@ -135,10 +136,10 @@ def CommonTreeViewHTMLDetail(
 			if objh_obj is not None:
 				ObjectName = str(objh_obj.OBJECT_NAME)
 				
-	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SAQITM","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB"]:
+	if str(ObjectName) in ["ACAPCH","SYPRAP", "SAQIBP","SAQTBP","SAQRIB","SASORG","PREXRT","SYTABS","ACACSS","ACACST","ACACSA","cpq_permissions","SYOBJD","SYPRTB","SYPSAC","SYPRSN","SYAPPS","SYOBJC","SYSECT","USERS","SYSEFL","SYPROH","SAQTMT","PRCURR","SYROMA","SYPGAC","SAQTIP","SYOBJX","SYPRSF","SYROUS","SYOBFD","SYPRAC","SAQSCO","SAQTRV","SAQTSV","SAQSFB","SAQSGB","SAQDOC"]:
 			canedit = "TRUE"
 	if Product.GetGlobal("TreeParentLevel0") == "Billing":
-		ObjectName = "SAQTBP"
+		ObjectName = "SAQRIB"
 	if TableId == "SYOBJR-95824" and str(TreeParentParam == "Fields and Relationships") and (current_prod == "SYSTEM ADMIN"):		
 		ObjectName = "SYOBJD"
 		if str(CurrentTab == "Object"):
@@ -166,6 +167,8 @@ def CommonTreeViewHTMLDetail(
 			RECORD_ID
 		else:
 			RECORD_ID = CPQID.KeyCPQId.GetKEYId(str(ObjectName), str(RECORD_ID))
+			Trace.Write(str(ObjectName)+"@170---ObjectName-----Recordid"+str(RECORD_ID))
+
 	elif MODE == "EDIT_CLEAR":
 		MODE = "EDIT"
 	elif MODE == "CANCEL" :
@@ -247,7 +250,7 @@ def CommonTreeViewHTMLDetail(
 				lookup_ObjName = lookupval[1]
 
 	
-	if ObjectName != 'SAQTBP':
+	if ObjectName != 'SAQRIB':
 		sec_str += ' <div class="col-md-12"   id="alert_msg" style="display: none;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true">NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-danger"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/stopicon1.svg" alt="Error">  </label></div></div></div>'
 
 	if str(ObjectName) == "SAQTRV" or  str(ObjectName) == "ACAPCH":
@@ -462,7 +465,7 @@ def CommonTreeViewHTMLDetail(
 		if action_visible_obj:
 			if action_visible_obj.OBJECT_RECORD_ID:
 				action_visible_str = action_visible_obj.OBJECT_RECORD_ID
-		if ObjectName == "SYOBFD" or ObjectName == "SAQIGB" or ObjectName == "SAQIFL":
+		if ObjectName == "SYOBFD":
 			editable_permission = "TRUE"
 		Trace.Write("editable_permission==="+str(editable_permission))
 		if editable_permission == "TRUE":			
@@ -631,8 +634,8 @@ def CommonTreeViewHTMLDetail(
 				API_NAMES = str(API_NAMES).replace("DEFAULT", "[DEFAULT]")	
 		if "PRIMARY" in str(API_NAMES):
 			API_NAMES = str(API_NAMES).replace("PRIMARY", "[PRIMARY]")
-		if str(ObjectName) == "SAQITM":
-			autoNumber = "LINE_ITEM_ID"
+		# if str(ObjectName) == "SAQITM":
+		# 	autoNumber = "LINE_ITEM_ID"
 		if str(ObjectName) == "SYPROH":
 			if "SYPRO" in RECORD_ID:
 				syprohval = SqlHelper.GetFirst(
@@ -659,9 +662,9 @@ def CommonTreeViewHTMLDetail(
 				RECORD_ID = str(users_obj.ID)			
 		
 		# Billing Matrix Details Load - Start
-		if ObjectName == 'SAQTBP':
+		if ObjectName == 'SAQRIB':
 			billing_plan_obj = SqlHelper.GetFirst(
-					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQTBP (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id,quote_revision_record_id)
+					"select QUOTE_BILLING_PLAN_RECORD_ID from SAQRIB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' ".format(quote_record_id,quote_revision_record_id)
 					
 				)
 			if billing_plan_obj:
@@ -669,7 +672,7 @@ def CommonTreeViewHTMLDetail(
 		# Billing Matrix Details Load - End	
 		
 		# Greenbook details load || Quote item Location Node - Start
-		if Product.GetGlobal("TreeParentLevel2") == 'Quote Items' or ObjectName == 'SAQIGB':
+		if Product.GetGlobal("TreeParentLevel2") == 'Quote Items':
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeParam = Product.GetGlobal("TreeParam")
@@ -685,9 +688,9 @@ def CommonTreeViewHTMLDetail(
 				Trace.Write("except")
 				Trace.Write("SuperParentParam-"+str(TreeSuperParentParam))
 				service_id = TreeSuperParentParam.split('-')[1].strip()
-			quote_item_gb = Sql.GetFirst(
-				"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
-			)
+			# quote_item_gb = Sql.GetFirst(
+			# 	"select QUOTE_ITEM_GREENBOOK_RECORD_ID from SAQIGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,service_id)
+			# )
 			if quote_item_gb:
 				RECORD_ID = quote_item_gb.QUOTE_ITEM_GREENBOOK_RECORD_ID				
 		# Greenbook details load || Quote item Location Node - End
@@ -707,9 +710,14 @@ def CommonTreeViewHTMLDetail(
 			Trace.Write('ObjectName---')		
 			quote_record_id = Quote.GetGlobal("contract_quote_record_id")
 			prd_location_gb = Sql.GetFirst(
+				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND GREENBOOK = '{}' AND SERVICE_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam)
+			)
+			''' ## REMOVAL FOR FAB LOCATIONS.
+			prd_location_gb = Sql.GetFirst(
 				"""select QUOTE_SERVICE_GREENBOOK_RECORD_ID from SAQSGB (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'
 and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(quote_record_id,quote_revision_record_id,TreeParam,TreeParentParam,Product.GetGlobal("TreeParentLevel1").split(" ")[0].strip())
 			)
+			'''
 			if prd_location_gb:
 				RECORD_ID = prd_location_gb.QUOTE_SERVICE_GREENBOOK_RECORD_ID
 		# Greenbook details load || Product offering  Node - End
@@ -840,26 +848,26 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						+ str(RECORD_ID)
 						+ "' AND RELOCATION_TYPE LIKE '%RECEIVING%'"
 					)
-			elif ObjectName == "SAQITM":
-				Trace.Write("test74_J "+str(RECORD_ID))
-				Trace.Write("Treeparam"+str(TreeParam))
-				#RECORD_ID = RECORD_ID.split("|")[0]
-				Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
-				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
-				Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
-				RECORD_ID = TreeParam.split("-")[0].strip()
-				script = (
-					"SELECT "
-					+ str(API_NAMES)
-					+ " FROM "
-					+ str(ObjectName)
-					+ " (NOLOCK) WHERE "
-					+ str(autoNumber)
-					+ " = '"
-					+ str(RECORD_ID) 
-					+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
-					+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
-				)
+			# elif ObjectName == "SAQITM":
+			# 	Trace.Write("test74_J "+str(RECORD_ID))
+			# 	Trace.Write("Treeparam"+str(TreeParam))
+			# 	#RECORD_ID = RECORD_ID.split("|")[0]
+			# 	Trace.Write("test746--quote_record_id--00--------"+str(RECORD_ID))
+			# 	quote_record_id = Quote.GetGlobal("contract_quote_record_id")
+			# 	Trace.Write("test746---quote_record_id-----"+str(quote_record_id))
+			# 	RECORD_ID = TreeParam.split("-")[0].strip()
+			# 	script = (
+			# 		"SELECT "
+			# 		+ str(API_NAMES)
+			# 		+ " FROM "
+			# 		+ str(ObjectName)
+			# 		+ " (NOLOCK) WHERE "
+			# 		+ str(autoNumber)
+			# 		+ " = '"
+			# 		+ str(RECORD_ID) 
+			# 		+ "' AND  QUOTE_RECORD_ID = '"+str(quote_record_id)+"'"
+			# 		+ " AND  QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'"
+			# 	)
 			elif ObjectName == "SAQICO":
 				RECORD_ID = primary_value
 				Trace.Write("line_item--quote_record_id--00--------"+str(RECORD_ID))
@@ -893,7 +901,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ "'"
 					+ ""
 				)
-			elif ObjectName == "SAQTBP" and TreeParentParam == "Billing":
+			elif ObjectName == "SAQRIB" and TreeParentParam == "Billing":
 				RECORD_ID = RECORD_ID.split("|")[0]
 				Trace.Write("test746--867-----TreeParam-----"+str(TreeParam))
 				quote_record_id = Quote.GetGlobal("contract_quote_record_id")
@@ -906,7 +914,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					+ " (NOLOCK) WHERE QUOTE_RECORD_ID "
 					+ " = '"
 					+ str(quote_record_id)
-					+ "' and SERVICE_ID = '"+str(TreeParam)+"'"
+					+ "' and PRDOFR_ID = '"+str(TreeParam)+"'"
 					+ ""
 				)
 			elif ObjectName == "ACAPCH" and TreeParam == "Approval Chain Information":
@@ -1082,12 +1090,8 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				
 				if ObjectName == "SAQIBP" and TreeParam == "Billing Plan":
 					notinlist = [
-						"QUOTE_ID",
-						"SALESORG_ID",
-						"SALESORG_NAME",
-						"LINE_ITEM_ID",					
-						"SPLIT_BILLING",
-						"QUOTE_NAME",
+						"QUOTE_ID",											
+						"SPLIT_BILLING",						
 						"CPQTABLEENTRYADDEDBY",
 						"CPQTABLEENTRYDATEADDED",
 						"CpqTableEntryModifiedBy",
@@ -1125,7 +1129,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					]
 					if current_obj_api_name in noninlist:						
 						add_style = "display: none;"	
-				if ObjectName == "SAQTBP" and TreeParam == "Billing":
+				if ObjectName == "SAQRIB" and TreeParam == "Billing":
 					noninlist = [						
 						"SALESORG_ID",
 						"SALESORG_NAME"					
@@ -1184,14 +1188,14 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					##suppress PAR_SERVICE_ID and PAR_SERVICE_DESCRIPTION if value is null ends
 					if current_obj_api_name in notinlist:
 						add_style = "display: none;"
-				elif ObjectName == "SAQIGB":
-					notinlist = ["QUOTE_ITEM_GREENBOOK_RECORD_ID"]
-					if current_obj_api_name in notinlist:
-						add_style = "display: none;"
-				elif ObjectName == "SAQITM":
-					notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
-					if current_obj_api_name in notinlist:
-						add_style = "display: none;"
+				# elif ObjectName == "SAQIGB":
+				# 	notinlist = ["QUOTE_ITEM_GREENBOOK_RECORD_ID"]
+				# 	if current_obj_api_name in notinlist:
+				# 		add_style = "display: none;"
+				# elif ObjectName == "SAQITM":
+				# 	notinlist = ["SRVTAXCLA_ID","SALESORG_NAME","SALESORG_ID","REMAINING_QUANTITY","RELEASED_QUANTITY","PO_ITEM","PO_NOTES","PO_NUMBER"]
+				# 	if current_obj_api_name in notinlist:
+				# 		add_style = "display: none;"
 				Quote_Type = Sql.GetFirst("SELECT QUOTE_TYPE FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' ")
 				if Quote_Type is not None:
 					if Quote_Type.QUOTE_TYPE == "ZWK1 - SPARES":
@@ -1250,7 +1254,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 							Trace.Write('check error')
 					if current_obj_api_name == "approve_condition_id" and ObjectName == "approve_condition":
 						current_obj_value = current_obj_value
-					elif ObjectName == 'SAQTBP' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
+					elif ObjectName == 'SAQRIB' and TreeParam == "Billing":		# Billing Matrix Details Load - Start				
 						billing_plan_obj = Sql.GetFirst(
 									"SELECT CpqTableEntryId FROM {ObjectName} (NOLOCK) where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID='{revision_rec_id}'".format(
 										ObjectName=ObjectName, QuoteRecordId=quote_record_id,revision_rec_id = quote_revision_record_id)
@@ -1424,7 +1428,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						#current_obj_value = str(current_obj_api_name*int(100))				
 					if current_obj_value == "":
 						symbol = ""
-					if current_obj_api_name == "DISCOUNT" and (str(ObjectName) == "SAQIGB" or str(ObjectName) == "SAQIFL") and MODE == "EDIT":
+					if current_obj_api_name == "DISCOUNT" and MODE == "EDIT":
 						Trace.Write("@1809 inside discount")
 						sec_str += (
 							'<td><input id="'
@@ -1463,12 +1467,12 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 				):	
 					Trace.Write(str(lookup_val)+'--lookup_val---'+str(readonly)+'current_obj_api_name--1440---'+str(current_obj_api_name))
 					##A055S000P01-10459 code starts...
-					if current_obj_api_name == "EXCHANGE_RATE_TYPE":
-						revision_object = SqlHelper.GetFirst("select REGION FROM SAQTRV where QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
-						if revision_object.REGION == "AMC" or revision_object.REGION == "AMK":
-							readonly = ""
-						else:
-							readonly = "readonly"
+					# if current_obj_api_name == "EXCHANGE_RATE_TYPE":
+					# 	revision_object = SqlHelper.GetFirst("select REGION FROM SAQTRV where QUOTE_RECORD_ID = '{}' and QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id")))
+					# 	if revision_object.REGION == "AMC" or revision_object.REGION == "AMK":
+					# 		readonly = ""
+					# 	else:
+					# 		readonly = "readonly"
 					##A055S000P01-10459 code ends...
 					if current_obj_api_name in lookup_val and str(readonly) != "readonly":
 						Trace.Write(str(readonly)+'current_obj_api_name--1443---'+str(current_obj_api_name))	
@@ -1765,21 +1769,12 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 						Tier_List = (Sql_Quality_Tier.PICKLIST_VALUES).split(",")		
 						for req1 in Tier_List:
 							req1 = req1.strip()							
-							if current_obj_value == req1:	
-								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":		
-									sec_str += "<option selected>" + str(req1) + " of month </option>"
-								else:
-									sec_str += "<option selected>" + str(req1) + "</option>"
-							else:	
-								if str(current_obj_api_name) == "APPDTE_EXCH_RATE":							
-									sec_str += "<option>" + str(req1) + " of month </option>"
-								else:
-									sec_str += "<option>" + str(req1) + "</option>"
+							if current_obj_value == req1:
+								sec_str += "<option selected>" + str(req1) + "</option>"
+							else:
+								sec_str += "<option>" + str(req1) + "</option>"
 					else:	
-						if str(current_obj_api_name) == "APPDTE_EXCH_RATE":					
-							sec_str += "<option selected>" + str(current_obj_value) + " of month </option>"
-						else:
-							sec_str += "<option selected>" + str(current_obj_value) + "</option>"
+						sec_str += "<option selected>" + str(current_obj_value) + "</option>"
 					sec_str += "</select></td>"
 				elif data_type == "DATE" and MODE == "EDIT":								
 					date_field.append(current_obj_api_name)					
@@ -1830,88 +1825,88 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 					Trace.Write("@1737 inside discount")			
 					precentage_columns = ['BD_DISCOUNT']
 					precent_column = ['TARGET_PRICE_MARGIN','BD_PRICE_MARGIN','GREATER_THAN_QTLY_HRS','LESS_THAN_QTLY_HRS','LABOR_HOURS','CHAMBER_PM_HRS', 'MONTHLY_PM_HRS']					
-					if current_obj_api_name in precentage_columns and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM"):						
-						string_val = str(current_obj_value)
-						#string_val = string_val.replace('0','')
-						string_val1 = string_val.split('.')
-						str_val = str(string_val1[0])
-						#str_val1 = str_val[0]+str_val[1]
-						current_obj_value = str_val
-						if current_obj_value != "":							
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value +" %"
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)
-						else:
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)	
-					elif current_obj_api_name in precent_column and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM") and str(current_obj_value) !='':					
-						string_val = str(current_obj_value)
-						#string_val = string_val.replace('0','')
-						string_val1 = string_val.split('.')
-						#str_val = str(string_val1[1])
-						str_vaal = str(string_val1[1])
-						str_val2 = str(str_vaal[0]+str_vaal[1])
-						strr = str(string_val1[0] +"."+ str_val2)
-						current_obj_value = strr
-						if current_obj_value != "":
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)
-						else:
-							sec_str += (
-								'<td><input id="'
-								+ str(current_obj_api_name)
-								+ '" type="text" value="'
-								+ current_obj_value
-								+ '" class="form-control related_popup_css" style="'
-								+ str(add_style)
-								+ '" '
-								+ disable
-								+ "></td>"
-							)								
-					else:
-						Trace.Write("else 1812"+str(current_obj_api_name))
-						if str(ObjectName) == "SAQIGB" and current_obj_value != "":
-							decimal_val = 2
-							formatting_string = "{0:." + str(decimal_val) + "f}"
-							current_obj_value = formatting_string.format(float(current_obj_value))
-													
-						sec_str += (
-							'<td><input id="'
-							+ str(current_obj_api_name)
-							+ '" type="number" value="'
-							+ current_obj_value
-							+ '" class="form-control related_popup_css" style="'
-							+ str(add_style)
-							+ '" '
-							+ disable
-							+ "></td>"
-						)
+					# if current_obj_api_name in precentage_columns and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM"):						
+					# 	string_val = str(current_obj_value)
+					# 	#string_val = string_val.replace('0','')
+					# 	string_val1 = string_val.split('.')
+					# 	str_val = str(string_val1[0])
+					# 	#str_val1 = str_val[0]+str_val[1]
+					# 	current_obj_value = str_val
+					# 	if current_obj_value != "":							
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value +" %"
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)
+					# 	else:
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)	
+					# elif current_obj_api_name in precent_column and (str(ObjectName) == "SAQICO" or str(ObjectName) == "SAQITM") and str(current_obj_value) !='':					
+					# 	string_val = str(current_obj_value)
+					# 	#string_val = string_val.replace('0','')
+					# 	string_val1 = string_val.split('.')
+					# 	#str_val = str(string_val1[1])
+					# 	str_vaal = str(string_val1[1])
+					# 	str_val2 = str(str_vaal[0]+str_vaal[1])
+					# 	strr = str(string_val1[0] +"."+ str_val2)
+					# 	current_obj_value = strr
+					# 	if current_obj_value != "":
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)
+					# 	else:
+					# 		sec_str += (
+					# 			'<td><input id="'
+					# 			+ str(current_obj_api_name)
+					# 			+ '" type="text" value="'
+					# 			+ current_obj_value
+					# 			+ '" class="form-control related_popup_css" style="'
+					# 			+ str(add_style)
+					# 			+ '" '
+					# 			+ disable
+					# 			+ "></td>"
+					# 		)								
+					# else:
+					Trace.Write("else 1812"+str(current_obj_api_name))
+					# if str(ObjectName) == "SAQIGB" and current_obj_value != "":
+					# 	decimal_val = 2
+					# 	formatting_string = "{0:." + str(decimal_val) + "f}"
+					# 	current_obj_value = formatting_string.format(float(current_obj_value))
+												
+					sec_str += (
+						'<td><input id="'
+						+ str(current_obj_api_name)
+						+ '" type="number" value="'
+						+ current_obj_value
+						+ '" class="form-control related_popup_css" style="'
+						+ str(add_style)
+						+ '" '
+						+ disable
+						+ "></td>"
+					)
 						
 							
 				elif data_type == "FORMULA" and formula_data_type == "NUMBER":				
@@ -2319,7 +2314,7 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 			SEC_t = Sql.GetFirst("SELECT SYSECT.RECORD_ID FROM SYSECT WHERE  PRIMARY_OBJECT_NAME = '"+ str(ObjectName)+ "' AND  SECTION_NAME = 'BASIC INFORMATION' ")
 			api_name = SEC_t.RECORD_ID
 	
-	if not RECORD_ID and ObjectName == 'SAQTBP':
+	if not RECORD_ID and ObjectName == 'SAQRIB':
 		#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
 		Trace.Write('receiving---1993-------')
 		quoteid = Quote.GetGlobal("contract_quote_record_id")
@@ -2328,10 +2323,10 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 			sec_str = "<div class='noRecDisp'>No Record Found.</div>"
 		#else:
 			#sec_str = "<div class='noRecDisp'>Billing Matrix is not applicable for this quote configuration.</div>"
-	if RECORD_ID and ObjectName == 'SAQTBP':
-		date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
-						FROM SAQTBP (NOLOCK) 
-						WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
+	# if RECORD_ID and ObjectName == 'SAQRIB':
+	# 	date_diff_obj = Sql.GetFirst("""SELECT IS_CHANGED
+	# 					FROM SAQRIB (NOLOCK) 
+	# 					WHERE QUOTE_BILLING_PLAN_RECORD_ID = '{}'""".format(RECORD_ID))
 		# if date_diff_obj:
 		# 	if date_diff_obj.IS_CHANGED:
 		# 		notification = ' <div class="col-md-12" id="alert_msg" style="display: block;"><div class="row modulesecbnr brdr" data-toggle="collapse" data-target="#Alertmsg8" aria-expanded="true" >NOTIFICATIONS<i class="pull-right fa fa-chevron-down "></i><i class="pull-right fa fa-chevron-up"></i></div><div  id="Alertmsg8" class="col-md-12  alert-notification  brdr collapse in" ><div  class="col-md-12 alert-warning"  ><label ><img src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/warning1.svg" alt="Warning">  Changes have been made to the Quote Configuration. Please refresh the Billing Matrix.</label></div></div></div>'
@@ -2353,12 +2348,21 @@ and GREENBOOK = '{}' AND FABLOCATION_ID = '{}' AND SERVICE_ID = '{}'""".format(q
 	else:
 		Ad_on_prd = ""
 	if	Product.GetGlobal("TreeParentLevel0") == "Complementary Products" and TreeSuperParentParam == "Product Offerings":
-		entitlement_obj = Sql.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0092' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='CONSUMABLE_92'".format('SAQTSE',quote_record_id,quote_revision_record_id))
+		quoteid = Quote.GetGlobal("contract_quote_record_id")
+		entitlement_obj=Sql.GetFirst("SELECT ENTITLEMENT_XML FROM SAQTSE (NOLOCK) WHERE SERVICE_ID='Z0092' AND QUOTE_RECORD_ID ={} AND QTEREV_RECORD_ID = {}".format(quoteid,quote_revision_record_id))
+		spare_parts_visibility = 'False'
 		if entitlement_obj:
-			if entitlement_obj.ENTITLEMENT_VALUE_CODE == 'INCLUDED' or entitlement_obj.ENTITLEMENT_VALUE_CODE == 'SOME INCLUSIONS':
-				spare_parts_visibility = "True"
-			else:
-				spare_parts_visibility = "False"
+			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+			pattern_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+			pattern_id = re.compile(r'<ENTITLEMENT_NAME>CONSUMABLE_92</ENTITLEMENT_NAME>')
+			pattern_name = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:INCLUDED|SOME INCLUSIONS)</ENTITLEMENT_DISPLAY_VALUE>')
+			for m in re.finditer(pattern_tag, entitlement_xml):
+				sub_string = m.group(1)
+				get_ent_id =re.findall(pattern_id,sub_string)
+				get_ent_name=re.findall(pattern_name,sub_string)
+				if get_ent_id and get_ent_name:
+					spare_parts_visibility = 'True'
+					break
 	else:
 		spare_parts_visibility = ""				
 	
@@ -3124,7 +3128,7 @@ def UpdateBreadcrumb(REC_ID):
 # 				VALUES (NEWID(),ENTITLEMENT_XML,EQUIPMENT_ID,EQUIPMENT_RECORD_ID,LINE_ITEM_ID,QUOTE_ID,QUOTE_ITEM_COVERED_OBJECT_RECORD_ID,QTEITM_RECORD_ID,QUOTE_RECORD_ID,QTEREV_RECORD_ID,QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,SERIAL_NO,SERVICE_DESCRIPTION,SERVICE_ID,SERVICE_RECORD_ID,SALESORG_ID,SALESORG_NAME,SALESORG_RECORD_ID,CPS_CONFIGURATION_ID,EQUIPMENT_LINE_ID,'{datetimenow}', '{username}', {userid}, {userid}, '{datetimenow}' );""".format(rec=quoteid, datetimenow=datetime.now().strftime("%m/%d/%Y %H:%M:%S %p"), userid=userId, username=userName, revision_rec_id = quote_revision_record_id)
 				
 # 				Sql.RunQuery(QueryStatement)
-# 				QueryStatement ="""
+# 				QueryStatement =""
 # 				MERGE SAQIEN SRC USING (SELECT A.ENTITLEMENT_XML,B.PART_NUMBER,B.PART_RECORD_ID,B.LINE_ITEM_ID,A.QUOTE_ID,B.QUOTE_ITEM_FORECAST_PART_RECORD_ID,B.QTEITM_RECORD_ID,A.QUOTE_RECORD_ID,A.QTEREV_RECORD_ID,A.QUOTE_SERVICE_ENTITLEMENT_RECORD_ID,A.SERVICE_DESCRIPTION,A.SERVICE_ID,A.SERVICE_RECORD_ID,A.SALESORG_ID,A.SALESORG_NAME,A.SALESORG_RECORD_ID,A.CPS_CONFIGURATION_ID,B.PART_LINE_ID FROM SAQTSE(NOLOCK) A JOIN SAQIFP (NOLOCK) B ON A.QUOTE_RECORD_ID  = B.QUOTE_RECORD_ID AND A.QTEREV_RECORD_ID = B.QTEREV_RECORD_ID AND A.SALESORG_ID =B.SALESORG_ID where A.QUOTE_RECORD_ID = '{rec}'  AND A.QTEREV_RECORD_ID  = '{revision_rec_id}' )
 # 				TGT ON (SRC.QUOTE_RECORD_ID = TGT.QUOTE_RECORD_ID AND SRC.QTEREV_RECORD_ID = TGT.QTEREV_RECORD_ID AND SRC.SERVICE_ID = TGT.SERVICE_ID AND SRC.EQUIPMENT_ID = TGT.PART_NUMBER) 
 # 				WHEN MATCHED THEN UPDATE SET SRC.ENTITLEMENT_XML = TGT.ENTITLEMENT_XML
@@ -4965,6 +4969,7 @@ else:
 	# )
 	Trace.Write('else part---')
 	Trace.Write('Section List-->'+str(SectionList))
+
 	ApiResponse = ApiResponseFactory.JsonResponse(
 		CommonTreeViewHTMLDetail(
 			MODE, TableId, RECORD_ID, TreeParam, NEWVAL, LOOKUPOBJ, LOOKUPAPI, SECTION_EDIT, Flag, ObjectName, SectionList,LEGALSOW

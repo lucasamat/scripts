@@ -16,7 +16,7 @@ from System.Net import HttpWebRequest, NetworkCredential
 clr.AddReference("System.Net")
 from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
-Log.Info('19-SAGETQRPFV----')
+
 try:
     if 'Param' in globals():    
         if hasattr(Param, 'CPQ_Columns'): 
@@ -44,7 +44,7 @@ try:
 
             ToolWorksheet = SqlHelper.GetFirst("SELECT CASE WHEN ISNULL(RESULT,'') = '' THEN '' ELSE RESULT END AS RESULT FROM (SELECT replace ('\"ToolWorksheet\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"ToolId\" : \"'+ToolId+'\",\"ServiceID\" : \"'+ServiceID+'\"}' AS JSON from (SELECT DISTINCT ISNULL(SAQICO.EQUIPMENT_ID,'') AS ToolId,ISNULL(SAQICO.SERVICE_ID,'') AS ServiceID FROM SAQICO (NOLOCK)  WHERE SAQICO.QUOTE_ID ='"+ str(Quote_ID) +"' AND SAQICO.QTEREV_ID ='"+ str(Revision_ID) + "'  ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT)A " )
             
-            ForcastWorksheet = SqlHelper.GetFirst("SELECT CASE WHEN ISNULL(RESULT,'') = '' THEN '' ELSE RESULT END AS RESULT FROM (SELECT replace ('\"ForcastWorksheet\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"GreenBook\" : \"'+GreenBook+'\",\"ServiceID\" : \"'+ServiceID+'\",\"ForcastValue\" : \"'+ForcastValue+'\"}' AS JSON from (SELECT DISTINCT ISNULL(SAQICO.GREENBOOK,'') AS GreenBook,ISNULL(SAQICO.SERVICE_ID,'') AS ServiceID,ISNULL(CONVERT(VARCHAR,SAQICO.NET_VALUE),'') AS ForcastValue FROM SAQICO (NOLOCK)  WHERE SAQICO.QUOTE_ID ='"+ str(Quote_ID) +"' AND SAQICO.QTEREV_ID ='"+ str(Revision_ID) + "'  ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT)A " )
+            ForcastWorksheet = SqlHelper.GetFirst("SELECT CASE WHEN ISNULL(RESULT,'') = '' THEN '' ELSE RESULT END AS RESULT FROM (SELECT replace ('\"ForcastWorksheet\": ['+STUFF((SELECT ','+ JSON FROM (SELECT DISTINCT '{\"GreenBook\" : \"'+GreenBook+'\",\"ServiceID\" : \"'+ServiceID+'\",\"ForcastValue\" : \"'+ForcastValue+'\"}' AS JSON from (SELECT DISTINCT ISNULL(SAQRIT.GREENBOOK,'') AS GreenBook,ISNULL(SAQRIT.SERVICE_ID,'') AS ServiceID,CONVERT(VARCHAR,sum(ISNULL(SAQRIT.NET_VALUE,0))) AS ForcastValue FROM SAQRIT (NOLOCK)  WHERE SAQRIT.QUOTE_ID ='"+ str(Quote_ID) +"' AND SAQRIT.QTEREV_ID ='"+ str(Revision_ID) + "' GROUP BY SERVICE_ID,GREENBOOK  ) t    ) A FOR XML PATH ('')  ), 1, 1, '')+']','amp;#','#') AS RESULT)A " )
             
             
             final_json = ''

@@ -84,7 +84,8 @@ def POPUPLISTVALUEADDNEW(
 		quote_revision_record_id = ''
 	#page = ''
 	pagedata = ''  
-	QryCount = ""  
+	QryCount = ""
+	disable = ''  
 	try:
 		if (TABLEID != "ADDNEW__SYOBJR_93123_SYOBJ_00267" and TABLEID != "ADDNEW__SYOBJR_98788_SYOBJ_00907") and RECORD_FEILD != "":
 			Trace.Write('trace-----')
@@ -99,17 +100,27 @@ def POPUPLISTVALUEADDNEW(
 			RECORD_FEILD = ""
 	except:
 		RECORD_FEILD = ""
-	if TABLEID.startswith("SYOBJR"):
+	try:	
+		if TABLEID.startswith("SYOBJR"):
+			TABLE_ID = ""
+		else:
+			TABLE_ID = TABLEID.split("__")
+	except:		
 		TABLE_ID = ""
-	else:
-		TABLE_ID = TABLEID.split("__")
+		
 	TreeParentParam = ""
 	TreeSuperParentParam = ""
-	if TABLE_ID:
-		table = TABLE_ID[1]
-	else:
-		table = TABLEID
-	table = table.split("_")
+	try:
+		if TABLE_ID:
+			table = TABLE_ID[1]
+		else:
+			table = TABLEID
+	except:
+		table = ""
+	try:
+		table = table.split("_")
+	except:
+		table = ""
 	count_value = 0
 	filter_control_function = ""
 	try:
@@ -117,8 +128,14 @@ def POPUPLISTVALUEADDNEW(
 	except:
 		CurrentTab = 'Quotes'    
 	Trace.Write('TABLEID----'+str(TABLEID))
-	table1 = table[2] + "-" + table[3]
-	popup_table_id = table[0] + "-" + table[1]
+	try:
+		table1 = table[2] + "-" + table[3]
+	except:
+		table1 = ""
+	try:	
+		popup_table_id = table[0] + "-" + table[1]
+	except:
+		popup_table_id = ""
 
 	filter_tags = []
 	filter_types = []
@@ -132,7 +149,7 @@ def POPUPLISTVALUEADDNEW(
 		SYOBJR_NAME = "div_CTR_" + str(popup_lable_obj.NAME).replace(" ", "_")
 		Question_obj = Sql.GetFirst(
 			"SELECT OBJECT_NAME, LABEL FROM SYOBJH (NOLOCK) WHERE RECORD_ID='" + str(popup_lable_obj.OBJ_REC_ID) + "'"
-		)
+		)	
 
 	else:
 		Question_obj = Sql.GetFirst(
@@ -140,7 +157,7 @@ def POPUPLISTVALUEADDNEW(
 		)
 
 	if TABLEID != "ADDNEW__SYOBJR_93123_SYOBJ_00267" or TABLEID != "ADDNEW__SYOBJR_98788_SYOBJ_00907":
-		if TABLEID != "ADDNEW__SYOBJR_95800_SYOBJ_00458":
+		if TABLEID != "ADDNEW__SYOBJR_95800_SYOBJ_00458":		
 			rec_field = Sql.GetFirst(
 				"SELECT API_NAME,API_FIELD_NAME FROM SYSEFL (NOLOCK) WHERE SAPCPQ_ATTRIBUTE_NAME='" + str(RECORD_FEILD) + "'"
 			)
@@ -150,6 +167,7 @@ def POPUPLISTVALUEADDNEW(
 			else:
 				record_field = ""
 				record_value = ""
+		
 	if str(popup_table_id) == "SYOBJR-94489":
 		TreeParentParam = Product.GetGlobal("TreeParentLevel0")
 		record_value = TreeParentParam
@@ -177,10 +195,11 @@ def POPUPLISTVALUEADDNEW(
 	id_list = []
 	dict_list1 = []
 	selected_offerings_list_preslect = []
+	Trace.Write("DIVNAME==="+str(DIVNAME))	
 
 	if Question_obj is not None:
 		if DIVNAME == "div_CTR_Assigned_Apps":
-			ObjectName = "SYPRAP"
+			ObjectName = "SYPRAP"		
 		else:
 			ObjectName = Question_obj.OBJECT_NAME.strip()
 		if str(ObjectName) == "USERS" and str(CurrentTab) == "Profile":
@@ -3539,9 +3558,11 @@ def POPUPLISTVALUEADDNEW(
 				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
 			)
 
-		elif str(ObjectName) == "SAQRSP" and str(CurrentTab) == "Quotes":
-			Trace.Write('In SAQRSP')
+		elif (str(ObjectName) == "SAQRSP" or str(ObjectName)=="SAQSPT") and str(CurrentTab) == "Quotes":
+			Trace.Write('In '+str(ObjectName))
+			popup_obj = ObjectName
 			where_string = ""
+			where_string_1 = ""
 			if A_Keys != "" and A_Values != "":
 				A_Keys = list(A_Keys)
 				A_Values = list(A_Values)
@@ -3674,7 +3695,7 @@ def POPUPLISTVALUEADDNEW(
 				Offset_Skip_Count=offset_skip_count, Fetch_Count=fetch_count
 			)
 			TreeParam = Product.GetGlobal("TreeParam")
-			inner_join = "INNER JOIN MAMSOP (NOLOCK)  on MAMTRL.SAP_PART_NUMBER = MAMSOP.SAP_PART_NUMBER"
+			inner_join = "INNER JOIN MAMSOP (NOLOCK)  on MAMTRL.SAP_PART_NUMBER = MAMSOP.SAP_PART_NUMBER AND MAMTRL.MATERIAL_RECORD_ID = MAMSOP.MATERIAL_RECORD_ID "
 			additional_where = ""
 			if where_string and 'SAP_PART_NUMBER' in where_string:
 				where_string = where_string.replace("SAP_PART_NUMBER", "MAMTRL.SAP_PART_NUMBER")
@@ -3712,89 +3733,67 @@ def POPUPLISTVALUEADDNEW(
 				"MAMSOP.MATPRIGRP_ID"
 				]
 			#get consumable and non consumable values from XML start
-			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
+			get_salesval  = Sql.GetFirst("select SALESORG_ID from SAQTRV(NOLOCK) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"'")
 			iclusions_val_list = []
 			TreeSuperParentParam = Product.GetGlobal("TreeParentLevel1")
 			TreeTopSuperParentParam = Product.GetGlobal("TreeParentLevel2")
-			if TreeSuperParentParam == "Product Offerings":
-				TreeParam = TreeParam
-				TableName = "SAQTSE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
-			elif TreeTopSuperParentParam == "Product Offerings":
-				Service_Id = Product.GetGlobal("TreeParentLevel0")
-				TableName = "SAQSFE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
-			else:
-				Service_Id = Product.GetGlobal("TreeParentLevel1")
-				Fab_location_Id = Product.GetGlobal("TreeParentLevel0")
-				TableName = "SAQSGE"
-				entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' AND  FABLOCATION_ID = '{}' AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,Fab_location_Id,TreeParam))
-			# get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,'"+str(entitlement_obj.ENTITLEMENT_XML)+"') as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('{}','{}') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions') ".format(contract_quote_record_id,#quote_revision_record_id,TreeParam,non_consumable_value,consumable_value))
-			#get_xml_val = Sql.GetList("select ENTITLEMENT_ID,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID,replace(X.Y.value('(ENTITLEMENT_ID)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_ID,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from SAQTSE (nolock) where QUOTE_RECORD_ID = '"+str(contract_quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"' and SERVICE_ID = '"+str(TreeParam)+"' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_ID in ('"+str(non_consumable_value)+"','"+str(consumable_value)+"') and ENTITLEMENT_DISPLAY_VALUE in ('Some Exclusions','Some Inclusions')")
-			# entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-			# import re
-			# flag=0
-			# quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			# pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_NONCNS</ENTITLEMENT_ID>')
-			# pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-			# # non_consumable_val_mamsop = consumable_value_mamsop = ''
-			# consumable_value_mamsop = ""
-			# for m in re.finditer(quote_item_tag, entitlement_xml):
-			# 	sub_string = m.group(1)
-			# 	non_consumable =re.findall(pattern_non_consumable,sub_string)
-			# 	consumable =re.findall(pattern_consumable,sub_string)
-			# 	if non_consumable:
-			# 		consumable_value_mamsop = 'N'
-			# 		break
-			# 	if consumable:
-			# 		consumable_value_mamsop = 'C'
-			# 		break
-			# 	iclusions_val_list.append(consumable_value_mamsop)
-			# for val in get_xml_val:
-			# 	#Trace.Write(str(val.ENTITLEMENT_ID)+'ENTITLEMENT_DISPLAY_VALUE----consumables val --'+str(val.ENTITLEMENT_DISPLAY_VALUE))
-			# 	if '_TSC_NONCNS' in val.ENTITLEMENT_ID:
-			# 		consumable_value_mamsop = 'N'
-			# 	elif 'TSC_CONSUM' in val.ENTITLEMENT_ID:
-			# 		consumable_value_mamsop  = 'C'
-			# 	iclusions_val_list.append(consumable_value_mamsop)
-			#Trace.Write(str(val.ENTITLEMENT_ID)+'-----consumables val --'+str(non_consumable_val_mamsop)+'---'+str(consumable_value_mamsop))
-			#get consumable and non consumable values from XML end
-			#where_string += """ IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND SAP_PART_NUMBER NOT IN (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}')""".format(contract_quote_record_id,quote_revision_record_id)
-			entitlement_xml = entitlement_obj.ENTITLEMENT_XML
-			import re
-			flag=0
-			iclusions_val_list = []
-			quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
-			pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
-			pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
-			pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
-			for m in re.finditer(quote_item_tag, entitlement_xml):
-				sub_string = m.group(1)
-				non_consumable =re.findall(pattern_non_consumable,sub_string)
-				consumable =re.findall(pattern_consumable,sub_string)
-				exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
-				if non_consumable and exclusion_or_inclusion:
-					Trace.Write("Matcheddddddddd")
-					iclusions_val_list.append('N')
-				if consumable and exclusion_or_inclusion:
-					Trace.Write("5443543")
-					iclusions_val_list.append('C')
-			iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
-			#Trace.Write('iclusions_val---'+str(iclusions_val))
-			where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
-			#Trace.Write('inner_join----'+str(inner_join))
-			#Trace.Write('ordered_keys----'+str(ordered_keys))
-			#Trace.Write('additional_where----'+str(additional_where))
-			# table_data = Sql.GetList(
-			# 	"select {} from {} (NOLOCK) {} {} {} {} {}".format(
-			# 		", ".join(ordered_keys),
-			# 		ObjectName
-			# 		,inner_join if inner_join else "",
-			# 		"WHERE " + where_string if where_string else "" ,
-			# 		additional_where,
-			# 		order_by,pagination_condition
-			# 	)
-			# )
+			if str(popup_obj)=="SAQRSP":
+				if TreeSuperParentParam == "Product Offerings":
+					TreeParam = TreeParam
+					TableName = "SAQTSE"
+					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}' ".format(TableName,contract_quote_record_id,quote_revision_record_id,TreeParam))
+				else:
+					Service_Id = Product.GetGlobal("TreeParentLevel0")
+					TableName = "SAQSGE"
+					entitlement_obj = Sql.GetFirst("select replace(ENTITLEMENT_XML,'&',';#38') as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = '{}'AND GREENBOOK  = '{}'".format(TableName,contract_quote_record_id,quote_revision_record_id,Service_Id,TreeParam))
+				
+				entitlement_xml = entitlement_obj.ENTITLEMENT_XML
+				import re
+				flag=0
+				iclusions_val_list = []
+				quote_item_tag = re.compile(r'(<QUOTE_ITEM_ENTITLEMENT>[\w\W]*?</QUOTE_ITEM_ENTITLEMENT>)')
+				pattern_non_consumable = re.compile(r'<ENTITLEMENT_ID>(?:AGS_[^>]*?_TSC_NONCNS|AGS_[^>]*?_NON_CONSUMABLE)</ENTITLEMENT_ID>')
+				pattern_consumable = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_CONSUM</ENTITLEMENT_ID>')
+				pattern_new_parts_only = re.compile(r'<ENTITLEMENT_ID>AGS_[^>]*?_TSC_RPPNNW</ENTITLEMENT_ID>')
+				pattern_exclusion_or_inclusion = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>(?:Some Exclusions|Some Inclusions)</ENTITLEMENT_DISPLAY_VALUE>')
+				pattern_new_parts_only_yes = re.compile(r'<ENTITLEMENT_DISPLAY_VALUE>Yes</ENTITLEMENT_DISPLAY_VALUE>')
+				new_parts_yes = ""
+				for m in re.finditer(quote_item_tag, entitlement_xml):
+					sub_string = m.group(1)
+					non_consumable =re.findall(pattern_non_consumable,sub_string)
+					consumable =re.findall(pattern_consumable,sub_string)
+					exclusion_or_inclusion =re.findall(pattern_exclusion_or_inclusion,sub_string)
+					new_parts_only = re.findall(pattern_new_parts_only,sub_string)
+					new_parts_only_value = re.findall(pattern_new_parts_only_yes,sub_string)
+					if new_parts_only and new_parts_only_value:
+						new_parts_yes = "Yes"
+						break
+					if non_consumable and exclusion_or_inclusion:
+						iclusions_val_list.append('N')
+					if consumable and exclusion_or_inclusion:
+						iclusions_val_list.append('C')
+				if new_parts_yes == "Yes":
+					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND  MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE  MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+				else:
+					iclusions_val = str(tuple(iclusions_val_list)).replace(',)',')')
+					where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+					where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE MAMSOP.MATPRIGRP_ID in {iclusions_val} and MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id,iclusions_val = iclusions_val)
+				Pagination_M = Sql.GetFirst(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
+						ObjectName,ObjectName,str(where_string_1) if where_string_1 else "",additional_where
+					)
+				)
+			
+			elif str(popup_obj)=="SAQSPT":
+				where_string += """ MAMTRL.IS_SPARE_PART = 'True' AND MAMSOP.SALESORG_ID = '{sales}' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQSPT (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQSPT.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+				where_string_1 += """ MAMTRL.SAP_PART_NUMBER IN (SELECT SAP_PART_NUMBER FROM MAMSOP WHERE  MAMSOP.SALESORG_ID = '{sales}' )AND MAMTRL.IS_SPARE_PART = 'True' AND MAMTRL.PRODUCT_TYPE IS NULL AND NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{qt_rec_id}' AND QTEREV_RECORD_ID ='{qt_rev_id}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER)""".format(sales = get_salesval.SALESORG_ID,qt_rec_id = contract_quote_record_id,qt_rev_id = quote_revision_record_id)
+				Pagination_M = Sql.GetFirst(
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
+						ObjectName,ObjectName,str(where_string_1) if where_string_1 else "",additional_where
+					)
+				)
+			
 			table_data = Sql.GetList(
 				"select {} from {} (NOLOCK) {} {} {} {} {}".format(
 					", ".join(ordered_keys_mam),
@@ -3805,22 +3804,20 @@ def POPUPLISTVALUEADDNEW(
 					order_by,pagination_condition
 				)
 			)
-			Trace.Write('3721-----')
-			QueryCountObj = Sql.GetFirst(
-					"select count(*) as cnt from {} (NOLOCK) {} {} {} ".format(
-					ObjectName,
-					inner_join if inner_join else "",
-					"WHERE " + where_string if where_string else "",
-					additional_where
-				)
-				)
 			Pagination_M = Sql.GetFirst(
-				"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) {} WHERE {} {}.IS_SPARE_PART = 'True' AND PRODUCT_TYPE IS NULL AND  NOT EXISTS (SELECT PART_NUMBER FROM SAQRSP (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID ='{}' and MAMTRL.SAP_PART_NUMBER = SAQRSP.PART_NUMBER) {} ".format(
-					ObjectName,ObjectName,inner_join if inner_join else "",str(where_string)+" AND " if where_string else "",ObjectName,contract_quote_record_id,quote_revision_record_id,additional_where
+					"SELECT COUNT({}.CpqTableEntryId) as count FROM {} (NOLOCK) WHERE {} {}".format(
+						ObjectName,ObjectName,str(where_string_1) if where_string_1 else "",additional_where
+					)
 				)
-			)
-			if QueryCountObj is not None:
-				QryCount = QueryCountObj.cnt
+			# QueryCountObj = Sql.GetFirst(
+			# 		"select count(*) as cnt from {} (NOLOCK) {} {} ".format(
+			# 		ObjectName,
+			# 		"WHERE " + where_string_1 if where_string_1 else "",
+			# 		additional_where
+			# 	)
+			# 	)
+			#if QueryCountObj is not None:
+			QryCount = Pagination_M.count
 
 			if table_data is not None:
 				for row_data in table_data:
@@ -3994,6 +3991,331 @@ def POPUPLISTVALUEADDNEW(
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
+		elif str(ObjectName) =="SAQDLT" and str(CurrentTab) == "Quotes" and ACTION == "REPLACE":
+			Trace.Write('In SAQDLT')
+			where_string = ""
+			TreeParam = Product.GetGlobal("TreeParam")
+			
+			if A_Keys != "" and A_Values != "":
+				A_Keys = list(A_Keys)
+				A_Values = list(A_Values)
+				for key, value in zip(A_Keys, A_Values):
+					if value.strip():
+						if where_string:
+							where_string += " AND "
+						where_string += "{Key} LIKE '%{Value}%'".format(Key=key, Value=value)
+			DIVNAME = "VIEW_DIV_ID"
+			new_value_dict = {}
+			ObjectName = "SAEMPL"
+			table_id = "contact_manager_addnew_model"
+			Header_details = {
+				"EMPLOYEE_RECORD_ID": "KEY",
+				"EMPLOYEE_ID": "EMPLOYEE ID",
+				"EMPLOYEE_NAME": "EMPLOYEE NAME",
+				"EMAIL": "EMAIL",
+				"PHONE":"PHONE",
+			}
+			ordered_keys = [
+				"EMPLOYEE_RECORD_ID",
+				"EMPLOYEE_ID",
+				"EMPLOYEE_NAME",
+				"EMAIL",
+				"PHONE",
+			]
+			Objd_Obj = Sql.GetList(
+				"select FIELD_LABEL,API_NAME,LOOKUP_OBJECT,LOOKUP_API_NAME,DATA_TYPE,FORMULA_DATA_TYPE from SYOBJD (NOLOCK)where OBJECT_NAME = '"
+				+ str(ObjectName)
+				+ "'"
+			)
+			lookup_disply_list = []
+			if Objd_Obj is not None:
+				attr_list = {}
+				api_names = [inn.API_NAME for inn in Objd_Obj]
+				for attr in Objd_Obj:
+					attr_list[str(attr.API_NAME)] = str(attr.FIELD_LABEL)
+					if str(attr.LOOKUP_API_NAME) != "" and str(attr.LOOKUP_API_NAME) is not None:
+						lookup_disply_list.append(str(attr.API_NAME))
+				checkbox_list = [
+					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
+				]
+				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
+				sec_str = '<div class="row modulebnr brdr ma_mar_btm">REPLACE CONTRACT MANAGER<button type="button" id = "contract_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
+				sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Contacts</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">Select a valid Contract manager record below to replace it to the list of Contracts associated with your Quote</abbr></div></div></div></div>'
+
+			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
+			sec_str += ('<table id="'+str(table_id)+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>')
+			#sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+
+			for key, invs in enumerate(list(ordered_keys)):
+
+				invs = str(invs).strip()
+				qstring = Header_details.get(str(invs)) or ""
+				if key == 0:
+					sec_str += (
+						'<th data-field="'
+						+ str(invs)
+						+ '" data-formatter="contactreplaceKeyHyperLink" data-sortable="true" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+				else:
+					sec_str += (
+						'<th data-field="'
+						+ invs
+						+ '" data-title-tooltip="'
+						+ str(qstring)
+						+ '" data-sortable="true" data-filter-control="input">'
+						+ str(qstring)
+						+ "</th>"
+					)
+			sec_str += '</tr></thead><tbody class ="equipments_id" ></tbody></table>'
+			sec_str += '<div id="contact_replace_addnew_model_footer"></div>'
+			values_list = ""
+			values_lists = ""
+			a_test = []
+			for invsk in list(Header_details):
+				table_ids = "#" + str(table_id)
+				filter_class = table_ids + " .bootstrap-table-filter-control-" + str(invsk)
+				values_lists += "var " + str(invsk) + ' = $("' + str(filter_class) + '").val(); '
+				values_lists += " ATTRIBUTE_VALUEList.push(" + str(invsk) + "); "
+				a_test.append(invsk)
+				filter_control_function += (
+					'$("'
+					+ filter_class
+					+ '").change( function(){ var table_id = $(this).closest("table").attr("id"); var a_list = '
+					+ str(a_test)
+					+ "; ATTRIBUTE_VALUEList = []; "
+					+ str(values_lists)
+					+ ' SortColumn = localStorage.getItem("SortColumn"); SortColumnOrder = localStorage.getItem("SortColumnOrder"); PerPage = $("#PageCountValue").val(); PageInform = "1___" + PerPage + "___" + PerPage; cpq.server.executeScript("SYUADNWPOP", {\'TABLEID\': "'
+					+ str(TABLEID)
+					+ "\", 'OPER': 'NO', 'RECORDID': \""
+					+ str(RECORDID)
+					+ "\", 'RECORDFEILD':  \""
+					+ str(RECORDFEILD)
+					+ "\", 'NEWVALUE': '', 'LOOKUPOBJ': '', 'LOOKUPAPI': '','A_Keys':a_list,'A_Values':ATTRIBUTE_VALUEList,'ACTION':'REPLACE'}, function(data) {  date_field = data[3]; var assoc = data[1]; var api_name = data[2];data4 = data[4];data5 = data[5]; try { if(date_field.length > 0) { $(\""
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); $("#noRecDisp").remove() } else{ var date_field = [];$("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); $("#contact_manager_addnew_model").after("<div id=\'noRecDisp\' class=\'noRecord\'>No Records to Display</div>"); $(".noRecord:not(:first)").remove(); } } catch(err) { if(date_field.length > 0) { $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",false); } else{ $("'
+					+ str(table_ids)
+					+ '").bootstrapTable("load", date_field  ); $("button#country_save").attr("disabled",true); } } ; });  });'
+				)
+			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
+				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
+			)
+			Pagination_M = SqlHelper.GetFirst("""select count(SAEMPL.CpqTableEntryId) as count from SAEMPL (NOLOCK) WHERE SAEMPL.EMPLOYEE_RECORD_ID  NOT IN (SELECT MEMBER_RECORD_ID FROM SAQDLT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
+
+			order_by = "order by SAEMPL.EMPLOYEE_ID ASC"
+
+			if str(PerPage) == "" and str(PageInform) == "":
+				Page_start = 1
+				Page_End = fetch_count
+				PerPage = fetch_count
+				PageInform = "1___"+str(fetch_count)+"___"+str(fetch_count)
+			else:
+				Page_start = int(PageInform.split("___")[0])
+				Page_End = int(PageInform.split("___")[1])
+				PerPage = PerPage
+
+			order_by = ""
+			if SortColumn != '' and SortColumnOrder !='':
+				order_by = "order by "+SortColumn + " " + SortColumnOrder
+			else:
+				order_by = "order by EMPLOYEE_ID ASC"
+
+			pop_val = {}
+			if where_string:
+				where_string += " AND"
+				Trace.Write("soureceequipments "+str(where_string))
+			if TreeParam == "Sales Team":
+				where_string += """ SAEMPL.EMPLOYEE_RECORD_ID NOT IN (SELECT MEMBER_RECORD_ID FROM SAQDLT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
+			
+			table_data = Sql.GetList("Select {} FROM SAEMPL {} {} {}".format(", ".join(ordered_keys),"WHERE " +where_string if where_string else "",order_by,pagination_condition))
+			QueryCountObj = Sql.GetFirst(
+				"select count(*) as cnt from SAEMPL (NOLOCK) {}".format(
+				"WHERE " +where_string if where_string else ""
+				)
+			)
+			if QueryCountObj is not None:
+				QryCount = QueryCountObj.cnt
+
+
+			if table_data is not None :
+				for row_data in table_data:
+					data_id = str(ObjectName)
+
+					new_value_dict = {}
+
+					for data in row_data:
+						if str(data.Key) == "EMPLOYEE_RECORD_ID":
+							pop_val = str(data.Value)
+							cpqidval = CPQID.KeyCPQId.GetCPQId(ObjectName, str(data.Value))
+							new_value_dict[data.Key] = cpqidval
+						else:
+							new_value_dict[data.Key] = data.Value
+						new_value_dict["pop_val"] = pop_val
+					date_field.append(new_value_dict)
+			QueryCount = len(date_field)
+
+			pagination_total_count = 0
+			if Pagination_M is not None:
+				pagination_total_count = Pagination_M.count
+			if offset_skip_count == 0:
+				offset_skip_count = 1
+				records_end = fetch_count
+			records_end = offset_skip_count + fetch_count - 1
+			records_end = pagination_total_count if pagination_total_count < records_end else records_end
+			records_start_and_end = "{} - {} of ".format(offset_skip_count, records_end)
+			disable_next_and_last = ""
+			disable_previous_and_first = ""
+			if records_end == pagination_total_count:
+				disable_next_and_last = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			if offset_skip_count == 0:
+				disable_previous_and_first = "class='btn-is-disabled' style=\'pointer-events:none\' "
+			current_page = int(math.ceil(offset_skip_count / fetch_count)) + 1
+
+			Product.SetGlobal("QueryCount", str(QueryCount))
+			pagination_table_id = "pagination_{}".format(table_id)
+			if QueryCount != 0:
+				var_str = """<div id="{Parent_Div_Id}" class="col-md-12 brdr listContStyle padbthgt30">
+									<div class="col-md-4 pager-numberofitem  clear-padding">
+										<span class="pager-number-of-items-item flt_lt_pad2_mar2022" id="RecordsStartAndEnd">{Records_Start_And_End}</span>
+										<span class="pager-number-of-items-item flt_lt_pad2_mar" id="TotalRecordsCount">{Pagination_Total_Count}</span>
+										<div class="clear-padding fltltmrgtp3">
+											<div class="pull-right vralign">
+												<select onchange="ShowResultCountFunc(this, '{ShowResultCountFuncTb}', 'addEquipment', '{TableId}')" id="ShowResultCount" class="form-control selcwdt">
+													<option value="10" {Selected_10}>10</option>
+													<option value="20" {Selected_20}>20</option>
+													<option value="50" {Selected_50}>50</option>
+													<option value="100" {Selected_100}>100</option>
+													<option value="200" {Selected_200}>200</option>
+												</select> 
+											</div>
+										</div>
+									</div>
+									<div class="col-xs-8 col-md-4  clear-padding inpadtex" data-bind="visible: totalItemCount">
+										<div class="clear-padding col-xs-12 col-sm-6 col-md-12 brd0">
+											<ul class="pagination pagination">
+												<li class="disabled">
+													<a onclick="GetFirstResultFunc('{GetFirstResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_First}><i class="fa fa-caret-left fnt14bold"></i><i class="fa fa-caret-left fnt14"></i></a>
+												</li>
+												<li class="disabled"><a onclick="GetPreviuosResultFunc('{GetPreviuosResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Previous}><i class="fa fa-caret-left fnt14"></i>PREVIOUS</a></li>
+												<li class="disabled"><a onclick="GetNextResultFunc('{GetNextResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Next}>NEXT<i class="fa fa-caret-right fnt14"></i></a></li>
+												<li class="disabled"><a onclick="GetLastResultFunc('{GetLastResultFuncTb}', 'addEquipment', '{TableId}')" {Disable_Last}><i class="fa fa-caret-right fnt14"></i><i class="fa fa-caret-right fnt14bold"></i></a></li>
+											</ul>
+										</div> 
+									</div> 
+									<div class="col-md-4 pad3"> 
+										<span id="page_count" class="currentPage page_right_content">{Current_Page}</span>
+										<span class="page_right_content padrt2">Page </span>
+									</div>
+								</div>""".format(
+					Parent_Div_Id=pagination_table_id,
+					Records_Start_And_End=records_start_and_end,
+					Pagination_Total_Count=pagination_total_count,
+					ShowResultCountFuncTb=pagination_table_id,
+					Selected_10="selected" if fetch_count == 10 else "",
+					Selected_20="selected" if fetch_count == 20 else "",
+					Selected_50="selected" if fetch_count == 50 else "",
+					Selected_100="selected" if fetch_count == 100 else "",
+					Selected_200="selected" if fetch_count == 200 else "",
+					GetFirstResultFuncTb=pagination_table_id,
+					Disable_First=disable_previous_and_first,
+					GetPreviuosResultFuncTb=pagination_table_id,
+					Disable_Previous=disable_previous_and_first,
+					GetNextResultFuncTb=pagination_table_id,
+					Disable_Next=disable_next_and_last,
+					GetLastResultFuncTb=pagination_table_id,
+					Disable_Last=disable_next_and_last,
+					Current_Page=current_page,
+					TableId=TABLEID,
+				)
+			else:
+				date_field = "NORECORDS"
+				Trace.Write("No Equipment Records")
+			table_ids = "#" + str(table_id)
+			# Filter based on table MultiSelect Dropdown column - Start
+
+			for index, col_name in enumerate(ordered_keys):
+				table, api_name = ObjectName, col_name
+				obj_data = Sql.GetFirst(
+					"SELECT API_NAME, DATA_TYPE, PICKLIST FROM  SYOBJD WHERE OBJECT_NAME='"
+					+ str(table)
+					+ "' and API_NAME = '"
+					+ str(api_name)
+					+ "'"
+				)
+				if obj_data is not None:
+					if str(obj_data.PICKLIST).upper() == "TRUE":
+						filter_tag = (
+							'<div id = "'
+							+ str(table_id)
+							+ "_RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ '" class="form-control bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ " RelatedMutipleCheckBoxDrop_"
+							+ str(index)
+							+ ' "></div>'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("select")
+						if obj_data.DATA_TYPE == "CHECKBOX":
+							filter_values.append(["True", "False"])
+						else:
+							# Trace.Write("=============$$$$$$$$$$$$$>>>>>>>>>>>>> "+"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table))
+							data_obj = Sql.GetList(
+								"SELECT DISTINCT {Column} FROM {Table}".format(Column=api_name, Table=table)
+							)
+							if data_obj is not None:
+								filter_values.append([row_data.Value for data in data_obj for row_data in data])
+					else:
+						filter_tag = (
+							'<input type="text" class="form-control wth100visble bootstrap-table-filter-control-'
+							+ str(api_name)
+							+ '">'
+						)
+						filter_tags.append(filter_tag)
+						filter_types.append("input")
+						filter_values.append("")
+
+			filter_drop_down = (
+				"try { if( document.getElementById('"
+				+ str(table_id)
+				+ "') ) { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data6[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data8[j]); if(data11[j].length>5){ $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter}); }else{$('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter ,autoDropDownHeight: true});} } } } }  catch(err) { setTimeout(function() { var listws = document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control');  for (i = 0; i < listws.length; i++) { document.getElementById('"
+				+ str(table_id)
+				+ "').getElementsByClassName('filter-control')[i].innerHTML = data9[i];  } for (j = 0; j < listws.length; j++) { if (data10[j] == 'select') { var dataAdapter = new $.jqx.dataAdapter(data11[j]); $('#"
+				+ str(table_id)
+				+ "_RelatedMutipleCheckBoxDrop_' + j.toString() ).jqxDropDownList( { checkboxes: true, source: dataAdapter, scrollBarSize :10 }); } } }, 5000); }"
+			)
+			dbl_clk_function += (
+				'$("'
+				+ str(table_ids)
+				+ '").on("all.bs.table", function (e, name, args) { $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>"); }); $("'
+				+ str(table_ids)
+				+ '\ th.bs-checkbox div.th-inner").before("<div class=\'pad0brdbt\'>SELECT</div>"); $(".bs-checkbox input").addClass("custom"); $(".bs-checkbox input").after("<span class=\'lbl\'></span>");'
+			)
+
+			pagedata = ""
+			if QryCount < int(PerPage):
+				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
+			else:
+				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
+
 
 		elif str(ObjectName) =="SAQICT" and str(CurrentTab) == "Quotes":
 			Trace.Write('In SAQICT')
@@ -4043,12 +4365,12 @@ def POPUPLISTVALUEADDNEW(
 					inn.API_NAME for inn in Objd_Obj if (inn.DATA_TYPE == "CHECKBOX" or inn.FORMULA_DATA_TYPE == "CHECKBOX")
 				]
 				lookup_list = {ins.LOOKUP_API_NAME: ins.API_NAME for ins in Objd_Obj}
-				sec_str = '<div class="row modulebnr brdr ma_mar_btm">REPLACE CONTACT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
-				sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Contacts</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">Select a valid Contact record below to add it to the list of Contacts associated with your Quote</abbr></div></div></div></div>'
+				sec_str = '<div class="row modulebnr brdr ma_mar_btm">ADD CONTACT<button type="button" id = "account_replace" class="close flt_rt" onclick="closepopup_scrl(this)" data-dismiss="modal">X</button></div>'
+				sec_str += '<div class="col-md-12 padlftrhtnone"><div class="row pad-10 bg-lt-wt brdr"> <img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/APPLIEDMATERIALS_TST/Additionalfiles/customer_info_icon.svg"/><div class="product_txt_div_child secondary_highlight" style="display: block;text-align: left;"><div class="product_txt_child"><abbr title="Key">Contacts</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">Select a valid Contact record below to add it to the list of Contacts associated with your Quote</abbr></div></div><button type="button" class="btnconfig" data-dismiss="modal" onclick="closepopup_scrl()">CANCEL</button><button type="button" id="add-contacts" class="btnconfig" onclick="addcontacts()" data-dismiss="modal">ADD</button></div></div>'
 
 			sec_str += '<div id="container" class="g4 pad-10 brdr except_sec">'
 			sec_str += ('<table id="'+str(table_id)+ '" data-escape="true"  data-search-on-enter-key="true" data-show-header="true"  data-filter-control="true"> <thead><tr>')
-			#sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
+			sec_str += '<th data-field="SELECT" class="wth45" data-checkbox="true" id ="check_boxval" onchange = "get_checkedval()"><div class="action_col">SELECT</div></th>'
 
 			for key, invs in enumerate(list(ordered_keys)):
 
@@ -4111,7 +4433,7 @@ def POPUPLISTVALUEADDNEW(
 			pagination_condition = "OFFSET {Offset_Skip_Count} ROWS FETCH NEXT {Fetch_Count} ROWS ONLY".format(
 				Offset_Skip_Count=offset_skip_count-1 if offset_skip_count%10==1 else offset_skip_count, Fetch_Count=fetch_count
 			)
-			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_ID  NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
+			Pagination_M = SqlHelper.GetFirst("""select count(SACONT.CpqTableEntryId) as count from SACONT (NOLOCK) WHERE SACONT.CONTACT_RECORD_ID  NOT IN (SELECT CONTACT_RECORD_ID FROM SAQICT (NOLOCK) WHERE QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id))
 
 			order_by = "order by SACONT.CONTACT_ID ASC"
 
@@ -4136,7 +4458,7 @@ def POPUPLISTVALUEADDNEW(
 				where_string += " AND"
 				Trace.Write("soureceequipments "+str(where_string))
 			if TreeParam == "Customer Information":
-				where_string += """ SACONT.CONTACT_ID NOT IN (SELECT CONTACT_ID FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
+				where_string += """ SACONT.CONTACT_RECORD_ID NOT IN (SELECT CONTACT_RECORD_ID FROM SAQICT (NOLOCK) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}')""".format(contract_quote_record_id,quote_revision_record_id)
 			
 			table_data = Sql.GetList("Select {} FROM SACONT {} {} {}".format(", ".join(ordered_keys),"WHERE " +where_string if where_string else "",order_by,pagination_condition))
 			QueryCountObj = Sql.GetFirst(
@@ -4319,7 +4641,9 @@ def POPUPLISTVALUEADDNEW(
 				pagedata = str(Page_start) + " - " + str(QryCount) + " of "
 			else:
 				pagedata = str(Page_start) + " - " + str(Page_End)+ " of "
-				
+
+		
+					
 		else:
 			#Trace.Write("===============> Else")
 			overflow_val = ""
@@ -5459,6 +5783,7 @@ else:
 RECORDID = Param.RECORDID
 try:
 	RECORDFEILD = Param.RECORDFEILD
+	Trace.Write("RECORDFEILD==="+str(RECORDFEILD))
 except:
 	RECORDFEILD = ""
 try:
@@ -5492,6 +5817,12 @@ try:
 except:    
 	PerPage = ''
 	PageInform = ''
+
+try:
+	ACTION = Param.ACTION
+except:
+	ACTION = ''
+Trace.Write("ACTION==="+str(ACTION))
 
 
 Trace.Write("PerPage-----"+str(PerPage))

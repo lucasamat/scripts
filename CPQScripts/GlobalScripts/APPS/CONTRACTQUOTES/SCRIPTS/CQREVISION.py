@@ -24,12 +24,13 @@ Sql = SQL()
 ScriptExecutor = ScriptExecutor
 # When we create a new revision for existing quote from C4C, quote edit is taking some time. So if quote is not edited in backend, we do again here.
 if not Quote:
+	Trace.Write("========>>> Quote is not in edit mode")
 	try:
 		Quote = QuoteHelper.Edit(Param.QuoteId)
 	except Exception:
-		pass
+		Trace.Write("========>>> Quote is edit error")
 quote_contract_recordId = Quote.GetGlobal("contract_quote_record_id")
-Trace.Write('23----test')
+Trace.Write('23----test'+str(quote_contract_recordId))
 #A055S000P01-8729 start
 def create_new_revision(Opertion,cartrev):
 	cloneobject={
@@ -41,7 +42,6 @@ def create_new_revision(Opertion,cartrev):
 		"SAQSCA":"QUOTE_SERVICE_COVERED_OBJECT_ASSEMBLIES_RECORD_ID",
 		"SAQSCE":"QUOTE_SERVICE_COVERED_OBJ_ENTITLEMENTS_RECORD_ID",
 		"SAQSGE":"QUOTE_SERVICE_GREENBOOK_ENTITLEMENT_RECORD_ID",
-		"SAQSFE":"QUOTE_SERVICE_FAB_LOC_ENT_RECORD_ID",
 		"SAQSAE":"QUOTE_SERVICE_COV_OBJ_ASS_ENT_RECORD_ID",
 		"SAQSGB":"QUOTE_SERVICE_GREENBOOK_RECORD_ID",
 		"SAQSPT":"QUOTE_SERVICE_PART_RECORD_ID",
@@ -63,6 +63,17 @@ def create_new_revision(Opertion,cartrev):
 	# "SAQIPE":"QUOTE_ITEM_FORECAST_PART_ENT_RECORD_ID",
 	# "SAQIFP":"QUOTE_ITEM_FORECAST_PART_RECORD_ID"
 	if Quote is not None:
+		global quote_contract_recordId
+		if not quote_contract_recordId:
+			get_rev_info = Sql.GetFirst("SELECT QTEREV_ID,QTEREV_RECORD_ID,MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT (NOLOCK) WHERE C4C_QUOTE_ID='" + str(Param.QuoteId) + "'")
+			if get_rev_info:
+				try:
+					quote_contract_recordId = get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID
+					Quote.SetGlobal("contract_quote_record_id", str(get_rev_info.MASTER_TABLE_QUOTE_RECORD_ID))
+					Quote.SetGlobal("quote_revision_record_id",str(get_rev_info.QTEREV_RECORD_ID))
+					Quote.SetGlobal("quote_revision_id",str(get_rev_info.QTEREV_ID))
+				except Exception:
+					pass
 		get_quote_info_details = Sql.GetFirst("select * from SAQTMT where MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_contract_recordId)+"'")
 		#Get Old Revision ID - Start
 		get_old_revision_id = Sql.GetFirst("SELECT QTEREV_ID FROM SAQTRV WHERE ACTIVE='True' AND QUOTE_RECORD_ID= '"+str(quote_contract_recordId)+"'")
@@ -98,8 +109,7 @@ def create_new_revision(Opertion,cartrev):
 			quote_rev_data = {
 				"QUOTE_REVISION_RECORD_ID": str(quote_revision_id),
 				"QUOTE_ID": get_quote_info_details.QUOTE_ID,
-				"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,
-				"QUOTE_NAME":get_quote_info_details.QUOTE_NAME,
+				"REVISION_DESCRIPTION": get_rev_details.DESCRIPTION,				
 				"QUOTE_RECORD_ID": quote_contract_recordId,
 				"ACTIVE":1,
 				"REV_CREATE_DATE":current_date.strftime('%m/%d/%Y'),
@@ -157,6 +167,11 @@ def create_new_revision(Opertion,cartrev):
 		Sql.Upsert(quote_revision_table_info)
 		#create new revision -SAQTRV - update-end
 		#get quote data for update in SAQTMT start
+
+		##Calling the iflow for quote header writeback to cpq to c4c code starts..
+		CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+		##Calling the iflow for quote header writeback to cpq to c4c code ends...
 		
 		quote_table_info = Sql.GetTable("SAQTMT")
 		if get_quote_info_details:

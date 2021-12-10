@@ -36,7 +36,10 @@ def GSCONTLOOKUPPOPUP(
     var_str = ""
     pagination_app_total_count=0
     ContractRecordId = Product.GetGlobal("contract_record_id")
-    quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    try:
+        quote_revision_record_id = Quote.GetGlobal("quote_revision_record_id")
+    except:
+        quote_revision_record_id = ""
     xx_objname = SegmentsClickParam = VAL_Obj = xz_objname = ""
     
     if TABLENAME is not None:
@@ -246,7 +249,7 @@ def GSCONTLOOKUPPOPUP(
     else:
         sec_str += (
             '<div style="margin-bottom: -1px;" class="row modulebnr brdr">'
-            + str(eval(Header_Obj.LABEL)).upper()
+            + str(eval("Header_Obj.LABEL")).upper()
             + " LOOKUP LIST"
             + '<button type="button" style="float:right;" class="close"  data-dismiss= "modal">X</button></div>'
         )
@@ -370,11 +373,11 @@ def GSCONTLOOKUPPOPUP(
                         + " WHERE OBJECT_NAME = '{}'".format(object_name)
                     )
                 VAL_Obj = Sql.GetList(VAL_Str)
-            elif str(tab_Name) =="Quote" and TABLEID == 'PRTXCL':
-                classification_obj = Sql.GetFirst("select SRVTAXCAT_ID from SAQITM where QUOTE_RECORD_ID = '{quote_record_id}' and SERVICE_ID = '{service_id}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(quote_record_id = Quote.GetGlobal("contract_quote_record_id"),service_id = '-'.join(SegmentsClickParam.split('-')[1:]).strip(),quote_revision_record_id))
-                TESTEDOBJECT = classification_obj.SRVTAXCAT_ID
-                VAL_Str = ("SELECT top 1000 TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE TAXCATEGORY_ID = '{TESTEDOBJECT}' and TAX_CLASSIFICATION_TYPE = 'MATERIAL' ".format(TESTEDOBJECT = TESTEDOBJECT))
-                VAL_Obj = Sql.GetList(VAL_Str)
+            # elif str(tab_Name) =="Quote" and TABLEID == 'PRTXCL':
+                # classification_obj = Sql.GetFirst("select SRVTAXCAT_ID from SAQITM where QUOTE_RECORD_ID = '{quote_record_id}' and SERVICE_ID = '{service_id}'  AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(quote_record_id = Quote.GetGlobal("contract_quote_record_id"),service_id = '-'.join(SegmentsClickParam.split('-')[1:]).strip(),quote_revision_record_id))
+                # TESTEDOBJECT = classification_obj.SRVTAXCAT_ID
+                # VAL_Str = ("SELECT top 1000 TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,TAX_CLASSIFICATION_ID FROM PRTXCL WHERE TAXCATEGORY_ID = '{TESTEDOBJECT}' and TAX_CLASSIFICATION_TYPE = 'MATERIAL' ".format(TESTEDOBJECT = TESTEDOBJECT))
+                # VAL_Obj = Sql.GetList(VAL_Str)
             elif str(tab_Name) =="Quote" and str(SegmentsClickParam)=="Quote Information" and xx_objname == 'SAQTIP' and TABLEID != "MAFBLC":
                 if TESTEDOBJECT in("BILL TO","SHIP TO","SOLD TO","PAYER","SELLER"):
                     VAL_Str = (
@@ -473,6 +476,7 @@ def GSCONTLOOKUPPOPUP(
         #Trace.Write("VAL_Str-------------------------------------> " + str(VAL_Str))
         
         ids = API_NAME_list[0]
+        Trace.Write('ids==='+str(ids))
         TABLEIDS = "table_" + TABLEID
         sec_str += (
             '<table id="'
@@ -849,13 +853,13 @@ def GSCONTLOOKUPPOPUPFILTER(
                 elif str(TABLEID) == "cpq_permissions":
                     VAL_Str = "SELECT top 10000 permission_id,SYSTEM_ID,permission_name FROM cpq_permissions where "+ str(ATTRIBUTE_VALUE_STR)+ " and permission_type ='0'"
                     VAL_Obj = Sql.GetList(VAL_Str)                     
-                elif str(tab_Name) =="Quote" and TABLEID == 'PRTXCL':
-                    classification_obj = Sql.GetFirst("select SRVTAXCAT_ID from SAQITM where QUOTE_RECORD_ID = '{quote_record_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(quote_record_id = Quote.GetGlobal("contract_quote_record_id"),service_id = '-'.join(SegmentsClickParam.split('-')[1:]).strip(),quote_revision_record_id))
-                    TESTEDOBJECT = classification_obj.SRVTAXCAT_ID
-                    VAL_Str = ("SELECT top 1000 TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,        TAX_CLASSIFICATION_ID FROM PRTXCL WHERE "
-                    + str(ATTRIBUTE_VALUE_STR)
-                    + " AND TAXCATEGORY_ID = '{TESTEDOBJECT}' and TAX_CLASSIFICATION_TYPE = 'MATERIAL' ".format(TESTEDOBJECT = TESTEDOBJECT))
-                    VAL_Obj = Sql.GetList(VAL_Str)                     
+                # elif str(tab_Name) =="Quote" and TABLEID == 'PRTXCL':
+                #     classification_obj = Sql.GetFirst("select SRVTAXCAT_ID from SAQITM where QUOTE_RECORD_ID = '{quote_record_id}' and SERVICE_ID = '{service_id}' AND QTEREV_RECORD_ID = '{quote_revision_record_id}' ".format(quote_record_id = Quote.GetGlobal("contract_quote_record_id"),service_id = '-'.join(SegmentsClickParam.split('-')[1:]).strip(),quote_revision_record_id))
+                #     TESTEDOBJECT = classification_obj.SRVTAXCAT_ID
+                #     VAL_Str = ("SELECT top 1000 TAX_CLASSIFICATION_RECORD_ID,TAX_CLASSIFICATION_DESCRIPTION,        TAX_CLASSIFICATION_ID FROM PRTXCL WHERE "
+                #     + str(ATTRIBUTE_VALUE_STR)
+                #     + " AND TAXCATEGORY_ID = '{TESTEDOBJECT}' and TAX_CLASSIFICATION_TYPE = 'MATERIAL' ".format(TESTEDOBJECT = TESTEDOBJECT))
+                #     VAL_Obj = Sql.GetList(VAL_Str)                     
                 
                 elif TABLEID == 'USERS':
                     #A055S000P01-3282--start

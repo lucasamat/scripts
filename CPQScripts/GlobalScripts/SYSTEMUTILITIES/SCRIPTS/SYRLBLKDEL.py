@@ -111,6 +111,16 @@ if table_id == "ADDNEW__SYOBJR_00029_SYOBJ_1177034":
             parts.append(part)
         Sql.RunQuery("DELETE FROM SAQRSP WHERE CpqTableEntryId IN {}".format(tuple(rows)))
         Sql.RunQuery("DELETE FROM SAQRIP WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = 'Z0101' AND PART_NUMBER IN {}".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),tuple(parts)))
+elif table_id == "SYOBJR_00005_7EAA11B4_82C9_400B_8E48_65497373A578":
+    if selectall == "yes":
+        Sql.RunQuery("DELETE FROM SAQSPT WHERE QTEREV_RECORD_ID = '{}' AND QUOTE_RECORD_ID = '{}' AND SERVICE_ID = '{}'".format(Quote.GetGlobal("quote_revision_record_id"),Quote.GetGlobal("contract_quote_record_id"),TreeParam))
+    elif selectall == "no":
+        checkedrows = tuple(checkedrows.split(","))
+        rows = []
+        for x in checkedrows:
+            rows.append(x.split("-")[1])
+        Sql.RunQuery("DELETE FROM SAQSPT WHERE CpqTableEntryId IN {}".format(tuple(rows)))
+        
  
 
    

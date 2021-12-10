@@ -73,7 +73,7 @@ class ConfigUpdateScript:
 		"""TO DO."""
 		##A055S000P01-9370 ,A055S000P01-4191 code starts...
 		if obj_name == "SAQTMT":
-			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME,SAQTMT.POES,SAQTMT.LOW"
+			column = "SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID,SAQTRV.QUOTE_ID,SAQTRV.QTEREV_ID,SAQTMT.ACCOUNT_ID,SAQTMT.ACCOUNT_NAME,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO,SAQTRV.REVISION_STATUS,SAQTRV.SALESORG_ID,SAQTMT.OWNER_NAME,SAQTMT.POES,SAQTMT.LOW,SAQTMT.EXPIRED"
 			query_string = """
 					SELECT {Column_Name}
 					FROM {Table_Name} (NOLOCK)
@@ -227,7 +227,7 @@ class ConfigUpdateScript:
 					labels.append(objd_record.FIELD_LABEL)
 				##A055S000P01-9370 , A055S000P01-4191 code starts...
 				if self.current_tab_name == "Quote":
-					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES,LOW"
+					field_lables = "Key,Quote ID,Active Revision ID,Account ID,Account Name,Contract Valid From,Contract Valid To,Revision status,Sales Org ID,Quote owner,POES,LOW,Expired"
 				else:
 					field_lables = ",".join(labels)
 				##A055S000P01-9370, A055S000P01-4191 code ends..
@@ -268,6 +268,7 @@ class ConfigUpdateScript:
 				# 	Trace.Write("999"+str(vallist[4]))
 				# 	if vallist[4] == True:					
 				# 		vallist[4] = 'ACTIVE'
+				Trace.Write(" field_lables "+str(field_lables)+"field_values "+str(field_values))
 		return field_lables, field_values
 
 	def get_attributes_permission_details(self):
@@ -525,7 +526,16 @@ class ConfigUpdateScript:
 		return res
 		#return []
 
-
+	#This Function validate recall button is required or not for quote specific.
+	def recall_button_validate(self):
+		try:
+			getRevision = Sql.GetFirst("SELECT QUOTE_REVISION_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_ID = '{}'".format(Quote.CompositeNumber))
+			quote_revision_record_id = getRevision.QUOTE_REVISION_RECORD_ID
+			getQuote = Sql.GetFirst("SELECT COUNT(SAQTMT.OWNER_NAME) AS CNT FROM SAQTMT (NOLOCK) JOIN SAQTRV (NOLOCK) ON SAQTMT.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID WHERE SAQTRV.QUOTE_REVISION_RECORD_ID='{}' AND SAQTMT.OWNER_NAME='{}' AND SAQTRV.REVISION_STATUS='{}'".format(quote_revision_record_id,User.Name,'REJECTED'))
+			return getQuote.CNT
+		except:
+			pass
+	
 	def ConfiguratorCall(self, keyData_val):
 		"""TO DO."""
 		try:
@@ -545,8 +555,10 @@ class ConfigUpdateScript:
 		Trace.Write('At line 474')
 		restrict_section_edit = self.restrict_section_level_edit()
 		Trace.Write('At line 476')
-
-		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit
+		# This function call only add recall button if Quote Owner & User are same.
+		recall_button_flag = self.recall_button_validate()
+  
+		return BannerContent, EditLockIcon, CpqIdConvertion, RequiredFieldSymbol, CurrencySymbol,restrict_section_edit, recall_button_flag
 
 configobj = ConfigUpdateScript()
 
@@ -555,9 +567,10 @@ if hasattr(Param, "keyData_val"):
 	# Changes for sales app primary banner load - start
 	if not keyData_val:
 		try:
-			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
+			quote_obj = Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE QUOTE_ID ='{}'".format(Quote.CompositeNumber))
 			if quote_obj:
 				keyData_val = quote_obj.MASTER_TABLE_QUOTE_RECORD_ID
+				quote_revision_record_id = quote_obj.QTEREV_RECORD_ID
 		except Exception:
 			pass
 	# Changes for sales app primary banner load - End

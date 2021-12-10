@@ -45,6 +45,11 @@ def do_process(TABLEID, LABLE, VALUE):
     except:
         Trace.Write("err")
 
+    try:
+        CurrentTab = TestProduct.CurrentTab
+    except:
+        CurrentTab = 'Quotes'  
+
     err_msg = ""
     err_display=""
     Flag_unique = "True"
@@ -94,7 +99,8 @@ def do_process(TABLEID, LABLE, VALUE):
                 CONT_VALUE.insert(2, new_val)
                 CONT_LABLE.insert(1, lable)
                 CONT_LABLE.insert(2, lable)
-            row = dict(zip(LABLE, VALUE))            
+            row = dict(zip(LABLE, VALUE)) 
+            Trace.Write("row======="+str(row))           
             ##auto populate SAPCPQ_ATTRIBUTE_NAME starts
             
             if str(TABLEID) == "SYSECT":                
@@ -185,7 +191,9 @@ def do_process(TABLEID, LABLE, VALUE):
             if str(TABLEID).strip() == "SYOBJC":
                 row["OBJECT_CONSTRAINT_RECORD_ID"] = str(Guid.NewGuid()).upper()                
             if Flag_unique == "True":
+                Trace.Write("Flag_unique===>>>")
                 if "CpqTableEntryModifiedBy" in row.keys() and "CpqTableEntryDateModified" in row.keys():
+                    Trace.Write("Flag_unique===")
                     if TABLEID == 'SAQTIP':
                         ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
                         # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
@@ -258,6 +266,16 @@ def do_process(TABLEID, LABLE, VALUE):
 
                             }
                             Table.TableActions.Create("SAQSRA", receiving_account_row)
+                    elif TABLEID == 'SAQDLT':
+                        ContractRecordId = Quote.GetGlobal("contract_quote_record_id")
+                        # quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME FROM SAQTMT WHERE QUOTE_ID = '"+row["QUOTE_ID"]+"'")
+                        quote_val=Sql.GetFirst("SELECT MASTER_TABLE_QUOTE_RECORD_ID,QUOTE_NAME,QUOTE_ID,QTEREV_RECORD_ID,QTEREV_ID FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(ContractRecordId)+"' AND QTEREV_RECORD_ID = '"+str(quote_revision_record_id)+"'  ")
+                        row["QUOTE_ID"]=quote_val.QUOTE_ID
+                        row["QUOTE_RECORD_ID"]=quote_val.MASTER_TABLE_QUOTE_RECORD_ID                        
+                        row["QTEREV_RECORD_ID"]=quote_val.QTEREV_RECORD_ID
+                        row["QTEREV_ID"]=quote_val.QTEREV_ID
+                        Trace.Write("row==111"+str(row))
+                        Table.TableActions.Create(TABLEID, row)
                     else:                       
                         if TABLEID == "SYTREE":
                             newTableInfo = SqlHelper.GetTable('SYTREE')
@@ -446,13 +464,18 @@ def do_process(TABLEID, LABLE, VALUE):
     related_id = ""
     if CONT_TABLEID is not None and len(CONT_TABLEID) > 0 and str(CONT_TABLEID) != "":
         CONT_TABLEID = CONT_TABLEID.split("_")
-        related_id = CONT_TABLEID[0] + "-" + CONT_TABLEID[1]
+        related_id = CONT_TABLEID[0] + "-" + CONT_TABLEID[1]        
         related_name_obj = Sql.GetFirst(
-            "SELECT top 1 NAME FROM SYOBJR(NOLOCK) WHERE RECORD_ID='" + str(related_id) + "' ORDER BY CpqTableEntryId DESC "
-        )
-        if related_name_obj is not None:
-            related_org_name = str(related_name_obj.NAME)
-            rel_name = "div_CTR_" + str(related_org_name).replace(" ", "_")
+                "SELECT top 1 NAME FROM SYOBJR(NOLOCK) WHERE RECORD_ID='" + str(related_id) + "' ORDER BY CpqTableEntryId DESC "
+            )
+        Trace.Write("CurrentTab==="+str(CurrentTab))
+        if CurrentTab == "Quotes":
+            rel_name = "div_CTR_related_list"
+        else: 
+            Trace.Write("CurrentTab===>>"+str(CurrentTab))
+            if related_name_obj is not None:
+                related_org_name = str(related_name_obj.NAME)
+                rel_name = "div_CTR_" + str(related_org_name).replace(" ", "_")
         '''QueryStatement = "update PRPBMA set AVAILABLE_FORUSE='False'"
         a = Sql.RunQuery(QueryStatement)
         QueryStatement = "update PRPBMA set AVAILABLE_FORUSE='True' where PRICEBOOK_MATERIAL_RECORD_ID in (select pb.PRICEBOOK_MATERIAL_RECORD_ID  FROM PRPBMA pb INNER JOIN MAMTRL (nolock) a on a.MATERIAL_RECORD_ID =pb.MATERIAL_RECORD_ID inner join MAMAFC (nolock) b on a.SAP_PART_NUMBER=b.SAP_PART_NUMBER inner join CACTPR (nolock) c on a.SAP_PART_NUMBER=c.SAP_PART_NUMBER inner join PRLPBE (nolock) d on a.SAP_PART_NUMBER=d.SAP_PART_NUMBER inner join PRPRCL (nolock) e on d.PRICECLASS_ID=e.PRICECLASS_ID inner join MALGMA (nolock) f on a.SAP_PART_NUMBER=f.SAP_PART_NUMBER inner join CAMAIM (nolock) g on a.SAP_PART_NUMBER=g.SAP_PART_NUMBER where d.LIST_PRICE > 0 and f.LANGUAGE_ID='en_US' and pb.PROCEDURE_ID=d.PROCEDURE_ID and f.LNGMAT_WEBSHORTDESC!='' and f.LNGMAT_LONGDESC!='')"

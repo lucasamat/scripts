@@ -11,6 +11,8 @@ import Webcom.Configurator.Scripting.Test.TestProduct
 import re
 import sys
 import datetime
+import CQCPQC4CWB
+import CQREVSTSCH
 import clr
 
 import SYCNGEGUID as CPQID
@@ -483,10 +485,10 @@ class approvalCenter:
 				"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 					ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL,ACAPMA.APRCHN_RECORD_ID
 					FROM ACACSS (NOLOCK)
-					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 					INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 					INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
-					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APPROVALSTATUS = 'REJECTED' AND ACAPMA.APRSTAMAP_APPROVALSTATUS <> 'RECALLED'""".format(
+					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND ACACSS.APPROVALSTATUS = 'REJECTED' AND ACAPMA.APRSTAMAP_APPROVALSTATUS <> 'RECALLED'""".format(
 					QuoteNumber=str(self.QuoteNumber)
 				)
 			)
@@ -495,14 +497,16 @@ class approvalCenter:
 				MainObjUpdateQuery = """UPDATE {ObjName} SET
 					{ApiName} = '{statusUpdate}'
 					WHERE {primaryKey} = '{Primaryvalue}' """.format(
-					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
-					ObjName=str(GetCurStatus.OBJECT_NAME),
-					ApiName=str(GetCurStatus.API_NAME),
+					statusUpdate = "REJECTED",
+					ObjName="SAQTRV",
+					ApiName="REVISION_STATUS",
 					Primaryvalue=str(GetCurStatus.APRTRXOBJ_RECORD_ID),
-					primaryKey = str(GetCurStatus.RECORD_NAME )
+					primaryKey = "QUOTE_REVISION_RECORD_ID"
 				)
 
 				b = Sql.RunQuery(MainObjUpdateQuery)
+				##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+				CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				##update ARCHIVED as True If one step user rejected the transactn starts
 				Trans_update_archive = Sql.RunQuery("""UPDATE ACAPTX SET ARCHIVED = 1 WHERE APPROVAL_RECORD_ID = '{QuoteNumber}'
 					AND APRCHN_RECORD_ID = '{chainRecordId}'  """.format(
@@ -510,6 +514,13 @@ class approvalCenter:
 					)
 				)
 				##update ARCHIVED as True If one step user rejected the transactn ends
+			try:
+				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			except Exception, e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
+
 			rejecttresponse = self.sendmailNotification("Reject", CurrentTransId)
 			Notificationresponse = self.sendmailNotification("Notification",CurrentTransId)
 			UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}', COMPLETED_DATE = '{datetime_value}' WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
@@ -1081,7 +1092,7 @@ class approvalCenter:
 								"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 										ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL,ACAPMA.APRCHN_RECORD_ID,ACAPMA.APPROVAL_ID, ACAPMA.REQUESTOR_COMMENTS
 										FROM ACACSS (NOLOCK)
-										INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+										INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 										INNER JOIN SYOBJH ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 										INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
 										WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}'
@@ -1101,7 +1112,7 @@ class approvalCenter:
 				str(GetCurStatus.APRCHN_RECORD_ID), str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), Objh_Id
 			) """
 			retrunRecall = violationruleInsert.InsertAction(
-				Objh_Id, str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), "RECALL", str(GetCurStatus.APRCHN_RECORD_ID)
+				Objh_Id, str(ObjPrimaryKey), str(GetCurStatus.OBJECT_NAME), "RECALL"
 			)
 			
 			approval_id_without_auto_inc = '-'.join((GetCurStatus.APPROVAL_ID).split('-')[0:-1])
@@ -1131,8 +1142,16 @@ class approvalCenter:
 											FROM ACAPTX (NOLOCK) INNER JOIN ACACST (NOLOCK) 
 											ON ACAPTX.APRCHN_RECORD_ID = ACACST.APRCHN_RECORD_ID 
 											AND ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID 
-											WHERE ACAPTX.APPROVAL_RECORD_ID = '{approval_rec_id}' AND ACACST.ENABLE_SMARTAPPROVAL = 0 AND APRCHNSTP_ID != '1' AND ARCHIVED = 0 """.format(approval_rec_id = 
-											ele.APPROVAL_RECORD_ID))
+											WHERE ACAPTX.APRTRXOBJ_ID = '{approval_rec_id}' AND ACACST.ENABLE_SMARTAPPROVAL = 0 AND ACAPTX.APRCHNSTP_ID != '1' AND ACAPTX.ARCHIVED = 0""".format(approval_rec_id = 
+											Quote.CompositeNumber))
+					a = Sql.GetFirst(""" SELECT ACAPTX.APPROVALSTATUS,ACAPTX.APPROVAL_RECIPIENT,ACAPTX.APRCHNSTP_ID FROM ACAPTX (NOLOCK) INNER JOIN ACACST (NOLOCK) ON ACAPTX.APRCHN_RECORD_ID = ACACST.APRCHN_RECORD_ID AND ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID WHERE ACAPTX.APRTRXOBJ_ID = '{}' AND ACACST.ENABLE_SMARTAPPROVAL = 1 AND ACAPTX.APRCHNSTP_ID = '1' AND ACAPTX.ARCHIVED = 0""".format(Quote.CompositeNumber))
+					if a.APPROVALSTATUS == "REQUESTED":
+						Sql.RunQuery("""UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED'
+											FROM ACAPTX (NOLOCK) INNER JOIN ACACST (NOLOCK) 
+											ON ACAPTX.APRCHN_RECORD_ID = ACACST.APRCHN_RECORD_ID 
+											AND ACACST.APPROVAL_CHAIN_STEP_RECORD_ID = ACAPTX.APRCHNSTP_RECORD_ID 
+											WHERE ACAPTX.APRTRXOBJ_ID = '{approval_rec_id}' AND ACACST.ENABLE_SMARTAPPROVAL = 1 AND ACAPTX.APRCHNSTP_ID != '1' AND ACAPTX.ARCHIVED = 0 AND APPROVALSTATUS != 'APPROVED'""".format(approval_rec_id = 
+											Quote.CompositeNumber))
 					Sql.RunQuery("""UPDATE ACAPTX SET RECIPIENT_COMMENTS = '' WHERE APPROVAL_RECORD_ID = '{}'
 											AND APPROVALSTATUS = 'APPROVAL REQUIRED' AND ARCHIVED = 0""".format(
 											ele.APPROVAL_RECORD_ID))
@@ -1179,17 +1198,17 @@ class approvalCenter:
 				"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 					ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
 					FROM ACACSS (NOLOCK)
-					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID =SYOBJD.RECORD_ID
+					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID =SYOBJD.PARENT_OBJECT_RECORD_ID
 					INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.OBJECT_NAME=SYOBJD.OBJECT_NAME
 					INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL=SYOBJH.LABEL AND ACACSS.APRCHN_RECORD_ID =ACAPMA.APRCHN_RECORD_ID
-					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL' """.format(
+					WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}' AND APPROVALSTATUS = 'REQUESTED'  """.format(
 					QuoteNumber=str(self.QuoteNumber)
 				)
 				)
 				if GetCurStatus:
 					
-					MainObjUpdateQuery = """UPDATE {ObjName} SET
-						{ApiName} = '{statusUpdate}'
+					MainObjUpdateQuery = """UPDATE SAQTRV SET
+						REVISION_STATUS = 'APPROVAL PENDING'
 						WHERE {primaryKey} = '{Primaryvalue}' """.format(
 						statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 						ObjName=str(GetCurStatus.OBJECT_NAME),
@@ -1198,7 +1217,16 @@ class approvalCenter:
 						primaryKey = str(GetCurStatus.RECORD_NAME )
 					)
 					b = Sql.RunQuery(MainObjUpdateQuery)
+					##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+					CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
 				
+				try:
+					##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+					CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+					CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				except Exception, e:
+					Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
+
 				if submit.APPROVAL_METHOD == "PARALLEL STEP APPROVAL":
 					requestresponse = self.sendmailNotification("ParallelRequest")
 				else:
@@ -1308,18 +1336,18 @@ class approvalCenter:
 				"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 					ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL
 					FROM ACACSS (NOLOCK)
-					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID =SYOBJD.RECORD_ID
+					INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID =SYOBJD.PARENT_OBJECT_RECORD_ID
 					INNER JOIN SYOBJH (NOLOCK) ON SYOBJH.OBJECT_NAME=SYOBJD.OBJECT_NAME
 					INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL=SYOBJH.LABEL
-					WHERE ACAPMA.APPROVAL_RECORD_ID = '{approval_record_id}' AND APPROVALSTATUS = 'REQUESTED' AND ACACSS.APROBJ_STATUSFIELD_VAL = 'WAITING FOR APPROVAL'""".format(
+					WHERE ACAPMA.APPROVAL_RECORD_ID = '{approval_record_id}' AND ACACSS.APPROVALSTATUS = 'REQUESTED' """.format(
 					approval_record_id=str(approval_record_id)
 				)
 			)
 			if GetCurStatus:
 				
-				MainObjUpdateQuery = """UPDATE {ObjName} SET
-					{ApiName} = '{statusUpdate}'
-					WHERE {primaryKey} = '{Primaryvalue}' """.format(
+				MainObjUpdateQuery = """UPDATE SAQTRV SET
+					REVISION_STATUS = 'APPROVAL PENDING'
+					WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
 					statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 					ObjName=str(GetCurStatus.OBJECT_NAME),
 					ApiName=str(GetCurStatus.API_NAME),
@@ -1327,16 +1355,27 @@ class approvalCenter:
 					primaryKey = str(GetCurStatus.RECORD_NAME )
 				)
 				b = Sql.RunQuery(MainObjUpdateQuery)
+				##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+				CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+
 				getQuote = Sql.GetFirst(
-					"SELECT QUOTE_ID,QUOTE_STATUS FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"
+					"SELECT QUOTE_ID,REVISION_STATUS FROM SAQTRV WHERE QUOTE_REVISION_RECORD_ID = '"
 					+ str(GetCurStatus.APRTRXOBJ_RECORD_ID)
 					+ "' AND QTEREV_RECORD_ID = '"
 					+str(self.quote_revision_record_id)
 					+"'"
 				)
-				if getQuote.QUOTE_STATUS == "APPROVED":
+				if getQuote.REVISION_STATUS == "APPROVED":
 					
 					result = ScriptExecutor.ExecuteGlobal("QTPOSTACRM", {"QUOTE_ID": getQuote.QUOTE_ID, 'Fun_type':'cpq_to_crm'})
+			
+			try:
+				##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+				CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+				CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+			except Exception, e:
+				Trace.Write("EXCEPTION: QUOTE WRITE BACK " +str(e))
+
 			if parallel == "True":
 				requestresponse = self.sendmailNotification("ParallelRequest")
 			else:
@@ -1430,18 +1469,18 @@ class approvalCenter:
 							"""SELECT DISTINCT SYOBJD.API_NAME,SYOBJH.RECORD_NAME,SYOBJH.OBJECT_NAME,
 									ACAPMA.APRTRXOBJ_RECORD_ID,ACACSS.APROBJ_STATUSFIELD_VAL,ACAPMA.APRCHN_RECORD_ID,ACAPMA.APPROVAL_ID
 									FROM ACACSS (NOLOCK)
-									INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_STATUSFIELD_RECORD_ID = SYOBJD.RECORD_ID
+									INNER JOIN SYOBJD (NOLOCK) ON ACACSS.APROBJ_RECORD_ID = SYOBJD.PARENT_OBJECT_RECORD_ID
 									INNER JOIN SYOBJH ON SYOBJH.OBJECT_NAME = SYOBJD.OBJECT_NAME
 									INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APROBJ_LABEL = SYOBJH.LABEL
 									WHERE ACAPMA.APPROVAL_RECORD_ID = '{QuoteNumber}'
-									AND APPROVALSTATUS = 'RECALLED' """.format(
+									AND ACACSS.APPROVALSTATUS = 'RECALLED' """.format(
 								QuoteNumber=str(self.QuoteNumber)
 							)
 						)
 						if GetCurStatus:
-							MainObjUpdateQuery = """UPDATE {ObjName} SET
-									{ApiName} = '{statusUpdate}'
-									WHERE {primaryKey} = '{Primaryvalue}' """.format(
+							MainObjUpdateQuery = """UPDATE SAQTRV SET
+							REVISION_STATUS = 'RECALLED'
+							WHERE QUOTE_REVISION_RECORD_ID = '{Primaryvalue}' """.format(
 									statusUpdate = str(GetCurStatus.APROBJ_STATUSFIELD_VAL),
 									ObjName=str(GetCurStatus.OBJECT_NAME),
 									ApiName=str(GetCurStatus.API_NAME),
@@ -1449,6 +1488,9 @@ class approvalCenter:
 									primaryKey = str(GetCurStatus.RECORD_NAME )
 								)
 							b = Sql.RunQuery(MainObjUpdateQuery)
+							##Calling the iflow script to insert the records into SAQRSH custom table(Capture Date/Time for Quote Revision Status update.)
+							CQREVSTSCH.Revisionstatusdatecapture(Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+							
 							UpdateAppoval = """UPDATE ACAPMA SET
 								ACAPMA.APROBJ_STATUSFIELD_VALUE = ACACSS.APROBJ_STATUSFIELD_VAL,
 								ACAPMA.APRSTAMAP_APPROVALSTATUS = ACACSS.APPROVALSTATUS
@@ -1465,6 +1507,12 @@ class approvalCenter:
 							c = Sql.RunQuery(UpdateAppoval)
 							d = Sql.RunQuery(Transupdate)
 							#self.RecallSmartApprovalAction()
+						try:
+							##Calling the iflow script to update the details in c4c..(cpq to c4c write back...)
+							CQCPQC4CWB.writeback_to_c4c("quote_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+							CQCPQC4CWB.writeback_to_c4c("opportunity_header",Quote.GetGlobal("contract_quote_record_id"),Quote.GetGlobal("quote_revision_record_id"))
+						except Exception, e:
+							Trace.Write("EXCEPTION: QUOTE WRITE BACK "+str(e))
 
 				#self.QuoteNumber = RecalledRecId
 			#except Exception, e:
@@ -2895,12 +2943,13 @@ class approvalCenter:
 			Getplaceholdervalue = Sql.GetFirst(
 				"""SELECT {column_name} FROM ACAPMA (NOLOCK) INNER JOIN ACAPTX (NOLOCK)
 				ON ACAPMA.APPROVAL_RECORD_ID = ACAPTX.APPROVAL_RECORD_ID
+				INNER JOIN SAOPQT(NOLOCK) ON ACAPMA.APRTRXOBJ_ID = SAOPQT.QUOTE_ID
 				INNER JOIN ACAPCH (NOLOCK) ON ACAPCH.APPROVAL_CHAIN_RECORD_ID = ACAPMA.APRCHN_RECORD_ID
 				INNER JOIN {approvalObj} (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = {approvalObj}.{iskeyName}
-				LEFT JOIN SAQITM(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQITM.QUOTE_RECORD_ID
-				INNER JOIN SAQTSV(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTSV.QUOTE_RECORD_ID 
-				INNER JOIN SAOPQT(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAOPQT.QUOTE_RECORD_ID 
-				INNER JOIN SAQTIP(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTIP.QUOTE_RECORD_ID 
+				LEFT JOIN SAQTSV(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTSV.QTEREV_RECORD_ID 
+				INNER JOIN SAQTMT (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID		
+				LEFT JOIN SAQRIT(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQRIT.QTEREV_RECORD_ID
+				INNER JOIN SAQDLT(NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQDLT.QTEREV_RECORD_ID
 				WHERE {wherecondition} """.format(
 					approvalObj=str(objlableandobj.get(objectdic.get("approvalObj"))),
 					testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
@@ -2910,24 +2959,25 @@ class approvalCenter:
 					wherecondition=str(wherecondition),
 				)
 			)
+			getcurrency = Sql.GetFirst("SELECT GLOBAL_CURRENCY,GLOBAL_CURRENCY_RECORD_ID FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+			getcurrencysymbol = Sql.GetFirst("""SELECT DISPLAY_DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY_RECORD_ID = '{currencysymbol}' """.format(currencysymbol = getcurrency.GLOBAL_CURRENCY_RECORD_ID))
 			for eachkey in final_new_menu:
 				values = ""
 				eachsplit = eachkey.split(".")
-				if str(eachsplit[1]) == "OWNER_ID":
-					GetOwnerMailId = Sql.GetFirst(
-						"SELECT USERNAME FROM USERS (NOLOCK) WHERE NAME = '{owenername}' ".format(
-							owenername=str(eval("Getplaceholdervalue." + str(eachsplit[1])))
-						)
-					)
-					values = str(GetOwnerMailId.USERNAME)
-				elif str(eachsplit[1]) == "PARTY_ID":
-					getcontractmanager = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE = 'CONTRACT MANAGER' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				if str(eachsplit[1]) == "OWNER_NAME":
+					getaccountid = Sql.GetFirst("SELECT ACCOUNT_ID,ACCOUNT_NAME FROM SAQTMT (NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getaccountid:
+						acct_id=str(getaccountid.ACCOUNT_ID)
+						acct_name=str(getaccountid.ACCOUNT_NAME)
+						values =str(acct_name)+"-"+str(acct_id)
+				elif str(eachsplit[1]) == "MEMBER_ID":
+					getcontractmanager = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'Sales Employee' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractmanager:
-						values =str(getcontractmanager.PARTY_NAME)
-				elif str(eachsplit[1]) == "PARTY_NAME":
-					getcontractrole = Sql.GetFirst("SELECT PARTY_NAME FROM SAQTIP (NOLOCK) WHERE PARTY_ROLE = 'SALES EMPLOYEE' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+						values =str(getcontractmanager.MEMBER_NAME)
+				elif str(eachsplit[1]) == "MEMBER_NAME":
+					getcontractrole = Sql.GetFirst("SELECT MEMBER_NAME FROM SAQDLT (NOLOCK) WHERE C4C_PARTNERFUNCTION_ID = 'BD' and QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if getcontractrole:
-						values =str(getcontractrole.PARTY_NAME)
+						values =str(getcontractrole.MEMBER_NAME)
 				elif str(eachsplit[1]) == "CONTRACT_VALID_FROM":
 					GETDATE = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_FROM, 101) as A FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
 					if GETDATE:
@@ -2936,10 +2986,40 @@ class approvalCenter:
 					GETDATES = Sql.GetFirst("SELECT CONVERT(VARCHAR(100),CONTRACT_VALID_TO, 101) as B FROM SAQTMT WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"'  ")
 					if GETDATES:
 						values=str(GETDATES.B)
-				elif str(eachsplit[1]) == "OBJECT_QUANTITY":
-					GETFPM = Sql.GetFirst("SELECT CAST(OBJECT_QUANTITY AS INT) AS C FROM SAQITM (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				elif str(eachsplit[1]) == "QUANTITY":
+					GETFPM = Sql.GetFirst("SELECT SUM(QUANTITY) AS QUANTITY FROM SAQRIT (NOLOCK) WHERE QUOTE_RECORD_ID ='"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 					if GETFPM:
-						values=str(GETFPM.C)
+						values=str(GETFPM.QUANTITY)
+				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "NET_PRICE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_PRICE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_PRICE_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "CREDIT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT CREDIT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.CREDIT_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "TAX_AMOUNT_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT TAX_AMOUNT_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.TAX_AMOUNT_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
+				elif str(eachsplit[1]) == "NET_VALUE_INGL_CURR":
+					getnetprice = Sql.GetFirst("SELECT NET_VALUE_INGL_CURR FROM SAQTRV (NOLOCK) WHERE QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+					if getnetprice:
+						formatting_string = "{0:." + str(getcurrencysymbol.DISPLAY_DECIMAL_PLACES) + "f}"
+						value = formatting_string.format(float(getnetprice.NET_VALUE_INGL_CURR))
+						values=str(value)+' '+str(getcurrency.GLOBAL_CURRENCY)
 				else:
 					if Getplaceholdervalue:
 						values =str(eval("Getplaceholdervalue." + str(eachsplit[1])))
@@ -2947,55 +3027,26 @@ class approvalCenter:
 			
 			#emailId = str(getnotify.EMAIL)
 			subject = str(GetApprovalprocessobj.APROBJ_LABEL) + " " + str(getnotify.SUBJECT) + " - " + str(GetApprovalprocessobj.APRCHN_DESCRIPTION)
-			bodycontent = re.findall('<td class="TblHeadercolor">(.+?)</td>', bodywithformatsplit[1])
-			Trace.Write("bodycontent-->"+str(bodycontent))
-			bodyAPIName = []
-			currencylist = []
-			bodycontent.remove('CANCELLATION PERIOD')
-			bodycontent.remove('PAYMENT TERM ID')
-			for eachlable in bodycontent:
-				GetObjdAPI = Sql.GetFirst(
-					"""SELECT API_NAME,DATA_TYPE FROM SYOBJD (NOLOCK)
-					WHERE OBJECT_NAME= 'SAQTMT' AND UPPER(FIELD_LABEL) LIKE '%{}%' """.format(
-						str(eachlable)
-					)
-				)
-				
-				if str(GetObjdAPI.DATA_TYPE) == "CURRENCY":
-					currencylist.append(str(GetObjdAPI.API_NAME))
-				if str(GetObjdAPI.API_NAME) not in bodyAPIName:
-					bodyAPIName.append(str(GetObjdAPI.API_NAME))
-				#if "CURRENCY" not in bodyAPIName:
-				#    bodyAPIName.append("CURRENCY")
-			bodycolumn = str(bodyAPIName).replace("[", "").replace("]", "").replace("'", "")
-			getcurrentdata = Sql.GetList(
-				"""SELECT {bodycolumn} FROM {testedObj} (NOLOCK)
-				WHERE {iskeyName} = '{ApprovalObjeId}' AND {condition} """.format(
-					bodycolumn=bodycolumn,
-					testedObj=str(objlableandobj.get(objectdic.get("testedObj"))),
-					iskeyName=str(iskey.API_NAME),
-					ApprovalObjeId=str(getnotify.APRTRXOBJ_RECORD_ID),
-					condition=str(getnotify.WHERE_CONDITION_01),
-				)
-			)
-			if getcurrentdata:
-				for trloop in getcurrentdata:
-					bodystr += "<tr>"
-					for columnloop in bodyAPIName:
-						currenyextension = ""
-						if columnloop in currencylist:
-							currenyextension = str(trloop.CURRENCY)
-							Getcurrentrount = Sql.GetFirst(
-								"""SELECT DECIMAL_PLACES FROM PRCURR (NOLOCK) WHERE CURRENCY = '{currenyextension}' """.format(
-									currenyextension=currenyextension
-								)
-							)
-							tdvalues = round(int(eval("trloop." + str(columnloop))), int(Getcurrentrount.DECIMAL_PLACES))
-						else:
-							tdvalues = str(eval("trloop." + str(columnloop)))
-						bodystr += '<td class="borders">' + str(tdvalues) + "" + currenyextension + "</td>"
-					bodystr += "</tr>"
-			#Trace.Write("mail body construct" + str(bodystr))
+			#bodycontent = re.findall('<td class="productservice">(.+?)</td>', bodywithformatsplit[1])
+			servicestr = ""
+			getservid = Sql.GetList("SELECT SAQTSV.SERVICE_ID,SAQTSV.SERVICE_DESCRIPTION,SAQTSV.PRODUCT_TYPE,SAQTRV.DOCTYP_ID,SAQTRV.CONTRACT_VALID_FROM,SAQTRV.CONTRACT_VALID_TO FROM SAQTSV (NOLOCK) INNER JOIN SAQTRV ON SAQTSV.QUOTE_RECORD_ID =SAQTRV.QUOTE_RECORD_ID AND SAQTSV.QTEREV_RECORD_ID = SAQTRV.QTEREV_RECORD_ID WHERE SAQTRV.QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND SAQTRV.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND SAQTRV.ACTIVE ='1'")
+			if getservid:
+				for trloop in getservid:
+					validfrom = str(trloop.CONTRACT_VALID_FROM).split(' ')[0]
+					validto = str(trloop.CONTRACT_VALID_TO).split(' ')[0]
+					servicestr += "<tr class='borders'>"
+					servicestr += '<td class="no-border bg-white">' + str(trloop.SERVICE_ID)+ "</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.SERVICE_DESCRIPTION)+"</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(trloop.PRODUCT_TYPE)+"</td>"
+					servicestr += '<td class="no-border bg-white">'+ str(trloop.DOCTYP_ID)+"</td>"
+					servicestr += '<td class="no-border bg-white" colspan="2">'+ str(validfrom)+"</td>"
+					servicestr += '<td class="no-border bg-white">'+ str(validto)+"</td>"
+					servicestr += "</tr>"
+			#bodywithformatsplit = bodywithformatsplit.replace("<tr class ='productservice'></tr>",servicestr)
+			bodywithformatsplit[1]=re.sub(r'<tr class="productservice">\s*</tr>',servicestr,bodywithformatsplit[1])
+			Trace.Write("mail body 22222222" + str(servicestr))
+			Trace.Write("mail body construct" + str(bodywithformatsplit))
+			Trace.Write("mail body construct2" + bodywithformatsplit[1])
 			C4QUOTE =Sql.GetFirst("SELECT C4C_QUOTE_ID,ADDUSR_RECORD_ID,QTEREV_RECORD_ID FROM SAQTMT(NOLOCK) WHERE MASTER_TABLE_QUOTE_RECORD_ID = '"+str(quote_record_id)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 			SUBMITTERNAME = Sql.GetFirst("SELECT NAME,EMAIL FROM USERS(NOLOCK) WHERE ID = '"+str(C4QUOTE.ADDUSR_RECORD_ID)+"' ")
 			
@@ -3016,7 +3067,7 @@ class approvalCenter:
 				emailId = str(getnotify.EMAIL)
 			splitformailbodyappend = str(bodywithformatsplit[1]).split("</tbody>")
 			if mailbody.startswith("<!DOCTYPE html>", 0) == True:
-				
+				Trace.Write("ifmessage body")
 				mailbdyready = (
 					str(bodywithformatsplit[0])
 					+ "</style>"
@@ -3051,9 +3102,9 @@ class approvalCenter:
 			#    approvalid=str(getnotify.APPROVAL_RECORD_ID),
 			#    priceagreementrevid=str(getnotify.APRTRXOBJ_RECORD_ID),
 			#)
-			ApproveLink = """https://my347401-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
-			RejectLink = """https://my347401-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
-			ViewLink ="""https://my347401-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
+			ApproveLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
+			RejectLink = """https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
+			ViewLink ="""https://my345810-SSO.crm.ondemand.com//sap/public/byd/runtime?bo_ns=http://sap.com/thingTypes&bo=COD_GENERIC&node=Root&operation=OnExtInspect&param.InternalID={c4cid}&param.Type=COD_QUOTE_TT&sapbyd-agent=TAB&OBNRedirect=X""".format(c4cid=str(C4QUOTE.C4C_QUOTE_ID))
 			mailbdyready = mailbdyready.replace("ApproveLink", ApproveLink)
 			mailbdyready = mailbdyready.replace("RejectLink", RejectLink)
 			mailbdyready = mailbdyready.replace("ViewLink", ViewLink)
@@ -3084,14 +3135,12 @@ class approvalCenter:
 			msg.Subject = Subject
 			msg.IsBodyHtml = True
 			msg.Body = mailBody
-			copyEmail1 = MailAddress("mayura.priya@bostonharborconsulting.com")
+			copyEmail1 = MailAddress("surendar.murugachandran@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail1)
 			#copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
 			#msg.CC.Add(copyEmail2)
-			copyEmail2 = MailAddress("sathyabama.akhala@bostonharborconsulting.com")
+			copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
 			msg.CC.Add(copyEmail2)
-			#copyEmail4 = MailAddress("aditya.shivkumar@bostonharborconsulting.com")
-			#msg.CC.Add(copyEmail4)
 			#copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
 			#msg.CC.Add(copyEmail5)    
 			mailClient.Send(msg)
@@ -3252,7 +3301,7 @@ class approvalCenter:
 			GETstatus=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) WHERE  MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id) + "'")
 			value = str(GETstatus.QUOTE_STATUS)             
 			if value =="IN-PROGRESS":
-				a=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID  INNER JOIN SAQITM (NOLOCK) ON SAQITM.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID AND SAQITM.QTEREV_RECORD_ID = SAQTMT.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND SAQTMT.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+				a=Sql.GetFirst("Select QUOTE_STATUS FROM SAQTMT(NOLOCK) INNER JOIN ACAPMA (NOLOCK) ON ACAPMA.APRTRXOBJ_RECORD_ID = SAQTMT.QTEREV_RECORD_ID WHERE SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = '"+str(QuoteNumber)+"' AND SAQTMT.QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
 				if a:
 					value = "SUBMIT FOR APPROVAL"
 				else:

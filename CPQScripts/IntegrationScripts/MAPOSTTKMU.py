@@ -37,12 +37,12 @@ try :
 			Modi_date = today.strftime("%m/%d/%Y %H:%M:%S %p")
 			
 			for json_data in Jsonquery:
-				if "Param" in str(json_data.INTEGRATION_PAYLOAD):
-					splited_list = str(json_data.INTEGRATION_PAYLOAD).split("'")
-					rebuilt_data = eval(str(splited_list[1]))
+				if "Param" in json_data.INTEGRATION_PAYLOAD:
+					splited_list = json_data.INTEGRATION_PAYLOAD.split("%%")
+					rebuilt_data = eval(splited_list[1].replace('false','"false"').replace('true','"true"'))
 				else:
-					splited_list = str(json_data.INTEGRATION_PAYLOAD)
-					rebuilt_data = eval(splited_list)       
+					splited_list = json_data.INTEGRATION_PAYLOAD
+					rebuilt_data = eval(splited_list.replace('false','"false"').replace('true','"true"'))       
 
 				if len(rebuilt_data) != 0:      
 
@@ -53,14 +53,14 @@ try :
 					for tn in Table_Names:
 						if tn in rebuilt_data:
 							Check_flag = 1
-							if str(tn).upper() == "MAEAPM":
+							if str(tn).upper() == "QTQICO":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
 									Tbl_data = [rebuilt_data[tn]]
 								else:
 									Tbl_data = rebuilt_data[tn]
 									
 								for record_dict in Tbl_data:
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['EQUIPMENT_ID']+ "'',''"+record_dict['ASSEMBLY_ID']+ "'',''"+record_dict['PM_NAME']+ "'',''"+record_dict['PM_FREQUENCY']+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['KIT_NUMBER']+ "'',''"+record_dict['SEEDSTOCK_COST']+ "'',''"+record_dict['LOGISTICS_COST']+ "'',''"+record_dict['TKM_COST_PER_EVENT']+ "'',''"+ str(Modi_date)+ "'',''"+record_dict['KIT_MASTER_ID']+ "'',''"+record_dict['APPLICATION']+ "'',''"+record_dict['CLEANING_REGION']+ "'',''"+record_dict['CUSTOMER_MARKETING_NAME']+ "'',''"+record_dict['DEVICE']+ "'',''"+record_dict['PROCESS_TYPE']+ "'',''"+record_dict['SERVICE_COMPLEXITY']+ "'',''"+record_dict['TECH_NODE']+ "'',''"+record_dict['HW_TYPE']+ "'' ' ")
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAEAPM_INBOUND (SESSION_ID,EQUIPMENT_ID,ASSEMBLY_ID,PM_NAME,PM_FREQUENCY,KIT_ID,KIT_NUMBER,SEEDSTOCK_COST,LOGISTICS_COST,TKM_COST_PER_EVENT,cpqtableentrydatemodified,KIT_MASTER_ID,APPLICATION,REGION,CUSTOMER_MARKETING_NAME,DEVICE,PROCESS_TYPE,SERVICE_COMPLEXITY,TECHNOLOGY_NODE,HW_TYPE,ARCM_MODULE_ID,RFP_EDIT,UPDATED_DATE,CPQ_PROCESSED)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['TOOL_ID']+ "'',''"+record_dict['Assembly_ID']+ "'',''"+record_dict['PM_Event']+ "'',''"+str(record_dict['PM_Freq'])+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['KIT_Number']+ "'',''"+str(record_dict['Seedstock_Cost'])+ "'',''"+str(record_dict['Logistics_Cost'])+ "'',''"+str(record_dict['TKM_Cost_Per_Event'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['KIT_MASTER_ID'])+ "'',''"+record_dict['APPLICATION']+ "'',''"+record_dict['CLEANING_REGION']+ "'',''"+record_dict['CUSTOMER_MARKETING_NAME']+ "'',''"+record_dict['DEVICE']+ "'',''"+record_dict['PROCESS_TYPE']+ "'',''"+record_dict['SERVICE_COMPLEXITY']+ "'',''"+record_dict['TECH_NODE']+ "'',''"+record_dict['HW_TYPE']+ "'',N''"+str(record_dict['ARCM_Module_ID'])+ "'',N''"+str(record_dict['RFP_Edit'])+ "'',N''"+str(record_dict['Updated_Date'])+ "'',N''"+str(record_dict['CPQ_Processed'])+ "'' ' ")
 									
 							elif str(tn).upper() == "MAKTPT":
 								if str(type(rebuilt_data[tn])) == "<type 'dict'>":
@@ -69,7 +69,7 @@ try :
 									Tbl_data = rebuilt_data[tn]
 									
 								for record_dict in Tbl_data:
-									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAKTPT_INBOUND (SESSION_ID,KIT_ID,PART_NUMBER,QUANTITY,cpqtableentrydatemodified,KIT_MASTER_ID)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['PART_NUMBER']+ "'',''"+record_dict['QUANTITY']+ "'',''"+ str(Modi_date)+ "'',''"+record_dict['KIT_Master_ID']+ "'' ' ")                     
+									primaryQueryItems = SqlHelper.GetFirst( ""+ str(Parameter.QUERY_CRITERIA_1)+ " MAKTPT_INBOUND (SESSION_ID,KIT_ID,PART_NUMBER,QUANTITY,cpqtableentrydatemodified,KIT_MASTER_ID,UPDATED_DATE,CPQ_PROCESSED,KIT_DELETED)  select  ''"+ str(primaryQuerysession.A)+ "'',''"+record_dict['KIT_ID']+ "'',''"+record_dict['PartNumber']+ "'',''"+str(record_dict['Qty'])+ "'',''"+ str(Modi_date)+ "'',''"+str(record_dict['KIT_MASTER_ID'])+ "'',''"+record_dict['Updated_Date']+ "'',''"+record_dict['CPQ_Processed']+ "'',''"+record_dict['KIT_DELETED']+ "'' ' ")                    
 							
 										
 					StatusUpdateQuery = SqlHelper.GetFirst(""+ str(Parameter1.QUERY_CRITERIA_1)+ "  SYINPL SET STATUS = ''COMPLETED''FROM SYINPL (NOLOCK)  WHERE CpqTableEntryId = ''"+str(json_data.CpqTableEntryId)+"'' ' ")

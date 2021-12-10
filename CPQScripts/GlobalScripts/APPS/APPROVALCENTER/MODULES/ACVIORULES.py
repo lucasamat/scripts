@@ -210,7 +210,8 @@ class ViolationConditions:
         Log.Info("query statement acapma ---"+str(insertQueryStatement))
         return insertQueryStatement
 
-    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None,RoundKey=None,Round=1):
+    def ApprovalTranscationDataInsert(self, ApprovalChainRecordId=None,QuoteId=None,RoundKey=None,Round=None):
+        #Round = Quote.GetGlobal("Round")
         """ACAPTX date insert script."""
         InsertQueryStatement = """INSERT ACAPTX ( APRCHNRND_RECORD_ID,APPROVAL_ROUND,APRTRXOBJ_ID,APRCHN_ID ,APPROVAL_TRANSACTION_RECORD_ID ,APRCHN_RECORD_ID ,
 		APRCHNSTP_APPROVER_ID ,APRCHNSTP_APPROVER_RECORD_ID ,APRCHNSTP_ID ,APRCHNSTP_NAME,APRCHNSTP_RECORD_ID ,
@@ -569,7 +570,7 @@ class ViolationConditions:
                         # Approval Rounding - End
 
                         CheckViolaionRule2 = Sql.GetList(
-                            "SELECT ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
+                            "SELECT ACAPCH.APPROVAL_METHOD,ACAPCH.APPROVAL_CHAIN_RECORD_ID,ACACST.APRCHNSTP_NUMBER,ACACST.WHERE_CONDITION_01,"
                             + " ACACST.APROBJ_LABEL,ACACST.TSTOBJ_RECORD_ID FROM ACAPCH INNER JOIN ACACST ON "
                             + " ACAPCH.APPROVAL_CHAIN_RECORD_ID = "
                             + " ACACST.APRCHN_RECORD_ID WHERE ACAPCH.APROBJ_RECORD_ID = '"
@@ -649,8 +650,14 @@ class ViolationConditions:
                                     )
                                     if method is None:
                                         where_conditon += " AND ACACSS.APPROVALSTATUS = 'APPROVAL REQUIRED' "
+                                        flag = 0
                                     else:
                                         where_conditon += " AND ACACSS.APPROVALSTATUS = 'REQUESTED' "
+                                        if result.APPROVAL_METHOD == "SERIES STEP APPROVAL":
+                                            flag = 1
+                                        else:
+                                            flag = 0
+
                                     where_conditon += """GROUP BY APPRO.USER_RECORD_ID,ACAPCH.APRCHN_ID,
                                     ACAPCH.APPROVAL_CHAIN_RECORD_ID ,APPRO.APRCHNSTP_APPROVER_ID ,
                                     APPRO.APPROVAL_CHAIN_STEP_APPROVER_RECORD_ID,ACACST.APRCHNSTP_NUMBER ,
@@ -661,11 +668,14 @@ class ViolationConditions:
                                     ACACST.REQUEST_TEMPLATE_RECORD_ID,ACACST.REQUIRE_EXPLICIT_APPROVAL,
                                     APPRO.UNANIMOUS_CONSENT,ACACST.APRCHNSTP_NAME,ACAPMA.APRTRXOBJ_ID ORDER BY ACACST.APRCHNSTP_NUMBER"""
                                     
-                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=1)
+                                    Transcationrulebody = self.ApprovalTranscationDataInsert(ApprovalChainRecordId=result.APPROVAL_CHAIN_RECORD_ID,QuoteId=QuoteId,RoundKey=primarykey,Round=roundd)
                                     Rulebodywithcondition = Transcationrulebody + where_conditon
                                     Log.Info("ACAPTX Rulebodywithcondition ===> "+str(Rulebodywithcondition))
                                     b = Sql.RunQuery(Rulebodywithcondition)
-
+                                    #UPDATE ACAPTX APPROVAL STATUS OF SECOND CHAIN DURING RECALL
+                                    #if flag == 1:
+                                    #Sql.RunQuery("UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
+                                    #Log.Info("@@RECALL ----->>UPDATE ACAPTX SET APPROVALSTATUS = 'APPROVAL REQUIRED' WHERE APPROVAL_CHAIN_RECORD_ID = '{}' AND APRCHNSTP_ID != 1 AND APPROVAL_ROUND = '{}' AND APRTRXOBJ_ID = '{}' ".format(result.APPROVAL_CHAIN_RECORD_ID,roundd,QuoteId))
                                     GetTrackedFields = Sql.GetList(
                                         """SELECT APPROVAL_TRACKED_FIELD_RECORD_ID,API_NAME,OBJECT_NAME FROM ACAPTF (NOLOCK)
 										INNER JOIN SYOBJD (NOLOCK)
