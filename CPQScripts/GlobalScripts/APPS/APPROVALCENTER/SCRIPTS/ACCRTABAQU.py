@@ -1415,6 +1415,7 @@ except Exception, e:
 objDef = eval(violationruleInsert.Factory(Action))(CurrentRecordId=CurrentRecordId)
 Log.Info("inside the Approval center script ")
 if Action == "PoductDetails":
+    Trace.Write(str(Action))
     RecordId = Param.RecoedId
     wherecondition = Param.wherecondition
     Current_type = Param.Current_type
@@ -1425,12 +1426,15 @@ if Action == "PoductDetails":
         objDef.GetProductDetails(RecordId, wherecondition, Current_type, PerPage, startPage, endPage)
     )
 elif Action == "ProductDetail":
+    Trace.Write(str(Action))
     MaterilId = Param.MaterilId
     ApiResponse = ApiResponseFactory.JsonResponse(objDef.ProductDetailView(MaterilId))
 elif Action == "QueryBuilder":
+    Trace.Write(str(Action))
     OnEdit = Param.OnEdit
     ApiResponse = ApiResponseFactory.JsonResponse(objDef.ConstructQueryBuilder(OnEdit))
 elif Action == "QBSave":
+    Trace.Write(str(Action))
     QbJsonData = Param.QbJsonData
     QbWhereCondition = Param.QbWhereCondition
     QbCallFromPricing = Param.QbCallFromPricing
