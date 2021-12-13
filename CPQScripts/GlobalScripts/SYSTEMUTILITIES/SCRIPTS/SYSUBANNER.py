@@ -2614,8 +2614,10 @@ def Related_Sub_Banner(
                         Trace.Write("sales===")
                         contract_manager_info = Sql.GetFirst("SELECT COUNT(DISTINCT C4C_PARTNERFUNCTION_ID) as C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
                         if contract_manager_info.C4C_PARTNERFUNCTION_ID == "CONTRACT MANAGER":
+                            Trace.Write("sales==btn===")
                             sec_rel_sub_bnr += ""
                         else:
+                            Trace.Write("sales==btn===>>")
                             sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
