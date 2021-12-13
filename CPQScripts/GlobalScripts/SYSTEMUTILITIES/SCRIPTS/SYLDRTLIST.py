@@ -8409,7 +8409,14 @@ class SYLDRTLIST:
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
-					Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
+					if ObjectName == "SAQDLT":
+						Action_str += (
+									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
+									+ str(onclick)
+									+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE</a></li>'
+								)
+					else:
+						Action_str += '<li><a class="dropdown-item" data-target="#cont_viewModalDelete" data-toggle="modal" onclick="cont_delete(this)" href="#">DELETE</a></li>'
 				Action_str += "</ul></div></div>"
 				new_dict = {}
 				seg_pric = {}
