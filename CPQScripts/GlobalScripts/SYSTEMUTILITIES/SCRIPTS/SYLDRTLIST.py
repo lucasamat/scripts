@@ -8409,6 +8409,7 @@ class SYLDRTLIST:
 					else:
 						Action_str += '<li><a class="dropdown-item" href="#" onclick="Commontree_edit_RL(this)">EDIT</a></li>'    
 				if str(Action_permission.get("Delete")).upper() == "TRUE":
+					onclick = "CommonDelete(this, '" + str(ObjectName) + "', 'WARNING')"
 					if ObjectName == "SAQDLT":
 						Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
