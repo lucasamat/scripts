@@ -238,7 +238,7 @@ class EntitlementView():
 		try:
 			get_configuration_status = Sql.GetFirst("SELECT MATERIALCONFIG_TYPE FROM MAMTRL WHERE SAP_PART_NUMBER = '{}'".format(ProductPartnumber))
 			if get_configuration_status:
-				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL':
+				if get_configuration_status.MATERIALCONFIG_TYPE == 'SIMPLE MATERIAL' or ProductPartnumber == 'Z0101':
 					EntitlementType = "NO_ENTITLEMENT"
 		except:
 			Trace.Write('Treeparam--'+str(self.treeparam))
