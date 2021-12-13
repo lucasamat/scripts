@@ -167,7 +167,7 @@ class approvalCenter:
 			else:
 				UPDATE_ACACHR = """ UPDATE ACACHR SET ACACHR.COMPLETED_BY = '{UserName}',ACACHR.COMPLETEDBY_RECORD_ID='{UserId}',COMPLETED_DATE = NULL WHERE ACACHR.APPROVAL_RECORD_ID='{QuoteNumber}'""".format(UserId=self.UserId,UserName=self.UserName,datetime_value=self.datetime_value,QuoteNumber=self.QuoteNumber)
 			Sql.RunQuery(UPDATE_ACACHR)
-
+			response = self.cbcmailtrigger()
 			if str(Getchaintype.APPROVAL_METHOD).upper() == "PARALLEL STEP APPROVAL":
 				Curapprovestep = Sql.GetFirst(
 					" SELECT ACAPTX.* FROM ACAPTX (NOLOCK) WHERE APPROVAL_TRANSACTION_RECORD_ID = '{getCpqId}' AND ARCHIVED = 0".format(
@@ -3118,6 +3118,34 @@ class approvalCenter:
 		#    )
 		#    Trace.Write(self.exceptMessage)
 		return True
+	
+	def cbcmailtrigger(self):
+		try:
+			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+			MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")
+			mailClient = SmtpClient()
+			mailClient.Host = "smtp.gmail.com"
+			mailClient.Port = 587
+			mailClient.EnableSsl = "true"
+			mailCred = NetworkCredential()
+			mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+			mailCred.Password = str(LOGIN_CRE.PASSWORD)
+			mailClient.Credentials = mailCred
+			# toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
+			toEmail = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
+			fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+			msg = MailMessage(fromEmail, toEmail)
+			msg.Subject = "Clean Booking Checklist Completion"
+			msg.IsBodyHtml = True
+			msg.Body = "<!DOCTYPE HTML><html><p>Hi "+str(MANAGER_DETAILS.MEMBER_NAME)+",</p><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kindly complete the Clean Booking Checklist of the Quote <b>"+str(MANAGER_DETAILS.QUOTE_ID)+"</b> in order to proceed with the Contract Creation in CRM</p></html>"
+			# copyEmail1 = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
+			# msg.CC.Add(copyEmail1)
+			mailClient.Send(msg)
+		except Exception as e:
+			self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+			Trace.Write(self.exceptMessage)
+		return True
+
 	def mailtrigger(self, Subject, mailBody, recepient):
 		try:
 			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
