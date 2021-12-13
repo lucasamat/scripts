@@ -650,7 +650,7 @@ def Related_Sub_Banner(
                 else:                
                     PrimaryLable = "Dynamic Document Generator"
                     PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
-            
+             
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
@@ -1936,7 +1936,7 @@ def Related_Sub_Banner(
                 FifthLable = ""
                 FifthValue = ""
             Trace.Write("4 th "+str(FourthLable) + "4 th val" +str(FourthValue) + " 5 th " +str(FifthLable) + "5 th val" +str(FifthValue))'''
-            
+           	
     elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
         getFab = Sql.GetFirst("select FABLOCATION_NAME from CTCFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")        
         PrimaryLable = "Fab Location ID"
@@ -2612,13 +2612,14 @@ def Related_Sub_Banner(
                         sec_rel_sub_bnr += ""
                     elif TreeParam == "Sales Team":
                         Trace.Write("sales===")
-                        contract_manager_info = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))                        
-                        if contract_manager_info:
-                            Trace.Write("sales==btn===")
-                            sec_rel_sub_bnr += ""
-                        else:
-                            Trace.Write("sales==btn===>>")
-                            sec_rel_sub_bnr += (str(add_button))
+                        contract_manager_info = Sql.GetList("SELECT DISTINCT C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                        for c4c_id in contract_manager_info:
+                            if c4c_id.C4C_PARTNERFUNCTION_ID == "CONTRACT MANAGER":
+                                Trace.Write("sales==btn===")
+                                sec_rel_sub_bnr += ""
+                            # else:
+                            #     Trace.Write("sales==btn===>>")
+                            #     sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
                     
@@ -2636,7 +2637,7 @@ def Related_Sub_Banner(
                     else:
                         Trace.Write('elseeee11')
                         if str(TabName) == 'Quotes':
-                            if quote_status.QUOTE_STATUS != 'APPROVED' and subTabName == "Items":
+                            if quote_status.QUOTE_STATUS != 'APPROVED' and subTabName != 'Items':
                                 sec_rel_sub_bnr += (str(add_button))
                         else:
                             Trace.Write("add###---")                                        
@@ -2703,7 +2704,7 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                                
+                                   
 
 
 
@@ -3025,8 +3026,6 @@ def Related_Sub_Banner(
         #     sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button>')
         elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
             sec_rel_sub_bnr += ""
-        elif str(TreeParam) == "Quote Items" and TabName =="Quotes" and subTabName =="Items":
-            getsplit =Sql.GetFirst("Select ")
         else:
             Trace.Write("TreeParam-->"+str(TreeParam))
             Trace.Write("TabName-->"+str(TabName))
@@ -3035,16 +3034,8 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 #Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    entitlement_obj = SqlHelper.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0091' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='Split Quote'".format('SAQTSE',Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                    if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == 'Yes':
-                        if quote_status.QUOTE_STATUS != 'APPROVED':
-                            sec_rel_sub_bnr += (btn)
-                    
-                    else:
-                        if 'SPLIT' not in btn:
-                            sec_rel_sub_bnr += (btn)
-
-                    
+                    if quote_status.QUOTE_STATUS != 'APPROVED':
+                        sec_rel_sub_bnr += (btn)
             
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
@@ -3177,7 +3168,7 @@ if CurrentTab == 'Quotes':
     if TreeParentParam == "Quote Items" and (subTabName == "Spare Part Details" or subTabName == "Entitlements") and getQuotetype == "ZWK1 - SPARES":
         ObjName = "SAQIFP"
     if (TreeParam.startswith("Sending") or TreeParam.startswith("Receiving")):
-        ObjectName = "SAQSRA"	     
+        ObjectName = "SAQSRA"	    
     # if crnt_Qry is not None:
     # 	if str(ObjName) != "SAQRIB":
     # 		CurrentRecordId = str(crnt_Qry.SAPCPQ_ATTRIBUTE_NAME)
