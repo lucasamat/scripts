@@ -394,7 +394,7 @@ class ContractQuoteItem:
 						) IQ_SAQRIT CROSS JOIN (SELECT 1 as YEAR_NUM UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10) CJQ where YEAR>=YEAR_NUM
 					) CONTRACT_TEMP ON  CONTRACT_TEMP.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND CONTRACT_TEMP.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND CONTRACT_TEMP.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND CONTRACT_TEMP.FABLOCATION_RECORD_ID = IQ.FABLOCATION_RECORD_ID AND CONTRACT_TEMP.OBJECT_ID = IQ.OBJECT_ID
 				) OQ
-				LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = IQ.SERVICE_RECORD_ID AND  ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') =  ISNULL(IQ.FABLOCATION_RECORD_ID,'') AND ISNULL(SAQICO.OBJECT_ID,'') = ISNULL(IQ.OBJECT_ID,'')
+				LEFT JOIN SAQICO (NOLOCK) ON SAQICO.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQICO.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQICO.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID AND  ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') =  ISNULL(OQ.FABLOCATION_RECORD_ID,'') AND ISNULL(SAQICO.OBJECT_ID,'') = ISNULL(OQ.OBJECT_ID,'')
 				WHERE ISNULL(SAQICO.FABLOCATION_RECORD_ID,'') = '' AND ISNULL(SAQICO.OBJECT_ID,'') = ''
 				""".format(UserId=self.user_id, UserName=self.user_name, QuoteRecordId=self.contract_quote_record_id,QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, DynamicValueForStatus = dynamic_value_for_status,DynamicColNames = dynamic_col_names)
 			)
@@ -1213,8 +1213,8 @@ class ContractQuoteItem:
 			self._ordering_item_line_no()
 
 			# Item Level entitlement Insert
-			if self.service_id == 'Z0101':
-				self._spare_quote_items_entitlement_insert(update=update)
+			if self.service_id == 'Z0101' or self.quote_service_entitlement_type == 'OFFERING + PM EVENT':
+				self._service_based_quote_items_entitlement_insert(update=update)  
 			else:
 				self._quote_items_entitlement_insert(update=update)
 		return True		
@@ -1577,7 +1577,7 @@ class ContractQuoteItem:
 			for obj in deleting_tables_list:
 				Sql.RunQuery("DELETE {obj} FROM {obj} (NOLOCK) WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, obj = obj))
 
-	def _spare_quote_items_entitlement_insert(self, update=False):		
+	def _service_based_quote_items_entitlement_insert(self, update=False):		
 		#if update: # need to verify one more time
 		Sql.RunQuery("DELETE SAQITE FROM SAQITE WHERE SAQITE.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQITE.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQITE.SERVICE_ID = '{ServiceId}'".format(QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id))
 		Sql.RunQuery("""INSERT SAQITE (QUOTE_REV_ITEM_ENTITLEMENT_RECORD_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CPS_CONFIGURATION_ID, CPS_MATCH_ID, ENTITLEMENT_COST_IMPACT, ENTITLEMENT_GROUP_ID, ENTITLEMENT_GROUP_XML, ENTITLEMENT_PRICE_IMPACT, ENTITLEMENT_XML, IS_CHANGED, LINE, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, QTEITM_RECORD_ID, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, GREENBOOK, GREENBOOK_RECORD_ID)
