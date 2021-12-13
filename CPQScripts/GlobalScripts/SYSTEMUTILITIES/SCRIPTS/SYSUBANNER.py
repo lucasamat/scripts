@@ -2636,7 +2636,7 @@ def Related_Sub_Banner(
                     else:
                         Trace.Write('elseeee11')
                         if str(TabName) == 'Quotes':
-                            if quote_status.QUOTE_STATUS != 'APPROVED':
+                            if quote_status.QUOTE_STATUS != 'APPROVED' and subTabName == "Items":
                                 sec_rel_sub_bnr += (str(add_button))
                         else:
                             Trace.Write("add###---")                                        
@@ -3025,6 +3025,8 @@ def Related_Sub_Banner(
         #     sec_rel_sub_bnr += ('<div class="product_tab_icon"><img style="height: 40px; margin-top: -1px; margin-left: -1px; float: left;" src="/mt/appliedmaterials_tst/Additionalfiles/Secondary Icon.svg"/></div><div class="product_txt_div_child secondary_highlight" style="display: block;"><div class="product_txt_child"><abbr title="Quote Items">Quote Items</abbr></div><div class="product_txt_to_top_child"><abbr title="ALL">ALL</abbr></div></div><div class="segment_part_number_child secondary_highlight subellipsisdot" style="display: block;"><div class="segment_part_number_heading_child"><abbr title="Product Offering ID">Product Offering ID</abbr></div><div class="segment_part_number_text_child"><abbr title="ALL">ALL</abbr></div></div><button id="generate-line-items" onclick="generateLineItems()"  class="btnconfig"style="display: none;">UPDATE LINES</button>')
         elif str(TreeParam) == "Fab Locations" and TabName =="Quotes" and subTabName =="Fab Locations":
             sec_rel_sub_bnr += ""
+        elif str(TreeParam) == "Quote Items" and TabName =="Quotes" and subTabName =="Items":
+            getsplit =Sql.GetFirst("Select ")
         else:
             Trace.Write("TreeParam-->"+str(TreeParam))
             Trace.Write("TabName-->"+str(TabName))
@@ -3033,8 +3035,16 @@ def Related_Sub_Banner(
             if str(multi_buttons) != "":
                 #Trace.Write("add_button_if"+str(add_button))
                 for btn in multi_buttons:
-                    if quote_status.QUOTE_STATUS != 'APPROVED':
-                        sec_rel_sub_bnr += (btn)
+                    entitlement_obj = SqlHelper.GetFirst("select ENTITLEMENT_NAME,ENTITLEMENT_VALUE_CODE,ENTITLEMENT_DISPLAY_VALUE from (SELECT distinct e.QUOTE_RECORD_ID,e.QTEREV_RECORD_ID, replace(X.Y.value('(ENTITLEMENT_NAME)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_NAME,replace(X.Y.value('(ENTITLEMENT_VALUE_CODE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_VALUE_CODE,replace(X.Y.value('(ENTITLEMENT_DISPLAY_VALUE)[1]', 'VARCHAR(128)'),';#38','&') as ENTITLEMENT_DISPLAY_VALUE FROM (select QUOTE_RECORD_ID,QTEREV_RECORD_ID,convert(xml,replace(ENTITLEMENT_XML,'&',';#38')) as ENTITLEMENT_XML from {} (nolock) where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' and SERVICE_ID = 'Z0091' ) e OUTER APPLY e.ENTITLEMENT_XML.nodes('QUOTE_ITEM_ENTITLEMENT') as X(Y) ) as m where ENTITLEMENT_NAME  ='Split Quote'".format('SAQTSE',quote_record_id=Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
+                    if entitlement_obj.ENTITLEMENT_DISPLAY_VALUE == 'Yes':
+                        if quote_status.QUOTE_STATUS != 'APPROVED':
+                            sec_rel_sub_bnr += (btn)
+                    
+                    else:
+                        if 'SPLIT' not in btn:
+                            sec_rel_sub_bnr += (btn)
+
+                    
             
         Trace.Write('sec_rel_sub_bnr--2941--'+str(sec_rel_sub_bnr))
     return sec_rel_sub_bnr,recall_edit,buttonvisibility,price_bar
