@@ -3111,15 +3111,14 @@ class approvalCenter:
 			# Trace.Write("mail body " + str(mailbdyready))
 			# Trace.Write("mail email " + str(emailId))
 			# Trace.Write("mail subject " + str(subject))
-			copyEmails = ['surendar.murugachandran@bostonharborconsulting.com','wasim.abdul@bostonharborconsulting.com']
-			Getresponse = self.mailtrigger(str(subject), str(mailbdyready), str(emailId), str(copyEmails))
+			Getresponse = self.mailtrigger(str(subject), str(mailbdyready), str(emailId))
 		#except Exception, e:
 		#    self.exceptMessage = (
 		#        "ACSECTACTN : sendmailNotification : EXCEPTION : UNABLE TO SEND EMAIL : EXCEPTION E : " + str(e)
 		#    )
 		#    Trace.Write(self.exceptMessage)
 		return True
-	def mailtrigger(self, Subject, mailBody, recepient,copyEmails):
+	def mailtrigger(self, Subject, mailBody, recepient):
 		try:
 			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
 			mailClient = SmtpClient()
@@ -3136,9 +3135,14 @@ class approvalCenter:
 			msg.Subject = Subject
 			msg.IsBodyHtml = True
 			msg.Body = mailBody
-			for mail in copyEmails:
-    			copyEmail = MailAddress(mail)
-				msg.CC.Add(copyEmail)
+			copyEmail1 = MailAddress("surendar.murugachandran@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail1)
+			#copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
+			#msg.CC.Add(copyEmail2)
+			copyEmail2 = MailAddress("wasim.abdul@bostonharborconsulting.com")
+			msg.CC.Add(copyEmail2)
+			#copyEmail5 = MailAddress("namrata.sivakumar@bostonharborconsulting.com")
+			#msg.CC.Add(copyEmail5)    
 			mailClient.Send(msg)
 		except Exception, e:
 			self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
