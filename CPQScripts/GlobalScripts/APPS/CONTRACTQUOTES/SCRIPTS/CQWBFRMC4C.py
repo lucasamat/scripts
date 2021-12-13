@@ -10,10 +10,13 @@ from SYDATABASE import SQL
 Sql = SQL()
 import sys
 
-if 'Param' in globals(): 	
+if 'Param' in globals():
+    Log.Info("CQWBFRMC4C called.......")	
     if hasattr(Param, 'CPQ_Columns'):
         for values in Param.CPQ_Columns:
             Key = str(values.Key)
+            Log.Info("CQWBFRMC4C called......."+str(values.Key))
+            Log.Info("CQWBFRMC4C called......."+str(values.Value))
             if str(Key).upper() == "OPPORTUNITY_ID":
                 opportunity_id = str(values.Value)
             if str(Key).upper() == "OPPORTUNITY_STATUS":
