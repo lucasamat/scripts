@@ -681,7 +681,6 @@ class ContractQuoteItem:
 			for obj in ['SAQICO','SAQRIO','SAQITE','SAQRIP','SAQIFP','SAQIBP']:
 				Sql.RunQuery("""UPDATE {obj} SET LINE  = SAQRIT.LINE from {obj} (NOLOCK) INNER JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = {obj}.QUOTE_RECORD_ID AND {obj}.QTEREV_RECORD_ID = SAQRIT.QTEREV_RECORD_ID AND QTEITM_RECORD_ID = QUOTE_REVISION_CONTRACT_ITEM_ID WHERE SAQRIT.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQRIT.QTEREV_RECORD_ID = '{RevisionRecordId}' """.format(QuoteRecordId=self.contract_quote_record_id,RevisionRecordId=self.contract_quote_revision_record_id, obj=obj))
 
-
 	def _set_quote_service_entitlement_type(self):
 		##chk ancillary offering
 		parent_service_id = ""
@@ -730,7 +729,8 @@ class ContractQuoteItem:
 							self.source_object_name = 'SAQSCE'
 						elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
 							self.source_object_name = 'SAQSGE'
-
+						elif self.quote_service_entitlement_type == 'OFFERING + PM EVENT':
+							self.source_object_name = 'SAQTSE'
 						break
 				elif entitlement_billing_id_tag_match:
 					ent_billing_display_value_tag_match = re.findall(entitlement_display_value_tag_pattern,quote_item_tag_content)
@@ -811,6 +811,7 @@ class ContractQuoteItem:
 
 	def _quote_items_insert(self, update=False):
 		Log.Info("====>>> _quote_items_insert")
+		Trace.Write("====>>> _quote_items_insert"+str(self.quote_service_entitlement_type))
 		# dynamic_select_columns = ""
 		# item_where_string = ""
 		# item_join_string = ""
@@ -1074,7 +1075,69 @@ class ContractQuoteItem:
 					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.GREENBOOK_RECORD_ID = OQ.GREENBOOK_RECORD_ID
 					WHERE ISNULL(SAQRIT.GREENBOOK_RECORD_ID,'') = ''
 				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns))
-			
+			elif self.quote_service_entitlement_type == "OFFERING + PM EVENT":
+				Sql.RunQuery("""INSERT SAQRIT (QUOTE_REVISION_CONTRACT_ITEM_ID, CPQTABLEENTRYADDEDBY, CPQTABLEENTRYDATEADDED, CpqTableEntryModifiedBy, CpqTableEntryDateModified, CONTRACT_VALID_FROM, CONTRACT_VALID_TO, DOC_CURRENCY, DOCURR_RECORD_ID, EXCHANGE_RATE, EXCHANGE_RATE_DATE, EXCHANGE_RATE_RECORD_ID, GL_ACCOUNT_NO, GLOBAL_CURRENCY, GLOBAL_CURRENCY_RECORD_ID, LINE, OBJECT_ID, OBJECT_TYPE, FABLOCATION_ID, FABLOCATION_NAME, FABLOCATION_RECORD_ID, SERVICE_DESCRIPTION, SERVICE_ID, SERVICE_RECORD_ID, PROFIT_CENTER, QUANTITY, QUOTE_ID, QUOTE_RECORD_ID, QTEREV_ID, QTEREV_RECORD_ID, REF_SALESORDER, STATUS, TAXCLASSIFICATION_DESCRIPTION, TAXCLASSIFICATION_ID, TAXCLASSIFICATION_RECORD_ID,{DynamicColumnNames} GREENBOOK, GREENBOOK_RECORD_ID, QTEITMSUM_RECORD_ID)
+					SELECT CONVERT(VARCHAR(4000),NEWID()) as QUOTE_REVISION_CONTRACT_ITEM_ID,
+						'{UserName}' AS CPQTABLEENTRYADDEDBY,
+						GETDATE() as CPQTABLEENTRYDATEADDED,
+						{UserId} as CpqTableEntryModifiedBy,
+						GETDATE() as CpqTableEntryDateModified, 
+						OQ.* 
+					FROM (
+						SELECT 
+							DISTINCT
+							SAQTRV.CONTRACT_VALID_FROM,
+							SAQTRV.CONTRACT_VALID_TO,
+							SAQTRV.DOC_CURRENCY,
+							SAQTRV.DOCCURR_RECORD_ID as DOCURR_RECORD_ID,
+							ISNULL(CONVERT(FLOAT,SAQTRV.EXCHANGE_RATE),'') AS EXCHANGE_RATE,
+							SAQTRV.EXCHANGE_RATE_DATE,
+							SAQTRV.EXCHANGERATE_RECORD_ID as EXCHANGE_RATE_RECORD_ID,
+							null as GL_ACCOUNT_NO,
+							SAQTRV.GLOBAL_CURRENCY,
+							SAQTRV.GLOBAL_CURRENCY_RECORD_ID,
+							ROW_NUMBER()OVER(ORDER BY(IQ.PM_ID)) + {EquipmentsCount} as LINE,
+							IQ.PM_ID as OBJECT_ID,
+							'EVENT' as OBJECT_TYPE,
+							IQ.FABLOCATION_ID as FABLOCATION_ID,
+							IQ.FABLOCATION_NAME as FABLOCATION_NAME,
+							IQ.FABLOCATION_RECORD_ID as FABLOCATION_RECORD_ID,			
+							{ObjectName}.SERVICE_DESCRIPTION,
+							{ObjectName}.SERVICE_ID,
+							{ObjectName}.SERVICE_RECORD_ID,
+							null as PROFIT_CENTER,
+							1 as QUANTITY,
+							SAQTRV.QUOTE_ID,
+							SAQTRV.QUOTE_RECORD_ID,
+							SAQTMT.QTEREV_ID,
+							SAQTMT.QTEREV_RECORD_ID,
+							null as REF_SALESORDER,
+							'ACQUIRING' as STATUS,
+							MAMSCT.TAXCLASSIFICATION_DESCRIPTION,
+							MAMSCT.TAXCLASSIFICATION_ID,
+							MAMSCT.TAXCLASSIFICATION_RECORD_ID,
+							{DynamicNetValues}					
+							null as GREENBOOK,
+							null as GREENBOOK_RECORD_ID,
+							SAQRIS.QUOTE_REV_ITEM_SUMMARY_RECORD_ID as QTEITMSUM_RECORD_ID
+						FROM (
+							SELECT DISTINCT
+								SAQSCO.QUOTE_RECORD_ID, SAQSCO.QTEREV_RECORD_ID, SAQSCO.SERVICE_ID, FABLOCATION_ID,FABLOCATION_RECORD_ID, PM_ID
+							FROM SAQSCO (NOLOCK) INNER JOIN SAQSAP (NOLOCK) ON SAQSCO.QUOTE_RECORD_ID = SAQSAP.QUOTE_RECORD_ID AND SAQSCO.QTEREV_RECORD_ID = SAQSAP.QTEREV_RECORD_ID AND SAQSCO.SERVICE_RECORD_ID= SAQSAP.SERVICE_RECORD_ID AND SAQSCO.EQUIPMENT_RECORD_ID = SAQSAP.EQUIPMENT_RECORD_ID  
+							WHERE SAQSCO.QUOTE_RECORD_ID = '{QuoteRecordId}' AND SAQSCO.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND SAQSCO.SERVICE_ID = '{ServiceId}' AND PM_LEVEL = 'Chamber / Module PM'
+							GROUP BY SAQSCO.QUOTE_RECORD_ID, SAQSCO.QTEREV_RECORD_ID, SAQSCO.SERVICE_ID, SAQSCO.FABLOCATION_ID,  SAQSCO.FABLOCATION_RECORD_ID, SAQSAP.PM_ID
+						) IQ
+						JOIN {ObjectName} (NOLOCK) ON {ObjectName}.QUOTE_RECORD_ID = IQ.QUOTE_RECORD_ID AND {ObjectName}.QTEREV_RECORD_ID = IQ.QTEREV_RECORD_ID AND {ObjectName}.SERVICE_ID = IQ.SERVICE_ID 
+						JOIN SAQTMT (NOLOCK) ON SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID = {ObjectName}.QUOTE_RECORD_ID AND SAQTMT.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID     
+						JOIN SAQTRV (NOLOCK) ON SAQTRV.SALESORG_RECORD_ID = {ObjectName}.SALESORG_RECORD_ID AND SAQTRV.QTEREV_RECORD_ID = {ObjectName}.QTEREV_RECORD_ID AND SAQTRV.QUOTE_RECORD_ID = SAQTMT.MASTER_TABLE_QUOTE_RECORD_ID
+						JOIN SAQRIS (NOLOCK) ON SAQRIS.QTEREV_RECORD_ID = SAQTRV.QUOTE_REVISION_RECORD_ID AND SAQRIS.QUOTE_RECORD_ID = SAQTRV.QUOTE_RECORD_ID AND SAQRIS.SERVICE_ID = {ObjectName}.SERVICE_ID
+						JOIN MAMTRL (NOLOCK) ON MAMTRL.SAP_PART_NUMBER = {ObjectName}.SERVICE_ID 
+						LEFT JOIN MAMSCT (NOLOCK) ON MAMSCT.DISTRIBUTIONCHANNEL_RECORD_ID = SAQTRV.DISTRIBUTIONCHANNEL_RECORD_ID AND MAMSCT.COUNTRY_RECORD_ID = SAQTRV.COUNTRY_RECORD_ID AND MAMSCT.DIVISION_ID = SAQTRV.DIVISION_ID AND MAMSCT.SAP_PART_NUMBER = MAMTRL.SAP_PART_NUMBER
+						WHERE {ObjectName}.QUOTE_RECORD_ID = '{QuoteRecordId}' AND {ObjectName}.QTEREV_RECORD_ID = '{QuoteRevisionRecordId}' AND {ObjectName}.SERVICE_ID = '{ServiceId}' AND ISNULL({ObjectName}.CONFIGURATION_STATUS,'') = 'COMPLETE' 
+					) OQ
+					LEFT JOIN SAQRIT (NOLOCK) ON SAQRIT.QUOTE_RECORD_ID = OQ.QUOTE_RECORD_ID AND SAQRIT.QTEREV_RECORD_ID = OQ.QTEREV_RECORD_ID AND SAQRIT.SERVICE_RECORD_ID = OQ.SERVICE_RECORD_ID  AND SAQRIT.OBJECT_ID = OQ.OBJECT_ID
+					WHERE ISNULL(SAQRIT.OBJECT_ID,'') = ''
+				""".format(UserId=self.user_id, UserName=self.user_name, ObjectName=self.source_object_name, QuoteRecordId=self.contract_quote_record_id, QuoteRevisionRecordId=self.contract_quote_revision_record_id, ServiceId=self.service_id, EquipmentsCount=equipments_count, DynamicNetValues=dynamic_global_curr_columns,DynamicColumnNames=dynamic_columns))
 			##ordering line field in saqrit
 			self._ordering_item_line_no()
 
