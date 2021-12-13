@@ -2891,7 +2891,7 @@ class SYLDRTLIST:
 										Action_str += ('<li style="display: none;"><a class="dropdown-item" href="#" id="deletebtn" onclick="'+ str(onclick)+ '" data-target="#cont_CommonModalDelete" data-toggle="modal">DELETE ACCOUNT</a></li>')
 							##A055S000P01-10136
 							elif str(ObjectName)=="SAQICT":
-								# Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
+								Trace.Write("oooooqqqqqqoooo"+str(ObjectName))
 								Action_str += (
 									'<li><a class="dropdown-item" href="#" id="deletebtn" onclick="'
 									+ str(onclick)
@@ -3156,6 +3156,7 @@ class SYLDRTLIST:
 								new_dict[value123] = ('<abbr id ="' + key_value + '" title="' + value1234 + '">' + imgValue + "</abbr>")
 							else:
 								Trace.Write('At line 2832-- second else')
+
 								new_dict[value123] = ('<abbr id ="' + str(key_value) + '" title="' + str(value1234) + '">' + str(value1234) + "</abbr>")  
 								#new_dict[value123] = value1234                           
 						## addon product hyperlink starts
