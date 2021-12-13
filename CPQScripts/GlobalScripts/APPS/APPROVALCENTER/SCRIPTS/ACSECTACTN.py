@@ -3120,30 +3120,34 @@ class approvalCenter:
 		return True
 	
 	def cbcmailtrigger(self):
-		try:
-			LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
-			MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")
-			mailClient = SmtpClient()
-			mailClient.Host = "smtp.gmail.com"
-			mailClient.Port = 587
-			mailClient.EnableSsl = "true"
-			mailCred = NetworkCredential()
-			mailCred.UserName = str(LOGIN_CRE.USER_NAME)
-			mailCred.Password = str(LOGIN_CRE.PASSWORD)
-			mailClient.Credentials = mailCred
-			# toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
-			toEmail = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
-			fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
-			msg = MailMessage(fromEmail, toEmail)
-			msg.Subject = "Clean Booking Checklist Completion"
-			msg.IsBodyHtml = True
-			msg.Body = "<!DOCTYPE HTML><html><p>Hi "+str(MANAGER_DETAILS.MEMBER_NAME)+",</p><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kindly complete the Clean Booking Checklist of the Quote <b>"+str(MANAGER_DETAILS.QUOTE_ID)+"</b> in order to proceed with the Contract Creation in CRM</p></html>"
-			# copyEmail1 = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
-			# msg.CC.Add(copyEmail1)
-			mailClient.Send(msg)
-		except Exception as e:
-			self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
-			Trace.Write(self.exceptMessage)
+		revision_status = Sql.GetFirst("SELECT REVISION_STATUS FROM SAQTRV WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QUOTE_REVISION_RECORD_ID = '"+str(self.quote_revision_record_id)+"' ")
+		if revision_status.REVISION_STATUS=="APPROVED":
+			try:
+				LOGIN_CRE = Sql.GetFirst("SELECT USER_NAME,PASSWORD FROM SYCONF (NOLOCK) where Domain ='SUPPORT_MAIL'")
+				MANAGER_DETAILS=Sql.GetFirst("SELECT EMAIL,MEMBER_NAME,QUOTE_ID FROM SAQDLT WHERE QUOTE_RECORD_ID = '"+str(Quote.GetGlobal("contract_quote_record_id"))+"' AND QTEREV_RECORD_ID = '"+str(self.quote_revision_record_id)+"' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ")
+				mailClient = SmtpClient()
+				mailClient.Host = "smtp.gmail.com"
+				mailClient.Port = 587
+				mailClient.EnableSsl = "true"
+				mailCred = NetworkCredential()
+				mailCred.UserName = str(LOGIN_CRE.USER_NAME)
+				mailCred.Password = str(LOGIN_CRE.PASSWORD)
+				mailClient.Credentials = mailCred
+				# toEmail = MailAddress(str(MANAGER_DETAILS.EMAIL))
+				toEmail = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
+				fromEmail = MailAddress(str(LOGIN_CRE.USER_NAME))
+				msg = MailMessage(fromEmail, toEmail)
+				msg.Subject = "Clean Booking Checklist Completion"
+				msg.IsBodyHtml = True
+				msg.Body = "<!DOCTYPE HTML><html><p>Hi "+str(MANAGER_DETAILS.MEMBER_NAME)+",</p><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kindly complete the Clean Booking Checklist of the Quote <b>"+str(MANAGER_DETAILS.QUOTE_ID)+"</b> in order to proceed with the Contract Creation in CRM</p></html>"
+				# copyEmail1 = MailAddress("viknesh.duraisamy@bostonharborconsulting.com")
+				# msg.CC.Add(copyEmail1)
+				mailClient.Send(msg)
+			except Exception as e:
+				self.exceptMessage = "ACSECTACTN : mailtrigger : EXCEPTION : UNABLE TO TRIGGER E-EMAIL : EXCEPTION E : " + str(e)
+				Trace.Write(self.exceptMessage)
+		else:
+    		Trace.Write('CBC MAIL TRIGGER : QUOTE NOT APPROVED YET')
 		return True
 
 	def mailtrigger(self, Subject, mailBody, recepient):
