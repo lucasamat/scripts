@@ -5217,7 +5217,8 @@ class SYLDRTLIST:
 			if billing_date_column:
 				column_before_pivot_change = col
 				col += ","+ ",".join(billing_date_column)
-
+			select_obj_str = col
+			Trace.Write('@5221, Select obj str-->'+str(select_obj_str))
 			edit_field = []
 			OrderBy_obj = Sql.GetFirst("select ORDERS_BY from SYOBJR (NOLOCK) where RECORD_ID = '" + str(RECORD_ID) + "'")
 			
@@ -8849,7 +8850,7 @@ class SYLDRTLIST:
 				+ str(table_id) 
 				+ "_SortColumnOrder', order); }); " 
 			)   
-			            
+						
 			dbl_clk_function = SAQICO_dbl_clk_function
 		return table_list, QueryCount, PageInformS,dbl_clk_function,footer_str
 
