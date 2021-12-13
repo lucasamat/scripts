@@ -121,12 +121,15 @@ def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
     Trace.Write("cont_rec_id===="+str(cont_rec_id))
     Trace.Write("table_name===="+str(table_name)) 
     con_data_chk = Sql.GetFirst("Select * from SAQDLT(NOLOCK) WHERE QUOTE_RECORD_ID ='{}' AND QTEREV_RECORD_ID = '{}' AND QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{}'".format(contract_quote_record_id,quote_revision_record_id,cont_rec_id))
+    #sypfty_values = Sql.GetFirst("Select SYPFTY.C4C_PARTNER_FUNCTION,SYPFTY.CRM_PARTNERFUNCTION from SYPFTY(NOLOCK) INNER JOIN SAQDLT(NOLOCK) ON SAQDLT.C4C_PARTNERFUNCTION_ID = SYPFTY.C4C_PARTNER_FUNCTION AND SAQDLT.WHERE SAQDLT.QUOTE_RECORD_ID ='{}' AND SAQDLT.QTEREV_RECORD_ID = '{}' AND SAQDLT.QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{}'".format(contract_quote_record_id,quote_revision_record_id,cont_rec_id) )
     rpl_con_data_chk =Sql.GetFirst("Select * FROM SAEMPL(NOLOCK) WHERE EMPLOYEE_RECORD_ID = '{}'".format(repalce_values))
     if con_data_chk:
         delete_saqict = ("DELETE SAQDLT WHERE QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{}'".format(cont_rec_id))
         Sql.RunQuery(delete_saqict)
         tableInfo = Sql.GetTable("SAQDLT")
-        row = {}	
+        row = {}
+        row['CRM_PARTNERFUNCTION_ID'] = con_data_chk.CRM_PARTNERFUNCTION_ID
+        row['C4C_PARTNERFUNCTION_ID'] = con_data_chk.C4C_PARTNERFUNCTION_ID
         row['MEMBER_ID'] = rpl_con_data_chk.EMPLOYEE_ID if str(rpl_con_data_chk.EMPLOYEE_ID) != '' else ''
         row['MEMBER_NAME'] = rpl_con_data_chk.EMPLOYEE_NAME if str(rpl_con_data_chk.EMPLOYEE_NAME) != '' else ''       
         row['MEMBER_RECORD_ID'] = rpl_con_data_chk.EMPLOYEE_RECORD_ID if str(rpl_con_data_chk.EMPLOYEE_RECORD_ID) != '' else ''       
@@ -136,7 +139,7 @@ def replace_contract_manager_replace(repalce_values,cont_rec_id,table_name):
         row['QUOTE_REV_DEAL_TEAM_MEMBER_ID'] = cont_rec_id
         tableInfo.AddRow(row)
         SqlHelper.Upsert(tableInfo)
-        update_saqdlt="UPDATE SAQDLT SET MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(member_id = rpl_con_data_chk.EMPLOYEE_ID,member_name = rpl_con_data_chk.EMPLOYEE_NAME,member_rec_id = rpl_con_data_chk.EMPLOYEE_RECORD_ID,email=rpl_con_data_chk.EMAIL,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)
+        update_saqdlt="UPDATE SAQDLT SET CRM_PARTNERFUNCTION_ID = '{crm_pf_id}',C4C_PARTNERFUNCTION_ID = '{}',MEMBER_ID = '{member_id}',MEMBER_NAME = '{member_name}',MEMBER_RECORD_ID = '{member_rec_id}',EMAIL = '{email}' WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' and QTEREV_RECORD_ID = '{RevisionRecordId}' and QUOTE_REV_DEAL_TEAM_MEMBER_ID ='{cont_rec_id}'".format(crm_pf_id = con_data_chk.CRM_PARTNERFUNCTION_ID,c4c_pf_id = con_data_chk.C4C_PARTNERFUNCTION_ID,member_id = rpl_con_data_chk.EMPLOYEE_ID,member_name = rpl_con_data_chk.EMPLOYEE_NAME,member_rec_id = rpl_con_data_chk.EMPLOYEE_RECORD_ID,email=rpl_con_data_chk.EMAIL,QuoteRecordId = contract_quote_record_id,RevisionRecordId = quote_revision_record_id,cont_rec_id = cont_rec_id)
         update_saqdlt = update_saqdlt.encode('ascii', 'ignore').decode('ascii')
         Sql.RunQuery(update_saqdlt)
 
