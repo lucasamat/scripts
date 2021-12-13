@@ -800,7 +800,7 @@ class ContractQuoteItem:
 							self.source_object_name = 'SAQSCE'
 						elif self.quote_service_entitlement_type in ('OFFERING + FAB + GREENBOOK + GROUP OF EQUIPMENT', 'OFFERING + GREENBOOK + GR EQUI', 'OFFERING + CHILD GROUP OF PART'):
 							self.source_object_name = 'SAQSGE'
-						elif self.quote_service_entitlement_type == 'OFFERING + PM EVENT':
+						elif self.quote_service_entitlement_type in ('OFFERING + PM EVENT','OFFERING+CONSIGNED+ON REQUEST'):
 							self.source_object_name = 'SAQTSE'
 						break
 				elif entitlement_billing_id_tag_match:
@@ -1213,7 +1213,7 @@ class ContractQuoteItem:
 			self._ordering_item_line_no()
 
 			# Item Level entitlement Insert
-			if self.service_id == 'Z0101' or self.quote_service_entitlement_type == 'OFFERING + PM EVENT':
+			if self.service_id == 'Z0101' or self.quote_service_entitlement_type in ('OFFERING + PM EVENT', 'OFFERING+CONSIGNED+ON REQUEST','OFFERING'):
 				self._service_based_quote_items_entitlement_insert(update=update)  
 			else:
 				self._quote_items_entitlement_insert(update=update)
