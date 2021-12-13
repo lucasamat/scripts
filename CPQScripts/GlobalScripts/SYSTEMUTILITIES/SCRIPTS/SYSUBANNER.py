@@ -2617,9 +2617,9 @@ def Related_Sub_Banner(
                             if c4c_id.C4C_PARTNERFUNCTION_ID == "CONTRACT MANAGER":
                                 Trace.Write("sales==btn===")
                                 sec_rel_sub_bnr += ""
-                            else:
-                                Trace.Write("sales==btn===>>")
-                                sec_rel_sub_bnr += (str(add_button))
+                            # else:
+                            #     Trace.Write("sales==btn===>>")
+                            #     sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
                     
