@@ -650,7 +650,7 @@ def Related_Sub_Banner(
                 else:                
                     PrimaryLable = "Dynamic Document Generator"
                     PrimaryValue = "Use the settings below to control the conditional display of information on your Customer Facing Documents"  
-             
+            
                     
 
             elif subTabName == "Equipment" and (TreeParentParam == "Fab Locations" or TreeSuperParentParam == "Product Offerings" or TreeParentParam == "Add-On Products" and sec_rel_sub_bnr == "") and CurrentTab == 'Quotes':		
@@ -1936,7 +1936,7 @@ def Related_Sub_Banner(
                 FifthLable = ""
                 FifthValue = ""
             Trace.Write("4 th "+str(FourthLable) + "4 th val" +str(FourthValue) + " 5 th " +str(FifthLable) + "5 th val" +str(FifthValue))'''
-           	
+            
     elif TreeSuperParentParam == "Fab Locations" and ObjName == 'CTCFEQ':
         getFab = Sql.GetFirst("select FABLOCATION_NAME from CTCFBL(nolock) where FABLOCATION_ID = '"+str(TreeParentParam)+"'")        
         PrimaryLable = "Fab Location ID"
@@ -2703,7 +2703,7 @@ def Related_Sub_Banner(
                                     if "ADD UNMAPPED EQUIPMENTS" in btn:
                                         Trace.Write('add_button->unmapped--'+str(add_button))
                                         sec_rel_sub_bnr += str(btn)
-                                   
+                                
 
 
 
