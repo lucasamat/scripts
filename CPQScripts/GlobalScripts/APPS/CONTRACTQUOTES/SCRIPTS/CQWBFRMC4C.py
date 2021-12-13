@@ -12,7 +12,7 @@ import sys
 
 if 'Param' in globals():
     Log.Info("CQWBFRMC4C called.......")	
-    if hasattr(Param, 'CPQ_Columns'):
+    if hasattr(Param, "CPQ_Columns"):
         Log.Info("CQWBFRMC4C called.......inside if")
         for values in Param.CPQ_Columns:
             Log.Info("CQWBFRMC4C called....... inside for")
