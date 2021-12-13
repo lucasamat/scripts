@@ -950,19 +950,46 @@ class QueryBuilder:
 
     def SaveQueryBuilder(self, QbJsonData, QbWhereCondition, QbCallFromPricing):
         CpqIdQuery = Sql.GetFirst(
-            "select CpqTableEntryId from ACACST (nolock) where APPROVAL_CHAIN_STEP_RECORD_ID = '"
+            "select CpqTableEntryId,APRCHN_ID,APRCHN_RECORD_ID,APRCHNSTP_NAME,APRCHNSTP_NUMBER from ACACST (nolock) where APPROVAL_CHAIN_STEP_RECORD_ID = '"
             + str(self.CurrentRecordId)
             + "'"
         )
         tableInfo = Sql.GetTable("ACACST")
+        tableInfoACACSF = Sql.GetTable("ACACSF")
         updaterow = {
             "CpqTableEntryId": CpqIdQuery.CpqTableEntryId,
             "CRITERIA_01": QbJsonData,
             "WHERE_CONDITION_01": QbWhereCondition,
         }
+        if "AND" in QbWhereCondition:
+            QbWhereCondition =QbWhereCondition.split("AND")
+            l=[]
+            count = 0
+            for i in QbWhereCondition:
+                l.append(i.split("."))
+                count += 1
+            Trace.Write("LIST---"+str(l))
+            
+            for x in count:
+                getFieldLabel = Sql.GetFirst("SELECT FIELD_LABEL,RECORD_ID FROM SYOBJD(NOLOCK) WHERE OBJECT_NAME ='{}' AND API_NAME = '{}'".format(l[x][0],str(l[x][1]).split("=")[0].strip()))
+                getObjLabel = Sql.GetFirst("SELECT LABEL,RECORD_ID FROM SYOBJH(NOLOCK) WHERE OBJECT_NAME ='{}'".format(l[x][0]))
+                if getFieldLabel and getObjLabel:
+                    row = {
+                        "APRCHNSTP_TESTEDFIELD_RECORD_ID":str(Guid.NewGuid()).upper(),
+                        "APRCHN_ID":CpqIdQuery.APRCHN_ID,
+                        "APRCHN_RECORD_ID":CpqIdQuery.APRCHN_RECORD_ID,
+                        "APRCHNSTP_NUMBER":CpqIdQuery.APRCHNSTP_NUMBER,
+                        "APRCHNSTP_RECORD_ID":self.CurrentRecordId,
+                        "TSTOBJ_TESTEDFIELD_LABEL":getFieldLabel.FIELD_LABEL,
+                        "TSTOBJ_TESTEDFIELD_RECORD_ID":getFieldLabel.RECORD_ID,
+                        "TSTOBJ_LABEL":getObjLabel.LABEL,
+                        "TSTOBJ_RECORD_ID":getObjLabel.RECORD_ID
+                    }
         Trace.Write(str(updaterow))
         tableInfo.AddRow(updaterow)
-        Sql.Upsert(tableInfo)
+        Sql.Upsert(tableInfoACACSF)
+        tableInfoACACSF.AddRow(row)
+        Sql.Upsert(tableInfoACACSF)
         return True
 
 
