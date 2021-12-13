@@ -15,3 +15,6 @@ from System.Net import CookieContainer, NetworkCredential, Mail
 from System.Net.Mail import SmtpClient, MailAddress, Attachment, MailMessage
 from SYDATABASE import SQL
 Sql = SQL()
+user_id = str(User.Id)
+user_name = str(User.UserName)		
+datetime_value = datetime.datetime.now()
