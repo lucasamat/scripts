@@ -17,7 +17,7 @@ if 'Param' in globals():
          
         opportunity_data = [str(param_result.Value) for param_result in Param.CPQ_Columns]
         opportunity_id = opportunity_data[0]
-        opportunity_status = opportunity_data[-1]
+        opportunity_status = str(opportunity_data[-1]).upper()
         
         Log.Info("opportunity_id--"+str(opportunity_id))
         Log.Info("opportunity_status--"+str(opportunity_status))
