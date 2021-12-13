@@ -2612,14 +2612,13 @@ def Related_Sub_Banner(
                         sec_rel_sub_bnr += ""
                     elif TreeParam == "Sales Team":
                         Trace.Write("sales===")
-                        contract_manager_info = Sql.GetList("SELECT DISTINCT C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}'".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))
-                        for c4c_id in contract_manager_info:
-                            if c4c_id.C4C_PARTNERFUNCTION_ID == "CONTRACT MANAGER":
-                                Trace.Write("sales==btn===")
-                                sec_rel_sub_bnr += ""
-                            # else:
-                            #     Trace.Write("sales==btn===>>")
-                            #     sec_rel_sub_bnr += (str(add_button))
+                        contract_manager_info = Sql.GetFirst("SELECT C4C_PARTNERFUNCTION_ID from SAQDLT where QUOTE_RECORD_ID = '{}' AND QTEREV_RECORD_ID = '{}' AND C4C_PARTNERFUNCTION_ID = 'CONTRACT MANAGER' ".format(Quote.GetGlobal("contract_quote_record_id"),quote_revision_record_id))                        
+                        if contract_manager_info:
+                            Trace.Write("sales==btn===")
+                            sec_rel_sub_bnr += ""
+                        else:
+                            Trace.Write("sales==btn===>>")
+                            sec_rel_sub_bnr += (str(add_button))
 
                     # Removed Add New Button suppress functionality
                     
