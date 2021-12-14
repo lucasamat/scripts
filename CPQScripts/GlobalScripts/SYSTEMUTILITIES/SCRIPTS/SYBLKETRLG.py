@@ -526,6 +526,23 @@ def RELATEDMULTISELECTONSAVE(TITLE, VALUE, CLICKEDID, RECORDID,selectPN,ALLVALUE
 			elif obj_name == "SAQRIT":
 				Trace.Write("inside saqrit")
 				Trace.Write("all values---"+str(dict(ALLVALUES)))
+				#A055S000P01-12656 start
+				tax_percent_amt =''
+				net_value_tax  = ''
+				Sql = SQL()
+				get_quote_item_details = Sql.GetList("select * from SAQRIT where QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id")))
+				if get_quote_item_details:
+					for val in get_quote_item_details:
+						item_rec = val.QUOTE_REVISION_CONTRACT_ITEM_ID
+						if val.TAX_PERCENTAGE:
+							tax_percent_amt = val.TAX_PERCENTAGE
+						if val.COMVAL_INGL_CURR:
+							commitval = val.COMVAL_INGL_CURR
+							tax_amt_update  = float(commitval) * float(tax_percent_amt)
+							net_value_tax = tax_amt_update+commitval
+							net_price_update = "UPDATE SAQRIT SET NET_PRICE = '{commitvalue}',NET_PRICE_INGL_CURR= '{commitvalue}',TAX_AMOUNT ={tax_amt_update},TAX_AMOUNT_INGL_CURR = {tax_amt_update},NET_VALUE = {net_value_tax},NET_VALUE_INGL_CURR={net_value_tax} where QUOTE_RECORD_ID = '{qt_rec}' and QUOTE_REVISION_CONTRACT_ITEM_ID = '{item_rec}' AND QTEREV_RECORD_ID = '{rev_rec_id}'".format(commitvalue = val.COMVAL_INGL_CURR,tax_amt_update=tax_amt_update,qt_rec= Qt_rec_id,item_rec=item_rec,net_value_tax=net_value_tax,rev_rec_id =  Quote.GetGlobal("quote_revision_record_id"))
+							Sql.RunQuery(net_price_update)
+				#A055S000P01-12656 end
 			elif (TreeParentParam in ('Comprehensive Services','Complementary Products') or TreeTopSuperParentParam in ('Comprehensive Services','Complementary Products')) and obj_name == "SAQSAP":
 				Sql.RunQuery("""UPDATE SAQSAP SET {column} = {value} WHERE QUOTE_RECORD_ID = '{QuoteRecordId}' AND QTEREV_RECORD_ID = '{rev_rec_id}' AND {rec_name} = '{rec_id}' """.format(column=TITLE,value = ALLVALUES[index] if str(type(ALLVALUES))=="<type 'ArrayList'>" else ALLVALUES,QuoteRecordId = Qt_rec_id,rev_rec_id = Quote.GetGlobal("quote_revision_record_id"),rec_name = objh_head,rec_id = sql_obj.QUOTE_SERVICE_COV_OBJ_ASS_PM_KIT_RECORD_ID))
 			else:
